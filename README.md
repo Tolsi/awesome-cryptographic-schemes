@@ -259,6 +259,8 @@
 - [Graph Encryption](#graph-encryption)
 - [Encrypted Client Hello (ECH)](#encrypted-client-hello-ech)
 - [Private Heavy Hitters / Frequency Estimation](#private-heavy-hitters--frequency-estimation)
+- [Accountable Decryption](#accountable-decryption)
+- [Certified Quantum Randomness / Proof of Quantumness](#certified-quantum-randomness--proof-of-quantumness)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -3993,6 +3995,33 @@
 | **Prio3 + VDAF (IETF)** | 2023 | Secret sharing + ZK | Standardized (draft-irtf-cfrg-vdaf); used in Mozilla/Apple telemetry; extends [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation) [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-vdaf/) |
 
 **State of the art:** Poplar/Prio3 for heavy hitters; RAPPOR for local DP. Related to [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation) and [Differential Privacy](#differential-privacy).
+
+---
+
+## Accountable Decryption
+
+**Goal:** Auditable use of decryption keys. Every decryption act produces a publicly verifiable log entry proving the decryption was legitimate. A verifier can identify malicious decryptors who abuse their keys. Distinct from [message franking](#message-franking--abuse-reporting-in-e2e) (which audits message content, not key usage).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Kiayias-Tang Accountable Decryption** | 2023 | Signatures + log | Formal model: decryptor must produce verifiable log entry for every decryption; identifies rogue decryptors [[1]](https://eprint.iacr.org/2023/1519) |
+| **Practical Accountable Decryption (IEEE TIFS)** | 2024 | TEE + verifiable logs | Production system: identifies malicious decryptors among 300K log entries in 69 ms [[1]](https://ieeexplore.ieee.org/document/10798458/) |
+
+**State of the art:** TEE-enforced accountable decryption (2024); formal model (2023). Complements [Key Transparency](#key-transparency--coniks) (audits key bindings) and [Traceable Signatures](#traceable-signatures) (audits signing).
+
+---
+
+## Certified Quantum Randomness / Proof of Quantumness
+
+**Goal:** Generate provably random bits using a quantum device — even if you don't trust the device. A classical client sends challenge circuits to an untrusted quantum processor; the client verifies outputs classically, certifying genuine entropy. No Bell test or device trust required.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Brakerski-Christiano-Mahadev-Vazirani** | 2018 | LWE + quantum | First proof of quantumness protocol; classical verifier certifies quantum computation [[1]](https://arxiv.org/abs/1804.00640) |
+| **Aaronson-Hung Certified Randomness** | 2023 | Random circuit sampling | Certify randomness from quantum processor via random circuit challenges [[1]](https://arxiv.org/abs/2303.01625) |
+| **Quantinuum Certified Randomness (Nature)** | 2025 | 56-qubit trapped-ion | First experimental demonstration: 71,313 certified random bits from untrusted quantum processor [[1]](https://www.nature.com/articles/s41586-025-08737-1) |
+
+**State of the art:** Quantinuum H2-1 demonstration (Nature 2025); a new primitive class at intersection of [QKD](#quantum-key-distribution-qkd), [Randomness Beacons](#randomness-beacons--coin-tossing), and computational complexity.
 
 ---
 
