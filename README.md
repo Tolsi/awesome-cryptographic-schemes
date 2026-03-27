@@ -760,8 +760,9 @@
 | **Circuit PSI** | 2018 | Garbled circuits | Maliciously secure; outputs secret-shared intersection [[1]](https://eprint.iacr.org/2018/120) |
 | **PSI-CA** | 2012 | Various | Cardinality only: learn size of intersection, not elements [[1]](https://eprint.iacr.org/2011/141) |
 | **Multi-Party PSI (Kolesnikov et al.)** | 2017 | OPRF + OT | PSI for N>2 parties; star topology or circuit-based; used in Google Private Join and Compute [[1]](https://eprint.iacr.org/2017/799) |
+| **Private Contact Discovery (Signal)** | 2023 | Unbalanced PSI + SGX | Find which phone contacts use Signal without revealing contacts; ~2 sec for 1024 contacts against billions [[1]](https://eprint.iacr.org/2023/758) |
 
-**State of the art:** OPRF-based PSI (semi-honest), circuit PSI (malicious), multi-party PSI (N parties), PSI-CA (minimal leakage).
+**State of the art:** OPRF-based PSI (semi-honest), circuit PSI (malicious), multi-party PSI (N parties), private contact discovery (Signal production).
 
 ---
 
@@ -805,8 +806,9 @@
 | **PEKS (Boneh et al.)** | 2004 | Pairings | Public-key keyword search; anyone can generate trapdoors [[1]](https://eprint.iacr.org/2003/195) |
 | **OXT** | 2013 | Symmetric + OT | Conjunctive queries; sublinear search time [[1]](https://eprint.iacr.org/2013/169) |
 | **Dynamic SSE (Kamara-Papamanthou)** | 2013 | PRF + inverted index | Supports updates; leakage-optimal [[1]](https://eprint.iacr.org/2012/563) |
+| **GraphSE² (Encrypted Graph Search)** | 2019 | SSE + graph | SSE for social graph pattern matching; Facebook-scale queries on million-user encrypted graphs [[1]](https://arxiv.org/abs/1905.04501) |
 
-**State of the art:** OXT (multi-keyword), Dynamic SSE (updatable datasets).
+**State of the art:** Dynamic SSE (updatable datasets), GraphSE² (encrypted graph queries).
 
 ---
 
@@ -1243,8 +1245,9 @@
 | **Bonawitz et al. (Google SecAgg)** | 2017 | Secret sharing + DH masking | Tolerates dropouts; used in Gboard federated learning [[1]](https://eprint.iacr.org/2017/281) |
 | **Bell et al. (SecAgg+)** | 2020 | Sparse secret sharing | O(n log n) communication; improved scalability [[1]](https://eprint.iacr.org/2020/704) |
 | **FLAME (LWE-based)** | 2023 | LWE | Post-quantum secure aggregation [[1]](https://eprint.iacr.org/2023/224) |
+| **PAgIoT** | 2016 | Paillier + attributes | Privacy-preserving multi-attribute aggregation for IoT; lightweight for constrained devices [[1]](https://lgmanzan.github.io/docs/PagIoT.pdf) |
 
-**State of the art:** SecAgg+ (Google/Apple production), FLAME (PQ setting).
+**State of the art:** SecAgg+ (Google/Apple production), FLAME (PQ setting), PAgIoT (IoT-optimized).
 
 ---
 
@@ -1328,8 +1331,9 @@
 | **Prio** | 2017 | Secret sharing + SNIPs | First practical system; used in Firefox, ISRG [[1]](https://crypto.stanford.edu/prio/paper.pdf) |
 | **Prio3 / VDAF** | 2023 | IETF DAP protocol | Standardized VDAF (RFC 9709-area); FLP + secret sharing [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-vdaf/) |
 | **Poplar / Prio+** | 2021 | Heavy hitters + IDPF | Find popular strings privately; Mozilla/Apple telemetry [[1]](https://eprint.iacr.org/2021/017) |
+| **IPA (Interoperable Private Attribution)** | 2023 | 3-party MPC + blinding | W3C PATCG protocol for privacy-preserving ad attribution measurement without user tracking [[1]](https://eprint.iacr.org/2023/437) |
 
-**State of the art:** Prio3/VDAF (IETF standard), Poplar (heavy-hitter queries in Chrome, Firefox).
+**State of the art:** Prio3/VDAF (IETF standard), Poplar (heavy-hitter queries in Chrome, Firefox), IPA (W3C ad measurement).
 
 ---
 
@@ -1564,8 +1568,9 @@
 | **Daniel Kang et al. (zkCNN)** | 2022 | GKR + sumcheck | Prove CNN inference; interactive → Fiat-Shamir [[1]](https://eprint.iacr.org/2021/673) |
 | **Giza (ONNX→Cairo)** | 2023 | STARKs | Compile ONNX to Cairo (STARK-provable) [[1]](https://github.com/gizatechxyz/orion) |
 | **zkPyTorch** | 2025 | Expander proof engine | Auto-generate ZK proofs for standard PyTorch inference; no custom circuits [[1]](https://eprint.iacr.org/2025/535) |
+| **SecFormer** | 2024 | SMPC + segmented polynomials | Privacy-preserving transformer inference via SMPC; Goldschmidt's method for nonlinear ops; ACL 2024 [[1]](https://aclanthology.org/2024.findings-acl.790/) |
 
-**State of the art:** EZKL (practical), zkCNN (academic foundation), zkPyTorch (2025, PyTorch-native), active race between SNARK/STARK approaches.
+**State of the art:** EZKL (practical), zkPyTorch (2025, PyTorch-native), SecFormer (2024, SMPC-based), active race between SNARK/STARK/SMPC approaches.
 
 ---
 
@@ -3870,8 +3875,9 @@
 | **Kogiso-Fujita Encrypted Control** | 2015 | ElGamal HE | First encrypted controller; homomorphic linear feedback on encrypted plant state [[1]](https://doi.org/10.1109/CDC.2015.7402918) |
 | **Kim-Shim-Wu et al. Encrypted LQG** | 2020 | CKKS (approx HE) | Encrypted linear-quadratic-Gaussian control; CKKS for real-valued computations [[1]](https://arxiv.org/abs/2010.00268) |
 | **Encrypted MPC (Schlüter et al.)** | 2023 | TFHE + model predictive | Encrypted model predictive control with bootstrapping; real-time feasible [[1]](https://doi.org/10.1016/j.ifacol.2023.10.1285) |
+| **Privacy-Preserving Power Flow (SMPC)** | 2024 | MPC + Newton's method | SMPC-based power flow analysis for smart grids without revealing grid state [[1]](https://arxiv.org/abs/2411.14557) |
 
-**State of the art:** CKKS-based encrypted LQG (2020); TFHE for nonlinear control (2023). Bridges [HE](#homomorphic-encryption-he) and control theory.
+**State of the art:** CKKS-based encrypted LQG (2020); TFHE for nonlinear control (2023); MPC for power flow (2024). Bridges [HE](#homomorphic-encryption-he), [MPC](#secure-multi-party-computation-mpc), and control theory.
 
 ---
 
