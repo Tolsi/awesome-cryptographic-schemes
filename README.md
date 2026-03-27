@@ -191,6 +191,16 @@
 - [Universal Thresholdizer](#universal-thresholdizer)
 - [Verifiable FHE](#verifiable-fhe)
 - [Point Function Obfuscation / Digital Locker](#point-function-obfuscation--digital-locker)
+- [Linked Timestamping](#linked-timestamping)
+- [E-Cash / Chaumian Digital Cash](#e-cash--chaumian-digital-cash)
+- [Digital Watermarking / Fingerprinting](#digital-watermarking--fingerprinting)
+- [Group Encryption](#group-encryption)
+- [Leakage-Resilient Secret Sharing](#leakage-resilient-secret-sharing)
+- [Updatable CRS / Powers of Tau](#updatable-crs--powers-of-tau)
+- [Delegatable Anonymous Credentials](#delegatable-anonymous-credentials)
+- [Secure Deduplication](#secure-deduplication)
+- [Quantum Money / Quantum Tokens](#quantum-money--quantum-tokens)
+- [Multi-Prover Interactive Proofs (MIP)](#multi-prover-interactive-proofs-mip)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -2957,6 +2967,151 @@
 | **Compute-and-Compare Obfuscation** | 2017 | LWE | Generalize point obfuscation: output s iff f(x) = target; from LWE [[1]](https://eprint.iacr.org/2017/276) |
 
 **State of the art:** Lockable obfuscation from LWE (2017); implies point obfuscation, lockable encryption, and more. Relates to [iO](#indistinguishability-obfuscation-io) as the achievable fragment of program obfuscation.
+
+---
+
+## Linked Timestamping
+
+**Goal:** Prove a document existed at a specific time. Chain documents together using cryptographic hashes — each timestamp depends on all previous ones, creating a tamper-evident timeline. The direct precursor to blockchain.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Haber-Stornetta Linked Timestamping** | 1991 | Hash chain | First secure timestamping; documents linked in hash chain [[1]](https://doi.org/10.1007/BF00196791) |
+| **Bayer-Haber-Stornetta (Merkle tree TS)** | 1993 | Merkle tree | Batch timestamps into Merkle tree; O(log n) proof size [[1]](https://doi.org/10.1007/978-1-4613-9323-8_24) |
+| **RFC 3161 Timestamp Protocol** | 2001 | PKI + hash | Internet standard; trusted timestamp authority signs hash + time [[1]](https://www.rfc-editor.org/rfc/rfc3161) |
+| **Guardtime KSI** | 2007 | Hash calendar | Keyless Signatures Infrastructure; hash-based, no PKI dependency [[1]](https://guardtime.com/technology) |
+
+**State of the art:** Guardtime KSI (deployed in Estonian e-government); blockchain-based timestamping inherits Haber-Stornetta's design. Three of their papers are cited in the [Bitcoin whitepaper](https://bitcoin.org/bitcoin.pdf).
+
+---
+
+## E-Cash / Chaumian Digital Cash
+
+**Goal:** Anonymous digital payments. A bank issues "coins" via blind signatures; the user spends coins anonymously (bank cannot link withdrawal to payment); double-spending is detected. The foundational idea behind all cryptocurrency.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chaum E-Cash** | 1982 | Blind RSA signatures | First anonymous digital cash; bank blindly signs coin, user spends unlinkably [[1]](https://doi.org/10.1007/978-1-4757-0602-4_18) |
+| **Chaum-Fiat-Naor Offline E-Cash** | 1990 | Blind sigs + cut-and-choose | Offline spending; double-spender's identity revealed [[1]](https://doi.org/10.1007/3-540-46766-1_34) |
+| **Brands E-Cash** | 1993 | Discrete log + blind sigs | Efficient offline e-cash; compact wallets [[1]](https://doi.org/10.1007/3-540-48329-2_26) |
+| **Compact E-Cash (Camenisch-Hohenberger-Lysyanskaya)** | 2005 | Pairings + ZK | Withdraw N coins at once; O(1) wallet storage [[1]](https://eprint.iacr.org/2005/060) |
+
+**State of the art:** Compact E-Cash (CHL 2005); modern [Privacy Pass](#privacy-pass--anonymous-tokens) is essentially single-use e-cash tokens. See [Blind Signatures](#blind-signatures).
+
+---
+
+## Digital Watermarking / Fingerprinting
+
+**Goal:** Copyright protection and traitor tracing. Embed a hidden mark in content (image, audio, video, text, ML model) that survives transformations (compression, cropping, noise). Fingerprinting: each copy gets a unique mark to trace leakers.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Cox-Kilian-Leighton-Shamoon Spread Spectrum** | 1997 | Spread spectrum | Embed watermark in frequency domain; robust to compression [[1]](https://doi.org/10.1109/83.650120) |
+| **Boneh-Shaw Fingerprinting** | 1998 | Collusion-resistant codes | Fingerprinting code: coalition of k users cannot frame an innocent user [[1]](https://doi.org/10.1109/18.705568) |
+| **Tardos Fingerprinting Code** | 2003 | Probabilistic | Optimal-length collusion-resistant code; O(k² log n) length [[1]](https://doi.org/10.1145/779928.779945) |
+| **ML Model Watermarking** | 2018 | Trigger set / backdoor | Embed verifiable watermark in neural network weights [[1]](https://arxiv.org/abs/1802.04633) |
+
+**State of the art:** Tardos codes for collusion resistance; ML watermarking for AI model IP. Related to [Steganography](#steganography) (hide message) vs. watermarking (prove ownership).
+
+---
+
+## Group Encryption
+
+**Goal:** Encrypt for a group with accountability. Anyone can encrypt to the group; any group member can decrypt; the group manager can identify which member decrypted. The encryption dual of group signatures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Kiayias-Tsiounis-Yung Group Encryption** | 2007 | Pairings + GS proofs | First group encryption; CCA-secure with opening capability [[1]](https://eprint.iacr.org/2007/015) |
+| **Cathalo-Libert-Yung** | 2009 | Pairings | Efficient group encryption with shorter ciphertexts [[1]](https://eprint.iacr.org/2009/510) |
+| **Lattice Group Encryption (El Bansarkhani-Sturm)** | 2018 | LWE | Post-quantum group encryption from lattices [[1]](https://eprint.iacr.org/2018/196) |
+
+**State of the art:** Lattice-based group encryption for PQ; complements [Ring & Group Signatures](#ring--group-signatures) as the encryption counterpart.
+
+---
+
+## Leakage-Resilient Secret Sharing
+
+**Goal:** Side-channel resistant shares. Secret sharing remains secure even if an adversary learns bounded leakage (e.g., a few bits) from each share. Standard Shamir is completely broken by 1-bit leakage from each share; LRSS withstands it.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Benhamouda-Degwekar-Ishai-Rabin LRSS** | 2018 | Inner product + Shamir | First LRSS for general leakage; local leakage model [[1]](https://eprint.iacr.org/2018/294) |
+| **Goyal-Kumar LRSS** | 2018 | Extractors + SS | Optimal rate LRSS; leakage up to (1-ε) fraction of share size [[1]](https://eprint.iacr.org/2018/099) |
+| **Nielsen-Simkin Non-Malleable + LR SS** | 2020 | Combined model | Both leakage-resilient and non-malleable secret sharing [[1]](https://eprint.iacr.org/2020/209) |
+
+**State of the art:** Combined NM + LR secret sharing (2020); extends [Secret Sharing](#secret-sharing-schemes-sss) and relates to [Leakage-Resilient Crypto](#leakage-resilient-cryptography).
+
+---
+
+## Updatable CRS / Powers of Tau
+
+**Goal:** Perpetually strengthened trusted setup. A common reference string (CRS) for SNARKs that can be continuously updated by new participants — each adds their own randomness. The CRS is secure as long as at least one participant was honest, ever.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bowe-Gabizon-Miers (Powers of Tau)** | 2017 | Pairings + KZG | Universal SRS ceremony; sequential contributions; used by Zcash [[1]](https://eprint.iacr.org/2017/1050) |
+| **Zcash Powers of Tau Ceremony** | 2018 | BGM protocol | 87 participants; produced SRS for Sapling [[1]](https://z.cash/technology/paramgen/) |
+| **Ethereum KZG Ceremony** | 2023 | KZG SRS | 141,416 contributors; SRS for EIP-4844 (proto-danksharding) [[1]](https://ceremony.ethereum.org/) |
+| **Universal SRS (SONIC/Marlin/PLONK)** | 2019 | Updatable + universal | One SRS for all circuits up to a size bound [[1]](https://eprint.iacr.org/2019/953) |
+
+**State of the art:** Ethereum KZG ceremony (141k participants); universal updatable SRS for [PLONK-family](#zero-knowledge-proofs-zk) SNARKs.
+
+---
+
+## Delegatable Anonymous Credentials
+
+**Goal:** Credential chaining with privacy. A credential holder can delegate their credential to another party — possibly with restrictions — who can further delegate. Each presentation is anonymous and unlinkable, even across delegation levels.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chase-Lysyanskaya Delegatable Creds** | 2006 | NIZK + signatures | First delegatable anonymous credentials; unlimited depth [[1]](https://eprint.iacr.org/2006/281) |
+| **Belenkiy-Chase-Kohlweiss-Lysyanskaya** | 2009 | GS proofs + P-signatures | Practical delegatable creds from Groth-Sahai proofs [[1]](https://eprint.iacr.org/2008/428) |
+| **Camenisch-Drijvers-Dubovitskaya** | 2017 | CL sigs + delegation | Practical construction with attribute-based delegation [[1]](https://eprint.iacr.org/2017/115) |
+
+**State of the art:** Delegatable creds from [Malleable Proofs](#malleable-proof-systems--controlled-malleable-nizk) and [SPS/EQS](#structure-preserving-signatures-sps). Extends [Anonymous Credentials](#anonymous-credentials).
+
+---
+
+## Secure Deduplication
+
+**Goal:** Encrypted storage with duplicate elimination. Cloud server detects and removes duplicate files among encrypted uploads — without decrypting. Saves storage while preserving confidentiality. Formalizes security of convergent encryption.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Douceur et al. Convergent Encryption** | 2002 | H(plaintext) as key | Deterministic encryption for dedup; see [Deterministic Encryption](#deterministic-encryption--convergent-encryption) [[1]](https://doi.org/10.1145/514236.514243) |
+| **Bellare-Keelveedhi-Ristenpart (DupLESS)** | 2013 | Server-aided MLE | Server-aided message-locked encryption; key from OPRF prevents offline brute-force [[1]](https://eprint.iacr.org/2013/429) |
+| **Secure Dedup with PoW (Halevi et al.)** | 2011 | Proof of ownership | Client proves it owns file before server deduplicates [[1]](https://eprint.iacr.org/2011/277) |
+
+**State of the art:** DupLESS (server-aided OPRF-based dedup); extends [Deterministic Encryption](#deterministic-encryption--convergent-encryption) with formal security and [OPRF](#oblivious-prf-oprf).
+
+---
+
+## Quantum Money / Quantum Tokens
+
+**Goal:** Unclonable currency. Banknotes are quantum states — the no-cloning theorem prevents counterfeiting. Impossible to achieve classically (any digital data can be copied). A foundational quantum cryptographic primitive beyond QKD.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Wiesner's Quantum Money** | 1983 | Conjugate coding | First proposal; bank verifies; uses BB84-like states [[1]](https://doi.org/10.1145/1008908.1008920) |
+| **Aaronson-Christiano Public Quantum Money** | 2012 | Hidden subspaces | Public verification; anyone can verify without the bank [[1]](https://doi.org/10.1145/2213977.2213983) |
+| **Zhandry Quantum Lightning** | 2019 | Cryptographic assumptions | Strongest form: even the minter cannot create two identical bolts [[1]](https://eprint.iacr.org/2018/1105) |
+
+**State of the art:** Quantum lightning (Zhandry 2019); theoretical — requires quantum computers for creation/verification. See [QKD](#quantum-key-distribution-qkd).
+
+---
+
+## Multi-Prover Interactive Proofs (MIP)
+
+**Goal:** Proofs from non-communicating provers. Multiple provers who cannot communicate with each other jointly convince a verifier. Vastly more powerful than single-prover proofs: MIP = NEXP. With entangled provers: MIP* = RE (every recursively enumerable language!).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ben-Or-Goldwasser-Kilian-Wigderson** | 1988 | Two provers | First MIP; two provers are enough for NEXP [[1]](https://doi.org/10.1145/62212.62223) |
+| **Babai-Fortnow-Lund MIP = NEXP** | 1991 | Algebraic | Proved MIP = NEXP; multi-prover as powerful as exponential computation [[1]](https://doi.org/10.1007/BF01200056) |
+| **MIP* = RE (Ji et al.)** | 2020 | Quantum entanglement | With entangled provers, all RE languages provable; resolved Connes embedding [[1]](https://arxiv.org/abs/2001.04383) |
+| **Interactive Proofs for Muggles (GKR)** | 2008 | Sumcheck | Practical: verifier delegates computation to untrusted prover [[1]](https://doi.org/10.1145/2699436) |
+
+**State of the art:** MIP* = RE (2020, breakthrough); practical MIP-derived systems via [Sumcheck](#sumcheck-protocol) and [IOP](#interactive-oracle-proofs-iop--pcp). Foundational for proof complexity.
 
 ---
 
