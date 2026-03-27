@@ -379,8 +379,9 @@
 | **Verifiable SS — Pedersen** | 1991 | Double commitments | Information-theoretically hiding [[1]](https://link.springer.com/chapter/10.1007/3-540-46766-1_9) |
 | **Packed Secret Sharing** | 1992 | Multi-secret polynomial | Amortized: share multiple secrets at once [[1]](https://dl.acm.org/doi/10.1145/129712.129780) |
 | **Proactive SS** | 1995 | Periodic share refresh | Tolerates mobile adversary over time [[1]](https://link.springer.com/chapter/10.1007/3-540-44750-4_27) |
+| **Verifiable Weighted SS** | 2025 | Bulletproofs + Shamir | First efficient verifiable weighted SS; stake-aware party weights [[1]](https://arxiv.org/abs/2505.24289) |
 
-**State of the art:** Shamir + Feldman VSS (practical), Packed SS (MPC optimization).
+**State of the art:** Shamir + Feldman VSS (practical), Packed SS (MPC optimization), Weighted SS (2025).
 
 ---
 
@@ -461,8 +462,9 @@
 | **TFHE** | 2016 | Fully HE (Boolean/small int) | any Boolean gate, small int add/mul, fast bootstrapping | Fast bootstrapping (~10 ms); gate-by-gate [[1]](https://eprint.iacr.org/2018/421) |
 | **OpenFHE** | 2022 | Library | all of above (library) | Implements BFV, BGV, CKKS, TFHE (successor to PALISADE, HElib, HEAAN) [[1]](https://eprint.iacr.org/2022/915) |
 | **Paillier** | 1999 | Additive HE only | add only, scalar mul | Simple; used in e-voting, MPC, federated learning [[1]](https://link.springer.com/chapter/10.1007/3-540-48910-X_16) |
+| **TFHE-rs** | 2022 | TFHE (Rust) | Production FHE library | Programmable bootstrapping; used in Zama's fhEVM for encrypted smart contracts [[1]](https://github.com/zama-ai/tfhe-rs) |
 
-**State of the art:** TFHE (fast bootstrapping), CKKS (ML on encrypted data), OpenFHE (reference library).
+**State of the art:** TFHE (fast bootstrapping), CKKS (ML on encrypted data), OpenFHE (reference library), TFHE-rs (production Rust impl.).
 
 ---
 
@@ -862,8 +864,9 @@
 | **E91** | 1991 | Entangled pairs | Bell inequality violation as security test [[1]](https://link.springer.com/chapter/10.1007/978-3-319-53412-1_2) |
 | **B92** | 1992 | 2 non-orthogonal states | Simpler than BB84; less efficient [[1]](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.68.3121) |
 | **MDI-QKD** | 2012 | Measurement-device-independent | Removes detector side-channels; more practical [[1]](https://eprint.iacr.org/2012/003) |
+| **Microsatellite QKD (Jinan-1)** | 2025 | Satellite + BB84 | 23kg quantum microsatellite; space-to-ground QKD over 12,900km; 1.07M secure bits/pass; Nature 2025 [[1]](https://www.nature.com/articles/s41586-025-08739-z) |
 
-**State of the art:** BB84 (deployed in commercial QKD, China's Micius satellite), MDI-QKD (practical lab deployments).
+**State of the art:** BB84 (deployed in commercial QKD, China's Micius satellite), MDI-QKD (practical lab deployments), Jinan-1 (2025, microsatellite QKD).
 
 ---
 
@@ -876,8 +879,10 @@
 | **Krawczyk-Rabin Chameleon Hash** | 1997 | DLP | First scheme; trapdoor = discrete log [[1]](https://link.springer.com/chapter/10.1007/3-540-49677-7_17) |
 | **EC Chameleon Hash** | 2004 | ECDLP | Elliptic curve variant; compact keys [[1]](https://link.springer.com/chapter/10.1007/978-3-540-28632-5_2) |
 | **Chameleon-Hash with Ephemeral Trapdoors** | 2017 | Pairings | Per-message trapdoor; used in sanitizable signatures [[1]](https://eprint.iacr.org/2017/018) |
+| **Tagged Chameleon Hash from Lattices** | 2024 | LWE | PQ chameleon hash with tags for redactable blockchains; PKC 2024 [[1]](https://link.springer.com/chapter/10.1007/978-3-031-57725-3_10) |
+| **Decentralized Chameleon Hash (IDCH)** | 2024 | Identity-based | Redactable blockchain with traceable on-chain edits; no single trapdoor holder [[1]](https://www.sciencedirect.com/science/article/pii/S235286482400141X) |
 
-**State of the art:** EC Chameleon Hash (redactable blockchain, GDPR-compliant chains), Sanitizable Signatures (document workflows).
+**State of the art:** EC Chameleon Hash (redactable blockchain, GDPR-compliant chains), Sanitizable Signatures (document workflows), Lattice-based variants (PQ-secure).
 
 ---
 
@@ -891,8 +896,9 @@
 | **Threshold RSA (Shoup)** | 2000 | RSA + VSS | Secure threshold RSA decryption [[1]](https://eprint.iacr.org/1999/011) |
 | **PVSS-based Threshold Dec.** | 2001 | PVSS + ElGamal | Publicly verifiable shares; no trusted dealer [[1]](https://eprint.iacr.org/1999/041) |
 | **TPKE (Threshold BLS Enc.)** | 2020 | Pairings + Shamir | Non-interactive; used in Ethereum DVT, Dusk Network [[1]](https://eprint.iacr.org/2021/339) |
+| **Pilvi (Lattice Threshold PKE)** | 2025 | LWE | Post-quantum threshold PKE with small decryption shares; simulation-based security; ASIACRYPT 2025 [[1]](https://eprint.iacr.org/2025/1691) |
 
-**State of the art:** Threshold ElGamal (general), TPKE (blockchain applications, DVT).
+**State of the art:** Threshold ElGamal (general), TPKE (blockchain applications, DVT), Pilvi (PQ-secure, 2025).
 
 ---
 
@@ -1179,8 +1185,9 @@
 | **WireGuard** | 2017 | Noise IK + X25519 + ChaCha20-Poly1305 | Minimalist VPN; ~4000 lines of code [[1]](https://www.wireguard.com/papers/wireguard.pdf) |
 | **MLS (Messaging Layer Security)** | 2023 | TreeKEM + HPKE + AEAD | Scalable group E2E messaging; RFC 9420 [[1]](https://www.rfc-editor.org/rfc/rfc9420) |
 | **Noise Framework** | 2018 | DH patterns + AEAD | Composable handshake patterns (XX, IK, NK, etc.) [[1]](https://noiseprotocol.org/noise.html) |
+| **Encrypted Client Hello (ECH)** | 2024 | HPKE (RFC 9180) | **RFC 9849**; encrypts entire TLS ClientHello; hides SNI from observers; deployed in Chrome, Firefox [[1]](https://www.rfc-editor.org/rfc/rfc9849.html) |
 
-**State of the art:** TLS 1.3 (web), Signal (messaging), MLS (group chat), WireGuard (VPN).
+**State of the art:** TLS 1.3 (web), Signal (messaging), MLS (group chat), WireGuard (VPN), ECH (SNI privacy).
 
 ---
 
@@ -1540,8 +1547,9 @@
 | **HyperNova** | 2023 | CCS + multilinear | Fold customizable constraint systems (generalizes R1CS, Plonkish) [[1]](https://eprint.iacr.org/2023/573) |
 | **ProtoStar** | 2023 | Plonkish + accumulation | Non-uniform IVC for PLONK-like systems; see [BARG](#batch-arguments-barg--accumulation-schemes) [[1]](https://eprint.iacr.org/2023/620) |
 | **Protostar/Protogalaxy** | 2023 | Lattice folding | Fold with logarithmic verifier [[1]](https://eprint.iacr.org/2023/1106) |
+| **Symphony** | 2025 | Lattice + high-arity folding | First PQ folding SNARK; avoids hash embedding in circuits; polylog proof size [[1]](https://eprint.iacr.org/2025/1905) |
 
-**State of the art:** HyperNova (most general), Nova (simplest), ProtoStar (PLONK-compatible). Active area with new schemes monthly.
+**State of the art:** HyperNova (most general), Nova (simplest), ProtoStar (PLONK-compatible), Symphony (first PQ-secure folding). Active area with new schemes monthly.
 
 ---
 
@@ -1555,8 +1563,9 @@
 | **Modulus Labs (Remainder)** | 2023 | Custom arithmetic circuits | ZK inference for transformers; on-chain verification [[1]](https://eprint.iacr.org/2023/1584) |
 | **Daniel Kang et al. (zkCNN)** | 2022 | GKR + sumcheck | Prove CNN inference; interactive → Fiat-Shamir [[1]](https://eprint.iacr.org/2021/673) |
 | **Giza (ONNX→Cairo)** | 2023 | STARKs | Compile ONNX to Cairo (STARK-provable) [[1]](https://github.com/gizatechxyz/orion) |
+| **zkPyTorch** | 2025 | Expander proof engine | Auto-generate ZK proofs for standard PyTorch inference; no custom circuits [[1]](https://eprint.iacr.org/2025/535) |
 
-**State of the art:** EZKL (practical), zkCNN (academic foundation), active race between SNARK/STARK approaches.
+**State of the art:** EZKL (practical), zkCNN (academic foundation), zkPyTorch (2025, PyTorch-native), active race between SNARK/STARK approaches.
 
 ---
 
@@ -1856,8 +1865,9 @@
 | **Threshold BLS Encryption for Mempools** | 2022 | TPKE + threshold BLS | Validators jointly decrypt after block ordering; Shutter Network, Penumbra [[1]](https://eprint.iacr.org/2022/898) |
 | **Commit-Reveal Mempool** | 2019 | Hash commitment + reveal | Simpler: commit hash, reveal after inclusion; see [Commit-Reveal](#commit-reveal-schemes) |
 | **Delay Encryption** | 2021 | VDF + encryption | Decrypt only after a time delay; combines VDF with encryption; see [VDF](#verifiable-delay-functions-vdf) [[1]](https://eprint.iacr.org/2021/1490) |
+| **BEAT-MEV** | 2024 | Epochless batched TE | Batched threshold enc for mempools; communication independent of batch size; USENIX Security 2025 [[1]](https://eprint.iacr.org/2024/1533) |
 
-**State of the art:** Threshold encryption (Shutter, Penumbra), Delay encryption (theoretical), commit-reveal (simplest deployed).
+**State of the art:** Threshold encryption (Shutter, Penumbra), BEAT-MEV (2025, batch-optimized), commit-reveal (simplest deployed).
 
 ---
 
@@ -1899,8 +1909,9 @@
 | **AKS Sorting Network** | 1983 | Expander graphs | O(n log n) optimal oblivious sort; impractical constants [[1]](https://dl.acm.org/doi/10.1145/800061.808726) |
 | **Oblivious Bucket Sort (Asharov et al.)** | 2022 | Hashing + padding | Practical O(n log n) with small constants; MPC-friendly [[1]](https://eprint.iacr.org/2022/1243) |
 | **Oblivious Priority Queue** | 2014 | Path ORAM + PQ | Oblivious insertions and extract-min; for graph algorithms on encrypted data [[1]](https://eprint.iacr.org/2014/344) |
+| **Secure Sorting via FSS (Agarwal et al.)** | 2024 | Function secret sharing | 2PC/3PC sorting/selection (top-k, median) with optimal online communication; CCS 2024 [[1]](https://dl.acm.org/doi/10.1145/3658644.3690359) |
 
-**State of the art:** Oblivious Bucket Sort (practical MPC), Bitonic Sort (simplest, widely implemented).
+**State of the art:** Oblivious Bucket Sort (practical MPC), Bitonic Sort (simplest, widely implemented), FSS-based sorting (2024, information-theoretic).
 
 ---
 
@@ -2607,8 +2618,9 @@
 | **Boneh-Naor Timed Commitments** | 2000 | RSA + sequential squaring | First construction; forced opening via repeated squaring mod N [[1]](https://doi.org/10.1007/3-540-44598-6_15) |
 | **Homomorphic Timed Commitments** | 2020 | Class groups | Compute on timed commitments before opening; enables timed auctions [[1]](https://eprint.iacr.org/2019/635) |
 | **Efficient Timed Commitments (Thyagarajan et al.)** | 2021 | Pairings + TLP | Batch verification; more efficient than RSA-based [[1]](https://eprint.iacr.org/2021/1272) |
+| **VT-Dilithium (PQ Timed Signature)** | 2024 | Lattice + TLP | First post-quantum verifiable timed signature; combines Dilithium with lattice time-lock puzzles [[1]](https://eprint.iacr.org/2024/1262) |
 
-**State of the art:** Homomorphic timed commitments for auction/voting applications. Combines [Time-Lock Puzzles](#time-lock-puzzles--timed-release-encryption) with [Commitment Schemes](#commitment-schemes).
+**State of the art:** Homomorphic timed commitments for auction/voting applications, VT-Dilithium (PQ-secure). Combines [Time-Lock Puzzles](#time-lock-puzzles--timed-release-encryption) with [Commitment Schemes](#commitment-schemes).
 
 ---
 
@@ -3594,8 +3606,10 @@
 | **Boneh-Partap-Rotem Traceable SS** | 2024 | Fingerprinting + Shamir | First traceable SS; tracing key identifies leaked shares; CRYPTO 2024 [[1]](https://eprint.iacr.org/2024/405) |
 | **Traceable SS for General Access** | 2024 | LSSS + tracing | Extension to general access structures (beyond threshold) [[1]](https://eprint.iacr.org/2024/405) |
 | **Bottom-Up Traceable SS** | 2025 | Social key recovery | Users self-assign shares; tracing in community key recovery model [[1]](https://eprint.iacr.org/2025/2089) |
+| **TVSS (Traceable Verifiable SS)** | 2025 | Feldman/Pedersen + tracing | Combines traceability with verifiability against malicious dealers [[1]](https://eprint.iacr.org/2025/318) |
+| **TSS-PV (Public Verifiability)** | 2025 | Indistinguishable dummy shares | First publicly verifiable traceable SS; resolves "Provenance Paradox" [[1]](https://eprint.iacr.org/2025/2261) |
 
-**State of the art:** Boneh-Partap-Rotem (CRYPTO 2024); new security dimension for [Secret Sharing](#secret-sharing-schemes-sss). Analogous to [traitor tracing](#broadcast-encryption) but for secret sharing.
+**State of the art:** Boneh-Partap-Rotem (CRYPTO 2024), TVSS (2025), TSS-PV (2025); new security dimension for [Secret Sharing](#secret-sharing-schemes-sss). Analogous to [traitor tracing](#broadcast-encryption) but for secret sharing.
 
 ---
 
@@ -3993,8 +4007,9 @@
 | **RAPPOR (Google)** | 2014 | Local DP + Bloom filters | First deployed private frequency estimation; Chrome telemetry [[1]](https://doi.org/10.1145/2660267.2660348) |
 | **Poplar (Boneh et al.)** | 2021 | Incremental DPF | Private heavy hitters via distributed point functions; no public-key crypto needed [[1]](https://arxiv.org/abs/2012.14884) |
 | **Prio3 + VDAF (IETF)** | 2023 | Secret sharing + ZK | Standardized (draft-irtf-cfrg-vdaf); used in Mozilla/Apple telemetry; extends [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation) [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-vdaf/) |
+| **Mastic** | 2024 | IDPF + attribute filtering | Extends Poplar to weighted, attribute-filtered metrics under two-server MPC; PoPETS 2025 [[1]](https://eprint.iacr.org/2024/221) |
 
-**State of the art:** Poplar/Prio3 for heavy hitters; RAPPOR for local DP. Related to [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation) and [Differential Privacy](#differential-privacy).
+**State of the art:** Poplar/Prio3 for heavy hitters, Mastic (2025, weighted heavy hitters); RAPPOR for local DP. Related to [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation) and [Differential Privacy](#differential-privacy).
 
 ---
 
