@@ -163,6 +163,13 @@
 - [Packed Secret Sharing](#packed-secret-sharing)
 - [Verifiable Timed Commitments](#verifiable-timed-commitments)
 - [Constrained / Policy-Based Signatures](#constrained--policy-based-signatures)
+- [Aggregate Signatures (BLS Aggregate)](#aggregate-signatures-bls-aggregate)
+- [Linkable Ring Signatures](#linkable-ring-signatures)
+- [Distributed PRF (DPRF)](#distributed-prf-dprf)
+- [Zero-Knowledge Sets](#zero-knowledge-sets)
+- [Broadcast Authentication (TESLA)](#broadcast-authentication-tesla)
+- [Compressed Sigma Protocols](#compressed-sigma-protocols)
+- [Proof of Solvency / Proof of Reserves](#proof-of-solvency--proof-of-reserves)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -2520,6 +2527,106 @@
 | **Functional Signatures (Boyle-Goldwasser-Ivan)** | 2014 | iO / pairings | Sign f(m) using a key for function f, without seeing m [[1]](https://eprint.iacr.org/2013/401) |
 
 **State of the art:** Constrained signatures from lattices (Boneh-Kim 2017); related to [Constrained PRFs](#puncturable--constrained-prf). Enables fine-grained delegation without proxy re-signing.
+
+---
+
+## Aggregate Signatures (BLS Aggregate)
+
+**Goal:** Non-interactive signature compression. Anyone can combine N signatures from N different signers on N different messages into a single short aggregate signature. Verification checks all N messages at once. Critical for blockchain consensus scalability.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BGLS Aggregate Signatures** | 2003 | Pairings (BLS) | First aggregate sigs; combine n BLS sigs into one; verify in O(n) pairings [[1]](https://eprint.iacr.org/2002/029) |
+| **BGLS Same-Message Aggregate** | 2003 | Pairings | n signers on same message → one sig; single pairing to verify [[1]](https://eprint.iacr.org/2002/029) |
+| **Ethereum BLS Aggregation** | 2020 | BLS12-381 | Aggregate 100k+ validator attestations per epoch; EIP-2537 [[1]](https://eips.ethereum.org/EIPS/eip-2537) |
+| **Compact Multi-Signatures (Boneh-Drijvers-Neven)** | 2018 | Pairings | Aggregate sigs with proof of possession; prevents rogue-key attacks [[1]](https://eprint.iacr.org/2018/483) |
+
+**State of the art:** BLS aggregation on BLS12-381 (Ethereum consensus); differs from [Sequential Aggregate Signatures](#sequential-aggregate-signatures) in that aggregation is non-interactive and order-independent.
+
+---
+
+## Linkable Ring Signatures
+
+**Goal:** Anonymous signing with double-spend detection. Sign anonymously within a ring, but if the same signer signs twice (on the same tag/epoch), the two signatures are publicly linkable — without revealing the signer. Foundation of privacy-preserving cryptocurrencies.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Liu-Wei-Wong LRS** | 2004 | DLP | First linkable ring signature; linking tag derived from signer's key [[1]](https://eprint.iacr.org/2004/027) |
+| **CryptoNote Ring Signatures** | 2013 | EC + key images | One-time ring sigs with key images for double-spend detection; Monero [[1]](https://www.getmonero.org/resources/research-lab/pubs/whitepaper_annotated.pdf) |
+| **RingCT (Ring Confidential Transactions)** | 2016 | Pedersen + Borromean | Combines linkable ring sigs + confidential amounts; Monero v2+ [[1]](https://eprint.iacr.org/2015/1098) |
+| **Triptych** | 2021 | DLP + commitments | Logarithmic-size linkable ring sigs; Monero research [[1]](https://eprint.iacr.org/2020/018) |
+
+**State of the art:** Triptych / Seraphis for next-gen Monero; RingCT currently deployed. Extends [Ring & Group Signatures](#ring--group-signatures) with linkability.
+
+---
+
+## Distributed PRF (DPRF)
+
+**Goal:** Threshold PRF evaluation. t-of-n servers jointly evaluate a PRF on input x — no single server knows the PRF key, and fewer than t servers learn nothing about the output. Enables distributed key derivation and tokenization.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Naor-Pinkas-Reingold DPRF** | 1999 | DDH | First DPRF; threshold Naor-Reingold PRF [[1]](https://doi.org/10.1007/3-540-48910-X_16) |
+| **Dodis-Yampolskiy DVRF/DPRF** | 2005 | Pairings | Verifiable DPRF; each server proves correct partial evaluation [[1]](https://eprint.iacr.org/2004/310) |
+| **Threshold OPRF (TOPRF)** | 2020 | EC + threshold | Threshold + oblivious: client input hidden, key distributed [[1]](https://eprint.iacr.org/2017/363) |
+
+**State of the art:** TOPRF for distributed password authentication (extends [OPRF](#oblivious-prf-oprf)); DPRF for distributed key management. Related to [PRF](#pseudorandom-functions-prf--pseudorandom-permutations-prp).
+
+---
+
+## Zero-Knowledge Sets
+
+**Goal:** Private set with membership/non-membership proofs. A prover commits to a set S without revealing it, then proves for any element x whether x ∈ S or x ∉ S — without leaking S's size or other elements. Stronger than accumulators.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Micali-Rabin-Kilian ZK Sets** | 2003 | Merkle + trapdoor hash | First ZK sets; prove membership AND non-membership without revealing set [[1]](https://doi.org/10.1109/SFCS.2003.1238200) |
+| **Chase-Healy-Lysyanskaya-Malkin-Reyzin** | 2005 | q-SDH | Efficient ZK sets from bilinear assumptions [[1]](https://eprint.iacr.org/2005/292) |
+| **ZK Elementary Database (ZK-EDB)** | 2003 | Trapdoor commitments | Key-value database with ZK proofs for queries and non-existence [[1]](https://doi.org/10.1109/SFCS.2003.1238200) |
+
+**State of the art:** ZK sets from Merkle trees + trapdoor hashing. Extends [Accumulators](#accumulators) with non-membership proofs and set hiding.
+
+---
+
+## Broadcast Authentication (TESLA)
+
+**Goal:** Asymmetric authentication from symmetric primitives. Authenticate broadcast/multicast messages using only MACs — the time delay between sending and key disclosure creates an asymmetry that prevents forgery. No public-key crypto needed.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **TESLA** | 2000 | Hash chain + MAC | Timed Efficient Stream Loss-tolerant Authentication; delayed key disclosure [[1]](https://doi.org/10.1109/JSAC.2002.806128) |
+| **μTESLA** | 2002 | TESLA + sensor optimizations | Lightweight TESLA for sensor networks; base station bootstraps keys [[1]](https://doi.org/10.1145/586110.586132) |
+| **TESLA++** | 2003 | TESLA + immediate auth | Hybrid: some packets immediately verifiable, rest via TESLA [[1]](https://doi.org/10.1145/948109.948113) |
+
+**State of the art:** TESLA for multicast authentication; μTESLA for IoT/sensor networks. Alternative to [Digital Signatures](#digital-signatures) when computation is constrained.
+
+---
+
+## Compressed Sigma Protocols
+
+**Goal:** Logarithmic proof compression. Compress n parallel Sigma protocol executions into a proof of size O(log n) — using an inner-product-like recursive argument. Generalizes the Bulletproofs inner-product technique to arbitrary Sigma protocols.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bulletproofs IPA** | 2018 | Pedersen + DLP | Inner-product argument: compress n multiplications to O(log n) proof [[1]](https://eprint.iacr.org/2017/1066) |
+| **Compressed Σ-Protocols (Attema-Cramer)** | 2020 | Any Sigma + pivot | General framework: compress any Sigma protocol for homomorphic relations [[1]](https://eprint.iacr.org/2020/152) |
+| **Compressed Σ for Lattices** | 2021 | SIS/LWE | Extension to lattice-based Sigma protocols; post-quantum compressed proofs [[1]](https://eprint.iacr.org/2021/307) |
+
+**State of the art:** Attema-Cramer (2020) as general framework; Bulletproofs IPA as most deployed instance. Extends [Sigma Protocols](#sigma-protocols--schnorr-identification) and [Bulletproofs](#zero-knowledge-proofs-zk).
+
+---
+
+## Proof of Solvency / Proof of Reserves
+
+**Goal:** Financial auditability with privacy. A custodian (e.g., crypto exchange) proves that total assets ≥ total liabilities — without revealing individual account balances or the full asset breakdown. Builds trust without full transparency.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Maxwell Proof of Reserves** | 2014 | Merkle sum tree | Merkle tree of (hash, balance) pairs; users verify inclusion [[1]](https://web.archive.org/web/20170927023529/https://iwilcox.me.uk/2014/proving-bitcoin-reserves) |
+| **Provisions** | 2015 | Pedersen + ZK range proofs | Privacy-preserving PoR; hides individual balances, proves solvency in ZK [[1]](https://eprint.iacr.org/2015/1008) |
+| **Summa** | 2023 | KZG + Merkle | Modern PoR with polynomial commitments; efficient for millions of accounts [[1]](https://github.com/summa-dev/summa-solvency) |
+
+**State of the art:** Summa / KZG-based (2023); post-FTX industry standard push. Combines [Commitment Schemes](#commitment-schemes), [ZK Proofs](#zero-knowledge-proofs-zk), and [Accumulators](#accumulators).
 
 ---
 
