@@ -215,6 +215,9 @@
 - [Universal One-Way Hash Functions (UOWHF)](#universal-one-way-hash-functions-uowhf)
 - [Dual-Mode Cryptosystems](#dual-mode-cryptosystems)
 - [Kleptography / Algorithm-Substitution Attacks](#kleptography--algorithm-substitution-attacks)
+- [Spooky Encryption](#spooky-encryption)
+- [Property-Preserving Encryption (PPE)](#property-preserving-encryption-ppe)
+- [Somewhere Statistically Binding (SSB) Hash](#somewhere-statistically-binding-ssb-hash)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -3328,6 +3331,49 @@
 | **ASA on Signatures (Ateniese et al.)** | 2015 | Randomness manipulation | Subvert signature randomness to leak signing key [[1]](https://eprint.iacr.org/2015/517) |
 
 **State of the art:** ASA model (Bellare et al. 2014); defenses include [CRF](#cryptographic-reverse-firewalls), deterministic signatures (EdDSA), and verifiable randomness. See also [DRBG](#drbg-deterministic-random-bit-generators).
+
+---
+
+## Spooky Encryption
+
+**Goal:** Non-interactive homomorphic computation across independent ciphertexts. Two parties independently encrypt messages m₁, m₂ under separate keys. A third party (without decryption keys) transforms the ciphertexts so that decryption yields shares of f(m₁, m₂) — without any interaction between the parties.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Dodis-Halevi-Rothblum-Wichs Spooky Enc** | 2016 | LWE | First spooky encryption; entangle independent ciphertexts; yields 2PC without interaction [[1]](https://eprint.iacr.org/2016/272) |
+| **Spooky Enc for General Functions** | 2016 | LWE + circular security | Extend to any efficiently computable function f [[1]](https://eprint.iacr.org/2016/272) |
+
+**State of the art:** LWE-based spooky encryption (2016); implies non-interactive MPC in a new model. Related to [Multi-Key FHE](#multi-key--threshold-fhe) and [MPC](#multi-party-computation-mpc).
+
+---
+
+## Property-Preserving Encryption (PPE)
+
+**Goal:** Unifying framework for structured leakage. Encryption that intentionally preserves a specific property of the plaintext — enabling server-side computation without decryption. Formalizes the tradeoff between functionality and leakage for encrypted databases.
+
+| Property | Scheme | Note |
+|----------|--------|------|
+| **Equality** | [Deterministic Encryption](#deterministic-encryption--convergent-encryption) | Same plaintext → same ciphertext; enables dedup and equality search |
+| **Order** | [OPE / ORE](#order-preserving--order-revealing-encryption-ope--ore) | Ciphertext preserves numerical order; enables range queries |
+| **Orthogonality** | [Inner-Product FE](#attribute-based--functional-encryption) | Decrypt iff inner product = 0; enables subset queries |
+| **Pattern match** | [HVE](#hidden-vector-encryption-hve) | Decrypt iff attributes match pattern with wildcards |
+| **Keyword** | [Searchable Encryption](#searchable-encryption-sse--peks) | Search encrypted data by keyword |
+
+**General framework:** Pandey-Rouselakis (2012) [[1]](https://eprint.iacr.org/2012/141) formalized PPE; Boldyreva-Chenette-O'Neill (2011) [[1]](https://eprint.iacr.org/2011/005) analyzed leakage. **Warning:** all PPE inherently leaks — weaker than semantic security. Use only when the leakage-functionality tradeoff is acceptable.
+
+---
+
+## Somewhere Statistically Binding (SSB) Hash
+
+**Goal:** Positional binding in hashed vectors. A hash of a vector v is *statistically binding* at a hidden position i — the value v[i] is uniquely determined by the hash, but which position i is binding is computationally hidden. Enables efficient SNARGs without random oracles.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Hubáček-Wichs SSB Hash** | 2015 | DDH / LWE | First SSB hash; used to build designated-verifier SNARGs [[1]](https://eprint.iacr.org/2015/1026) |
+| **SSB from LWE (Peikert-Shiehian)** | 2019 | LWE | SSB hash enabling SNARGs from standard lattice assumptions [[1]](https://eprint.iacr.org/2018/1004) |
+| **Batch SSB (Waters-Wu)** | 2023 | Pairings / LWE | SSB hash binding at multiple positions simultaneously; batch SNARGs [[1]](https://eprint.iacr.org/2022/1500) |
+
+**State of the art:** LWE-based SSB hash (2019+); key building block for [SNARGs](#snarg-succinct-non-interactive-arguments-without-zero-knowledge) and [BARG](#batch-arguments-barg--accumulation-schemes) from standard assumptions.
 
 ---
 
