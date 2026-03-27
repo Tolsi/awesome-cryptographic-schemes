@@ -264,6 +264,9 @@
 - [Fail-Stop Signatures](#fail-stop-signatures)
 - [Oblivious Automata / Branching Program Evaluation](#oblivious-automata--branching-program-evaluation)
 - [Private Set Difference / Set Operations](#private-set-difference--set-operations)
+- [Threshold Blind Signatures](#threshold-blind-signatures)
+- [Oblivious SQL / Encrypted Database Joins](#oblivious-sql--encrypted-database-joins)
+- [Streaming / Online Secure Computation](#streaming--online-secure-computation)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -4092,6 +4095,48 @@
 | **Multi-Party Set Difference** | 2005 | Threshold Paillier | Extension to N parties with malicious security [[1]](https://www.cs.cmu.edu/~leak/papers/set-tech-full.pdf) |
 
 **State of the art:** Kissner-Song (CRYPTO 2005); set-difference components most overlooked. Complements [PSI](#private-set-intersection-psi) and [PSU](#private-set-union-psu).
+
+---
+
+## Threshold Blind Signatures
+
+**Goal:** Distributed blind signing. A threshold t-of-n signers jointly produce a blind signature — no individual signer sees the message, and no fewer than t signers can produce a valid signature. Combines the anonymity of [Blind Signatures](#blind-signatures) with the distributed trust of [Threshold Signatures](#threshold-signature-schemes-tss).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boldyreva Threshold Blind Sig** | 2003 | Gap-DH | First efficient threshold blind signature; based on BLS [[1]](https://eprint.iacr.org/2002/118) |
+| **Threshold Blind BLS (Tomescu et al.)** | 2022 | BLS + DKG | Practical threshold blind BLS for anonymous token issuance [[1]](https://eprint.iacr.org/2022/1095) |
+| **Lattice Threshold Blind Sig** | 2025 | SIS | First post-quantum threshold blind signature from lattices [[1]](https://eprint.iacr.org/2025/1566) |
+
+**State of the art:** Lattice-based (PQ, 2025); BLS-based for production use. Combines [Blind Signatures](#blind-signatures), [Threshold Signatures](#threshold-signature-schemes-tss), and [Privacy Pass](#privacy-pass--anonymous-tokens).
+
+---
+
+## Oblivious SQL / Encrypted Database Joins
+
+**Goal:** Execute SQL operations on encrypted data without revealing queries or data to the server. Beyond keyword [SSE](#searchable-encryption-sse--peks): support joins, aggregations, GROUP BY, and range queries on fully encrypted relational databases while hiding access patterns.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CryptDB (Popa et al.)** | 2011 | Onion encryption layers | Layered encryption (RND→DET→OPE→HOM); peel layers as needed for SQL ops; SOSP 2011 [[1]](https://dl.acm.org/doi/10.1145/2043556.2043566) |
+| **ObliDB (Eskandarian-Boneh)** | 2019 | ORAM + oblivious ops | Full oblivious query processing hiding access patterns for arbitrary SQL; VLDB [[1]](https://dl.acm.org/doi/10.14778/3364324.3364331) |
+| **Opaque (Zheng-Dave-Beekman-Popa-Gonzalez-Stoica)** | 2017 | SGX + oblivious operators | Hardware-assisted encrypted SQL with oblivious operators; Spark integration [[1]](https://people.eecs.berkeley.edu/~wzheng/opaque.pdf) |
+
+**State of the art:** ObliDB (2019) for full obliviousness; CryptDB for practical deployment; Opaque for hardware-assisted. Extends [ORAM](#oblivious-ram-oram), [SSE](#searchable-encryption-sse--peks), and [Graph Encryption](#graph-encryption).
+
+---
+
+## Streaming / Online Secure Computation
+
+**Goal:** MPC on data streams. Compute on data that arrives continuously — parties cannot store the entire dataset. Single-pass or few-pass computation with sublinear memory. Distinct from standard [MPC](#multi-party-computation-mpc) which assumes all inputs available upfront.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Streaming MPC (Kol-Raz)** | 2008 | Communication complexity | First formal model: parties see stream of inputs, compute function with limited memory [[1]](https://doi.org/10.1145/1374376.1374438) |
+| **PIFO (Private Information Flow for Online ML)** | 2022 | Secret sharing + streaming | Privacy-preserving online learning on streaming data via secret-shared updates [[1]](https://eprint.iacr.org/2022/1103) |
+| **Streaming Verifiable Computation** | 2023 | Sumcheck + streaming | Verify computations on data streams with sublinear memory; extends [Sumcheck](#sumcheck-protocol) [[1]](https://eprint.iacr.org/2023/1393) |
+
+**State of the art:** Streaming VC (2023) for verification; PIFO for private online learning. Distinct from [Fluid MPC](#fluid-mpc-dynamic-participants) (dynamic parties) and [PSA](#private-stream-aggregation-psa) (aggregation only).
 
 ---
 
