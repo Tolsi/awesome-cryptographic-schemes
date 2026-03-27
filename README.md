@@ -129,6 +129,15 @@
 - [Delay Encryption](#delay-encryption)
 - [Vector Commitments](#vector-commitments)
 - [Sponge Construction / Duplex](#sponge-construction--duplex)
+- [Lightweight Cryptography / ASCON](#lightweight-cryptography--ascon)
+- [Lookup Arguments](#lookup-arguments)
+- [Sumcheck Protocol](#sumcheck-protocol)
+- [Double Ratchet / Symmetric Ratchet](#double-ratchet--symmetric-ratchet)
+- [Continuous Group Key Agreement (CGKA) / MLS](#continuous-group-key-agreement-cgka--mls)
+- [Proofs of Retrievability (PoR) / Provable Data Possession](#proofs-of-retrievability-por--provable-data-possession)
+- [Functional Commitments](#functional-commitments)
+- [Laconic Cryptography](#laconic-cryptography)
+- [Verifiable Information Dispersal (VID)](#verifiable-information-dispersal-vid)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -1982,6 +1991,142 @@
 | **Xoodyak** | 2020 | Xoodoo permutation | Lightweight duplex; NIST LWC finalist for constrained devices [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/xoodyak-spec-final.pdf) |
 
 **State of the art:** SHA-3/Keccak (FIPS 202) dominant; STROBE for protocol-level use; Xoodyak for IoT. The sponge paradigm underpins most modern permutation-based crypto.
+
+---
+
+## Lightweight Cryptography / ASCON
+
+**Goal:** Secure encryption and hashing for constrained devices. AES is too heavy for many IoT microcontrollers. Lightweight ciphers provide AEAD and hashing with minimal gate count, RAM, and energy — without sacrificing security.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ASCON** | 2019 | Sponge / permutation | **NIST LWC standard (2023)**; AEAD + hash; 320-bit state, tiny footprint [[1]](https://ascon.iaik.tugraz.at/) |
+| **GIFT-COFB** | 2020 | Block cipher (GIFT-128) | Combined feedback mode; NIST LWC finalist [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/gift-cofb-spec-final.pdf) |
+| **PHOTON-Beetle** | 2020 | Sponge (PHOTON) | Lightweight AEAD + hash; NIST LWC finalist [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/photon-beetle-spec-final.pdf) |
+| **PRESENT** | 2007 | SPN block cipher | 64-bit block, 80/128-bit key; ISO/IEC 29192-2 standard [[1]](https://link.springer.com/chapter/10.1007/978-3-540-74735-2_31) |
+| **SIMON / SPECK** | 2013 | Feistel / ARX | NSA designs for IoT; SIMON (hardware), SPECK (software) [[1]](https://eprint.iacr.org/2013/404) |
+
+**State of the art:** ASCON (NIST standard 2023); designed for constrained devices (see also [Sponge Construction](#sponge-construction--duplex) for the underlying paradigm).
+
+---
+
+## Lookup Arguments
+
+**Goal:** Efficient ZK table lookups. Prove that a value belongs to a precomputed table without expressing the lookup as arithmetic constraints — dramatically reduces circuit size for operations like range checks, bitwise ops, and hash functions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Plookup** | 2020 | Polynomial IOP | First practical lookup argument; sorted-concatenation technique [[1]](https://eprint.iacr.org/2020/315) |
+| **LogUp** | 2022 | Logarithmic derivatives | Reduces lookup to logarithmic derivative sum; better for large tables [[1]](https://eprint.iacr.org/2022/1530) |
+| **Lasso** | 2023 | Sumcheck + sparse polynomials | Lookup from structured tables without committing to full table; sublinear prover [[1]](https://eprint.iacr.org/2023/1216) |
+| **Baloo** | 2022 | KZG + lookup | Lookup argument with logarithmic proof size [[1]](https://eprint.iacr.org/2022/1565) |
+| **cq (Cached Quotients)** | 2022 | KZG | Table-independent preprocessing; efficient for shared tables [[1]](https://eprint.iacr.org/2022/1763) |
+
+**State of the art:** Lasso (2023) for structured tables; LogUp for general use. Lookups are now a core building block in zkVMs (see [ZK Proofs](#zero-knowledge-proofs-zk), [Folding Schemes](#folding-schemes)).
+
+---
+
+## Sumcheck Protocol
+
+**Goal:** Verifiable summation. An interactive proof where the prover convinces the verifier of the value of a sum of a multivariate polynomial over the Boolean hypercube — in logarithmic rounds. Foundation of most modern interactive proof systems.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **LFKN Sumcheck** | 1992 | Multivariate polynomials | Original sumcheck protocol; #P verifiable in IP [[1]](https://doi.org/10.1016/S0022-0000(05)80005-0) |
+| **GKR Protocol** | 2008 | Layered circuits + sumcheck | Efficient interactive proof for layered arithmetic circuits [[1]](https://doi.org/10.1145/2699436) |
+| **Spartan** | 2020 | Sumcheck + multilinear PCS | Transparent zkSNARK built entirely on sumcheck; no trusted setup [[1]](https://eprint.iacr.org/2019/550) |
+| **Jolt** | 2024 | Sumcheck + Lasso | zkVM using sumcheck + lookup arguments; no custom circuits [[1]](https://eprint.iacr.org/2023/1217) |
+
+**State of the art:** Sumcheck-based SNARKs (Spartan, Jolt, HyperNova) are increasingly dominant due to simplicity and transparency. Closely related to [IOP/PCP](#interactive-oracle-proofs-iop--pcp).
+
+---
+
+## Double Ratchet / Symmetric Ratchet
+
+**Goal:** Continuous key renewal. Each message uses a fresh encryption key derived from a ratcheting chain, providing forward secrecy (past messages stay safe if key leaks) and post-compromise security (future messages heal after compromise). Core of modern secure messaging.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **OTR (Off-the-Record) Ratchet** | 2004 | DH | First ratcheting protocol; per-message DH for forward secrecy [[1]](https://otr.cypherpunks.ca/otr-wpes.pdf) |
+| **Axolotl / Double Ratchet** | 2016 | DH + KDF chain | Signal's protocol: DH ratchet (asymmetric) + symmetric KDF chain [[1]](https://signal.org/docs/specifications/doubleratchet/) |
+| **Sesame (Signal)** | 2017 | Double Ratchet + X3DH | Session management for multiple devices [[1]](https://signal.org/docs/specifications/sesame/) |
+| **Matrix / Megolm** | 2016 | Symmetric ratchet | Group messaging ratchet; sender ratchet only (efficient for groups) [[1]](https://gitlab.matrix.org/matrix-org/olm/-/blob/master/docs/megolm.md) |
+
+**State of the art:** Signal Double Ratchet (WhatsApp, Signal, Google Messages); Megolm for large groups. See also [Secure Channels](#secure-channels--protocol-constructions).
+
+---
+
+## Continuous Group Key Agreement (CGKA) / MLS
+
+**Goal:** Scalable group E2E encryption. Efficiently manage a shared group key as members join and leave — with forward secrecy and post-compromise security. Extension of the double ratchet to groups of thousands.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ART (Asynchronous Ratcheting Tree)** | 2018 | DH tree | First tree-based group ratchet; O(log n) update cost [[1]](https://eprint.iacr.org/2017/666) |
+| **TreeKEM** | 2018 | KEM + binary tree | Core of MLS; each member holds a leaf; update = path of KEMs [[1]](https://inria.hal.science/hal-02425247) |
+| **MLS (Messaging Layer Security)** | 2023 | TreeKEM + proposals | **IETF RFC 9420**; standard for group E2E messaging [[1]](https://www.rfc-editor.org/rfc/rfc9420) |
+| **CoCoA (Continuous Cooperative Key Agreement)** | 2022 | Server-aided CGKA | Relaxed model; server helps coordinate but learns nothing [[1]](https://eprint.iacr.org/2022/251) |
+
+**State of the art:** MLS (RFC 9420); adopted by Cisco Webex, Wire, Matrix. Extends [Double Ratchet](#double-ratchet--symmetric-ratchet) to groups.
+
+---
+
+## Proofs of Retrievability (PoR) / Provable Data Possession
+
+**Goal:** Remote storage verification. A client can efficiently verify that a cloud server actually stores their data — without downloading it. The server produces a compact proof from a random challenge.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **PDP (Ateniese et al.)** | 2007 | RSA | Provable Data Possession; spot-check random blocks via homomorphic tags [[1]](https://eprint.iacr.org/2007/432) |
+| **PoR (Juels-Kaliski)** | 2007 | Error codes + MAC | Proof of Retrievability; sentinel-based, bounded verifications [[1]](https://doi.org/10.1145/1315245.1315317) |
+| **Compact PoR (Shacham-Waters)** | 2008 | BLS / Homomorphic tags | Publicly verifiable, compact proofs; unlimited verifications [[1]](https://eprint.iacr.org/2008/073) |
+| **Filecoin PoRep** | 2017 | zk-SNARK + PoS | Proof of Replication: prove unique physical copy is stored [[1]](https://filecoin.io/proof-of-replication.pdf) |
+
+**State of the art:** Compact PoR (Shacham-Waters) for traditional cloud; Filecoin PoRep for decentralized storage. Related to [PoW/PoSpace](#proof-of-work-pow--proof-of-space).
+
+---
+
+## Functional Commitments
+
+**Goal:** Committed function evaluation. Commit to a function f, then later open f(x) for any input x with a short proof — without revealing f itself. Generalizes polynomial commitments and vector commitments.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Libert-Ramanna-Yung FC** | 2016 | Pairings | First functional commitment for linear functions [[1]](https://eprint.iacr.org/2015/1017) |
+| **Peikert-Pepin-Sharp FC** | 2021 | Lattices | Functional commitments from lattice assumptions [[1]](https://eprint.iacr.org/2021/1443) |
+| **de Castro-Peikert FC** | 2023 | Lattices (SIS) | Succinct FC for polynomial-size circuits; from standard assumptions [[1]](https://eprint.iacr.org/2022/1368) |
+
+**State of the art:** Lattice-based FC (de Castro-Peikert 2023); subsumes [Vector Commitments](#vector-commitments) and [Polynomial Commitments (KZG)](#commitment-schemes) as special cases.
+
+---
+
+## Laconic Cryptography
+
+**Goal:** Minimal interaction. Two-message protocols where the first message is a short hash (digest) of a potentially huge input — the second message depends on this digest. Enables receiver-efficient OT, FE, and more from simple hash assumptions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Laconic OT (CDG+)** | 2017 | Hash + garbled circuits | Two-message OT where receiver sends short hash of selection bits [[1]](https://eprint.iacr.org/2017/799) |
+| **Laconic FE (Quach-Wee-Wichs)** | 2018 | LWE | Functional encryption with succinct ciphertexts from laconic techniques [[1]](https://eprint.iacr.org/2018/325) |
+| **Laconic PSI** | 2022 | Laconic OT | Private set intersection where one party sends only a short digest [[1]](https://eprint.iacr.org/2022/094) |
+| **Registered FE (Laconic approach)** | 2023 | Laconic + pairings | Connect laconic techniques to registration-based crypto [[1]](https://eprint.iacr.org/2023/398) |
+
+**State of the art:** Laconic OT from hash functions (CDG+ 2017); emerging paradigm connecting to [RBE](#registration-based-encryption-rbe), [PSI](#private-set-intersection-psi).
+
+---
+
+## Verifiable Information Dispersal (VID)
+
+**Goal:** Reliable data distribution with verification. A dealer encodes data into N shares using erasure coding; each recipient can verify they received a valid share without reconstructing the full data. Foundation of blockchain data availability.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Cachin-Tessaro VID** | 2005 | Reed-Solomon + hash | Original VID; Byzantine-tolerant dispersal with verification [[1]](https://doi.org/10.1109/RELDIS.2005.5) |
+| **AVID (Async VID, Hendricks et al.)** | 2007 | Erasure codes + Merkle | Asynchronous protocol; O(n|M|) total communication [[1]](https://doi.org/10.1145/1281100.1281131) |
+| **DispersedLedger** | 2022 | VID + BFT consensus | VID integrated into BFT; separate data from consensus [[1]](https://eprint.iacr.org/2021/868) |
+| **EigenDA VID** | 2024 | KZG + RS codes | KZG-committed VID for Ethereum rollup data availability [[1]](https://docs.eigenlayer.xyz/eigenda/overview) |
+
+**State of the art:** KZG-based VID (EigenDA, Ethereum danksharding); closely related to [DAS](#data-availability-sampling-das) and [Commitment Schemes](#commitment-schemes).
 
 ---
 
