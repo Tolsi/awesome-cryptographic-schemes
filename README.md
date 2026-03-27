@@ -85,6 +85,23 @@
 - [Garbled Circuits (expanded)](#garbled-circuits-expanded)
 - [Circular / KDM Security](#circular--kdm-security)
 - [Accountable Multi-Signatures / Subgroup Signatures](#accountable-multi-signatures--subgroup-signatures)
+- [One-Time Pad / Information-Theoretic Security](#one-time-pad--information-theoretic-security)
+- [Commit-Reveal Schemes](#commit-reveal-schemes)
+- [Interactive Oracle Proofs (IOP) / PCP](#interactive-oracle-proofs-iop--pcp)
+- [Folding Schemes](#folding-schemes)
+- [zkML (Zero-Knowledge Machine Learning)](#zkml-zero-knowledge-machine-learning)
+- [Function Secret Sharing (FSS) / Distributed Point Functions (DPF)](#function-secret-sharing-fss--distributed-point-functions-dpf)
+- [Homomorphic Secret Sharing (HSS)](#homomorphic-secret-sharing-hss)
+- [Homomorphic Signatures](#homomorphic-signatures)
+- [Sanitizable Signatures](#sanitizable-signatures)
+- [Proxy Signatures](#proxy-signatures)
+- [DC-Nets (Dining Cryptographers Networks)](#dc-nets-dining-cryptographers-networks)
+- [Onion Routing](#onion-routing)
+- [Hierarchical Deterministic Keys (BIP32 / HD Wallets)](#hierarchical-deterministic-keys-bip32--hd-wallets)
+- [Token-Based Authentication (TOTP / FIDO2 / WebAuthn)](#token-based-authentication-totp--fido2--webauthn)
+- [Puncturable Encryption](#puncturable-encryption)
+- [Matchmaking Encryption](#matchmaking-encryption)
+- [Registration-Based Encryption (RBE)](#registration-based-encryption-rbe)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -525,6 +542,8 @@
 ## Identity-Based Encryption (IBE)
 
 **Goal:** Confidentiality without PKI. Encrypt to an arbitrary identity string (email address, phone number, domain) — the recipient obtains a private key from a trusted authority and decrypts.
+
+**Architecture:** A trusted **Private Key Generator (PKG)** holds a master secret key (msk) and publishes a master public key (mpk). Anyone can encrypt to an identity string using mpk. The recipient contacts the PKG, authenticates, and receives their identity-specific secret key via `Extract(msk, id) → sk_id`. **Key escrow problem:** the PKG can decrypt all messages — motivating [Registration-Based Encryption](#registration-based-encryption-rbe) which removes this trust assumption.
 
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
@@ -1299,6 +1318,248 @@
 | **Pixel (forward-secure multi-sig)** | 2019 | Pairings | Forward-secure aggregatable sigs for blockchain consensus [[1]](https://eprint.iacr.org/2019/514) |
 
 **State of the art:** BLS + bitmap (Ethereum consensus), ASM (PoS slashing).
+
+---
+
+## One-Time Pad / Information-Theoretic Security
+
+**Goal:** Perfect secrecy. The only encryption scheme proven unconditionally secure (Shannon 1949): a truly random key as long as the message, used exactly once. Ciphertext reveals zero information about the plaintext regardless of adversary's computational power.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Vernam Cipher (One-Time Pad)** | 1917 | XOR with random key | C = M ⊕ K; key must be truly random, |K| ≥ |M|, never reused [[1]](https://ieeexplore.ieee.org/document/6769090) |
+| **Shannon's Theorem** | 1949 | Information theory | Perfect secrecy ⟺ H(K) ≥ H(M); OTP is optimal [[1]](https://ieeexplore.ieee.org/document/6769090) |
+| **Two-Time Pad Attack** | — | XOR | If key is reused: C1 ⊕ C2 = M1 ⊕ M2 — catastrophic failure; demonstrates why reuse is fatal |
+
+**State of the art:** OTP is used in diplomatic/military hotlines and combined with QKD for information-theoretically secure channels.
+
+---
+
+## Commit-Reveal Schemes
+
+**Goal:** Fairness and ordering. A two-phase protocol: first commit a hidden value (binding), then reveal it later (hiding until reveal). Prevents front-running, enables fair coin-toss, sealed-bid auctions, and MEV protection in blockchains.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Hash-Based Commit-Reveal** | 1991 | H(value ‖ nonce) | Simplest: commit = hash; reveal = value + nonce. Used in ENS, NFT mints [[1]](https://link.springer.com/chapter/10.1007/3-540-46766-1_9) |
+| **Pedersen Commit-Reveal** | 1991 | DLP | Perfectly hiding, computationally binding; see [Commitment Schemes](#commitment-schemes) [[1]](https://link.springer.com/chapter/10.1007/3-540-46766-1_9) |
+| **Submarine Sends** | 2018 | Smart contract + hash | MEV-resistant: commit tx hash on-chain, reveal later [[1]](https://eprint.iacr.org/2018/985) |
+| **Commit-Chain (RANDAO)** | 2015 | Sequential commit-reveal | Validators commit randomness; sequential reveal; see [Randomness Beacons](#randomness-beacons--coin-tossing) |
+
+**State of the art:** hash commit-reveal (ubiquitous), Submarine Sends (DeFi MEV protection).
+
+---
+
+## Interactive Oracle Proofs (IOP) / PCP
+
+**Goal:** Foundation of modern proof systems. An IOP combines an interactive proof with oracle access to the prover's messages. The PCP Theorem shows any NP statement has a proof checkable by reading only O(1) bits. STARKs, Plonky2, and most modern ZK systems are built on IOPs.
+
+| Concept | Year | Basis | Note |
+|---------|------|-------|------|
+| **PCP Theorem** | 1992 | Complexity theory | NP = PCP(O(log n), O(1)); any NP proof can be checked by reading ~3 bits [[1]](https://dl.acm.org/doi/10.1145/273865.273901) |
+| **Interactive Oracle Proofs (BCS)** | 2016 | IOP framework | Generalization of IP + PCP; prover sends oracles, verifier queries. Foundation of STARKs [[1]](https://eprint.iacr.org/2016/116) |
+| **Polynomial IOP** | 2019 | Polynomial commitments + IOP | Prover sends polynomial oracles; PLONK, Marlin, etc. are polynomial IOPs compiled with KZG/FRI [[1]](https://eprint.iacr.org/2019/953) |
+| **Linear PCP** | 2012 | Linear algebra | Prover's oracle is a linear function; basis of Pinocchio and Groth16 [[1]](https://eprint.iacr.org/2012/215) |
+
+**State of the art:** Polynomial IOPs (PLONK, Marlin) compiled with KZG or FRI; IOP + Fiat-Shamir = STARK.
+
+---
+
+## Folding Schemes
+
+**Goal:** Efficient recursion. Instead of verifying a proof inside another proof (expensive), "fold" two instances into one of the same size. Enables incremental verifiable computation (IVC) with minimal per-step overhead. Hottest topic in ZK research (2022–).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Nova** | 2022 | R1CS + Pedersen | First folding scheme; fold two R1CS instances into one; see [ZK Proofs](#zero-knowledge-proofs-zk) [[1]](https://eprint.iacr.org/2021/370) |
+| **SuperNova** | 2022 | Nova + multiple circuits | Non-uniform IVC: different circuits at each step [[1]](https://eprint.iacr.org/2022/1758) |
+| **HyperNova** | 2023 | CCS + multilinear | Fold customizable constraint systems (generalizes R1CS, Plonkish) [[1]](https://eprint.iacr.org/2023/573) |
+| **ProtoStar** | 2023 | Plonkish + accumulation | Non-uniform IVC for PLONK-like systems; see [BARG](#batch-arguments-barg--accumulation-schemes) [[1]](https://eprint.iacr.org/2023/620) |
+| **Protostar/Protogalaxy** | 2023 | Lattice folding | Fold with logarithmic verifier [[1]](https://eprint.iacr.org/2023/1106) |
+
+**State of the art:** HyperNova (most general), Nova (simplest), ProtoStar (PLONK-compatible). Active area with new schemes monthly.
+
+---
+
+## zkML (Zero-Knowledge Machine Learning)
+
+**Goal:** Verifiable AI inference. Prove that an ML model was evaluated correctly on an input without revealing the model weights, the input, or both. Enables trustless AI-as-a-service, on-chain ML verification, and private inference.
+
+| System | Year | Basis | Note |
+|--------|------|-------|------|
+| **EZKL** | 2023 | Halo2 / KZG | Prove ONNX model inference in ZK; production-grade [[1]](https://github.com/zkonduit/ezkl) |
+| **Modulus Labs (Remainder)** | 2023 | Custom arithmetic circuits | ZK inference for transformers; on-chain verification [[1]](https://eprint.iacr.org/2023/1584) |
+| **Daniel Kang et al. (zkCNN)** | 2022 | GKR + sumcheck | Prove CNN inference; interactive → Fiat-Shamir [[1]](https://eprint.iacr.org/2021/673) |
+| **Giza (ONNX→Cairo)** | 2023 | STARKs | Compile ONNX to Cairo (STARK-provable) [[1]](https://github.com/gizatechxyz/orion) |
+
+**State of the art:** EZKL (practical), zkCNN (academic foundation), active race between SNARK/STARK approaches.
+
+---
+
+## Function Secret Sharing (FSS) / Distributed Point Functions (DPF)
+
+**Goal:** Secret-share a function. Split a function f into shares f₀, f₁ such that each share reveals nothing, but f₀(x) + f₁(x) = f(x) for all x. Enables efficient PIR, anonymous messaging, private database queries with sublinear communication.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Distributed Point Function (GI14)** | 2014 | PRG tree | Secret-share a point function (1 at target, 0 elsewhere); O(λ log N) key size [[1]](https://eprint.iacr.org/2018/707) |
+| **FSS for intervals/comparison** | 2015 | DPF + prefix tree | Extend DPF to interval functions; private range queries [[1]](https://eprint.iacr.org/2018/707) |
+| **FSS for decision trees** | 2021 | DPF composition | Secret-share a decision tree for private inference [[1]](https://eprint.iacr.org/2020/1392) |
+
+**State of the art:** DPF (used in Brave/STAR, Google Privacy Sandbox), FSS for intervals (private analytics).
+
+---
+
+## Homomorphic Secret Sharing (HSS)
+
+**Goal:** Non-interactive secure computation. Secret-share data and compute on shares locally (without interaction between servers), then reconstruct the result. Like MPC but without communication rounds during computation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HSS for branching programs (BGI)** | 2016 | DDH / DCR | Evaluate branching programs on shares with no interaction [[1]](https://eprint.iacr.org/2015/084) |
+| **HSS from LWE** | 2019 | LWE | Post-quantum HSS; more expressive function classes [[1]](https://eprint.iacr.org/2019/1318) |
+| **HSS for NC1** | 2016 | Group actions | Evaluate any NC1 circuit on secret-shared data [[1]](https://eprint.iacr.org/2015/084) |
+
+**State of the art:** DDH-based HSS (practical for simple functions), LWE-based (PQ, richer function classes).
+
+---
+
+## Homomorphic Signatures
+
+**Goal:** Compute on authenticated data. Given signatures on messages m₁,...,mₙ, anyone can derive a valid signature on f(m₁,...,mₙ) without the signing key. Enables verifiable delegation of computation on signed datasets.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Linearly Homomorphic Sig (Boneh-Freeman)** | 2011 | Pairings | Sign vectors; derive sig on any linear combination [[1]](https://eprint.iacr.org/2009/025) |
+| **Fully Homomorphic Sig (Gennaro-Wichs)** | 2013 | FHE + SNARK | Sign data; derive sig on ANY computable function [[1]](https://eprint.iacr.org/2012/023) |
+| **Homomorphic Sig for Polynomials (Catalano-Fiore)** | 2013 | Pairings | Evaluate multivariate polynomials on signed data [[1]](https://eprint.iacr.org/2013/433) |
+
+**State of the art:** Linear homomorphic sigs (practical, used in network coding), fully homomorphic sigs (theoretical).
+
+---
+
+## Sanitizable Signatures
+
+**Goal:** Authorized modification. A signer designates a "sanitizer" who can modify specified parts of a signed message while keeping the signature valid. Non-designated parts remain immutable. Used in medical records, redactable documents.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ateniese et al.** | 2005 | Chameleon hash + sig | First sanitizable sig; sanitizer can change designated blocks [[1]](https://eprint.iacr.org/2004/245) |
+| **Brzuska et al. (formal model)** | 2009 | Generic | Formal security definitions: immutability, accountability, transparency [[1]](https://link.springer.com/chapter/10.1007/978-3-642-00468-1_28) |
+| **Sanitizable Sig with Accountability** | 2015 | Group sig + chameleon hash | Detect who sanitized; full accountability [[1]](https://eprint.iacr.org/2015/845) |
+
+**State of the art:** Accountable sanitizable sigs (GDPR: right to modify medical records while preserving audit trail).
+
+---
+
+## Proxy Signatures
+
+**Goal:** Delegated signing. Alice delegates her signing authority to Bob (proxy) who can sign messages on her behalf. The resulting signature is verifiable as a proxy signature, distinguishable from Alice's direct signatures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Mambo-Usuda-Okamoto** | 1996 | DLP | First proxy signature scheme; delegation by warrant [[1]](https://link.springer.com/chapter/10.1007/BFb0028379) |
+| **Boldyreva et al. (proxy re-sig)** | 2003 | Bilinear pairings | Proxy re-signatures: convert Alice's sig into Bob's; see also [PRE](#proxy-re-encryption-pre) [[1]](https://eprint.iacr.org/2003/096) |
+| **Short Proxy Sig (Fuchsbauer-Pointcheval)** | 2008 | Pairings | Efficient, short proxy signatures with security proof [[1]](https://eprint.iacr.org/2008/460) |
+
+**State of the art:** proxy re-signatures (certificate translation), delegation by warrant (enterprise workflows).
+
+---
+
+## DC-Nets (Dining Cryptographers Networks)
+
+**Goal:** Information-theoretically anonymous broadcast. A group of participants can broadcast a message so that an adversary (even computationally unbounded) cannot determine who sent it — as long as at least one participant is honest. Stronger than mixnets.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chaum DC-Net** | 1988 | Shared secrets + XOR | Original: participants XOR shared bits; anonymous 1-bit broadcast [[1]](https://www.cs.cornell.edu/people/egs/herbivore/dcnets.html) |
+| **Herbivore** | 2003 | DC-net + groups | Practical DC-net for small groups; scalability improvements [[1]](https://www.cs.cornell.edu/people/egs/herbivore/) |
+| **Verdict (Corrigan-Gibbs-Ford)** | 2013 | DC-net + ZKP | Accountable: detect disruptors via zero-knowledge proofs [[1]](https://dl.acm.org/doi/10.1145/2508859.2516683) |
+
+**State of the art:** Verdict (accountability + anonymity), DC-nets remain strongest anonymity guarantee but hard to scale.
+
+---
+
+## Onion Routing
+
+**Goal:** Low-latency anonymous communication. Messages are wrapped in layers of encryption ("onion"); each relay peels one layer, learning only the next hop. Provides sender anonymity in real-time (unlike high-latency mixnets).
+
+| System | Year | Basis | Note |
+|--------|------|-------|------|
+| **Original Onion Routing** | 1996 | RSA + DH | First onion routing proposal; layered encryption through relays [[1]](https://ieeexplore.ieee.org/document/501689) |
+| **Tor** | 2004 | TLS + DH + AES | Deployed network; 6000+ relays; 2M+ daily users [[1]](https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf) |
+| **Sphinx Packet Format** | 2009 | DH + HMAC | Compact, provably secure onion packet format; used in Lightning Network [[1]](https://eprint.iacr.org/2009/482) |
+
+**State of the art:** Tor (largest deployed anonymity network), Sphinx (Lightning, Nym transport layer).
+
+---
+
+## Hierarchical Deterministic Keys (BIP32 / HD Wallets)
+
+**Goal:** Structured key derivation. From a single master seed, deterministically derive an entire tree of key pairs. Each branch can be delegated (extended public key) without exposing the master. Standard in every cryptocurrency wallet.
+
+| Standard | Year | Basis | Note |
+|----------|------|-------|------|
+| **BIP32 (HD Wallets)** | 2012 | HMAC-SHA512 + secp256k1 | Master seed → child key tree; supports extended public keys for watch-only [[1]](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) |
+| **BIP44 (Multi-Account)** | 2014 | BIP32 + derivation paths | Standard paths: m/purpose'/coin'/account'/change/index [[1]](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki) |
+| **SLIP-10** | 2016 | BIP32 for Ed25519/NIST | Extend HD derivation to non-secp256k1 curves [[1]](https://github.com/satoshilabs/slips/blob/master/slip-0010.md) |
+
+**State of the art:** BIP32/44 (every Bitcoin/Ethereum wallet), SLIP-10 (Solana, Cardano, multi-curve wallets).
+
+---
+
+## Token-Based Authentication (TOTP / FIDO2 / WebAuthn)
+
+**Goal:** Practical user authentication. Protocols for proving identity using time-based codes, hardware tokens, or biometric-gated cryptographic keys — replacing or supplementing passwords.
+
+| Protocol | Year | Basis | Note |
+|----------|------|-------|------|
+| **HOTP** | 2005 | HMAC-SHA1 + counter | Event-based OTP; RFC 4226 [[1]](https://www.rfc-editor.org/rfc/rfc4226) |
+| **TOTP** | 2011 | HMAC-SHA1 + time | Time-based OTP; 30-second codes; Google Authenticator; RFC 6238 [[1]](https://www.rfc-editor.org/rfc/rfc6238) |
+| **FIDO2 / WebAuthn** | 2019 | ECDSA / Ed25519 + challenge-response | Passwordless auth; hardware keys (YubiKey) or platform biometrics; W3C standard [[1]](https://www.w3.org/TR/webauthn-2/) |
+| **Passkeys** | 2022 | FIDO2 + cloud sync | Cross-device FIDO2 credentials; Apple/Google/Microsoft [[1]](https://fidoalliance.org/passkeys/) |
+
+**State of the art:** FIDO2/Passkeys (passwordless, phishing-resistant), TOTP (legacy 2FA).
+
+---
+
+## Puncturable Encryption
+
+**Goal:** Forward-secure decryption. A recipient can "puncture" their secret key on specific ciphertexts they've already decrypted — the punctured key can decrypt everything *except* those messages. Provides forward secrecy without sender-side changes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Green-Miers Puncturable Enc** | 2015 | Puncturable PRF + IBE | Puncture decryption key at tags; based on HIBE [[1]](https://eprint.iacr.org/2014/984) |
+| **Bloom Filter Encryption** | 2018 | BF + puncturable PRF | Efficiently puncture on a Bloom filter of processed messages [[1]](https://eprint.iacr.org/2018/199) |
+| **0-RTT with Puncturable Enc** | 2017 | TLS + puncturable enc | Replay-resistant 0-RTT key exchange without server state [[1]](https://eprint.iacr.org/2017/004) |
+
+**State of the art:** Bloom Filter Encryption (practical), 0-RTT puncturable (TLS optimization).
+
+---
+
+## Matchmaking Encryption
+
+**Goal:** Dual-policy encryption. Message is decryptable only when BOTH the sender's attributes match the receiver's policy AND the receiver's attributes match the sender's policy. Neither party learns if decryption failed due to the other's policy.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ateniese et al. ME** | 2019 | ABE + ZK | First matchmaking encryption; bilateral access control [[1]](https://eprint.iacr.org/2018/1094) |
+| **Efficient ME (Chen et al.)** | 2021 | Pairings | Practical construction with shorter ciphertexts [[1]](https://eprint.iacr.org/2021/680) |
+
+**State of the art:** pairing-based ME; applications in dating platforms, classified communication, bilateral credential matching.
+
+---
+
+## Registration-Based Encryption (RBE)
+
+**Goal:** IBE without trusted authority. Like [IBE](#identity-based-encryption-ibe) but replaces the trusted PKG with a transparent public bulletin board. Users register their own public keys; anyone can encrypt to an identity; no single party holds a master secret.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Garg-Hajiabadi-Mahmoody-Rahimi** | 2018 | Lattices / iO | First RBE construction; removes key escrow [[1]](https://eprint.iacr.org/2018/040) |
+| **Efficient RBE (Glaeser et al.)** | 2022 | Pairings + accumulators | Practical: O(log N) ciphertext from accumulator-based approach [[1]](https://eprint.iacr.org/2022/1505) |
+
+**State of the art:** pairing + accumulator RBE (practical); resolves IBE's key escrow problem.
 
 ---
 
