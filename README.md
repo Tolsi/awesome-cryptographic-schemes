@@ -176,6 +176,11 @@
 - [Batch Verification](#batch-verification)
 - [Partially Blind Signatures](#partially-blind-signatures)
 - [Sealed-Bid Auction Protocols](#sealed-bid-auction-protocols)
+- [Oblivious Key-Value Store (OKVS)](#oblivious-key-value-store-okvs)
+- [Non-Committing Encryption](#non-committing-encryption)
+- [Conditional Disclosure of Secrets (CDS)](#conditional-disclosure-of-secrets-cds)
+- [Witness PRF](#witness-prf)
+- [Traceable Signatures](#traceable-signatures)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -2725,6 +2730,79 @@
 | **MEV Auction / Fair Ordering** | 2023 | Threshold encryption | Transaction ordering auctions to prevent MEV extraction; see [Encrypted Mempools](#encrypted-mempools--threshold-encryption-for-transaction-ordering) [[1]](https://eprint.iacr.org/2023/1063) |
 
 **State of the art:** MPC-based auctions for high-value settings; threshold encryption auctions for blockchain MEV. Combines [MPC](#multi-party-computation-mpc), [HE](#homomorphic-encryption-he), and [ZK Proofs](#zero-knowledge-proofs-zk).
+
+---
+
+## Oblivious Key-Value Store (OKVS)
+
+**Goal:** Efficient private encoding of key-value maps. Encode a set of (key, value) pairs into a compact structure where querying a key returns the value, but querying any other key returns random noise. Core data structure behind state-of-the-art PSI and circuit-PSI protocols.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Garbled Bloom Filter (GBF)** | 2014 | XOR-based | Encode key-value pairs in Bloom filter structure; see [Accumulators](#accumulators) [[1]](https://doi.org/10.1145/2660267.2660323) |
+| **PaXoS (Probe-and-XOR of Strings)** | 2020 | Linear system | Solve linear system over GF(2); compact encoding, fast decode [[1]](https://eprint.iacr.org/2020/193) |
+| **OKVS (Garimella et al.)** | 2021 | Banded matrix | Near-optimal rate (encoding ≈ n items); backbone of fast PSI [[1]](https://eprint.iacr.org/2021/883) |
+| **RB-OKVS (Random Band)** | 2022 | Banded linear algebra | Improved; O(n) encode/decode; used in fastest PSI implementations [[1]](https://eprint.iacr.org/2022/320) |
+
+**State of the art:** RB-OKVS (2022); enables PSI on millions of items in seconds. Key building block for [PSI](#private-set-intersection-psi) and [Silent OT](#silent-ot--pseudorandom-correlation-generators-pcg).
+
+---
+
+## Non-Committing Encryption
+
+**Goal:** Simulation security for encryption. After generating a ciphertext, the simulator can "explain" it as an encryption of any message — by revealing fake randomness. Required for UC-secure (universally composable) protocols, where standard CPA/CCA encryption is insufficient.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Canetti-Feige-Goldreich-Naor NCE** | 1996 | OT | First NCE; based on oblivious transfer [[1]](https://doi.org/10.1145/237814.237866) |
+| **Nielsen NCE** | 2002 | Trapdoor permutations | Efficient NCE from any trapdoor permutation [[1]](https://doi.org/10.1007/3-540-45539-6_14) |
+| **Adaptively Secure NCE (Choi et al.)** | 2009 | DDH | Non-committing encryption secure against adaptive corruption [[1]](https://eprint.iacr.org/2009/035) |
+| **Non-Committing Authenticated Enc** | 2017 | AEAD + NCE | Combine authenticity with non-committing property for UC channels [[1]](https://eprint.iacr.org/2017/332) |
+
+**State of the art:** DDH-based NCE (Choi et al.); essential for UC-secure [Secure Channels](#secure-channels--protocol-constructions) and [MPC](#multi-party-computation-mpc) in the adaptive corruption model.
+
+---
+
+## Conditional Disclosure of Secrets (CDS)
+
+**Goal:** Predicate-gated secret release. Two parties each hold an input (x, y) and a referee holds a secret s. The secret s is revealed if and only if f(x, y) = 1 — with minimal communication. A fundamental building block for more complex protocols.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Gertner-Ishai-Kushilevitz-Malkin CDS** | 2000 | Secret sharing | First CDS formalization; connections to secret sharing and OT [[1]](https://doi.org/10.1007/3-540-44598-6_3) |
+| **CDS for General Predicates** | 2014 | Branching programs | CDS for any predicate computable by branching programs [[1]](https://eprint.iacr.org/2014/213) |
+| **Attribute-Based CDS** | 2017 | LWE / pairings | CDS with policies on attributes; connects to ABE [[1]](https://eprint.iacr.org/2017/614) |
+| **CDS with Reusable Setup** | 2020 | DDH | Amortized: one setup, many CDS instances [[1]](https://eprint.iacr.org/2020/431) |
+
+**State of the art:** CDS from standard assumptions (DDH/LWE); building block for [PSI](#private-set-intersection-psi), [OT extension](#oblivious-transfer-ot), and [Garbled Circuits](#garbled-circuits-expanded).
+
+---
+
+## Witness PRF
+
+**Goal:** NP-gated pseudorandom evaluation. A PRF where anyone holding a witness w for an NP statement x can compute PRF(x) — without a secret key. Combines properties of PRFs, witness encryption, and constrained PRFs into one powerful primitive.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Zhandry Witness PRF** | 2016 | Multilinear maps | First construction; evaluate PRF using NP witness instead of secret key [[1]](https://eprint.iacr.org/2016/597) |
+| **Witness PRF from iO** | 2016 | Indistinguishability obfuscation | Alternative construction from iO; more general [[1]](https://eprint.iacr.org/2016/597) |
+| **Witness PRF Applications** | 2016 | — | Implies multi-party key exchange, secret sharing for NP, more [[1]](https://eprint.iacr.org/2016/597) |
+
+**State of the art:** Theoretical; constructions require [iO](#indistinguishability-obfuscation-io) or [Multilinear Maps](#multilinear-maps). Implies [Witness Encryption](#witness-encryption), [Constrained PRFs](#puncturable--constrained-prf), and more.
+
+---
+
+## Traceable Signatures
+
+**Goal:** Accountability in group signatures. A group member can sign anonymously, but if they exceed a signing quota (e.g., sign more than k times in an epoch), the group manager can trace and identify them. Stronger than linkability — full identity recovery.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Kiayias-Tsiounis-Yung Traceable Sigs** | 2004 | DLP + pairings | First traceable sigs; manager traces over-signers; CCA-anonymous [[1]](https://eprint.iacr.org/2004/007) |
+| **Traceable Sigs with Stepping Capabilities** | 2008 | Pairings | Incremental tracing: trace after threshold violations [[1]](https://doi.org/10.1007/978-3-540-78967-3_7) |
+| **Lattice Traceable Sigs** | 2019 | LWE / SIS | Post-quantum traceable group signatures [[1]](https://eprint.iacr.org/2019/1158) |
+
+**State of the art:** Lattice-based traceable sigs for PQ; extends [Ring & Group Signatures](#ring--group-signatures) and [Linkable Ring Signatures](#linkable-ring-signatures) with full traceability.
 
 ---
 
