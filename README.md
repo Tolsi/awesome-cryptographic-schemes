@@ -843,8 +843,9 @@
 | **U-Prove** | 2010 | DLP | One-show tokens; minimal disclosure; Microsoft research [[1]](https://www.microsoft.com/en-us/research/project/u-prove/) |
 | **idemix (IBM)** | 2001 | CL + ZK | Multi-show credentials with unlinkability [[1]](https://idemix.wordpress.com/) |
 | **PS Signatures (Pointcheval-Sanders)** | 2016 | Pairings | Short, randomizable; used in Coconut / Nym network [[1]](https://eprint.iacr.org/2015/525) |
+| **SD-JWT (Selective Disclosure JWT)** | 2025 | Hash-based digests | **RFC 9901**; selective claim disclosure for JWTs; mandated by eIDAS 2.0 for EU digital identity [[1]](https://datatracker.ietf.org/doc/rfc9901/) |
 
-**State of the art:** PS Signatures (blockchain/Nym), CL Signatures (enterprise), BBS+ (W3C Verifiable Credentials).
+**State of the art:** BBS+ (W3C VC), SD-JWT (RFC 9901, EU eIDAS 2.0), PS Signatures (blockchain/Nym), CL Signatures (enterprise).
 
 ---
 
@@ -3817,8 +3818,9 @@
 |--------|------|-------|------|
 | **Oblivious DoH (ODoH)** | 2021 | HPKE + proxy | IETF RFC 9230; deployed by Cloudflare + Apple; proxy-based privacy [[1]](https://www.rfc-editor.org/rfc/rfc9230) |
 | **μODNS (Mutualized Oblivious DNS)** | 2021 | Multi-relay | Multiple randomly selected relays; defeats single-relay collusion [[1]](https://arxiv.org/abs/2104.13785) |
+| **OHTTP (Oblivious HTTP)** | 2024 | HPKE + relay | **RFC 9458**; generalizes ODoH to arbitrary HTTP requests; client identity hidden from server [[1]](https://www.ietf.org/rfc/rfc9458.html) |
 
-**State of the art:** ODoH (RFC 9230) deployed in Apple iCloud Private Relay, Cloudflare. Related to [Onion Routing](#onion-routing) but specialized for DNS.
+**State of the art:** ODoH (RFC 9230) for DNS; OHTTP (RFC 9458) for general HTTP; deployed in Apple iCloud Private Relay, Cloudflare. Related to [Onion Routing](#onion-routing).
 
 ---
 
