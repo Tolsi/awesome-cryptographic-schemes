@@ -210,6 +210,11 @@
 - [Oblivious Polynomial Evaluation (OPE)](#oblivious-polynomial-evaluation-ope)
 - [Threshold Ring Signatures](#threshold-ring-signatures)
 - [Secret Sharing with Cheater Detection](#secret-sharing-with-cheater-detection)
+- [Lossy Encryption / Lossy Trapdoor Functions](#lossy-encryption--lossy-trapdoor-functions)
+- [Correlation-Intractable Hash Functions](#correlation-intractable-hash-functions)
+- [Universal One-Way Hash Functions (UOWHF)](#universal-one-way-hash-functions-uowhf)
+- [Dual-Mode Cryptosystems](#dual-mode-cryptosystems)
+- [Kleptography / Algorithm-Substitution Attacks](#kleptography--algorithm-substitution-attacks)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -3251,6 +3256,78 @@
 | **Unconditionally Secure Cheater Detection (Ogata et al.)** | 2005 | Information-theoretic | Optimal share size with information-theoretic cheater detection [[1]](https://doi.org/10.1007/978-3-540-30576-7_5) |
 
 **State of the art:** MAC-based cheater identification (Ishai-Sahai 2006); used in malicious-secure [MPC](#multi-party-computation-mpc). Extends [Secret Sharing](#secret-sharing-schemes-sss), complements [Robust SS](#robust-secret-sharing).
+
+---
+
+## Lossy Encryption / Lossy Trapdoor Functions
+
+**Goal:** Proof technique as primitive. A public key can operate in two computationally indistinguishable modes: *injective* (normal encryption, decryptable) and *lossy* (ciphertext is statistically independent of the message). Enables elegant CCA security proofs and new constructions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Peikert-Waters Lossy TDF** | 2008 | DDH / LWE | First lossy TDFs; injective and lossy modes; implies CCA-secure PKE [[1]](https://eprint.iacr.org/2007/279) |
+| **Bellare-Hofheinz-Yilek Lossy Encryption** | 2009 | DDH / LWE | Lossy encryption formalization; key-dependent message security [[1]](https://eprint.iacr.org/2009/079) |
+| **Lossy TDF from Lattices** | 2008 | LWE | Peikert-Waters LWE instantiation; post-quantum lossy TDF [[1]](https://eprint.iacr.org/2007/279) |
+| **All-But-One TDF** | 2008 | DDH / LWE | Lossy on one branch, injective on all others; CCA from CHF [[1]](https://eprint.iacr.org/2007/279) |
+
+**State of the art:** Lossy TDFs from LWE (PQ-secure); foundational for [KEM/DEM](#key-encapsulation-mechanism-kem--dem-paradigm) security proofs and [Dual-Mode Cryptosystems](#dual-mode-cryptosystems).
+
+---
+
+## Correlation-Intractable Hash Functions
+
+**Goal:** Secure Fiat-Shamir for all NP. A hash function H is correlation-intractable for a relation R if no one can find x such that R(x, H(x)) holds. Enables provably secure non-interactive proofs from interactive ones via Fiat-Shamir — resolving a decades-old open question.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Canetti CI Hash (definition)** | 2001 | — | Formal definition; showed no CI hash for all relations in standard model [[1]](https://eprint.iacr.org/1998/015) |
+| **Peikert-Shiehian CI from LWE** | 2019 | LWE | First CI hash for all efficiently searchable relations; Fiat-Shamir for NP [[1]](https://eprint.iacr.org/2018/1004) |
+| **Canetti-Chen-Holmgren-Lombardi-Rothblum-Rothblum** | 2019 | LWE | CI hash for bounded-depth relations; simpler construction [[1]](https://eprint.iacr.org/2018/1003) |
+
+**State of the art:** CI hash from LWE (Peikert-Shiehian 2019); proves Fiat-Shamir sound for NP under standard assumptions. Connects [Sigma Protocols](#sigma-protocols--schnorr-identification) and [NIZK](#zero-knowledge-proofs-zk).
+
+---
+
+## Universal One-Way Hash Functions (UOWHF)
+
+**Goal:** Weaker-than-collision-resistance hashing. Adversary commits to x₁ before seeing the hash key, then cannot find x₂ ≠ x₁ with the same hash. Weaker than collision resistance but sufficient for signatures, CCA encryption, and more — and exists under weaker assumptions (any OWF).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Naor-Yung UOWHF** | 1989 | Any one-way function | First UOWHF; exists if any OWF exists (vs CR needs stronger assumptions) [[1]](https://doi.org/10.1145/73007.73011) |
+| **Rompel UOWHF from OWF** | 1990 | Any OWF | Proved UOWHF from any OWF; simplified by Katz-Koo-Shin [[1]](https://doi.org/10.1145/100216.100269) |
+| **UOWHF for Signatures (Bellare-Rogaway)** | 1997 | UOWHF + OWF | Hash-and-sign paradigm: UOWHF suffices (CR not needed) [[1]](https://eprint.iacr.org/2006/285) |
+
+**State of the art:** UOWHF = target collision resistance; foundational for minimal-assumption cryptography. Weaker than [Hash Functions](#hash-functions) (collision resistance) but sufficient for most applications.
+
+---
+
+## Dual-Mode Cryptosystems
+
+**Goal:** UC-secure encryption. A cryptosystem with two indistinguishable CRS modes: *messy mode* (statistically hiding — encryption hides bit perfectly) and *decryption mode* (statistically binding — only one decryption). Enables UC-secure OT, commitments, and ZK.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Peikert-Vaikuntanathan-Waters Dual-Mode** | 2008 | DDH / QR / LWE | First dual-mode encryption; implies UC-secure OT in CRS model [[1]](https://eprint.iacr.org/2008/009) |
+| **Dual-Mode from LWE** | 2008 | LWE | Lattice instantiation; post-quantum UC-secure OT [[1]](https://eprint.iacr.org/2008/009) |
+| **Dual-Mode Commitments** | 2011 | DDH / LWE | Extension to commitments: perfectly hiding or perfectly binding modes [[1]](https://eprint.iacr.org/2011/010) |
+
+**State of the art:** LWE-based dual-mode (PQ-secure); foundation of UC-secure [OT](#oblivious-transfer-ot) and [Non-Committing Encryption](#non-committing-encryption).
+
+---
+
+## Kleptography / Algorithm-Substitution Attacks (ASA)
+
+**Goal:** Attack model — subverted implementations. An adversary replaces a cryptographic algorithm with a modified version that covertly leaks secret keys through ciphertexts, signatures, or nonces — undetectable by black-box testing. The attack-side counterpart to [Cryptographic Reverse Firewalls](#cryptographic-reverse-firewalls).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Young-Yung Kleptography** | 1996 | Subliminal channels | First formalization; embed secret key in RSA key generation subliminal channel [[1]](https://doi.org/10.1007/3-540-68339-9_12) |
+| **Bellare-Paterson-Rogaway ASA** | 2014 | Symmetric / AEAD | Algorithm-substitution attacks on symmetric encryption; post-Snowden model [[1]](https://eprint.iacr.org/2014/438) |
+| **Dual_EC_DRBG Backdoor** | 2013 | EC points | Real-world kleptographic backdoor in NIST DRBG; NSA-planted [[1]](https://projectbullrun.org/dual-ec/documents.html) |
+| **ASA on Signatures (Ateniese et al.)** | 2015 | Randomness manipulation | Subvert signature randomness to leak signing key [[1]](https://eprint.iacr.org/2015/517) |
+
+**State of the art:** ASA model (Bellare et al. 2014); defenses include [CRF](#cryptographic-reverse-firewalls), deterministic signatures (EdDSA), and verifiable randomness. See also [DRBG](#drbg-deterministic-random-bit-generators).
 
 ---
 
