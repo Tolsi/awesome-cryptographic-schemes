@@ -138,6 +138,24 @@
 - [Functional Commitments](#functional-commitments)
 - [Laconic Cryptography](#laconic-cryptography)
 - [Verifiable Information Dispersal (VID)](#verifiable-information-dispersal-vid)
+- [Sigma Protocols / Schnorr Identification](#sigma-protocols--schnorr-identification)
+- [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps)
+- [Groth-Sahai Proofs](#groth-sahai-proofs)
+- [Semaphore / Anonymous Group Signaling (RLN)](#semaphore--anonymous-group-signaling-rln)
+- [Garbled RAM](#garbled-ram)
+- [Anonymous IBE](#anonymous-ibe)
+- [Password Hardened Encryption (PHE)](#password-hardened-encryption-phe)
+- [Oblivious Message Retrieval (OMR)](#oblivious-message-retrieval-omr)
+- [Incremental Cryptography](#incremental-cryptography)
+- [Rerandomizable Signatures (PS Signatures)](#rerandomizable-signatures-ps-signatures)
+- [Key Transparency / CONIKS](#key-transparency--coniks)
+- [Proactive Secret Sharing](#proactive-secret-sharing)
+- [Visual Cryptography](#visual-cryptography)
+- [Non-Interactive DKG (NIDKG)](#non-interactive-dkg-nidkg)
+- [Asynchronous BFT / Asynchronous MPC](#asynchronous-bft--asynchronous-mpc)
+- [Key-Insulated Cryptography](#key-insulated-cryptography)
+- [Client Puzzles / Proof of Effort](#client-puzzles--proof-of-effort)
+- [Identity-Based Signatures (IBS)](#identity-based-signatures-ibs)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -2127,6 +2145,272 @@
 | **EigenDA VID** | 2024 | KZG + RS codes | KZG-committed VID for Ethereum rollup data availability [[1]](https://docs.eigenlayer.xyz/eigenda/overview) |
 
 **State of the art:** KZG-based VID (EigenDA, Ethereum danksharding); closely related to [DAS](#data-availability-sampling-das) and [Commitment Schemes](#commitment-schemes).
+
+---
+
+## Sigma Protocols / Schnorr Identification
+
+**Goal:** Foundation of efficient ZK proofs. A 3-move interactive protocol (commit → challenge → response) where the prover demonstrates knowledge of a secret without revealing it. The universal building block for discrete-log-based ZK and digital signatures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Schnorr Identification** | 1989 | DLP | Prove knowledge of discrete log; basis of Schnorr signatures via Fiat-Shamir [[1]](https://doi.org/10.1007/0-387-34805-0_22) |
+| **Guillou-Quisquater (GQ)** | 1988 | RSA | Sigma protocol for RSA-based identification [[1]](https://doi.org/10.1007/0-387-34799-2_16) |
+| **Chaum-Pedersen** | 1992 | DLP | Prove equality of discrete logarithms (DLEQ); core of VOPRF, VRF [[1]](https://link.springer.com/chapter/10.1007/3-540-48071-4_7) |
+| **AND/OR Composition (CDS)** | 1994 | Any sigma | Compose sigma protocols with AND/OR logic; prove compound statements [[1]](https://link.springer.com/chapter/10.1007/BFb0053443) |
+| **Damgård's Techniques** | 2000 | Any sigma | Formal framework: special soundness + HVZK → Fiat-Shamir secure [[1]](https://www.cs.au.dk/~ivan/Sigma.pdf) |
+
+**State of the art:** Sigma protocols + Fiat-Shamir transform = foundation of Schnorr signatures, DLEQ proofs, and most discrete-log ZK. See [ZK Proofs](#zero-knowledge-proofs-zk), [Digital Signatures](#digital-signatures).
+
+---
+
+## Structure-Preserving Signatures (SPS)
+
+**Goal:** Composability with pairing-based proofs. Messages, public keys, and signatures are all group elements — enabling direct composition with Groth-Sahai proofs without hashing into the group. Foundation of provably secure anonymous credentials.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Abe-Haralambiev-Ohkubo (AHO)** | 2010 | Pairings (Type III) | First SPS; signatures on group element vectors [[1]](https://eprint.iacr.org/2010/133) |
+| **Abe-Groth-Ohkubo (AGO)** | 2011 | Pairings | Optimal SPS: 7 group elements, tight reduction [[1]](https://eprint.iacr.org/2011/358) |
+| **Equivalence-Class Signatures (EQS)** | 2014 | Pairings | Sign equivalence classes of vectors; basis of delegatable credentials [[1]](https://eprint.iacr.org/2014/944) |
+| **Mercurial Signatures** | 2008 | Pairings | Sign on equivalence classes with additional randomizability [[1]](https://eprint.iacr.org/2008/163) |
+
+**State of the art:** EQS (Hanser-Slamanig 2014) for anonymous credentials; SPS are the "right" primitive for composable pairing-based crypto. See [Anonymous Credentials](#anonymous-credentials).
+
+---
+
+## Groth-Sahai Proofs
+
+**Goal:** Non-interactive ZK for pairing equations. Prove satisfiability of equations over group elements and scalars in bilinear groups — without random oracles. The standard NIZK framework for pairing-based cryptography.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Groth-Sahai (GS) Proofs** | 2008 | Pairings (DLIN/SXDH) | NIZK for pairing-product equations; witness-indistinguishable or ZK [[1]](https://eprint.iacr.org/2007/155) |
+| **GS Proofs for Linear Equations** | 2008 | Pairings | Special case: linear equations have constant-size proofs [[1]](https://eprint.iacr.org/2007/155) |
+| **Extractable GS** | 2012 | Knowledge assumptions | Proofs of knowledge variant; extractable witnesses [[1]](https://eprint.iacr.org/2012/028) |
+
+**State of the art:** Groth-Sahai (2008); the canonical NIZK for pairing-based constructions. Enables [SPS](#structure-preserving-signatures-sps), group signatures, and anonymous credentials without random oracles.
+
+---
+
+## Semaphore / Anonymous Group Signaling (RLN)
+
+**Goal:** Anonymous membership proof with rate limiting. Prove you belong to a group and broadcast a signal — without revealing which member you are. RLN (Rate-Limiting Nullifiers) adds: sending more than one signal per epoch reveals your secret key.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Semaphore** | 2019 | zk-SNARK + Merkle | Anonymous group signaling via ZK membership proof in a Merkle tree [[1]](https://semaphore.pse.dev/V1) |
+| **RLN v1 (Rate-Limiting Nullifiers)** | 2020 | Semaphore + Shamir | Rate-limited: >1 signal per epoch → secret key reconstructable [[1]](https://rate-limiting-nullifier.github.io/rln-docs/) |
+| **RLN v2** | 2023 | Groth16 + slashing | Improved; variable rate limits per epoch [[1]](https://rate-limiting-nullifier.github.io/rln-docs/v2) |
+| **Zupass / Semaphore v4** | 2024 | Groth16 / PLONK | Identity framework: ZK proofs of attributes, event tickets, voting [[1]](https://github.com/semaphore-protocol/semaphore) |
+
+**State of the art:** Semaphore v4 + RLN v2; used in Ethereum (spam prevention), Waku messaging, Zupass identity. Related to [Ring Signatures](#ring--group-signatures), [ZK Proofs](#zero-knowledge-proofs-zk).
+
+---
+
+## Garbled RAM
+
+**Goal:** Efficient MPC for RAM programs. Extend garbled circuits to support random-access memory — instead of unrolling memory access into a massive circuit, emulate RAM with ORAM. Exponential improvement for memory-intensive computations.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Lu-Ostrovsky Garbled RAM** | 2013 | ORAM + GC | First garbled RAM; polylog overhead per memory access [[1]](https://eprint.iacr.org/2013/229) |
+| **Garg-Lu-Ostrovsky-Scafuro** | 2015 | ORAM + succinct GC | Improved; sublinear garbled program size for RAM computations [[1]](https://eprint.iacr.org/2014/656) |
+| **Heath-Kolesnikov RAM-MPC** | 2020 | Stacked garbling + RAM | Practical garbled RAM with stacked garbling optimizations [[1]](https://eprint.iacr.org/2020/973) |
+
+**State of the art:** Heath-Kolesnikov (2020) for practical use; extends [Garbled Circuits](#garbled-circuits-expanded) and [ORAM](#oblivious-ram-oram) into a unified MPC framework.
+
+---
+
+## Anonymous IBE
+
+**Goal:** Recipient privacy in IBE. The ciphertext hides not just the message but also the identity of the intended recipient. An eavesdropper cannot determine who can decrypt — even given the master public key.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boyen-Waters Anonymous IBE** | 2006 | Pairings | First efficient anonymous IBE; ciphertext hides recipient identity [[1]](https://eprint.iacr.org/2005/029) |
+| **Gentry Anonymous IBE** | 2006 | Pairings | Anonymous + CCA-secure; tight reduction [[1]](https://eprint.iacr.org/2006/077) |
+| **Lattice Anonymous IBE (Agrawal et al.)** | 2010 | LWE | Post-quantum anonymous IBE from lattices [[1]](https://eprint.iacr.org/2010/383) |
+| **Anonymous HIBE (Ducas-Lyubashevsky)** | 2018 | LWE | Hierarchical + anonymous + post-quantum [[1]](https://eprint.iacr.org/2018/088) |
+
+**State of the art:** Lattice-based anonymous IBE (PQ-secure); extends [IBE](#identity-based-encryption-ibe) with recipient anonymity. Useful for anonymous broadcast and PIR-like scenarios.
+
+---
+
+## Password Hardened Encryption (PHE)
+
+**Goal:** Two-factor encryption. Decryption requires both the user's password and a server-side key. A server breach alone is useless (no password); a password brute-force alone is useless (no server key). The server never sees plaintext.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Lai-Tlejben-Abel-Polyakov PHE** | 2018 | OPRF + AE | PHE from oblivious PRF; server evaluates OPRF on password [[1]](https://eprint.iacr.org/2018/003) |
+| **Pythia PRF** | 2015 | Partially-oblivious PRF | Server-side key-rotation without re-encrypting; verifiable [[1]](https://eprint.iacr.org/2015/644) |
+| **OPAQUE (as PHE)** | 2018 | aPAKE | Can serve as PHE base: server stores password file, client derives key [[1]](https://eprint.iacr.org/2018/163) |
+
+**State of the art:** PHE (Lai et al. 2018); deployed by Virgil Security. Related to [OPRF](#oblivious-prf-oprf) and [PAKE](#password-based-key-derivation-kdf--pake).
+
+---
+
+## Oblivious Message Retrieval (OMR)
+
+**Goal:** Private message delivery. Messages are posted to a public bulletin board; a recipient can detect and download their messages without the server learning which messages belong to whom. Like PIR but optimized for the "mailbox" setting.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Liu-Tromer OMR** | 2021 | FHE (BFV) | First OMR; server runs FHE detection on behalf of recipient [[1]](https://eprint.iacr.org/2021/1256) |
+| **Cohn-Gordon et al. OMR** | 2023 | PIR + FHE | Improved; practical for millions of messages, ~5 sec server time [[1]](https://eprint.iacr.org/2022/1528) |
+| **FrodoPIR-based OMR** | 2023 | Lattice PIR | Lightweight variant using offline preprocessing [[1]](https://eprint.iacr.org/2022/981) |
+
+**State of the art:** FHE-based OMR (Liu-Tromer 2021+); enables private messaging without metadata leakage. Extends [PIR](#private-information-retrieval-pir) to the messaging domain.
+
+---
+
+## Incremental Cryptography
+
+**Goal:** Efficient updates. When data is modified (insert, delete, edit), update the hash, MAC, or signature incrementally — without recomputing from scratch. Critical for large files, streaming data, and version-controlled content.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Incremental Hashing (BGG)** | 1994 | Universal hash | First formalization; update hash after data modification in O(change size) [[1]](https://doi.org/10.1007/3-540-48329-2_22) |
+| **Incremental MAC (Bellare et al.)** | 1995 | XOR-based MAC | Update MAC without rehashing entire message [[1]](https://doi.org/10.1007/BFb0015744) |
+| **Incremental Signatures (Bellare et al.)** | 1994 | Tree-based | Update signature when document changes; logarithmic cost [[1]](https://doi.org/10.1007/3-540-48329-2_22) |
+| **Authenticated Data Structures (Tamassia)** | 2003 | Merkle + skip lists | Generalized framework: any data structure with authenticated incremental updates [[1]](https://doi.org/10.1007/3-540-39658-0_2) |
+
+**State of the art:** Merkle-based authenticated data structures (widely deployed); incremental hashing in rsync, IPFS, git. See [Accumulators](#accumulators), [Hash Functions](#hash-functions).
+
+---
+
+## Rerandomizable Signatures (PS Signatures)
+
+**Goal:** Unlinkable credential presentation. A signature can be publicly rerandomized into a fresh, valid signature on the same message — unlinkable to the original. Enables multi-show anonymous credentials without interaction with the issuer.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CL Signatures (Camenisch-Lysyanskaya)** | 2004 | RSA / pairings | First practical rerandomizable sigs for anonymous credentials [[1]](https://eprint.iacr.org/2004/076) |
+| **PS Signatures (Pointcheval-Sanders)** | 2016 | Pairings (Type III) | Short, efficient, rerandomizable; basis of modern anon credentials [[1]](https://eprint.iacr.org/2015/525) |
+| **BBS+ Signatures** | 2004 | Pairings | Rerandomizable with selective disclosure; W3C Verifiable Credentials [[1]](https://eprint.iacr.org/2009/095) |
+| **PS Multi-Message** | 2018 | Pairings | Sign multiple messages; selectively disclose subset [[1]](https://eprint.iacr.org/2017/1197) |
+
+**State of the art:** BBS+ (W3C VC standard, ISO mDL); PS signatures for academic constructions. Foundation of [Anonymous Credentials](#anonymous-credentials) and [Structure-Preserving Signatures](#structure-preserving-signatures-sps).
+
+---
+
+## Key Transparency / CONIKS
+
+**Goal:** Verifiable key directory. A public, append-only log that maps usernames to public keys — anyone can audit that the server hasn't secretly swapped someone's key. Prevents misbinding attacks where a server substitutes a malicious key.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CONIKS** | 2015 | Merkle prefix tree | First key transparency system; users verify their own key bindings [[1]](https://eprint.iacr.org/2014/1004) |
+| **Google Key Transparency** | 2017 | Sparse Merkle + VRF | Production system; verifiable log of key-to-account bindings [[1]](https://github.com/google/keytransparency) |
+| **SEEMless (Meta)** | 2023 | Verifiable log | WhatsApp key transparency; Auditable Key Directory [[1]](https://engineering.fb.com/2023/04/13/security/whatsapp-key-transparency/) |
+| **Signal Key Transparency** | 2024 | Merkle + monitoring | Detects key substitution in Signal's server [[1]](https://signal.org/blog/key-transparency/) |
+
+**State of the art:** SEEMless (WhatsApp), Signal Key Transparency (2024). Closely related to [Certificate Transparency](#certificate-transparency-ct).
+
+---
+
+## Proactive Secret Sharing
+
+**Goal:** Long-term threshold security. Periodically refresh secret shares without changing the secret — so an adversary who compromises different parties in different time periods never accumulates enough shares. Defends against "mobile adversaries."
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Herzberg-Jarecki-Krawczyk-Yung (HJKY)** | 1995 | Shamir + rerandomization | First proactive SS; parties jointly rerandomize shares each epoch [[1]](https://doi.org/10.1007/3-540-44750-4_27) |
+| **Proactive RSA (Frankel et al.)** | 1997 | RSA threshold | Proactive threshold RSA signatures; share refresh without new key [[1]](https://doi.org/10.1007/BFb0052253) |
+| **CHURP** | 2019 | Bivariate polynomials | Proactive SS with dynamic committee changes; Byzantine-tolerant [[1]](https://eprint.iacr.org/2019/017) |
+| **Proactive Refresh for BLS** | 2022 | BLS threshold | Refresh threshold BLS shares; used in Ethereum validator key management [[1]](https://eprint.iacr.org/2022/898) |
+
+**State of the art:** CHURP (2019) for dynamic committees; proactive BLS for blockchain validators. Extends [Secret Sharing](#secret-sharing-schemes-sss) and [DKG](#distributed-key-generation-dkg).
+
+---
+
+## Visual Cryptography
+
+**Goal:** Information-theoretic image sharing. Split an image into N shares printed on transparencies — overlaying any t shares reveals the image, fewer than t shares reveal nothing. No computation, no cryptographic assumptions — purely visual.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Naor-Shamir Visual SS** | 1994 | Pixel expansion | First (2,2) visual scheme; each pixel → 2×2 subpixels per share [[1]](https://doi.org/10.1007/BFb0053419) |
+| **(k,n) Visual SS** | 1996 | Combinatorial | General threshold; Ateniese-Blundo-De Santis-Stinson [[1]](https://doi.org/10.1016/S0020-0190(96)00127-4) |
+| **Extended Visual Crypto (EVC)** | 1996 | Meaningful shares | Each share looks like a valid image (not noise); shares reveal secret when overlaid [[1]](https://doi.org/10.1007/BFb0052995) |
+| **Colored Visual Crypto** | 1997 | Color mixing | Extension to color images [[1]](https://doi.org/10.1007/BFb0028175) |
+
+**State of the art:** (k,n) visual SS with meaningful shares; applications in physical document security. Pure information-theoretic security — see [OTP](#one-time-pad--information-theoretic-security).
+
+---
+
+## Non-Interactive DKG (NIDKG)
+
+**Goal:** One-round distributed key generation. Generate a shared public key and individual secret key shares in a single broadcast round — no back-and-forth communication. Critical for blockchain protocols where interactive rounds are expensive.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Groth NIDKG** | 2021 | Pairings + NIZK | Non-interactive; publicly verifiable; O(n) transcript size [[1]](https://eprint.iacr.org/2021/339) |
+| **Gurkan et al. NIDKG** | 2021 | KZG + gossip | Aggregatable DKG; used in Celo blockchain [[1]](https://eprint.iacr.org/2021/005) |
+| **Groth-Shoup NIDKG** | 2022 | Forward-secure enc | Used in Internet Computer (DFINITY); asynchronous, robust [[1]](https://eprint.iacr.org/2022/087) |
+
+**State of the art:** Groth-Shoup NIDKG (DFINITY/Internet Computer); Gurkan et al. (Celo). Extends [DKG](#distributed-key-generation-dkg) to non-interactive setting.
+
+---
+
+## Asynchronous BFT / Asynchronous MPC
+
+**Goal:** Consensus and computation without timing assumptions. Protocols that tolerate arbitrary message delays — no timeouts, no synchrony assumptions. Necessary for truly decentralized systems where network conditions are unpredictable.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ben-Or-Canetti-Goldreich Async MPC** | 1993 | Information-theoretic | First async MPC; tolerates t < n/3 corruptions [[1]](https://doi.org/10.1145/167088.167109) |
+| **HoneyBadgerBFT** | 2016 | Threshold encryption + ACS | First practical async BFT; uses threshold encryption for censorship resistance [[1]](https://eprint.iacr.org/2016/199) |
+| **Dumbo** | 2020 | MVBA + ABA | Improved async BFT; better latency than HoneyBadger [[1]](https://eprint.iacr.org/2020/841) |
+| **VABA (Validated Async BA)** | 2019 | Threshold sigs + MVBA | Async BA with external validity; basis of many async protocols [[1]](https://eprint.iacr.org/2019/1460) |
+| **DAG-Rider** | 2021 | DAG + zero-message overhead | BFT from DAG structure; no extra consensus messages [[1]](https://eprint.iacr.org/2021/1362) |
+
+**State of the art:** DAG-based BFT (DAG-Rider, Bullshark, Narwhal-Tusk); used in Aptos, Sui. Related to [MPC](#multi-party-computation-mpc), [Threshold Decryption](#threshold-decryption).
+
+---
+
+## Key-Insulated Cryptography
+
+**Goal:** Temporal key isolation. Compromise of the current secret key does not reveal past or future keys — even without secure erasure. A physically secure "helper" device updates the user's key each time period, but the helper alone cannot sign or decrypt.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Dodis-Katz-Xu-Yung Key-Insulated Sigs** | 2002 | DLP / RSA | First key-insulated scheme; helper updates user key per period [[1]](https://eprint.iacr.org/2002/064) |
+| **Strong Key-Insulation** | 2003 | DLP | Even compromising helper + one period doesn't break other periods [[1]](https://doi.org/10.1007/3-540-39200-9_8) |
+| **Intrusion-Resilient Sigs (Itkis-Reyzin)** | 2002 | DLP | Combines forward security + key-insulation [[1]](https://doi.org/10.1007/3-540-36178-2_33) |
+
+**State of the art:** Key-insulated schemes fill the gap between [Forward-Secure Crypto](#forward-secure-signatures--encryption) (no helper needed) and [Proactive SS](#proactive-secret-sharing) (distributed). Used in smart card + host scenarios.
+
+---
+
+## Client Puzzles / Proof of Effort
+
+**Goal:** DoS resistance. A server issues a computational puzzle to a client before committing resources — legitimate clients solve easily, but an attacker must spend proportional effort per request. Adjustable difficulty without centralized rate limiting.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Juels-Brainard Client Puzzles** | 1999 | Hash inversion | First formal client puzzle; find partial hash preimage [[1]](https://doi.org/10.1007/978-1-4471-0641-2_11) |
+| **Merkle Puzzles** | 1978 | Symmetric encryption | Original "puzzle" construction for key exchange; O(n²) vs O(n) gap [[1]](https://doi.org/10.1007/978-1-4684-3386-7_5) |
+| **TLS Client Puzzles (RFC draft)** | 2019 | Hash | Extension to TLS handshake; server issues puzzle during ClientHello [[1]](https://datatracker.ietf.org/doc/draft-nir-tls-puzzles/) |
+| **VDF-based Puzzles** | 2018 | Sequential squaring | Non-parallelizable puzzles; fair regardless of hardware [[1]](https://eprint.iacr.org/2018/601) |
+
+**State of the art:** VDF-based puzzles for fairness; hash-based puzzles for simplicity. Precursor to [PoW](#proof-of-work-pow--proof-of-space). See also [Time-Lock Puzzles](#time-lock-puzzles--timed-release-encryption).
+
+---
+
+## Identity-Based Signatures (IBS)
+
+**Goal:** Sign with identity, verify with identity. The signer obtains a signing key from a PKG using their identity string; anyone can verify using the signer's identity and master public key — no certificate lookup needed. Complement to IBE.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Shamir IBS (concept)** | 1984 | — | First proposal of identity-based signatures alongside IBE [[1]](https://doi.org/10.1007/3-540-39568-7_5) |
+| **Cha-Cheon IBS** | 2003 | Pairings (BDH) | Efficient pairing-based IBS from Gap-DH [[1]](https://eprint.iacr.org/2002/083) |
+| **Paterson-Schuldt IBS** | 2006 | Pairings | Provably secure in standard model (no random oracle) [[1]](https://eprint.iacr.org/2006/080) |
+| **Lattice IBS (Rückert)** | 2010 | SIS/LWE | Post-quantum identity-based signatures [[1]](https://eprint.iacr.org/2009/222) |
+
+**State of the art:** Pairing-based IBS (standard model); lattice IBS for PQ. Complement to [IBE](#identity-based-encryption-ibe); same PKG architecture.
 
 ---
 
