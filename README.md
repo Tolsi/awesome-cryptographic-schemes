@@ -484,8 +484,9 @@
 | **Asokan-Shoup-Waidner** | 1998 | RSA-based | Optimistic fair exchange via TTP [[1]](https://link.springer.com/chapter/10.1007/BFb0054144) |
 | **Verifiable Enc. of DL** | 2003 | ElGamal + Sigma | Prove enc. of discrete log; simple and efficient [[1]](https://eprint.iacr.org/2002/161) |
 | **ZK + Hybrid Enc.** | 2016 | SNARK/STARK + Enc. | Modern: prove anything about ciphertext contents [[1]](https://eprint.iacr.org/2016/260) |
+| **VECK (Verifiable Enc. under Committed Key)** | 2024 | Symmetric key + commitment | Generalizes VE to symmetric keys; enables fair data exchange via blockchain; a16z research [[1]](https://a16zcrypto.com/posts/article/new-paper-alert-fair-data-exchange/) |
 
-**State of the art:** Camenisch-Shoup framework + modern SNARKs for generic relations.
+**State of the art:** Camenisch-Shoup framework + modern SNARKs; VECK (2024) for symmetric-key fair exchange.
 
 ---
 
