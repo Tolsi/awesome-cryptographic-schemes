@@ -186,6 +186,11 @@
 - [Hidden Vector Encryption (HVE)](#hidden-vector-encryption-hve)
 - [Robust Secret Sharing](#robust-secret-sharing)
 - [Ramp Secret Sharing](#ramp-secret-sharing)
+- [General Access Structure Secret Sharing](#general-access-structure-secret-sharing)
+- [Asynchronous Verifiable Secret Sharing (AVSS)](#asynchronous-verifiable-secret-sharing-avss)
+- [Universal Thresholdizer](#universal-thresholdizer)
+- [Verifiable FHE](#verifiable-fhe)
+- [Point Function Obfuscation / Digital Locker](#point-function-obfuscation--digital-locker)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -2879,6 +2884,79 @@
 | **Ramp SS for MPC** | 2006 | Packed Shamir | Amortized MPC communication using ramp shares [[1]](https://eprint.iacr.org/2005/264) |
 
 **State of the art:** Ramp SS for large-secret sharing and amortized [MPC](#multi-party-computation-mpc); closely related to [Packed Secret Sharing](#packed-secret-sharing). Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## General Access Structure Secret Sharing
+
+**Goal:** Beyond threshold. Share a secret so that any authorized subset of participants (defined by an arbitrary monotone access structure) can reconstruct, while unauthorized subsets learn nothing. Generalizes (t,n)-threshold to any collection of qualified sets.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ito-Saito-Nishizeki** | 1989 | Monotone formulae | First general construction; any monotone access structure; exponential share size [[1]](https://doi.org/10.1007/0-387-34805-0_43) |
+| **Benaloh-Leichter** | 1990 | Monotone formulae | Simpler construction; shares from formula decomposition [[1]](https://doi.org/10.1007/0-387-34805-0_27) |
+| **Linear Secret Sharing (LSSS)** | 1996 | Monotone span programs | Shares are linear in secret; basis of ABE access policies [[1]](https://doi.org/10.1007/3-540-68339-9_22) |
+| **Multi-Linear SS (Beimel)** | 2011 | General | Survey of constructions; share size lower bounds [[1]](https://doi.org/10.1007/978-3-642-20901-7_2) |
+
+**State of the art:** LSSS for efficient schemes (used in [ABE](#attribute-based--functional-encryption)); general access structures remain exponential in worst case — a major open problem. Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## Asynchronous Verifiable Secret Sharing (AVSS)
+
+**Goal:** VSS without timing assumptions. The dealer shares a secret so that (1) all honest parties eventually receive valid shares, (2) a unique secret is determined even if the dealer is malicious, (3) no synchrony assumptions — messages can be arbitrarily delayed.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Canetti-Rabin AVSS** | 1993 | Bivariate polynomials | First AVSS; information-theoretic; t < n/3 [[1]](https://doi.org/10.1145/167088.167109) |
+| **Cachin-Kursawe-Petzold-Shoup (CKPS)** | 2002 | Pedersen + pairings | Practical AVSS; O(n²) messages; used in async DKG [[1]](https://eprint.iacr.org/2002/134) |
+| **Abraham-Chow-Goldfeder-Hazay AVSS** | 2021 | KZG commitments | O(n log n) communication; optimal async VSS [[1]](https://eprint.iacr.org/2021/118) |
+| **Haven (Das et al.)** | 2023 | Polynomial eval + async | High-throughput AVSS for async DKG and MPC [[1]](https://eprint.iacr.org/2023/1762) |
+
+**State of the art:** KZG-based AVSS (2021+) for optimal communication; essential for [Async BFT](#asynchronous-bft--asynchronous-mpc) and [DKG](#distributed-key-generation-dkg).
+
+---
+
+## Universal Thresholdizer
+
+**Goal:** Generic threshold compiler. Take any cryptographic scheme (encryption, signatures, PRF, VRF, etc.) and automatically convert it into a threshold version — without designing a bespoke threshold protocol for each primitive.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boneh-Komlo Universal Thresholdizer** | 2023 | FHE + threshold decryption | Threshold any scheme: parties jointly FHE-evaluate the scheme, then threshold-decrypt [[1]](https://eprint.iacr.org/2023/636) |
+| **Shoup-Smart Threshold Paradigm** | 2000 | Threshold decryption | Template: each party applies its key share, combine partial results [[1]](https://eprint.iacr.org/2000/016) |
+| **Damgård-Koprowski Threshold RSA** | 2001 | RSA shares | Generic threshold RSA from any RSA-based scheme [[1]](https://eprint.iacr.org/2001/044) |
+
+**State of the art:** Boneh-Komlo (2023) via FHE: truly universal but expensive; practical threshold schemes remain bespoke (see [TSS](#threshold-signature-schemes-tss), [Threshold Decryption](#threshold-decryption)).
+
+---
+
+## Verifiable FHE
+
+**Goal:** Trustworthy outsourced computation on encrypted data. The server performs FHE computation and provides a proof that the computation was done correctly — the client verifies the proof without re-executing. Without this, FHE outsourcing requires trusting the server's correctness.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Fiore-Gennaro Verifiable Computation on Enc Data** | 2012 | FHE + homomorphic MAC | Verify FHE computation via homomorphic MAC on plaintexts [[1]](https://eprint.iacr.org/2012/202) |
+| **Ganesh-Nitulescu-Soria-Vazquez** | 2021 | SNARK + FHE | Prove correct FHE evaluation with a SNARK; general circuits [[1]](https://eprint.iacr.org/2021/1530) |
+| **Rinocchio** | 2021 | SNARK over rings | Adapt Pinocchio/Groth16 to work over polynomial rings (FHE-native) [[1]](https://eprint.iacr.org/2021/322) |
+
+**State of the art:** SNARK-based verifiable FHE (Ganesh et al. 2021); combines [ZK Proofs](#zero-knowledge-proofs-zk) and [HE](#homomorphic-encryption-he). Active research area for trustworthy cloud computation.
+
+---
+
+## Point Function Obfuscation / Digital Locker
+
+**Goal:** Obfuscate a "password check." Create a program that outputs a secret s when given input x, and outputs ⊥ on all other inputs — but the program reveals nothing about x or s. The one case where VBB (virtual black-box) obfuscation is achievable.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Canetti Point Obfuscation** | 1997 | Random oracle | First point obfuscation; VBB-secure in ROM [[1]](https://doi.org/10.1145/258533.258553) |
+| **Wee Point Obfuscation (std model)** | 2005 | Strong DDH variant | Point obfuscation under strong assumptions without RO [[1]](https://doi.org/10.1145/1060590.1060669) |
+| **Lockable Obfuscation (Goyal et al.)** | 2017 | LWE | Obfuscate program that outputs message iff input matches "lock"; from lattices [[1]](https://eprint.iacr.org/2017/274) |
+| **Compute-and-Compare Obfuscation** | 2017 | LWE | Generalize point obfuscation: output s iff f(x) = target; from LWE [[1]](https://eprint.iacr.org/2017/276) |
+
+**State of the art:** Lockable obfuscation from LWE (2017); implies point obfuscation, lockable encryption, and more. Relates to [iO](#indistinguishability-obfuscation-io) as the achievable fragment of program obfuscation.
 
 ---
 
