@@ -181,6 +181,11 @@
 - [Conditional Disclosure of Secrets (CDS)](#conditional-disclosure-of-secrets-cds)
 - [Witness PRF](#witness-prf)
 - [Traceable Signatures](#traceable-signatures)
+- [Malleable Proof Systems / Controlled-Malleable NIZK](#malleable-proof-systems--controlled-malleable-nizk)
+- [Transciphering / FHE-friendly Ciphers](#transciphering--fhe-friendly-ciphers)
+- [Hidden Vector Encryption (HVE)](#hidden-vector-encryption-hve)
+- [Robust Secret Sharing](#robust-secret-sharing)
+- [Ramp Secret Sharing](#ramp-secret-sharing)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -2803,6 +2808,77 @@
 | **Lattice Traceable Sigs** | 2019 | LWE / SIS | Post-quantum traceable group signatures [[1]](https://eprint.iacr.org/2019/1158) |
 
 **State of the art:** Lattice-based traceable sigs for PQ; extends [Ring & Group Signatures](#ring--group-signatures) and [Linkable Ring Signatures](#linkable-ring-signatures) with full traceability.
+
+---
+
+## Malleable Proof Systems / Controlled-Malleable NIZK
+
+**Goal:** Proof transformation without witness. Transform a valid NIZK proof π for statement x into a valid proof π' for a related statement x' — without knowing the witness for either. The transformation is "controlled": only specific, predefined relations between statements are allowed.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chase-Kohlweiss-Lysyanskaya-Meiklejohn** | 2012 | Groth-Sahai proofs | First controlled-malleable NIZK; define allowed transformations via relations [[1]](https://eprint.iacr.org/2012/345) |
+| **Malleable Signatures (Chase et al.)** | 2012 | SPS + GS | Derive signatures on related messages; enables delegatable credentials [[1]](https://eprint.iacr.org/2012/345) |
+| **cm-NIZK for Circuits** | 2014 | Pairings | Controlled malleability for general circuit satisfiability [[1]](https://eprint.iacr.org/2014/590) |
+
+**State of the art:** cm-NIZK from [Groth-Sahai](#groth-sahai-proofs) proofs; enables delegatable [Anonymous Credentials](#anonymous-credentials) and proof-carrying data without interaction.
+
+---
+
+## Transciphering / FHE-friendly Ciphers
+
+**Goal:** Efficient client-to-FHE bridge. Client encrypts data with a lightweight symmetric cipher; the server homomorphically evaluates the cipher's decryption circuit to switch into the FHE domain. Avoids sending massive FHE ciphertexts over the network.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Kreyvium** | 2016 | Stream cipher (Trivium variant) | Low multiplicative depth (12); optimized for FHE transciphering [[1]](https://eprint.iacr.org/2015/113) |
+| **HERA** | 2022 | AES-like (MPC/FHE-friendly) | Designed for transciphering; low ANDdepth; competitive throughput [[1]](https://eprint.iacr.org/2021/731) |
+| **Pasta** | 2022 | Feistel (FHE-optimized) | Designed for TFHE/BFV transciphering; affine layers + Sbox [[1]](https://eprint.iacr.org/2021/731) |
+| **Elisabeth** | 2022 | Stream cipher (FHE-native) | Designed specifically for TFHE; minimal bootstrapping cost [[1]](https://eprint.iacr.org/2022/099) |
+
+**State of the art:** HERA/Pasta for BFV/BGV transciphering; Elisabeth for TFHE. Bridges [Symmetric Encryption](#symmetric-encryption) and [Homomorphic Encryption](#homomorphic-encryption-he).
+
+---
+
+## Hidden Vector Encryption (HVE)
+
+**Goal:** Conjunctive search on encrypted attributes. Encrypt a vector of attributes (a₁, ..., aₙ); a key for pattern (p₁, ..., pₙ) with wildcards (*) decrypts iff aᵢ = pᵢ for all non-wildcard positions. Enables expressive encrypted search without revealing the query pattern.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boneh-Waters HVE** | 2007 | Pairings (composite order) | First HVE; conjunctive, subset, and range queries on encrypted data [[1]](https://eprint.iacr.org/2007/013) |
+| **Park-Lee-Lee HVE** | 2011 | Pairings (prime order) | Efficient HVE in prime-order groups; shorter ciphertexts [[1]](https://doi.org/10.1007/978-3-642-21554-4_4) |
+| **Lattice HVE (Agrawal-Freeman)** | 2013 | LWE | Post-quantum HVE from lattice assumptions [[1]](https://eprint.iacr.org/2013/328) |
+
+**State of the art:** Lattice HVE for PQ; prime-order pairing HVE for efficiency. Generalizes [Searchable Encryption](#searchable-encryption-sse--peks) and specializes [Predicate Encryption](#attribute-based--functional-encryption).
+
+---
+
+## Robust Secret Sharing
+
+**Goal:** Error-tolerant reconstruction. Reconstruct the secret correctly even when up to t_c shares are adversarially corrupted (not just missing). Standard Shamir fails with even one corrupted share — robust SS detects and corrects errors during reconstruction.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Rabin-Ben-Or Robust SS** | 1989 | Error-correcting + Shamir | First robust SS; detects corrupted shares via error-correcting codes [[1]](https://doi.org/10.1145/73007.73014) |
+| **Cramer-Damgård-Fehr Robust SS** | 2006 | Algebraic + MAC | Optimal corruption tolerance: t_c < n/3 for information-theoretic [[1]](https://eprint.iacr.org/2006/109) |
+| **Cevallos-Fehr-Ostrovsky Robust SS** | 2012 | Short shares | Asymptotically optimal share size + robust reconstruction [[1]](https://eprint.iacr.org/2012/372) |
+
+**State of the art:** Optimal robust SS (Cevallos et al. 2012); essential for [MPC](#multi-party-computation-mpc) and [DKG](#distributed-key-generation-dkg) with malicious parties. Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## Ramp Secret Sharing
+
+**Goal:** Efficiency vs. privacy tradeoff. In (t, t+g, n)-ramp SS, fewer than t shares reveal nothing, t+g or more shares reconstruct the secret, and between t and t+g shares may leak partial information. Shares are g times shorter than in Shamir — critical for large secrets.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Blakley-Meadows Ramp SS** | 1985 | Linear algebra | First ramp scheme; shares = secret_size / g instead of secret_size [[1]](https://doi.org/10.1007/3-540-39757-4_20) |
+| **Franklin-Yung (packed as ramp)** | 1992 | Polynomial | Packed secret sharing is a ramp scheme; share k secrets in one poly [[1]](https://doi.org/10.1007/3-540-48071-4_12) |
+| **Ramp SS for MPC** | 2006 | Packed Shamir | Amortized MPC communication using ramp shares [[1]](https://eprint.iacr.org/2005/264) |
+
+**State of the art:** Ramp SS for large-secret sharing and amortized [MPC](#multi-party-computation-mpc); closely related to [Packed Secret Sharing](#packed-secret-sharing). Extends [Secret Sharing](#secret-sharing-schemes-sss).
 
 ---
 
