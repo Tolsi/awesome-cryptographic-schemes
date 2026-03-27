@@ -261,6 +261,9 @@
 - [Private Heavy Hitters / Frequency Estimation](#private-heavy-hitters--frequency-estimation)
 - [Accountable Decryption](#accountable-decryption)
 - [Certified Quantum Randomness / Proof of Quantumness](#certified-quantum-randomness--proof-of-quantumness)
+- [Fail-Stop Signatures](#fail-stop-signatures)
+- [Oblivious Automata / Branching Program Evaluation](#oblivious-automata--branching-program-evaluation)
+- [Private Set Difference / Set Operations](#private-set-difference--set-operations)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -505,13 +508,14 @@
 
 **Goal:** Sender has multiple messages; receiver picks one and learns only that one — sender doesn't learn which was chosen. Foundational for MPC.
 
-| Scheme | Year | Note |
-|--------|------|------|
-| **1-out-of-2 OT (Naor-Pinkas)** | 2001 | Based on DDH; efficient base OT [[1]](https://dl.acm.org/doi/10.5555/365411.365502) |
-| **OT Extension (IKNP)** | 2003 | Extend few base OTs into millions cheaply via symmetric crypto [[1]](https://link.springer.com/chapter/10.1007/978-3-540-45146-4_9) |
-| **Silent OT (Boyle et al.)** | 2019 | Sublinear communication using pseudorandom correlation generators [[1]](https://eprint.iacr.org/2019/1159) |
-| **Simplest OT (Chou-Orlandi)** | 2015 | 1 round, 1 exponentiation; practical [[1]](https://eprint.iacr.org/2015/267) |
-| **SoftSpokenOT** | 2022 | Optimized OT extension [[1]](https://eprint.iacr.org/2022/192) |
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **1-out-of-2 OT (Naor-Pinkas)** | 2001 | DDH | Efficient base OT [[1]](https://dl.acm.org/doi/10.5555/365411.365502) |
+| **OT Extension (IKNP)** | 2003 | Symmetric crypto | Extend few base OTs into millions cheaply [[1]](https://link.springer.com/chapter/10.1007/978-3-540-45146-4_9) |
+| **Silent OT (Boyle et al.)** | 2019 | PCG | Sublinear communication using pseudorandom correlation generators [[1]](https://eprint.iacr.org/2019/1159) |
+| **Simplest OT (Chou-Orlandi)** | 2015 | ECDH | 1 round, 1 exponentiation; practical [[1]](https://eprint.iacr.org/2015/267) |
+| **SoftSpokenOT** | 2022 | OT extension | Optimized [[1]](https://eprint.iacr.org/2022/192) |
+| **Conditional OT / Priced OT (Aiello-Ishai-Reingold)** | 2001 | HE + predicate | Transfer executes only if predicate Q(x,y) is true; priced variant enables pay-per-item digital commerce [[1]](https://link.springer.com/chapter/10.1007/3-540-44987-6_8) |
 
 **State of the art:** Silent OT extension (minimal communication), SoftSpokenOT.
 
@@ -1031,6 +1035,7 @@
 | **Re-encryption Mixnet** | 1993 | Rerandomizable enc | Rerandomize ciphertexts without decrypting at each hop [[1]](https://link.springer.com/chapter/10.1007/3-540-57220-1_66) |
 | **Verifiable Shuffle (Neff)** | 2001 | ZK proofs | Prove shuffle correctness; used in e-voting (Verificatum) [[1]](https://dl.acm.org/doi/10.1145/501983.502000) |
 | **Loopix / Nym** | 2017 | Poisson mixing + cover traffic | Continuous-time mixnet; resists traffic analysis [[1]](https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/piotrowska) |
+| **Universal Re-encryption (Golle et al.)** | 2004 | ElGamal + embedded rekey | Re-encrypt ciphertext without knowing recipient's public key; enables anonymous routing without destination knowledge [[1]](https://link.springer.com/chapter/10.1007/978-3-540-24660-2_14) |
 
 **State of the art:** Loopix/Nym (modern anonymous comm.), Verifiable Shuffle (e-voting).
 
@@ -2461,6 +2466,7 @@
 | **(k,n) Visual SS** | 1996 | Combinatorial | General threshold; Ateniese-Blundo-De Santis-Stinson [[1]](https://doi.org/10.1016/S0020-0190(96)00127-4) |
 | **Extended Visual Crypto (EVC)** | 1996 | Meaningful shares | Each share looks like a valid image (not noise); shares reveal secret when overlaid [[1]](https://doi.org/10.1007/BFb0052995) |
 | **Colored Visual Crypto** | 1997 | Color mixing | Extension to color images [[1]](https://doi.org/10.1007/BFb0028175) |
+| **Progressive Visual SS (Jin et al.)** | 2004 | Multi-resolution | Image sharpens progressively as more shares added beyond threshold; partial trust = partial information [[1]](https://www.researchgate.net/publication/332575738) |
 
 **State of the art:** (k,n) visual SS with meaningful shares; applications in physical document security. Pure information-theoretic security — see [OTP](#one-time-pad--information-theoretic-security).
 
@@ -3077,6 +3083,7 @@
 | **Chaum-Fiat-Naor Offline E-Cash** | 1990 | Blind sigs + cut-and-choose | Offline spending; double-spender's identity revealed [[1]](https://doi.org/10.1007/3-540-46766-1_34) |
 | **Brands E-Cash** | 1993 | Discrete log + blind sigs | Efficient offline e-cash; compact wallets [[1]](https://doi.org/10.1007/3-540-48329-2_26) |
 | **Compact E-Cash (Camenisch-Hohenberger-Lysyanskaya)** | 2005 | Pairings + ZK | Withdraw N coins at once; O(1) wallet storage [[1]](https://eprint.iacr.org/2005/060) |
+| **Divisible E-Cash (Okamoto)** | 1995 | Binary tree coins | Single coin of value N subdivides into any denomination combination; O(log N) communication per payment [[1]](https://link.springer.com/chapter/10.1007/3-540-44750-4_35) |
 
 **State of the art:** Compact E-Cash (CHL 2005); modern [Privacy Pass](#privacy-pass--anonymous-tokens) is essentially single-use e-cash tokens. See [Blind Signatures](#blind-signatures).
 
@@ -3390,6 +3397,7 @@
 
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
+| **Simmons Subliminal Channel** | 1984 | DSA/ElGamal nonce | Original subliminal channel: embed covert message in signature nonce; "Prisoners' Problem" [[1]](https://link.springer.com/chapter/10.1007/978-1-4684-4730-9_5) |
 | **Young-Yung Kleptography** | 1996 | Subliminal channels | First formalization; embed secret key in RSA key generation subliminal channel [[1]](https://doi.org/10.1007/3-540-68339-9_12) |
 | **Bellare-Paterson-Rogaway ASA** | 2014 | Symmetric / AEAD | Algorithm-substitution attacks on symmetric encryption; post-Snowden model [[1]](https://eprint.iacr.org/2014/438) |
 | **Dual_EC_DRBG Backdoor** | 2013 | EC points | Real-world kleptographic backdoor in NIST DRBG; NSA-planted [[1]](https://projectbullrun.org/dual-ec/documents.html) |
@@ -4043,6 +4051,47 @@
 | **Quantinuum Certified Randomness (Nature)** | 2025 | 56-qubit trapped-ion | First experimental demonstration: 71,313 certified random bits from untrusted quantum processor [[1]](https://www.nature.com/articles/s41586-025-08737-1) |
 
 **State of the art:** Quantinuum H2-1 demonstration (Nature 2025); a new primitive class at intersection of [QKD](#quantum-key-distribution-qkd), [Randomness Beacons](#randomness-beacons--coin-tossing), and computational complexity.
+
+---
+
+## Fail-Stop Signatures
+
+**Goal:** Provable forgery detection. If an adversary with unbounded computational power forges a signature, the legitimate signer can produce an unconditional proof of forgery — the system "fails and stops" rather than silently accepting. Signers have information-theoretic protection; verifiers have computational protection. Strictly stronger than standard signatures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Pfitzmann-Waidner Fail-Stop Sigs** | 1990 | Factoring + prekey | First fail-stop signature; signer proves forgery unconditionally [[1]](https://epubs.siam.org/doi/10.1137/S009753979324557X) |
+| **Pedersen-Pfitzmann FSS** | 1997 | DLP | Efficient fail-stop from discrete log; SIAM J. Computing [[1]](https://epubs.siam.org/doi/10.1137/S009753979324557X) |
+| **PQ Fail-Stop Sigs** | 2024 | Lattice | "That's Not My Signature!" — fail-stop for post-quantum world; CRYPTO 2024 [[1]](https://link.springer.com/chapter/10.1007/978-3-031-68376-3_4) |
+
+**State of the art:** PQ fail-stop signatures (CRYPTO 2024); revived interest for post-quantum contexts. Extends [Digital Signatures](#digital-signatures).
+
+---
+
+## Oblivious Automata / Branching Program Evaluation
+
+**Goal:** Private pattern matching on private data. One party holds a private automaton (DFA, regex, decision tree); the other holds a private input string. They jointly evaluate whether the input is accepted — without revealing the automaton's structure or the input content. Applications: private virus scanning, DNA matching, regulatory compliance.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Troncoso-Pastoriza et al. Oblivious DFA** | 2007 | Garbled circuits | First practical oblivious DFA evaluation; private DNA searching; CCS 2007 [[1]](https://dl.acm.org/doi/10.1145/1315245.1315309) |
+| **Ishai-Paskin Oblivious Branching Programs** | 2007 | HE + branching programs | Evaluate branching programs on encrypted data; output independent of program width; TCC 2007 [[1]](https://link.springer.com/chapter/10.1007/978-3-540-70936-7_31) |
+| **Mohassel et al. Efficient Oblivious DFA** | 2012 | OT + garbled circuits | Optimized; O(n·|Q|) communication for DFA with |Q| states on length-n string [[1]](https://eprint.iacr.org/2011/434) |
+
+**State of the art:** Mohassel et al. (2012) for practical DFA; Ishai-Paskin for branching programs. Related to [Garbled Circuits](#garbled-circuits-expanded) and [PFE](#private-function-evaluation-pfe).
+
+---
+
+## Private Set Difference / Set Operations
+
+**Goal:** Compute set difference and symmetric difference privately. Beyond [PSI](#private-set-intersection-psi) (intersection) and [PSU](#private-set-union-psu) (union): compute A \ B (in A not B) or A △ B (in exactly one) without revealing other elements. Applications: deduplication, anomaly detection, auditing.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Kissner-Song Set Operations** | 2005 | Paillier + polynomials | First composable framework for union, intersection, difference, symmetric difference; CRYPTO 2005 [[1]](https://link.springer.com/chapter/10.1007/11535218_15) |
+| **Multi-Party Set Difference** | 2005 | Threshold Paillier | Extension to N parties with malicious security [[1]](https://www.cs.cmu.edu/~leak/papers/set-tech-full.pdf) |
+
+**State of the art:** Kissner-Song (CRYPTO 2005); set-difference components most overlooked. Complements [PSI](#private-set-intersection-psi) and [PSU](#private-set-union-psu).
 
 ---
 
