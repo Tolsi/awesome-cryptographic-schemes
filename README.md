@@ -201,6 +201,11 @@
 - [Secure Deduplication](#secure-deduplication)
 - [Quantum Money / Quantum Tokens](#quantum-money--quantum-tokens)
 - [Multi-Prover Interactive Proofs (MIP)](#multi-prover-interactive-proofs-mip)
+- [DRBG (Deterministic Random Bit Generators)](#drbg-deterministic-random-bit-generators)
+- [Wiretap Channel / Physical-Layer Security](#wiretap-channel--physical-layer-security)
+- [Key-Aggregate Encryption](#key-aggregate-encryption)
+- [Anonymous Broadcast Encryption](#anonymous-broadcast-encryption)
+- [Evolving Secret Sharing](#evolving-secret-sharing)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -3112,6 +3117,79 @@
 | **Interactive Proofs for Muggles (GKR)** | 2008 | Sumcheck | Practical: verifier delegates computation to untrusted prover [[1]](https://doi.org/10.1145/2699436) |
 
 **State of the art:** MIP* = RE (2020, breakthrough); practical MIP-derived systems via [Sumcheck](#sumcheck-protocol) and [IOP](#interactive-oracle-proofs-iop--pcp). Foundational for proof complexity.
+
+---
+
+## DRBG (Deterministic Random Bit Generators)
+
+**Goal:** Standardized cryptographic PRNG. Generate pseudorandom bits from an initial seed (entropy) using a deterministic algorithm. All practical crypto depends on DRBG quality — a weak DRBG breaks everything. Must support reseeding, prediction resistance, and backtracking resistance.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HMAC-DRBG** | 2006 | HMAC | NIST SP 800-90A; HMAC-based; widely deployed (OpenSSL default) [[1]](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final) |
+| **CTR-DRBG** | 2006 | AES-CTR | NIST SP 800-90A; AES in counter mode; hardware-accelerated [[1]](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final) |
+| **Hash-DRBG** | 2006 | SHA-256/512 | NIST SP 800-90A; hash-based; simple design [[1]](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final) |
+| **Dual_EC_DRBG (withdrawn)** | 2006 | Elliptic curve | **Backdoored by NSA**; withdrawn 2014; cautionary tale [[1]](https://projectbullrun.org/dual-ec/documents.html) |
+| **Fortuna** | 2003 | AES + SHA-256 | Ferguson-Schneier; multiple entropy pools; used in FreeBSD, Windows [[1]](https://www.schneier.com/academic/fortuna/) |
+
+**State of the art:** HMAC-DRBG and CTR-DRBG (NIST SP 800-90A); Fortuna for OS-level entropy pooling. Foundation of all practical crypto — see [PRG](#pseudorandom-generators-prg).
+
+---
+
+## Wiretap Channel / Physical-Layer Security
+
+**Goal:** Information-theoretic secrecy from physics. Extract secret keys from a noisy communication channel — if the eavesdropper's channel is noisier than the legitimate receiver's, perfect secrecy is achievable without any computational assumptions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Wyner Wiretap Channel** | 1975 | Information theory | First model: sender→receiver channel better than sender→eavesdropper [[1]](https://doi.org/10.1002/j.1538-7305.1975.tb02040.x) |
+| **Csiszár-Körner Broadcast Channel** | 1978 | Information theory | Generalized wiretap to broadcast channels; secrecy capacity formula [[1]](https://doi.org/10.1109/TIT.1978.1055892) |
+| **Maurer Secret Key Agreement** | 1993 | Public discussion + noisy channel | Two parties extract shared key using public discussion over noisy channel [[1]](https://doi.org/10.1109/18.256484) |
+| **Ahlswede-Csiszár Common Randomness** | 1993 | Source model | Secret key from correlated random sources [[1]](https://doi.org/10.1109/18.256485) |
+
+**State of the art:** Physical-layer security in 5G/wireless; theoretically beautiful but hard to guarantee channel advantage in practice. Complements [QKD](#quantum-key-distribution-qkd) and [OTP](#one-time-pad--information-theoretic-security).
+
+---
+
+## Key-Aggregate Encryption
+
+**Goal:** Compact delegation for cloud storage. Encrypt N files under N different keys; delegate access to any chosen subset S with a single short aggregate key — regardless of |S|. The aggregate key is constant-size (one group element), not proportional to the number of shared files.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chu-Chow-Tzeng-Zhou KAE** | 2014 | Pairings | First KAE; constant-size aggregate key for any subset of ciphertexts [[1]](https://eprint.iacr.org/2013/679) |
+| **KAE with Authentication** | 2016 | Pairings + signatures | Authenticated KAE; detect tampering of delegated ciphertexts [[1]](https://doi.org/10.1016/j.jisa.2016.09.001) |
+| **Lattice KAE** | 2019 | LWE | Post-quantum key-aggregate encryption [[1]](https://eprint.iacr.org/2019/494) |
+
+**State of the art:** Pairing-based KAE (Chu et al. 2014); lattice KAE for PQ. Useful for cloud access control; related to [Broadcast Encryption](#broadcast-encryption) and [ABE](#attribute-based--functional-encryption).
+
+---
+
+## Anonymous Broadcast Encryption
+
+**Goal:** Recipient-hiding broadcast. Encrypt to a set S of authorized receivers — but the ciphertext reveals nothing about who is in S. An eavesdropper cannot tell whether they are an intended recipient (beyond trying to decrypt).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Barth-Boneh-Waters Anonymous BE** | 2006 | Pairings | First anonymous broadcast encryption; hides recipient set [[1]](https://eprint.iacr.org/2006/104) |
+| **Libert-Paterson-Quaglia** | 2012 | Pairings (prime order) | Efficient anonymous BE with shorter ciphertexts [[1]](https://eprint.iacr.org/2011/476) |
+| **Anonymous BE from LWE** | 2019 | Lattices | Post-quantum anonymous broadcast encryption [[1]](https://eprint.iacr.org/2019/532) |
+
+**State of the art:** Lattice-based anonymous BE for PQ; extends [Broadcast Encryption](#broadcast-encryption) with recipient privacy. Related to [Anonymous IBE](#anonymous-ibe).
+
+---
+
+## Evolving Secret Sharing
+
+**Goal:** Unbounded participants. Share a secret so that new participants can be added indefinitely — without reissuing existing shares and without knowing the total number of participants in advance. Share sizes grow slowly (polylog) with the participant index.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Komargodski-Naor-Yogev Evolving SS** | 2016 | Binary tree + prefix codes | First evolving SS; t-threshold with polylog share size growth [[1]](https://eprint.iacr.org/2016/194) |
+| **Evolving SS with Small Shares** | 2017 | Improved construction | Optimized share sizes; O(t · log² i) bits for i-th participant [[1]](https://eprint.iacr.org/2017/510) |
+| **Dynamic Evolving SS** | 2020 | Tree-based | Add participants AND update threshold over time [[1]](https://eprint.iacr.org/2020/789) |
+
+**State of the art:** Evolving SS (Komargodski et al. 2016+); useful for long-lived systems where participant set is unknown at setup. Extends [Secret Sharing](#secret-sharing-schemes-sss).
 
 ---
 
