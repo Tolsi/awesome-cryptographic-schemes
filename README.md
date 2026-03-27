@@ -156,6 +156,13 @@
 - [Key-Insulated Cryptography](#key-insulated-cryptography)
 - [Client Puzzles / Proof of Effort](#client-puzzles--proof-of-effort)
 - [Identity-Based Signatures (IBS)](#identity-based-signatures-ibs)
+- [Oblivious Linear Evaluation (OLE) / VOLE](#oblivious-linear-evaluation-ole--vole)
+- [Multi-Authority ABE](#multi-authority-abe)
+- [Keyed-Verification Anonymous Credentials (KVAC)](#keyed-verification-anonymous-credentials-kvac)
+- [MPC-in-the-Head (MPCitH)](#mpc-in-the-head-mpcith)
+- [Packed Secret Sharing](#packed-secret-sharing)
+- [Verifiable Timed Commitments](#verifiable-timed-commitments)
+- [Constrained / Policy-Based Signatures](#constrained--policy-based-signatures)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -2411,6 +2418,108 @@
 | **Lattice IBS (Rückert)** | 2010 | SIS/LWE | Post-quantum identity-based signatures [[1]](https://eprint.iacr.org/2009/222) |
 
 **State of the art:** Pairing-based IBS (standard model); lattice IBS for PQ. Complement to [IBE](#identity-based-encryption-ibe); same PKG architecture.
+
+---
+
+## Oblivious Linear Evaluation (OLE) / VOLE
+
+**Goal:** Arithmetic oblivious transfer. Sender holds (a, b), receiver holds x; receiver learns ax + b and nothing else, sender learns nothing. VOLE (Vector OLE) extends this to vectors. The arithmetic foundation of modern MPC over large fields.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Gilboa OLE** | 1999 | OT extension | First efficient OLE from OT; basis of arithmetic MPC [[1]](https://doi.org/10.1007/3-540-48405-1_8) |
+| **VOLE from LPN (Boyle et al.)** | 2019 | LPN + PCG | Generate massive VOLE correlations from short seeds; sublinear communication [[1]](https://eprint.iacr.org/2019/1159) |
+| **Wolverine** | 2021 | VOLE + ZK | ZK proofs from VOLE: efficient field arithmetic proofs [[1]](https://eprint.iacr.org/2020/925) |
+| **QuickSilver** | 2021 | VOLE | Optimized VOLE-based ZK; practical for arithmetic circuits [[1]](https://eprint.iacr.org/2021/076) |
+
+**State of the art:** PCG-based VOLE (Boyle et al. 2019+); foundation of SPDZ preprocessing (see [MPC](#multi-party-computation-mpc)) and VOLE-in-the-head ZK (see [Silent OT / PCG](#silent-ot--pseudorandom-correlation-generators-pcg)).
+
+---
+
+## Multi-Authority ABE
+
+**Goal:** Decentralized access control. Multiple independent attribute authorities each manage a subset of attributes — no single authority can decrypt alone. Eliminates single point of trust in ABE systems.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chase Multi-Authority ABE** | 2007 | Pairings | First multi-authority CP-ABE; central authority + attribute authorities [[1]](https://eprint.iacr.org/2007/010) |
+| **Chase-Chow (no central authority)** | 2009 | Pairings | Removes central authority; fully decentralized [[1]](https://eprint.iacr.org/2009/094) |
+| **Lewko-Waters Decentralized ABE** | 2011 | Pairings (dual system) | Any party can become an authority; no global setup [[1]](https://eprint.iacr.org/2011/414) |
+| **MAABE for Large Universe (Rouselakis-Waters)** | 2015 | Pairings | Large attribute universe; efficient multi-authority [[1]](https://eprint.iacr.org/2015/016) |
+
+**State of the art:** Lewko-Waters (2011) for fully decentralized; Rouselakis-Waters for large universes. Extends [ABE/FE](#attribute-based--functional-encryption) to remove single trust assumptions.
+
+---
+
+## Keyed-Verification Anonymous Credentials (KVAC)
+
+**Goal:** Lightweight anonymous credentials. Issuer gives user a credential; user can prove possession anonymously — but only the issuer (who holds the verification key) can verify. No pairings needed; very efficient. Used in Signal's anonymous groups.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CMZ KVAC (Chase-Meiklejohn-Zaverucha)** | 2014 | Algebraic MAC + ZK | First KVAC; MAC-based anonymous credentials; efficient without pairings [[1]](https://eprint.iacr.org/2013/516) |
+| **Signal Anonymous Credentials** | 2020 | CMZ + Ristretto | Signal's implementation for anonymous group membership [[1]](https://signal.org/blog/signal-private-group-system/) |
+| **KVAC with Attributes** | 2019 | Algebraic MAC | Selective disclosure of attributes; blind issuance [[1]](https://eprint.iacr.org/2019/344) |
+
+**State of the art:** CMZ-based KVAC (Signal Private Groups); lightweight alternative to [BBS+/PS Signatures](#rerandomizable-signatures-ps-signatures) when issuer-only verification suffices. See [Anonymous Credentials](#anonymous-credentials).
+
+---
+
+## MPC-in-the-Head (MPCitH)
+
+**Goal:** ZK proofs from MPC. The prover mentally simulates an MPC protocol between virtual parties, commits to their views, and opens a random subset. The verifier checks consistency — if the "MPC" was honest, the statement must be true. Enables ZK from symmetric-key primitives.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **IKOS (Ishai-Kushilevitz-Ostrovsky-Sahai)** | 2007 | Any MPC protocol | Foundational transformation: MPC protocol → ZK proof [[1]](https://doi.org/10.1145/1250790.1250794) |
+| **ZKBoo** | 2016 | 3-party MPC | Practical MPCitH; 3 virtual parties, efficient for Boolean circuits [[1]](https://eprint.iacr.org/2016/163) |
+| **ZKB++ / Picnic** | 2017 | ZKBoo + Fiat-Shamir | NIST PQ signature candidate; ZK from AES/LowMC circuits [[1]](https://eprint.iacr.org/2017/279) |
+| **Limbo** | 2021 | N-party MPCitH | Generalized to N parties; tradeoff: more parties → shorter proofs [[1]](https://eprint.iacr.org/2021/215) |
+| **Banquet** | 2021 | MPCitH + algebraic | Optimized for algebraic hash functions; shorter signatures [[1]](https://eprint.iacr.org/2021/068) |
+
+**State of the art:** Picnic/Banquet for PQ signatures (see [Post-Quantum](#post-quantum-cryptography)); MPCitH is a general ZK paradigm alongside [IOPs](#interactive-oracle-proofs-iop--pcp) and [Sigma Protocols](#sigma-protocols--schnorr-identification).
+
+---
+
+## Packed Secret Sharing
+
+**Goal:** Amortized secret sharing. Share k secrets simultaneously using a single polynomial of degree t + k − 1, instead of k separate Shamir sharings. Reduces communication in MPC by a factor of k — crucial for large-scale secure computation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Franklin-Yung Packed SS** | 1992 | Polynomial | First packed SS; k secrets in one degree-(t+k−1) polynomial [[1]](https://doi.org/10.1007/3-540-48071-4_12) |
+| **Packed SS for MPC (Damgård et al.)** | 2006 | Packed Shamir | Amortized MPC: evaluate k gates in one round via packed shares [[1]](https://eprint.iacr.org/2005/264) |
+| **Turbopack** | 2022 | Packed SS + batch | Further optimize MPC with packed SS; near-optimal communication [[1]](https://eprint.iacr.org/2022/1316) |
+
+**State of the art:** Turbopack (2022) for high-throughput MPC; packed SS is a core optimization in [MPC](#multi-party-computation-mpc) and [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## Verifiable Timed Commitments
+
+**Goal:** Forced opening after delay. A commitment that the committer can open instantly, but anyone can force-open after time T by performing sequential computation. Guarantees fairness in exchange protocols — no party can withhold forever.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boneh-Naor Timed Commitments** | 2000 | RSA + sequential squaring | First construction; forced opening via repeated squaring mod N [[1]](https://doi.org/10.1007/3-540-44598-6_15) |
+| **Homomorphic Timed Commitments** | 2020 | Class groups | Compute on timed commitments before opening; enables timed auctions [[1]](https://eprint.iacr.org/2019/635) |
+| **Efficient Timed Commitments (Thyagarajan et al.)** | 2021 | Pairings + TLP | Batch verification; more efficient than RSA-based [[1]](https://eprint.iacr.org/2021/1272) |
+
+**State of the art:** Homomorphic timed commitments for auction/voting applications. Combines [Time-Lock Puzzles](#time-lock-puzzles--timed-release-encryption) with [Commitment Schemes](#commitment-schemes).
+
+---
+
+## Constrained / Policy-Based Signatures
+
+**Goal:** Delegated signing with restrictions. Derive a constrained signing key that can only sign messages satisfying a predicate (e.g., "emails from @company.com", "transactions under $1000"). The master key signs anything; constrained keys are limited.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bellare-Fuchsbauer Policy-Based Sigs** | 2014 | Generic | Formal model; signing key restricted to a message space defined by a policy [[1]](https://eprint.iacr.org/2014/100) |
+| **Boneh-Kim Constrained Sigs** | 2017 | Pairings / lattices | Constrained keys for circuit predicates; related to constrained PRFs [[1]](https://eprint.iacr.org/2017/502) |
+| **Functional Signatures (Boyle-Goldwasser-Ivan)** | 2014 | iO / pairings | Sign f(m) using a key for function f, without seeing m [[1]](https://eprint.iacr.org/2013/401) |
+
+**State of the art:** Constrained signatures from lattices (Boneh-Kim 2017); related to [Constrained PRFs](#puncturable--constrained-prf). Enables fine-grained delegation without proxy re-signing.
 
 ---
 
