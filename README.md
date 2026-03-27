@@ -28,7 +28,6 @@
 - [Ring & Group Signatures](#ring--group-signatures)
 - [Accumulators](#accumulators)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
-- [References](#references)
 
 ---
 
@@ -36,13 +35,13 @@
 
 **Goal:** Confidentiality. Encrypt data with a single shared secret key so that only those who know the key can read it.
 
-| Algorithm | Type | Note |
-|-----------|------|------|
-| **AES-256** | Block cipher | De-facto standard (NIST), 128-bit block, 256-bit key [1] |
-| **ChaCha20** | Stream cipher | Fast in software, constant-time; used in TLS 1.3, WireGuard [2] |
-| **Salsa20** | Stream cipher | Predecessor to ChaCha20, eSTREAM portfolio [3] |
-| **Serpent** | Block cipher | AES finalist, conservative security margin [4] |
-| **Camellia** | Block cipher | ISO/IEC standard, comparable to AES [5] |
+| Algorithm | Year | Type | Note |
+|-----------|------|------|------|
+| **AES-256** | 2001 | Block cipher | De-facto standard (NIST), 128-bit block, 256-bit key [[1]](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf) |
+| **ChaCha20** | 2008 | Stream cipher | Fast in software, constant-time; used in TLS 1.3, WireGuard [[2]](https://cr.yp.to/chacha/chacha-20080128.pdf) |
+| **Salsa20** | 2005 | Stream cipher | Predecessor to ChaCha20, eSTREAM portfolio [[3]](https://cr.yp.to/snuffle/salsafamily-20071225.pdf) |
+| **Serpent** | 1998 | Block cipher | AES finalist, conservative security margin [[4]](https://www.cl.cam.ac.uk/~rja14/Papers/serpent.pdf) |
+| **Camellia** | 2000 | Block cipher | ISO/IEC standard, comparable to AES [[5]](https://tools.ietf.org/html/rfc3713) |
 
 **State of the art:** AES-256 (hardware-accelerated via AES-NI) and ChaCha20 for software-only environments.
 
@@ -52,13 +51,13 @@
 
 **Goal:** Confidentiality without pre-shared keys. A sender encrypts with the recipient's public key; only the recipient's private key can decrypt.
 
-| Algorithm | Basis | Note |
-|-----------|-------|------|
-| **RSA-OAEP** | Integer factorization | First practical PKE; 2048+ bit keys recommended [6] |
-| **ECIES** | Elliptic Curve Diffie-Hellman | Hybrid: ECDH + symmetric enc; compact keys [7] |
-| **DHIES / DHAES** | Diffie-Hellman | Provably CCA2-secure hybrid scheme [8] |
-| **Cramer-Shoup** | DDH | First practical CCA2-secure scheme without random oracles [9] |
-| **HPKE** | Hybrid KEM/DEM | Modern standard (RFC 9180): KEM + AEAD + KDF [10] |
+| Algorithm | Year | Basis | Note |
+|-----------|------|-------|------|
+| **RSA-OAEP** | 1977 | Integer factorization | First practical PKE; 2048+ bit keys recommended [[1]](https://dl.acm.org/doi/10.1145/359340.359342) |
+| **ECIES** | 2001 | Elliptic Curve Diffie-Hellman | Hybrid: ECDH + symmetric enc; compact keys [[2]](https://eprint.iacr.org/1999/007) |
+| **DHIES / DHAES** | 1999 | Diffie-Hellman | Provably CCA2-secure hybrid scheme [[3]](https://shoup.net/papers/iso-2_1.pdf) |
+| **Cramer-Shoup** | 1998 | DDH | First practical CCA2-secure scheme without random oracles [[4]](https://eprint.iacr.org/1998/008) |
+| **HPKE** | 2022 | Hybrid KEM/DEM | Modern standard (RFC 9180): KEM + AEAD + KDF [[5]](https://www.rfc-editor.org/rfc/rfc9180) |
 
 **State of the art:** HPKE (RFC 9180) with X25519 KEM + AES-256-GCM — used in TLS Encrypted Client Hello, MLS, OHTTP.
 
@@ -68,15 +67,15 @@
 
 **Goal:** Integrity & data fingerprinting. Map arbitrary data to a fixed-size digest; must be collision-resistant, preimage-resistant, and second-preimage-resistant.
 
-| Algorithm | Output | Note |
-|-----------|--------|------|
-| **SHA-256 / SHA-512** | 256 / 512 bit | Merkle-Damgard; NIST standard, ubiquitous [11] |
-| **SHA-3 (Keccak)** | 224–512 bit | Sponge construction; NIST standard (FIPS 202) [12] |
-| **BLAKE3** | 256 bit | Merkle tree + compression; extremely fast [13] |
-| **BLAKE2** | up to 512 bit | Faster than SHA-3, widely used (Argon2, WireGuard) [14] |
-| **KangarooTwelve (K12)** | variable | Reduced-round Keccak-p, parallelizable [15] |
+| Algorithm | Year | Output | Note |
+|-----------|------|--------|------|
+| **SHA-256 / SHA-512** | 2002 | 256 / 512 bit | Merkle-Damgard; NIST standard, ubiquitous [[1]](https://csrc.nist.gov/publications/detail/fips/180/4/final) |
+| **SHA-3 (Keccak)** | 2015 | 224–512 bit | Sponge construction; NIST standard (FIPS 202) [[2]](https://keccak.team/keccak.html) |
+| **BLAKE3** | 2020 | 256 bit | Merkle tree + compression; extremely fast [[3]](https://github.com/BLAKE3-team/BLAKE3-specs/blob/master/blake3.pdf) |
+| **BLAKE2** | 2012 | up to 512 bit | Faster than SHA-3, widely used (Argon2, WireGuard) [[4]](https://www.blake2.net/blake2.pdf) |
+| **KangarooTwelve (K12)** | 2016 | variable | Reduced-round Keccak-p, parallelizable [[5]](https://eprint.iacr.org/2016/770) |
 
-**Extendable-Output Functions (XOF):** SHAKE128/256 (SHA-3 family), TurboSHAKE [12].
+**Extendable-Output Functions (XOF):** SHAKE128/256 (SHA-3 family), TurboSHAKE [[2]](https://keccak.team/keccak.html).
 
 **State of the art:** BLAKE3 (speed), SHA-3/SHAKE (diversity from SHA-2), SHA-256 (compatibility).
 
@@ -86,13 +85,13 @@
 
 **Goal:** Integrity + Authentication. Verify that a message was not altered and comes from someone who knows the shared key.
 
-| Algorithm | Basis | Note |
-|-----------|-------|------|
-| **HMAC** | Hash-based | HMAC-SHA256 is the workhorse; provably secure if hash is PRF [16] |
-| **CMAC** | Block cipher | Based on CBC-MAC; NIST SP 800-38B [17] |
-| **GMAC** | GF(2^128) | MAC-only mode of GCM; very fast with AES-NI [18] |
-| **Poly1305** | Polynomial | One-time MAC; used with ChaCha20 in TLS 1.3 [19] |
-| **KMAC** | Keccak | SHA-3-based MAC; NIST SP 800-185 [20] |
+| Algorithm | Year | Basis | Note |
+|-----------|------|-------|------|
+| **HMAC** | 1996 | Hash-based | HMAC-SHA256 is the workhorse; provably secure if hash is PRF [[1]](https://csrc.nist.gov/publications/detail/fips/198/1/final) |
+| **CMAC** | 2005 | Block cipher | Based on CBC-MAC; NIST SP 800-38B [[2]](https://csrc.nist.gov/publications/detail/sp/800/38/b/final) |
+| **GMAC** | 2004 | GF(2^128) | MAC-only mode of GCM; very fast with AES-NI [[3]](https://csrc.nist.gov/publications/detail/sp/800/38/d/final) |
+| **Poly1305** | 2005 | Polynomial | One-time MAC; used with ChaCha20 in TLS 1.3 [[4]](https://cr.yp.to/mac/poly1305-20050329.pdf) |
+| **KMAC** | 2016 | Keccak | SHA-3-based MAC; NIST SP 800-185 [[5]](https://csrc.nist.gov/publications/detail/sp/800/185/final) |
 
 **State of the art:** HMAC-SHA256 (general), Poly1305 (high speed, paired with ChaCha20).
 
@@ -102,15 +101,15 @@
 
 **Goal:** Authentication + Integrity + Non-repudiation. Prove that a specific private-key holder signed a message, and anyone with the public key can verify.
 
-| Algorithm | Basis | Note |
-|-----------|-------|------|
-| **ECDSA** | Elliptic curves | Widely deployed (TLS, Bitcoin); P-256 or secp256k1 [21] |
-| **EdDSA (Ed25519 / Ed448)** | Twisted Edwards curves | Deterministic, fast, misuse-resistant; RFC 8032 [22] |
-| **Schnorr** | DLP | Elegant, provably secure; BIP 340 (Bitcoin Taproot) [23] |
-| **RSA-PSS** | Factorization | Provably secure RSA variant; PKCS#1 v2.2 [24] |
-| **BLS** | Bilinear pairings | Short signatures, native aggregation; Ethereum 2.0 [25] |
+| Algorithm | Year | Basis | Note |
+|-----------|------|-------|------|
+| **ECDSA** | 1992 | Elliptic curves | Widely deployed (TLS, Bitcoin); P-256 or secp256k1 [[1]](https://doi.org/10.1007/s102070100048) |
+| **EdDSA (Ed25519 / Ed448)** | 2011 | Twisted Edwards curves | Deterministic, fast, misuse-resistant; RFC 8032 [[2]](https://eprint.iacr.org/2011/368) |
+| **Schnorr** | 1989 | DLP | Elegant, provably secure; BIP 340 (Bitcoin Taproot) [[3]](https://link.springer.com/article/10.1007/BF00196725) |
+| **RSA-PSS** | 1996 | Factorization | Provably secure RSA variant; PKCS#1 v2.2 [[4]](https://eprint.iacr.org/1996/002) |
+| **BLS** | 2001 | Bilinear pairings | Short signatures, native aggregation; Ethereum 2.0 [[5]](https://eprint.iacr.org/2001/002) |
 
-**State of the art:** Ed25519 (general), BLS (aggregation), Schnorr (multi-sig via MuSig2 [26]).
+**State of the art:** Ed25519 (general), BLS (aggregation), Schnorr (multi-sig via MuSig2 [[6]](https://eprint.iacr.org/2020/1261)).
 
 ---
 
@@ -118,14 +117,14 @@
 
 **Goal:** Establish a shared secret over an insecure channel, providing confidentiality for subsequent communication.
 
-| Algorithm | Basis | Note |
-|-----------|-------|------|
-| **ECDH (X25519)** | Elliptic curves | Curve25519; default in TLS 1.3, Signal, WireGuard [27] |
-| **X448** | Goldilocks curve | 224-bit security; RFC 7748 [28] |
-| **Classic DH** | Discrete logarithm | Original key exchange; use 2048+ bit groups [29] |
-| **SPAKE2 / OPAQUE** | PAKE | Password-authenticated; no PKI needed [30][31] |
-| **MQV / HMQV** | DL + static keys | Implicitly authenticated 2-pass protocol [32] |
-| **Noise Framework** | Composable patterns | Modular handshakes: XX, IK, NK, etc. [33] |
+| Algorithm | Year | Basis | Note |
+|-----------|------|-------|------|
+| **ECDH (X25519)** | 2006 | Elliptic curves | Curve25519; default in TLS 1.3, Signal, WireGuard [[1]](https://cr.yp.to/ecdh/curve25519-20060209.pdf) |
+| **X448** | 2015 | Goldilocks curve | 224-bit security; RFC 7748 [[2]](https://eprint.iacr.org/2015/625) |
+| **Classic DH** | 1976 | Discrete logarithm | Original key exchange; use 2048+ bit groups [[3]](https://ee.stanford.edu/~hellman/publications/24.pdf) |
+| **SPAKE2 / OPAQUE** | 2005 | PAKE | Password-authenticated; no PKI needed [[4]](https://eprint.iacr.org/2005/096)[[5]](https://eprint.iacr.org/2018/163) |
+| **MQV / HMQV** | 1995 | DL + static keys | Implicitly authenticated 2-pass protocol [[6]](https://eprint.iacr.org/2005/176) |
+| **Noise Framework** | 2016 | Composable patterns | Modular handshakes: XX, IK, NK, etc. [[7]](https://noiseprotocol.org/noise.html) |
 
 **State of the art:** X25519 (ephemeral DH), OPAQUE (PAKE without exposing password to server), Noise XX (modern protocol design).
 
@@ -135,14 +134,14 @@
 
 **Goal:** Split a secret into *n* shares so that any *t* shares reconstruct it, but fewer than *t* reveal nothing. Provides confidentiality + availability.
 
-| Scheme | Approach | Note |
-|--------|----------|------|
-| **Shamir's Secret Sharing** | Polynomial interpolation | Information-theoretically secure; *(t,n)* threshold [34] |
-| **Blakley's Scheme** | Hyperplane geometry | Alternative geometric approach [35] |
-| **Verifiable SS (VSS) — Feldman** | Commitments on polynomial coeff. | Detects cheating dealer [36] |
-| **Verifiable SS — Pedersen** | Double commitments | Information-theoretically hiding [37] |
-| **Packed Secret Sharing** | Multi-secret polynomial | Amortized: share multiple secrets at once [38] |
-| **Proactive SS** | Periodic share refresh | Tolerates mobile adversary over time [39] |
+| Scheme | Year | Approach | Note |
+|--------|------|----------|------|
+| **Shamir's Secret Sharing** | 1979 | Polynomial interpolation | Information-theoretically secure; *(t,n)* threshold [[1]](https://dl.acm.org/doi/10.1145/359168.359176) |
+| **Blakley's Scheme** | 1979 | Hyperplane geometry | Alternative geometric approach [[2]](https://doi.org/10.1109/AFIPS.1979.98) |
+| **Verifiable SS (VSS) — Feldman** | 1987 | Commitments on polynomial coeff. | Detects cheating dealer [[3]](https://doi.org/10.1109/SFCS.1987.4) |
+| **Verifiable SS — Pedersen** | 1991 | Double commitments | Information-theoretically hiding [[4]](https://link.springer.com/chapter/10.1007/3-540-46766-1_9) |
+| **Packed Secret Sharing** | 1992 | Multi-secret polynomial | Amortized: share multiple secrets at once [[5]](https://dl.acm.org/doi/10.1145/129712.129780) |
+| **Proactive SS** | 1995 | Periodic share refresh | Tolerates mobile adversary over time [[6]](https://link.springer.com/chapter/10.1007/3-540-44750-4_27) |
 
 **State of the art:** Shamir + Feldman VSS (practical), Packed SS (MPC optimization).
 
@@ -152,14 +151,14 @@
 
 **Goal:** *t-of-n* parties collectively sign without ever reconstructing the private key. Provides distributed trust and non-repudiation.
 
-| Scheme | Underlying Sig | Note |
-|--------|---------------|------|
-| **GG18 / GG20** | ECDSA | Threshold ECDSA with presigning; used in MPC wallets [40][41] |
-| **CGGMP** | ECDSA | UC-secure, identifiable abort, improved over GG20 [42] |
-| **FROST** | Schnorr | Simple, round-efficient threshold Schnorr; 2 rounds [43] |
-| **Threshold BLS** | BLS | Deterministic; natural from Shamir + pairing; non-interactive aggregation [25][34] |
-| **MuSig2** | Schnorr | 2-round multi-signature (all *n* of *n*); BIP 327 [26] |
-| **ROAST** | Schnorr/FROST | Robust wrapper for asynchronous FROST signing [44] |
+| Scheme | Year | Underlying Sig | Note |
+|--------|------|---------------|------|
+| **GG18 / GG20** | 2018 | ECDSA | Threshold ECDSA with presigning; used in MPC wallets [[1]](https://eprint.iacr.org/2019/114)[[2]](https://eprint.iacr.org/2020/540) |
+| **CGGMP** | 2021 | ECDSA | UC-secure, identifiable abort, improved over GG20 [[3]](https://eprint.iacr.org/2021/060) |
+| **FROST** | 2020 | Schnorr | Simple, round-efficient threshold Schnorr; 2 rounds [[4]](https://eprint.iacr.org/2020/852) |
+| **Threshold BLS** | 2001 | BLS | Deterministic; natural from Shamir + pairing; non-interactive aggregation [[5]](https://eprint.iacr.org/2001/002)[[6]](https://dl.acm.org/doi/10.1145/359168.359176) |
+| **MuSig2** | 2020 | Schnorr | 2-round multi-signature (all *n* of *n*); BIP 327 [[7]](https://eprint.iacr.org/2020/1261) |
+| **ROAST** | 2022 | Schnorr/FROST | Robust wrapper for asynchronous FROST signing [[8]](https://eprint.iacr.org/2022/550) |
 
 **State of the art:** FROST (Schnorr threshold), CGGMP (ECDSA threshold), ROAST (robust async).
 
@@ -169,12 +168,12 @@
 
 **Goal:** Produce a pseudorandom output from a secret key and input so that the output is deterministic, unpredictable, and publicly verifiable. Used in lotteries, leader election, DNS (NSEC5).
 
-| Scheme | Basis | Note |
-|--------|-------|------|
-| **ECVRF** | Elliptic curves | IETF standard (RFC 9381); based on Elligator [45] |
-| **RSA-FDH VRF** | RSA | Full-domain hash approach; larger proofs [46] |
-| **BLS-based VRF** | Pairings | Short proofs; naturally threshold-friendly [25] |
-| **Threshold VRF (DVRF)** | DKG + VRF | Distributed: t-of-n nodes produce VRF jointly [47] |
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ECVRF** | 2023 | Elliptic curves | IETF standard (RFC 9381); based on Elligator [[1]](https://www.rfc-editor.org/rfc/rfc9381) |
+| **RSA-FDH VRF** | 1999 | RSA | Full-domain hash approach; larger proofs [[2]](https://people.csail.mit.edu/silvio/Selected%20Scientific%20Papers/Pseudo%20Randomness/Verifiable_Random_Functions.pdf) |
+| **BLS-based VRF** | 2001 | Pairings | Short proofs; naturally threshold-friendly [[3]](https://eprint.iacr.org/2001/002) |
+| **Threshold VRF (DVRF)** | 2020 | DKG + VRF | Distributed: t-of-n nodes produce VRF jointly [[4]](https://eprint.iacr.org/2020/096) |
 
 **State of the art:** ECVRF (RFC 9381), BLS-VRF (threshold-friendly for blockchain).
 
@@ -186,25 +185,25 @@
 
 ### General-Purpose ZK (for arbitrary circuits)
 
-| System | Type | Note |
-|--------|------|------|
-| **Groth16** | zk-SNARK (pairing) | Shortest proofs (~192 B), trusted setup per circuit [48] |
-| **PLONK** | zk-SNARK (pairing) | Universal trusted setup (powers of tau); widely used [49] |
-| **Marlin** | zk-SNARK (pairing) | Universal & updatable setup [50] |
-| **Halo 2** | zk-SNARK (no trusted setup) | Recursive; IPA-based; used in Zcash Orchard [51] |
-| **STARKs** | Transparent (hash-based) | No trusted setup, post-quantum friendly; larger proofs [52] |
-| **Bulletproofs** | IPA-based | No trusted setup; compact range proofs [53] |
-| **Nova / SuperNova** | IVC / folding | Incremental Verifiable Computation; minimal per-step cost [54] |
-| **Spartan** | Sum-check protocol | No trusted setup, no FFTs; very fast prover [55] |
-| **Brakedown / Binius** | Code-based | Hardware-friendly, binary-field proofs [56] |
+| System | Year | Type | Note |
+|--------|------|------|------|
+| **Groth16** | 2016 | zk-SNARK (pairing) | Shortest proofs (~192 B), trusted setup per circuit [[1]](https://eprint.iacr.org/2016/260) |
+| **PLONK** | 2019 | zk-SNARK (pairing) | Universal trusted setup (powers of tau); widely used [[2]](https://eprint.iacr.org/2019/953) |
+| **Marlin** | 2019 | zk-SNARK (pairing) | Universal & updatable setup [[3]](https://eprint.iacr.org/2019/1047) |
+| **Halo 2** | 2019 | zk-SNARK (no trusted setup) | Recursive; IPA-based; used in Zcash Orchard [[4]](https://eprint.iacr.org/2019/1021) |
+| **STARKs** | 2018 | Transparent (hash-based) | No trusted setup, post-quantum friendly; larger proofs [[5]](https://eprint.iacr.org/2018/046) |
+| **Bulletproofs** | 2017 | IPA-based | No trusted setup; compact range proofs [[6]](https://eprint.iacr.org/2017/1066) |
+| **Nova / SuperNova** | 2021 | IVC / folding | Incremental Verifiable Computation; minimal per-step cost [[7]](https://eprint.iacr.org/2021/370) |
+| **Spartan** | 2019 | Sum-check protocol | No trusted setup, no FFTs; very fast prover [[8]](https://eprint.iacr.org/2019/550) |
+| **Brakedown / Binius** | 2021 | Code-based | Hardware-friendly, binary-field proofs [[9]](https://eprint.iacr.org/2021/1043) |
 
 ### Specialized ZK Protocols
 
-| Protocol | Purpose |
-|----------|---------|
-| **Sigma protocols (Schnorr)** | DL knowledge proof; basis for many schemes [23] |
-| **Pedersen + range proof** | Confidential transactions (Monero, Mimblewimble) [53] |
-| **zk-EVM (Polygon, Scroll, zkSync)** | Prove EVM execution in ZK [57] |
+| Protocol | Year | Purpose |
+|----------|------|---------|
+| **Sigma protocols (Schnorr)** | 1989 | DL knowledge proof; basis for many schemes [[1]](https://link.springer.com/article/10.1007/BF00196725) |
+| **Pedersen + range proof** | 1991 | Confidential transactions (Monero, Mimblewimble) [[2]](https://eprint.iacr.org/2017/1066) |
+| **zk-EVM (Polygon, Scroll, zkSync)** | 2022 | Prove EVM execution in ZK [[3]](https://eprint.iacr.org/2022/1692) |
 
 **State of the art:** PLONK/KZG variants (practical SNARKs), STARKs (transparency + PQ), Nova (IVC/folding for recursion).
 
@@ -214,14 +213,14 @@
 
 **Goal:** Compute on encrypted data without decrypting it. The result, when decrypted, matches computation on plaintext. Provides confidentiality during processing.
 
-| Scheme | Type | Note |
-|--------|------|------|
-| **BFV** | Leveled HE (integer arith.) | Batch integer computation via SIMD [58] |
-| **BGV** | Leveled HE (integer arith.) | Modulus switching for noise control [59] |
-| **CKKS** | Approximate HE (real/complex) | ML-friendly; approximate fixed-point [60] |
-| **TFHE** | Fully HE (Boolean/small int) | Fast bootstrapping (~10 ms); gate-by-gate [61] |
-| **OpenFHE** | Library | Implements BFV, BGV, CKKS, TFHE (successor to PALISADE, HElib, HEAAN) [62] |
-| **Paillier** | Additive HE only | Simple; used in e-voting, MPC, federated learning [63] |
+| Scheme | Year | Type | Supported Operations | Note |
+|--------|------|------|---------------------|------|
+| **BFV** | 2012 | Leveled HE (integer arith.) | add, mul (leveled), SIMD batching | Batch integer computation via SIMD [[1]](https://eprint.iacr.org/2012/144) |
+| **BGV** | 2011 | Leveled HE (integer arith.) | add, mul (leveled), mod switching | Modulus switching for noise control [[2]](https://eprint.iacr.org/2011/277) |
+| **CKKS** | 2017 | Approximate HE (real/complex) | add, mul (approx. real/complex), SIMD | ML-friendly; approximate fixed-point [[3]](https://eprint.iacr.org/2016/421) |
+| **TFHE** | 2016 | Fully HE (Boolean/small int) | any Boolean gate, small int add/mul, fast bootstrapping | Fast bootstrapping (~10 ms); gate-by-gate [[4]](https://eprint.iacr.org/2018/421) |
+| **OpenFHE** | 2022 | Library | all of above (library) | Implements BFV, BGV, CKKS, TFHE (successor to PALISADE, HElib, HEAAN) [[5]](https://eprint.iacr.org/2022/915) |
+| **Paillier** | 1999 | Additive HE only | add only, scalar mul | Simple; used in e-voting, MPC, federated learning [[6]](https://link.springer.com/chapter/10.1007/3-540-48910-X_16) |
 
 **State of the art:** TFHE (fast bootstrapping), CKKS (ML on encrypted data), OpenFHE (reference library).
 
@@ -231,12 +230,12 @@
 
 **Goal:** Encrypt a value and prove (in zero-knowledge) that the ciphertext contains a plaintext satisfying a given relation — without revealing it. Used in fair exchange, escrow, and group signatures.
 
-| Scheme | Approach | Note |
-|--------|----------|------|
-| **Camenisch-Shoup** | CCA2 enc + ZKP | General framework; widely cited [64] |
-| **Asokan-Shoup-Waidner** | RSA-based | Optimistic fair exchange via TTP [65] |
-| **Verifiable Enc. of DL** | ElGamal + Sigma | Prove enc. of discrete log; simple and efficient [64] |
-| **ZK + Hybrid Enc.** | SNARK/STARK + Enc. | Modern: prove anything about ciphertext contents [48] |
+| Scheme | Year | Approach | Note |
+|--------|------|----------|------|
+| **Camenisch-Shoup** | 2003 | CCA2 enc + ZKP | General framework; widely cited [[1]](https://eprint.iacr.org/2002/161) |
+| **Asokan-Shoup-Waidner** | 1998 | RSA-based | Optimistic fair exchange via TTP [[2]](https://link.springer.com/chapter/10.1007/BFb0054144) |
+| **Verifiable Enc. of DL** | 2003 | ElGamal + Sigma | Prove enc. of discrete log; simple and efficient [[1]](https://eprint.iacr.org/2002/161) |
+| **ZK + Hybrid Enc.** | 2016 | SNARK/STARK + Enc. | Modern: prove anything about ciphertext contents [[3]](https://eprint.iacr.org/2016/260) |
 
 **State of the art:** Camenisch-Shoup framework + modern SNARKs for generic relations.
 
@@ -246,13 +245,13 @@
 
 **Goal:** Commit to a value (hiding) so it can be revealed later (binding). Like a sealed envelope. Used as a building block in many protocols.
 
-| Scheme | Basis | Note |
-|--------|-------|------|
-| **Pedersen Commitment** | DLP | Perfectly hiding, computationally binding; additively homomorphic [37] |
-| **Hash Commitment** | Hash function | `C = H(m ‖ r)`; simple, practical [11] |
-| **KZG (Kate) Commitment** | Pairings + polynomial | Commit to polynomials; constant-size proofs; trusted setup [66] |
-| **FRI** | Hash + RS codes | Polynomial commitment; transparent (no setup); used in STARKs [52] |
-| **Bulletproofs IPA** | Inner-product argument | Logarithmic-size polynomial commitment [53] |
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Pedersen Commitment** | 1991 | DLP | Perfectly hiding, computationally binding; additively homomorphic [[1]](https://link.springer.com/chapter/10.1007/3-540-46766-1_9) |
+| **Hash Commitment** | 2002 | Hash function | `C = H(m ‖ r)`; simple, practical [[2]](https://csrc.nist.gov/publications/detail/fips/180/4/final) |
+| **KZG (Kate) Commitment** | 2010 | Pairings + polynomial | Commit to polynomials; constant-size proofs; trusted setup [[3]](https://eprint.iacr.org/2010/274) |
+| **FRI** | 2017 | Hash + RS codes | Polynomial commitment; transparent (no setup); used in STARKs [[4]](https://eprint.iacr.org/2018/046) |
+| **Bulletproofs IPA** | 2017 | Inner-product argument | Logarithmic-size polynomial commitment [[5]](https://eprint.iacr.org/2017/1066) |
 
 **State of the art:** KZG (SNARKs, Ethereum danksharding), FRI (STARKs, PQ-friendly).
 
@@ -262,14 +261,15 @@
 
 **Goal:** Sender has multiple messages; receiver picks one and learns only that one — sender doesn't learn which was chosen. Foundational for MPC.
 
-| Scheme | Note |
-|--------|------|
-| **1-out-of-2 OT (Naor-Pinkas)** | Based on DDH; efficient base OT [67] |
-| **OT Extension (IKNP)** | Extend few base OTs into millions cheaply via symmetric crypto [68] |
-| **Silent OT (Boyle et al.)** | Sublinear communication using pseudorandom correlation generators [69] |
-| **Simplest OT (Chou-Orlandi)** | 1 round, 1 exponentiation; practical [70] |
+| Scheme | Year | Note |
+|--------|------|------|
+| **1-out-of-2 OT (Naor-Pinkas)** | 2001 | Based on DDH; efficient base OT [[1]](https://dl.acm.org/doi/10.5555/365411.365502) |
+| **OT Extension (IKNP)** | 2003 | Extend few base OTs into millions cheaply via symmetric crypto [[2]](https://link.springer.com/chapter/10.1007/978-3-540-45146-4_9) |
+| **Silent OT (Boyle et al.)** | 2019 | Sublinear communication using pseudorandom correlation generators [[3]](https://eprint.iacr.org/2019/1159) |
+| **Simplest OT (Chou-Orlandi)** | 2015 | 1 round, 1 exponentiation; practical [[4]](https://eprint.iacr.org/2015/267) |
+| **SoftSpokenOT** | 2022 | Optimized OT extension [[5]](https://eprint.iacr.org/2022/192) |
 
-**State of the art:** Silent OT extension (minimal communication), SoftSpokenOT [71].
+**State of the art:** Silent OT extension (minimal communication), SoftSpokenOT.
 
 ---
 
@@ -277,14 +277,14 @@
 
 **Goal:** Multiple parties jointly compute a function over their private inputs without revealing anything except the output. Provides privacy + correctness.
 
-| Protocol | Model | Note |
-|----------|-------|------|
-| **GMW** | Semi-honest, Boolean | Gate-by-gate OT-based; foundational [72] |
-| **BGW** | Info.-theoretic, honest majority | No crypto assumptions if ≥2/3 honest [73] |
-| **SPDZ / SPDZ2k** | Malicious, dishonest majority | Preprocessing + MAC-based online phase [74] |
-| **ABY / ABY3** | Mixed: Arithmetic, Boolean, Yao | Efficient conversions between share types [75] |
-| **Garbled Circuits (Yao)** | 2PC, semi-honest | Constant-round; optimized with free-XOR, half-gates [76] |
-| **MP-SPDZ** | Framework | Implements 30+ MPC protocols [77] |
+| Protocol | Year | Model | Note |
+|----------|------|-------|------|
+| **GMW** | 1987 | Semi-honest, Boolean | Gate-by-gate OT-based; foundational [[1]](https://dl.acm.org/doi/10.1145/28395.28420) |
+| **BGW** | 1988 | Info.-theoretic, honest majority | No crypto assumptions if ≥2/3 honest [[2]](https://dl.acm.org/doi/10.1145/62212.62213) |
+| **SPDZ / SPDZ2k** | 2012 | Malicious, dishonest majority | Preprocessing + MAC-based online phase [[3]](https://eprint.iacr.org/2011/535) |
+| **ABY / ABY3** | 2015 | Mixed: Arithmetic, Boolean, Yao | Efficient conversions between share types [[4]](https://eprint.iacr.org/2018/403) |
+| **Garbled Circuits (Yao)** | 1986 | 2PC, semi-honest | Constant-round; optimized with free-XOR, half-gates [[5]](https://eprint.iacr.org/2014/756) |
+| **MP-SPDZ** | 2020 | Framework | Implements 30+ MPC protocols [[6]](https://eprint.iacr.org/2020/521) |
 
 **State of the art:** SPDZ2k (dishonest majority), ABY3 (3-party ML), Silent-OT-based 2PC.
 
@@ -294,14 +294,14 @@
 
 **Goal:** Confidentiality + Integrity + Authentication in a single primitive. Encrypt and authenticate data so tampering is detectable.
 
-| Algorithm | Note |
-|-----------|------|
-| **AES-256-GCM** | NIST standard; hardware-accelerated; nonce-misuse vulnerable [18] |
-| **ChaCha20-Poly1305** | Software-fast; TLS 1.3, WireGuard; IETF RFC 8439 [2][19] |
-| **AES-GCM-SIV** | Nonce-misuse resistant; RFC 8452 [78] |
-| **AES-OCB3** | Very fast (single-pass); patent-free since 2021 [79] |
-| **AEGIS-128L / AEGIS-256** | AES-round-based stream; fastest AEAD on AES-NI hardware [80] |
-| **Ascon** | Lightweight AEAD; NIST LWC winner (2023) [81] |
+| Algorithm | Year | Note |
+|-----------|------|------|
+| **AES-256-GCM** | 2004 | NIST standard; hardware-accelerated; nonce-misuse vulnerable [[1]](https://csrc.nist.gov/publications/detail/sp/800/38/d/final) |
+| **ChaCha20-Poly1305** | 2013 | Software-fast; TLS 1.3, WireGuard; IETF RFC 8439 [[2]](https://cr.yp.to/chacha/chacha-20080128.pdf)[[3]](https://cr.yp.to/mac/poly1305-20050329.pdf) |
+| **AES-GCM-SIV** | 2019 | Nonce-misuse resistant; RFC 8452 [[4]](https://www.rfc-editor.org/rfc/rfc8452) |
+| **AES-OCB3** | 2011 | Very fast (single-pass); patent-free since 2021 [[5]](https://link.springer.com/article/10.1007/s00145-011-9107-9) |
+| **AEGIS-128L / AEGIS-256** | 2014 | AES-round-based stream; fastest AEAD on AES-NI hardware [[6]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-aegis-aead/) |
+| **Ascon** | 2023 | Lightweight AEAD; NIST LWC winner (2023) [[7]](https://ascon.iaik.tugraz.at/) |
 
 **State of the art:** AES-256-GCM (standard), AEGIS (speed record on AES-NI), Ascon (constrained devices).
 
@@ -313,22 +313,22 @@
 
 ### Key Derivation Functions (KDF)
 
-| Algorithm | Note |
-|-----------|------|
-| **Argon2id** | PHC winner (2015); memory-hard; recommended default [82] |
-| **scrypt** | Memory-hard; used in Litecoin, Tarsnap [83] |
-| **bcrypt** | Classic; Blowfish-based; still widely deployed [84] |
-| **HKDF** | Extract-then-expand; not for passwords; RFC 5869 [85] |
-| **Balloon Hashing** | Provably memory-hard; NIST candidate [86] |
+| Algorithm | Year | Note |
+|-----------|------|------|
+| **Argon2id** | 2015 | PHC winner (2015); memory-hard; recommended default [[1]](https://github.com/P-H-C/phc-winner-argon2/blob/master/argon2-specs.pdf) |
+| **scrypt** | 2009 | Memory-hard; used in Litecoin, Tarsnap [[2]](https://www.tarsnap.com/scrypt/scrypt.pdf) |
+| **bcrypt** | 1999 | Classic; Blowfish-based; still widely deployed [[3]](https://www.usenix.org/legacy/publications/library/proceedings/usenix99/provos/provos.pdf) |
+| **HKDF** | 2010 | Extract-then-expand; not for passwords; RFC 5869 [[4]](https://www.rfc-editor.org/rfc/rfc5869) |
+| **Balloon Hashing** | 2016 | Provably memory-hard; NIST candidate [[5]](https://eprint.iacr.org/2016/027) |
 
 ### Password-Authenticated Key Exchange (PAKE)
 
-| Protocol | Note |
-|----------|------|
-| **OPAQUE** | Asymmetric PAKE; server never sees password; IETF draft [31] |
-| **SPAKE2** | Symmetric PAKE; simple, round-efficient; RFC 9382 [30] |
-| **SRP** | Legacy PAKE; TLS-SRP; widely deployed [87] |
-| **CPace** | Balanced PAKE; IETF draft; provably secure in UC model [88] |
+| Protocol | Year | Note |
+|----------|------|------|
+| **OPAQUE** | 2018 | Asymmetric PAKE; server never sees password; IETF draft [[6]](https://eprint.iacr.org/2018/163) |
+| **SPAKE2** | 2005 | Symmetric PAKE; simple, round-efficient; RFC 9382 [[7]](https://eprint.iacr.org/2005/096) |
+| **SRP** | 2000 | Legacy PAKE; TLS-SRP; widely deployed [[8]](https://www.rfc-editor.org/rfc/rfc2945) |
+| **CPace** | 2018 | Balanced PAKE; IETF draft; provably secure in UC model [[9]](https://eprint.iacr.org/2018/286) |
 
 **State of the art:** Argon2id (password hashing), OPAQUE (asymmetric PAKE).
 
@@ -338,13 +338,13 @@
 
 **Goal:** Fine-grained access control embedded in ciphertext. Decrypt only if your attributes/key satisfy a policy. Provides access control + confidentiality.
 
-| Scheme | Type | Note |
-|--------|------|------|
-| **CP-ABE (Bethencourt-Sahai-Waters)** | Ciphertext-Policy ABE | Policy in ciphertext; key has attributes [89] |
-| **KP-ABE (Goyal-Pandey-Sahai-Waters)** | Key-Policy ABE | Policy in key; ciphertext has attributes [90] |
-| **FAME** | CP-ABE (prime-order) | Fast, prime-order groups; practical [91] |
-| **Inner-Product FE (Abdalla et al.)** | Functional Encryption | Decrypt inner product of attribute vectors [92] |
-| **Multi-Input FE** | Functional Encryption | Multiple encryptors, joint function [93] |
+| Scheme | Year | Type | Note |
+|--------|------|------|------|
+| **CP-ABE (Bethencourt-Sahai-Waters)** | 2007 | Ciphertext-Policy ABE | Policy in ciphertext; key has attributes [[1]](https://eprint.iacr.org/2006/309) |
+| **KP-ABE (Goyal-Pandey-Sahai-Waters)** | 2006 | Key-Policy ABE | Policy in key; ciphertext has attributes [[2]](https://eprint.iacr.org/2006/309) |
+| **FAME** | 2017 | CP-ABE (prime-order) | Fast, prime-order groups; practical [[3]](https://eprint.iacr.org/2017/807) |
+| **Inner-Product FE (Abdalla et al.)** | 2015 | Functional Encryption | Decrypt inner product of attribute vectors [[4]](https://eprint.iacr.org/2015/017) |
+| **Multi-Input FE** | 2014 | Functional Encryption | Multiple encryptors, joint function [[5]](https://eprint.iacr.org/2013/774) |
 
 **State of the art:** FAME (practical ABE), Inner-Product FE (ML applications).
 
@@ -354,12 +354,12 @@
 
 **Goal:** Signer signs a message without seeing its content. Provides anonymity + non-repudiation. Used in e-cash, anonymous credentials, Privacy Pass.
 
-| Scheme | Basis | Note |
-|--------|-------|------|
-| **RSA Blind Signature** | RSA | Chaum's original; used in Privacy Pass (RFC 9474) [94] |
-| **Blind Schnorr** | DLP | Simple but requires care with ROS problem [95] |
-| **BBS+ / BBS** | Pairings | Multi-message blind sign + selective disclosure; W3C VC [96] |
-| **Abe's Blind Signature** | Pairing | Partially blind; used in anonymous e-cash schemes [97] |
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **RSA Blind Signature** | 1982 | RSA | Chaum's original; used in Privacy Pass (RFC 9474) [[1]](https://eprint.iacr.org/2022/895) |
+| **Blind Schnorr** | 1989 | DLP | Simple but requires care with ROS problem [[2]](https://eprint.iacr.org/2019/877) |
+| **BBS+ / BBS** | 2004 | Pairings | Multi-message blind sign + selective disclosure; W3C VC [[3]](https://eprint.iacr.org/2023/275) |
+| **Abe's Blind Signature** | 1997 | Pairing | Partially blind; used in anonymous e-cash schemes [[4]](https://link.springer.com/chapter/10.1007/978-3-642-10366-7_35) |
 
 **State of the art:** RSA Blind Sig (Privacy Pass), BBS+ (anonymous credentials & selective disclosure).
 
@@ -369,12 +369,12 @@
 
 **Goal:** Sign on behalf of a group/ring without revealing which member signed. Provides anonymity within a set.
 
-| Scheme | Type | Note |
-|--------|------|------|
-| **Ring Signatures (Rivest-Shamir-Tauman)** | Ring | Ad-hoc group, no setup; used in Monero (pre-2020) [98] |
-| **CLSAG** | Ring (linkable) | Compact Linkable Spontaneous; current Monero scheme [99] |
-| **Group Signatures (BBS04)** | Group | Requires group manager; revocable anonymity [100] |
-| **Short Group Sig (Boneh-Boyen-Shacham)** | Group | Pairing-based; very short signatures [100] |
+| Scheme | Year | Type | Note |
+|--------|------|------|------|
+| **Ring Signatures (Rivest-Shamir-Tauman)** | 2001 | Ring | Ad-hoc group, no setup; used in Monero (pre-2020) [[1]](https://link.springer.com/chapter/10.1007/3-540-45682-1_32) |
+| **CLSAG** | 2019 | Ring (linkable) | Compact Linkable Spontaneous; current Monero scheme [[2]](https://eprint.iacr.org/2019/654) |
+| **Group Signatures (BBS04)** | 2004 | Group | Requires group manager; revocable anonymity [[3]](https://eprint.iacr.org/2004/174) |
+| **Short Group Sig (Boneh-Boyen-Shacham)** | 2004 | Group | Pairing-based; very short signatures [[3]](https://eprint.iacr.org/2004/174) |
 
 **State of the art:** CLSAG (privacy coins), BBS Group Sig (enterprise), Raptor (PQ ring sig).
 
@@ -384,14 +384,14 @@
 
 **Goal:** Compactly represent a set and prove (non-)membership of elements. Used for revocation lists, stateless blockchain validation.
 
-| Scheme | Basis | Note |
-|--------|-------|------|
-| **RSA Accumulator** | Strong RSA | Constant-size; add/delete + membership proofs [101] |
-| **Bilinear Accumulator** | Pairings | Efficient non-membership proofs [102] |
-| **Merkle Tree** | Hash | Simple; membership proof is O(log n); used everywhere [103] |
-| **Verkle Tree** | KZG + Merkle | Smaller proofs than Merkle; proposed for Ethereum [66] |
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **RSA Accumulator** | 1993 | Strong RSA | Constant-size; add/delete + membership proofs [[1]](https://link.springer.com/chapter/10.1007/3-540-48285-7_24) |
+| **Bilinear Accumulator** | 2005 | Pairings | Efficient non-membership proofs [[2]](https://link.springer.com/chapter/10.1007/978-3-540-30580-4_14) |
+| **Merkle Tree** | 1979 | Hash | Simple; membership proof is O(log n); used everywhere [[3]](https://link.springer.com/chapter/10.1007/3-540-48184-2_32) |
+| **Verkle Tree** | 2018 | KZG + Merkle | Smaller proofs than Merkle; proposed for Ethereum [[4]](https://eprint.iacr.org/2010/274) |
 
-**State of the art:** Verkle Trees (blockchain), RSA Accumulators + batching [104].
+**State of the art:** Verkle Trees (blockchain), RSA Accumulators + batching [[5]](https://eprint.iacr.org/2018/1188).
 
 ---
 
@@ -401,166 +401,41 @@ Schemes designed to resist attacks from quantum computers (Shor's algorithm brea
 
 ### PQ Key Encapsulation (KEM) / Encryption
 
-| Algorithm | Basis | Note |
-|-----------|-------|------|
-| **ML-KEM (Kyber)** | Module lattices (MLWE) | **NIST standard (FIPS 203)**; used in Chrome, Signal [105] |
-| **FrodoKEM** | Standard lattices (LWE) | More conservative; no ring structure [106] |
-| **Classic McEliece** | Code-based (Goppa) | Very large keys (~1 MB), very small ciphertexts; NIST round 4 [107] |
-| **BIKE** | Code-based (QC-MDPC) | Moderate key sizes; NIST round 4 [108] |
-| **HQC** | Code-based (Hamming QC) | NIST round 4 alternate [109] |
-| **NTRU** | Lattice (NTRU) | One of the oldest PQ schemes (1996); patents expired [110] |
+| Algorithm | Year | Basis | Note |
+|-----------|------|-------|------|
+| **ML-KEM (Kyber)** | 2024 | Module lattices (MLWE) | **NIST standard (FIPS 203)**; used in Chrome, Signal [[1]](https://csrc.nist.gov/pubs/fips/203/final) |
+| **FrodoKEM** | 2016 | Standard lattices (LWE) | More conservative; no ring structure [[2]](https://frodokem.org/files/FrodoKEM-specification-20210604.pdf) |
+| **Classic McEliece** | 2017 | Code-based (Goppa) | Very large keys (~1 MB), very small ciphertexts; NIST round 4 [[3]](https://classic.mceliece.org/) |
+| **BIKE** | 2017 | Code-based (QC-MDPC) | Moderate key sizes; NIST round 4 [[4]](https://bikesuite.org/) |
+| **HQC** | 2017 | Code-based (Hamming QC) | NIST round 4 alternate [[5]](https://pqc-hqc.org/) |
+| **NTRU** | 1996 | Lattice (NTRU) | One of the oldest PQ schemes (1996); patents expired [[6]](https://eprint.iacr.org/1996/002) |
 
 ### PQ Digital Signatures
 
-| Algorithm | Basis | Note |
-|-----------|-------|------|
-| **ML-DSA (Dilithium)** | Module lattices (MLWE) | **NIST standard (FIPS 204)**; general-purpose PQ sig [111] |
-| **SLH-DSA (SPHINCS+)** | Hash-based (stateless) | **NIST standard (FIPS 205)**; conservative, no lattice assumption [112] |
-| **FN-DSA (Falcon)** | NTRU lattices | NIST standard (FIPS 206); compact signatures, complex signing [113] |
-| **XMSS** | Hash-based (stateful) | RFC 8391; stateful — must track index [114] |
-| **LMS / HSS** | Hash-based (stateful) | RFC 8554; NIST SP 800-208; simple stateful scheme [115] |
-| **SQIsign** | Supersingular isogenies | Shortest PQ signatures (~200 B); very new [116] |
+| Algorithm | Year | Basis | Note |
+|-----------|------|-------|------|
+| **ML-DSA (Dilithium)** | 2024 | Module lattices (MLWE) | **NIST standard (FIPS 204)**; general-purpose PQ sig [[1]](https://csrc.nist.gov/pubs/fips/204/final) |
+| **SLH-DSA (SPHINCS+)** | 2024 | Hash-based (stateless) | **NIST standard (FIPS 205)**; conservative, no lattice assumption [[2]](https://csrc.nist.gov/pubs/fips/205/final) |
+| **FN-DSA (Falcon)** | 2024 | NTRU lattices | NIST standard (FIPS 206); compact signatures, complex signing [[3]](https://csrc.nist.gov/pubs/fips/206/final) |
+| **XMSS** | 2011 | Hash-based (stateful) | RFC 8391; stateful — must track index [[4]](https://www.rfc-editor.org/rfc/rfc8391) |
+| **LMS / HSS** | 2019 | Hash-based (stateful) | RFC 8554; NIST SP 800-208; simple stateful scheme [[5]](https://www.rfc-editor.org/rfc/rfc8554) |
+| **SQIsign** | 2020 | Supersingular isogenies | Shortest PQ signatures (~200 B); very new [[6]](https://eprint.iacr.org/2020/1240) |
 
 ### PQ Zero-Knowledge
 
-| Approach | Note |
-|----------|------|
-| **STARKs** | Hash-based; inherently post-quantum [52] |
-| **Lattice-based ZK** | Emerging; based on SIS/LWE [117] |
+| Approach | Year | Note |
+|----------|------|------|
+| **STARKs** | 2018 | Hash-based; inherently post-quantum [[1]](https://eprint.iacr.org/2018/046) |
+| **Lattice-based ZK** | 2011 | Emerging; based on SIS/LWE [[2]](https://eprint.iacr.org/2011/537) |
 
 ### PQ Key Exchange / Hybrid
 
-| Protocol | Note |
-|----------|------|
-| **X25519Kyber768** | Hybrid: classical X25519 + ML-KEM-768; deployed in Chrome, Signal, Cloudflare [118] |
-| **PQ Noise** | Noise Framework patterns with PQ KEMs [33] |
+| Protocol | Year | Note |
+|----------|------|------|
+| **X25519Kyber768** | 2024 | Hybrid: classical X25519 + ML-KEM-768; deployed in Chrome, Signal, Cloudflare [[1]](https://eprint.iacr.org/2016/1017) |
+| **PQ Noise** | 2016 | Noise Framework patterns with PQ KEMs [[2]](https://noiseprotocol.org/noise.html) |
 
 **State of the art:** ML-KEM (FIPS 203) for encryption, ML-DSA (FIPS 204) for signatures, SLH-DSA for conservative hash-based sigs, hybrid X25519+ML-KEM for transition period.
-
----
-
-## References
-
-| # | Reference |
-|---|-----------|
-| [1] | Daemen, Rijmen. "The Design of Rijndael: AES — The Advanced Encryption Standard." Springer, 2002. |
-| [2] | Bernstein. "ChaCha, a variant of Salsa20." 2008. https://cr.yp.to/chacha.html |
-| [3] | Bernstein. "The Salsa20 family of stream ciphers." 2007. https://cr.yp.to/salsa20.html |
-| [4] | Anderson, Biham, Knudsen. "Serpent: A Proposal for the Advanced Encryption Standard." 1998. |
-| [5] | Aoki et al. "Camellia: A 128-Bit Block Cipher Suitable for Multiple Platforms." SAC 2000. |
-| [6] | Rivest, Shamir, Adleman. "A Method for Obtaining Digital Signatures and Public-Key Cryptosystems." CACM, 1978. |
-| [7] | Abdalla, Bellare, Rogaway. "DHAES: An Encryption Scheme Based on the Diffie-Hellman Problem." CT-RSA 2001. |
-| [8] | Shoup. "A Proposal for an ISO Standard for Public Key Encryption." 2001. |
-| [9] | Cramer, Shoup. "A Practical Public Key Cryptosystem Provably Secure Against Adaptive Chosen Ciphertext Attack." CRYPTO 1998. |
-| [10] | Barnes et al. "Hybrid Public Key Encryption." RFC 9180, 2022. |
-| [11] | NIST. "Secure Hash Standard (SHS)." FIPS 180-4, 2015. |
-| [12] | Bertoni et al. "Keccak." SHA-3 submission, 2011. https://keccak.team |
-| [13] | O'Connor et al. "BLAKE3: one function, fast everywhere." 2020. https://github.com/BLAKE3-team/BLAKE3-specs |
-| [14] | Aumasson et al. "BLAKE2: simpler, smaller, fast as MD5." ACNS 2013. |
-| [15] | Guido Bertoni et al. "KangarooTwelve: Fast Hashing Based on Keccak-p." ACNS 2018. |
-| [16] | Bellare, Canetti, Krawczyk. "Keying Hash Functions for Message Authentication." CRYPTO 1996. |
-| [17] | NIST. "Recommendation for Block Cipher Modes of Operation: The CMAC Mode for Authentication." SP 800-38B. |
-| [18] | McGrew, Viega. "The Galois/Counter Mode of Operation (GCM)." 2004. |
-| [19] | Bernstein. "The Poly1305-AES Message-Authentication Code." FSE 2005. |
-| [20] | NIST. "SHA-3 Derived Functions." SP 800-185, 2016. |
-| [21] | Johnson, Menezes, Vanstone. "The Elliptic Curve Digital Signature Algorithm (ECDSA)." IJIS, 2001. |
-| [22] | Bernstein et al. "High-speed high-security signatures." J. Cryptographic Engineering, 2012. Ed25519. |
-| [23] | Schnorr. "Efficient Signature Generation by Smart Cards." J. Cryptology, 1991. |
-| [24] | Bellare, Rogaway. "The Exact Security of Digital Signatures — How to Sign with RSA and Rabin." EUROCRYPT 1996. |
-| [25] | Boneh, Lynn, Shacham. "Short Signatures from the Weil Pairing." ASIACRYPT 2001. |
-| [26] | Nick, Ruffing, Seurin. "MuSig2: Simple Two-Round Schnorr Multi-Signatures." CRYPTO 2021. |
-| [27] | Bernstein. "Curve25519: new Diffie-Hellman speed records." PKC 2006. |
-| [28] | Hamburg. "Ed448-Goldilocks, a new elliptic curve." 2015. |
-| [29] | Diffie, Hellman. "New Directions in Cryptography." IEEE Trans. Info. Theory, 1976. |
-| [30] | Abdalla, Pointcheval. "Simple Password-Based Encrypted Key Exchange Protocols." CT-RSA 2005. |
-| [31] | Jarecki, Krawczyk, Xu. "OPAQUE: An Asymmetric PAKE Protocol Secure Against Pre-Computation Attacks." EUROCRYPT 2018. |
-| [32] | Krawczyk. "HMQV: A High-Performance Secure Diffie-Hellman Protocol." CRYPTO 2005. |
-| [33] | Perrin (ed.). "The Noise Protocol Framework." 2018. https://noiseprotocol.org |
-| [34] | Shamir. "How to Share a Secret." CACM, 1979. |
-| [35] | Blakley. "Safeguarding cryptographic keys." AFIPS 1979. |
-| [36] | Feldman. "A Practical Scheme for Non-Interactive Verifiable Secret Sharing." FOCS 1987. |
-| [37] | Pedersen. "Non-Interactive and Information-Theoretic Secure Verifiable Secret Sharing." CRYPTO 1991. |
-| [38] | Franklin, Yung. "Communication Complexity of Secure Computation." STOC 1992. |
-| [39] | Herzberg et al. "Proactive Secret Sharing, Or: How to Cope with Perpetual Leakage." CRYPTO 1995. |
-| [40] | Gennaro, Goldfeder. "Fast Multiparty Threshold ECDSA with Fast Trustless Setup." CCS 2018. (GG18) |
-| [41] | Gennaro, Goldfeder. "One Round Threshold ECDSA with Identifiable Abort." 2020. (GG20) |
-| [42] | Canetti et al. "UC Non-Interactive, Proactive, Threshold ECDSA with Identifiable Aborts." CCS 2020. (CGGMP) |
-| [43] | Komlo, Goldberg. "FROST: Flexible Round-Optimized Schnorr Threshold Signatures." SAC 2020. |
-| [44] | Ruffing et al. "ROAST: Robust Asynchronous Schnorr Threshold Signatures." CCS 2022. |
-| [45] | Goldberg et al. "Verifiable Random Functions (VRFs)." RFC 9381, 2023. |
-| [46] | Micali, Rabin, Vadhan. "Verifiable Random Functions." FOCS 1999. |
-| [47] | Galindo et al. "A Practical Distributed VRF and its Use in E-Coupons." 2021. |
-| [48] | Groth. "On the Size of Pairing-Based Non-interactive Arguments." EUROCRYPT 2016. (Groth16) |
-| [49] | Gabizon, Williamson, Ciobotaru. "PLONK: Permutations over Lagrange-bases for Oecumenical Noninteractive arguments of Knowledge." 2019. |
-| [50] | Chiesa et al. "Marlin: Preprocessing zkSNARKs with Universal and Updatable SRS." EUROCRYPT 2020. |
-| [51] | Bowe, Grigg, Hopwood. "Recursive Proof Composition without a Trusted Setup." 2019. (Halo) |
-| [52] | Ben-Sasson et al. "Scalable, transparent, and post-quantum secure computational integrity." 2018. (STARKs) |
-| [53] | Bünz et al. "Bulletproofs: Short Proofs for Confidential Transactions and More." S&P 2018. |
-| [54] | Kothapalli, Setty, Tzialla. "Nova: Recursive Zero-Knowledge Arguments from Folding Schemes." CRYPTO 2022. |
-| [55] | Setty. "Spartan: Efficient and general-purpose zkSNARKs without trusted setup." CRYPTO 2020. |
-| [56] | Golovnev et al. "Brakedown: Linear-time and field-agnostic SNARKs for R1CS." CRYPTO 2023. |
-| [57] | Various (Polygon, Scroll, zkSync). "zkEVM: Zero-Knowledge Ethereum Virtual Machine." 2022–2024. |
-| [58] | Fan, Vercauteren. "Somewhat Practical Fully Homomorphic Encryption." 2012. (BFV) |
-| [59] | Brakerski, Gentry, Vaikuntanathan. "(Leveled) Fully Homomorphic Encryption without Bootstrapping." ITCS 2012. (BGV) |
-| [60] | Cheon et al. "Homomorphic Encryption for Arithmetic of Approximate Numbers." ASIACRYPT 2017. (CKKS) |
-| [61] | Chillotti et al. "TFHE: Fast Fully Homomorphic Encryption over the Torus." J. Cryptology, 2020. |
-| [62] | Al Badawi et al. "OpenFHE: Open-Source Fully Homomorphic Encryption Library." 2022. |
-| [63] | Paillier. "Public-Key Cryptosystems Based on Composite Degree Residuosity Classes." EUROCRYPT 1999. |
-| [64] | Camenisch, Shoup. "Practical Verifiable Encryption and Decryption of Discrete Logarithms." CRYPTO 2003. |
-| [65] | Asokan, Shoup, Waidner. "Optimistic Fair Exchange of Digital Signatures." EUROCRYPT 1998. |
-| [66] | Kate, Zaverucha, Goldberg. "Constant-Size Commitments to Polynomials and Their Applications." ASIACRYPT 2010. (KZG) |
-| [67] | Naor, Pinkas. "Efficient Oblivious Transfer Protocols." SODA 2001. |
-| [68] | Ishai et al. "Extending Oblivious Transfers Efficiently." CRYPTO 2003. (IKNP) |
-| [69] | Boyle et al. "Efficient Two-Round OT Extension and Silent Non-Interactive Secure Computation." CCS 2019. |
-| [70] | Chou, Orlandi. "The Simplest Protocol for Oblivious Transfer." LATINCRYPT 2015. |
-| [71] | Roy. "SoftSpokenOT: Quieter OT Extension from Small-Field Silent VOLE in the Minicrypt Model." CRYPTO 2022. |
-| [72] | Goldreich, Micali, Wigderson. "How to Play Any Mental Game." STOC 1987. (GMW) |
-| [73] | Ben-Or, Goldwasser, Wigderson. "Completeness Theorems for Non-Cryptographic Fault-Tolerant Distributed Computation." STOC 1988. (BGW) |
-| [74] | Damgård et al. "Multiparty Computation from Somewhat Homomorphic Encryption." CRYPTO 2012. (SPDZ) |
-| [75] | Demmler, Schneider, Zohner. "ABY — A Framework for Efficient Mixed-Protocol Secure Two-Party Computation." NDSS 2015. |
-| [76] | Yao. "How to Generate and Exchange Secrets." FOCS 1986. |
-| [77] | Keller. "MP-SPDZ: A Versatile Framework for Multi-Party Computation." CCS 2020. |
-| [78] | Gueron, Langley, Lindell. "AES-GCM-SIV: Nonce Misuse-Resistant Authenticated Encryption." RFC 8452, 2019. |
-| [79] | Krovetz, Rogaway. "The Software Performance of Authenticated-Encryption Modes." FSE 2011. (OCB) |
-| [80] | Denis, Bhargavan, Gueron. "AEGIS: A Fast Authenticated Encryption Algorithm." 2023. |
-| [81] | Dobraunig et al. "Ascon v1.2." NIST Lightweight Cryptography winner, 2023. |
-| [82] | Biryukov, Dinu, Khovratovich. "Argon2: the memory-hard function for password hashing and other applications." PHC winner, 2015. |
-| [83] | Percival. "Stronger Key Derivation via Sequential Memory-Hard Functions." BSDCan 2009. (scrypt) |
-| [84] | Provos, Mazières. "A Future-Adaptable Password Scheme." USENIX 1999. (bcrypt) |
-| [85] | Krawczyk, Eronen. "HMAC-based Extract-and-Expand Key Derivation Function (HKDF)." RFC 5869, 2010. |
-| [86] | Boneh, Corrigan-Gibbs, Schechter. "Balloon Hashing: A Memory-Hard Function Providing Provable Protection Against Sequential Attacks." ASIACRYPT 2016. |
-| [87] | Wu. "The SRP Authentication and Key Exchange System." RFC 2945, 2000. |
-| [88] | Abdalla et al. "CPace, a balanced composable PAKE." IETF draft, 2023. |
-| [89] | Bethencourt, Sahai, Waters. "Ciphertext-Policy Attribute-Based Encryption." S&P 2007. |
-| [90] | Goyal, Pandey, Sahai, Waters. "Attribute-Based Encryption for Fine-Grained Access Control of Encrypted Data." CCS 2006. |
-| [91] | Agrawal, Chase. "FAME: Fast Attribute-based Message Encryption." CCS 2017. |
-| [92] | Abdalla et al. "Simple Functional Encryption Schemes for Inner Products." PKC 2015. |
-| [93] | Goldwasser et al. "Multi-Input Functional Encryption." EUROCRYPT 2014. |
-| [94] | Chaum. "Blind Signatures for Untraceable Payments." CRYPTO 1982. |
-| [95] | Schnorr. "Blind Schnorr Signatures and Signed ElGamal Encryption in the Algebraic Group Model." EUROCRYPT 2021. |
-| [96] | Boneh, Boyen, Shacham. "Short Group Signatures." CRYPTO 2004. / Tessaro, Zhu. "Revisiting BBS Signatures." EUROCRYPT 2023. |
-| [97] | Abe, Ohkubo. "A Framework for Universally Composable Non-Committing Blind Signatures." ASIACRYPT 2009. |
-| [98] | Rivest, Shamir, Tauman. "How to Leak a Secret." ASIACRYPT 2001. |
-| [99] | Goodell et al. "Concise Linkable Ring Signatures and Forgery Against Adversarial Keys." 2019. (CLSAG) |
-| [100] | Boneh, Boyen, Shacham. "Short Group Signatures." CRYPTO 2004. (BBS04) |
-| [101] | Benaloh, de Mare. "One-Way Accumulators: A Decentralized Alternative to Digital Signatures." EUROCRYPT 1993. / Barić, Pfitzmann. 1997. |
-| [102] | Nguyen. "Accumulators from Bilinear Pairings and Applications." CT-RSA 2005. |
-| [103] | Merkle. "A Digital Signature Based on a Conventional Encryption Function." CRYPTO 1987. |
-| [104] | Boneh, Bünz, Fisch. "Batching Techniques for Accumulators with Applications to IOPs and Stateless Blockchains." CRYPTO 2019. |
-| [105] | Avanzi et al. "CRYSTALS-Kyber (ML-KEM)." NIST FIPS 203, 2024. |
-| [106] | Alkim et al. "FrodoKEM: Learning With Errors Key Encapsulation." 2020. |
-| [107] | Bernstein et al. "Classic McEliece." NIST PQC Round 4. |
-| [108] | Aragon et al. "BIKE: Bit Flipping Key Encapsulation." NIST PQC Round 4. |
-| [109] | Aguilar Melchor et al. "HQC: Hamming Quasi-Cyclic." NIST PQC Round 4. |
-| [110] | Hoffstein, Pipher, Silverman. "NTRU: A Ring-Based Public Key Cryptosystem." ANTS 1998. |
-| [111] | Ducas et al. "CRYSTALS-Dilithium (ML-DSA)." NIST FIPS 204, 2024. |
-| [112] | Bernstein et al. "SPHINCS+: Stateless Hash-Based Signatures (SLH-DSA)." NIST FIPS 205, 2024. |
-| [113] | Fouque et al. "Falcon: Fast-Fourier Lattice-based Compact Signatures over NTRU (FN-DSA)." NIST FIPS 206, 2024. |
-| [114] | Huelsing et al. "XMSS: eXtended Merkle Signature Scheme." RFC 8391, 2018. |
-| [115] | McGrew, Curcio, Fluhrer. "Leighton-Micali Hash-Based Signatures." RFC 8554, 2019. |
-| [116] | De Feo et al. "SQIsign: compact post-quantum signatures from quaternions and isogenies." ASIACRYPT 2020. |
-| [117] | Lyubashevsky. "Lattice Signatures without Trapdoors." EUROCRYPT 2012. |
-| [118] | Stebila, Mosca. "Post-Quantum Key Exchange for the Internet and the Open Quantum Safe Project." SAC 2016. / Chrome: hybrid X25519Kyber768, 2024. |
 
 ---
 
