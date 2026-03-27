@@ -228,6 +228,16 @@
 - [Proof of Location / Spatial Proofs](#proof-of-location--spatial-proofs)
 - [Coercion-Resistant Voting / Receipt-Freeness](#coercion-resistant-voting--receipt-freeness)
 - [Deniable Authentication](#deniable-authentication)
+- [ZK-Friendly Hash Functions (Arithmetization-Oriented)](#zk-friendly-hash-functions-arithmetization-oriented)
+- [Traceable Secret Sharing](#traceable-secret-sharing)
+- [Ring VRF](#ring-vrf)
+- [VOLEitH (VOLE-in-the-Head)](#voleith-vole-in-the-head)
+- [Fluid MPC (Dynamic Participants)](#fluid-mpc-dynamic-participants)
+- [Lattice Isomorphism Problem (LIP) / HAWK](#lattice-isomorphism-problem-lip--hawk)
+- [Equivalence-Based PQ Signatures](#equivalence-based-pq-signatures)
+- [Position-Based Quantum Cryptography](#position-based-quantum-cryptography)
+- [Human-Computable Cryptography](#human-computable-cryptography)
+- [YOSO Model (You Only Speak Once)](#yoso-model-you-only-speak-once)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -3532,6 +3542,148 @@
 | **Dodis-Fiore-Ostrovsky-Rosen** | 2012 | Ring signatures | Deniable auth equivalent to ring signatures of size 2 [[1]](https://eprint.iacr.org/2012/282) |
 
 **State of the art:** DH-based deniable auth (in Signal, OTR); ring-signature-based for formal guarantees. Related to [Designated Verifier Signatures](#designated-verifier-signatures--proofs).
+
+---
+
+## ZK-Friendly Hash Functions (Arithmetization-Oriented)
+
+**Goal:** Hash functions optimized for ZK circuits. Standard hashes (SHA-256, BLAKE) have massive circuit size in ZK; arithmetization-oriented hashes minimize multiplicative depth and constraint count, enabling 10-100x speedup for in-SNARK hashing.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Poseidon** | 2019 | Partial SPN over Fp | First widely-deployed ZK hash; S-box = x^α over prime field [[1]](https://eprint.iacr.org/2019/458) |
+| **Poseidon2** | 2023 | Improved Poseidon | 2-4x faster than Poseidon; optimized linear layer [[1]](https://eprint.iacr.org/2023/323) |
+| **Anemoi / Jive** | 2023 | Flystel S-box | Novel "Flystel" structure + Jive compression; 2x improvement over Poseidon in R1CS [[1]](https://eprint.iacr.org/2022/840) |
+| **Griffin** | 2022 | Degree-3 S-box | Distinct non-linear/linear interaction; optimized for Groth16 [[1]](https://eprint.iacr.org/2022/403) |
+| **Reinforced Concrete** | 2022 | Lookup-table + algebraic | Combines lookup-based "bricks" with algebraic structure; CCS 2022 [[1]](https://eprint.iacr.org/2021/1038) |
+| **Tip5** | 2023 | Lookup-based (AIR) | Optimized for STARK/AIR proof systems; lookup-table S-box [[1]](https://eprint.iacr.org/2023/107) |
+
+**State of the art:** Poseidon2 (general ZK), Tip5 (STARKs), Reinforced Concrete (R1CS). A new primitive class bridging [Hash Functions](#hash-functions) and [ZK Proofs](#zero-knowledge-proofs-zk).
+
+---
+
+## Traceable Secret Sharing
+
+**Goal:** Leak deterrence for secret shares. If shareholders sell or leak their shares, a tracing algorithm can identify which shares were leaked — even when up to t shareholders collude. A new security property beyond [cheater detection](#secret-sharing-with-cheater-detection) or [robust SS](#robust-secret-sharing).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boneh-Partap-Rotem Traceable SS** | 2024 | Fingerprinting + Shamir | First traceable SS; tracing key identifies leaked shares; CRYPTO 2024 [[1]](https://eprint.iacr.org/2024/405) |
+| **Traceable SS for General Access** | 2024 | LSSS + tracing | Extension to general access structures (beyond threshold) [[1]](https://eprint.iacr.org/2024/405) |
+| **Bottom-Up Traceable SS** | 2025 | Social key recovery | Users self-assign shares; tracing in community key recovery model [[1]](https://eprint.iacr.org/2025/2089) |
+
+**State of the art:** Boneh-Partap-Rotem (CRYPTO 2024); new security dimension for [Secret Sharing](#secret-sharing-schemes-sss). Analogous to [traitor tracing](#broadcast-encryption) but for secret sharing.
+
+---
+
+## Ring VRF
+
+**Goal:** Anonymous pseudorandom identity. Combine ring signature anonymity with VRF pseudorandomness: prove membership in a ring and output a unique, deterministic, unlinkable pseudonym per context — without revealing which ring member you are.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Burdges-de Valence-Hopwood-Patak Ring VRF** | 2023 | Schnorr + ring + VRF | First Ring VRF; unlinkable pseudonymous identity across contexts [[1]](https://eprint.iacr.org/2023/002) |
+| **ZK Continuations for Ring VRF** | 2023 | Groth16 + recursion | Efficient Ring VRF via recursive ZK proofs [[1]](https://eprint.iacr.org/2023/002) |
+
+**State of the art:** Ring VRF (2023); enables anonymous rate-limiting, anonymous login, and credential systems. Combines [VRF](#verifiable-random-functions-vrf) and [Ring Signatures](#ring--group-signatures).
+
+---
+
+## VOLEitH (VOLE-in-the-Head)
+
+**Goal:** Efficient ZK from VOLE. Generalize MPCitH by replacing the secret-sharing-based MPC with VOLE as the underlying subprotocol. Produces shorter proofs for large witness languages (e.g., AES circuits). Foundation of the FAEST post-quantum signature.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Baum-Braun-Delpech de Saint Guilhem et al. VOLEitH** | 2023 | VOLE + ZK | First VOLEitH; shorter proofs than MPCitH for arithmetic witnesses; CRYPTO 2023 [[1]](https://eprint.iacr.org/2023/996) |
+| **FAEST Signature** | 2023 | VOLEitH + AES | PQ signature from VOLEitH on AES; security = AES key recovery; NIST Round 2 [[1]](https://faest.info/) |
+| **Appenzeller-to-Brie (A2B)** | 2024 | VOLEitH optimization | Improved VOLEitH with batch verification and smaller proofs [[1]](https://eprint.iacr.org/2024/1075) |
+
+**State of the art:** FAEST (NIST Additional Sigs Round 2); VOLEitH as paradigm alongside [MPCitH](#mpc-in-the-head-mpcith) and [Sigma Protocols](#sigma-protocols--schnorr-identification).
+
+---
+
+## Fluid MPC (Dynamic Participants)
+
+**Goal:** MPC with join/leave. Parties can dynamically enter and exit the computation mid-protocol — without restarting. Each round may have a completely different set of participants. Linear communication complexity. Essential for decentralized, permissionless settings.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Choudhuri-Goel-Green-Jain-Kaptchuk Fluid MPC** | 2021 | Secret sharing + handoff | First fluid MPC; parties hand off state to newcomers; CRYPTO 2021 [[1]](https://eprint.iacr.org/2020/754) |
+| **Fluid MPC with Linear Communication** | 2023 | Packed SS + handoff | Optimal communication complexity; CRYPTO 2023 [[1]](https://eprint.iacr.org/2023/012) |
+
+**State of the art:** Linear-communication Fluid MPC (2023); distinct from [Async MPC](#asynchronous-bft--asynchronous-mpc) (fixed parties, no timing) and standard [MPC](#multi-party-computation-mpc) (fixed parties, fixed protocol).
+
+---
+
+## Lattice Isomorphism Problem (LIP) / HAWK
+
+**Goal:** PQ crypto from a new hard problem. The Lattice Isomorphism Problem: given two lattices, determine if they are isomorphic (related by an orthogonal transformation). A fundamentally different hardness assumption from LWE/SIS — no floating-point arithmetic, no rejection sampling.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HAWK** | 2022 | Module LIP | PQ signature from LIP; 4x faster signing than Falcon; no floating-point; NIST Additional Sigs Round 2 [[1]](https://eprint.iacr.org/2022/1155) |
+| **LIP Public-Key Encryption** | 2024 | LIP | First PKE from LIP; distinct from LWE-based PKE [[1]](https://eprint.iacr.org/2023/1093) |
+| **Ducas-Postlethwaite-Pulles-van Woerden** | 2022 | LIP analysis | Security analysis; LIP is NP-hard in general; ASIACRYPT 2022 [[1]](https://eprint.iacr.org/2022/1155) |
+
+**State of the art:** HAWK (NIST Round 2); LIP as a new assumption class alongside LWE/SIS in [Post-Quantum Cryptography](#post-quantum-cryptography).
+
+---
+
+## Equivalence-Based PQ Signatures
+
+**Goal:** PQ signatures from code/form equivalence problems. A new family of hardness assumptions: is code C₁ equivalent to code C₂ under some transformation? Fundamentally different from lattice, hash, or multivariate assumptions. Multiple NIST Round 2 candidates.
+
+| Scheme | Year | Problem | Note |
+|--------|------|---------|------|
+| **LESS** | 2020 | Linear code equivalence | Monomial equivalence of linear codes; Fiat-Shamir on permutation identification [[1]](https://less-project.github.io/) |
+| **MEDS** | 2022 | Matrix code equivalence | Row+column operations on matrix codes; distinct algebraic structure [[1]](https://meds-pqc.org/) |
+| **ALTEQ** | 2022 | Alternating trilinear form eq. | Equivalence of multilinear algebraic objects [[1]](https://doi.org/10.1007/978-3-031-22966-4_11) |
+| **CROSS** | 2023 | Restricted syndrome decoding | MPCitH on restricted error sets; NIST Round 2 [[1]](https://cross-crypto.com/) |
+
+**State of the art:** LESS, MEDS, CROSS (all NIST Additional Sigs Round 2). A genuinely new problem class for [Post-Quantum](#post-quantum-cryptography) signatures.
+
+---
+
+## Position-Based Quantum Cryptography
+
+**Goal:** Location as sole credential. Cryptographic protocols where your geographic position is the only authentication factor — you can decrypt or participate only if you are physically at a specific location. Classically impossible against colluding adversaries; quantumly achievable via no-cloning.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Buhrman-Chandran-Fehr-Gelles-Goyal-Ostrovsky-Schaffner** | 2011 | Quantum + relativistic | First position-based QKD; secure against bounded quantum storage [[1]](https://doi.org/10.1007/978-3-642-22792-9_27) |
+| **Position Verification with Single-Qubit** | 2014 | BB84-like | Simplified protocol using single-qubit messages [[1]](https://doi.org/10.1007/978-3-662-44381-1_8) |
+| **Uncloneable Position Verification** | 2023 | No-cloning + relativity | Composable security from no-cloning + speed of light [[1]](https://eprint.iacr.org/2023/1643) |
+
+**State of the art:** Theoretical; requires relativistic constraints (speed of light). Extends [QKD](#quantum-key-distribution-qkd) to spatial authentication.
+
+---
+
+## Human-Computable Cryptography
+
+**Goal:** Authentication without devices. Cryptographic protocols that a human can execute mentally — no computer, no smartphone. A person memorizes a secret mapping and can authenticate by answering challenges in their head, even against an adversary who observed all prior sessions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Blum-Vempala Human Hash** | 2015 | Random mapping memorization | Human memorizes small mapping; computes f(challenge) mentally; usable but limited security [[1]](https://doi.org/10.4230/LIPIcs.ITCS.2017.10) |
+| **Blocki-Blum-Datta-Vempala** | 2017 | Cognitive model | Formal model of human computation; proves security bounds against polynomial adversary [[1]](https://doi.org/10.4230/LIPIcs.ITCS.2017.10) |
+| **CAPTCHA-Based Crypto (Canetti-Halevi-Steiner)** | 2013 | Human-solvable puzzles | CAPTCHA as cryptographic primitive; human interaction as security assumption [[1]](https://doi.org/10.1007/978-3-642-36362-7_30) |
+
+**State of the art:** Blum-Vempala (ITCS 2017); limited practical deployment but theoretically novel — security from cognitive limitations.
+
+---
+
+## YOSO Model (You Only Speak Once)
+
+**Goal:** MPC where each party sends exactly one message, then goes permanently offline. No interaction, no rounds — each party contributes once and disappears. Enables committee-based protocols where committee members are selected anonymously and ephemeral.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Gentry-Halevi-Magri-Nielsen-Yakoubov YOSO** | 2021 | Role-based MPC | First YOSO model; parties speak once then leave; CRYPTO 2021 [[1]](https://eprint.iacr.org/2021/210) |
+| **YOLO YOSO (Cascudo-Gennaro-Ishai-Nevet)** | 2022 | YOSO + secret sharing | Fast encryption and SS in YOSO model; ASIACRYPT 2022 [[1]](https://eprint.iacr.org/2022/1279) |
+| **PVSS over Class Groups for YOSO DKG** | 2024 | Class groups + PVSS | DKG in YOSO model using class group PVSS; EUROCRYPT 2024 [[1]](https://eprint.iacr.org/2023/1651) |
+
+**State of the art:** YOSO + PVSS for blockchain committee DKG; distinct from [Fluid MPC](#fluid-mpc-dynamic-participants) (parties interact multiple times) and [Async MPC](#asynchronous-bft--asynchronous-mpc) (parties stay online).
 
 ---
 
