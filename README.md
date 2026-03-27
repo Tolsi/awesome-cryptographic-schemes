@@ -206,6 +206,10 @@
 - [Key-Aggregate Encryption](#key-aggregate-encryption)
 - [Anonymous Broadcast Encryption](#anonymous-broadcast-encryption)
 - [Evolving Secret Sharing](#evolving-secret-sharing)
+- [Access Control Encryption (ACE)](#access-control-encryption-ace)
+- [Oblivious Polynomial Evaluation (OPE)](#oblivious-polynomial-evaluation-ope)
+- [Threshold Ring Signatures](#threshold-ring-signatures)
+- [Secret Sharing with Cheater Detection](#secret-sharing-with-cheater-detection)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -3190,6 +3194,63 @@
 | **Dynamic Evolving SS** | 2020 | Tree-based | Add participants AND update threshold over time [[1]](https://eprint.iacr.org/2020/789) |
 
 **State of the art:** Evolving SS (Komargodski et al. 2016+); useful for long-lived systems where participant set is unknown at setup. Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## Access Control Encryption (ACE)
+
+**Goal:** Enforced communication policy. A sanitizer mediates all communication — it enforces who can send messages to whom according to a policy, without learning message contents. Neither sender nor receiver can bypass the policy. Unlike ABE (controls who reads), ACE controls who communicates.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Damgård-Haagh-Orlandi ACE** | 2016 | iO / witness encryption | First ACE; sanitizer enforces access graph without learning content [[1]](https://eprint.iacr.org/2016/106) |
+| **ACE from Pairings (Fuchsbauer et al.)** | 2017 | Pairings + NIZK | Practical ACE without iO; disjunctive normal form policies [[1]](https://eprint.iacr.org/2017/457) |
+| **ACE with Accountability** | 2019 | ACE + tracing | Identify policy violators; accountable sanitizer [[1]](https://eprint.iacr.org/2019/904) |
+
+**State of the art:** Pairing-based ACE (2017); combines ideas from [ABE](#attribute-based--functional-encryption), [Proxy Re-Encryption](#proxy-re-encryption-pre), and network access control.
+
+---
+
+## Oblivious Polynomial Evaluation (OPE)
+
+**Goal:** Private function evaluation for polynomials. Sender holds a polynomial P(x) of degree d; receiver holds a point x₀. Receiver learns P(x₀) and nothing else; sender learns nothing about x₀. Not to be confused with order-preserving encryption.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Naor-Pinkas OPE** | 1999 | OT + polynomial | First efficient OPE from OT; sender's polynomial stays hidden [[1]](https://doi.org/10.1007/3-540-48405-1_8) |
+| **OPE from Homomorphic Encryption** | 2006 | Paillier | Evaluate encrypted polynomial; additive HE suffices for poly eval [[1]](https://doi.org/10.1007/11681878_14) |
+| **Batch OPE (Ghosh-Nilges)** | 2021 | VOLE | Batch evaluation of many points; amortized from VOLE [[1]](https://eprint.iacr.org/2021/1254) |
+
+**State of the art:** VOLE-based batch OPE (2021); building block for [PSI](#private-set-intersection-psi), [OPRF](#oblivious-prf-oprf) constructions, and private equality testing. See [OLE/VOLE](#oblivious-linear-evaluation-ole--vole).
+
+---
+
+## Threshold Ring Signatures
+
+**Goal:** Anonymous threshold signing. At least t members of a ring must cooperate to produce a valid signature, but the ring hides which members signed. Combines the anonymity of ring signatures with the distributed trust of threshold signatures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bresson-Stern-Szydlo TRS** | 2002 | DLP | First threshold ring signature; t-of-n from a ring of N [[1]](https://doi.org/10.1007/3-540-36178-2_20) |
+| **Tsang-Wei TRS** | 2005 | Pairings | Short threshold ring sigs; separable threshold from ring [[1]](https://doi.org/10.1007/978-3-540-30580-4_27) |
+| **Lattice TRS (Cayrel et al.)** | 2010 | Lattice (SIS) | Post-quantum threshold ring signatures [[1]](https://doi.org/10.1007/978-3-642-14423-3_18) |
+
+**State of the art:** Lattice-based TRS for PQ. Combines [Ring & Group Signatures](#ring--group-signatures) and [Threshold Signatures](#threshold-signature-schemes-tss).
+
+---
+
+## Secret Sharing with Cheater Detection
+
+**Goal:** Tamper detection during reconstruction. If a participant submits a forged or modified share, the reconstruction algorithm detects the fraud (cheater detection) or identifies the cheater (cheater identification) — rather than silently outputting a wrong secret.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Tompa-Woll Cheater Detection** | 1988 | Redundant shares | First cheater-detectable SS; honest majority can detect forged shares [[1]](https://doi.org/10.1007/0-387-34799-2_20) |
+| **McEliece-Sarwate (error-correcting)** | 1981 | Reed-Solomon | Shamir SS as Reed-Solomon code; detect/correct errors via decoding [[1]](https://doi.org/10.1145/360363.360369) |
+| **Cheater Identifiable SS (Ishai-Sahai)** | 2006 | MAC-based | Identify exactly which participants cheated; optimal cheater tolerance [[1]](https://eprint.iacr.org/2006/140) |
+| **Unconditionally Secure Cheater Detection (Ogata et al.)** | 2005 | Information-theoretic | Optimal share size with information-theoretic cheater detection [[1]](https://doi.org/10.1007/978-3-540-30576-7_5) |
+
+**State of the art:** MAC-based cheater identification (Ishai-Sahai 2006); used in malicious-secure [MPC](#multi-party-computation-mpc). Extends [Secret Sharing](#secret-sharing-schemes-sss), complements [Robust SS](#robust-secret-sharing).
 
 ---
 
