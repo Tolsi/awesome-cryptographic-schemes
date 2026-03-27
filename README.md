@@ -238,6 +238,16 @@
 - [Position-Based Quantum Cryptography](#position-based-quantum-cryptography)
 - [Human-Computable Cryptography](#human-computable-cryptography)
 - [YOSO Model (You Only Speak Once)](#yoso-model-you-only-speak-once)
+- [Private Stream Aggregation (PSA)](#private-stream-aggregation-psa)
+- [Secret Leader Election](#secret-leader-election)
+- [Order-Fair Consensus](#order-fair-consensus)
+- [Fuzzy Message Detection (FMD)](#fuzzy-message-detection-fmd)
+- [Secret-Shared Shuffle](#secret-shared-shuffle)
+- [Oblivious DNS (ODoH)](#oblivious-dns-odoh)
+- [Unclonable Secret Sharing](#unclonable-secret-sharing)
+- [Privacy-Preserving Record Linkage (PPRL)](#privacy-preserving-record-linkage-pprl)
+- [Homomorphic Hashing](#homomorphic-hashing)
+- [Rational Cryptography](#rational-cryptography)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -3684,6 +3694,143 @@
 | **PVSS over Class Groups for YOSO DKG** | 2024 | Class groups + PVSS | DKG in YOSO model using class group PVSS; EUROCRYPT 2024 [[1]](https://eprint.iacr.org/2023/1651) |
 
 **State of the art:** YOSO + PVSS for blockchain committee DKG; distinct from [Fluid MPC](#fluid-mpc-dynamic-participants) (parties interact multiple times) and [Async MPC](#asynchronous-bft--asynchronous-mpc) (parties stay online).
+
+---
+
+## Private Stream Aggregation (PSA)
+
+**Goal:** Aggregate time-series data from many users without seeing individual values. Each user encrypts their data point; the aggregator computes the sum (or polynomial function) of all values without decrypting any individual contribution. Lighter than FHE/MPC — designed for smart metering, federated analytics.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Shi-Chan-Rieffel-Chow-Song PSA** | 2011 | DLP + noise | First PSA; aggregator learns only noisy sum; differential privacy built in [[1]](https://eprint.iacr.org/2010/612) |
+| **DIPSAUCE (Trusted-Setup-Free PSA)** | 2023 | LWE | No trusted authority for key generation; fully decentralized setup [[1]](https://eprint.iacr.org/2023/214) |
+| **PPSA (Polynomial PSA)** | 2024 | Lattice + DP | Extends PSA to arbitrary polynomial functions over streams; 138x speedup over prior work [[1]](https://eprint.iacr.org/2024/1460) |
+
+**State of the art:** PPSA (2024) for polynomial aggregation; DIPSAUCE for trustless setup. Distinct from [SecAgg](#secure-aggregation-secagg) (one-shot) and [HE](#homomorphic-encryption-he) (general computation) by focusing on lightweight streaming aggregation.
+
+---
+
+## Secret Leader Election
+
+**Goal:** Elect a leader (block proposer, committee chair) so that the leader's identity is secret until they act. Prevents targeted DoS/bribery attacks on the next leader. Used in blockchain consensus (Ethereum single-slot finality research).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Algorand Cryptographic Sortition** | 2017 | VRF | VRF-based self-selection; each user privately checks if selected [[1]](https://arxiv.org/abs/1607.01341) |
+| **Boneh-Eskandarian-Fisch-Hanzlik SLE** | 2020 | Commit-reveal + VRF | Formal secret leader election; leader identity hidden until block proposal [[1]](https://eprint.iacr.org/2020/025) |
+| **Whisk (Ethereum proposal)** | 2022 | Shuffle + commitments | Shuffled validator registry; no one knows next proposer; considered for Ethereum [[1]](https://ethresear.ch/t/whisk-a-practical-shuffle-based-ssle-protocol-for-ethereum/11763) |
+
+**State of the art:** Whisk for Ethereum; Algorand sortition deployed. Combines [VRF](#verifiable-random-functions-vrf) and [Commitment Schemes](#commitment-schemes).
+
+---
+
+## Order-Fair Consensus
+
+**Goal:** Prevent transaction reordering attacks (MEV). If most honest nodes receive transaction A before B, then A must be ordered before B in the final ledger. A new consensus property alongside safety and liveness — fairness of ordering.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Aequitas (Kelkar-Zhang-Goldfeder-Juels)** | 2020 | Threshold timestamps | First order-fair consensus; CRYPTO 2020; ordering reflects receive-order [[1]](https://eprint.iacr.org/2020/269) |
+| **Themis** | 2023 | Batch-ordering + consensus | Strong order-fairness with standard liveness; negligible overhead over BFT [[1]](https://eprint.iacr.org/2021/1465) |
+| **BEAT-MEV** | 2024 | Batched threshold encryption | Epochless batched TE for encrypted mempools; USENIX Security 2025 [[1]](https://eprint.iacr.org/2024/1533) |
+
+**State of the art:** Themis (2023) for consensus-level fairness; BEAT-MEV for encryption-based MEV prevention. Extends [Encrypted Mempools](#encrypted-mempools--threshold-encryption-for-transaction-ordering) and [Async BFT](#asynchronous-bft--asynchronous-mpc).
+
+---
+
+## Fuzzy Message Detection (FMD)
+
+**Goal:** Detect your messages with tunable false positives. A server tests encrypted messages against your detection key — matches include your messages plus a controlled rate of false positives (cover traffic). Privacy degrades gracefully: more false positives = more privacy.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Beck-Len-Miers-Green FMD** | 2021 | DDH / pairings | First FMD; tunable false-positive rate p via multi-key detection [[1]](https://eprint.iacr.org/2021/089) |
+| **Multi-Server FMD** | 2025 | Distributed detection | Multiple servers hold detection key shares; threshold detection [[1]](https://eprint.iacr.org/2025/2072) |
+
+**State of the art:** FMD (2021) for privacy-preserving message routing; extends [OMR](#oblivious-message-retrieval-omr) and [PIR](#private-information-retrieval-pir) with tunable privacy/bandwidth tradeoff. Proposed for Zcash.
+
+---
+
+## Secret-Shared Shuffle
+
+**Goal:** Jointly permute a secret-shared dataset so that neither party learns the permutation. A fundamental building block for anonymous communication, private analytics, and oblivious sorting — but as a standalone, optimized primitive (not general MPC).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chase-Ghosh-Poburinnaya Shuffle** | 2020 | PRF + secret sharing | First sublinear-round secret-shared shuffle [[1]](https://eprint.iacr.org/2019/1340) |
+| **Maliciously Secure Shuffle (NDSS 2024)** | 2024 | Correlation checks | Malicious security via lightweight checks; linear communication [[1]](https://www.ndss-symposium.org/wp-content/uploads/2024-21-paper.pdf) |
+| **SLIDE** | 2025 | Shamir SS + unconditional | Uniform shuffle of Shamir shares; unconditional security under honest majority [[1]](https://eprint.iacr.org/2025/165) |
+
+**State of the art:** SLIDE (2025) for unconditional security; maliciously secure shuffle (NDSS 2024) for two-party. Extends [Oblivious Sorting](#oblivious-sorting--oblivious-data-structures) and [Mixnets](#mix-networks-mixnets).
+
+---
+
+## Oblivious DNS (ODoH)
+
+**Goal:** DNS privacy without trusting any single party. Client encrypts DNS query with HPKE to the resolver; a proxy forwards it without decrypting. The proxy sees the client but not the query; the resolver sees the query but not the client. Cryptographic separation of identity from intent.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Oblivious DoH (ODoH)** | 2021 | HPKE + proxy | IETF RFC 9230; deployed by Cloudflare + Apple; proxy-based privacy [[1]](https://www.rfc-editor.org/rfc/rfc9230) |
+| **μODNS (Mutualized Oblivious DNS)** | 2021 | Multi-relay | Multiple randomly selected relays; defeats single-relay collusion [[1]](https://arxiv.org/abs/2104.13785) |
+
+**State of the art:** ODoH (RFC 9230) deployed in Apple iCloud Private Relay, Cloudflare. Related to [Onion Routing](#onion-routing) but specialized for DNS.
+
+---
+
+## Unclonable Secret Sharing
+
+**Goal:** Secret sharing where quantum shares cannot be cloned. If a shareholder tries to duplicate their quantum share, at least one copy becomes useless for reconstruction. Prevents share proliferation — a new quantum security property for [Secret Sharing](#secret-sharing-schemes-sss).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Unclonable Secret Sharing** | 2024 | Quantum no-cloning | First USS; quantum shares; even t colluding shareholders cannot produce extra working copies [[1]](https://eprint.iacr.org/2024/716) |
+| **Unclonable Encryption** | 2023 | Quantum (plain model) | Related: ciphertext can only be decrypted once; constructed without quantum RO [[1]](https://eprint.iacr.org/2023/1825) |
+
+**State of the art:** USS (2024); extends [Quantum Copy-Protection](#quantum-copy-protection--uncloneable-encryption) to the secret sharing domain.
+
+---
+
+## Privacy-Preserving Record Linkage (PPRL)
+
+**Goal:** Link records across databases (hospitals, registries) referring to the same person — without revealing any personal data to the other party. Match on fuzzy identifiers (name variants, typos) using MPC/PSI techniques. Critical for medical research and census.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bloom Filter PPRL (Schnell et al.)** | 2009 | Bloom filters + Dice coeff. | First practical PPRL; encode n-grams of names in Bloom filters; compare similarity [[1]](https://doi.org/10.1186/1472-6947-9-41) |
+| **MainSEL** | 2022 | ABY MPC + Bloom filters | Production MPC system; links against 10K records in <4 sec; deployed in German hospitals [[1]](https://academic.oup.com/bioinformatics/article/38/6/1657/5900257) |
+| **Fuzzy PSI for PPRL** | 2025 | VOLE + fuzzy matching | Extension of [PSI](#private-set-intersection-psi) to approximate/fuzzy matching for record linkage [[1]](https://eprint.iacr.org/2025/911) |
+
+**State of the art:** MainSEL (deployed); Fuzzy PSI from VOLE (2025). Combines [PSI](#private-set-intersection-psi), [MPC](#multi-party-computation-mpc), and approximate matching.
+
+---
+
+## Homomorphic Hashing
+
+**Goal:** A hash function where H(a + b) = H(a) · H(b) (or similar homomorphism). Enables verifying computations on data without seeing the data, integrity checks on distributed storage, and secure multicast authentication — all without recomputing the full hash.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **LtHash (Bellare-Micciancio)** | 1997 | Lattice-based | First homomorphic hash; H(a⊕b) = H(a) + H(b); used in Meta's encrypted database integrity [[1]](https://cseweb.ucsd.edu/~daniele/papers/LtHash.pdf) |
+| **MuHash (Bellare-Micciancio)** | 1997 | Multiplication in group | Multiplicative homomorphic hash; H(a∥b) = H(a) · H(b); used in Bitcoin UTXO set hashing [[1]](https://cseweb.ucsd.edu/~daniele/papers/MuHash.pdf) |
+| **ECMH (Elliptic Curve Multiset Hash)** | 2003 | EC points | Hash set to EC point; additive homomorphism; set equality testing [[1]](https://arxiv.org/abs/1601.06502) |
+
+**State of the art:** LtHash (Meta Diem), MuHash (Bitcoin Core); related to [Universal Hash](#universal-hash-functions-carter-wegman) and [Homomorphic Signatures](#homomorphic-signatures).
+
+---
+
+## Rational Cryptography
+
+**Goal:** Crypto protocols secure against rational (game-theoretic) adversaries — not just honest/malicious but self-interested agents who deviate only when it benefits them. Uses mechanism design: make cheating economically irrational. Bridges cryptography and game theory.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Halpern-Teague Rational Secret Sharing** | 2004 | Game theory + SS | First rational SS; players cooperate because deviating yields worse outcome [[1]](https://doi.org/10.1145/1007352.1007427) |
+| **Abraham-Dolev-Gonen-Halpern** | 2006 | Rational MPC | Distributed computing with rational players; equilibrium-based security [[1]](https://doi.org/10.1007/11818175_1) |
+| **Groce-Katz Rational Protocol Design** | 2012 | Mechanism design + MPC | Fair MPC via utility alignment; punishment strategies enforce cooperation [[1]](https://eprint.iacr.org/2012/029) |
+
+**State of the art:** Rational protocol design (2012); active in blockchain mechanism design. Bridges [MPC](#multi-party-computation-mpc) and economic incentive theory.
 
 ---
 
