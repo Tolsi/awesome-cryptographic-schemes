@@ -45,6 +45,24 @@
 - [Chameleon Hash (Trapdoor Hash)](#chameleon-hash-trapdoor-hash)
 - [Threshold Decryption](#threshold-decryption)
 - [Publicly Verifiable Secret Sharing (PVSS)](#publicly-verifiable-secret-sharing-pvss)
+- [Broadcast Encryption](#broadcast-encryption)
+- [Time-Lock Puzzles / Timed-Release Encryption](#time-lock-puzzles--timed-release-encryption)
+- [Randomness Beacons / Coin Tossing](#randomness-beacons--coin-tossing)
+- [Verifiable Computation (VC)](#verifiable-computation-vc)
+- [Proof of Work (PoW) / Proof of Space](#proof-of-work-pow--proof-of-space)
+- [Deniable Encryption](#deniable-encryption)
+- [Fuzzy Extractors / Secure Sketches](#fuzzy-extractors--secure-sketches)
+- [Mix Networks (Mixnets)](#mix-networks-mixnets)
+- [Order-Preserving / Order-Revealing Encryption (OPE / ORE)](#order-preserving--order-revealing-encryption-ope--ore)
+- [Deterministic Encryption / Convergent Encryption](#deterministic-encryption--convergent-encryption)
+- [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem--dem-paradigm)
+- [Indistinguishability Obfuscation (iO)](#indistinguishability-obfuscation-io)
+- [Updatable Encryption](#updatable-encryption)
+- [Rerandomizable Encryption](#rerandomizable-encryption)
+- [Puncturable / Constrained PRF](#puncturable--constrained-prf)
+- [Non-Malleable Encryption / Commitments](#non-malleable-encryption--commitments)
+- [Secret Handshakes / Hidden Credentials](#secret-handshakes--hidden-credentials)
+- [Randomness Extractors](#randomness-extractors)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -371,6 +389,7 @@
 | **FAME** | 2017 | CP-ABE (prime-order) | Fast, prime-order groups; practical [[1]](https://eprint.iacr.org/2017/807) |
 | **Inner-Product FE (Abdalla et al.)** | 2015 | Functional Encryption | Decrypt inner product of attribute vectors [[1]](https://eprint.iacr.org/2015/017) |
 | **Multi-Input FE** | 2014 | Functional Encryption | Multiple encryptors, joint function [[1]](https://eprint.iacr.org/2013/774) |
+| **Predicate Encryption (KSW)** | 2008 | Pairings | Generalization of ABE: decrypt iff predicate(key attrs, ct attrs) = true [[1]](https://eprint.iacr.org/2008/290) |
 
 **State of the art:** FAME (practical ABE), Inner-Product FE (ML applications).
 
@@ -416,12 +435,14 @@
 | **Bilinear Accumulator** | 2005 | Pairings | Efficient non-membership proofs [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30580-4_14) |
 | **Merkle Tree** | 1979 | Hash | Simple; membership proof is O(log n); used everywhere [[1]](https://link.springer.com/chapter/10.1007/3-540-48184-2_32) |
 | **Verkle Tree** | 2018 | KZG + Merkle | Smaller proofs than Merkle; proposed for Ethereum [[1]](https://eprint.iacr.org/2010/274) |
+| **Bloom Filter** | 1970 | Hash-based | Probabilistic set membership test; false positives, no false negatives; ubiquitous [[1]](https://dl.acm.org/doi/10.1145/362686.362692) |
+| **Garbled Bloom Filter** | 2014 | Symmetric | Privacy-preserving set membership; used in PSI protocols [[1]](https://eprint.iacr.org/2013/620) |
 
 **State of the art:** Verkle Trees (blockchain), RSA Accumulators + batching [[1]](https://eprint.iacr.org/2018/1188).
 
 ---
 
-### Pseudorandom Functions (PRF) & Pseudorandom Permutations (PRP)
+## Pseudorandom Functions (PRF) & Pseudorandom Permutations (PRP)
 
 **Goal:** Security foundation. A PRF is indistinguishable from a truly random function; a PRP from a random permutation. Underlies MACs, KDFs, stream ciphers, OT, and garbled circuits.
 
@@ -436,7 +457,7 @@
 
 ---
 
-### Oblivious PRF (OPRF)
+## Oblivious PRF (OPRF)
 
 **Goal:** Privacy. A client and server jointly evaluate a PRF on the client's input using the server's key — the client learns only the output, the server learns nothing. Provides input confidentiality + unlinkability.
 
@@ -450,7 +471,7 @@
 
 ---
 
-### Verifiable Delay Functions (VDF)
+## Verifiable Delay Functions (VDF)
 
 **Goal:** Unpredictability + public verifiability. Compute a function that requires at least T sequential steps, but whose output can be verified quickly. Used in unbiasable randomness beacons and blockchain leader election.
 
@@ -464,7 +485,7 @@
 
 ---
 
-### Distributed Key Generation (DKG)
+## Distributed Key Generation (DKG)
 
 **Goal:** Availability + distributed trust. Generate a threshold public/private keypair among *n* parties so that no single party — nor any coalition below threshold *t* — ever knows the full private key.
 
@@ -479,7 +500,7 @@
 
 ---
 
-### Identity-Based Encryption (IBE)
+## Identity-Based Encryption (IBE)
 
 **Goal:** Confidentiality without PKI. Encrypt to an arbitrary identity string (email address, phone number, domain) — the recipient obtains a private key from a trusted authority and decrypts.
 
@@ -494,7 +515,7 @@
 
 ---
 
-### Proxy Re-Encryption (PRE)
+## Proxy Re-Encryption (PRE)
 
 **Goal:** Delegated confidentiality. A semi-trusted proxy can re-encrypt Alice's ciphertext so Bob can decrypt it — without the proxy ever seeing the plaintext. Used in cloud storage access delegation.
 
@@ -508,7 +529,7 @@
 
 ---
 
-### Signcryption
+## Signcryption
 
 **Goal:** Confidentiality + Authentication + Non-repudiation in a single pass. More efficient than sequential sign-then-encrypt; security is proven jointly (IND-CCA2 + EUF-CMA).
 
@@ -522,7 +543,7 @@
 
 ---
 
-### Private Set Intersection (PSI)
+## Private Set Intersection (PSI)
 
 **Goal:** Privacy-preserving intersection. Two parties compute the intersection of their private sets, learning only the intersection — nothing about non-matching elements. Used in contact discovery (Signal, Apple), private advertising measurement.
 
@@ -537,7 +558,7 @@
 
 ---
 
-### Oblivious RAM (ORAM)
+## Oblivious RAM (ORAM)
 
 **Goal:** Access pattern hiding. Access a remote encrypted store so that the server cannot tell which locations are being read or written — even across many accesses.
 
@@ -552,7 +573,7 @@
 
 ---
 
-### Private Information Retrieval (PIR)
+## Private Information Retrieval (PIR)
 
 **Goal:** Query privacy. A client retrieves an element from a database without the server learning which element was fetched.
 
@@ -567,7 +588,7 @@
 
 ---
 
-### Searchable Encryption (SSE / PEKS)
+## Searchable Encryption (SSE / PEKS)
 
 **Goal:** Confidential search. Search over encrypted data without decrypting it. A server executes keyword queries on ciphertexts and returns matching documents.
 
@@ -582,7 +603,7 @@
 
 ---
 
-### Format-Preserving Encryption (FPE)
+## Format-Preserving Encryption (FPE)
 
 **Goal:** Confidentiality with structural compatibility. Ciphertext has the exact same format as plaintext — a 16-digit credit card number encrypts to another 16-digit number. Required for PCI-DSS tokenization and legacy systems.
 
@@ -596,7 +617,7 @@
 
 ---
 
-### Anonymous Credentials
+## Anonymous Credentials
 
 **Goal:** Selective disclosure + unlinkability. Prove possession of attributes (age, nationality, membership) without revealing identity or linking multiple presentations. Used in digital IDs, privacy-preserving access control.
 
@@ -611,7 +632,7 @@
 
 ---
 
-### One-Time Signatures (OTS)
+## One-Time Signatures (OTS)
 
 **Goal:** Post-quantum authentication. Sign exactly one message; the signing key is spent. Quantum-safe: security depends only on hash function collision resistance. Building block of XMSS, LMS, and SPHINCS+.
 
@@ -626,7 +647,7 @@
 
 ---
 
-### Quantum Key Distribution (QKD)
+## Quantum Key Distribution (QKD)
 
 **Goal:** Information-theoretic key establishment. Distribute a shared secret key using quantum mechanics — any eavesdropping attempt disturbs the quantum state and is detectable. Unlike PQ crypto (software), QKD requires quantum hardware.
 
@@ -641,7 +662,7 @@
 
 ---
 
-### Chameleon Hash (Trapdoor Hash)
+## Chameleon Hash (Trapdoor Hash)
 
 **Goal:** Controlled collision resistance. A hash function that appears collision-resistant to everyone except the holder of a secret trapdoor key, who can find arbitrary collisions. Enables redactable signatures and updatable blockchain transactions.
 
@@ -655,7 +676,7 @@
 
 ---
 
-### Threshold Decryption
+## Threshold Decryption
 
 **Goal:** Distributed confidentiality. *t-of-n* parties jointly decrypt a ciphertext without any single party reconstructing the full private key. Complement to Threshold Signatures for the encryption side.
 
@@ -670,7 +691,7 @@
 
 ---
 
-### Publicly Verifiable Secret Sharing (PVSS)
+## Publicly Verifiable Secret Sharing (PVSS)
 
 **Goal:** Transparency + integrity. A verifiable secret sharing scheme where *anyone* (not just participants) can verify that shares are correctly computed — even without a trusted dealer.
 
@@ -681,6 +702,264 @@
 | **Aggregatable PVSS** | 2021 | KZG + pairings | O(1) verification; scalable for blockchain randomness [[1]](https://eprint.iacr.org/2021/339) |
 
 **State of the art:** Aggregatable PVSS (randomness beacons, DKG), Schoenmakers (classic deployments).
+
+---
+
+## Broadcast Encryption
+
+**Goal:** Selective confidentiality. Encrypt to an arbitrary subset of *N* registered users so only authorized members can decrypt. Efficient revocation without re-keying all users. Used in DRM (Blu-ray AACS), pay-TV, multicast.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Fiat-Naor BE** | 1993 | Combinatorial | First formal broadcast encryption scheme [[1]](https://link.springer.com/chapter/10.1007/3-540-48329-2_40) |
+| **NNL (Subset-Difference)** | 2001 | Key trees | Used in AACS (Blu-ray); O(r log(N/r)) header size [[1]](https://link.springer.com/chapter/10.1007/3-540-44647-8_4) |
+| **Boneh-Gentry-Waters** | 2005 | Bilinear pairings | O(1) ciphertext header; short keys [[1]](https://eprint.iacr.org/2005/018) |
+| **Traitor Tracing (BSW)** | 2006 | Pairings | Identify leakers of decryption keys; combines with BE [[1]](https://eprint.iacr.org/2006/056) |
+
+**State of the art:** NNL (industry standard in AACS/CPPM), Boneh-Gentry-Waters (short ciphertexts).
+
+---
+
+## Time-Lock Puzzles / Timed-Release Encryption
+
+**Goal:** Temporal confidentiality. Force a minimum sequential computation time *T* before a secret can be recovered — even with unlimited parallelism. "Encrypt to the future."
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Rivest-Shamir-Wagner TLP** | 1996 | Repeated squaring (RSA group) | First time-lock puzzle; foundational [[1]](https://people.csail.mit.edu/rivest/pubs/RSW96.pdf) |
+| **Malavolta-Thyagarajan TLP** | 2019 | Generic (any sequential function) | TLP without RSA assumption [[1]](https://eprint.iacr.org/2019/635) |
+| **Homomorphic TLP** | 2020 | RSA + HE | Compute on time-locked data without unlocking [[1]](https://eprint.iacr.org/2019/635) |
+
+**State of the art:** RSW TLP (practical, used with VDFs), Homomorphic TLP (privacy-preserving auctions).
+
+---
+
+## Randomness Beacons / Coin Tossing
+
+**Goal:** Public unpredictability. Generate random values that are publicly verifiable, unpredictable before publication, and unbiasable by any party. Used in lotteries, parameter generation, leader election.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Blum Coin Tossing** | 1981 | Commitment | First 2-party fair coin toss protocol [[1]](https://dl.acm.org/doi/10.1145/800076.802493) |
+| **NIST Randomness Beacon** | 2013 | Hardware RNG | Centralized public beacon; 512-bit values every 60s [[1]](https://csrc.nist.gov/projects/interoperable-randomness-beacons) |
+| **drand (League of Entropy)** | 2020 | Threshold BLS | Decentralized beacon; Cloudflare, Protocol Labs, etc. [[1]](https://eprint.iacr.org/2023/728) |
+| **RANDAO + VDF** | 2022 | Commit-reveal + VDF | Ethereum Beacon Chain; bias-resistant via VDF [[1]](https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/attestations/) |
+
+**State of the art:** drand (decentralized, production-grade), RANDAO+VDF (Ethereum consensus).
+
+---
+
+## Verifiable Computation (VC)
+
+**Goal:** Delegated integrity. Outsource computation to an untrusted server and verify correctness of the result efficiently — faster than re-executing. Foundation of rollups, cloud computing, and proof-carrying data.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Interactive Proofs (GMR)** | 1985 | Information-theoretic | Foundational: prover convinces verifier of statement truth [[1]](https://dl.acm.org/doi/10.1145/22145.22178) |
+| **Pinocchio** | 2013 | QAPs + pairings | First practical VC; basis of many zkSNARKs [[1]](https://eprint.iacr.org/2013/279) |
+| **GGP (FHE-based VC)** | 2010 | FHE | Verify any computation via bootstrapping [[1]](https://eprint.iacr.org/2009/547) |
+| **vnTinyRAM / TinyRAM** | 2013 | SNARK for RAM | VC for arbitrary programs (not just circuits) [[1]](https://eprint.iacr.org/2013/507) |
+
+**State of the art:** modern zkSNARKs/STARKs subsume VC; Pinocchio historically foundational.
+
+---
+
+## Proof of Work (PoW) / Proof of Space
+
+**Goal:** Sybil resistance. Prove that computational or storage resources were expended. Unforgeable and adjustable in difficulty. Foundation of permissionless consensus (Bitcoin, Zcash, Chia).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Hashcash** | 1997 | SHA-1 / hash | First practical PoW; anti-spam email [[1]](http://www.hashcash.org/papers/hashcash.pdf) |
+| **Bitcoin PoW** | 2008 | Double-SHA256 | Difficulty-adjustable PoW; Nakamoto consensus [[1]](https://bitcoin.org/bitcoin.pdf) |
+| **Equihash** | 2016 | Generalized birthday | Memory-hard PoW; ASIC-resistant; used in Zcash [[1]](https://eprint.iacr.org/2015/946) |
+| **Proof of Space (Dziembowski)** | 2015 | Graph pebbling | Store data instead of compute; used in Chia Network [[1]](https://eprint.iacr.org/2013/796) |
+
+**State of the art:** Bitcoin PoW (deployed, highest hashrate), Proof of Space (energy-efficient alternative).
+
+---
+
+## Deniable Encryption
+
+**Goal:** Coercion resistance. After encryption, the sender/receiver can produce fake randomness making it look like a different plaintext was encrypted. Protects under duress or legal compulsion.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CDNO Deniable Encryption** | 1997 | Sender-deniable PKE | Foundational definitions; first constructions [[1]](https://link.springer.com/chapter/10.1007/BFb0052229) |
+| **Sahai-Waters Receiver-Deniable** | 2014 | iO (indistinguishability obfuscation) | First receiver-deniable PKE (from iO) [[1]](https://eprint.iacr.org/2014/381) |
+| **OTR Messaging** | 2004 | DH + MAC (no signatures) | Practical deniability in chat; no non-repudiation [[1]](https://otr.cypherpunks.ca/otr-wpes.pdf) |
+| **Signal Protocol (deniability)** | 2013 | Triple-DH + ratchet | Deniable by design: no binding signatures on messages [[1]](https://signal.org/docs/specifications/doubleratchet/) |
+
+**State of the art:** Signal Protocol (practical messaging), OTR (classic chat), Sahai-Waters (theoretical).
+
+---
+
+## Fuzzy Extractors / Secure Sketches
+
+**Goal:** Biometric key derivation. Derive a stable, reproducible cryptographic key from noisy biometric data (fingerprints, iris, typing patterns) that varies between readings. Sketch leaks minimal entropy about the source.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Dodis-Reyzin-Smith** | 2004 | Information-theoretic | Formal definitions; Gen/Rep paradigm [[1]](https://eprint.iacr.org/2003/235) |
+| **Boyen Fuzzy IBE** | 2004 | Pairings + error-tolerance | Identity-based encryption with biometric keys [[1]](https://eprint.iacr.org/2004/086) |
+| **Computational Fuzzy Extractors** | 2013 | Computational assumptions | Relaxed model; better parameters for real biometrics [[1]](https://eprint.iacr.org/2013/416) |
+
+**State of the art:** Computational Fuzzy Extractors (practical biometric systems), Dodis-Reyzin-Smith (theoretical foundation).
+
+---
+
+## Mix Networks (Mixnets)
+
+**Goal:** Sender anonymity. Messages are shuffled through a chain of servers; each removes a layer of encryption and permutes the batch, so the link between sender and recipient is hidden. Foundation of anonymous communication and e-voting.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chaum Decryption Mix** | 1981 | PKE + layered enc | First mixnet proposal; onion encryption through relay chain [[1]](https://link.springer.com/chapter/10.1007/978-1-4757-0602-4_18) |
+| **Re-encryption Mixnet** | 1993 | Rerandomizable enc | Rerandomize ciphertexts without decrypting at each hop [[1]](https://link.springer.com/chapter/10.1007/3-540-57220-1_66) |
+| **Verifiable Shuffle (Neff)** | 2001 | ZK proofs | Prove shuffle correctness; used in e-voting (Verificatum) [[1]](https://dl.acm.org/doi/10.1145/501983.502000) |
+| **Loopix / Nym** | 2017 | Poisson mixing + cover traffic | Continuous-time mixnet; resists traffic analysis [[1]](https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/piotrowska) |
+
+**State of the art:** Loopix/Nym (modern anonymous comm.), Verifiable Shuffle (e-voting).
+
+---
+
+## Order-Preserving / Order-Revealing Encryption (OPE / ORE)
+
+**Goal:** Encrypted range queries. Ciphertext preserves or reveals the numerical order of plaintexts, enabling range queries on encrypted databases without decrypting. **Warning:** inherent leakage; weaker than standard encryption.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boldyreva OPE** | 2009 | Hypergeometric sampling | First provably secure OPE; leaks order + approximate distance [[1]](https://eprint.iacr.org/2009/197) |
+| **Chenette-Lewi-Wu ORE** | 2016 | PRF + block cipher | Reveals only order, not distance; "best-possible" ORE [[1]](https://eprint.iacr.org/2016/612) |
+| **Lewi-Wu Practical ORE** | 2016 | PRF | Efficient; used in CryptDB-like systems [[1]](https://eprint.iacr.org/2016/612) |
+
+**State of the art:** Lewi-Wu ORE (practical), but SSE/FHE approaches preferred when leakage is unacceptable.
+
+---
+
+## Deterministic Encryption / Convergent Encryption
+
+**Goal:** Encrypted deduplication & lookup. Same plaintext always produces the same ciphertext, enabling equality checks without decryption. Leaks plaintext equality — not suitable where this matters.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SIV Mode (Rogaway-Shrimpton)** | 2006 | AES + CMAC | Deterministic AEAD; misuse-resistant; IV = MAC(header, plaintext) [[1]](https://eprint.iacr.org/2006/221) |
+| **Convergent Encryption** | 2002 | Hash-as-key | Key = H(plaintext); enables cloud dedup of encrypted data [[1]](https://dl.acm.org/doi/10.5555/514236.514238) |
+| **MLE (Message-Locked Encryption)** | 2013 | Various | Formalization of convergent encryption with security definitions [[1]](https://eprint.iacr.org/2012/631) |
+
+**State of the art:** AES-SIV (misuse-resistant AEAD, RFC 5297), MLE (cloud deduplication).
+
+---
+
+## Key Encapsulation Mechanism (KEM) / DEM Paradigm
+
+**Goal:** Modular encryption design. Split public-key encryption into two clean steps: (1) KEM produces a shared symmetric key from public key, (2) DEM encrypts data with that key. Enables clean security proofs and mix-and-match of components.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Shoup KEM/DEM** | 2001 | Any PKE | Formal paradigm definition; cleaner than direct PKE proofs [[1]](https://shoup.net/papers/kem-dem.pdf) |
+| **RSA-KEM** | 2003 | RSA | Random RSA encapsulation; NIST SP 800-56B [[1]](https://csrc.nist.gov/publications/detail/sp/800/56/b/rev-2/final) |
+| **DHKEM (X25519)** | 2022 | ECDH | DH-based KEM used in HPKE (RFC 9180) [[1]](https://www.rfc-editor.org/rfc/rfc9180) |
+| **ML-KEM (Kyber)** | 2024 | MLWE lattice | NIST PQ standard KEM (FIPS 203) [[1]](https://csrc.nist.gov/pubs/fips/203/final) |
+
+**State of the art:** all modern encryption standards use KEM/DEM (HPKE, ML-KEM, ECIES). The paradigm is the default design pattern.
+
+---
+
+## Indistinguishability Obfuscation (iO)
+
+**Goal:** Maximum software protection. Make a program "unintelligible" while preserving its input/output behavior. Theoretical "crypto-complete" primitive: iO + one-way functions → almost any cryptographic primitive.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **GGH+SW13 (first candidate)** | 2013 | Multilinear maps | First iO candidate construction; broken/patched repeatedly [[1]](https://eprint.iacr.org/2013/451) |
+| **Jain-Lin-Sahai** | 2021 | LWE + LPN + PRG assumptions | First iO from well-studied assumptions; breakthrough [[1]](https://eprint.iacr.org/2020/1003) |
+| **Witness Encryption (GGSW)** | 2013 | Multilinear maps / iO | Encrypt to an NP statement; decrypt with witness [[1]](https://eprint.iacr.org/2013/258) |
+
+**State of the art:** Jain-Lin-Sahai (2021) — theoretical milestone; iO remains impractical but is the "holy grail" of crypto.
+
+---
+
+## Updatable Encryption
+
+**Goal:** Key rotation without re-download. Server applies a short re-encryption token to update all ciphertexts from an old key to a new key — without decrypting or downloading data. Used in cloud storage key rotation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BLMR (Boneh et al.)** | 2013 | ElGamal / AES | Formal model for ciphertext-independent updates [[1]](https://eprint.iacr.org/2012/021) |
+| **Lehmann-Tackmann** | 2018 | Hybrid (KEM + DEM) | CCA-secure updatable encryption [[1]](https://eprint.iacr.org/2018/794) |
+| **Klooß-Lehmann-Rupp** | 2019 | Forward-secure enc | Forward + post-compromise security [[1]](https://eprint.iacr.org/2019/043) |
+
+**State of the art:** Klooß-Lehmann-Rupp (strongest security guarantees), BLMR (foundational).
+
+---
+
+## Rerandomizable Encryption
+
+**Goal:** Unlinkable ciphertexts. Anyone can publicly transform a ciphertext into a fresh-looking encryption of the same plaintext — unlinkable to the original. Foundation of mixnets and anonymous credentials.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ElGamal (rerandomizable)** | 1985 | DDH | Naturally rerandomizable: multiply by Enc(1) [[1]](https://link.springer.com/chapter/10.1007/3-540-39568-7_2) |
+| **Groth RCCA** | 2004 | Pairings | CCA-secure under rerandomization (RCCA model) [[1]](https://eprint.iacr.org/2003/174) |
+| **Prabhakaran-Rosulek RCCA** | 2007 | DDH | Efficient RCCA without pairings [[1]](https://eprint.iacr.org/2007/064) |
+
+**State of the art:** Groth RCCA (provable security), ElGamal (practical in mixnets/voting).
+
+---
+
+## Puncturable / Constrained PRF
+
+**Goal:** Fine-grained key delegation. A PRF key can be "punctured" at specific points: the punctured key works everywhere *except* those points. Enables forward secrecy without state and 0-RTT key exchange.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Puncturable PRF (Boneh-Waters)** | 2013 | GGM tree | Puncture at any polynomial set of points [[1]](https://eprint.iacr.org/2013/602) |
+| **Constrained PRF (BW/KPTZ)** | 2013 | GGM / lattice | Key evaluates only on a constrained input set (e.g., prefix, circuit) [[1]](https://eprint.iacr.org/2013/352) |
+
+**State of the art:** GGM-based puncturable PRFs (used in forward-secure 0-RTT, Bloom Filter Encryption).
+
+---
+
+## Non-Malleable Encryption / Commitments
+
+**Goal:** Integrity against related-message attacks. An adversary who sees a ciphertext/commitment cannot produce a valid ciphertext/commitment for a *related* message. Stronger than CCA2 in certain settings.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Dolev-Dwork-Naor** | 1991 | Simulation-based | First definition + construction of non-malleable encryption [[1]](https://dl.acm.org/doi/10.1145/103418.103474) |
+| **Non-Malleable Commitments** | 1991 | Complexity-theoretic | Cannot produce related commitment from seeing one; used in MPC [[1]](https://dl.acm.org/doi/10.1145/103418.103474) |
+| **CCA2 as NM** | 1998 | Various | CCA2 security implies non-malleability for encryption (Bellare et al.) [[1]](https://eprint.iacr.org/1998/006) |
+
+**State of the art:** CCA2-secure encryption (standard), explicit non-malleability needed for commitments in MPC protocols.
+
+---
+
+## Secret Handshakes / Hidden Credentials
+
+**Goal:** Mutual private authentication. Two parties discover if they share a group membership — if not, neither learns anything about the other. No information leaks on failed authentication.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Balfanz-Durfee-et-al.** | 2003 | Pairing-based | First secret handshake scheme; CA issues group credentials [[1]](https://dl.acm.org/doi/10.1145/948109.948126) |
+| **Multi-Group SH (Castelluccia)** | 2004 | Bilinear maps | Support for multiple simultaneous group memberships [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30108-0_22) |
+| **Unlinkable SH (Jarecki-Liu)** | 2009 | OPRF + ZK | Unlinkable across sessions; stronger privacy [[1]](https://eprint.iacr.org/2008/332) |
+
+**State of the art:** Unlinkable Secret Handshakes (strongest privacy), pairing-based SH (practical).
+
+---
+
+## Randomness Extractors
+
+**Goal:** Entropy purification. Convert weakly random sources (physical noise, biased bits, blockchain hashes) into nearly uniform random bits suitable for cryptographic keys. Foundation of all practical randomness.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Leftover Hash Lemma (ILL)** | 1989 | Universal hashing | Foundational: 2-universal hash family extracts randomness [[1]](https://dl.acm.org/doi/10.1145/73007.73009) |
+| **Trevisan's Extractor** | 1999 | List-decodable codes | Near-optimal seed length; from error-correcting codes [[1]](https://dl.acm.org/doi/10.1145/301250.301292) |
+| **Two-Source Extractors** | 2016 | Combinatorial | Extract from two independent weak sources; breakthrough [[1]](https://dl.acm.org/doi/10.1145/2897518.2897528) |
+
+**State of the art:** Leftover Hash Lemma (practical), HKDF uses extract-then-expand pattern.
 
 ---
 
