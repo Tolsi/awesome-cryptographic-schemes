@@ -102,6 +102,20 @@
 - [Puncturable Encryption](#puncturable-encryption)
 - [Matchmaking Encryption](#matchmaking-encryption)
 - [Registration-Based Encryption (RBE)](#registration-based-encryption-rbe)
+- [Pseudorandom Generators (PRG)](#pseudorandom-generators-prg)
+- [Trapdoor Functions / Trapdoor Permutations](#trapdoor-functions--trapdoor-permutations)
+- [Forward-Secure Signatures & Encryption](#forward-secure-signatures--encryption)
+- [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers)
+- [Key Wrapping / Envelope Encryption](#key-wrapping--envelope-encryption)
+- [End-to-End Verifiable E-Voting](#end-to-end-verifiable-e-voting)
+- [Message Franking / Abuse Reporting in E2E](#message-franking--abuse-reporting-in-e2e)
+- [Data Availability Sampling (DAS)](#data-availability-sampling-das)
+- [Encrypted Mempools / Threshold Encryption for Transaction Ordering](#encrypted-mempools--threshold-encryption-for-transaction-ordering)
+- [Sequential Aggregate Signatures](#sequential-aggregate-signatures)
+- [Private Function Evaluation (PFE)](#private-function-evaluation-pfe)
+- [Oblivious Sorting / Oblivious Data Structures](#oblivious-sorting--oblivious-data-structures)
+- [Covert Security / Publicly Auditable MPC](#covert-security--publicly-auditable-mpc)
+- [SNARG (Succinct Non-Interactive Arguments without Zero-Knowledge)](#snarg-succinct-non-interactive-arguments-without-zero-knowledge)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -1560,6 +1574,211 @@
 | **Efficient RBE (Glaeser et al.)** | 2022 | Pairings + accumulators | Practical: O(log N) ciphertext from accumulator-based approach [[1]](https://eprint.iacr.org/2022/1505) |
 
 **State of the art:** pairing + accumulator RBE (practical); resolves IBE's key escrow problem.
+
+---
+
+## Pseudorandom Generators (PRG)
+
+**Goal:** Stretch randomness. A PRG takes a short truly random seed and outputs a longer string indistinguishable from random. The most basic cryptographic primitive — PRFs, stream ciphers, commitments, and ZK all build on PRGs.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Blum-Micali PRG** | 1984 | DLP | First PRG from discrete log; output = hard-core bit of g^x [[1]](https://dl.acm.org/doi/10.1145/800057.808667) |
+| **Blum-Blum-Shub (BBS)** | 1986 | Quadratic residuosity | x_{n+1} = x_n² mod N; provably secure under factoring [[1]](https://link.springer.com/chapter/10.1007/3-540-39799-X_8) |
+| **GGM PRG→PRF** | 1986 | Any PRG | PRG is sufficient to build PRF (tree construction); see [PRF](#pseudorandom-functions-prf--pseudorandom-permutations-prp) [[1]](https://dl.acm.org/doi/10.1145/6490.6503) |
+| **AES-CTR as PRG** | 2001 | Block cipher in CTR mode | Practical: AES in counter mode is a fast PRG [[1]](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf) |
+| **ChaCha20 as PRG** | 2008 | Stream cipher | ChaCha20(key, counter) outputs pseudorandom stream; see [Symmetric Encryption](#symmetric-encryption) [[1]](https://cr.yp.to/chacha/chacha-20080128.pdf) |
+
+**State of the art:** AES-CTR / ChaCha20 (practical PRGs), Blum-Micali (theoretical foundation). PRG → PRF → PRP is the fundamental hierarchy of pseudorandomness.
+
+---
+
+## Trapdoor Functions / Trapdoor Permutations
+
+**Goal:** One-way with a backdoor. A function easy to compute but hard to invert — unless you know the secret trapdoor. Foundation of all public-key encryption: anyone can encrypt (evaluate), only the key holder can decrypt (invert).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **RSA Function** | 1977 | Factoring | f(x) = x^e mod N; trapdoor = (p,q); first TDP; see [Asymmetric Encryption](#asymmetric-public-key-encryption) [[1]](https://dl.acm.org/doi/10.1145/359340.359342) |
+| **Rabin Function** | 1979 | Factoring | f(x) = x² mod N; provably hard as factoring; 2-to-1 [[1]](https://apps.dtic.mil/sti/pdfs/ADA078416.pdf) |
+| **Goldreich-Levin Hard-Core Predicate** | 1989 | Any OWF | Extract a hard-core bit from any one-way function; foundational [[1]](https://dl.acm.org/doi/10.1145/73007.73010) |
+| **Lattice Trapdoors (Gentry-Peikert-Vaikuntanathan)** | 2008 | LWE / SIS | PQ trapdoor from lattices; basis of lattice IBE and sigs [[1]](https://eprint.iacr.org/2007/432) |
+| **Lossy Trapdoor Functions (Peikert-Waters)** | 2008 | DDH / LWE | Injective or lossy mode; enables CCA security [[1]](https://eprint.iacr.org/2007/279) |
+
+**State of the art:** RSA (deployed), Lattice trapdoors (PQ), Lossy TDFs (clean CCA proofs).
+
+---
+
+## Forward-Secure Signatures & Encryption
+
+**Goal:** Protect the past. If the current secret key is compromised, all messages/signatures from previous time periods remain secure. The key evolves forward; past keys are deleted.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bellare-Miner Forward-Secure Sig** | 1999 | Key evolution tree | First FS signature; binary tree of keys; update = move to next leaf [[1]](https://eprint.iacr.org/1999/009) |
+| **Itkis-Reyzin FS-Sig** | 2001 | Factoring | Efficient FS signature based on Guillou-Quisquater [[1]](https://eprint.iacr.org/2001/006) |
+| **Canetti-Halevi-Katz FS-PKE** | 2003 | HIBE → FS-PKE | Elegant reduction: binary tree HIBE = forward-secure encryption [[1]](https://eprint.iacr.org/2003/083) |
+| **0-RTT TLS (forward secrecy)** | 2018 | Ephemeral DH + puncturable enc | TLS 1.3 0-RTT achieves FS via session ticket puncturing; see [Puncturable Encryption](#puncturable-encryption) [[1]](https://www.rfc-editor.org/rfc/rfc8446) |
+
+**State of the art:** TLS 1.3 ephemeral DH (practical FS), Signal ratchet (continuous FS), puncturable encryption (0-RTT FS).
+
+---
+
+## Disk Encryption / Tweakable Block Ciphers
+
+**Goal:** At-rest confidentiality. Encrypt each disk sector independently with a sector-number-dependent tweak, so sectors can be read/written randomly without decrypting the whole disk. Used in BitLocker, FileVault, LUKS, Android FBE.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **XTS-AES** | 2007 | Tweakable AES | IEEE 1619; sector-level encryption; tweak = sector number [[1]](https://ieeexplore.ieee.org/document/4493450) |
+| **XEX (Rogaway)** | 2004 | Tweakable block cipher | Foundation: xor-encrypt-xor; XTS is a variant [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30539-2_2) |
+| **Adiantum** | 2019 | ChaCha + NH + Poly1305 | Google; for devices without AES-NI (low-end Android) [[1]](https://eprint.iacr.org/2018/720) |
+| **AES-HCTR2** | 2021 | AES + universal hash | Wide-block tweakable cipher; successor to Adiantum on AES-NI devices [[1]](https://eprint.iacr.org/2021/1441) |
+
+**State of the art:** XTS-AES (BitLocker, FileVault, LUKS), Adiantum (low-end Android), AES-HCTR2 (modern Android).
+
+---
+
+## Key Wrapping / Envelope Encryption
+
+**Goal:** Protect keys with keys. Encrypt a secret key (DEK) under a key-encryption key (KEK), providing confidentiality + integrity for key material. Standard pattern in HSMs, cloud KMS, and key hierarchies.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **AES-KW (Key Wrap)** | 2001 | AES + Feistel | NIST SP 800-38F; RFC 3394; 64-bit integrity check [[1]](https://www.rfc-editor.org/rfc/rfc3394) |
+| **AES-KWP (Key Wrap with Padding)** | 2001 | AES-KW + padding | For non-aligned key sizes; RFC 5649 [[1]](https://www.rfc-editor.org/rfc/rfc5649) |
+| **Envelope Encryption** | 2006 | KEM + DEK pattern | AWS KMS / GCP CMEK pattern: wrap DEK with KEK; store wrapped DEK alongside data [[1]](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#enveloping) |
+| **SIV for Key Wrapping** | 2006 | AES-SIV | Misuse-resistant alternative; see [Deterministic Encryption](#deterministic-encryption--convergent-encryption) [[1]](https://www.rfc-editor.org/rfc/rfc5297) |
+
+**State of the art:** AES-KW (NIST/HSMs), Envelope Encryption (all major cloud KMS).
+
+---
+
+## End-to-End Verifiable E-Voting
+
+**Goal:** Voter-verifiable elections. Anyone can verify that votes were correctly counted, each voter can verify their vote was included, and ballot secrecy is maintained. Combines mixnets, HE, ZK, and blind signatures.
+
+| System | Year | Basis | Note |
+|--------|------|-------|------|
+| **Helios** | 2008 | ElGamal HE + ZK | First practical web-based verifiable voting; used in IACR elections [[1]](https://www.usenix.org/legacy/events/sec08/tech/full_papers/adida/adida.pdf) |
+| **Belenios** | 2015 | Helios + mixnet | Adds stronger ballot privacy via mixnet decryption; French academic elections [[1]](https://hal.inria.fr/hal-02066930/document) |
+| **Civitas** | 2008 | Blind sig + credential | Coercion-resistant; voter gets real + fake credentials [[1]](https://ieeexplore.ieee.org/document/4531145) |
+| **Swiss Post / Scytl** | 2019 | Mixnet + ZK shuffle | National-scale; verifiable shuffle of encrypted ballots [[1]](https://eprint.iacr.org/2019/838) |
+
+**State of the art:** Belenios (academic/organization elections), mixnet-based (national scale). E-voting remains one of the hardest applied crypto problems.
+
+---
+
+## Message Franking / Abuse Reporting in E2E
+
+**Goal:** Accountable encryption. In E2E encrypted messaging, allow a recipient to report an abusive message to the platform in a way that proves the message content and sender — without giving the platform a decryption backdoor.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Facebook Message Franking** | 2017 | HMAC commitment + AEAD | Sender commits to plaintext via HMAC; platform can verify if reported [[1]](https://eprint.iacr.org/2017/664) |
+| **Asymmetric Message Franking (Grubbs et al.)** | 2017 | Compactly committing AEAD | Stronger: works even if sender is malicious [[1]](https://eprint.iacr.org/2017/664) |
+| **Traceback for E2E (Hecate)** | 2022 | Threshold tracing + ZK | Trace source of viral content without breaking E2E [[1]](https://eprint.iacr.org/2021/1548) |
+
+**State of the art:** Facebook/Meta message franking (deployed at scale), Hecate (academic, for viral content tracing).
+
+---
+
+## Data Availability Sampling (DAS)
+
+**Goal:** Verify data exists without downloading it. Light clients randomly sample small chunks of erasure-coded data; if enough samples succeed, the full data is available with high probability. Core to blockchain scalability (Ethereum danksharding).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **KZG-based DAS** | 2020 | KZG + Reed-Solomon | Commit to data with KZG polynomial; sample random evaluations; see [Commitment Schemes](#commitment-schemes) [[1]](https://eprint.iacr.org/2019/1205) |
+| **2D KZG DAS (Danksharding)** | 2022 | KZG over 2D grid | Ethereum's approach: rows + columns of KZG commitments [[1]](https://eprint.iacr.org/2022/1592) |
+| **FRI-based DAS** | 2023 | FRI + RS codes | No trusted setup (unlike KZG); used in Celestia, Avail [[1]](https://eprint.iacr.org/2023/1172) |
+
+**State of the art:** KZG-based (Ethereum EIP-4844), FRI-based (Celestia). Critical for modular blockchain scalability.
+
+---
+
+## Encrypted Mempools / Threshold Encryption for Transaction Ordering
+
+**Goal:** MEV prevention. Transactions are encrypted before submission to the mempool; a threshold committee decrypts them only after ordering is finalized. Prevents front-running, sandwich attacks, and censorship.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Threshold BLS Encryption for Mempools** | 2022 | TPKE + threshold BLS | Validators jointly decrypt after block ordering; Shutter Network, Penumbra [[1]](https://eprint.iacr.org/2022/898) |
+| **Commit-Reveal Mempool** | 2019 | Hash commitment + reveal | Simpler: commit hash, reveal after inclusion; see [Commit-Reveal](#commit-reveal-schemes) |
+| **Delay Encryption** | 2021 | VDF + encryption | Decrypt only after a time delay; combines VDF with encryption; see [VDF](#verifiable-delay-functions-vdf) [[1]](https://eprint.iacr.org/2021/1490) |
+
+**State of the art:** Threshold encryption (Shutter, Penumbra), Delay encryption (theoretical), commit-reveal (simplest deployed).
+
+---
+
+## Sequential Aggregate Signatures
+
+**Goal:** Chain-ordered aggregation. Each signer in sequence adds their signature to the aggregate — the final result is one compact signature validating all signers in order. Used in BGP route attestation, certificate chains.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Lysyanskaya-Micali-Reyzin-Shacham (LMRS)** | 2004 | RSA + certified trapdoor | First sequential aggregate sig; signer-by-signer aggregation [[1]](https://eprint.iacr.org/2003/197) |
+| **Boneh-Gentry-Lynn-Shacham (BGLS)** | 2003 | BLS + pairings | Non-sequential aggregate: any order; see [Digital Signatures](#digital-signatures) for BLS [[1]](https://eprint.iacr.org/2002/175) |
+| **History-Free Sequential Aggregate (HSA)** | 2012 | RSA-based | No need to see previous messages; only aggregate sig passed along [[1]](https://eprint.iacr.org/2012/486) |
+
+**State of the art:** BGLS (general aggregation), LMRS (sequential/routing), HSA (bandwidth-optimized).
+
+---
+
+## Private Function Evaluation (PFE)
+
+**Goal:** Hide the function. In standard MPC, the computed function is public. In PFE, even the function is private — one party's input is the circuit/program itself. Used when the algorithm is proprietary (trade secret evaluation, private credit scoring).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Universal Circuits (Valiant)** | 1976 | Circuit topology | Simulate any circuit of size n with O(n log n) universal circuit [[1]](https://dl.acm.org/doi/10.1145/800113.803649) |
+| **PFE via Universal Circuit + GC** | 2008 | Garbled universal circuit | Embed function into UC, then garble; see [Garbled Circuits](#garbled-circuits-expanded) [[1]](https://eprint.iacr.org/2008/491) |
+| **PFE from OT (Mohassel-Sadeghian)** | 2013 | OT + permutation network | More efficient: use extended OT to evaluate switching network [[1]](https://eprint.iacr.org/2013/239) |
+
+**State of the art:** OT-based PFE (practical), Universal Circuits (theoretical foundation).
+
+---
+
+## Oblivious Sorting / Oblivious Data Structures
+
+**Goal:** Sort or access data structures without revealing access patterns. Even the sorted order or query pattern is hidden. Critical building block for ORAM, private databases, and MPC on large datasets.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bitonic Sort (Batcher)** | 1968 | Comparison network | O(n log² n) oblivious sort; data-independent comparison pattern [[1]](https://dl.acm.org/doi/10.1145/1468075.1468121) |
+| **AKS Sorting Network** | 1983 | Expander graphs | O(n log n) optimal oblivious sort; impractical constants [[1]](https://dl.acm.org/doi/10.1145/800061.808726) |
+| **Oblivious Bucket Sort (Asharov et al.)** | 2022 | Hashing + padding | Practical O(n log n) with small constants; MPC-friendly [[1]](https://eprint.iacr.org/2022/1243) |
+| **Oblivious Priority Queue** | 2014 | Path ORAM + PQ | Oblivious insertions and extract-min; for graph algorithms on encrypted data [[1]](https://eprint.iacr.org/2014/344) |
+
+**State of the art:** Oblivious Bucket Sort (practical MPC), Bitonic Sort (simplest, widely implemented).
+
+---
+
+## Covert Security / Publicly Auditable MPC
+
+**Goal:** Intermediate MPC security. Stronger than semi-honest (passive), weaker than full malicious. In covert security, cheating is detected with probability ε — a rational adversary won't cheat if the reputational cost of detection outweighs the benefit. Much cheaper than malicious security.
+
+| Model | Year | Basis | Note |
+|-------|------|-------|------|
+| **Covert Security (Aumann-Lindell)** | 2007 | Cut-and-choose | Detect cheating with prob ε; 1/ε overhead instead of κ for malicious [[1]](https://eprint.iacr.org/2007/060) |
+| **Publicly Auditable MPC (Baum et al.)** | 2014 | Commitments + audit trail | Any external party can verify correctness of MPC execution post-hoc [[1]](https://eprint.iacr.org/2014/075) |
+| **Publicly Verifiable Covert (PVC)** | 2018 | Covert + public audit | Combine covert deterrence with public verifiability [[1]](https://eprint.iacr.org/2018/1108) |
+
+**State of the art:** Covert security (practical for honest-but-curious business settings), PVC (compliance-friendly MPC).
+
+---
+
+## SNARG (Succinct Non-Interactive Arguments without Zero-Knowledge)
+
+**Goal:** Verifiable computation without privacy. Like a SNARK but the proof need not hide the witness — only succinctness and soundness matter. Useful when you want to verify computation but don't care about privacy (rollup state transitions, compliance proofs).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Micali CS Proofs** | 2000 | PCP + random oracle | First SNARG via PCP + Fiat-Shamir in ROM [[1]](https://people.csail.mit.edu/silvio/Selected%20Scientific%20Papers/Proof%20Systems/Computationally_Sound_Proofs.pdf) |
+| **Incrementally Verifiable Computation (Valiant)** | 2008 | Recursive SNARGs | Each step proves correctness of all prior steps; precursor to IVC/Nova [[1]](https://link.springer.com/chapter/10.1007/978-3-540-78524-8_18) |
+| **Designated-Verifier SNARG (Kalai et al.)** | 2023 | LWE | SNARG from standard lattice assumptions; designated verifier [[1]](https://eprint.iacr.org/2023/1542) |
+
+**State of the art:** zk-SNARKs subsume SNARGs in practice; designated-verifier SNARGs from LWE (theoretical breakthrough, 2023).
 
 ---
 
