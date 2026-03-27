@@ -248,6 +248,12 @@
 - [Privacy-Preserving Record Linkage (PPRL)](#privacy-preserving-record-linkage-pprl)
 - [Homomorphic Hashing](#homomorphic-hashing)
 - [Rational Cryptography](#rational-cryptography)
+- [Encrypted Control Systems](#encrypted-control-systems)
+- [Stealth Addresses](#stealth-addresses)
+- [Cryptographic Provenance Attestation (C2PA / SLSA)](#cryptographic-provenance-attestation-c2pa--slsa)
+- [In-Sensor Cryptography](#in-sensor-cryptography)
+- [zkLLM / Verifiable AI Inference](#zkllm--verifiable-ai-inference)
+- [Fuzzy Private Set Intersection (FPSI)](#fuzzy-private-set-intersection-fpsi)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -3831,6 +3837,89 @@
 | **Groce-Katz Rational Protocol Design** | 2012 | Mechanism design + MPC | Fair MPC via utility alignment; punishment strategies enforce cooperation [[1]](https://eprint.iacr.org/2012/029) |
 
 **State of the art:** Rational protocol design (2012); active in blockchain mechanism design. Bridges [MPC](#multi-party-computation-mpc) and economic incentive theory.
+
+---
+
+## Encrypted Control Systems
+
+**Goal:** Secure cyber-physical control without decryption. A cloud controller receives FHE-encrypted sensor data, computes the control law homomorphically, and sends encrypted actuator commands — the controller never sees plaintext measurements or commands. Protects industrial control systems and smart grids from cloud compromise.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Kogiso-Fujita Encrypted Control** | 2015 | ElGamal HE | First encrypted controller; homomorphic linear feedback on encrypted plant state [[1]](https://doi.org/10.1109/CDC.2015.7402918) |
+| **Kim-Shim-Wu et al. Encrypted LQG** | 2020 | CKKS (approx HE) | Encrypted linear-quadratic-Gaussian control; CKKS for real-valued computations [[1]](https://arxiv.org/abs/2010.00268) |
+| **Encrypted MPC (Schlüter et al.)** | 2023 | TFHE + model predictive | Encrypted model predictive control with bootstrapping; real-time feasible [[1]](https://doi.org/10.1016/j.ifacol.2023.10.1285) |
+
+**State of the art:** CKKS-based encrypted LQG (2020); TFHE for nonlinear control (2023). Bridges [HE](#homomorphic-encryption-he) and control theory.
+
+---
+
+## Stealth Addresses
+
+**Goal:** Receiver-unlinkable blockchain payments. Sender non-interactively generates a one-time address controlled by the receiver — without any prior interaction. An observer cannot link the stealth address to the receiver's public key. Each payment goes to a fresh, unique address.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Dual-Key Stealth Address Protocol (DKSAP)** | 2014 | ECDH | Receiver publishes scan + spend keys; sender derives one-time address via ECDH [[1]](https://eprint.iacr.org/2020/548) |
+| **ERC-5564 (Ethereum Standard)** | 2023 | ECDH + view tags | Standardized stealth addresses for Ethereum; view tags for efficient scanning [[1]](https://eips.ethereum.org/EIPS/eip-5564) |
+| **Stealth Addresses + ZK (Umbra)** | 2022 | ECDH + ZK proofs | Privacy-preserving withdrawal using ZK proofs; deployed on Ethereum [[1]](https://www.umbra.cash/) |
+
+**State of the art:** ERC-5564 (Ethereum standard); Umbra (deployed). Related to [NIKE](#non-interactive-key-exchange-nike) and [HD Wallets](#hierarchical-deterministic-keys-bip32--hd-wallets).
+
+---
+
+## Cryptographic Provenance Attestation (C2PA / SLSA)
+
+**Goal:** Prove the origin, integrity, and chain of custody of digital artifacts. Cryptographically signed metadata binds content to its creator, creation tool, and transformation history — combating deepfakes, supply chain attacks, and misinformation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **C2PA (Coalition for Content Provenance)** | 2021 | X.509 + COSE signatures | Sign image/video/audio metadata at creation; camera → edit → publish chain [[1]](https://c2pa.org/specifications/specifications/2.1/specs/C2PA_Specification.html) |
+| **SLSA (Supply-chain Levels for Software Artifacts)** | 2021 | Sigstore + attestation | Cryptographic provenance for software builds: source → build → deploy [[1]](https://slsa.dev/) |
+| **Content Credentials (Adobe/Leica)** | 2023 | C2PA + hardware signing | Camera signs image at capture time; edit chain preserved through Adobe tools [[1]](https://contentcredentials.org/) |
+
+**State of the art:** C2PA v2.1 (media), SLSA v1.0 (software); deployed by Adobe, Leica, Google, Microsoft. Related to [Linked Timestamping](#linked-timestamping) and [Digital Signatures](#digital-signatures).
+
+---
+
+## In-Sensor Cryptography
+
+**Goal:** Sign data at the point of physical measurement. The sensor hardware (camera, accelerometer, thermometer) cryptographically signs readings at capture time — before any software can modify them. Guarantees authenticity of physical measurements; combats deepfakes and scientific data fraud.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Qualcomm Snapdragon Secure Camera** | 2022 | Hardware signing | SoC signs image frames at ISP level; tamper-evident metadata [[1]](https://www.qualcomm.com/news/onq/2022/11/new-snapdragon-8-gen-2-sets-a-new-standard-for-premium-smartphones) |
+| **Nikon Z9 C2PA** | 2024 | C2PA + hardware | Camera signs photos at capture; verifiable provenance chain [[1]](https://www.nikon.com/company/technology/c2pa/) |
+| **Chandrasekaran et al. In-Sensor Crypto** | 2025 | PUF + physical | Physical crypto directly in sensor hardware; binds measurement to device identity [[1]](https://www.nature.com/articles/s41928-026-01593-5) |
+
+**State of the art:** C2PA-integrated cameras (Nikon, Leica, Sony); PUF-based sensor crypto (2025). Extends [PUF](#physical-unclonable-functions-puf) and [Provenance Attestation](#cryptographic-provenance-attestation-c2pa--slsa).
+
+---
+
+## zkLLM / Verifiable AI Inference
+
+**Goal:** Cryptographically prove that an AI model produced a specific output on a specific input — without revealing model weights or input data. Enables trustless AI-as-a-service: the provider proves correct inference, the client verifies without re-running the model.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **zkLLM (Sun-Li-Zhang)** | 2024 | tlookup + zkAttn | First ZK proof for LLM attention; proves 13B-param inference in <15 min; CCS 2024 [[1]](https://arxiv.org/abs/2404.16109) |
+| **zkPyTorch** | 2025 | Expander proof engine | Auto-generate ZK proofs for standard PyTorch inference workloads [[1]](https://eprint.iacr.org/2025/535) |
+| **Lightweight Proof of Inference** | 2026 | Sampling + Merkle | Statistical sampling of inference trace; millisecond proving time [[1]](https://eprint.iacr.org/2026/541) |
+
+**State of the art:** zkLLM (CCS 2024) for full LLM proofs; lightweight sampling (2026) for practical deployment. Extends [zkML](#zkml-zero-knowledge-machine-learning) to production-scale models.
+
+---
+
+## Fuzzy Private Set Intersection (FPSI)
+
+**Goal:** Find approximate matches between private sets. Standard PSI finds exact matches; FPSI finds elements that are "close" (edit distance, Hamming distance, Euclidean distance). Enables privacy-preserving record linkage, biometric matching, and DNA comparison without exact identifiers.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Fuzzy PSI from OT (Freedman et al.)** | 2016 | OT + locality-sensitive hash | First FPSI; LSH reduces fuzzy matching to multiple exact PSI instances [[1]](https://eprint.iacr.org/2016/799) |
+| **FPSI from VOLE** | 2025 | VOLE + fuzzy matching | Efficient FPSI using vector OLE; sublinear communication for approximate matches [[1]](https://eprint.iacr.org/2025/911) |
+
+**State of the art:** VOLE-based FPSI (2025); combines [PSI](#private-set-intersection-psi), [OLE/VOLE](#oblivious-linear-evaluation-ole--vole), and [PPRL](#privacy-preserving-record-linkage-pprl).
 
 ---
 
