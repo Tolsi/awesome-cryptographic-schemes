@@ -63,6 +63,28 @@
 - [Non-Malleable Encryption / Commitments](#non-malleable-encryption--commitments)
 - [Secret Handshakes / Hidden Credentials](#secret-handshakes--hidden-credentials)
 - [Randomness Extractors](#randomness-extractors)
+- [Secure Channels / Protocol Constructions](#secure-channels--protocol-constructions)
+- [Fujisaki-Okamoto Transform](#fujisaki-okamoto-transform)
+- [Universal Hash Functions (Carter-Wegman)](#universal-hash-functions-carter-wegman)
+- [Adaptor Signatures / Scriptless Scripts](#adaptor-signatures--scriptless-scripts)
+- [Secure Aggregation (SecAgg)](#secure-aggregation-secagg)
+- [Multi-Key / Threshold FHE](#multi-key--threshold-fhe)
+- [Group Key Agreement](#group-key-agreement)
+- [Multilinear Maps](#multilinear-maps)
+- [Proof-Carrying Data (PCD)](#proof-carrying-data-pcd)
+- [Certificate Transparency (CT)](#certificate-transparency-ct)
+- [Prio / VDAF (Privacy-Preserving Aggregation)](#prio--vdaf-privacy-preserving-aggregation)
+- [Steganography](#steganography)
+- [Physical Unclonable Functions (PUF)](#physical-unclonable-functions-puf)
+- [White-Box Cryptography](#white-box-cryptography)
+- [Leakage-Resilient Cryptography](#leakage-resilient-cryptography)
+- [Differential Privacy](#differential-privacy)
+- [Attribute-Based Signatures (ABS)](#attribute-based-signatures-abs)
+- [Key-Homomorphic PRF](#key-homomorphic-prf)
+- [Batch Arguments (BARG) / Accumulation Schemes](#batch-arguments-barg--accumulation-schemes)
+- [Garbled Circuits (expanded)](#garbled-circuits-expanded)
+- [Circular / KDM Security](#circular--kdm-security)
+- [Accountable Multi-Signatures / Subgroup Signatures](#accountable-multi-signatures--subgroup-signatures)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -960,6 +982,323 @@
 | **Two-Source Extractors** | 2016 | Combinatorial | Extract from two independent weak sources; breakthrough [[1]](https://dl.acm.org/doi/10.1145/2897518.2897528) |
 
 **State of the art:** Leftover Hash Lemma (practical), HKDF uses extract-then-expand pattern.
+
+---
+
+## Secure Channels / Protocol Constructions
+
+**Goal:** End-to-end security. Combine key exchange, encryption, authentication, and ratcheting into a complete secure communication protocol. These are where all the primitives come together.
+
+| Protocol | Year | Components | Note |
+|----------|------|------------|------|
+| **TLS 1.3** | 2018 | ECDHE + AEAD + HKDF | Standard Internet security protocol; 1-RTT handshake; RFC 8446 [[1]](https://www.rfc-editor.org/rfc/rfc8446) |
+| **Signal Protocol (Double Ratchet)** | 2013 | X3DH + AES-CBC + HMAC-SHA256 | Asynchronous E2E messaging; forward secrecy + post-compromise security [[1]](https://signal.org/docs/specifications/doubleratchet/) |
+| **WireGuard** | 2017 | Noise IK + X25519 + ChaCha20-Poly1305 | Minimalist VPN; ~4000 lines of code [[1]](https://www.wireguard.com/papers/wireguard.pdf) |
+| **MLS (Messaging Layer Security)** | 2023 | TreeKEM + HPKE + AEAD | Scalable group E2E messaging; RFC 9420 [[1]](https://www.rfc-editor.org/rfc/rfc9420) |
+| **Noise Framework** | 2018 | DH patterns + AEAD | Composable handshake patterns (XX, IK, NK, etc.) [[1]](https://noiseprotocol.org/noise.html) |
+
+**State of the art:** TLS 1.3 (web), Signal (messaging), MLS (group chat), WireGuard (VPN).
+
+---
+
+## Fujisaki-Okamoto Transform
+
+**Goal:** CPA→CCA upgrade. Transform any CPA-secure public-key encryption or KEM into a CCA-secure one. Used in ALL NIST post-quantum KEMs (ML-KEM, etc.).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Fujisaki-Okamoto (original)** | 1999 | ROM (random oracle model) | Hybrid: PKE + symmetric enc; CCA from CPA [[1]](https://link.springer.com/chapter/10.1007/978-3-540-48405-1_32) |
+| **FO⊥ / FO⊥̸ (variants)** | 2017 | QROM | Quantum-safe variants; used in ML-KEM (Kyber), NTRU [[1]](https://eprint.iacr.org/2017/604) |
+| **OAEP (Bellare-Rogaway)** | 1994 | ROM | Earlier CPA→CCA transform specific to RSA [[1]](https://eprint.iacr.org/1994/009) |
+
+**State of the art:** FO⊥̸ transform (QROM-secure) — mandatory component in all NIST PQ KEMs.
+
+---
+
+## Universal Hash Functions (Carter-Wegman)
+
+**Goal:** Fast, provably collision-resistant hashing with a key. Unlike cryptographic hashes, security is information-theoretic (depends only on key randomness). Foundation of Poly1305, UMAC, randomness extraction, and commitments.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Carter-Wegman UHF** | 1979 | Polynomial / matrix | Original universal hash family; collision prob ≤ 1/p [[1]](https://dl.acm.org/doi/10.1145/800105.803400) |
+| **Poly1305 (as UHF)** | 2005 | Polynomial over GF(2^130-5) | Fast UHF component; combined with cipher for MAC [[1]](https://cr.yp.to/mac/poly1305-20050329.pdf) |
+| **GHASH** | 2004 | GF(2^128) multiplication | UHF inside AES-GCM; hardware-accelerated via PCLMULQDQ [[1]](https://csrc.nist.gov/publications/detail/sp/800/38/d/final) |
+| **UMAC / VMAC** | 1999 | NH + polynomial | Very fast MAC from universal hashing [[1]](https://www.cs.ucdavis.edu/~rogaway/papers/umac-full.pdf) |
+
+**State of the art:** GHASH (AES-GCM hardware), Poly1305 (software), Carter-Wegman paradigm (theoretical foundation).
+
+---
+
+## Adaptor Signatures / Scriptless Scripts
+
+**Goal:** Conditional signatures. A "pre-signature" that becomes a valid signature only when a secret value is revealed — and revealing the signature reveals the secret. Enables trustless atomic swaps and payment channels without scripting.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Schnorr Adaptor Signatures** | 2018 | Schnorr / DLP | Pre-sign with respect to a point T; completion reveals discrete log of T [[1]](https://eprint.iacr.org/2020/476) |
+| **ECDSA Adaptor Signatures** | 2020 | ECDSA | Adaptor for ECDSA; enables scriptless scripts on Bitcoin pre-Taproot [[1]](https://eprint.iacr.org/2020/476) |
+| **Scriptless Scripts (Poelstra)** | 2017 | Schnorr + adaptor | Atomic swaps, payment channels, discreet log contracts — no on-chain scripts [[1]](https://download.wpsoftware.net/bitcoin/wizardry/mw-slides/2017-03-mit-bitcoin-expo/slides.pdf) |
+
+**State of the art:** Schnorr adaptor sigs (Bitcoin Taproot), ECDSA adaptors (cross-chain swaps).
+
+---
+
+## Secure Aggregation (SecAgg)
+
+**Goal:** Privacy-preserving summation. Multiple clients send encrypted inputs to a server, which learns only the aggregate (sum/average) — not individual contributions. Core primitive for federated learning.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bonawitz et al. (Google SecAgg)** | 2017 | Secret sharing + DH masking | Tolerates dropouts; used in Gboard federated learning [[1]](https://eprint.iacr.org/2017/281) |
+| **Bell et al. (SecAgg+)** | 2020 | Sparse secret sharing | O(n log n) communication; improved scalability [[1]](https://eprint.iacr.org/2020/704) |
+| **FLAME (LWE-based)** | 2023 | LWE | Post-quantum secure aggregation [[1]](https://eprint.iacr.org/2023/224) |
+
+**State of the art:** SecAgg+ (Google/Apple production), FLAME (PQ setting).
+
+---
+
+## Multi-Key / Threshold FHE
+
+**Goal:** Joint computation on data encrypted under different keys. Multiple parties each encrypt their data under their own key; a computation is performed on all ciphertexts jointly without any party decrypting.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Multi-Key FHE (López-Alt et al.)** | 2012 | NTRU lattice | First MKFHE; N parties, joint decryption [[1]](https://eprint.iacr.org/2011/613) |
+| **Threshold BFV/BGV** | 2012 | Shamir + HE | Secret-share FHE key among N parties; joint bootstrapping [[1]](https://eprint.iacr.org/2011/535) |
+| **Multi-Party CKKS** | 2020 | RLWE + SS | Privacy-preserving ML on distributed encrypted data [[1]](https://eprint.iacr.org/2020/304) |
+
+**State of the art:** Multi-Party CKKS (federated ML), Threshold BFV (joint computation with no single key holder).
+
+---
+
+## Group Key Agreement
+
+**Goal:** Multi-party key establishment. Extend 2-party Diffie-Hellman to *n* parties who jointly establish a shared group key. Used in group messaging, conferencing, multicast.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Burmester-Desmedt** | 1994 | DH / DLP | 2-round group DH; all parties contribute [[1]](https://link.springer.com/chapter/10.1007/BFb0053443) |
+| **Tree-DH (Kim-Perrig-Tsudik)** | 2004 | DH binary tree | Logarithmic rounds; efficient join/leave [[1]](https://dl.acm.org/doi/10.1145/1030083.1030088) |
+| **TreeKEM (MLS)** | 2018 | DH + ratchet tree | Used in MLS (RFC 9420); efficient group ratcheting [[1]](https://www.rfc-editor.org/rfc/rfc9420) |
+| **Continuous Group Key Agreement (CGKA)** | 2020 | Formal model | Security model for TreeKEM and MLS [[1]](https://eprint.iacr.org/2019/1189) |
+
+**State of the art:** TreeKEM/MLS (messaging), Burmester-Desmedt (classic group DH).
+
+---
+
+## Multilinear Maps
+
+**Goal:** Generalized pairings. A *k*-linear map takes elements from *k* groups and outputs an element in a target group, enabling richer algebraic operations than bilinear pairings. Theoretical foundation for early iO and multi-party non-interactive key exchange.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **GGH13** | 2013 | Ideal lattices | First candidate multilinear map; zeroizing attacks found [[1]](https://eprint.iacr.org/2012/610) |
+| **CLT13** | 2013 | CRT over integers | Alternative construction; also broken in many settings [[1]](https://eprint.iacr.org/2013/183) |
+| **GGH15 (Graph-Induced)** | 2015 | Lattice | More structured; partial resistance to zeroizing attacks [[1]](https://eprint.iacr.org/2014/645) |
+
+**State of the art:** no fully secure multilinear map candidate exists; research continues. Modern iO (Jain-Lin-Sahai 2021) avoids multilinear maps.
+
+---
+
+## Proof-Carrying Data (PCD)
+
+**Goal:** Distributed IVC. Extend incrementally verifiable computation to distributed settings: each node in a computation graph produces a proof that all prior computation was correct. Foundation of blockchain interoperability and recursive SNARKs.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chiesa-Tromer (PCD)** | 2010 | Recursive SNARKs | First PCD construction; compliance proofs for distributed protocols [[1]](https://eprint.iacr.org/2010/174) |
+| **Recursive SNARK composition** | 2014 | Cycles of curves | Practical PCD via SNARK verifier inside a SNARK (Ben-Sasson et al.) [[1]](https://eprint.iacr.org/2014/595) |
+| **Nova-based PCD** | 2022 | Folding schemes | IVC + folding for lightweight distributed proof chains [[1]](https://eprint.iacr.org/2021/370) |
+
+**State of the art:** Nova-based PCD (efficient), recursive SNARKs on cycles of elliptic curves (Mina, Pickles).
+
+---
+
+## Certificate Transparency (CT)
+
+**Goal:** Public auditability of certificates. Append-only Merkle-tree log of all TLS certificates issued by CAs, so misissued certificates are publicly detectable. Not a cryptographic primitive per se, but a critical cryptographic protocol.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Certificate Transparency (RFC 6962)** | 2013 | Merkle tree + signatures | Google initiative; all major CAs participate [[1]](https://www.rfc-editor.org/rfc/rfc6962) |
+| **Signed Certificate Timestamps (SCT)** | 2013 | Ed25519 / ECDSA | Proof of log inclusion; embedded in TLS certificates [[1]](https://www.rfc-editor.org/rfc/rfc6962) |
+| **Verifiable Data Structures** | 2015 | Merkle / append-only | General framework: key transparency, binary transparency (Google) [[1]](https://transparency.dev/) |
+
+**State of the art:** CT v2 (mandatory for Chrome), Key Transparency (Google/Apple for E2E messaging).
+
+---
+
+## Prio / VDAF (Privacy-Preserving Aggregation)
+
+**Goal:** Verifiable private aggregation. Clients secret-share their data across multiple servers; servers jointly compute the aggregate and can verify that each client's input is well-formed — without learning individual inputs. Used in privacy-preserving telemetry.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Prio** | 2017 | Secret sharing + SNIPs | First practical system; used in Firefox, ISRG [[1]](https://crypto.stanford.edu/prio/paper.pdf) |
+| **Prio3 / VDAF** | 2023 | IETF DAP protocol | Standardized VDAF (RFC 9709-area); FLP + secret sharing [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-vdaf/) |
+| **Poplar / Prio+** | 2021 | Heavy hitters + IDPF | Find popular strings privately; Mozilla/Apple telemetry [[1]](https://eprint.iacr.org/2021/017) |
+
+**State of the art:** Prio3/VDAF (IETF standard), Poplar (heavy-hitter queries in Chrome, Firefox).
+
+---
+
+## Steganography
+
+**Goal:** Covert communication. Hide the very existence of a secret message within an innocent-looking cover medium (image, audio, text). Even if an adversary inspects the medium, they cannot detect that a hidden message exists.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **LSB Steganography** | 1990s | Spatial domain | Replace least significant bits of image pixels; simple but detectable [[1]](https://ieeexplore.ieee.org/document/4655281) |
+| **Provably Secure Stego (Hopper-Langford-von Ahn)** | 2002 | Rejection sampling | First formal security definitions; stego from any PRG [[1]](https://eprint.iacr.org/2002/137) |
+| **Meteor (LLM Stego)** | 2023 | Language model sampling | Hide messages in LLM-generated text; provably undetectable [[1]](https://eprint.iacr.org/2023/1029) |
+
+**State of the art:** Provably-secure stego (theory), Meteor (AI-era steganography in LLM text).
+
+---
+
+## Physical Unclonable Functions (PUF)
+
+**Goal:** Hardware-based authentication. A PUF exploits manufacturing variations in a chip to produce unique, unpredictable challenge-response pairs. Acts as a physical "fingerprint" for devices. Cannot be cloned, even by the manufacturer.
+
+| Type | Year | Basis | Note |
+|------|------|-------|------|
+| **Arbiter PUF** | 2002 | Race condition | Two signal paths compete; winner depends on manufacturing variations [[1]](https://ieeexplore.ieee.org/document/1003580) |
+| **SRAM PUF** | 2007 | Power-up state | Each SRAM cell powers up to 0 or 1 deterministically per device [[1]](https://ieeexplore.ieee.org/document/4261993) |
+| **Ring Oscillator PUF** | 2003 | Frequency differences | Compare oscillation frequencies of identically-designed rings [[1]](https://dl.acm.org/doi/10.1145/611892.611996) |
+
+**State of the art:** SRAM PUF (commercial: NXP, Intrinsic ID), combined with fuzzy extractors for stable key derivation.
+
+---
+
+## White-Box Cryptography
+
+**Goal:** Key hiding in hostile environments. Implement cryptographic algorithms so that the secret key cannot be extracted even by an adversary who has full access to the running software and execution environment. Used in DRM, mobile payments.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chow et al. WB-AES** | 2002 | Lookup tables + mixing bijections | First white-box AES; series of table lookups encoding key [[1]](https://link.springer.com/chapter/10.1007/3-540-36492-7_17) |
+| **Billet et al. (cryptanalysis)** | 2004 | Algebraic attack | Broke Chow WB-AES; showed key extraction is possible [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30564-4_16) |
+| **WBC Challenge (CHES)** | 2017 | Competition | Ongoing competitions show no WBC scheme survives long-term attack [[1]](https://www.whiteboxcrypto.com/) |
+
+**State of the art:** no provably secure WBC exists; practical deployments rely on obfuscation + tamper-detection layers. Active research area.
+
+---
+
+## Leakage-Resilient Cryptography
+
+**Goal:** Side-channel resistance in theory. Schemes that remain secure even when an adversary obtains partial information about the secret key (via power analysis, timing, EM emanation, cold boot attacks).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Dziembowski-Pietrzak (LR stream cipher)** | 2008 | PRG + alternating extraction | First leakage-resilient stream cipher [[1]](https://eprint.iacr.org/2008/135) |
+| **Faust-Kiltz-Pietrzak-Rothblum** | 2010 | Any LR-PRG | Leakage-resilient signatures from any LR-secure PRG [[1]](https://eprint.iacr.org/2009/282) |
+| **Prouff-Rivain (masking)** | 2013 | Boolean masking | Practical higher-order masking for AES; provable security [[1]](https://eprint.iacr.org/2013/468) |
+
+**State of the art:** Prouff-Rivain masking (industry standard for smart cards), theoretical LR frameworks (complementary).
+
+---
+
+## Differential Privacy
+
+**Goal:** Quantifiable privacy. Add calibrated noise to query results so that the presence or absence of any single individual's data cannot be distinguished. Mathematical guarantee, composable. Used in census data, Apple/Google telemetry.
+
+| Mechanism | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Laplace Mechanism** | 2006 | Calibrated Laplace noise | First DP mechanism; ε-differential privacy [[1]](https://link.springer.com/chapter/10.1007/11681878_14) |
+| **Gaussian Mechanism** | 2006 | Gaussian noise | (ε,δ)-DP; better for high-dimensional data [[1]](https://link.springer.com/chapter/10.1007/11681878_14) |
+| **Local DP (RAPPOR)** | 2014 | Randomized response | Each client randomizes locally; no trusted server needed; Google Chrome [[1]](https://arxiv.org/abs/1407.6981) |
+| **Rényi / zCDP** | 2016 | Rényi divergence | Tighter composition; concentrated DP [[1]](https://arxiv.org/abs/1605.02065) |
+
+**State of the art:** zCDP (tight composition), Local DP (Apple, Google deployment), DP-SGD (federated ML).
+
+---
+
+## Attribute-Based Signatures (ABS)
+
+**Goal:** Policy-based authentication. Sign a message with a set of attributes; the signature verifies if the signer's attributes satisfy a policy — without revealing which attributes or the signer's identity. Dual of ABE for signatures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Maji-Prabhakaran-Rosulek ABS** | 2011 | Pairings | First ABS with expressive policies (monotone span programs) [[1]](https://eprint.iacr.org/2010/595) |
+| **Sakai-Attrapadung ABS** | 2016 | Pairings | Efficient constant-size signatures for AND policies [[1]](https://eprint.iacr.org/2016/246) |
+| **Lattice ABS** | 2014 | SIS / LWE | Post-quantum attribute-based signatures [[1]](https://eprint.iacr.org/2014/279) |
+
+**State of the art:** Pairing-based ABS (practical), Lattice ABS (PQ setting).
+
+---
+
+## Key-Homomorphic PRF
+
+**Goal:** Algebraic key structure. A PRF where outputs are homomorphic with respect to the key: F(k1⊕k2, x) = F(k1,x) ⊕ F(k2,x). Enables distributed PRF evaluation, key rotation, and updatable encryption.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Naor-Pinkas-Reingold** | 2002 | DDH | F(k,x) = g^{k·H(x)}; perfect key-homomorphism [[1]](https://eprint.iacr.org/1999/018) |
+| **Boneh et al. (LWE-based)** | 2013 | LWE lattice | Almost key-homomorphic (small error); post-quantum [[1]](https://eprint.iacr.org/2013/196) |
+| **Key-Homomorphic PRF for Group Actions** | 2020 | Isogeny / group action | From group actions; potential PQ KH-PRF [[1]](https://eprint.iacr.org/2019/1188) |
+
+**State of the art:** DDH-based (practical, used in updatable encryption), LWE-based (post-quantum).
+
+---
+
+## Batch Arguments (BARG) / Accumulation Schemes
+
+**Goal:** Efficient batch verification. Prove many statements simultaneously with a proof shorter than proving each individually. Used in blockchain rollups and recursive proof composition.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BARG (Choudhuri et al.)** | 2021 | LWE + RAM SNARKs | Batch NP statements with poly-size proof [[1]](https://eprint.iacr.org/2021/1423) |
+| **Accumulation Schemes (Bünz et al.)** | 2020 | IPA / polynomial commitment | Accumulate proofs incrementally; used in Halo 2 [[1]](https://eprint.iacr.org/2020/499) |
+| **ProtoStar** | 2023 | IVC + accumulation | Generic accumulation for PLONK-like systems [[1]](https://eprint.iacr.org/2023/620) |
+
+**State of the art:** ProtoStar (modern folding/accumulation), BARG from LWE (theoretical breakthrough).
+
+---
+
+## Garbled Circuits (expanded)
+
+*Note: already a row in MPC section, but deserves own section for the optimization techniques.*
+
+**Goal:** Secure 2-party computation in constant rounds. One party "garbles" a Boolean circuit (encrypts gate-by-gate); the other evaluates it on their input without learning the circuit's intermediate values.
+
+| Technique | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Yao's Garbled Circuit** | 1986 | Symmetric encryption | Original construction; each gate = 4 ciphertexts [[1]](https://ieeexplore.ieee.org/document/4568207) |
+| **Point-and-Permute** | 1990 | Pointer bit | Reduce evaluation to 1 decryption per gate [[1]](https://dl.acm.org/doi/10.1145/100216.100287) |
+| **Free-XOR** | 2008 | Global offset Δ | XOR gates cost zero garbling/evaluation [[1]](https://eprint.iacr.org/2008/096) |
+| **Half-Gates** | 2015 | Two half-garbled gates | AND gates cost 2 ciphertexts instead of 4 (optimal) [[1]](https://eprint.iacr.org/2014/756) |
+| **Stacked Garbling** | 2020 | Conditional branching | Garble only the taken branch; sublinear for branching programs [[1]](https://eprint.iacr.org/2020/973) |
+
+**State of the art:** Half-Gates + Free-XOR (standard), Stacked Garbling (branching programs).
+
+---
+
+## Circular / KDM Security
+
+**Goal:** Security when encrypting the key itself. An encryption scheme is KDM-secure (Key-Dependent Message) if it remains secure even when the plaintext is a function of the secret key. Critical for FHE bootstrapping and disk encryption.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boneh-Halevi-Hamburg-Ostrovsky** | 2008 | DDH | First KDM-CPA secure encryption from standard assumptions [[1]](https://eprint.iacr.org/2008/140) |
+| **Applebaum-Cash-Peikert-Sahai** | 2009 | LWE | KDM-secure for affine functions of the key [[1]](https://eprint.iacr.org/2009/070) |
+| **Barak-Haitner-Hofheinz-Ishai** | 2010 | Any CPA enc (bounded) | KDM security for bounded polynomial cycles [[1]](https://eprint.iacr.org/2010/198) |
+
+**State of the art:** LWE-based KDM (used in FHE bootstrapping security proofs), DDH-based (practical).
+
+---
+
+## Accountable Multi-Signatures / Subgroup Signatures
+
+**Goal:** Identify non-signers. In a multi-signature or threshold protocol, produce a compact proof that identifies *which* parties signed (or failed to sign). Important for BFT consensus where non-signing validators must be slashed.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boneh-Drijvers-Neven (Compact Multi-Sig)** | 2018 | BLS + aggregation | Aggregate BLS sigs with signer bitmap; used in Ethereum [[1]](https://eprint.iacr.org/2018/483) |
+| **Accountable Subgroup Multi-Sig (ASM)** | 2021 | Schnorr / BLS | Identify exactly which subset signed; penalty for absence [[1]](https://eprint.iacr.org/2021/1351) |
+| **Pixel (forward-secure multi-sig)** | 2019 | Pairings | Forward-secure aggregatable sigs for blockchain consensus [[1]](https://eprint.iacr.org/2019/514) |
+
+**State of the art:** BLS + bitmap (Ethereum consensus), ASM (PoS slashing).
 
 ---
 
