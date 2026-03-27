@@ -218,6 +218,9 @@
 - [Spooky Encryption](#spooky-encryption)
 - [Property-Preserving Encryption (PPE)](#property-preserving-encryption-ppe)
 - [Somewhere Statistically Binding (SSB) Hash](#somewhere-statistically-binding-ssb-hash)
+- [Witness Indistinguishability (WI) / Witness Hiding](#witness-indistinguishability-wi--witness-hiding)
+- [Non-Black-Box Zero-Knowledge / Concurrent ZK](#non-black-box-zero-knowledge--concurrent-zk)
+- [Quantum Copy-Protection / Uncloneable Encryption](#quantum-copy-protection--uncloneable-encryption)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -3374,6 +3377,50 @@
 | **Batch SSB (Waters-Wu)** | 2023 | Pairings / LWE | SSB hash binding at multiple positions simultaneously; batch SNARGs [[1]](https://eprint.iacr.org/2022/1500) |
 
 **State of the art:** LWE-based SSB hash (2019+); key building block for [SNARGs](#snarg-succinct-non-interactive-arguments-without-zero-knowledge) and [BARG](#batch-arguments-barg--accumulation-schemes) from standard assumptions.
+
+---
+
+## Witness Indistinguishability (WI) / Witness Hiding
+
+**Goal:** Relaxed zero-knowledge. Witness indistinguishability: the verifier cannot distinguish which of multiple valid witnesses the prover used. Witness hiding: the verifier cannot compute any witness after the interaction. Weaker than ZK but sufficient for many applications and compositionally robust.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Feige-Shamir WI/WH** | 1990 | Any NP | Formal definitions; WI ⊂ ZK; WI composes under parallel composition (ZK does not) [[1]](https://doi.org/10.1145/100216.100272) |
+| **WI from Sigma Protocols** | 1994 | DLP | Run two Sigma protocols in parallel; WI without ZK [[1]](https://doi.org/10.1007/BFb0053443) |
+| **Resettable WI (Deng-Goyal-Sahai)** | 2009 | One-way functions | WI secure even if verifier can reset prover to initial state [[1]](https://doi.org/10.1109/FOCS.2009.12) |
+
+**State of the art:** WI is the default security notion for many sub-protocols in [MPC](#multi-party-computation-mpc) and credential systems. Composes better than ZK — see [ZK Proofs](#zero-knowledge-proofs-zk), [Sigma Protocols](#sigma-protocols--schnorr-identification).
+
+---
+
+## Non-Black-Box Zero-Knowledge / Concurrent ZK
+
+**Goal:** ZK under concurrent composition. Standard black-box ZK is impossible when many proof sessions run simultaneously (verifier can interleave sessions to cheat). Barak's breakthrough: the simulator reads the verifier's code directly (non-black-box), enabling ZK even under concurrent execution.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Barak Non-Black-Box ZK** | 2001 | Universal arguments | First non-black-box simulator; concurrent ZK for NP in plain model [[1]](https://doi.org/10.1109/SFCS.2001.959902) |
+| **Concurrent ZK (Canetti et al.)** | 2002 | Timing assumptions | Concurrent ZK under timing assumptions (bounded delay) [[1]](https://eprint.iacr.org/2001/055) |
+| **Resettable ZK (Canetti et al.)** | 2000 | Non-black-box | ZK secure even if verifier can rewind/reset prover [[1]](https://doi.org/10.1145/335305.335311) |
+| **Constant-Round Concurrent ZK (Goyal)** | 2013 | Non-black-box + commitments | O(1) rounds concurrent ZK; improved Barak's technique [[1]](https://eprint.iacr.org/2012/563) |
+
+**State of the art:** Constant-round concurrent ZK (Goyal 2013); essential for real-world protocols with parallel sessions. Extends [ZK Proofs](#zero-knowledge-proofs-zk).
+
+---
+
+## Quantum Copy-Protection / Uncloneable Encryption
+
+**Goal:** Software anti-piracy from quantum mechanics. Encode a program or decryption key as a quantum state — the no-cloning theorem prevents making copies. A user can run the program but cannot duplicate it for others. Classically impossible; quantumly achievable for certain function classes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Aaronson Quantum Copy-Protection** | 2009 | Quantum oracles | First formal definition; copy-protect point functions in oracle model [[1]](https://doi.org/10.1109/CCC.2009.42) |
+| **Broadbent-Lord Uncloneable Encryption** | 2020 | BB84 states | Ciphertext is a quantum state; cannot be copied even by key holder [[1]](https://eprint.iacr.org/2019/1146) |
+| **Coladangelo-Liu-Liu-Zhandry Copy-Protection** | 2021 | Quantum FHE | Copy-protect compute-and-compare programs from standard assumptions [[1]](https://eprint.iacr.org/2020/1005) |
+| **Ananth-Kaleoglu-Li-Liu-Zhandry** | 2023 | iO + quantum | Copy-protect all unlearnable functions (general result) [[1]](https://eprint.iacr.org/2023/356) |
+
+**State of the art:** Copy-protection for all unlearnable functions (2023); uncloneable encryption deployed-ready. Extends [Quantum Money](#quantum-money--quantum-tokens) and [QKD](#quantum-key-distribution-qkd).
 
 ---
 
