@@ -254,6 +254,11 @@
 - [In-Sensor Cryptography](#in-sensor-cryptography)
 - [zkLLM / Verifiable AI Inference](#zkllm--verifiable-ai-inference)
 - [Fuzzy Private Set Intersection (FPSI)](#fuzzy-private-set-intersection-fpsi)
+- [Mental Poker / Commutative Encryption](#mental-poker--commutative-encryption)
+- [Private Set Union (PSU)](#private-set-union-psu)
+- [Graph Encryption](#graph-encryption)
+- [Encrypted Client Hello (ECH)](#encrypted-client-hello-ech)
+- [Private Heavy Hitters / Frequency Estimation](#private-heavy-hitters--frequency-estimation)
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
 
 ---
@@ -3920,6 +3925,74 @@
 | **FPSI from VOLE** | 2025 | VOLE + fuzzy matching | Efficient FPSI using vector OLE; sublinear communication for approximate matches [[1]](https://eprint.iacr.org/2025/911) |
 
 **State of the art:** VOLE-based FPSI (2025); combines [PSI](#private-set-intersection-psi), [OLE/VOLE](#oblivious-linear-evaluation-ole--vole), and [PPRL](#privacy-preserving-record-linkage-pprl).
+
+---
+
+## Mental Poker / Commutative Encryption
+
+**Goal:** Fair card games without a trusted dealer. Two or more players deal, shuffle, and draw cards from a virtual deck — no player can cheat (see others' cards, stack the deck), and no trusted third party is needed. Uses commutative encryption: E_A(E_B(x)) = E_B(E_A(x)), so encryption order doesn't matter.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Shamir-Rivest-Adleman Mental Poker** | 1981 | Commutative RSA | First protocol; players encrypt cards with commutative cipher; shuffle by re-encrypting [[1]](https://people.csail.mit.edu/rivest/pubs/SRA81.pdf) |
+| **Barnett-Smart Mental Poker** | 2003 | ElGamal + ZK | Efficient protocol using ElGamal rerandomization + zero-knowledge proofs of shuffle [[1]](https://doi.org/10.1007/978-3-540-40061-5_23) |
+| **Blockchain Mental Poker** | 2018 | Smart contracts + commit-reveal | Trustless poker on Ethereum; disputes resolved on-chain [[1]](https://doi.org/10.1007/978-3-030-01177-2_28) |
+
+**State of the art:** Barnett-Smart (efficient, ZK-based); blockchain variants for trustless online play. The first example of [Secure Computation](#multi-party-computation-mpc) — historically predates general MPC.
+
+---
+
+## Private Set Union (PSU)
+
+**Goal:** Compute the union of private sets without revealing which elements belong to which party. Dual of [PSI](#private-set-intersection-psi) (intersection) — PSU reveals A ∪ B while hiding individual membership. Harder than PSI because the output is larger.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Kolesnikov-Kumaresan-Rosulek-Trieu PSU** | 2019 | OPRF + OT | First efficient PSU with linear communication [[1]](https://eprint.iacr.org/2019/776) |
+| **Jia-Sun-Zhou-Gu Scalable PSU** | 2024 | Additively HE | Stronger security; avoids OT-based leakage; scales to millions of items [[1]](https://eprint.iacr.org/2024/922) |
+
+**State of the art:** AHE-based PSU (2024) for stronger security; OPRF-based for efficiency. Related to [PSI](#private-set-intersection-psi) and [OKVS](#oblivious-key-value-store-okvs).
+
+---
+
+## Graph Encryption
+
+**Goal:** Outsource a graph database to an untrusted server and query it privately. The server evaluates encrypted graph queries (shortest path, subgraph matching, neighbor queries) without seeing the graph structure or query. Extends [Searchable Encryption](#searchable-encryption-sse--peks) to graph-structured data.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chase-Kamara Structured Encryption** | 2010 | Symmetric encryption | General framework for encrypting data structures (graphs, matrices) with controlled leakage [[1]](https://eprint.iacr.org/2010/351) |
+| **Ghosh-Kamara-Tamassia GES** | 2021 | Graph encryption | Graph encryption for shortest path queries; sublinear query time [[1]](https://eprint.iacr.org/2021/865) |
+| **PathGES** | 2024 | GES + optimization | Efficient single-pair shortest path on encrypted graphs; logarithmic storage overhead [[1]](https://eprint.iacr.org/2024/845) |
+
+**State of the art:** PathGES (2024); extends [SSE](#searchable-encryption-sse--peks) to relational/graph queries. Active area for encrypted databases.
+
+---
+
+## Encrypted Client Hello (ECH)
+
+**Goal:** Hide website identity from network observers in TLS. Standard TLS exposes the Server Name Indication (SNI) in plaintext — revealing which website you're connecting to. ECH encrypts the entire ClientHello using HPKE, so even the domain name is hidden from passive observers.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ESNI (Encrypted SNI)** | 2018 | AES + DH | First attempt; encrypted only SNI field; deployed by Cloudflare [[1]](https://blog.cloudflare.com/encrypted-sni/) |
+| **ECH (Encrypted Client Hello)** | 2024 | HPKE (RFC 9180) | **RFC 9849**; encrypts entire ClientHello; deployed in Chrome, Firefox, Cloudflare [[1]](https://www.rfc-editor.org/rfc/rfc9849.html) |
+
+**State of the art:** ECH (RFC 9849, 2024); deployed in major browsers. Complements [ODoH](#oblivious-dns-odoh) and [TLS in Secure Channels](#secure-channels--protocol-constructions).
+
+---
+
+## Private Heavy Hitters / Frequency Estimation
+
+**Goal:** Discover popular items from distributed private data. Many clients each hold a private value; the server wants to find the most frequent values (heavy hitters) or estimate value frequencies — without learning any individual client's data. Core primitive for telemetry, analytics, and spam detection.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **RAPPOR (Google)** | 2014 | Local DP + Bloom filters | First deployed private frequency estimation; Chrome telemetry [[1]](https://doi.org/10.1145/2660267.2660348) |
+| **Poplar (Boneh et al.)** | 2021 | Incremental DPF | Private heavy hitters via distributed point functions; no public-key crypto needed [[1]](https://arxiv.org/abs/2012.14884) |
+| **Prio3 + VDAF (IETF)** | 2023 | Secret sharing + ZK | Standardized (draft-irtf-cfrg-vdaf); used in Mozilla/Apple telemetry; extends [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation) [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-vdaf/) |
+
+**State of the art:** Poplar/Prio3 for heavy hitters; RAPPOR for local DP. Related to [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation) and [Differential Privacy](#differential-privacy).
 
 ---
 
