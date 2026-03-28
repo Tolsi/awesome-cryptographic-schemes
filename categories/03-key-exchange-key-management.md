@@ -280,3 +280,187 @@ Recovery: 2 shares from Group 1 + Group 2's share
 **State of the art:** SLIP-39 (SatoshiLabs 2019). Trezor-native; not widely supported elsewhere. Complements BIP-85 (derive child seeds from recovered master). See [Secret Sharing Schemes](#secret-sharing-schemes-sss), [HD Wallets](#hierarchical-deterministic-keys-bip32--hd-wallets).
 
 ---
+
+## SIGMA Protocol (SIGn-and-MAc)
+
+**Goal:** Provide a provably secure framework for authenticated Diffie-Hellman key exchange that simultaneously achieves identity protection, mutual authentication, and forward secrecy — and serves as the cryptographic core of IKEv1/v2 and TLS 1.3.
+
+The SIGMA family, introduced by Hugo Krawczyk at CRYPTO 2003, fixes a subtle flaw in the earlier Station-to-Station (STS) protocol. STS signs the DH transcript but does not MAC-protect the peer identity, leaving an identity misbinding attack open. SIGMA resolves this by requiring each party to both sign the DH exchange and MAC their own identity under the derived session key — hence "SIGn-and-MAc."
+
+**Core SIGMA-I handshake (identity-protecting variant):**
+
+```
+Alice → Bob:  g^x
+Bob → Alice:  g^y, CERT_B, SIG_B(g^x, g^y), MAC_K(Bob)
+Alice → Bob:  CERT_A, SIG_A(g^y, g^x), MAC_K(Alice)
+```
+
+where K = KDF(g^xy). Bob's certificate and signature arrive encrypted; Alice's identity is fully hidden from passive adversaries.
+
+**SIGMA variants:**
+
+| Variant | Rounds | Identity protection |
+|---------|--------|---------------------|
+| SIGMA-I | 3 messages | Initiator identity hidden |
+| SIGMA-R | 3 messages | Responder identity hidden |
+| SIGMA-0 | 2 messages | No identity protection; minimal overhead |
+
+**Why SIGMA matters:** IKEv1 (1998) adopted SIGMA-style signing. IKEv2 (RFC 7296, 2014) formalised it. TLS 1.3 (RFC 8446, 2018) uses a SIGMA-inspired construction — the Finished MAC plays the role of MAC_K(identity) — making SIGMA the conceptual ancestor of every secure TLS 1.3 connection.
+
+| Deployment | Role |
+|------------|------|
+| IKEv1 / IKEv2 | Signature-based authentication mode |
+| TLS 1.3 | Finished MAC mirrors SIGMA's identity MAC |
+| QUIC | Inherits TLS 1.3 handshake |
+
+**State of the art:** Cite as [[1]](https://iacr.org/archive/crypto2003/27290399/27290399.pdf). Security proof in the BR model; formalised by Canetti-Krawczyk in the UC model. Related to [IKEv2 / IPsec ESP](categories/12-secure-communication-protocols.md#ikev2--ipsec-esp) and [Key Exchange / Key Agreement](#key-exchange--key-agreement).
+
+---
+
+## J-PAKE (Password-Authenticated Key Exchange by Juggling)
+
+**Goal:** Enable two parties to establish an authenticated session key using only a shared low-entropy password, with no PKI and with provable resistance to both on-line and off-line dictionary attacks, using only standard discrete-log primitives.
+
+J-PAKE, designed by Feng Hao and Peter Ryan (2008) and standardised as RFC 8236, authenticates a Diffie-Hellman exchange through a pair of Schnorr non-interactive zero-knowledge (NIZK) proofs that "juggle" both parties' password contributions into the final key. Unlike SRP, J-PAKE provides a published security proof under the DDH assumption.
+
+**Two-round protocol sketch (over a prime-order group):**
+
+| Round | Alice sends | Bob sends |
+|-------|-------------|-----------|
+| 1 | g^x1, g^x2, ZKP(x1), ZKP(x2) | g^x3, g^x4, ZKP(x3), ZKP(x4) |
+| 2 | A = g^(x1+x3+x4)·x2·s, ZKP(x2·s) | B = g^(x1+x2+x3)·x4·s, ZKP(x4·s) |
+| Key | K = (B/g^(x2·x4·s))^x2 | K = (A/g^(x2·x4·s))^x4 |
+
+where s is a hash of the password. Both sides must then confirm K with a key-confirmation step (two extra messages, or folded into the application layer).
+
+**Security properties:**
+- Off-line dictionary attack resistance — no password verifier is leaked to a passive adversary
+- Forward secrecy — session key remains secret even if password is later disclosed
+- On-line attack limited to one password guess per protocol run
+
+**Deployments:** Firefox Sync (early); Google Nest / Thread (IoT key agreement); OpenSSL, NSS, Bouncy Castle; IEEE 802.15.4 (Thread group).
+
+**State of the art:** Cite as [[1]](https://www.rfc-editor.org/rfc/rfc8236). EC-J-PAKE (elliptic-curve variant) specified in RFC 8235. CPace (see [Password-Based Key Derivation](#password-based-key-derivation-kdf--pake)) is a cleaner modern alternative. Related to [SPEKE](#speke-simple-password-exponential-key-exchange) and [SPAKE2 / OPAQUE](#key-exchange--key-agreement).
+
+---
+
+## SPEKE (Simple Password Exponential Key Exchange)
+
+**Goal:** Derive the Diffie-Hellman generator from the shared password, turning a standard DH exchange into a password-authenticated one with a minimal footprint — no zero-knowledge proofs required.
+
+SPEKE was introduced by David Jablon in 1996. Instead of using a fixed generator g, both parties independently compute g = H(π)² mod p (squaring ensures g generates the prime-order subgroup), then run a standard DH exchange g^a, g^b. An attacker who does not know π cannot compute the correct generator and therefore cannot impersonate either party without making a password guess per protocol run.
+
+**Protocol flow:**
+
+```
+Shared input: password π, safe prime p (order q = (p-1)/2)
+g ← H(π)² mod p          (both parties compute independently)
+Alice: picks a, sends A = g^a mod p
+Bob:   picks b, sends B = g^b mod p
+Shared secret: K = B^a = A^b = g^(ab) mod p
+Key confirmation: optional MAC exchange
+```
+
+**Comparison with J-PAKE:**
+
+| Property | SPEKE | J-PAKE |
+|----------|-------|--------|
+| Zero-knowledge proofs | None required | Schnorr NIZKs |
+| Round complexity | 2 messages | 4+ messages |
+| Security proof | Informal (1996); formal 2015+ | Proven under DDH (RFC 8236) |
+| Known vulnerabilities | 2014 impersonation & KCI attacks | None published |
+
+**Known issues (2014):** Two attacks were identified — an unknown key-share (UKS) attack via parallel sessions and a key-compromise impersonation (KCI) attack. Mitigations require adding session IDs and explicit key confirmation.
+
+**Standards:** IEEE P1363.2 (2008); ISO/IEC 11770-4. EC-SPEKE extends the construction to elliptic curve groups.
+
+**State of the art:** Cite as [[1]](https://dl.acm.org/doi/10.1145/242896.242897). Superseded in practice by SPAKE2 and CPace, which have cleaner security proofs, but SPEKE remains relevant in standards contexts (IEEE P1363.2). Related to [Password-Based Key Derivation](#password-based-key-derivation-kdf--pake) and [J-PAKE](#j-pake-password-authenticated-key-exchange-by-juggling).
+
+---
+
+## ECMQV (Elliptic Curve Menezes-Qu-Vanstone)
+
+**Goal:** Implicit authentication in two passes — each party holds a static key pair and an ephemeral key pair; combining both produces a shared secret that is mutually authenticated without an explicit signature or MAC, in exactly two messages.
+
+MQV was proposed by Menezes, Qu, and Vanstone in 1995 and extended to elliptic curves (ECMQV) in joint work with Law and Solinas. HMQV (Krawczyk, 2005) gave the first rigorous security proof and is included in the Key Exchange table above. ECMQV is the elliptic-curve realisation standardised by NIST and used in SSH.
+
+**Two-pass ECMQV handshake:**
+
+```
+Static keys:  (dA, QA), (dB, QB)     — long-term
+Ephemeral:    (rA, RA), (rB, RB)     — per-session
+
+Alice → Bob: RA
+Bob → Alice: RB
+
+Implicit sig scalar (Alice): sA = rA + ē(RA)·dA  mod n
+Implicit sig scalar (Bob):   sB = rB + ē(RB)·dB  mod n
+
+Shared secret: K = h·sA·(RB + ē(RB)·QB)
+                 = h·sB·(RA + ē(RA)·QA)
+```
+
+where ē(R) = (x_R mod 2^⌈log₂n/2⌉) + 2^⌈log₂n/2⌉ (the "implicit" contribution of R).
+
+**Properties:**
+- Mutual implicit authentication — no certificates verified in-band
+- Two passes, two scalar multiplications per party (comparable to ECDH)
+- Forward secrecy from ephemeral keys
+- Key compromise impersonation (KCI) resistance requires HMQV variant
+
+| Standard | Role |
+|----------|------|
+| NIST SP 800-56A Rev 3 | Approved for US federal key establishment |
+| IEEE P1363 | Included alongside ECDH |
+| RFC 5656 | ECMQV optional in SSH Transport Layer |
+
+**Note:** NSA removed ECMQV from Suite B (2010) citing patent concerns (Certicom). HMQV is the academically preferred variant with a full proof.
+
+**State of the art:** Cite as [[1]](https://eprint.iacr.org/2005/176). NIST SP 800-56A Rev 3 (2018) still approves ECMQV; HMQV preferred in new designs. Related to [Key Exchange / Key Agreement](#key-exchange--key-agreement) and [Non-Interactive Key Exchange (NIKE)](#non-interactive-key-exchange-nike).
+
+---
+
+## TLS 1.3 Key Schedule
+
+**Goal:** Multi-stage, labeled HKDF derivation that transforms a single Diffie-Hellman output into a complete hierarchy of independent, context-bound keys — early data, handshake, and application traffic secrets — with cryptographic separation between stages and between client/server directions.
+
+The TLS 1.3 key schedule (RFC 8446 §7.1) is a stand-alone KDF construction of independent cryptographic interest. It uses HKDF-Extract and HKDF-Expand with transcript hashes as context, creating a sequence of salted extractions that "chain" secrets across the handshake phases.
+
+**Derivation graph:**
+
+```
+0 (zero)
+│
+├─ HKDF-Extract(PSK or 0) → Early Secret
+│     ├─ Derive-Secret("c e traffic", CH)    → client_early_traffic_secret
+│     └─ Derive-Secret("e exp master", CH)   → early_exporter_master_secret
+│
+├─ HKDF-Extract(DHE or 0) → Handshake Secret
+│     ├─ Derive-Secret("c hs traffic", CH+SH) → client_handshake_traffic_secret
+│     └─ Derive-Secret("s hs traffic", CH+SH) → server_handshake_traffic_secret
+│
+└─ HKDF-Extract(0) → Master Secret
+      ├─ Derive-Secret("c ap traffic", CH…SF)  → client_application_traffic_secret_0
+      ├─ Derive-Secret("s ap traffic", CH…SF)  → server_application_traffic_secret_0
+      ├─ Derive-Secret("exp master",   CH…SF)  → exporter_master_secret
+      └─ Derive-Secret("res master",   CH…CF)  → resumption_master_secret
+```
+
+where `Derive-Secret(label, msgs) = HKDF-Expand-Label(Secret, label, Transcript-Hash(msgs), L)`.
+
+**HKDF-Expand-Label encoding:**
+```
+HKDF-Expand(Secret, HkdfLabel, L)
+HkdfLabel = length(2B) || "tls13 " || label || context
+```
+
+The "tls13 " prefix domain-separates TLS 1.3 outputs from any other HKDF use of the same key material.
+
+**Security properties (proven in [[1]](https://eprint.iacr.org/2020/1044.pdf)):**
+- Each stage's traffic keys are independent: compromise of application keys does not reveal handshake keys
+- PSK-only mode, PSK + DHE, and DHE-only all provably achieve their respective security levels
+- 0-RTT early data keys are bound to the client hello transcript, preventing cross-session replay at the key level (though application-layer replay protection is still required)
+
+**State of the art:** RFC 8446 (2018) [[1]](https://www.rfc-editor.org/rfc/rfc8446); full security proof by Dowling, Fischlin, Günther, and Stebila (Journal of Cryptology 2021) [[2]](https://eprint.iacr.org/2020/1044.pdf). Key-schedule-only security analysis: [[3]](https://eprint.iacr.org/2021/467.pdf). Related to [Password-Based Key Derivation (KDF)](#password-based-key-derivation-kdf--pake) and [SIGMA Protocol](#sigma-protocol-sign-and-mac).
+
+---

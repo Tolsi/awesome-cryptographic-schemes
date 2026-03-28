@@ -236,6 +236,79 @@
 
 ---
 
+## Beaver Triples (Multiplication Triples)
+
+**Goal:** Amortize the cost of secure multiplications. A Beaver triple is a secret-shared tuple (⟨a⟩, ⟨b⟩, ⟨c⟩) with c = a·b, where a and b are uniformly random. Given a precomputed triple, two parties can evaluate any multiplication gate with a single round of communication and no cryptography — all expensive work is pushed to an offline preprocessing phase.
+
+| Technique | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Beaver's Circuit Randomization** | 1991 | Information-theoretic | Original preprocessing model; reduce online MPC to XOR + broadcast using precomputed triples [[1]](https://dl.acm.org/doi/10.1145/103418.103444) |
+| **Triple generation via MASCOT** | 2016 | OT extension | Generate authenticated triples under malicious security using OT; basis of SPDZ preprocessing [[1]](https://eprint.iacr.org/2016/505) |
+| **Triple generation via PCG/Silent OT** | 2020 | Ring-LPN | Generate triples from short correlated seeds; sublinear communication [[1]](https://eprint.iacr.org/2020/924) |
+| **Masked Triples** | 2021 | Secret sharing | Amortize triples across conditional branches; reduce waste from unused branch triples [[1]](https://eprint.iacr.org/2021/604) |
+
+**State of the art:** PCG-based triple generation (2020) for minimal communication; MASCOT for concretely practical malicious-secure generation. Beaver triples are the universal currency of the preprocessing model — used in SPDZ, ABY, MOTION, and virtually every practical arithmetic MPC protocol. See [Silent OT / PCG](#silent-ot--pseudorandom-correlation-generators-pcg) and [OLE / VOLE](#oblivious-linear-evaluation-ole--vole).
+
+---
+
+## BMR Protocol (Constant-Round MPC)
+
+**Goal:** Multiparty computation in a constant number of rounds, regardless of circuit depth. Beaver, Micali, and Rogaway (1990) generalize Yao's garbled circuits to n parties: parties collaboratively construct a garbled circuit using a round of MPC, then each party evaluates locally. Round complexity is O(1) rather than O(depth).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BMR (Beaver-Micali-Rogaway)** | 1990 | Garbled circuits + secret sharing | First constant-round n-party SFE; parties jointly garble then all evaluate locally [[1]](https://dl.acm.org/doi/10.1145/100216.100287) |
+| **BMR + SPDZ preprocessing** | 2015 | BMR + SPDZ | Maliciously secure constant-round MPC; use SPDZ offline phase to generate authenticated BMR garbling [[1]](https://eprint.iacr.org/2015/523) |
+| **MOTION (GMW + BMR framework)** | 2022 | BMR + GMW + OT | Production framework implementing BMR and GMW with mixed-protocol support; semi-honest n-party [[1]](https://eprint.iacr.org/2020/1137) |
+
+**State of the art:** BMR + SPDZ (malicious, constant-round); MOTION for practical semi-honest deployment. The constant-round property matters for high-latency networks. Distinct from round-optimal but communication-heavy protocols like [BGW](#multi-party-computation-mpc) (O(depth) rounds).
+
+---
+
+## MASCOT (Malicious Arithmetic MPC via OT)
+
+**Goal:** Efficient maliciously secure arithmetic MPC in the preprocessing model without FHE. MASCOT (Keller-Orsini-Scholl, 2016) generates authenticated Beaver multiplication triples using OT extension — achieving malicious security for dishonest majority with only ~6× overhead over semi-honest, and outperforming prior SPDZ preprocessing by over 200×.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **MASCOT** | 2016 | OT extension + MACs | Malicious preprocessing for SPDZ over any field; replaces expensive FHE with OT; ACM CCS 2016 [[1]](https://eprint.iacr.org/2016/505) |
+| **SPDZ2k** | 2018 | MASCOT variant | Extend MASCOT to rings ℤ/2^k — native integer arithmetic without field embedding [[1]](https://eprint.iacr.org/2018/482) |
+| **Overdrive** | 2018 | LWE / FHE | Alternative SPDZ preprocessing using somewhat-HE; better amortized cost at large scale [[1]](https://eprint.iacr.org/2017/1230) |
+
+**State of the art:** MASCOT for practical malicious preprocessing (standard choice in MP-SPDZ); Overdrive for large-batch FHE-based preprocessing. Directly feeds into [SPDZ](#multi-party-computation-mpc) online phase; see also [Beaver Triples](#beaver-triples-multiplication-triples).
+
+---
+
+## Cut-and-Choose for Garbled Circuits (Malicious 2PC)
+
+**Goal:** Achieve malicious security in Yao's garbled circuit framework without heavy generic techniques. One party garbles s circuits; the other checks roughly half of them (cut), and evaluates the rest (choose). Cheating requires all evaluated circuits to be malicious, giving soundness error ~2^{−s/2} or better with refined techniques.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Lindell-Pinkas Cut-and-Choose** | 2007 | GC + commit-reveal | Seminal cut-and-choose 2PC; s circuits gives 2^{−0.32s} cheating probability [[1]](https://eprint.iacr.org/2007/557) |
+| **Lindell Fast Cut-and-Choose** | 2013 | GC + forge-and-lose | Optimal s circuits for 2^{−s} soundness; single additional small MPC to "close the loop" [[1]](https://eprint.iacr.org/2013/079) |
+| **Amortizing Garbled Circuits (HKK)** | 2015 | GC batching | Batch cut-and-choose across multiple executions; amortize the s-circuit overhead [[1]](https://eprint.iacr.org/2015/081) |
+| **Authenticated Garbling (WRK)** | 2017 | GC + information-theoretic MACs | Replace cut-and-choose entirely with authenticated wires; single garbled circuit suffices; CCS 2017 [[1]](https://eprint.iacr.org/2017/030) |
+
+**State of the art:** Authenticated garbling (WRK 2017) supersedes cut-and-choose for most uses — achieving malicious 2PC with one garbled circuit and no circuit duplication. Cut-and-choose remains relevant when the underlying primitive is most convenient. See [Garbled Circuits (expanded)](#garbled-circuits-expanded).
+
+---
+
+## SecureML and MPC-Based Machine Learning Inference
+
+**Goal:** Train and evaluate machine learning models on private data held by multiple parties. SecureML (Mohassel-Zhang, 2017) introduced efficient 2PC protocols for linear regression, logistic regression, and neural network training using secret sharing and Beaver triples over fixed-point arithmetic — enabling ML without exposing training data.
+
+| System | Year | Basis | Note |
+|--------|------|-------|------|
+| **SecureML** | 2017 | 2PC + secret sharing | Privacy-preserving linear/logistic regression and NN training; MPC-friendly sigmoid/softmax; S&P 2017 [[1]](https://eprint.iacr.org/2017/396) |
+| **ABY3** | 2018 | 3PC with honest majority | Three-party ML with fast conversions; supports training and inference at LAN speeds [[1]](https://eprint.iacr.org/2018/403) |
+| **CrypTen (Facebook)** | 2020 | Secret sharing (SPDZ-like) | Open-source PyTorch-based framework for 2/3-party private inference and training [[1]](https://arxiv.org/abs/2109.00984) |
+| **Piranha** | 2022 | GPU-accelerated 3PC | GPU-accelerated secure ML training under semi-honest 3PC; order-of-magnitude speedups [[1]](https://eprint.iacr.org/2022/892) |
+
+**State of the art:** ABY3 / CrypTen for practical private inference; Piranha for GPU-accelerated training. MPC-based ML is an active area bridging [MPC](#multi-party-computation-mpc), [HE](#homomorphic-encryption-fhe--she--phe), and zkML (see [Zero-Knowledge Proof Systems](categories/04-zero-knowledge-proof-systems.md#zkml--verifiable-machine-learning)).
+
+---
+
 ## Mental Poker / Commutative Encryption
 
 **Goal:** Fair card games without a trusted dealer. Two or more players deal, shuffle, and draw cards from a virtual deck — no player can cheat (see others' cards, stack the deck), and no trusted third party is needed. Uses commutative encryption: E_A(E_B(x)) = E_B(E_A(x)), so encryption order doesn't matter.

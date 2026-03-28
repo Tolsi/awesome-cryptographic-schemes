@@ -277,3 +277,77 @@
 **State of the art:** TEE-enforced accountable decryption (2024); formal model (2023). Complements [Key Transparency](#key-transparency--coniks) (audits key bindings) and [Traceable Signatures](#traceable-signatures) (audits signing).
 
 ---
+
+## CRT-based Secret Sharing (Mignotte / Asmuth-Bloom)
+
+**Goal:** Threshold sharing via modular arithmetic. Split a secret into *n* shares using the Chinese Remainder Theorem (CRT) so that any *t* shares reconstruct it by CRT combination, without polynomial interpolation. An integer-arithmetic alternative to Shamir — shares are residues modulo pairwise coprime integers.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Mignotte's Scheme** | 1983 | CRT + Mignotte sequences | Uses special (t,n)-sequences where the product of the t smallest moduli exceeds that of the t−1 largest; *not* perfect — fewer than t shares can leak partial information [[1]](https://doi.org/10.1007/3-540-39466-4_27) |
+| **Asmuth-Bloom Scheme** | 1983 | CRT + randomization | Adds a random multiple of the secret modulus before reduction; achieves *perfect* secrecy — fewer than t shares reveal nothing [[1]](https://doi.org/10.1109/TIT.1983.1056651) |
+| **Ideal CRT-based SS** | 2018 | CRT over cyclotomic fields | Constructs ideal (optimal share size) CRT-based schemes for any threshold [[1]](https://eprint.iacr.org/2018/837) |
+| **Homomorphic CRT-SS** | 2020 | CRT + homomorphic ext. | Extends Asmuth-Bloom with homomorphic operations on shares; enables CRT-based MPC [[1]](https://www.sciencedirect.com/science/article/pii/S0166218X20303012) |
+
+**State of the art:** Asmuth-Bloom is the standard perfect CRT-based scheme; Mignotte is historically important but imperfect. CRT-based SS is preferred when modular arithmetic is more natural than field arithmetic (e.g., hardware, RSA-based systems). Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## Computational Secret Sharing
+
+**Goal:** Shares shorter than the secret. In information-theoretic (t,n)-SS each share must be at least as long as the secret. Under computational security assumptions (bounded adversary), shares can be compressed to |secret|/t plus a small key-dependent overhead — giving dramatic savings for large secrets.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Krawczyk SSMS ("Secret Sharing Made Short")** | 1993 | IDA + symmetric enc | Share = encrypt secret with random key k, then Shamir-share k; total share size |S|/t + O(κ); computationally secure [[1]](https://link.springer.com/chapter/10.1007/3-540-48329-2_12) |
+| **Rogaway-Bellare RCSS** | 2007 | PRF + commitment | Robust computational SS with unified treatment of all classical SS goals; handles share tampering [[1]](https://dl.acm.org/doi/10.1145/1315245.1315268) |
+| **Optimal Computational SS** | 2025 | Information theory + PRF | Tight bounds on share size in the computational model; matches Krawczyk for threshold but extends to general access structures [[1]](https://arxiv.org/abs/2502.02774) |
+
+**State of the art:** Krawczyk's SSMS (1993) remains the standard construction; widely used in practice wherever large files must be split. Key insight: information-theoretic share-size lower bounds do not apply against computationally bounded adversaries. Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## Multi-Secret Sharing
+
+**Goal:** Share multiple independent secrets simultaneously. Each secret may have its own access structure (qualified sets). Unlike [Packed Secret Sharing](#packed-secret-sharing), the secrets are not required to share a single threshold; the scheme must hide each secret from unauthorized parties even when some other secrets are revealed.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ideal Multi-Secret Sharing (Blundo et al.)** | 1993 | Polynomial | First formal treatment; share k secrets with (possibly distinct) access structures using a single sharing; characterizes when ideal schemes exist [[1]](https://link.springer.com/article/10.1007/BF00189262) |
+| **Blundo-De Santis Multi-SS** | 1994 | Polynomial + info theory | CRYPTO '94; information-theoretic lower bounds on share sizes for multi-secret SS [[1]](https://link.springer.com/chapter/10.1007/3-540-48658-5_17) |
+| **Verifiable Multi-SS (Yang-Chang-Hwang)** | 2004 | One-way functions + Shamir | Efficient reusable shares; one polynomial encodes multiple secrets; verification via public commitments [[1]](https://www.sciencedirect.com/science/article/abs/pii/S0140366498001911) |
+| **Space-Efficient Computational Multi-SS** | 2018 | PRF + polynomial | Computational multi-SS with share sizes independent of the number of secrets; supports arbitrary access structures [[1]](https://eprint.iacr.org/2018/1010) |
+
+**State of the art:** Computational multi-SS (2018) achieves near-optimal share sizes; widely used in key management, password managers, and threshold wallets where multiple independent secrets must be distributed. Distinct from [Packed SS](#packed-secret-sharing) (which amortizes a single threshold over many secrets) and extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## Regenerating Codes for Distributed Storage
+
+**Goal:** Repair-efficient secret sharing. In a standard (t,n)-SS, repairing a lost share requires downloading the entire secret and re-sharing. Regenerating codes allow a failed node to be repaired by contacting d helper nodes and downloading only a fraction of their data — trading off storage overhead against repair bandwidth, with strong connections to secret sharing and MPC.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Dimakis et al. Regenerating Codes** | 2010 | Network coding + cut-set bounds | Foundational paper; identifies MSR (min storage) and MBR (min bandwidth) tradeoff points; file is recoverable from any k of n nodes [[1]](https://doi.org/10.1109/TIT.2010.2054295) |
+| **Product-Matrix MSR/MBR** | 2011 | Linear algebra | Explicit optimal exact-regenerating codes at MSR and MBR points; simple product-matrix construction [[1]](https://arxiv.org/abs/1005.4178) |
+| **Secure Regenerating Codes** | 2012 | RS codes + secret sharing | Information-theoretic security against eavesdroppers during repair; combines regenerating codes with Shamir sharing [[1]](https://arxiv.org/abs/1210.3664) |
+| **Regenerating Codes ↔ Proactive SS** | 2022 | Formal equivalence | Shows formal connections and implications between regenerating codes and proactive secret sharing; unified framework [[1]](https://eprint.iacr.org/2022/096) |
+
+**State of the art:** Regenerating codes are deployed in distributed storage systems (e.g., Azure LRC, Facebook f4) and increasingly connected to [Proactive SS](#proactive-secret-sharing) and [Robust SS](#robust-secret-sharing). Key open problem: efficient exact-repair regenerating codes with strong cryptographic security.
+
+---
+
+## Multiplicative Secret Sharing
+
+**Goal:** Threshold sharing compatible with multiplication. A secret sharing scheme is *multiplicative* if parties can locally multiply their shares of two secrets [a] and [b] to obtain shares of the product a·b, enabling secure multiplication in MPC without interaction. The foundational mechanism behind [BGW](#multi-party-computation-mpc)-style perfectly secure MPC.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Shamir Multiplicative SS (BGW)** | 1988 | Polynomial evaluation | Shamir shares are multiplicative: product of shares lies on degree-2t polynomial; requires degree-reduction sub-protocol [[1]](https://dl.acm.org/doi/10.1145/62212.62213) |
+| **d-Multiplicative SS (Ishai-Kushilevitz)** | 2000 | Combinatorics | Characterizes when a sharing scheme supports multiplication of d secrets; tight bounds on adversary threshold [[1]](https://link.springer.com/content/pdf/10.1007/s00145-010-9056-z.pdf) |
+| **Multiplicative SS over Z_m** | 2000 | Rings | Extends multiplicative SS to composite moduli (rings); needed for arithmetic over Z_{2^k} in MPC [[1]](https://link.springer.com/chapter/10.1007/3-540-45708-9_18) |
+| **Packed Multiplicative SS** | 2022 | Packed Shamir | Combines multiplicative and packed sharing; sharing transformation enables dishonest-majority MPC with amortized communication [[1]](https://eprint.iacr.org/2022/831) |
+
+**State of the art:** Shamir sharing remains the standard multiplicative SS; degree-reduction (via Beaver triples or BGW resharing) is the bottleneck of information-theoretically secure MPC. Packed multiplicative SS (2022) amortizes costs. Central to [MPC](#multi-party-computation-mpc), [Packed SS](#packed-secret-sharing), and [Robust SS](#robust-secret-sharing).
+
+---

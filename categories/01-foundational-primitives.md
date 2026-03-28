@@ -355,6 +355,139 @@
 
 ---
 
+## Feistel Networks (Luby-Rackoff Construction)
+
+**Goal:** Build a secure block cipher (PRP) from a simpler round function. A Feistel network splits a block into two halves and alternates XOR-with-round-function across rounds. The Luby-Rackoff theorem proves this is sufficient: 3 rounds from a PRF yield a PRP; 4 rounds yield a strong PRP (SPRP). The construction underpins DES, Blowfish, Twofish, CAST, Camellia, and dozens of other block ciphers.
+
+**Round structure (one round):**
+```
+(L, R) → (R,  L ⊕ F(K_i, R))
+```
+Repeat for r rounds, then swap the final halves. Decryption uses the same structure with subkeys in reverse order — the round function F need not be invertible.
+
+| Cipher | Year | Rounds | Note |
+|--------|------|--------|------|
+| **DES** | 1977 | 16 | First widely deployed Feistel cipher; 56-bit key (retired) [[1]](https://csrc.nist.gov/publications/detail/fips/46/3/archive/1999-10-25) |
+| **Blowfish** | 1993 | 16 | 64-bit block, up to 448-bit key; still used in bcrypt [[1]](https://www.schneier.com/academic/blowfish/) |
+| **Twofish** | 1998 | 16 | AES finalist; 128-bit block, 128/192/256-bit key; MDS matrix mixing [[1]](https://www.schneier.com/academic/twofish/) |
+| **Luby-Rackoff (abstract)** | 1988 | 3–4 | Theoretical foundation: PRF → PRP (3 rounds) / SPRP (4 rounds) [[1]](https://dl.acm.org/doi/10.1145/12130.12162) |
+
+**State of the art:** AES (SPN) has displaced Feistel ciphers in new designs, but Feistel construction remains theoretically important via the Luby-Rackoff theorem and is widely deployed (3DES legacy, Blowfish in bcrypt). See [Pseudorandom Functions (PRF)](#pseudorandom-functions-prf--pseudorandom-permutations-prp).
+
+---
+
+## Block Cipher Modes of Operation
+
+**Goal:** Extend a block cipher (which encrypts exactly one fixed-size block) to encrypt arbitrary-length messages, optionally providing authentication. The mode determines how successive plaintext blocks interact with each other, the key, and a nonce/IV.
+
+**Confidentiality-only modes (NIST SP 800-38A):**
+
+| Mode | Year | Property | Note |
+|------|------|----------|------|
+| **ECB** (Electronic Codebook) | 1981 | Deterministic | Identical plaintext blocks → identical ciphertext blocks; **never use** [[1]](https://csrc.nist.gov/pubs/sp/800/38/a/final) |
+| **CBC** (Cipher Block Chaining) | 1981 | Sequential | C_i = E_K(P_i ⊕ C_{i-1}); IV must be random; parallelizable decrypt only [[1]](https://csrc.nist.gov/pubs/sp/800/38/a/final) |
+| **CTR** (Counter) | 1979 | Parallelizable | E_K(nonce ∥ counter) ⊕ P_i; turns block cipher into stream cipher [[1]](https://csrc.nist.gov/pubs/sp/800/38/a/final) |
+| **OFB** (Output Feedback) | 1981 | Keystream-based | Keystream independent of plaintext; single-bit errors don't propagate [[1]](https://csrc.nist.gov/pubs/sp/800/38/a/final) |
+| **CFB** (Cipher Feedback) | 1981 | Self-synchronising | Error propagation limited; rarely preferred today [[1]](https://csrc.nist.gov/pubs/sp/800/38/a/final) |
+
+**Authenticated Encryption with Associated Data (AEAD) modes:**
+
+| Mode | Year | Basis | Note |
+|------|------|-------|------|
+| **GCM** (Galois/Counter Mode) | 2004 | CTR + GHASH | NIST SP 800-38D; dominant AEAD; hardware-accelerated [[1]](https://csrc.nist.gov/pubs/sp/800/38/d/final) |
+| **CCM** (Counter + CBC-MAC) | 2004 | CTR + CBC-MAC | NIST SP 800-38C; used in 802.11i (WPA2), TLS, IoT [[1]](https://csrc.nist.gov/pubs/sp/800/38/c/upd1/final) |
+| **EAX** | 2004 | CTR + OMAC | Two-pass; patent-free; used in OpenPGP [[1]](https://eprint.iacr.org/2003/069) |
+| **OCB** (Offset Codebook) | 2001 | Single-pass | Fastest AEAD; 1-pass; RFC 7253; patent-free since 2021 [[1]](https://www.rfc-editor.org/rfc/rfc7253) |
+| **AES-GCM-SIV** | 2017 | SIV + POLYVAL | Nonce-misuse resistant; RFC 8452; safe if nonce repeated [[1]](https://www.rfc-editor.org/rfc/rfc8452) |
+| **XTS-AES** | 2010 | Tweakable block cipher | NIST SP 800-38E; disk/storage encryption (FileVault, BitLocker) [[1]](https://csrc.nist.gov/pubs/sp/800/38/e/final) |
+
+**State of the art:** AES-GCM (internet, TLS 1.3, most cloud APIs); CCM (embedded/IoT); XTS-AES (disk encryption); AES-GCM-SIV for nonce-misuse-resistant settings. CTR underlies most stream-cipher-style use of AES. See [Symmetric Encryption](#symmetric-encryption) and [Sponge Construction](#sponge-construction--duplex) for alternative approaches.
+
+---
+
+## Block-Cipher-Based Hash Compression Functions
+
+**Goal:** Build a one-way compression function from a block cipher. These constructions turn a block cipher E_K(M) into a collision-resistant compression function h(H, M) by wiring the chaining value and message block into the cipher's key and plaintext ports in different ways. They underlie SHA-1 and SHA-2 (Davies-Meyer with a dedicated cipher), and are provably secure when E is an ideal cipher.
+
+**The twelve Preneel-Govaerts-Vandewalle constructions** reduce to three canonical families with optimal collision resistance:
+
+| Construction | Formula | Used in | Note |
+|-------------|---------|---------|------|
+| **Davies-Meyer** | h = E_{M_i}(H_{i-1}) ⊕ H_{i-1} | SHA-1, SHA-256, SHA-512 | Message is the key; chaining value is plaintext [[1]](https://en.wikipedia.org/wiki/One-way_compression_function) |
+| **Matyas-Meyer-Oseas** | h = E_{H_{i-1}}(M_i) ⊕ M_i | Whirlpool variant | Chaining value is the key; message is plaintext [[1]](https://en.wikipedia.org/wiki/One-way_compression_function) |
+| **Miyaguchi-Preneel** | h = E_{H_{i-1}}(M_i) ⊕ M_i ⊕ H_{i-1} | Whirlpool | Combines both XOR inputs; stronger feed-forward [[1]](https://en.wikipedia.org/wiki/One-way_compression_function) |
+| **Hirose double-block** | 2006 variant | — | Two-pass; double-length output; provably secure in ideal cipher [[1]](https://eprint.iacr.org/2006/090) |
+
+**Security note:** Davies-Meyer allows computation of fixed points (H such that E_H(h) ⊕ h = h), but no practical attack exploits this.
+
+**State of the art:** Davies-Meyer + Merkle-Damgård is the backbone of SHA-2 (SHA-256/512). Miyaguchi-Preneel underlies Whirlpool. For new designs the sponge construction (see [Sponge Construction](#sponge-construction--duplex)) is preferred over block-cipher-based compression.
+
+---
+
+## Password Hashing & Memory-Hard KDFs
+
+**Goal:** Slow, resource-intensive key derivation for password storage and password-based key derivation. Unlike general KDFs (HKDF), password hashers must resist GPU/ASIC offline attacks by requiring large amounts of memory and/or computation per evaluation. A correct scheme means an attacker must pay significant hardware cost per password guess.
+
+| Scheme | Year | Memory-hard | Note |
+|--------|------|-------------|------|
+| **bcrypt** | 1999 | No (4 KB state) | Blowfish-based; work factor 2^cost; widely deployed but ASIC-attackable [[1]](https://www.usenix.org/legacy/events/usenix99/provos/provos.pdf) |
+| **PBKDF2** | 2000 | No | HMAC iterated t times; NIST SP 800-132, RFC 8018; FIPS-compliant but weak against GPU [[1]](https://www.rfc-editor.org/rfc/rfc8018) |
+| **scrypt** | 2009 | Yes (configurable) | Colin Percival; sequential memory-hard via ROMix; N×r×p parameters [[1]](https://www.rfc-editor.org/rfc/rfc7914) |
+| **Argon2d** | 2015 | Yes | PHC winner; data-dependent memory access; maximally MHF, resist TMTO [[1]](https://www.rfc-editor.org/rfc/rfc9106) |
+| **Argon2i** | 2015 | Yes | Data-independent; side-channel-resistant; suitable for sensitive environments [[1]](https://www.rfc-editor.org/rfc/rfc9106) |
+| **Argon2id** | 2015 | Yes | Hybrid: Argon2i first pass + Argon2d remainder; **recommended default** (RFC 9106) [[1]](https://www.rfc-editor.org/rfc/rfc9106) |
+| **Balloon Hashing** | 2016 | Yes | Provably memory-hard under standard assumptions; simple design [[1]](https://eprint.iacr.org/2016/027) |
+
+**Parameters (Argon2id recommended defaults):** memory ≥ 19 MiB, iterations ≥ 2, parallelism = 1. OWASP 2023 guidance: 64 MiB / 3 iterations / 4 threads.
+
+**State of the art:** Argon2id (RFC 9106, PHC winner) is the current recommendation for new systems. bcrypt and PBKDF2 remain dominant in legacy deployments. See [Key Exchange & KDFs](categories/03-key-exchange-key-management.md) for general-purpose KDFs.
+
+---
+
+## HKDF (Extract-and-Expand Key Derivation)
+
+**Goal:** Derive one or more cryptographically strong keys from any source of keying material — shared secrets, passwords, or raw entropy — using a structured two-phase process. HKDF separates randomness extraction (weak → uniform) from key expansion (one PRK → many keys), cleanly composing the Randomness Extractor and PRF abstractions.
+
+**Two-phase design (RFC 5869):**
+
+```
+HKDF-Extract(salt, IKM)  →  PRK  (pseudorandom key, 32 bytes for SHA-256)
+HKDF-Expand(PRK, info, L)  →  OKM  (output keying material, L bytes)
+```
+
+- **Extract:** `PRK = HMAC-Hash(salt, IKM)` — acts as a randomness extractor; salt plays the role of the hash key
+- **Expand:** `OKM = T(1) ∥ T(2) ∥ …` where `T(i) = HMAC-Hash(PRK, T(i-1) ∥ info ∥ i)`; `info` allows domain separation / context binding
+
+| Instantiation | Hash | PRK size | Max OKM |
+|---------------|------|----------|---------|
+| HKDF-SHA256 | SHA-256 | 32 B | 8160 B |
+| HKDF-SHA512 | SHA-512 | 64 B | 16320 B |
+
+**Used in:** TLS 1.3 (all key derivation), HPKE (RFC 9180), Signal Protocol (X3DH + Double Ratchet), Noise Protocol Framework, OPAQUE (RFC 9106), WireGuard.
+
+**State of the art:** RFC 5869 (2010); NIST SP 800-56C Rev. 2 endorses the extract-then-expand pattern. HKDF-SHA256 is the de facto key-derivation workhorse in modern protocols. See [Randomness Extractors](#randomness-extractors) for the theoretical foundation.
+
+---
+
+## Hardware-Oriented Stream Ciphers (eSTREAM / 3GPP)
+
+**Goal:** High-speed encryption in hardware-constrained environments — mobile chipsets, network ASICs, smart cards — where AES-CTR carries too much gate-count overhead. These stream ciphers are designed specifically for hardware gate efficiency and/or 3GPP radio standards.
+
+| Cipher | Year | Architecture | Note |
+|--------|------|-------------|------|
+| **Trivium** | 2006 | 3 shift registers (288-bit state) | eSTREAM Profile 2 (hardware); 80-bit key; ~3500 gates; parallelisable [[1]](https://link.springer.com/chapter/10.1007/978-3-540-68351-3_18) |
+| **Grain v1** | 2006 | LFSR + NLFSR (160-bit state) | eSTREAM Profile 2; 80-bit key; ultra-low area [[1]](https://eprint.iacr.org/2011/068) |
+| **Grain-128a** | 2011 | LFSR + NLFSR + MAC | 128-bit key; adds authentication; eSTREAM portfolio [[1]](https://eprint.iacr.org/2011/068) |
+| **SNOW 3G** | 2006 | LFSR + FSM | 3GPP UEA2/UIA2 (UMTS); 128-bit key; confidentiality + integrity in 4G [[1]](https://www.gsma.com/security/wp-content/uploads/2019/05/SNOW_3G_specification_1.1.pdf) |
+| **ZUC (祖冲之)** | 2011 | LFSR + FSM + NL | 3GPP 128-EEA3/128-EIA3 (LTE/5G); 128-bit key; Chinese national standard (GM/T 0001) [[1]](https://www.gsma.com/security/wp-content/uploads/2019/05/ZUC_specification_3.pdf) |
+| **ZUC-256** | 2019 | Extended ZUC | 256-bit key variant; 5G security [[1]](https://eprint.iacr.org/2022/634) |
+
+**eSTREAM Portfolio (2008):** Profile 1 (software): HC-128, Rabbit, Salsa20/12, SOSEMANUK. Profile 2 (hardware): Grain v1, MICKEY v2, Trivium.
+
+**State of the art:** ZUC and SNOW 3G are mandatory 3GPP ciphers in all 4G LTE and 5G deployments. Trivium and Grain are reference hardware designs. For software use, ChaCha20 (see [Symmetric Encryption](#symmetric-encryption)) dominates.
+
+---
+
 ## Batch Verification
 
 **Goal:** Amortized verification. Verify n signatures in significantly less time than n individual verifications — typically using random linear combinations to batch pairing/exponentiation checks into one. Critical for blockchain nodes processing thousands of transactions per block.

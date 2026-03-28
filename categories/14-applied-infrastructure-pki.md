@@ -379,3 +379,259 @@ root.json ─── delegates to ──► targets.json ─── delegates to �
 **State of the art:** C2PA v2.1 (media), SLSA v1.0 (software); deployed by Adobe, Leica, Google, Microsoft. Related to [Linked Timestamping](#linked-timestamping) and [Digital Signatures](#digital-signatures).
 
 ---
+
+## RPKI / Resource Public Key Infrastructure
+
+**Goal:** Cryptographically authorize which Autonomous Systems (ASes) are permitted to originate specific IP address prefixes in BGP — preventing route hijacking and accidental route leaks that would otherwise redirect internet traffic through malicious or misconfigured routers.
+
+**Trust hierarchy:**
+
+```
+IANA (root)
+  └── RIRs (ARIN, RIPE, APNIC, LACNIC, AFRINIC) — issue resource certs for their IP/ASN space
+        └── LIRs / ISPs — receive resource certs covering their allocated prefixes
+              └── ROA (Route Origin Authorization) — signed object: "AS 64496 may announce 203.0.113.0/24"
+```
+
+**Cryptographic objects:**
+
+| Object | Format | Signing | Purpose |
+|--------|--------|---------|---------|
+| **Resource Certificate** | X.509 + RFC 3779 extensions | RSA-2048/4096 | Binds IP blocks and ASNs to subject |
+| **ROA (Route Origin Auth)** | CMS (RFC 3852) signed | RSA (resource cert key) | Authorizes AS to originate prefix up to maxLength |
+| **Manifest** | CMS signed | RSA | Lists all current RPKI objects for a repository |
+| **CRL** | X.509 CRL | RSA | Revokes resource certificates |
+| **BGPsec Path Attr** | RPKI router cert | ECDSA P-256 | Signs individual BGP path segments (RFC 8205) |
+
+**ROA structure:**
+```
+ROA ::= SEQUENCE {
+  version    [0] INTEGER DEFAULT 0,
+  asID           ASID,            -- the authorized AS number
+  ipAddrBlocks   SEQUENCE OF ROAIPAddressFamily
+}
+-- Each ROAIPAddress: prefix + optional maxLength
+-- Wrapped in CMS SignedData; signed with the holder's resource cert private key
+```
+
+**Route Origin Validation (ROV) at routers:**
+```
+For each received BGP prefix announcement:
+  1. Fetch all ROAs covering the announced prefix from RPKI cache (RTR protocol)
+  2. If no ROA exists → state: NotFound (router policy decides; typically accept)
+  3. If ROA exists and AS + prefix length match → state: Valid (accept)
+  4. If ROA exists but AS or maxLength mismatch → state: Invalid (drop/depref)
+```
+
+**RTR protocol (RFC 8210):** Routers fetch validated ROA payloads from a local RPKI cache (Routinator, OctoRPKI, rpki-client) over an incremental protocol; routers do not do crypto — the cache does.
+
+**BGPsec (RFC 8205):** Extends RPKI to sign path attributes hop-by-hop; requires all ASes on path to participate — deployment remains very limited due to operational overhead.
+
+**Deployment (2024):** >50% of global IPv4 routes and >60% of IPv6 routes covered by ROAs (NIST RPKI Monitor). Major networks deploying ROV: Cloudflare, AT&T, Deutsche Telekom, Amazon, NTT. MANRS initiative tracks ROV deployment.
+
+**State of the art:** RFC 6480 (RPKI architecture), RFC 6482 (ROA format), RFC 6487 (resource certificates), RFC 8210 (RTR v2), RFC 8205 (BGPsec). As of 2024, majority of global routing table is ROA-covered [[1]](https://manrs.org/2024/05/rpki-rov-deployment-reaches-major-milestone/). See [DNSSEC](#dnssec--dns-security-extensions).
+
+---
+
+## CAA / Certification Authority Authorization
+
+**Goal:** Allow domain owners to publish a DNS policy restricting which Certificate Authorities are permitted to issue TLS certificates for their domain — providing a pre-issuance control that complements post-issuance Certificate Transparency logs.
+
+**CAA record syntax (RFC 8659):**
+```
+example.com.  IN  CAA  0  issue    "letsencrypt.org"
+example.com.  IN  CAA  0  issue    "digicert.com"
+example.com.  IN  CAA  0  issuewild ";"              ; no wildcard certs from anyone
+example.com.  IN  CAA  0  iodef    "mailto:security@example.com"
+```
+
+**Property tags:**
+
+| Tag | Meaning |
+|-----|---------|
+| `issue` | Names one CA authorized to issue DV/OV/EV certs for this domain |
+| `issuewild` | Names one CA authorized to issue wildcard (`*.example.com`) certs; overrides `issue` for wildcards |
+| `iodef` | URL or mailto for the CA to report policy violations |
+| `accounturi` (RFC 8657) | Restricts issuance to a specific ACME account at the named CA |
+| `validationmethods` (RFC 8657) | Restricts which ACME challenge methods (`dns-01`, `http-01`) the CA may use |
+
+**CA enforcement:** Since CA/Browser Forum Ballot 187 (2017), all CAs in the WebPKI are **required** to check CAA before issuance. Absence of CAA records → unrestricted issuance permitted. Any CAA record → CA must be named or refuse.
+
+**Security model:**
+- Without CAA: any of ~200 trusted root CAs can issue for any domain
+- With CAA: reduces that to the named subset; dramatically narrows the mis-issuance blast radius
+- Does not require DNSSEC, but CAA records are trivially spoofable without DNSSEC validation by the CA
+
+**Limitations:** CAA is checked at issuance time only; it is not verified by browsers or TLS clients at connection time. It is a CA-side process control, not a client-side enforcement. Adoption remains low (~15% of popular sites as of 2024).
+
+**State of the art:** RFC 8659 (2019, replaces RFC 6844), RFC 8657 (2019, ACME extensions). CA/B Forum mandated CA checking since 2017. Complement to [Certificate Transparency](#certificate-transparency-ct) and [ACME Protocol](#acme-protocol--automated-certificate-management). Best used together with CAA + CT + DANE.
+
+---
+
+## OCSP Stapling and Certificate Revocation
+
+**Goal:** Allow a TLS server to prove to connecting clients that its certificate has not been revoked — without each client needing to make a live network request to the Certificate Authority's OCSP responder, which leaks browsing history to the CA and adds latency.
+
+**Certificate revocation mechanisms:**
+
+| Mechanism | How | Client network req. | Soft-fail risk | Deployment |
+|-----------|-----|--------------------|----|------------|
+| **CRL** | Download full revocation list | Yes (large) | Yes | Legacy; still used for intermediates |
+| **OCSP** (RFC 6960) | Query CA per-cert | Yes (privacy leak) | Yes | Common |
+| **OCSP Stapling** (RFC 6066 §8) | Server staples signed CA response in TLS handshake | No | Depends on Must-Staple | Widely deployed |
+| **OCSP Must-Staple** (RFC 7633) | X.509 extension: browser hard-fails if no staple | No | No | Limited |
+| **Short-lived certs** | Cert expires before next update needed | No | N/A | Emerging (Let's Encrypt 6-day) |
+| **CRLite / CRL Sets** | Browser pre-fetches compressed revocation set | No | No | Chrome (CRL Sets), Firefox (CRLite) |
+
+**OCSP stapling flow:**
+```
+1. Server periodically fetches signed OCSP response from CA responder
+   Response: {certStatus: good, thisUpdate, nextUpdate} signed by CA OCSP key
+2. During TLS handshake (Certificate message), server appends the cached OCSP response
+3. Client verifies: (a) OCSP response signature valid for issuing CA,
+                    (b) serial number matches cert, (c) not expired
+4. No client→CA contact needed
+```
+
+**OCSP Must-Staple (RFC 7633):**
+- X.509v3 extension OID `1.3.6.1.5.5.7.1.24` embedded in the leaf certificate
+- Signals to compliant clients: "reject this connection if no valid OCSP staple is present"
+- Changes soft-fail (ignore missing staple) to hard-fail
+- Largely superseded in practice by short-lived certificate strategies
+
+**Short-lived certificates:** Let's Encrypt announced 6-day certificates (2024) as an alternative to revocation checking — a compromised certificate expires before the revocation machinery matters. No OCSP check needed if the cert lifetime is shorter than the CRL/OCSP check window.
+
+**Privacy problem with OCSP:** Each client→CA OCSP request reveals which websites the client visits; OCSP stapling eliminates this. Google Chrome removed OCSP checking entirely (2012), relying on CRL Sets instead.
+
+**State of the art:** RFC 6960 (OCSP), RFC 6066 §8 (stapling in TLS), RFC 7633 (Must-Staple), RFC 6961 (multiple stapling). Supported by Apache (2.3.3+), nginx (1.3.7+), IIS (Windows Server 2008+). Short-lived certificates (6-day) are the forward direction for WebPKI revocation. See [DANE](#dane--dns-based-authentication-of-named-entities).
+
+---
+
+## TPM 2.0 / Trusted Platform Module
+
+**Goal:** Provide an isolated, tamper-resistant hardware security engine embedded in a platform (PC, server, phone) that: (1) measures software loaded during boot into sealed Platform Configuration Registers, (2) generates hardware-bound keys that cannot be exported, and (3) produces cryptographically signed attestation quotes proving the platform's measured boot state to remote verifiers.
+
+**Key hierarchies (TCG TPM 2.0 specification, ISO/IEC 11889:2015):**
+
+| Hierarchy | Seed | Purpose | Owner |
+|-----------|------|---------|-------|
+| **Endorsement (EH)** | Manufacturer-burned EPS seed | Platform identity; EK cert issued by OEM | Platform privacy admin |
+| **Storage (SH)** | Owner-controlled SPS seed | General-purpose key storage; SRK root | Platform owner |
+| **Platform (PH)** | Firmware-controlled PPS seed | Firmware-only keys | Firmware (not OS) |
+| **Null** | Ephemeral per-boot | Session keys, ephemeral use | None |
+
+**Key types:**
+- **EK (Endorsement Key)** — RSA-2048 or ECC P-256; burned by manufacturer with EK certificate; used only to decrypt (not sign); proves TPM identity
+- **AK (Attestation Key)** — derived from EH or SH; restricted signing key; used to sign quotes (PCR values); replaces legacy AIK from TPM 1.2
+- **SRK (Storage Root Key)** — root of the storage hierarchy key tree; wraps user keys
+- **User keys** — arbitrary asymmetric/symmetric keys; stored encrypted ("key blobs") under SRK or parent key; TPM2_Load re-imports them
+
+**PCR (Platform Configuration Register) measurement:**
+```
+Boot sequence (UEFI Secure Boot path):
+  PCR0:  UEFI firmware code
+  PCR1:  UEFI firmware config
+  PCR2:  UEFI option ROMs
+  PCR4:  Boot loader code (e.g. GRUB)
+  PCR7:  Secure Boot state (db/dbx/PK)
+  PCR8-15: OS kernel, initrd, kernel command line (measured by bootloader)
+
+Extension operation (all PCRs):
+  PCR[i] := SHA256(PCR[i] || new_measurement)
+```
+
+**Attestation quote (TPM2_Quote):**
+```
+Input:  AK handle, nonce, PCR selection
+Output: TPMS_ATTEST {
+          magic, type, qualifiedSigner (AK name),
+          extraData (nonce), clockInfo,
+          attested: TPMS_QUOTE_INFO {
+            pcrSelect, pcrDigest (hash of selected PCR values)
+          }
+        }
+        Signature: ECDSA-P256 or RSASSA under AK
+```
+
+**Credential activation (MakeCredential / ActivateCredential):**
+Used to prove an AK is co-resident with a known EK on the same TPM. A CA encrypts a secret under the EK public key, binds it to the AK name; the TPM decrypts only if AK and EK are on the same device. This is the enrollment protocol for remote attestation.
+
+**Applications:**
+- **BitLocker / dm-crypt:** Seals disk encryption key to TPM; released only if PCRs match (correct boot state)
+- **Windows 11 requirement:** TPM 2.0 mandatory for Secure Boot + credential protection
+- **Remote attestation:** Keylime, TPM2-TSS stack, Google Asylo, Microsoft Azure Attestation
+- **FIDO2 authenticators:** Platform authenticators (Windows Hello, TouchID) use TPM 2.0 or Secure Enclave to protect resident passkey private keys
+
+**State of the art:** TCG TPM Library 2.0 rev 01.59 (2019); ISO/IEC 11889:2015. Mandatory in Windows 11. tpm2-tools and tpm2-tss are the reference open-source stack. IETF RFC 9334 (RATS architecture) defines how TPM quotes fit into remote attestation. See [TEE Remote Attestation](#tee-remote-attestation).
+
+---
+
+## FIDO2 / WebAuthn / Passkeys
+
+**Goal:** Replace passwords with hardware-bound public-key credentials — a private key generated and stored in a secure element or TPM never leaves the device, and authentication is a cryptographic challenge-response. The credential is scoped to a specific origin (website domain), making phishing structurally impossible.
+
+**Component stack:**
+
+| Layer | Standard | Role |
+|-------|----------|------|
+| **WebAuthn** | W3C Recommendation (Level 2, 2021) | Browser JS API; defines registration and authentication ceremonies; CBOR/COSE encoding |
+| **CTAP2** | FIDO Alliance CTAP 2.1 (2021) | Client-to-Authenticator Protocol; USB HID / NFC / BLE transport between browser and roaming authenticator |
+| **FIDO2** | Umbrella term | WebAuthn + CTAP2 together |
+| **Passkey** | FIDO Alliance / Apple/Google/Microsoft 2022 | Synced FIDO2 credential stored in platform keychain (iCloud, Google Password Manager, Windows Hello) |
+
+**Registration (credential creation) ceremony:**
+```
+1. RP server → browser: challenge (32 bytes random), rpId (domain), pubKeyCredParams
+2. Browser → authenticator (CTAP2 or platform API):
+     authenticatorMakeCredential(clientDataHash, rpId, user, pubKeyCredParams)
+3. Authenticator:
+     - Generates key pair (ECDSA P-256 by default)
+     - Private key stored in secure element / TPM (never exported)
+     - Produces attestedCredentialData:
+         credentialId (random, 16-1023 bytes)
+         credentialPublicKey (CBOR-encoded COSE key: {1:2, 3:-7, -1:1, -2:x, -3:y})
+     - Signs authenticatorData || clientDataHash with attestation key
+4. Browser → RP: attestationObject (CBOR) + clientDataJSON
+5. RP stores: credentialId → (publicKey, signCount, userHandle)
+```
+
+**Authentication ceremony:**
+```
+1. RP → browser: challenge, rpId, allowCredentials list
+2. Authenticator: user verifies (biometric / PIN)
+3. Authenticator signs:  authenticatorData || SHA-256(clientDataJSON)
+     authenticatorData includes: rpIdHash, UP+UV flags, signCount, extensions
+     Signature: ECDSA-P256 (ES256, COSE alg -7) or Ed25519 / RS256
+4. RP verifies: signature over (authData || clientDataHash) with stored public key
+                checks: rpIdHash, origin binding, signCount (replay prevention)
+```
+
+**Key algorithms (COSE):**
+
+| COSE alg | Value | Curve / Key | Notes |
+|----------|-------|-------------|-------|
+| ES256 | -7 | ECDSA P-256 | Default; required by spec |
+| ES384 | -35 | ECDSA P-384 | Optional |
+| EdDSA | -8 | Ed25519 | YubiKey 5.2+, passkeys |
+| RS256 | -257 | RSA-2048 PKCS1 | Windows Hello legacy |
+| RS1 | -65535 | RSA SHA-1 | Deprecated |
+
+**Attestation formats:** Authenticators may prove their model to the RP.
+
+| Format | Signer | Use case |
+|--------|--------|---------|
+| `packed` | Authenticator attestation key | Common roaming keys (YubiKey) |
+| `tpm` | TPM AK | Windows Hello platform authenticator |
+| `android-key` | Android Keystore key | Android platform authenticator |
+| `apple` | Apple anonymous CA | Touch ID / Face ID |
+| `none` | — | Passkeys (privacy: no device model disclosed) |
+
+**Passkeys (synced credentials):** Extend FIDO2 by syncing the private key (encrypted) across a user's devices via the platform cloud keychain. Private key leaves the secure enclave in encrypted form for backup only; authentication still uses local hardware. Apple, Google, and Microsoft passkey ecosystems use different key sync architectures.
+
+**Anti-phishing:** `rpIdHash = SHA-256(origin's effective domain)` is embedded in `authenticatorData` and signed. A fake site on `evil.bank.com` cannot produce a valid signature for `bank.com`'s rpId — origin binding is enforced in hardware.
+
+**Deployment:** Google, Apple, Microsoft all support passkeys (2022–2023). GitHub, PayPal, Amazon, WhatsApp, 1Password, Dashlane deployed passkeys. FIDO Alliance reports >13 billion FIDO-enabled accounts (2024).
+
+**State of the art:** W3C WebAuthn Level 2 (2021); CTAP 2.1 (2021); passkeys specification (FIDO Alliance, 2022). WebAuthn Level 3 draft (2024) adds hybrid transport, credential management. See [TOTP/FIDO2/WebAuthn](categories/12-secure-communication-protocols.md#totpfido2webauthn) and [TPM 2.0](#tpm-20--trusted-platform-module).
+
+---

@@ -128,3 +128,81 @@
 **State of the art:** Lossy TDFs from LWE (PQ-secure); foundational for [KEM/DEM](#key-encapsulation-mechanism-kem--dem-paradigm) security proofs and [Dual-Mode Cryptosystems](#dual-mode-cryptosystems).
 
 ---
+
+## Random Oracle Model (ROM) vs. Standard Model
+
+**Goal:** Formalize when hash functions can be treated as ideal. The random oracle model (ROM), introduced by Bellare and Rogaway (1993), replaces cryptographic hash functions with a perfectly random function accessible only as an oracle. Proofs in the ROM are often simpler and tighter; the standard model avoids this idealization but demands stronger hardness assumptions or more complex constructions. A central open question is whether ROM security implies real-world security after instantiating the oracle with a concrete hash.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **ROM introduction** | 1993 | Bellare–Rogaway | Formalized the ROM paradigm; used to prove RSA-OAEP and FDH secure; advocates ROM as a practical design heuristic [[1]](https://cseweb.ucsd.edu/~mihir/papers/ro.pdf) |
+| **ROM separation (CGH)** | 1998 | Canetti–Goldreich–Halevi | Constructed schemes secure in ROM but insecure under any hash instantiation; ROM proofs do not imply standard-model security [[1]](https://eprint.iacr.org/1998/011) |
+| **Standard-model NIZK** | 2008 | Groth–Sahai | Pairing-based NIZK without any random oracle; canonical standard-model alternative [[1]](https://eprint.iacr.org/2007/155) |
+| **Ideal cipher ≡ ROM** | 2008 | Holenstein–Künzler–Tessaro | Proved the ideal cipher model and the random oracle model are equivalent [[1]](https://eprint.iacr.org/2008/246) |
+| **Instantiation impossibility for PSS** | 2011 | Dodis–Oliveira–Pietrzak | Black-box impossibility of instantiating PSS in the standard model even assuming ideal trapdoor permutations [[1]](https://link.springer.com/chapter/10.1007/978-3-642-19379-8_22) |
+
+**State of the art:** The ROM remains the dominant proof model for deployed protocols (TLS, OAEP, Fiat-Shamir heuristic). Standard-model alternatives exist but are less efficient. The CGH separation is the canonical impossibility reference; programmability of the random oracle is an active area of research.
+
+---
+
+## Semantic Security and IND-CPA / IND-CCA Security
+
+**Goal:** Formally define what it means for an encryption scheme to be "secure." Goldwasser and Micali (1984) introduced semantic security — no partial information about the plaintext leaks to a polynomial-time adversary — and proved it equivalent to indistinguishability under chosen-plaintext attack (IND-CPA). Naor and Yung (1990) then defined IND-CCA1, and Rackoff and Simon (1991) defined IND-CCA2 — the adaptive chosen-ciphertext attack notion that is the accepted gold standard today.
+
+| Notion | Year | Authors | Note |
+|--------|------|---------|------|
+| **Semantic security / IND-CPA** | 1984 | Goldwasser–Micali | Probabilistic encryption; semantic security ≡ IND-CPA; instantiated from quadratic residuosity [[1]](https://mit6875.github.io/PAPERS/probabilistic_encryption.pdf) |
+| **IND-CCA1 (non-adaptive CCA)** | 1990 | Naor–Yung | Dual-encryption + simulation yields CCA1-secure PKE; introduced the "lunchtime attack" model [[1]](https://doi.org/10.1145/100216.100221) |
+| **IND-CCA2 (adaptive CCA)** | 1991 | Rackoff–Simon | Adversary may query decryption oracle after seeing the challenge ciphertext; defines the accepted PKE security target [[1]](https://doi.org/10.1007/3-540-46766-1_34) |
+| **Hierarchy of PKE notions** | 1998 | Bellare–Desai–Jokipii–Rogaway | Formal taxonomy: OW-CPA ⊂ IND-CPA ⊂ IND-CCA1 ⊂ IND-CCA2; exhaustive separation examples [[1]](https://www.cs.ucdavis.edu/~rogaway/papers/relations.pdf) |
+| **Cramer-Shoup (standard-model CCA2)** | 1998 | Cramer–Shoup | First practical IND-CCA2-secure PKE in the standard model under DDH, no random oracle needed [[1]](https://eprint.iacr.org/1998/008) |
+
+**State of the art:** IND-CCA2 is mandatory for any deployed PKE or KEM. All current standards — ML-KEM, RSA-OAEP, ECIES — target IND-CCA2. These notions underpin every encryption section in this repository.
+
+---
+
+## Universal Composability (UC) Framework
+
+**Goal:** Guarantee protocol security under arbitrary concurrent composition. The UC framework (Canetti 2001/2020) defines security by requiring that a real protocol is computationally indistinguishable from an *ideal functionality* — a trusted party that computes the desired function perfectly — even when the protocol runs concurrently alongside arbitrarily many other protocols. Unlike standalone game-based definitions, UC security composes freely and is the appropriate model for multi-session, internet-scale deployments.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **UC framework** | 2001 | Canetti | Foundational definition; universal composition theorem; ideal functionalities for OT, commitment, CRS [[1]](https://eprint.iacr.org/2000/067) |
+| **UC commitments impossibility** | 2001 | Canetti–Fischlin | UC-secure commitments are impossible in the plain model; require a setup assumption (CRS or global ROM) [[1]](https://eprint.iacr.org/2001/055) |
+| **Simplified UC (CC-UC)** | 2015 | Canetti–Cohen–Lindell | Cleaner formalization for standard MPC settings; easier to use for protocol designers [[1]](https://eprint.iacr.org/2014/553) |
+| **UC journal version** | 2020 | Canetti | Definitive JACM version; consolidates all prior revisions; introduces global subroutines and global functionalities [[1]](https://dl.acm.org/doi/10.1145/3402457) |
+| **EasyUC** | 2019 | Canetti–Stoughton–Varia | Machine-checked UC proofs using the EasyCrypt proof assistant [[1]](https://eprint.iacr.org/2019/582) |
+
+**State of the art:** UC is the canonical composition framework for [MPC](categories/06-multi-party-computation.md#multi-party-computation-mpc), [CGKA/MLS](categories/12-secure-communication-protocols.md#cgkamls), and [OT](categories/06-multi-party-computation.md#oblivious-transfer-ot). Simulation-based security is the language of the UC model; game-based definitions (IND-CPA, etc.) remain preferred for standalone primitives.
+
+---
+
+## One-Way Functions and Impagliazzo's Five Worlds
+
+**Goal:** Map the landscape of what cryptography is possible. One-way functions (OWFs) — functions easy to compute but hard to invert on a random input — are the minimal assumption underlying all of private-key cryptography. Whether OWFs exist is equivalent to asking whether P ≠ NP in the average-case sense. Impagliazzo (1995) organized five possible worlds according to which hardness assumptions hold, clarifying precisely which cryptographic primitives are achievable in each.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **OWF → PRG (HILL theorem)** | 1993 | Håstad–Impagliazzo–Levin–Luby | Any OWF implies a pseudorandom generator; stretched via Goldreich-Levin hard-core bits; foundational [[1]](https://doi.org/10.1137/S0097539793244708) |
+| **OWF → PRF (GGM)** | 1986 | Goldreich–Goldwasser–Micali | PRFs from any PRG (hence any OWF) via the GGM tree construction [[1]](https://dl.acm.org/doi/10.1145/6490.6503) |
+| **Impagliazzo's five worlds** | 1995 | Impagliazzo | Algorithmica / Heuristica / Pessiland / Minicrypt / Cryptomania; taxonomizes cryptographic possibility based on worst-case vs. average-case hardness and OWF/PKE existence [[1]](https://doi.org/10.1109/CCC.1995.514587) |
+| **OWF ↛ key agreement (oracle)** | 1989 | Impagliazzo–Rudich | Relativizing separation: OWFs alone do not imply key exchange via black-box reductions; Minicrypt ≠ Cryptomania [[1]](https://doi.org/10.1145/73007.73012) |
+| **OWF existence ↔ bounded KT complexity** | 2023 | Liu–Pass | OWFs exist if and only if there are problems with bounded Kolmogorov-time complexity; links OWF existence to meta-complexity [[1]](https://eprint.iacr.org/2020/1333) |
+
+**State of the art:** We almost certainly live in Cryptomania, but no proof exists. The HILL theorem (OWF → PRG) is the deepest structural result in symmetric cryptography. Liu-Pass (2023) gives the sharpest known characterization of when OWFs exist.
+
+---
+
+## Black-Box Separations
+
+**Goal:** Prove that certain cryptographic primitives cannot be constructed from weaker ones via black-box reductions. A black-box separation shows — typically via a relativizing oracle argument — that no efficient algorithm can build primitive B from primitive A using only A's input/output interface, regardless of which specific A is chosen. These results delineate the "cryptographic primitive hierarchy" and prevent futile proof attempts.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **OWF ↛ key agreement** | 1989 | Impagliazzo–Rudich | Oracle world where OWFs exist but no key exchange protocol is secure; foundational separation result [[1]](https://doi.org/10.1145/73007.73012) |
+| **OWP ↛ collision-resistant hash** | 1998 | Simon | One-way permutations do not black-box imply collision-resistant hash functions [[1]](https://link.springer.com/chapter/10.1007/3-540-68339-9_23) |
+| **RTV framework** | 2004 | Reingold–Trevisan–Vadhan | Unified framework classifying black-box reductions: fully / semi / non-black-box; systematic catalogue of separations [[1]](https://eprint.iacr.org/2004/049) |
+| **Non-black-box techniques** | 2001 | Barak | Non-black-box simulation circumvents some separations for ZK; demonstrates limits of oracle-based lower bounds (see [Non-Black-Box ZK](#non-black-box-zero-knowledge--concurrent-zk)) [[1]](https://doi.org/10.1109/SFCS.2001.959902) |
+| **BB-uselessness composability** | 2021 | Couteau–Hartmann | Black-box uselessness composes: two BB-useless primitives cannot be combined to yield a useful one [[1]](https://eprint.iacr.org/2021/016) |
+
+**State of the art:** The Impagliazzo-Rudich oracle argument and the RTV taxonomy (2004) remain the standard tools. Non-black-box constructions (Barak, Bitansky-Paneth) partially circumvent these barriers for specific tasks (ZK, SNARGs) but not for key exchange or OT. Active area: non-black-box separations for PKE from OWF.

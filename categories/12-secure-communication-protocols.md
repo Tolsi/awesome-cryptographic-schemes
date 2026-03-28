@@ -364,6 +364,180 @@
 
 ---
 
+## SSH Transport Layer / Secure Shell Cryptography
+
+**Goal:** Provide authenticated, encrypted, integrity-protected remote login and general-purpose secure tunneling over an insecure network — with mutual host authentication and per-session forward secrecy. The dominant protocol for remote server administration.
+
+**Protocol layers (RFC 4251–4254):**
+
+```
+[SSH Connection Protocol]   — channels, port forwarding, exec, sftp
+[SSH User Authentication]   — password, public-key, GSSAPI
+[SSH Transport Layer]       — key exchange, encryption, MAC, compression
+```
+
+**Transport layer key exchange (RFC 4253 + updates):**
+
+| Step | Operation |
+|------|-----------|
+| Algorithm negotiation | Client and server exchange `SSH_MSG_KEXINIT`; agree on KEX, host-key, cipher, MAC |
+| Key exchange | DH / ECDH / X25519 generates a shared secret K + exchange hash H |
+| Host authentication | Server signs H with its host key (Ed25519, ECDSA P-256, or RSA) |
+| Key derivation | 6 keys derived via `HASH(K ∥ H ∥ letter ∥ session_id)` for each direction |
+
+**Supported algorithms (current recommendations, RFC 9142):**
+
+| Category | Algorithms | Status |
+|----------|-----------|--------|
+| Key exchange | `curve25519-sha256`, `ecdh-sha2-nistp256` | Preferred |
+| Key exchange (PQ) | `mlkem768x25519-sha256` (default in OpenSSH 10.0) | State of the art |
+| Host key | `ssh-ed25519`, `ecdsa-sha2-nistp256`, `rsa-sha2-256` | Preferred |
+| Encryption | `chacha20-poly1305@openssh.com`, `aes128-gcm`, `aes256-gcm` | AEAD preferred |
+| MAC | Implicit (AEAD) or `hmac-sha2-256-etm` | ETM preferred |
+
+**`chacha20-poly1305@openssh.com` cipher detail:**
+- Requires 512 bits of key material from the KEX output (two 256-bit keys K₁, K₂)
+- K₁ encrypts the 4-byte packet length field (length obfuscation)
+- K₂ used with Poly1305 for AEAD over the entire packet
+- No separate MAC step; no padding oracle; length field also authenticated
+- Note: vulnerable to the Terrapin attack (CVE-2023-48795) if `ext-info-c` is not used; fixed by strict KEX
+
+**Post-quantum (OpenSSH 10.0, 2025):** `mlkem768x25519-sha256` is the new default KEX — a hybrid of ML-KEM-768 and X25519, providing both classical and post-quantum forward secrecy.
+
+**State of the art:** OpenSSH 10.0 (2025) defaults to ML-KEM-768 + X25519 hybrid KEX and Ed25519 host keys. RFC 9142 (2022) deprecates weak algorithms (DH group1, hmac-md5). Terrapin patch (strict KEX) in OpenSSH 9.6. See [Secure Channels](#secure-channels--protocol-constructions).
+
+---
+
+## SRTP / Secure Real-time Transport Protocol
+
+**Goal:** Authenticated encryption for real-time audio/video streams over UDP. SRTP adds per-packet confidentiality, integrity, and replay protection to RTP media flows without imposing TCP-style reliability — preserving the low-latency characteristics essential for live communication.
+
+**Architecture — two protocols:**
+
+```
+[SRTP]  — secures RTP media packets  (audio, video payloads)
+[SRTCP] — secures RTCP control packets (statistics, sender reports)
+```
+
+**Cryptographic design (RFC 3711, 2004):**
+
+| Property | Detail |
+|----------|--------|
+| Encryption | AES-128-CTR (counter mode, default) |
+| Integrity | HMAC-SHA1, 80-bit truncated tag appended per packet |
+| Replay protection | Sliding window over RTP sequence numbers |
+| Key structure | Master key + master salt → session keys via AES-128 PRF |
+| Session key derivation | `KDF(master_key, master_salt, index, label)` using AES-128-CM |
+| IV construction | `IV = (k_s XOR (SSRC ∥ packet_index)) << 16` |
+
+**Key management — DTLS-SRTP (RFC 5764):**
+
+SRTP does not specify its own key management; instead DTLS-SRTP is the mandatory mechanism in WebRTC:
+
+1. SDP `a=fingerprint:` attribute exchanges DTLS certificate fingerprints out-of-band
+2. Peers run a DTLS handshake on the same UDP 5-tuple as the media stream
+3. DTLS master secret is fed into SRTP key derivation (RFC 5764 §4.2)
+4. After derivation, DTLS record protection is discarded; SRTP takes over for RTP packets
+5. Each SSRC uses an independent derived key pair (one per media stream direction)
+
+| Key management method | Standard | Note |
+|----------------------|----------|------|
+| **DTLS-SRTP** | RFC 5764 (2010) | Mandatory in WebRTC (RFC 8827); in-band, authenticates via certs |
+| **SDES (SDP key exchange)** | RFC 4568 | Key in SDP; requires secure signalling; deprecated in WebRTC |
+| **MIKEY** | RFC 3830 | IETF alternative; used in SIP/IMS networks |
+
+**Deployments:** All WebRTC implementations (Chrome, Firefox, Safari), SIP-based VoIP (Asterisk, FreeSWITCH), video conferencing (Zoom, Teams use SRTP internally), IPTV multicast.
+
+**State of the art:** RFC 3711 (2004) for SRTP; RFC 5764 (2010) for DTLS-SRTP. WebRTC mandates DTLS-SRTP (RFC 8827, 2021). AES-256-GCM as an SRTP cipher is specified in RFC 7714 (2016) — modernizes SRTP to use AEAD and eliminate the separate HMAC-SHA1. See [DTLS](#dtls--datagram-tls).
+
+---
+
+## S/MIME (Secure/Multipurpose Internet Mail Extensions)
+
+**Goal:** End-to-end encrypted and digitally signed email using a PKI (CA-issued certificates) rather than a web of trust — the enterprise and government counterpart to OpenPGP, embedded in every major email client.
+
+**Core operations (RFC 8551, S/MIME v4.0):**
+
+| Operation | Mechanism |
+|-----------|-----------|
+| Encryption | Recipient's public key (ECDH-P256 or RSA-OAEP) encrypts a random session key; session key encrypts message body |
+| Content encryption | AES-128-CBC (legacy), AES-256-CBC, or AES-256-GCM (v4.0) via CMS EnvelopedData |
+| Digital signature | Sender's Ed25519 or ECDSA-P256 or RSA-PSS private key signs a hash of the message |
+| Signature format | CMS SignedData object; detached or opaque; carried in `multipart/signed` MIME part |
+| Key distribution | X.509 certificates from commercial CAs (DigiCert, Sectigo) or enterprise PKI |
+
+**CMS (Cryptographic Message Syntax) structure (RFC 5652):**
+
+```
+ContentInfo
+  └─ EnvelopedData
+       ├─ RecipientInfo (ECDH ephemeral-static or RSA encrypted session key per recipient)
+       └─ EncryptedContentInfo (AES-GCM encrypted body)
+```
+
+**S/MIME v4.0 improvements over v3.2 (RFC 8551 vs. RFC 5751):**
+
+| Feature | v3.2 (RFC 5751) | v4.0 (RFC 8551) |
+|---------|----------------|----------------|
+| Signature algorithms | RSA, DSA | + Ed25519, ECDSA |
+| Encryption KEM | RSA, ECDH-P256 | + X25519 with HKDF-256 |
+| Hash | SHA-1 (allowed) | SHA-1 historic; SHA-256/512 |
+| AEAD | None | AES-256-GCM added |
+
+**S/MIME vs. OpenPGP:**
+
+| Property | S/MIME | OpenPGP |
+|----------|--------|---------|
+| Trust model | CA hierarchy (X.509) | Web of trust (keyservers) |
+| Certificate cost | Paid (or enterprise CA) | Free (self-generated) |
+| Client support | Native (Outlook, Apple Mail, iOS) | Requires plugin |
+| Revocation | CRL / OCSP | Keyserver-based |
+| Standardization | IETF (RFC 8551) | IETF (RFC 9580) |
+
+**Deployments:** Microsoft Outlook (built-in), Apple Mail (built-in), iOS/macOS (native), government/military (DoD PKI), healthcare (HIPAA-compliant email), banking.
+
+**State of the art:** RFC 8551 (S/MIME v4.0, 2019) with Ed25519 signatures, X25519 key agreement, and AES-256-GCM. Post-quantum S/MIME is being standardized via IETF draft-ietf-lamps-pq-smime. See [OpenPGP](#openpgp-rfc-9580), [Applied Infrastructure PKI](categories/14-applied-infrastructure-pki.md).
+
+---
+
+## OMEMO (Signal Protocol for XMPP)
+
+**Goal:** End-to-end encryption for XMPP instant messaging that supports multi-device delivery and offline messages — bringing the Signal Protocol's Double Ratchet and X3DH to the federated XMPP ecosystem without requiring a centralized server.
+
+**Protocol design (XEP-0384):**
+
+OMEMO adapts the Signal Protocol for XMPP's publish-subscribe (PubSub) architecture: pre-keys and identity keys are published to the sender's XMPP server; receivers fetch them on-demand.
+
+| Component | Mechanism |
+|-----------|-----------|
+| Key agreement | X3DH (Extended Triple DH) for session initiation |
+| Session encryption | Double Ratchet (AES-256-CBC + HMAC-SHA-256 per message) |
+| Key exchange curves | Curve25519 (X3DH DH steps), Ed25519 (identity key signatures) |
+| Multi-device delivery | Message encrypted separately to each recipient device key |
+| Pre-key distribution | Identity key + signed pre-key + one-time pre-keys via XMPP PubSub |
+| Message encoding | OMEMOKeyExchange + ciphertext carried in XMPP `<message>` stanzas |
+
+**Multi-device architecture:**
+
+```
+Alice (2 devices) → Bob (3 devices)
+  Per message: 5 separate OMEMO key encryptions (one per device key)
+  Each device independently decrypts using its own ratchet state
+  Message body encrypted once; only the session key is per-device encrypted
+```
+
+**OMEMO 2 (XEP-0384 v0.8+, namespace `urn:xmpp:omemo:2`):**
+- Switches from Signal's libsignal-protocol to direct Curve25519/Ed25519 primitives
+- Adds support for file attachments and arbitrary XMPP stanza encryption (not just `<message>`)
+- Clearer specification of double ratchet state serialization
+- Version 0.9.0 released April 2025
+
+**Deployments:** Conversations (Android), Gajim (desktop), Dino (Linux), Monal (iOS/macOS), Profanity (CLI). Supported by all major XMPP servers (ejabberd, Prosody, MongooseIM).
+
+**State of the art:** OMEMO 2 (XEP-0384 v0.9.0, 2025); widely deployed in the XMPP ecosystem. Provides the same cryptographic guarantees as Signal (forward secrecy, post-compromise security, deniability) within XMPP's federated model. See [Double Ratchet](#double-ratchet--symmetric-ratchet), [X3DH](#x3dh--extended-triple-dh-key-agreement).
+
+---
+
 ## DKIM / DomainKeys Identified Mail
 
 **Goal:** Cryptographically prove that an email was authorized by the owner of the sending domain — enabling receivers to reject spoofed mail. The signature survives SMTP relay hops and is verified against a public key published in DNS.

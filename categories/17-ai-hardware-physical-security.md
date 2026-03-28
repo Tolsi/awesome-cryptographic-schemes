@@ -99,3 +99,83 @@
 **State of the art:** ZK spatial proofs (Girish et al. 2025); combines [ZK Proofs](#zero-knowledge-proofs-zk) with location verification.
 
 ---
+
+## Power Analysis Attacks & Masking Countermeasures
+
+**Goal:** Prevent secret-key extraction from physical power measurements. A cryptographic device leaks information through its power consumption; masking splits every sensitive intermediate value into random shares so that no single observable quantity correlates with the secret.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SPA/DPA (Kocher-Jaffe-Jun)** | 1999 | Power trace statistics | Introduced Simple and Differential Power Analysis; extract AES/DES keys from a few hundred traces [[1]](https://link.springer.com/chapter/10.1007/3-540-48405-1_25) |
+| **Boolean Masking (Chari et al.)** | 1999 | Secret sharing | Split each variable into d+1 shares; provably secure against d-th order DPA [[1]](https://link.springer.com/chapter/10.1007/3-540-48405-1_26) |
+| **Threshold Implementation (TI)** | 2006 | Multiparty sharing | Glitch-resistant masking via secret sharing; provably first-order secure even with combinational glitches; Nikova-Rechberger-Rijmen [[1]](https://link.springer.com/chapter/10.1007/11935308_38) |
+| **Domain-Oriented Masking (DOM)** | 2016 | Registered sharing | More area-efficient than TI; separates domain crossings with register stages; Gross-Mangard-Stoffelen [[1]](https://dlnext.acm.org/doi/abs/10.1145/2996366.2996426) |
+| **SILVER / Probe-Isolating NI** | 2021 | Formal leakage model | Automated verification of masked implementations under the probing model [[1]](https://eprint.iacr.org/2020/1555) |
+
+**State of the art:** DOM and higher-order TI are the current design standards for masked hardware; SILVER and similar tools verify implementations formally. Extending masking to PQC (ML-KEM, ML-DSA) is an active research frontier. Closely related to [Side-Channel Attacks](#speculative-execution--cache-timing-side-channel-attacks) and [PUF](#physical-unclonable-functions-puf).
+
+---
+
+## Fault Injection Attacks & Countermeasures
+
+**Goal:** Detect or prevent adversarial faults injected into cryptographic hardware. An attacker induces computation errors (via voltage glitches, clock glitches, laser pulses, or EM) and uses the faulty outputs to recover secret keys through differential analysis.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bellcore / Boneh-DeMillo-Lipton Attack** | 1997 | Algebraic fault | First published fault attack; single fault in RSA-CRT exposes the private key via GCD [[1]](https://link.springer.com/chapter/10.1007/3-540-69053-0_4) |
+| **Differential Fault Analysis (DFA)** | 1997 | Differential + fault | Biham-Shamir; generalised to secret-key ciphers (DES); compare correct/faulty outputs [[1]](https://link.springer.com/chapter/10.1007/BFb0052259) |
+| **Infective Computation** | 2012 | Fault spreading | Spread any injected fault throughout the result so faulty outputs carry no exploitable information [[1]](https://link.springer.com/chapter/10.1007/978-3-642-33027-8_19) |
+| **CRAFT / Fault-Resistant Block Ciphers** | 2019 | Tweakable cipher | Block cipher designed from scratch with built-in protection against differential fault attacks [[1]](https://eprint.iacr.org/2019/210) |
+| **MDPL / Dual-Rail Precharge Logic** | 2005 | Balanced hardware | Dual-rail circuits balance switching activity and detect faults by checking complementary rails [[1]](https://ieeexplore.ieee.org/document/1490438) |
+
+**State of the art:** Combined countermeasures (redundancy + infective computation + error detection codes) are standard in certified cryptographic hardware (Common Criteria EAL 5+). Fault attacks on lattice-based PQC signatures are an active research area (2024–2025). Complements [Masking](#power-analysis-attacks--masking-countermeasures) and [PUF](#physical-unclonable-functions-puf).
+
+---
+
+## Speculative Execution & Cache-Timing Side-Channel Attacks
+
+**Goal:** Prevent microarchitectural attacks that leak cryptographic secrets through CPU caches, branch predictors, or speculative execution. Defenses span hardware mitigations, constant-time programming disciplines, and cryptographic library hardening.
+
+| Attack / Defense | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Bernstein Cache-Timing Attack on AES** | 2005 | Cache sets | First public cache-timing key recovery on OpenSSL AES; motivates constant-time AES [[1]](https://cr.yp.to/antiforgery/cachetiming-20050414.pdf) |
+| **Spectre (Kocher et al.)** | 2018 | Speculative execution + cache | Branch-predictor mis-speculation leaks cross-process secrets; breaks OS isolation; affects all major CPUs [[1]](https://spectreattack.com/spectre.pdf) |
+| **Meltdown (Lipp et al.)** | 2018 | Out-of-order + cache | Transient reads bypass page-table permissions; leaks kernel memory to user space [[1]](https://meltdownattack.com/meltdown.pdf) |
+| **Constant-Time Programming (ctgrind / TIMECOP)** | 2010+ | Valgrind-based verification | Discipline: branches and memory indices must not depend on secrets; automated checkers verify compliance [[1]](https://github.com/agl/ctgrind) |
+| **DIFT / Hardware Performance Counter Detection** | 2022 | HW performance counters | Detect side-channel attacks at runtime using CPU PMU events; no software modification required [[1]](https://dl.acm.org/doi/10.1145/3519601) |
+
+**State of the art:** Hardware mitigations (IBRS, STIBP, page-table isolation) are deployed in all major OS kernels; constant-time coding is mandatory in modern crypto libraries (OpenSSL, BoringSSL, libsodium). Spectre-class variants continue to emerge; microcode updates remain the primary defense. Related to [Masking](#power-analysis-attacks--masking-countermeasures).
+
+---
+
+## Hardware True Random Number Generators (TRNGs)
+
+**Goal:** Generate cryptographically unpredictable bits from a physical entropy source. A TRNG harvests entropy from irreducible physical randomness (thermal noise, oscillator jitter, quantum shot noise) and conditions it into a stream that passes statistical and min-entropy tests. Underpins every cryptographic key-generation operation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ring Oscillator TRNG** | 1999 | Clock jitter | Free-running oscillators with different frequencies; jitter accumulates as entropy; simple, widely deployed [[1]](https://ieeexplore.ieee.org/document/803927) |
+| **Intel RDRAND / RDSEED (Bull Mountain)** | 2012 | Thermal noise + DRBG | First mainstream CPU TRNG; on-die thermal noise conditioned through AES-CBC-MAC; NIST SP 800-90 compliant [[1]](https://www.intel.com/content/www/us/en/developer/articles/guide/intel-digital-random-number-generator-drng-software-implementation-guide.html) |
+| **NIST SP 800-90B Entropy Source Standard** | 2018 | Min-entropy estimation | Defines validation methodology for physical entropy sources; requires health tests and min-entropy ≥ 0.999 per bit [[1]](https://csrc.nist.gov/pubs/sp/800/90/b/final) |
+| **Cryptoristor TRNG (Science Advances)** | 2024 | Transistor stochasticity | Single cryptographic transistor as entropy source; ultra-low power; passes NIST SP 800-22 and AIS-31 [[1]](https://www.science.org/doi/10.1126/sciadv.adk6042) |
+| **Keccak-Conditioned FPGA TRNG** | 2025 | Ring oscillators + Keccak | Open-source FPGA TRNG with Keccak conditioning; min-entropy 0.9998 bit/bit; validated to BSI AIS-31 [[1]](https://pmc.ncbi.nlm.nih.gov/articles/PMC11946209/) |
+
+**State of the art:** Intel RDRAND/RDSEED in every modern x86 CPU; ARM TrustZone includes dedicated TRNG hardware; NIST SP 800-90B defines the certification baseline. Feeds into [DRBG / PRNG](categories/01-foundational-primitives.md#drbg--cryptographic-pseudorandom-number-generators) and all key generation. See also [PUF](#physical-unclonable-functions-puf) for device-unique entropy.
+
+---
+
+## Confidential ML / TEE-Based Inference
+
+**Goal:** Run ML model inference inside a hardware-isolated trusted execution environment so that neither the model weights nor the user's input are visible to the cloud operator, OS, or hypervisor. Combines TEE attestation with privacy-preserving ML deployment.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Intel SGX + Gramine / Occlum** | 2016+ | Enclave + LibOS | Library OSes (Gramine, SCONE, Occlum) lift-and-shift ML workloads into SGX enclaves without code changes [[1]](https://arxiv.org/abs/2208.10134) |
+| **Trusted Yet Flexible: ML Runtimes in TEEs** | 2025 | TEE + high-level runtime | Systematization of high-level ML runtimes (TensorFlow, PyTorch) running inside SGX/TDX; benchmark overhead analysis [[1]](https://www.mdpi.com/2624-800X/6/1/23) |
+| **Confidential LLM Inference (CPU + GPU TEEs)** | 2025 | Intel TDX + NVIDIA H100 CC | First study of LLM inference on both CPU (TDX) and GPU (H100 Confidential Computing) TEEs; performance/cost tradeoffs [[1]](https://arxiv.org/abs/2509.18886) |
+| **Gramine-TDX (CCS 2024)** | 2024 | Intel TDX + LibOS | Lightweight OS kernel for confidential VMs; lower TCB than SGX LibOS; CCS 2024 [[1]](https://dl.acm.org/doi/10.1145/3658644.3690323) |
+| **AMD SEV-SNP / Intel TDX VM Isolation** | 2022+ | Full-VM memory encryption | Encrypts VM memory from hypervisor; supports confidential ML at VM granularity; benchmarked in 2024 [[1]](https://arxiv.org/abs/2408.00443) |
+
+**State of the art:** Intel TDX and AMD SEV-SNP offer VM-level isolation deployable on major cloud providers (Azure, GCP, AWS); GPU TEEs (NVIDIA H100 CC) extend coverage to accelerator workloads. Interacts with [TEE Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation), [zkLLM](#zkllm--verifiable-ai-inference), and [FHE-based encrypted inference](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-he).
+
+---

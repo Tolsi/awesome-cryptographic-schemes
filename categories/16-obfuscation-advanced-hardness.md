@@ -113,3 +113,64 @@
 **State of the art:** Lockable obfuscation from LWE (2017); implies point obfuscation, lockable encryption, and more. Relates to [iO](#indistinguishability-obfuscation-io) as the achievable fragment of program obfuscation.
 
 ---
+
+## VBB Obfuscation Impossibility
+
+**Goal:** Establish limits of program obfuscation. Virtual Black-Box (VBB) obfuscation would turn any program into an "unintelligible" equivalent that reveals only what oracle access to the original would reveal. The seminal Barak et al. (2001) result proves that general-purpose VBB obfuscation is impossible, motivating the shift to weaker (but useful) notions such as iO.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **VBB Impossibility (BGI+)** | 2001 | Barak, Goldreich, Impagliazzo, Rudich, Sahai, Vadhan, Yang | Constructs an unobfuscatable circuit family; no efficient obfuscator can hide all properties [[1]](https://eprint.iacr.org/2001/069) |
+| **VBB Impossibility extended** | 2001 | Same | Extends to approximate obfuscators, non-uniform, and TC⁰ circuits; positive result: point functions and simple pseudo-random functions can be VBB-obfuscated [[1]](https://eprint.iacr.org/2001/069) |
+| **VBB Impossibility in idealized models** | 2016 | Asharov, Segev | Extends impossibility to random oracle and generic group models, ruling out black-box proofs of VBB obfuscation [[1]](https://eprint.iacr.org/2015/632.pdf) |
+| **VBB Impossibility with graded encodings** | 2016 | Garg, Gentry, Halevi, Wichs | Shows VBB obfuscation impossible even using ideal constant-degree graded encoding schemes [[1]](https://link.springer.com/chapter/10.1007/978-3-662-49096-9_1) |
+
+**State of the art:** Definitively impossible in general (2001); the impossibility proof is constructive and extends broadly. The field pivoted to [iO](#indistinguishability-obfuscation-io) (indistinguishability obfuscation) and [point function obfuscation](#point-function-obfuscation--digital-locker) as the achievable cases.
+
+---
+
+## Differing-Inputs Obfuscation (diO)
+
+**Goal:** Stronger obfuscation than iO but weaker than VBB. A differing-inputs obfuscator (diO) guarantees that obfuscations of two circuits are indistinguishable not only when the circuits are functionally equivalent, but also when it is computationally hard to find any input on which their outputs differ. This gives stronger security for applications such as succinct functional encryption and Turing machine obfuscation — but the general notion (with auxiliary input) was shown implausible.
+
+| Scheme / Result | Year | Note |
+|-----------------|------|------|
+| **diO definition and applications (ABGSZ)** | 2013 | Introduced by Ananth, Boneh, Garg, Sahai, Zhandry; applications to succinct iO and FE for Turing machines [[1]](https://ntt-research.com/wp-content/uploads/2022/08/Differing-inputs-obfuscation-and-applications.pdf) |
+| **Implausibility of diO with aux input (Boyle-Pass)** | 2013 | Boyle and Pass show general-purpose diO with arbitrary auxiliary input implies the obfuscation of a specific circuit family, which is itself implausible [[1]](https://eprint.iacr.org/2013/860) |
+| **Implausibility via extractable WE (GGHW)** | 2014 | Garg, Gentry, Halevi, Wichs show diO with aux input also implies implausible extractable witness encryption [[1]](https://link.springer.com/chapter/10.1007/978-3-662-44371-2_29) |
+| **Public-coin diO (BCP)** | 2015 | Retreats to a restricted variant where aux input is a public random string; retains useful applications while avoiding known impossibilities [[1]](https://eprint.iacr.org/2014/942.pdf) |
+| **Candidate diO from iO + aux-input point obfuscation** | 2018 | Construct candidate diO for the restricted case; relies on iO and auxiliary-input point obfuscation [[1]](https://eprint.iacr.org/2018/1055) |
+
+**State of the art:** General diO (with aux input) is considered implausible; public-coin diO remains viable for restricted applications. The gap between [iO](#indistinguishability-obfuscation-io) and [VBB obfuscation](#vbb-obfuscation-impossibility) is large, and diO occupies an important — if fragile — middle ground.
+
+---
+
+## Evasive LWE & Tensor LWE
+
+**Goal:** Post-quantum hardness for advanced primitives. Evasive LWE and tensor LWE are new lattice-based hardness assumptions introduced to sidestep the limitations of standard LWE for constructing optimal broadcast encryption, ciphertext-policy ABE, witness encryption, and null-iO — without relying on multilinear maps or iO. They assert that certain structured LWE samples remain hard to distinguish even when the adversary receives additional trapdoor-related information.
+
+| Assumption / Scheme | Year | Note |
+|---------------------|------|------|
+| **Evasive LWE — Wee (Eurocrypt 2022)** | 2022 | Introduced for optimal broadcast encryption and CP-ABE for bounded-depth circuits with parameter sizes poly(log N); first plausibly post-quantum optimal broadcast encryption [[1]](https://eprint.iacr.org/2023/906) |
+| **Tensor LWE — Wee / Tsabary (2022)** | 2022 | Companion assumption introduced simultaneously; used for constant-input ABE and predicate encryption from lattices [[1]](https://eprint.iacr.org/2023/941) |
+| **Witness Encryption and null-iO from Evasive LWE** | 2022 | Vaikuntanathan et al. show evasive LWE implies witness encryption and null-iO, strengthening the connection to obfuscation [[1]](https://eprint.iacr.org/2022/1140) |
+| **Counterexamples to private-coin variants** | 2024 | Definitions, classes, and counterexamples established; several private-coin formulations shown false via "zeroizing"-style attacks, narrowing the valid assumption landscape [[1]](https://eprint.iacr.org/2024/2000) |
+
+**State of the art:** Public-coin evasive LWE remains a leading assumption for post-quantum advanced primitives (2022–2024); private-coin variants face counterexamples. Closely related to [multilinear maps](#multilinear-maps) (which it aims to replace) and [witness encryption](#witness-encryption).
+
+---
+
+## Average-Case Hardness & Planted Problems
+
+**Goal:** Cryptography from statistical hardness. Standard worst-case hardness assumptions (LWE, SIS, DDH) guarantee hardness on some instances. Average-case assumptions assert hardness on *most* instances from an explicit distribution — a stronger requirement needed when the cryptographic scheme itself must generate hard instances. The planted clique problem and planted random graph problems are the canonical examples and underpin constructions of public-key encryption and secret sharing from fine-grained complexity.
+
+| Problem / Scheme | Year | Note |
+|-----------------|------|------|
+| **Planted Clique conjecture** | 1992 | Karp conjectured that finding a planted clique of size k = O(√n) in G(n, 1/2) is hard; widely used as a hardness assumption in statistics and algorithms [[1]](https://en.wikipedia.org/wiki/Planted_clique) |
+| **Cryptography from planted clique (Juels-Peinado)** | 1997 | Early use of planted clique hardness for cryptographic constructions [[1]](https://eprint.iacr.org/2025/1501.pdf) |
+| **Cryptography from Planted Graphs (Abram et al.)** | 2023 | Constructs PKE and secret sharing from the planted clique conjecture with logarithmic-size messages; first clean PKE from a graph-theoretic average-case assumption [[1]](https://eprint.iacr.org/2023/1929.pdf) |
+| **PKE from Planted Clique and Noisy k-LIN (STOC 2025)** | 2025 | New construction of PKE from the planted clique conjecture combined with noisy k-linearity over expanders; strengthens the case for planted clique as a crypto hardness base [[1]](https://dl.acm.org/doi/10.1145/3717823.3718306) |
+
+**State of the art:** Planted clique is a clean average-case assumption with growing cryptographic applications; hardness is supported by failure of spectral, SDP, and statistical-query algorithms up to clique size O(√n). Complements [theoretical foundations](categories/19-theoretical-foundations.md) on leakage-resilient and circular-security assumptions.
+
+---

@@ -190,6 +190,77 @@
 
 ---
 
+## Coconut Credentials
+
+**Goal:** Threshold-issued anonymous credentials on distributed systems. A set of authorities jointly issue a credential (no single authority sees the full request); the credential supports selective attribute disclosure, re-randomization for unlinkability, and private attributes. Designed for integration with smart contracts and blockchains.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Coconut** | 2019 | PS Signatures + threshold blind sigs | Threshold issuance: t-of-n authorities; unlinkable re-randomizable credential; deployed in Nym network [[1]](https://www.ndss-symposium.org/ndss-paper/coconut-threshold-issuance-selective-disclosure-credentials-with-applications-to-distributed-ledgers/) |
+| **Security Analysis of Coconut** | 2022 | Algebraic security model | Formal UC-style analysis; modified blind issuance for information-theoretic user privacy [[1]](https://eprint.iacr.org/2022/011) |
+| **Threshold BBS+** | 2023 | BBS+ + threshold issuance | Distributed BBS+ credential issuance without a trusted issuer [[1]](https://eprint.iacr.org/2023/602) |
+
+**State of the art:** Coconut (NDSS 2019) deployed in Nym network for anonymous bandwidth tokens. Extends [PS Signatures](#anonymous-credentials) with threshold issuance; complements [Delegatable Anonymous Credentials](#delegatable-anonymous-credentials) and [KVAC](#keyed-verification-anonymous-credentials-kvac).
+
+---
+
+## Tor v3 Onion Services
+
+**Goal:** Server-side anonymity on Tor. A hidden service advertises a self-authenticating .onion address derived from a long-term Ed25519 key. Clients locate the service through a distributed hash table of encrypted descriptors — without any party learning the server's IP address. Provides mutual anonymity: both client and server are hidden.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Onion Services v2** | 2004 | RSA-1024 + SHA-1 | 16-char address; descriptor in plain text in HSDir; deprecated 2021 [[1]](https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf) |
+| **Onion Services v3 (prop 224)** | 2017 | Ed25519 + X25519 + SHAKE-256 | 56-char address = Ed25519 pubkey + checksum; descriptor double-encrypted; blinded daily signing key derived from identity key + date [[1]](https://torproject.gitlab.io/torspec/rend-spec-v3.html) |
+| **Client Authorization (v3)** | 2017 | X25519 ECDH | Optional: service encrypts descriptor_cookie with each authorized client's X25519 key; unauthenticated parties cannot decrypt descriptor at all [[1]](https://torproject.gitlab.io/torspec/rend-spec-v3.html) |
+
+**State of the art:** Tor v3 onion services (rend-spec-v3, deployed since 2021 exclusively). Key-blinded daily descriptors prevent HSDir enumeration; X25519 client auth adds access control. Related to [Onion Routing](#onion-routing) and [DC-Nets](#dc-nets-dining-cryptographers-networks).
+
+---
+
+## I2P (Invisible Internet Project)
+
+**Goal:** Internal anonymous network for peer-to-peer services. Unlike Tor (which proxies clearnet traffic), I2P is designed for services hosted within the network. It uses "garlic routing" — bundling multiple encrypted messages into a single packet — over unidirectional tunnels, making traffic analysis significantly harder than bidirectional circuits.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Garlic Routing** | 2003 | Layered enc + message bundling | Extension of onion routing: multiple messages ("cloves") bundled in one "garlic"; hides which message belongs to which sender [[1]](https://i2p.net/en/docs/overview/garlic-routing/) |
+| **NTCP2 Transport** | 2018 | Noise protocol + ChaCha20 | Obfuscated transport replacing NTCP; resistant to deep-packet inspection [[1]](https://i2p.net/en/docs/transport/ntcp2/) |
+| **SSU2 Transport** | 2022 | Noise + UDP | UDP transport; replaces SSU; reduces DPI fingerprinting [[1]](https://i2p.net/en/docs/transport/ssu2/) |
+| **ECIES-X25519-AEAD-Ratchet** | 2020 | X25519 + ChaCha20-Poly1305 | Forward-secure end-to-end encryption for I2P garlic messages; replaces ElGamal/AES [[1]](https://i2p.net/en/docs/spec/ecies/) |
+
+**State of the art:** I2P with NTCP2/SSU2 transports and ECIES ratchet (deployed ~2022). Complements [Onion Routing](#onion-routing) and [Mix Networks](#mix-networks-mixnets) for internal-network anonymity; garlic bundling adds resistance to correlation attacks.
+
+---
+
+## GNU Taler
+
+**Goal:** Privacy-preserving online payments with one-sided anonymity. Customers pay anonymously (payer is unlinkable across transactions); merchants are always identified and taxable. Built on Chaumian blind signatures with efficient change, deployed as a central-bank-compatible e-cash system.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **GNU Taler Core** | 2016 | RSA blind signatures + online exchange | Customer blind-withdraws coins from exchange; spends unlinkably; exchange detects double-spending; merchant identity visible to exchange [[1]](https://link.springer.com/chapter/10.1007/978-3-319-49445-6_14) |
+| **Taler with Clause-Schnorr** | 2021 | Blind Schnorr (CS-blind) | Replaces RSA blind sigs with more efficient Clause-Schnorr blind signatures; reduces coin size and signing overhead [[1]](https://www.taler.net/papers/cs-thesis.pdf) |
+| **NGI Taler (EU rollout)** | 2024 | Taler + central bank integration | 11-partner EU consortium; targets CBDC-compatible deployment; income transparency for tax compliance [[1]](https://ngi.eu/blog/2023/05/02/gnu-taler/) |
+
+**State of the art:** GNU Taler with Clause-Schnorr blind signatures; selected for EU NGI rollout (2024–2027). Provides stronger payer anonymity than traditional e-cash while retaining merchant accountability. Extends [E-Cash / Chaumian Digital Cash](#e-cash--chaumian-digital-cash) and [Blind Signatures](categories/08-signatures-advanced.md#blind-signatures).
+
+---
+
+## Zcash Shielded Protocols (Sapling / Orchard)
+
+**Goal:** Fully private blockchain payments. Shielded transactions hide sender, receiver, and amount on a public blockchain using zk-SNARKs. Notes are commitments in a Merkle tree; spending reveals only a nullifier (preventing double-spend) and a ZK proof — no linkable information.
+
+| Protocol | Year | Basis | Note |
+|----------|------|-------|------|
+| **Sprout** | 2016 | zk-SNARK (BCTV14) + SHA-256 | First Zcash shielded pool; large proving times (~40 s); trusted setup required [[1]](https://zips.z.cash/protocol/protocol.pdf) |
+| **Sapling** | 2018 | Groth16 + BLS12-381 + Jubjub | 100× faster proving (~2 s); Jubjub in-circuit curve; trusted ceremony (700+ participants) [[1]](https://zips.z.cash/protocol/sapling.pdf) |
+| **Orchard** | 2022 | Halo 2 (PLONKish) + Pallas curve | No trusted setup; recursive proofs; replaces Sapling in NU5 (2022); Pallas/Vesta cycle [[1]](https://zips.z.cash/zip-0224) |
+
+**State of the art:** Orchard (activated May 2022) using Halo 2 — the first production shielded pool without a trusted ceremony. Sapling remains widely supported for compatibility. Relies on [Halo 2 / Recursive SNARKs](categories/04-zero-knowledge-proof-systems.md#recursive-snarks--proof-carrying-data-pcd); complements [Confidential Transactions](categories/13-blockchain-distributed-ledger.md#confidential-transactions--range-proofs) and [Stealth Addresses](#stealth-addresses).
+
+---
+
 ## Group Encryption
 
 **Goal:** Encrypt for a group with accountability. Anyone can encrypt to the group; any group member can decrypt; the group manager can identify which member decrypted. The encryption dual of group signatures.

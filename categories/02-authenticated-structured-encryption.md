@@ -235,3 +235,137 @@
 **State of the art:** no provably secure WBC exists; practical deployments rely on obfuscation + tamper-detection layers. Active research area.
 
 ---
+
+## AES-CCM (Counter with CBC-MAC)
+
+**Goal:** AEAD for constrained and wireless environments. Combine CTR-mode confidentiality with CBC-MAC authentication in a single pass over the message using only the AES encrypt operation — making it hardware-efficient and suitable for smart cards, 802.11 Wi-Fi, and Bluetooth.
+
+| Algorithm | Year | Standard | Note |
+|-----------|------|----------|------|
+| **AES-CCM** | 2004 | NIST SP 800-38C | Authenticate-then-encrypt; CBC-MAC over message, then CTR encryption of message + tag [[1]](https://nvlpubs.nist.gov/nistpubs/legacy/sp/nistspecialpublication800-38c.pdf) |
+| **CCMP (802.11i)** | 2004 | IEEE 802.11i / WPA2 | CCM instantiated for Wi-Fi frame protection; mandatory in WPA2 [[1]](https://en.wikipedia.org/wiki/CCMP_(cryptography)) |
+| **BLE CCM** | 2010 | Bluetooth 4.0+ | CCM used for Bluetooth Low Energy link-layer encryption [[1]](https://www.bluetooth.com/specifications/) |
+| **AES-CCM in TLS** | 2012 | RFC 6655 | AES-128-CCM and AES-256-CCM cipher suites for TLS 1.2 [[1]](https://datatracker.ietf.org/doc/html/rfc6655) |
+
+CCM design tradeoffs versus GCM:
+- **Advantages:** requires only the AES encryption direction (saves code/silicon), minimal ciphertext expansion, nonce can be 7–13 bytes.
+- **Disadvantages:** two-pass (must know message length before starting), not parallelisable, no hardware CLMUL acceleration.
+- **Nonce misuse:** not misuse-resistant — nonce reuse breaks both confidentiality and authenticity.
+
+**State of the art:** AES-CCM remains the mandatory AEAD in WPA2 (CCMP) and Bluetooth LE, and is available in TLS 1.2/1.3 for IoT stacks. Superseded by AES-GCM for general-purpose use but irreplaceable in constrained hardware where only AES-encrypt logic fits.
+
+---
+
+## EAX Mode
+
+**Goal:** A two-pass, patent-free AEAD with no restrictions on message length, nonce length, or block-cipher primitive — designed as a clean, provably-secure alternative to the complex CCM mode and the then-patented OCB mode.
+
+| Property | Value |
+|----------|-------|
+| **Authors** | Bellare, Rogaway, Wagner (2004) |
+| **Publication** | FSE 2004 [[1]](https://www.cs.ucdavis.edu/~rogaway/papers/eax.pdf) |
+| **Underlying primitive** | Any block cipher (typically AES-128/256) |
+| **Internal MAC** | OMAC (CMAC) |
+| **Encryption** | CTR mode |
+| **Patent status** | Public domain |
+| **Online** | Yes — streaming encryption without knowing message length in advance |
+
+**Construction:** EAX uses three OMAC calls under distinct domain-separation tags — one over the nonce, one over the associated data (header), and one over the ciphertext — then XORs the three tags together to form the authentication tag. Encryption is standard CTR mode keyed from the nonce OMAC.
+
+```
+Tag_N  = OMAC_K(0 || N)
+Tag_H  = OMAC_K(1 || H)
+CTR_K(Tag_N, M) → C
+Tag_C  = OMAC_K(2 || C)
+Tag    = Tag_N ⊕ Tag_H ⊕ Tag_C
+```
+
+**Variant:** EAX′ (EAXprime) is used in the ANSI C12.22 standard for smart meter data transport [[1]](https://en.wikipedia.org/wiki/EAX_mode).
+
+**State of the art:** EAX is not a NIST standard but is widely implemented (OpenSSL, Bouncy Castle, Crypto++). It filled an important role before OCB patents expired (2021) and GCM became ubiquitous. Still preferred in some IoT/embedded stacks for its simplicity and online property.
+
+---
+
+## Hybrid Public Key Encryption (HPKE)
+
+**Goal:** A single, modular, well-specified standard for public-key encryption of arbitrary messages. HPKE composes a KEM, a KDF, and an AEAD into one clean API with four operating modes (base, pre-shared key, authenticated sender, and combined), replacing ad-hoc ECIES constructions.
+
+| Component | Options |
+|-----------|---------|
+| **KEM** | DHKEM(X25519, HKDF-SHA256), DHKEM(P-256, HKDF-SHA256), DHKEM(X448, HKDF-SHA512), ML-KEM (draft) |
+| **KDF** | HKDF-SHA256, HKDF-SHA384, HKDF-SHA512 |
+| **AEAD** | AES-128-GCM, AES-256-GCM, ChaCha20-Poly1305, Export-only |
+
+**Modes:**
+
+| Mode | Authentication | Use case |
+|------|---------------|----------|
+| `Base` | None | Encrypt to recipient public key |
+| `PSK` | Pre-shared key | Endpoint authentication via shared secret |
+| `Auth` | Sender KEM key | Authenticate sender identity |
+| `AuthPSK` | Both | Strongest mutual authentication |
+
+**Key schedule:** `ExtractAndExpand` uses the KEM shared secret, the KDF, and a suite-specific context string to derive independent keys for the AEAD and an exporter interface, preventing cross-protocol confusion.
+
+**Deployed in:** TLS Encrypted Client Hello (ECH) [[1]](https://datatracker.ietf.org/doc/html/draft-ietf-tls-esni), Oblivious HTTP (RFC 9458) [[1]](https://datatracker.ietf.org/doc/html/rfc9458), Oblivious DoH, Message Layer Security (MLS/RFC 9420), Privacy Preserving Measurement (PPM).
+
+**State of the art:** RFC 9180 (2022) [[1]](https://www.rfc-editor.org/rfc/rfc9180). The default public-key encryption primitive for new IETF protocols. Post-quantum variants with ML-KEM are being standardized in draft-irtf-cfrg-hpke-pq.
+
+---
+
+## SpongeWrap / Duplex-Based AEAD
+
+**Goal:** Single-pass authenticated encryption from a cryptographic permutation, without needing a block cipher. The duplex construction alternates absorbing input and squeezing output through a single permutation call per block, providing confidentiality, integrity, and an optional per-block authentication tag in one traversal.
+
+| Scheme | Year | Permutation | Note |
+|--------|------|-------------|------|
+| **SpongeWrap** | 2011 | Any (Keccak-f) | First duplex-based AEAD; by Bertoni, Daemen, Peeters, Van Assche [[1]](https://eprint.iacr.org/2011/499) |
+| **Keyak** | 2014 | Keccak-p | CAESAR submission; river/lake/ocean/sea/lunar variants for different parallelism levels [[1]](https://keccak.team/keyak.html) |
+| **Ketje** | 2014 | Keccak-p (small) | Lightweight CAESAR submission; targets constrained devices [[1]](https://keccak.team/ketje.html) |
+| **Ascon** | 2023 | Ascon-p (320-bit) | NIST LWC winner; duplex-based design; NIST SP 800-232 (2025) [[1]](https://ascon.iaik.tugraz.at/) |
+
+**Duplex construction:**
+
+```
+State S = IV || key || capacity-bits
+For each input block M_i:
+    S ← P(S ⊕ (M_i || domain-sep))   // absorb
+    Z_i ← S[0..rate]                  // squeeze keystream / tag
+```
+
+The capacity portion (not XOR'd with input) acts as the secret state providing authentication. Rate + capacity = full permutation width (e.g., 1600 bits for Keccak-f[1600]).
+
+**Security:** Security bound is 2^(capacity/2) against generic attacks. Nonce-respecting security; nonce reuse breaks confidentiality but authentication holds if the same (nonce, key) pair is not reused with different messages.
+
+**State of the art:** Ascon (NIST LWC standard, 2025) is the primary deployment target for constrained devices. Keccak-based SpongeWrap variants appear in Keyak. The duplex paradigm underlies the majority of sponge-based CAESAR and NIST LWC competition submissions.
+
+---
+
+## MRAE and Online Authenticated Encryption (OAE)
+
+**Goal:** Formal treatment of nonce-misuse resistance and online/streaming AEAD. MRAE (Misuse-Resistant AE) guarantees that nonce reuse causes only confidentiality loss for repeated (nonce, AD, plaintext) triples — authenticity is never broken. Online AE (OAE) further requires that encryption is streaming (output begins before the full message is known) while retaining some misuse robustness.
+
+**Security hierarchy:**
+
+| Notion | Nonce reuse | Online | Representative scheme |
+|--------|-------------|--------|-----------------------|
+| Standard AEAD (IND-CPA + INT-CTXT) | Catastrophic | Optional | AES-GCM, ChaCha20-Poly1305 |
+| **MRAE** | Only leaks plaintext equality | No (SIV is offline) | AES-SIV (RFC 5297) [[1]](https://www.rfc-editor.org/rfc/rfc5297), AES-GCM-SIV (RFC 8452) [[1]](https://www.rfc-editor.org/rfc/rfc8452) |
+| **OAE1 / OAE2** | Reasonable degradation | Yes | McOE-G, COBC, IOAE |
+| **Robust AE** | Auth holds; confidentiality degrades gracefully | Variant-dependent | CAESAR robustness category |
+
+**Key schemes in the MRAE / OAE family:**
+
+| Scheme | Year | Property | Note |
+|--------|------|----------|------|
+| **SIV (Rogaway-Shrimpton)** | 2006 | MRAE, offline | Synthetic IV = PRF(header ‖ msg); deterministic [[1]](https://eprint.iacr.org/2006/221) |
+| **AES-GCM-SIV** | 2017/2019 | MRAE, offline | Efficient GCM variant; uses POLYVAL; RFC 8452 [[1]](https://www.rfc-editor.org/rfc/rfc8452) |
+| **McOE-G / McOE-X** | 2012 | OAE1, online | First online AE with misuse robustness; Fleischmann-Forler-Lucks [[1]](https://eprint.iacr.org/2011/644) |
+| **COBRA / POET** | 2014–2015 | OAE2, online | Stronger online misuse-resistant AE; parallelisable [[1]](https://eprint.iacr.org/2015/189) |
+| **MRAE lower bound** | 2017 | Theory | Any MRAE scheme must be two-pass or offline; Poe-Shrimpton [[1]](https://eprint.iacr.org/2017/462) |
+
+**Why MRAE matters:** standard AEAD with a repeated nonce leaks the plaintext XOR (GCM) or allows tag forgery (GCM-style). MRAE schemes degrade gracefully: a reused (nonce, AD, plaintext) triple produces the same ciphertext (leaking equality), but authentication is unaffected. Essential in high-availability systems, distributed systems where nonce coordination is hard, and backup/dedup contexts.
+
+**State of the art:** AES-SIV (RFC 5297) and AES-GCM-SIV (RFC 8452) are the deployed MRAE standards. AES-GCM-SIV is preferred for its efficiency (single-key, hardware-friendly). McOE-G remains a research reference for online misuse-resistant AE; no online MRAE scheme has been standardized as of 2026.
+
+---

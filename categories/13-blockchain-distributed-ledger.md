@@ -354,3 +354,196 @@ sigHash = keccak256(
 **State of the art:** Themis (2023) for consensus-level fairness; BEAT-MEV for encryption-based MEV prevention. Extends [Encrypted Mempools](#encrypted-mempools--threshold-encryption-for-transaction-ordering) and [Async BFT](#asynchronous-bft--asynchronous-mpc).
 
 ---
+
+## Groth16 / Zcash Sapling zk-SNARK
+
+**Goal:** The smallest and fastest-verifying pairing-based zk-SNARK for arithmetic circuit satisfiability — a proof of only 3 group elements (~200 bytes) verified with a single pairing product equation — deployed as the cryptographic core of Zcash's Sapling protocol for private shielded transactions.
+
+**Groth16 proof system (Groth, EUROCRYPT 2016):**
+
+A proof for an R1CS (rank-1 constraint system) circuit of size m consists of:
+
+| Component | Size | Role |
+|-----------|------|------|
+| `[A]₁` | 1 element in G₁ | Encodes witness left-hand side |
+| `[B]₂` | 1 element in G₂ | Encodes witness right-hand side |
+| `[C]₁` | 1 element in G₁ | Encodes output combination |
+
+Verification checks a single pairing equation: `e([A]₁, [B]₂) = e(α, β) · e(Σᵢ aᵢ[γᵢ]₁, γ) · e([C]₁, δ)` — three pairings total, independent of circuit size.
+
+**Trusted setup — Circuit-specific Powers of Tau:**
+
+Groth16 requires a circuit-specific structured reference string (SRS) `{αG, βG, δG, {τⁱG}, ...}` derived from secret toxic waste `(α, β, δ, τ)`. Bowe-Gabizon-Miers (2017) gave a two-phase MPC ceremony where the toxic waste is split across N participants; the setup is sound as long as ≥ 1 participant destroys their share.
+
+**Zcash Sapling deployment (2018):**
+
+| Ceremony | Year | Participants | Circuit | Note |
+|----------|------|-------------|---------|------|
+| **Powers of Tau (Phase 1)** | 2017 | 87 | Universal | General-purpose phase; no circuit needed |
+| **Sapling MPC (Phase 2)** | 2018 | ~200 | Spend + Output circuits | Circuit-specific; BLS12-381 curve |
+
+Sapling uses two circuits: Spend (proves ownership + nullifier) and Output (proves new note commitment). Each shielded transaction proves both without revealing amounts, addresses, or transaction graph.
+
+**BLS12-381:** Zcash and Groth16 popularized this curve — 128-bit security, 381-bit field, efficient pairings. Now the standard curve for Ethereum BLS signatures (Casper FFG), Filecoin, and many SNARK systems.
+
+**Limitations:** Circuit-specific trusted setup; proving is slow (~1–3 seconds on a PC). Superseded by universal-SRS SNARKs (PLONK, Marlin) for new systems, but Groth16 remains the gold standard for per-proof verification efficiency.
+
+**State of the art:** Groth16 is deployed in Zcash Sapling (2018, billions of shielded transactions), Filecoin PoRep/PoSt (see below), Semaphore (Ethereum), and Tornado Cash circuits. EUROCRYPT 2016 paper [[1]](https://eprint.iacr.org/2016/260). See [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems-overview), [Filecoin PoRep/PoSt](#filecoin-porep--post-proof-of-replication--proof-of-spacetime).
+
+---
+
+## Lightning Network Payment Channels
+
+**Goal:** Instant, near-zero-fee Bitcoin payments between parties without broadcasting every transaction on-chain. Two parties lock funds in a 2-of-2 multisig, then exchange cryptographically signed commitment transactions off-chain. The blockchain is used only for channel open/close; the revocation mechanism makes old state broadcasts unprofitable.
+
+**Channel lifecycle:**
+
+```
+Open: Alice + Bob jointly fund a 2-of-2 on-chain UTXO
+  │
+  ├── Exchange commitment transactions off-chain (state updates)
+  │   Each state invalidates the previous via revocation keys
+  │
+Close (cooperative): Publish final balance directly
+Close (unilateral): Broadcast latest commitment tx; timelock gives other party a window to punish
+```
+
+**Poon-Dryja penalty mechanism (2016):**
+
+Each commitment transaction is asymmetric — Alice's version of state N makes her own output subject to a CSV (CheckSequenceVerify) timelock, while Bob's output is immediately spendable. Alice also gives Bob a revocation secret for state N when they advance to state N+1. If Alice broadcasts an old state, Bob can use the revocation secret to claim all channel funds (the "penalty transaction") within the CSV window.
+
+| Component | Mechanism | Purpose |
+|-----------|-----------|---------|
+| **2-of-2 funding output** | P2WSH multisig | Locks funds; requires both signatures to spend |
+| **Commitment transaction** | ECDSA → Schnorr (Taproot) | Current channel state; asymmetric timelocks |
+| **Revocation key** | `rev = H(per_commitment_secret)` | Claim all funds if counterparty cheats |
+| **HTLC output** | SHA-256 hashlock + CLTV timelock | In-flight payments; see [Atomic Swaps](#fair-exchange--atomic-swaps) |
+| **PTLC (Taproot upgrade)** | Adaptor signature + point lock | Replaces HTLC; breaks payment correlation |
+
+**Multi-hop payments:** Alice can pay Carol through Bob using chained HTLCs. Each hop adds a hashlock with the same preimage — Carol reveals the preimage to Bob, Bob reveals it to Alice, atomically. PTLCs (Point Time-Lock Contracts) use adaptor signatures to provide the same atomicity without hash correlation across hops.
+
+**Eltoo / LN-Symmetry (Decker-Russell-Osuntokun, 2018):** Proposed replacement for penalty channels. Uses `SIGHASH_ANYPREVOUT` (BIP 118, not yet activated) to allow the latest state to supersede any earlier state — no revocation keys, no asymmetric states, simpler watchtower logic. Awaits Bitcoin soft-fork activation.
+
+**State of the art:** LN-Penalty (Poon-Dryja) is deployed in production — ~5,000 BTC capacity, ~15,000 nodes (2025). Taproot channels (PTLC-ready) rolled out in 2024 via LND and CLN. Original paper [[1]](https://lightning.network/lightning-network-paper.pdf); Eltoo [[2]](https://blockstream.com/eltoo.pdf). See [Adaptor Signatures](categories/08-signatures-advanced.md#adaptor-signatures--scriptless-scripts), [Fair Exchange / Atomic Swaps](#fair-exchange--atomic-swaps).
+
+---
+
+## ZK Rollups and Optimistic Rollups
+
+**Goal:** Scale Ethereum throughput by executing transactions off-chain and posting only a compressed summary plus a cryptographic proof (ZK rollup) or an assertion subject to fraud challenge (optimistic rollup) to L1. Either approach inherits Ethereum's security while offering 10–100× cost reduction.
+
+**Comparison of the two approaches:**
+
+| Property | ZK Rollup | Optimistic Rollup |
+|----------|-----------|-------------------|
+| Validity mechanism | Validity proof (SNARK/STARK) | Fraud proof + challenge window |
+| Finality on L1 | Immediate (after proof verification) | ~7 days (challenge period) |
+| Proof cost | High prover compute; cheap L1 verify | None normally; expensive if challenged |
+| EVM compatibility | Hard (circuit must encode EVM) | Easy (re-execute disputed tx on L1) |
+| Example projects | zkSync Era, Starknet, Polygon zkEVM | Optimism (OP Stack), Arbitrum |
+
+**ZK rollup cryptographic stack:**
+
+Each batch of N transactions is compiled into a circuit; the prover generates a SNARK/STARK proving state transition correctness:
+
+| System | Proof system | Trusted setup | Note |
+|--------|-------------|--------------|------|
+| **StarkEx / Starknet** | STARK (FRI + AIR) | None | Quantum-resistant; larger proofs (~100 KB) |
+| **zkSync Era** | Boojum (Plonky2 variant + STARK) | None | Recursive STARKs for scalable batching |
+| **Polygon zkEVM** | PLONK + FRI (Plonky2) | None | EVM-equivalent; type-2 zkEVM |
+| **Scroll** | PLONK + KZG | KZG ceremony | EVM-equivalent; type-2 zkEVM |
+| **Linea (ConsenSys)** | Gnark (PLONK) | None | EVM-compatible; deployed on Ethereum |
+
+**Optimistic rollup fraud proof mechanism:**
+
+Sequencer posts state root + compressed calldata on L1. During the 7-day challenge window, any verifier can initiate a bisection game (interactive fraud proof, used by Arbitrum) or single-round re-execution (Cannon, used by Optimism/OP Stack) to pinpoint and prove the invalid instruction. If a fraud proof succeeds, the sequencer's bond is slashed.
+
+**Recursive proof aggregation:** ZK rollups chain SNARK proofs — a "proof of proofs" aggregates N batch proofs into one, amortizing L1 verification cost. Starknet, zkSync, and Polygon all use recursive SNARKs (see [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md)).
+
+**State of the art:** Optimism and Arbitrum dominate TVL (~$10B+ combined, 2025); zkSync Era and Starknet are the leading ZK rollups by usage. All major projects are converging on ZK proofs long-term. See [Data Availability Sampling](#data-availability-sampling-das) (EIP-4844 blobs cut rollup costs ~10×). Survey [[1]](https://ethereum.org/en/developers/docs/scaling/zk-rollups/).
+
+---
+
+## Verkle Trees (Ethereum State)
+
+**Goal:** Replace Ethereum's Merkle-Patricia Trie (MPT) with a Verkle tree — a polynomial-commitment-based authenticated data structure that produces witnesses ~6–30× smaller than Merkle proofs. The primary motivation is **stateless clients**: nodes can validate blocks without storing Ethereum's full state (~200 GB), instead receiving a compact witness with each block.
+
+**From Merkle hashes to vector commitments:**
+
+In a Merkle tree, a path proof requires one sibling hash per level. In a Verkle tree, each internal node is a polynomial commitment (KZG or Pedersen) to its children's values. A multiproof for k leaves across the whole tree collapses to a constant number of group elements regardless of tree depth, because commitment openings aggregate.
+
+| Property | Merkle-Patricia Trie | Verkle Tree |
+|----------|---------------------|-------------|
+| Node branching factor | 16 | 256 |
+| Proof per leaf | ~3 KB (MPT, hexary) | ~150 bytes |
+| Multi-leaf proof | Linear in leaves | ~constant (aggregated) |
+| Commitment scheme | Keccak-256 hash | Pedersen commitment (Bandersnatch curve) |
+| Trusted setup | None | None (Pedersen, not KZG) |
+
+**Ethereum's design choices:**
+
+- **Curve:** Bandersnatch — a Jubjub-like curve embedded inside BLS12-381 scalar field, enabling efficient SNARK-friendly inner verification
+- **Commitment:** Pedersen vector commitment (not KZG) — no trusted setup, 256-ary branching
+- **Encoding:** Polynomial over F_p where each child is a field element; commitment = Σ child_i · Gᵢ (multi-scalar multiplication)
+- **Tree structure:** Single unified trie (accounts + storage) replacing MPT's two-trie design
+
+**Stateless Ethereum workflow:**
+
+```
+Block producer: Compute state diff → generate witness (opened commitments for all touched nodes)
+Block validator: Receive block + witness → verify commitment openings → apply state transition
+No local state needed — witness carries all necessary proofs
+```
+
+**EIP-6800 / Verkle migration:** Ethereum's Verkle transition requires a hard fork to migrate the existing MPT state. Devnet testing ongoing (2024–2025); full mainnet deployment expected post-Pectra upgrade.
+
+**State of the art:** Vitalik Buterin's Verkle tree proposal (2021) [[1]](https://vitalik.eth.limo/general/2021/06/18/verkle.html); Ethereum Foundation blog post on structure [[2]](https://blog.ethereum.org/2021/12/02/verkle-tree-structure). See [Commitment Schemes](categories/09-commitments-verifiability.md#commitment-schemes), [Data Availability Sampling](#data-availability-sampling-das).
+
+---
+
+## Filecoin PoRep / PoSt (Proof of Replication / Proof of Spacetime)
+
+**Goal:** Prove that a storage provider has dedicated unique physical storage to a specific client's data (PoRep), and continues to store it over time (PoSt) — without the verifier retrieving the data. Filecoin's entire incentive model rests on these two cryptographic proofs, both implemented as Groth16 zk-SNARKs posted on-chain.
+
+**Proof of Replication (PoRep) — Stacked DRG (SDR):**
+
+The raw data (a "sector", typically 32 GiB) is encoded into a replica through a sequence of directed random graph (DRG) layers. The encoding is intentionally slow — O(n log n) sequential hash operations — making it infeasible to regenerate the replica on-demand and thereby fake storage.
+
+```
+Unsealed sector (data)
+  │
+  └─ SDR encoding (11 layers × DRG labeling via SHA-256 + Poseidon)
+      │
+      └─ Sealed replica (unique per storage provider per sector)
+          │
+          └─ Merkle tree commitment (TreeC, TreeD, TreeR)
+              │
+              └─ Groth16 SNARK over commit graph (~3 MB native proof → 192 bytes on-chain)
+```
+
+**PoRep circuit:** Proves knowledge of the unsealed data and all DRG layer labels consistent with the sealed replica root, without revealing the data. Uses Poseidon hash (SNARK-friendly) inside the circuit and SHA-256 outside.
+
+**Proof of Spacetime (PoSt):** Proves continuous storage by periodically sampling random leaves of the replica Merkle tree:
+
+| Variant | Frequency | Purpose | Mechanism |
+|---------|-----------|---------|-----------|
+| **WinningPoSt** | Per block (~30 s) | Block eligibility lottery | Storage provider proves replica leaf in the elected block to win block reward |
+| **WindowPoSt** | Every 24 hours | Audit / slashing | Proves all sectors in a 24-h window; failure triggers stake slashing |
+
+Both PoSt variants are also Groth16 SNARKs, compressing large Merkle proofs to ~192 bytes each.
+
+**Cryptographic primitives:**
+
+| Primitive | Role |
+|-----------|------|
+| Poseidon hash | SNARK-friendly hash for DRG labeling and Merkle trees inside circuits |
+| SHA-256 | Label seeding outside circuits |
+| Pedersen commitments | Leaf value commitments in TreeC |
+| Groth16 over BLS12-381 | Compress all proofs to 192 bytes for on-chain posting |
+| VRF (DLEQ-based) | Randomness beacon for PoSt challenge selection |
+
+**Scale:** Filecoin mainnet stores ~1.7 EiB (exbibytes) of data (2025), secured by continuous WindowPoSt proofs from ~2,000 storage providers. Each 32 GiB sector requires ~1.5 hours of SDR encoding and ~30 minutes of SNARK proving on GPU.
+
+**State of the art:** SDR PoRep and PoSt are deployed on Filecoin mainnet (launched 2020). Original PoRep paper (Fisch et al.) [[1]](https://eprint.iacr.org/2018/678); Filecoin Proof of Useful Space technical report [[2]](https://research.protocol.ai/publications/filecoin-proof-of-useful-space/giacomelli2023.pdf). See [Groth16 / Zcash Sapling zk-SNARK](#groth16--zcash-sapling-zk-snark), [Proof of Work / Proof of Space](#proof-of-work-pow--proof-of-space).
+
+---

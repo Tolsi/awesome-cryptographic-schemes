@@ -392,3 +392,90 @@
 **State of the art:** Pairing-based IBS (standard model); lattice IBS for PQ. Complement to [IBE](#identity-based-encryption-ibe); same PKG architecture.
 
 ---
+
+## MuSig / MuSig2 (Schnorr Multi-Signatures)
+
+**Goal:** Key-aggregating n-of-n multi-signatures. All n signers jointly produce a single standard Schnorr signature valid under an aggregate public key indistinguishable from a single-signer key. Enables cooperative Bitcoin Taproot key-path spends with no on-chain multi-sig overhead.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **MuSig1 (Maxwell-Poelstra-Seurin-Wuille)** | 2018 | Schnorr / DLP | First provably secure key-aggregating Schnorr multi-sig; 3 communication rounds [[1]](https://eprint.iacr.org/2018/068) |
+| **MuSig2 (Nick-Ruffing-Seurin)** | 2020 | Schnorr / AOMDL | Reduces to 2 rounds (1 preprocessing + 1 online); concurrent-session secure; BIP 327 [[1]](https://eprint.iacr.org/2020/1261) |
+| **MuSig-DN (deterministic nonces)** | 2020 | Schnorr + NIZK | Deterministic nonce generation with ZK proof; eliminates per-session randomness [[1]](https://eprint.iacr.org/2020/1057) |
+| **MuSig-L (lattice)** | 2022 | Module lattice | First lattice-based multi-sig with key aggregation, PPK-model security, and single online round [[1]](https://eprint.iacr.org/2022/1036) |
+
+MuSig2 is the n-of-n variant of [Threshold Signature Schemes](#threshold-signature-schemes-tss). Key aggregation means the combined public key is computationally indistinguishable from an ordinary Schnorr public key — on-chain footprint is a single 32-byte x-only key (BIP 340) and a single 64-byte signature, regardless of signer count. Security is proved under the algebraic one-more discrete logarithm (AOMDL) assumption. Rogue-key attacks are prevented by requiring a proof of knowledge of each individual public key before aggregation.
+
+**State of the art:** MuSig2 (BIP 327, Bitcoin Taproot); MuSig-L for post-quantum multi-signatures. See [Threshold Signature Schemes](#threshold-signature-schemes-tss) for t-of-n variants.
+
+---
+
+## Boneh-Boyen (BB) Short Signatures
+
+**Goal:** Standard-model short signatures. Achieve existential unforgeability under chosen-message attack without random oracles, using a pairing-based construction and the q-Strong Diffie-Hellman (q-SDH) assumption. Signatures consist of a single group element — the shortest possible for pairing-based schemes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BB Basic (Boneh-Boyen)** | 2004 | Pairings / q-SDH | Short sigs without random oracle; one G₁ element; EUROCRYPT 2004 [[1]](https://eprint.iacr.org/2004/171) |
+| **BB Full (Boneh-Boyen)** | 2004 | Pairings / q-SDH + q-BSDH | Stronger unforgeability under two assumptions; signing key can verify [[1]](https://eprint.iacr.org/2004/171) |
+| **Waters Signatures** | 2005 | Pairings / CDH | Fully secure standard-model sigs under plain CDH (no q-type assumption); basis of many IBE/IBS constructions [[1]](https://eprint.iacr.org/2005/097) |
+| **Short Group Sigs (BBS04)** | 2004 | Pairings / SDH + DLIN | Group signatures of RSA size from q-SDH and Decision Linear; CRYPTO 2004; ancestor of BBS+ [[1]](https://eprint.iacr.org/2004/174) |
+
+BB signatures fill the gap between BLS (random-oracle model, single group element) and earlier standard-model schemes (which required large signatures or strong assumptions). The q-SDH assumption — no PPT adversary can compute a new (c, g^{1/(x+c)}) pair given g, g^x, …, g^{x^q} — is analogous to Strong RSA. Waters signatures weaken the assumption to plain CDH at the cost of slightly larger public keys; they became the template for numerous IBE and ABE constructions. BBS04 group signatures are the structural ancestor of BBS+ rerandomizable credentials.
+
+**State of the art:** BB signatures (standard-model short sigs), Waters signatures (CDH-based, used in IBE/ABS constructions), BBS04 → BBS+ (W3C anonymous credentials). Cross-links: [Structure-Preserving Signatures](#structure-preserving-signatures-sps), [Rerandomizable Signatures](#rerandomizable-signatures-ps-signatures), [BLS Aggregate](#aggregate-signatures-bls-aggregate).
+
+---
+
+## Stateful Hash-Based Signatures (XMSS & LMS)
+
+**Goal:** Post-quantum stateful tree signatures. Authenticate many messages using a Merkle tree of one-time keys; the signer advances a state counter so each leaf is used at most once. Security depends only on hash function properties — no number-theoretic assumptions. Standardized for use before PQC deployment is complete.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **XMSS (eXtended Merkle Signature Scheme)** | 2011 | Hash tree + WOTS+ | Single-tree stateful scheme; minimal security assumptions; RFC 8391 (2018) [[1]](https://www.rfc-editor.org/rfc/rfc8391) |
+| **XMSS^MT (multi-tree)** | 2013 | Hash forest + WOTS+ | Hierarchical multi-tree variant; fast key generation; RFC 8391 [[1]](https://www.rfc-editor.org/rfc/rfc8391) |
+| **LMS (Leighton-Micali Signatures)** | 1995 | Hash tree + LM-OTS | Simpler Merkle tree structure; hardware-friendly; RFC 8554 (2019) [[1]](https://www.rfc-editor.org/rfc/rfc8554) |
+| **HSS (Hierarchical Signature System)** | 1995 | LMS forest | Multi-level LMS tree; scales to billions of signatures per key; RFC 8554 [[1]](https://www.rfc-editor.org/rfc/rfc8554) |
+| **NIST SP 800-208** | 2020 | XMSS + LMS profiles | NIST recommendation approving both families; governs parameter set selection [[1]](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-208.pdf) |
+
+Stateful schemes require careful state management: reusing a leaf index is catastrophic (it reveals the one-time key). This makes them unsuitable for general software use but appropriate for controlled environments such as firmware signing, code signing, and PKI root CAs. XMSS has the smallest signatures of any hash-based stateful scheme. LMS/HSS is simpler to implement and favored for hardware security modules (HSMs). Both families are built on [One-Time Signatures (OTS)](#one-time-signatures-ots) as leaf-level primitives — XMSS uses WOTS+, LMS uses LM-OTS.
+
+**State of the art:** LMS/HSS preferred for HSM firmware signing (CNSA 2.0 mandated for national-security code signing by 2030); XMSS for applications where signature size is critical. Contrast with [ML-DSA & SLH-DSA](#nist-pqc-signature-standards-ml-dsa--slh-dsa) (stateless, general-purpose PQ standards).
+
+---
+
+## NIST PQC Signature Standards (ML-DSA & SLH-DSA)
+
+**Goal:** Drop-in post-quantum replacements for RSA and ECDSA. Standardized by NIST in August 2024 as FIPS 204 (ML-DSA) and FIPS 205 (SLH-DSA), these algorithms are designed to be secure against both classical and quantum adversaries and are the primary migration targets for digital signatures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ML-DSA (CRYSTALS-Dilithium)** | 2017 | Module LWE + SIS | Lattice-based; FIPS 204; primary standard; three security levels (ML-DSA-44/65/87) [[1]](https://csrc.nist.gov/pubs/fips/204/final) |
+| **SLH-DSA (SPHINCS+)** | 2019 | Hash tree + WOTS+ + FORS | Stateless hash-based; FIPS 205; conservative choice; small keys, large sigs [[1]](https://csrc.nist.gov/pubs/fips/205/final) |
+| **FALCON (FN-DSA)** | 2017 | NTRU lattice + FFT | NIST selected as FIPS 206; compact sigs; complex implementation; see [PQC](#post-quantum-cryptography-pqc) [[1]](https://csrc.nist.gov/pubs/fips/206/final) |
+| **Dilithium-G (CRYSTALS)** | 2018 | Module lattice | Earlier name; Dilithium Mode 2/3/5 maps to ML-DSA-44/65/87; same algorithm [[1]](https://eprint.iacr.org/2017/633) |
+
+ML-DSA is based on the hardness of Module Learning With Errors (MLWE) and Module Short Integer Solution (MSIS) problems. Signing produces a polynomial hint vector alongside a short lattice response; verification checks a linear relation over module lattices. Public keys are ~1312 bytes (level 2); signatures ~2420 bytes — significantly larger than ECDSA but fast to sign and verify. SLH-DSA (SPHINCS+) is the "hash-only" conservative choice: its security reduces entirely to hash function properties (preimage resistance, second-preimage resistance) with no algebraic assumptions. It is stateless (unlike XMSS/LMS), but signatures are large (7–50 KB depending on variant). NIST recommends ML-DSA as the primary standard and SLH-DSA as a conservative backup.
+
+**State of the art:** FIPS 204 (ML-DSA) and FIPS 205 (SLH-DSA) finalized August 2024; NIST migration deadline for federal systems is 2030. Cross-links: [One-Time Signatures (OTS)](#one-time-signatures-ots) (WOTS+/FORS building blocks), [Stateful Hash-Based Signatures](#stateful-hash-based-signatures-xmss--lms) (XMSS/LMS), [PQC in the quantum-cryptography category](categories/15-quantum-cryptography.md#post-quantum-cryptography-pqc).
+
+---
+
+## DKLs23 & Next-Generation Threshold ECDSA
+
+**Goal:** Efficient maliciously-secure threshold ECDSA. Achieve t-of-n ECDSA signing with UC-security against a dishonest majority in the minimum number of rounds, replacing the expensive Paillier-based arithmetic of GG18/GG20 with oblivious transfer (OT) extensions for a dramatically faster protocol.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **GG18 (Gennaro-Goldfeder)** | 2018 | ECDSA + Paillier | First practical threshold ECDSA; MtA via Paillier HE; 6 rounds [[1]](https://eprint.iacr.org/2019/114) |
+| **GG20 (Gennaro-Goldfeder)** | 2020 | ECDSA + Paillier + presign | Adds identifiable abort; presigning reduces online rounds; widely deployed [[1]](https://eprint.iacr.org/2020/540) |
+| **CGGMP21 (Canetti-Gennaro-Goldfeder-Makriyannis-Peled)** | 2021 | ECDSA + Paillier | UC-secure, proactive, non-interactive presign, identifiable abort; production standard [[1]](https://eprint.iacr.org/2021/060) |
+| **DKLs18 (Doerner-Kondi-Lee-Shelat)** | 2018 | ECDSA + OT | 2-of-n threshold ECDSA via OT; avoids Paillier; faster in practice [[1]](https://eprint.iacr.org/2018/499) |
+| **DKLs23 (Doerner-Kondi-Lee-Shelat)** | 2023 | ECDSA + OT + UC | UC-secure t-of-n in 3 rounds; OT replaces MtA; information-theoretic interior [[1]](https://eprint.iacr.org/2023/765) |
+
+The core challenge of threshold ECDSA is that the signing equation requires a product of secret shares (the nonce inverse times the key), which is not naturally linear. GG18/GG20/CGGMP21 solve this via multiplicative-to-additive (MtA) conversion using Paillier encryption — correct but expensive in bandwidth and computation. DKLs18/23 replace MtA with correlated OT extensions: two-party multiplication (2PC-Mul) built on OT is faster, avoids the Paillier key-generation overhead, and achieves UC-security with an information-theoretic commitment layer. DKLs23 achieves 3-round online signing (down from 6 in GG20) and is the current state of the art for maliciously-secure threshold ECDSA.
+
+**State of the art:** CGGMP21 (production MPC wallets, e.g. Fireblocks, ZenGo); DKLs23 (leading academic construction; adoption growing, e.g. Vultisig). Extends [Threshold Signature Schemes](#threshold-signature-schemes-tss). For Schnorr threshold signing see [FROST](#threshold-signature-schemes-tss).
+
+---

@@ -121,6 +121,114 @@
 
 ---
 
+## KZG Polynomial Commitments
+
+**Goal:** Succinct, binding commitment to a polynomial with constant-size evaluation proofs. A prover commits to a polynomial f ∈ Fₚ[X] of degree d, then later proves f(z) = y for any challenge point z with a single group element — regardless of d. Foundational in SNARKs, Ethereum's data availability sampling (EIP-4844 / danksharding), and proof systems like PLONK.
+
+| Property | Value |
+|----------|-------|
+| **Commitment size** | 1 group element (48 bytes on BLS12-381) |
+| **Evaluation proof size** | 1 group element — constant, independent of degree |
+| **Verification cost** | 1 pairing check: e(C − [y]₁, [1]₂) = e(π, [τ − z]₂) |
+| **Setup** | Structured Reference String (SRS): (g, g^τ, g^τ², …, g^τ^d) — toxic waste τ must be destroyed |
+| **Security assumption** | d-Strong Diffie-Hellman (d-SDH) in the generic group model |
+| **Homomorphism** | Additively homomorphic: commit(f + g) = commit(f) · commit(g) |
+
+| Variant | Year | Note |
+|---------|------|------|
+| **KZG (Kate-Zaverucha-Goldberg)** | 2010 | Original univariate scheme; O(1) proof, trusted setup [[1]](https://eprint.iacr.org/2010/274) |
+| **KZG multi-point opening** | 2020 | Open multiple points simultaneously with one proof via quotient polynomials [[1]](https://dankradfeist.de/ethereum/2020/06/16/kate-polynomial-commitments.html) |
+| **KZG with amortized batching** | 2021 | Feist-Khovratovich: O(n log n) to compute all n single-point proofs in batch [[1]](https://eprint.iacr.org/2023/033) |
+| **EIP-4844 / Danksharding blob commitments** | 2024 | Ethereum uses KZG over BLS12-381 to commit 128 KB data blobs; trusted setup via Powers of Tau MPC [[1]](https://eips.ethereum.org/EIPS/eip-4844) |
+
+**State of the art:** KZG is the dominant polynomial commitment in production SNARKs (PLONK, Groth16-style systems) and Ethereum's data availability layer. The Powers of Tau ceremony (participated in by thousands) provides a reusable SRS. The main limitation — the trusted setup — is addressed by transparent alternatives ([FRI](#commitment-schemes), [IPA](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment), [Dory](#multilinear-polynomial-commitments)). See [[1]](https://eprint.iacr.org/2010/274).
+
+---
+
+## Inner Product Arguments (IPA) / Bulletproofs Polynomial Commitment
+
+**Goal:** Logarithmic-size, transparent polynomial commitment with no trusted setup. A prover holds a polynomial f of degree d (encoded as its d+1 coefficient vector) and a Pedersen-style commitment. An interactive protocol (made non-interactive via Fiat-Shamir) proves evaluation f(z) = y using only O(log d) communication and no toxic waste.
+
+| Property | Value |
+|----------|-------|
+| **Commitment size** | 1 group element |
+| **Proof size** | O(log d) group elements (2 log d + 3 in Bulletproofs) |
+| **Verifier cost** | O(d) scalar multiplications (no sub-linear verification without preprocessing) |
+| **Setup** | Transparent: only public random group generators needed |
+| **Security assumption** | Discrete logarithm (DLOG) in the random oracle model |
+| **Homomorphism** | Additively homomorphic commitments |
+
+| Variant | Year | Note |
+|---------|------|------|
+| **Bootle et al. IPA** | 2016 | First O(log n) inner-product argument [[1]](https://eprint.iacr.org/2016/263) |
+| **Bulletproofs (Bünz et al.)** | 2018 | Refinement to 2 log n group elements; transparent; also produces range proofs [[1]](https://eprint.iacr.org/2017/1066) |
+| **IPA-PCS (BCMS20)** | 2020 | Specialises the IPA to a polynomial commitment scheme; used in Halo/Halo2 [[1]](https://eprint.iacr.org/2019/1021) |
+| **Halo2 / IPA-based PLONK** | 2021 | Zcash / ECC's PLONK system uses IPA-PCS over Pasta curves; no trusted setup [[1]](https://zcash.github.io/halo2/) |
+| **Dory** | 2021 | Transparent, pairing-based inner-product argument; O(log n) verifier (improvement over basic IPA); multilinear polynomials [[1]](https://eprint.iacr.org/2020/1274) |
+
+**State of the art:** IPA-PCS underpins Halo2 (Zcash, Scroll, Taiko). Dory (Lee, TCC 2021) achieves O(log n) verification via pairings, reducing the main weakness of the basic IPA (linear verifier). Compared to KZG, IPA avoids trusted setup at the cost of larger proofs and slower verification. See also [Commitment Schemes](#commitment-schemes) and [Multilinear Polynomial Commitments](#multilinear-polynomial-commitments).
+
+---
+
+## Range Proofs
+
+**Goal:** Prove that a committed secret value v lies within an interval [a, b] — in zero knowledge. Used in confidential transactions (Monero, MimbleWimble), anonymous credentials (age ≥ 18), auctions, and compliance checks — all without revealing v.
+
+| Scheme | Year | Basis | Proof size (k-bit range) | Note |
+|--------|------|-------|--------------------------|------|
+| **Square-decomposition (Boudot)** | 2000 | DLP + commitments | O(k) group elements | Early practical scheme [[1]](https://link.springer.com/chapter/10.1007/3-540-45539-6_31) |
+| **Bulletproofs range proof** | 2018 | IPA + Pedersen | O(log k) group elements | Transparent; most deployed; used in Monero, Grin, MimbleWimble [[1]](https://eprint.iacr.org/2017/1066) |
+| **Bulletproofs+** | 2021 | IPA variant | O(log k) — ~15% smaller | Reduces prover group elements [[1]](https://eprint.iacr.org/2020/735) |
+| **Bulletproofs++** | 2024 | Reciprocal set-membership | O(log k) — 3× fewer multiplications | Drop-in BP replacement; faster prover; CRYPTO 2024 [[1]](https://eprint.iacr.org/2022/510) |
+| **BFGW + KZG range proof** | 2021 | Lookup argument + KZG | O(1) group elements | Constant-size; trusted setup required [[1]](https://eprint.iacr.org/2020/1351) |
+| **Caulk** | 2022 | Lookup in sublinear time | O(1) | Sub-linear prover via lookup in committed table; CCS 2022 [[1]](https://eprint.iacr.org/2022/621) |
+
+**State of the art:** Bulletproofs range proofs (transparent, aggregatable, log-size) dominate in production — Monero v0.14+, Grin, and others. Bulletproofs++ (CRYPTO 2024) is the strongest transparent drop-in replacement. KZG-based lookup range proofs (BFGW, Caulk) achieve O(1) proofs with trusted setup, preferred inside SNARKs. A 2024 SoK paper systematises the full landscape [[1]](https://eprint.iacr.org/2024/430). See also [Commitment Schemes](#commitment-schemes) and [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment).
+
+---
+
+## Multilinear Polynomial Commitments
+
+**Goal:** Commit to multilinear polynomials (polynomials with degree ≤ 1 in each variable) and prove evaluations at arbitrary points. Multilinear polynomials over the boolean hypercube {0,1}ⁿ are the natural representation for computations in modern zkVMs (Nova, HyperPlonk, Spartan) — enabling faster proof generation via the sumcheck protocol instead of FFT-heavy univariate techniques.
+
+| Scheme | Year | Basis | Proof size | Note |
+|--------|------|-------|-----------|------|
+| **Hyrax** | 2018 | Pedersen matrix commitment | O(√n) | First efficient ML-PCS; transparent [[1]](https://eprint.iacr.org/2017/1132) |
+| **Dory** | 2021 | Pairings (inner-pairing product) | O(log n) | Transparent; O(log n) verifier; TCC 2021 [[1]](https://eprint.iacr.org/2020/1274) |
+| **Zeromorph** | 2023 | KZG + degree-bound proofs | O(n) prover, O(1) proof | Reduces ML commitment to univariate KZG; ZK-friendly; Journal of Cryptology 2024 [[1]](https://eprint.iacr.org/2023/917) |
+| **HyperPlonk + ML-PCS** | 2023 | Sumcheck + ML commitment | Depends on underlying PCS | Adapts PLONK to boolean hypercube; avoids FFT; used in high-degree custom gates [[1]](https://eprint.iacr.org/2022/1355) |
+| **DeepFold** | 2024 | Reed-Solomon + ML folding | O(log² n) | Efficient ML-PCS from RS codes; transparent; USENIX Security 2025 [[1]](https://eprint.iacr.org/2024/1595) |
+| **Lattice-based ML-PCS** | 2024 | Module-SIS (NTRU-like) | O(√n) | Post-quantum; transparent; CRYPTO 2024 [[1]](https://eprint.iacr.org/2024/281) |
+
+**State of the art:** ML-PCS schemes are the foundation of modern zkVM proof systems. Dory (transparent) and Zeromorph (KZG-based, constant proofs) are widely studied. DeepFold (2024) achieves the best asymptotic performance among hash/RS-based transparent schemes. The lattice-based variant (CRYPTO 2024) provides the first practical post-quantum ML-PCS. A comprehensive comparison of ML-PCS schemes is maintained at [[1]](https://pcs.zkpunk.pro/). See also [Commitment Schemes](#commitment-schemes) and [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment).
+
+---
+
+## BDLOP Lattice Commitments
+
+**Goal:** Efficient, post-quantum additively homomorphic commitments from structured lattice assumptions. The BDLOP (Baum-Damgård-Lyubashevsky-Oechsner-Peikert) scheme is the workhorse lattice commitment used in virtually all recent lattice-based zero-knowledge proofs — for range proofs, shuffle arguments, electronic voting, and anonymous transactions — filling the role that Pedersen commitments play in the DLP world.
+
+| Property | Value |
+|----------|-------|
+| **Security basis** | Module-SIS / Module-LWE (structured lattice, ring variants) |
+| **Hiding** | Computational (or statistical, at cost of efficiency) |
+| **Binding** | Computational |
+| **Homomorphism** | Additively homomorphic: com(m₁) + com(m₂) = com(m₁ + m₂) |
+| **ZK proof of opening** | Efficient; used in lattice ZK protocols |
+| **Quantum security** | Yes — based on worst-case lattice hardness |
+
+| Variant | Year | Note |
+|---------|------|------|
+| **Ajtai commitment** | 1996 | Collision-resistant hash from SIS; early lattice commitment; statistically binding [[1]](https://dl.acm.org/doi/10.1145/237814.237838) |
+| **Benhamouda et al.** | 2015 | First practical lattice commitment with ZK proof of opening [[1]](https://eprint.iacr.org/2014/890) |
+| **BDLOP** | 2018 | Factor 4–6× more efficient than predecessor; base for lattice-ZK ecosystem; SCN 2018 [[1]](https://eprint.iacr.org/2016/997) |
+| **Lattice-based PoK** | 2020 | Short ZK proofs of knowledge for BDLOP commitments; enables lattice-based credentials and e-voting [[1]](https://link.springer.com/chapter/10.1007/978-3-030-44223-1_15) |
+| **Lattice-based polynomial commitment (CRYPTO 2024)** | 2024 | Extends BDLOP-style commitments to a full polynomial commitment; transparent setup; 70× smaller than prior lattice PCS [[1]](https://eprint.iacr.org/2024/281) |
+
+**State of the art:** BDLOP is the de-facto standard lattice commitment for lattice-based ZK protocols (2018–present). Nearly all recent lattice ZK proofs — for confidential transactions, voting, range proofs — build on BDLOP or its ring variant. The 2024 lattice polynomial commitment [[1]](https://eprint.iacr.org/2024/281) extends this to a full polynomial commitment scheme competitive with FRI, marking a milestone for post-quantum verifiable computation. Related to [Ajtai Commitment](#commitment-schemes) and [Functional Commitments](#functional-commitments).
+
+---
+
 ## Verifiable Timed Commitments
 
 **Goal:** Forced opening after delay. A commitment that the committer can open instantly, but anyone can force-open after time T by performing sequential computation. Guarantees fairness in exchange protocols — no party can withhold forever.

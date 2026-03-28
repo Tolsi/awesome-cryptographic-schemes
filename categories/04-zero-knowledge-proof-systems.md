@@ -120,8 +120,10 @@
 | **Lasso** | 2023 | Sumcheck + sparse polynomials | Lookup from structured tables without committing to full table; sublinear prover [[1]](https://eprint.iacr.org/2023/1216) |
 | **Baloo** | 2022 | KZG + lookup | Lookup argument with logarithmic proof size [[1]](https://eprint.iacr.org/2022/1565) |
 | **cq (Cached Quotients)** | 2022 | KZG | Table-independent preprocessing; efficient for shared tables [[1]](https://eprint.iacr.org/2022/1763) |
+| **Caulk** | 2022 | KZG + position-hiding linkability | Sublinear prover: O(m² + m log N) for m lookups in table of size N; CCS 2022 [[1]](https://eprint.iacr.org/2022/621) |
+| **Caulk+** | 2022 | Polynomial divisibility check | Simplifies Caulk; O(m²) prover; removes dependence on table size N in proving cost [[1]](https://eprint.iacr.org/2022/957) |
 
-**State of the art:** Lasso (2023) for structured tables; LogUp for general use. Lookups are now a core building block in zkVMs (see [ZK Proofs](#zero-knowledge-proofs-zk), [Folding Schemes](#folding-schemes)).
+**State of the art:** Lasso (2023) for structured tables; LogUp for general use; Caulk/Caulk+ for sublinear-in-table-size proving. Lookups are now a core building block in zkVMs (see [ZK Proofs](#zero-knowledge-proofs-zk), [Folding Schemes](#folding-schemes)).
 
 ---
 
@@ -369,5 +371,86 @@
 | **ZK Email** | 2023 | DKIM signatures + ZK | Prove contents of signed email without revealing full message; Circom/Halo2 [[1]](https://prove.email/) |
 
 **State of the art:** TLSNotary (production, open-source 2PC), DECO (academic gold standard). Used in oracle protocols, on-chain identity, and DeFi undercollateralised lending. Main bottleneck is 2PC overhead for TLS-1.3 AES-GCM.
+
+---
+
+## Sonic
+
+**Goal:** Universal, updatable SNARK with a single global setup. Sonic was the first practical zk-SNARK to support a universal and continuously updatable structured reference string (SRS) that scales linearly in circuit size, eliminating per-circuit trusted setup ceremonies. It directly inspired PLONK and Marlin.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Sonic** | 2019 | KZG + polynomial IOP | Universal updatable SRS; linear-size; helper-based batch verification; CCS 2019 [[1]](https://eprint.iacr.org/2019/099) |
+| **Sonic with helpers** | 2019 | Sonic + advisory witnesses | Untrusted "helpers" supply advice enabling O(1) amortised verifier time in batch settings [[1]](https://eprint.iacr.org/2019/099) |
+
+**Key contribution:** Prior universal SNARKs (e.g., Groth-Maller) required a quadratically growing SRS. Sonic achieved linear SRS size. The updatability property means any party can contribute randomness to the SRS at any time, providing perpetual security under a 1-of-N assumption.
+
+**State of the art:** Superseded in practice by PLONK (2019) and Marlin (2019), which improved on Sonic's prover efficiency while retaining universality and updatability. Sonic remains important as the direct conceptual predecessor of the "universal SNARK" paradigm. See [[1]](https://eprint.iacr.org/2019/099).
+
+---
+
+## Ligero and Aurora
+
+**Goal:** Transparent, hash-based SNARKs from linear codes and IOPs. Ligero (2017) achieves sublinear proof size using interleaved Reed-Solomon codes over Boolean circuits — no trusted setup, no public-key crypto required. Aurora (2018) improves proof size to O(log² N) using a linear-length IOP for R1CS.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ligero** | 2017 | Reed-Solomon IOP + MPC-in-the-head | Proof size O(√N); based solely on collision-resistant hash functions; no trusted setup [[1]](https://eprint.iacr.org/2022/1608) |
+| **Ligero++** | 2020 | Improved interleaved codes | Optimised Ligero; better constants; O(√N) but tighter analysis; CCS 2020 [[1]](https://dl.acm.org/doi/10.1145/3372297.3417893) |
+| **Aurora** | 2018 | Linear-length IOP for R1CS | Proof size O(log² N) via a univariate sumcheck IOP; transparent; post-quantum plausible [[1]](https://eprint.iacr.org/2018/828) |
+| **Fractal** | 2020 | Aurora + holographic IOP | First transparent recursive SNARK; holographic preprocessing enables indexer-prover separation [[1]](https://eprint.iacr.org/2019/1076) |
+
+**Key insight:** Ligero encodes the witness as rows of a Reed-Solomon codeword matrix and uses interleaved tests to verify linear constraints. This gives a zero-knowledge argument whose communication depends on √N field elements rather than N. Aurora replaces the matrix approach with a univariate-sumcheck-based IOP, shrinking proofs to polylogarithmic.
+
+**State of the art:** Aurora and Fractal (2020) are the academic benchmarks; in production, their ideas are subsumed by STARKs and [Orion](#orion-and-brakedown-linear-time-snarks). Ligero's MPC-in-the-head viewpoint connects to [VOLEitH](#voleitH-vole-in-the-head). See [[1]](https://eprint.iacr.org/2018/828).
+
+---
+
+## HyperPlonk
+
+**Goal:** Linear-time prover SNARK on the boolean hypercube. HyperPlonk adapts the PLONK polynomial IOP to multilinear polynomials over the boolean hypercube, replacing FFTs with the sumcheck protocol. This gives an O(N) prover (vs. O(N log N) for PLONK) and supports high-degree custom gates without performance penalty.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HyperPlonk** | 2022 | Multilinear PLONK + sumcheck | O(N) prover; no FFT; high-degree custom gates; pluggable multilinear PCS; EUROCRYPT 2023 [[1]](https://eprint.iacr.org/2022/1355) |
+| **HyperPlonk + Orion PCS** | 2022 | HyperPlonk with linear-time PCS | Using Orion as polynomial commitment gives fully linear prover end-to-end; opening proofs < 10 KB [[1]](https://eprint.iacr.org/2022/1355) |
+
+**Key contribution:** Classical PLONK uses univariate polynomials over a multiplicative subgroup, requiring FFTs (O(N log N)) for the prover. HyperPlonk moves to the boolean hypercube where the sumcheck protocol handles all key sub-protocols. Custom gates of degree d cost O(dN) rather than O(N log N · d). Permutation checks are replaced by a novel multiset equality argument over the hypercube.
+
+**State of the art:** HyperPlonk (2022) is the state-of-the-art Plonkish system for prover time; used as the IOP layer in several multilinear SNARK stacks. Closely related to [Spartan](#sumcheck-protocol), [Sumcheck](#sumcheck-protocol), and [Binius](#binary-field-proof-systems). See [[1]](https://eprint.iacr.org/2022/1355).
+
+---
+
+## Orion and Brakedown (Linear-Time SNARKs)
+
+**Goal:** SNARKs with provably O(N) prover time. Both Brakedown (2021/2023) and Orion (2022) achieve linear prover time — the information-theoretic optimum — using expander codes and linear-time encodable error-correcting codes. No FFTs, no trusted setup, plausibly post-quantum.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Brakedown** | 2021/2023 | Expander codes + R1CS | First implemented linear-time SNARK; field-agnostic (any finite field); transparent; post-quantum plausible; CRYPTO 2023 [[1]](https://eprint.iacr.org/2021/1043) |
+| **Orion** | 2022 | Expander graphs + code switching | O(N) prover (field ops + hashes); O(log² N) proof; fastest concrete prover at 2²⁰ gates (3.09 s); CRYPTO 2022 [[1]](https://eprint.iacr.org/2022/1010) |
+| **Orion+ (soundness fix)** | 2024 | Revised Orion | Fixes a soundness issue in original Orion; restores security under clean assumptions [[1]](https://link.springer.com/chapter/10.1007/978-981-95-5116-3_13) |
+
+**Key insight:** Both systems build on the insight that linear-time encodable codes (e.g., expander-based codes due to Spielman) give a multilinear polynomial commitment scheme with O(N) commitment time and polylogarithmic proof size. Brakedown uses a direct tensor-product structure; Orion adds a "code-switching" technique to compress sqrt-size proofs to polylogarithmic.
+
+**Relation to Binius:** Binius (2023) also achieves linear prover time but operates over binary tower fields — see [Binary-Field Proof Systems](#binary-field-proof-systems). Brakedown and Orion work over arbitrary finite fields.
+
+**State of the art:** Orion (2022) for fastest concrete prover; Brakedown (CRYPTO 2023) for clean theoretical guarantees. Both are used as the PCS layer in [HyperPlonk](#hyperplonk). See [[1]](https://eprint.iacr.org/2021/1043)[[2]](https://eprint.iacr.org/2022/1010).
+
+---
+
+## RedShift
+
+**Goal:** Transparent SNARK via list polynomial commitments. RedShift (2019) gives the first efficient transformation of any KZG-based (trusted-setup) SNARK into a transparent counterpart by replacing KZG polynomial commitments with a new primitive called a list polynomial commitment, instantiated via FRI. This yields a transparent, plausibly post-quantum SNARK from any polynomial IOP.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **RedShift** | 2019/2022 | List polynomial commitment + FRI | Transparent SNARKs from KZG-based IOPs; works over prime and binary fields; CCS 2022 [[1]](https://eprint.iacr.org/2019/1400) |
+
+**Key contribution:** KZG-based SNARKs (PLONK, Marlin, Sonic) require a trusted setup (powers-of-tau SRS). RedShift defines a *list polynomial commitment* (LPC) — a polynomial commitment scheme that tolerates a list of valid openings rather than a unique one — and shows LPCs can be instantiated with FRI (no trusted setup). Plugging LPC into any polynomial IOP yields a transparent SNARK with no SRS ceremony.
+
+**Relation to other schemes:** RedShift predates the explicit "PLONK + FRI = Plonky2" design but formalises the same core idea. Plonky2, Polygon's zkEVM STARK backend, and StarkWare's Cairo prover all implicitly instantiate similar list polynomial commitments.
+
+**State of the art:** RedShift (Kattis-Panarin-Vlasov, CCS 2022); the LPC framework is the theoretical foundation of the PLONK-over-FRI approach used in Plonky2 and Polygon's prover stack. See [[1]](https://eprint.iacr.org/2019/1400).
 
 ---

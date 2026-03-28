@@ -360,6 +360,79 @@
 
 ---
 
+## Labeled PSI and Private Intersection-Sum (PSI-Sum)
+
+**Goal:** PSI with associated payloads. Beyond finding matching elements, the receiver also learns a value (label) associated with each matched element, or only the sum of those values — all without the sender learning which elements matched. Used in ad-conversion measurement, fraud detection, and medical record linkage.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Private Intersection-Sum (Ion et al.)** | 2020 | Commutative encryption + additively HE | Each sender element carries an integer value; receiver learns intersection cardinality and sum of values but not individual matches; deployed in Google ad measurement [[1]](https://eprint.iacr.org/2019/723) |
+| **Two-Sided Malicious PSI-Sum (Ghosh-Lepoint)** | 2021 | Homomorphic encryption + ZK | Maliciously secure PSI-Sum without semi-honest assumptions [[1]](https://eprint.iacr.org/2020/385) |
+| **Labeled PSI from FHE (Chen et al.)** | 2021 | BFV FHE + OPRF | Unbalanced labeled PSI: client with small set retrieves values associated with matching elements from large server set; O(√|X|) HE multiplications; 85% communication reduction vs. prior work; CCS 2021 [[1]](https://eprint.iacr.org/2021/1116) |
+| **Circuit-PSI with Linear Complexity (Chandran et al.)** | 2022 | OPPRF + garbled circuits | Compute arbitrary function over intersection items in MPC; linear communication via relaxed batch OPPRF [[1]](https://eprint.iacr.org/2021/034) |
+
+**State of the art:** Labeled PSI from FHE (CCS 2021) for unbalanced settings; PSI-Sum (2020) deployed in privacy-preserving ad attribution. Extends [PSI](#private-set-intersection-psi) and [OKVS](#oblivious-key-value-store-okvs); complements [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation).
+
+---
+
+## Volume-Hiding Searchable Encryption (Encrypted Multi-Maps)
+
+**Goal:** Suppress volume leakage in SSE. Standard SSE reveals the number of documents matching each query keyword (the "volume"), enabling leakage-abuse attacks that reconstruct the dataset. Volume-hiding encrypted multi-maps (EMMs) pad or obfuscate response sizes so the server learns nothing beyond the fact that a query was made.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Kamara-Moataz Volume-Hiding EMM** | 2019 | PRF + padding | Introduced volume-hiding EMMs; pads each response to maximum volume ℓ; O(ℓ) query overhead [[1]](https://eprint.iacr.org/2019/1292) |
+| **Dynamic Volume-Hiding EMM (Patel et al.)** | 2021 | Dense Subgraph Transform | Supports updates with forward and backward privacy while hiding volume; O(ℓ log n) overhead [[1]](https://eprint.iacr.org/2021/765) |
+| **XorMM (Patel-Persiano-Yeo-Yung)** | 2022 | XOR-based EMM | Optimal query communication: client receives exactly ℓ results, zero data loss; 1.23n storage, 76% storage savings vs. prior work; CCS 2022 [[1]](https://dl.acm.org/doi/10.1145/3548606.3559345) |
+
+**State of the art:** XorMM (CCS 2022) for optimal overhead; Dynamic VH-EMM (2021) for updatable datasets. Addresses the primary practical attack surface against deployed [Searchable Encryption](#searchable-encryption-sse--peks).
+
+---
+
+## Shuffle Model of Differential Privacy
+
+**Goal:** A middle ground between central and local DP. In the local model, each user randomizes their own data locally (strong privacy, poor accuracy). In the central model, a trusted curator adds noise to aggregate results (best accuracy, requires trust). The shuffle model uses an anonymous shuffler to break linkability, allowing local randomizers with small ε to achieve central-DP-level accuracy — without any trusted server.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Prochlo / ESA (Bittau et al.)** | 2017 | SGX-based oblivious shuffler + local DP | First Encode-Shuffle-Analyze system; uses Intel SGX for the shuffler; SOSP 2017 [[1]](https://dl.acm.org/doi/10.1145/3132747.3132769) |
+| **Cheu-Smith-Ullman-Zeber-Zhilyaev** | 2019 | Shuffle model formalization | First rigorous definition; shows single-message protocols in shuffle model can achieve ε = O(1/√n) from locally ε-DP data; EUROCRYPT 2019 [[1]](https://eprint.iacr.org/2018/1282) |
+| **Privacy Blanket (Balle-Bell-Gascón-Nissim)** | 2019 | Amplification by shuffling | Quantifies the privacy amplification: local ε₀-DP + shuffling → (ε, δ)-DP with ε = O(ε₀√(log(1/δ)/n)); CRYPTO 2019 [[1]](https://arxiv.org/abs/1903.02837) |
+| **Feldman-McMillan-Talwar Hiding Among Clones** | 2021 | Poisson-subsampling analysis | Near-optimal amplification analysis; nearly tight bounds for practical parameters [[1]](https://arxiv.org/abs/2012.12803) |
+
+**State of the art:** Privacy Blanket / Feldman et al. amplification bounds underpin all shuffle-model deployments; Prochlo in production at Google. Positioned between [Differential Privacy](#differential-privacy) (local DP row) and central DP; complements [Private Heavy Hitters](#private-heavy-hitters--frequency-estimation) and [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation).
+
+---
+
+## Differentially Private Machine Learning (DP-SGD / PATE)
+
+**Goal:** Train ML models on private data with formal privacy guarantees. The trained model's parameters should not reveal sensitive details about individual training examples. Two main paradigms: DP-SGD (inject noise during gradient updates) and PATE (use private teacher ensembles with noisy voting to train a public student). Widely deployed in on-device learning and privacy-preserving analytics.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DP-SGD (Abadi et al.)** | 2016 | Gradient clipping + Gaussian noise + Moments Accountant | Clip per-sample gradients to bound sensitivity; add Gaussian noise; track composition with the moments accountant; CCS 2016 [[1]](https://dl.acm.org/doi/10.1145/2976749.2978318) |
+| **PATE (Papernot et al.)** | 2017 | Private teacher ensemble + noisy aggregation | Train N teacher models on disjoint private shards; student queries teachers via noisy vote; privacy cost only incurred on labeled queries; ICLR 2017 [[1]](https://arxiv.org/abs/1610.05755) |
+| **Scalable PATE (Papernot et al.)** | 2018 | Rényi DP + data-dependent analysis | Tighter privacy accounting using Rényi DP when teacher consensus is strong; enables large-vocabulary models; ICLR 2018 [[1]](https://arxiv.org/abs/1802.08908) |
+| **Opacus (Meta / PyTorch)** | 2020 | DP-SGD library | Production-grade DP-SGD implementation for PyTorch; per-sample gradient engine; widely used in industry [[1]](https://arxiv.org/abs/2109.12298) |
+
+**State of the art:** DP-SGD (via Opacus/TF Privacy) is the standard for differentially private deep learning; PATE preferred when unlabeled public data is available. Relies on [Differential Privacy](#differential-privacy) mechanisms (Gaussian, Rényi/zCDP) and tightly integrates with the [Shuffle Model](#shuffle-model-of-differential-privacy) in federated settings.
+
+---
+
+## Advanced Single-Server PIR (OnionPIR / Spiral)
+
+**Goal:** Practical single-server PIR with near-optimal communication and high server throughput. Goes beyond SealPIR's BFV-only approach by composing multiple lattice-based schemes (Regev + GSW) to simultaneously shrink query size, response size, and computation — making single-server PIR viable for real deployments.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **OnionPIR (Mughees-Chen-Ren)** | 2021 | BFV + RGSW; copy-network oblivious evaluation | Response overhead 4.2× over insecure baseline vs. ~100× for prior schemes; CCS 2021 [[1]](https://eprint.iacr.org/2021/1081) |
+| **Spiral (Menon-Wu)** | 2022 | Regev + GSW FHE composition | 4.5× smaller queries, 1.5× smaller responses, 2× higher server throughput than OnionPIR; SpiralStream variant achieves 1.5 GB/s throughput and 0.49 rate; IEEE S&P 2022 [[1]](https://eprint.iacr.org/2022/368) |
+| **OnionPIRv2 (Mughees et al.)** | 2025 | Improved BFV+RGSW composition | Further reduces response overhead; closes gap with Spiral in communication [[1]](https://eprint.iacr.org/2025/1142) |
+
+**State of the art:** Spiral (2022) is the current throughput leader for single-server PIR; SimplePIR/DoublePIR (covered in [PIR](#private-information-retrieval-pir)) leads on latency with LWE. OnionPIR/Spiral are preferred when response size is the bottleneck (streaming applications).
+
+---
+
 ## Conditional Disclosure of Secrets (CDS)
 
 **Goal:** Predicate-gated secret release. Two parties each hold an input (x, y) and a referee holds a secret s. The secret s is revealed if and only if f(x, y) = 1 — with minimal communication. A fundamental building block for more complex protocols.

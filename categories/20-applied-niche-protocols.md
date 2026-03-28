@@ -118,3 +118,85 @@
 **State of the art:** Merkle-based authenticated data structures (widely deployed); incremental hashing in rsync, IPFS, git. See [Accumulators](#accumulators), [Hash Functions](#hash-functions).
 
 ---
+
+## Scantegrity II
+
+**Goal:** End-to-end verifiable optical scan voting. Voters mark a paper ballot with a special pen that reveals invisible-ink confirmation codes, which they note and later look up online to verify their vote was recorded — without revealing how they voted.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Scantegrity I** | 2008 | Invisible ink + hash chain | First optical scan system with E2E verifiability; confirmation codes on ballot revealed by special pen [[1]](https://www.usenix.org/legacy/events/evt08/tech/full_papers/chaum/chaum.pdf) |
+| **Scantegrity II** | 2008 | Invisible ink + mixnet | Per-selection invisible-ink codes; voters verify via public bulletin board; mixnet decryption proves tally correctness [[1]](https://www.usenix.org/legacy/event/evt08/tech/full_papers/chaum/chaum_html/index.html) |
+| **Takoma Park deployment** | 2009 | Scantegrity II | First governmental binding election using an E2E verifiable system; mayor and city council election [[1]](https://www.semanticscholar.org/paper/Scantegrity-II:-End-to-End-Verifiability-by-Voters-Chaum-Carback/62316a281a81ec21d9ed73458b22f1798d31464c) |
+
+The key insight is that confirmation codes are pre-printed in invisible ink under each candidate bubble. Marking a selection reveals that candidate's code and nothing else. The voter retains the code, and later auditors can verify that the multiset of posted confirmation codes matches a correct encryption of the tally via a publicly verifiable mixnet shuffle. The physical ballot retains its conventional look and feel.
+
+**State of the art:** Scantegrity II remains the only E2E verifiable system deployed in a binding governmental election (2009). Its approach is orthogonal to purely electronic systems like [Helios](#end-to-end-verifiable-e-voting) — it augments paper optical scan without replacing it.
+
+---
+
+## Prêt à Voter
+
+**Goal:** Voter-verifiable paper ballot voting with privacy via randomized candidate ordering. Each ballot has a unique random permutation of candidates; the permutation is committed and later destroyed, while only the marked position is published — preserving verifiability without leaking the vote.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Prêt à Voter (Chaum original)** | 2004 | Onion encryption + mixnet | Candidate list encrypted in onion; ballot right side retained as receipt; left side (permutation) destroyed [[1]](https://doi.org/10.1007/11967514_2) |
+| **Prêt à Voter with Re-encryption Mixes** | 2006 | ElGamal + re-encryption mixnet | Ryan & Schneider; distributed ballot construction; re-encryption mixnet replaces decryption mix [[1]](https://link.springer.com/chapter/10.1007/11863908_20) |
+| **Prêt à Voter with Paillier Encryption** | 2008 | Paillier HE + ZK | Xia et al.; additive homomorphic tallying; ZK proofs of shuffle correctness [[1]](https://www.usenix.org/legacy/event/evt08/tech/full_papers/xia/xia_html/) |
+| **vVote** | 2015 | Prêt à Voter + mixnet | Full implementation deployed in Victorian state election, Australia (2014) [[1]](https://doi.org/10.1145/2746338) |
+
+The voter tears the ballot along a perforation: the left strip (candidate names in permuted order) is surrendered, the right strip (position marks only) is retained as a receipt. The voter later checks their serial number on the bulletin board to verify the encrypted record matches their retained strip. A verifiable mixnet shuffle over all encrypted strips proves the tally.
+
+**State of the art:** vVote deployed in Victoria, Australia (2014) for voters with disabilities. Prêt à Voter's "destroy the permutation" model is the template for many physical E2E systems. Compare [Scantegrity II](#scantegrity-ii) (invisible ink on optical scan) and [E2E E-Voting](#end-to-end-verifiable-e-voting) (electronic ballots).
+
+---
+
+## STAR-Vote
+
+**Goal:** Combine the auditability of paper ballots with cryptographic end-to-end verifiability in a polling place setting. Voters cast ballots on a touchscreen terminal, receive a paper record, and can later verify their encrypted ballot is included in the tally — without a trusted election software stack.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **STAR-Vote system** | 2013 | Threshold ElGamal + homomorphic tally + ZK | Touchscreen DRE produces paper record; ballot encrypted with additive homomorphic threshold scheme; tally computed without decrypting individual ballots [[1]](https://www.usenix.org/system/files/conference/evtwote13/jets-0101-bell.pdf) |
+| **Benaloh challenge** | 2006 | Commit-then-reveal | Voter can challenge the machine to prove it encrypted correctly by revealing randomness; ballot then voided and a new one cast [[1]](https://eprint.iacr.org/2006/038) |
+
+STAR-Vote was designed in collaboration between Travis County (Austin, TX) election officials, Rice University, and Microsoft Research. The electronic record of all ballots is maintained in an encrypted form under a threshold public key; no individual ballot is decrypted. The homomorphic property allows aggregating all encrypted ballots into an encrypted tally, which is then decrypted once. Individual ballot verifiability is achieved via the Benaloh challenge: voters may ask the terminal to prove its encryption is honest, sacrificing that ballot.
+
+**State of the art:** STAR-Vote was not ultimately deployed in Travis County due to procurement constraints, but its design is widely cited as the state-of-the-art blueprint for in-person E2E verifiable voting. Extends [E2E E-Voting](#end-to-end-verifiable-e-voting) and [Coercion-Resistant Voting](#coercion-resistant-voting--receipt-freeness).
+
+---
+
+## OpenTimestamps
+
+**Goal:** Trust-minimized, scalable blockchain timestamping. Aggregate an arbitrary number of document hashes into a single Merkle tree and anchor the root in one Bitcoin transaction — providing timestamping proofs that anyone can verify with a Bitcoin full node, with no trusted third party beyond the Bitcoin network itself.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **OpenTimestamps protocol** | 2016 | Merkle tree + Bitcoin OP_RETURN | Peter Todd; calendar servers aggregate hashes into Merkle tree; root committed via OP_RETURN; proofs stored in binary `.ots` files [[1]](https://petertodd.org/2016/opentimestamps-announcement) |
+| **Merkle Mountain Range (MMR)** | 2016 | Append-only Merkle structure | Calendar server internal structure; O(log n) proof size; used to batch unlimited documents per transaction [[1]](https://github.com/opentimestamps/opentimestamps-server/blob/master/doc/merkle-mountain-range.md) |
+| **Internet Archive Carbon Dating** | 2017 | OpenTimestamps + crawl data | Timestamped snapshots of 450 billion web pages with a single Bitcoin transaction [[1]](https://petertodd.org/2017/carbon-dating-the-internet-archive-with-opentimestamps) |
+
+Unlike [RFC 3161](#linked-timestamping) (which requires trusting a TSA and its PKI), an OpenTimestamps proof is self-contained: the verifier checks a Merkle path from the document hash to a Bitcoin block header, which is publicly and independently auditable. Calendar servers (e.g., `alice.btc.calendar.opentimestamps.org`) provide this service for free. The `.ots` proof file encodes a sequence of hash operations and the final Bitcoin attestation.
+
+**State of the art:** Deployed in production for legal, journalistic, and archival use. The Internet Archive, multiple law firms, and the Italian Post Office use OpenTimestamps. Extends [Linked Timestamping](#linked-timestamping) by replacing the trusted TSA with the Bitcoin blockchain.
+
+---
+
+## Cryptographic Lotteries & Fairness Protocols
+
+**Goal:** Conduct a fair, publicly verifiable lottery or random draw with no trusted dealer — any party can verify the draw was unbiased, and no coalition can predict or bias the outcome before the draw closes. Combines commit-reveal with financial penalties or VRFs to deter abort.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Commit-Reveal Lottery** | 1988 | Hash commitment | Each participant commits to a secret; all secrets revealed; XOR/hash of all secrets is the random outcome; abort-prone without penalties [[1]](https://doi.org/10.1145/62212.62220) |
+| **Blum Coin Flipping over Telephone** | 1983 | Quadratic residuosity | First cryptographic coin-flip protocol; commitment based on factoring hardness [[1]](https://doi.org/10.1145/1008908.1008911) |
+| **Bentov-Kumaresan Bitcoin Fair Protocols** | 2014 | Bitcoin script + MPC | Parties deposit collateral; aborting forfeits deposit; achieves fairness with financial incentives; multiparty lottery in O(n) Bitcoin transactions [[1]](https://eprint.iacr.org/2014/129) |
+| **TYCHE: Coalition-Resistant Lotteries** | 2024 | Commit-reveal + ZK | Collateral-free multiparty lottery; ZK proofs prevent last-revealer advantage without requiring deposits [[1]](https://arxiv.org/abs/2409.03464) |
+| **VRF-based Lottery** | 2017 | Verifiable Random Function | Each party computes a VRF on a common seed; minimum output wins; verifiable and non-interactive after seed is fixed [[1]](https://eprint.iacr.org/2017/099) |
+
+The core challenge is the "last-revealer problem": in a commit-reveal protocol the last party to reveal can abort if the outcome is unfavorable, biasing the distribution. Solutions include: financial penalties via smart contracts (Bentov-Kumaresan), threshold randomness beacons (no single party controls the outcome), or VRFs combined with a pre-committed seed. Applications include blockchain leader election, provably fair games, and government lotteries.
+
+**State of the art:** VRF-based lotteries (used in Cardano, Algorand, Ethereum RANDAO) for blockchain leader election; Bitcoin-collateral protocols for fully trustless settings. See [VRF](#verifiable-random-function-vrf) and [Randomness Beacons](#randomness-beacons).
+
+---
