@@ -470,3 +470,82 @@
 **State of the art:** Overdrive (BFV-based) is the practical choice for large-batch lattice-based preprocessing in dishonest-majority MPC; post-quantum PCG (RLWE silent OT) is the research frontier for sublinear-communication PQ MPC. Related to [Homomorphic Encryption](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-fhe--she--phe), [MASCOT / Overdrive](#mascot-malicious-arithmetic-mpc-via-ot), and [Silent OT / PCG](#silent-ot--pseudorandom-correlation-generators-pcg).
 
 ---
+
+## GMW Protocol (Goldreich-Micali-Wigderson)
+
+**Goal:** General-purpose MPC over Boolean (and arithmetic) circuits using oblivious transfer, tolerating any number of semi-honest corruptions among n parties. GMW (1987) reduces secure function evaluation to gate-by-gate secret-sharing with OT-based AND-gate evaluation — the first proof that any function can be securely computed in the semi-honest model without an honest majority. Later extended to malicious security via zero-knowledge proofs, giving the first general-purpose maliciously secure MPC.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **GMW (semi-honest, Boolean)** | 1987 | XOR secret sharing + OT | Gate-by-gate evaluation; AND gate requires 1-of-4 OT per party pair; O(depth) rounds; STOC 1987 [[1]](https://dl.acm.org/doi/10.1145/28395.28420) |
+| **GMW (malicious, ZK compiler)** | 1987 | Semi-honest GMW + ZK | Upgrade any semi-honest protocol to malicious via commit-then-ZK-prove; exponential overhead in practice [[1]](https://dl.acm.org/doi/10.1145/28395.28420) |
+| **GMW over arithmetic circuits** | 2000s | Additive secret sharing + OLE | Replace Boolean gates with arithmetic over fields; AND ↔ multiplication via OLE [[1]](https://eprint.iacr.org/2014/765) |
+| **MOTION (GMW framework)** | 2022 | GMW + BMR + OT extension | Production C++ framework; implements both Boolean and arithmetic GMW with hardware-accelerated OT [[1]](https://eprint.iacr.org/2020/1137) |
+
+**State of the art:** GMW is the foundational template for all secret-sharing-based MPC. In practice, semi-honest GMW is superseded by SPDZ (malicious, dishonest majority) and ABY3 (honest majority). The MOTION framework provides a modern production implementation. See [MPC overview](#multi-party-computation-mpc), [OLE / VOLE](#oblivious-linear-evaluation-ole--vole), and [BMR](#bmr-protocol-constant-round-mpc) (which applies GMW offline to enable constant rounds).
+
+---
+
+## Honest Majority vs Dishonest Majority MPC (Security Models)
+
+**Goal:** Understand the fundamental trade-offs in MPC depending on the fraction of parties an adversary can corrupt. The corruption threshold determines what is achievable — information-theoretic vs computational security, whether output delivery is guaranteed (robustness) or only security-with-abort, and how expensive the protocol must be.
+
+| Model | Corruption Bound | Representative Protocols | Key Trade-off |
+|-------|-----------------|--------------------------|---------------|
+| **Honest majority (t < n/2)** | Minority corrupted | BGW, Ben-Or et al., PRZS | Information-theoretic security; robust output delivery possible; requires n ≥ 2t+1 [[1]](https://dl.acm.org/doi/10.1145/62212.62213) |
+| **Strict honest majority (t < n/3)** | < 1/3 corrupted | BGW (IT, robust), Beerliová-Trubíniová–Hirt | Robustness without FHE; error-correcting SS (Reed-Solomon); most efficient IT-MPC [[1]](https://dl.acm.org/doi/10.1145/62212.62213) |
+| **Dishonest majority (t < n)** | All-but-one corrupted | GMW, SPDZ, MASCOT, DKLS | Requires computational assumptions; security-with-abort (not robust) without penalties [[1]](https://eprint.iacr.org/2011/535) |
+| **Threshold = n−1 (2PC)** | One of two corrupted | Yao/GC, TinyOT, WRK, DKLS | Hardest case; no information-theoretic security; garbled circuits or OT-based [[1]](https://eprint.iacr.org/2014/756) |
+| **Adaptive corruptions** | Adversary picks victims mid-protocol | Canetti-Feige-Goldreich-Naor | Parties can be corrupted after seeing messages; non-committing encryption required [[1]](https://dl.acm.org/doi/10.1145/226643.226686) |
+
+**State of the art:** For honest majority: BGW / Replicated SS / ABY3 (practical). For dishonest majority: SPDZ / SPDZ2k (preprocessing + online). The honest-majority threshold enables information-theoretic security (no assumptions), while dishonest majority requires OT or FHE. Mixed-model frameworks like MP-SPDZ and ABY3 let practitioners choose per-deployment. See [MPC overview](#multi-party-computation-mpc), [BGW](#multi-party-computation-mpc), [SPDZ2k](#mascot-malicious-arithmetic-mpc-via-ot), and [Robust MPC](#robust-mpc-with-cheater-identification).
+
+---
+
+## Oblivious Linear Algebra (Secure Matrix Operations)
+
+**Goal:** Perform linear algebra — matrix multiplication, inversion, decomposition — on secret-shared or encrypted matrices, so that no party learns any entry of the input or intermediate matrices. A key building block for privacy-preserving machine learning (hidden-layer activations are matrix products), privacy-preserving statistics, and MPC-based genomics.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Beaver-triple matrix multiplication** | 1991 | Arithmetic MPC + Beaver triples | Reduce secure matrix multiply to precomputed matrix Beaver triples; O(n²) triples for n×n matrices [[1]](https://dl.acm.org/doi/10.1145/103418.103444) |
+| **MOTION matrix protocols** | 2022 | GMW + SIMD | Vectorized secret-shared matrix multiply using SIMD packing; hardware-AES-accelerated [[1]](https://eprint.iacr.org/2020/1137) |
+| **HEAR (CKKS matrix multiply)** | 2021 | CKKS + HE | Homomorphic matrix multiplication using CKKS rotation encodings; 2-server MPC with HE offline [[1]](https://eprint.iacr.org/2021/1198) |
+| **Pivot-Free Secure LU Decomposition** | 2013 | Arithmetic MPC + fixed-point | Oblivious LU factorization for secure linear systems; avoids data-dependent pivoting [[1]](https://link.springer.com/chapter/10.1007/978-3-642-36095-4_21) |
+| **MOTION2NX (secure conv layers)** | 2023 | Arithmetic 2PC + SIMD | Efficient oblivious convolution for CNN inference; packs multiple matrix ops per round [[1]](https://eprint.iacr.org/2021/1113) |
+
+**State of the art:** For honest-majority settings, replicated-SS matrix multiply (as in ABY3/Piranha) is fastest. For dishonest majority, CKKS-based offline + arithmetic online (Overdrive + CKKS) is the best-performing approach at scale. Oblivious matrix operations are the inner loop of private ML inference (see [SecureML and MPC-Based Machine Learning](#secureml-and-mpc-based-machine-learning-inference)) and private statistics. Related to [OLE / VOLE](#oblivious-linear-evaluation-ole--vole) and [Beaver Triples](#beaver-triples-multiplication-triples).
+
+---
+
+## Secure Computation on Graphs (Private Graph Algorithms)
+
+**Goal:** Evaluate graph algorithms — shortest paths, connectivity, PageRank, triangle counting, subgraph matching — on a graph whose structure is secret-shared among parties. Neither the edge set nor intermediate results are revealed. Applications include private contact-tracing, private social-network analysis, fraud detection across institutions, and private knowledge-graph queries.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Oblivious Graph Algorithms (Feigenbaum et al.)** | 2006 | Circuit MPC + ORAM | First systematic treatment; BFS, shortest path, connectivity on secret graphs; O(n² log n) gates [[1]](https://doi.org/10.1145/1132516.1132573) |
+| **GEM (Graph Encryption for Matching)** | 2016 | Graph encryption + SSE | Encrypted graph supporting private bipartite matching queries; sublinear search [[1]](https://eprint.iacr.org/2016/1247) |
+| **PrivGraph (Private PageRank)** | 2021 | Secret sharing + fixed-point | Secure PageRank for 2/3-party settings; convergence within privacy budget [[1]](https://eprint.iacr.org/2021/1234) |
+| **Private Triangle Counting** | 2020 | Arithmetic MPC + matrix ops | Secure triangle counting via private matrix trace; practical for graphs with thousands of nodes [[1]](https://eprint.iacr.org/2020/472) |
+| **SCALE-Graph (oblivious subgraph)** | 2023 | ORAM + garbled circuits | Oblivious subgraph isomorphism; hides which subgraph pattern matches [[1]](https://eprint.iacr.org/2023/1741) |
+
+**State of the art:** Private graph algorithms remain expensive — graph problems have complex data-dependent access patterns that require ORAM or oblivious data structures to hide. Practical systems restrict to specific graph properties (trees, planar graphs) or use approximate methods with differential privacy. Related to [ORAM](categories/10-privacy-preserving-computation.md#oblivious-ram-oram), [Graph Encryption](categories/10-privacy-preserving-computation.md#graph-encryption--encrypted-graph-databases), and [Oblivious Sorting](categories/10-privacy-preserving-computation.md#oblivious-sorting--oblivious-data-structures).
+
+---
+
+## ARIANN and SecureNN (Private Neural Network Inference)
+
+**Goal:** Perform neural network inference (forward pass) on private inputs without revealing the input to the model holder, and without revealing the model weights to the input holder. Targets the two-party "ML-as-a-service" setting: a client has a private query; a server has a private model; only the inference result is revealed.
+
+| System | Year | Basis | Note |
+|--------|------|-------|------|
+| **SecureNN (Wagh-Gupta-Chandran)** | 2019 | 3PC + secret sharing | Private inference for ReLU-based networks; novel secure comparison for non-linear layers; CCS 2019 [[1]](https://eprint.iacr.org/2018/442) |
+| **ARIANN (Ryffel et al.)** | 2020 | 2PC + additive SS + function secret sharing | Sublinear communication for private inference using FSS for ReLU and comparison; PPML 2020 [[1]](https://arxiv.org/abs/2006.04593) |
+| **Cheetah** | 2022 | 2PC: CKKS (linear) + OT/GC (nonlinear) | Fast 2-party private inference by combining CKKS for matrix multiply with GC for ReLU; USENIX Security 2022 [[1]](https://eprint.iacr.org/2022/207) |
+| **Iron** | 2022 | 2PC + transformer attention | Private transformer inference (BERT, GPT-2); handles attention heads and softmax securely; NeurIPS 2022 [[1]](https://arxiv.org/abs/2207.05836) |
+| **BOLT** | 2023 | 2PC + lookup table garbling | Efficient non-linear activation via garbled lookup tables; replaces expensive GC sigmoid with table-based approach [[1]](https://eprint.iacr.org/2023/806) |
+
+**State of the art:** Cheetah and BOLT represent the current performance frontier for 2-party private inference. The key challenge remains non-linear layers (ReLU, softmax, GeLU) — linear layers are well-handled by CKKS, but activations require expensive garbled circuits or FSS-based techniques. Distinct from [SecureML / MPC-based ML training](#secureml-and-mpc-based-machine-learning-inference) (covers training); related to [FSS / DPF](#function-secret-sharing-fss--distributed-point-functions-dpf), [Garbled Circuits](#garbled-circuits-expanded), and [HE](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-fhe--she--phe).
+
+---

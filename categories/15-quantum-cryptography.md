@@ -470,4 +470,131 @@ Noise parameters η₁ and η₂ define the centered binomial distribution for s
 
 ---
 
+## BIKE (Bit-Flipping Key Encapsulation)
+
+**Goal:** Code-based KEM with moderate key sizes from quasi-cyclic codes. BIKE (Bit-Flipping Key Encapsulation) is a key encapsulation mechanism whose security rests on the hardness of decoding quasi-cyclic moderate-density parity-check (QC-MDPC) codes and the indistinguishability of its public key from a random quasi-cyclic code. Unlike Classic McEliece (megabyte-scale public keys) and HQC (Hamming-metric noise), BIKE uses a parity-check matrix as the public key and a bit-flipping decoder as the decapsulation algorithm — achieving public keys of 1.5–6 KB at security levels 1–5.
+
+| Parameter Set | Public Key | Ciphertext | Security Level | Note |
+|---------------|-----------|-----------|---------------|------|
+| **BIKE-L1** | 1.54 KB | 1.57 KB | NIST Level 1 (~128-bit) | Smallest; fastest [[1]](https://bikesuite.org/files/v5.0/BIKE_Spec.2023.03.31.pdf) |
+| **BIKE-L3** | 3.10 KB | 3.12 KB | NIST Level 3 (~192-bit) | Mid-range [[1]](https://bikesuite.org/files/v5.0/BIKE_Spec.2023.03.31.pdf) |
+| **BIKE-L5** | 5.64 KB | 5.67 KB | NIST Level 5 (~256-bit) | Largest; highest security [[1]](https://bikesuite.org/files/v5.0/BIKE_Spec.2023.03.31.pdf) |
+
+**Design:** The public key is a quasi-cyclic parity-check matrix H = [H₀ | H₁] where H₀ and H₁ are circulant blocks with sparse (weight-w) rows. Encapsulation draws a random error vector e of weight t and computes the syndrome s = H·e^T as the ciphertext, together with a hash of the error for key derivation. Decapsulation runs the Black-Gray-Flip (BGF) bit-flipping algorithm — a variant of Gallager's iterative decoder — to recover e from s and H, then recomputes the shared key.
+
+**Security note — decoding failure and CCA:** Early BIKE variants suffered from non-negligible decapsulation failure rates, which can leak information about the secret key in a chosen-ciphertext attack. The BIKE v5 specification (2023) adopts a conservative parameter choice targeting decoding failure rate ≤ 2^{−128} and applies the Fujisaki-Okamoto (FO) transform to achieve IND-CCA2 security in the random oracle model, treating any decapsulation failure as a rejection [[1]](https://bikesuite.org/).
+
+**Key size vs. security trade-off:** BIKE-L1 public keys (~1.54 KB) and ciphertexts (~1.57 KB) are far smaller than Classic McEliece (~261 KB) and moderately smaller than HQC-128 (~2.2 KB / 4.4 KB). BIKE does not require a full public generator matrix — only the compact quasi-cyclic representation. However, BIKE's security assumption (QC-MDPC indistinguishability) is newer and less studied than Goppa-code assumptions underlying Classic McEliece.
+
+**NIST status:** BIKE is a NIST Round 4 alternate KEM — it was not selected in the initial 2024 FIPS batch (alongside ML-KEM / FIPS 203) and does not currently have a FIPS standardization track, but NIST has not ruled out future standardization [[1]](https://csrc.nist.gov/Projects/post-quantum-cryptography/post-quantum-cryptography-standardization/round-4-submissions).
+
+**State of the art:** BIKE v5 with BGF decoder and FO transform; constant-time implementations available for x86-64 and ARM. No FIPS standard; production use not yet recommended outside research contexts. Complements [Classic McEliece (Code-Based KEM)](#classic-mceliece-code-based-kem), [HQC](#hqc-hamming-quasi-cyclic--fips-207), and [Code-Based Cryptography Overview](#code-based-cryptography-overview) as the three primary code-based PQC families.
+
+---
+
+## Code-Based Cryptography Overview
+
+**Goal:** Provide a unified map of the code-based PQC family — the oldest post-quantum approach, predating lattice-based cryptography by two decades. All code-based schemes share a common hardness assumption: decoding a random linear code (the Syndrome Decoding Problem, SDP) is NP-hard in the worst case and conjectured hard on average. This hardness has resisted attack for nearly 50 years, making it the most battle-tested PQ assumption.
+
+**Foundational problems:**
+
+- **Syndrome Decoding Problem (SDP):** Given a random parity-check matrix H ∈ F_2^{m×n} and syndrome s ∈ F_2^m, find a low-weight vector e ∈ F_2^n such that He^T = s. NP-hard in general; conjectured hard for random instances at appropriate parameters.
+- **Goppa Code Indistinguishability:** A random-looking Goppa code is hard to distinguish from a random linear code (McEliece assumption). Key to Classic McEliece's tight reduction.
+- **QC-MDPC Indistinguishability:** A quasi-cyclic parity-check matrix with low-weight rows is hard to distinguish from random quasi-cyclic (BIKE assumption). Less studied than Goppa; quasi-cyclic structure may introduce algebraic structure risks.
+- **Hamming Quasi-Cyclic (HQC assumption):** Adding quasi-cyclic noise vectors is hard to invert without the trapdoor (HQC hardness). Related to SDP in the Hamming metric.
+
+| Scheme | Year | Code Family | KEM/Sign | Hard Problem | Note |
+|--------|------|-------------|----------|-------------|------|
+| **McEliece PKE** | 1978 | Binary Goppa codes | PKE | Goppa indistinguishability | Original; 50-year track record [[1]](https://ipnpr.jpl.nasa.gov/progress_report2/42-44/44N.PDF) |
+| **Niederreiter PKE** | 1986 | Goppa codes (dual) | PKE | SDP + Goppa | Equivalent security; smaller ciphertexts [[1]](https://link.springer.com/chapter/10.1007/3-540-39799-X_20) |
+| **Classic McEliece KEM** | 2017 | Binary Goppa (IND-CCA2) | KEM | Goppa indistinguishability + SDP | FO-transform from Niederreiter; NIST Round 4 [[1]](https://classic.mceliece.org/) |
+| **BIKE** | 2017 | QC-MDPC codes | KEM | QC-MDPC indistinguishability + SDP | Bit-flipping decoder; NIST Round 4 [[1]](https://bikesuite.org/) |
+| **HQC** | 2017 | Hamming quasi-cyclic | KEM | Hamming QC + SDP | Reed-Solomon concatenated; FIPS 207 forthcoming [[1]](https://pqc-hqc.org/) |
+| **LESS** | 2020 | Linear code equivalence | Signature | Code equivalence (not SDP) | Equivalence-problem-based; NIST Additional Sigs Round 2 [[1]](https://less-project.github.io/) |
+| **Wave** | 2018 | Ternary quasi-cyclic codes | Signature | SDP (ternary) | Code-based signatures from SDP directly; not in NIST process [[1]](https://eprint.iacr.org/2018/996) |
+
+**Why code-based provides diversity:** All NIST-standardized lattice schemes (ML-KEM, ML-DSA, Falcon) rest on Module LWE / NTRU lattice hardness. A structural attack on module lattice structure would break all three simultaneously. Code-based schemes — Classic McEliece, BIKE, HQC — rest on SDP and Goppa/quasi-cyclic indistinguishability, algebraically unrelated to lattice problems. This is the rationale for HQC's inclusion as FIPS 207: a code-based fallback if MLWE is structurally attacked.
+
+**Attack landscape:** The best attacks on SDP are information-set decoding (ISD) algorithms. Prange (1962) was the first; subsequent work (Stern 1989, Dumer 1991, BJMM 2012, MO 2015) reduced the exponent. The current best classical algorithm (May-Ozerov 2015) runs in 2^{0.054n} for SDP on n-bit codes — far higher than AES-128 equivalent. Quantum speedups (via Grover applied to ISD) yield roughly a quadratic improvement in the exponent, still leaving SDP hard at NIST Level 1 parameters [[1]](https://eprint.iacr.org/2011/516).
+
+**State of the art:** Three NIST-process code-based KEMs: Classic McEliece (most conservative, largest keys), HQC (FIPS 207 forthcoming, balanced), BIKE (smallest keys, newest assumption). See [Classic McEliece (Code-Based KEM)](#classic-mceliece-code-based-kem), [HQC (Hamming Quasi-Cyclic)](#hqc-hamming-quasi-cyclic--fips-207), [BIKE](#bike-bit-flipping-key-encapsulation), and [Equivalence-Based PQ Signatures](#equivalence-based-pq-signatures) for code-equivalence-based schemes.
+
+---
+
+## CSIDH and CTIDH — Isogeny Group Actions
+
+**Goal:** Post-quantum non-interactive key exchange (NIKE) and group-action-based cryptography. CSIDH (Commutative Supersingular Isogeny Diffie-Hellman, 2018) constructs a group action of an ideal class group on a set of supersingular elliptic curves over a prime field F_p. Unlike SIDH/SIKE (broken in 2022), CSIDH does not reveal auxiliary torsion point information — the attack surface exploited by Castryck-Decru does not apply. CSIDH enables Diffie-Hellman-style key exchange with a commutative group action, supporting non-interactive key exchange (NIKE): two parties can independently compute the same shared curve without an interactive protocol round.
+
+**Mathematical structure:** Let p be a prime such that p ≡ 3 (mod 4). The set S of supersingular elliptic curves over F_p with the same number of F_p-points forms a principal homogeneous space (torsor) under the class group Cl(Z[√−p]). Each ideal class [a] in Cl(Z[√−p]) maps a curve E to a new curve [a]⋆E via a chain of isogenies with kernels corresponding to ideal generators. Key exchange: Alice's public key is [a]⋆E₀; Bob's is [b]⋆E₀; the shared key is [a]⋆([b]⋆E₀) = [b]⋆([a]⋆E₀) by commutativity.
+
+| Scheme | Year | Hard Problem | Key Size | Timing | Note |
+|--------|------|-------------|---------|--------|------|
+| **CSIDH-512** | 2018 | CSIDH action (class group DLP) | 64 B (pub + priv) | ~80 ms (non-CT) | Original; not constant-time; vulnerable to timing [[1]](https://eprint.iacr.org/2018/383) |
+| **CTIDH-512** | 2021 | CSIDH action (class group DLP) | 64 B | ~20 ms (CT) | Constant-Time Isogeny DH; uses batched dummy isogenies; first practical CT-CSIDH [[1]](https://eprint.iacr.org/2021/633) |
+| **CTIDH-1024** | 2021 | CSIDH action | 128 B | ~80 ms (CT) | Higher security; side-channel safe [[1]](https://eprint.iacr.org/2021/633) |
+| **CTIDH-2048** | 2021 | CSIDH action | 256 B | ~330 ms (CT) | Conservative security margin [[1]](https://eprint.iacr.org/2021/633) |
+| **CSURF-512** | 2020 | CSIDH on the surface | 64 B | — | Eliminates cofactor issues; cleaner key validation [[1]](https://eprint.iacr.org/2020/1404) |
+| **PEGASIS** | 2024 | CSIDH group action | ~100 B | — | Group-action-based signature; NIST Additional Sigs Round 2 [[1]](https://eprint.iacr.org/2024/344) |
+
+**Timing attacks on CSIDH:** The original CSIDH uses variable-time isogeny chains — the number of isogeny steps in each small-degree component depends on the secret exponent vector. This leaks the Hamming weight and structure of the private key via cache timing or EM side channels. CTIDH (2021) achieves constant-time evaluation by re-parameterizing the class group action using a product of fixed-length isogeny batches and inserting dummy isogenies in constant-time branches, with performance improvements from a combined push-pull representation [[1]](https://ctidh.isogeny.org/).
+
+**Quantum security:** The class group action underlies a subexponential quantum algorithm (Kuperberg's algorithm, 2005) that solves the dihedral hidden subgroup problem in time 2^{O(√log p)} using quantum random access memory. For CSIDH-512, Kuperberg's algorithm with QRAM runs in approximately 2^{33} quantum gates — below NIST Level 1 — making CSIDH-512 insufficient for high-security applications post-quantum. CSIDH-1024 and CSIDH-2048 (and CTIDH-1024/2048) target approximately 96- and 128-bit quantum security respectively, accounting for Kuperberg's attack [[1]](https://eprint.iacr.org/2020/329).
+
+**Comparison to SIDH:** SIDH used non-commutative isogenies between supersingular curves over F_{p²} and required revealing auxiliary torsion-point information, enabling the Castryck-Decru 2022 key recovery attack. CSIDH operates entirely over F_p with no auxiliary torsion data — the attack does not apply. However, CSIDH suffers from subexponential quantum attacks that SIDH (before its break) was thought to resist, and constant-time CSIDH implementations (CTIDH) are 10–100× slower than ML-KEM.
+
+**State of the art:** CTIDH-512/1024 are the practical constant-time realizations (2021); PEGASIS leverages the group action for signatures (NIST 2024). CSIDH remains the leading candidate for post-quantum NIKE — non-interactive key exchange without a PKI — a primitive not directly achievable from lattices without interaction. No NIST standard currently; active research. See [Isogeny-Based Cryptography](#isogeny-based-cryptography) for SQIsign and SIDH break context.
+
+---
+
+## QKD Information Reconciliation — CASCADE and LDPC
+
+**Goal:** Correct errors in the raw key material after a QKD protocol run without revealing enough information to help an eavesdropper. After quantum transmission (BB84, CV-QKD, TF-QKD) and sifting, Alice and Bob hold correlated but not identical raw key strings — mismatches arise from channel noise and detector imperfections, not necessarily eavesdropping. Information reconciliation is the classical post-processing step that corrects these errors while quantifying (and bounding) how much information leaked to the environment. The final shared secret comes after subsequent privacy amplification.
+
+**Why reconciliation matters for security:** Every parity bit exchanged during error correction leaks information about the key to an eavesdropper who monitors the classical channel. The leaked information f·H(Q) bits (where Q is the quantum bit error rate, H is the binary entropy function, and f ≥ 1 is the reconciliation efficiency factor) must be subtracted from the raw key in privacy amplification. Inefficient reconciliation (large f) reduces the secure key rate to zero at lower QBER thresholds.
+
+| Algorithm | Year | Type | Efficiency f | QBER Tolerance | Note |
+|-----------|------|------|-------------|----------------|------|
+| **Winnow** | 2003 | Hamming-code-based interactive | ~1.16 | ≤11% | Low communication rounds; simple; moderate efficiency [[1]](https://arxiv.org/abs/quant-ph/0203096) |
+| **CASCADE** | 1994 | Bidirectional binary parity | ~1.16 | ≤11% | Brassard-Salvail; iterative binary bisection; the historical standard [[1]](https://www.semanticscholar.org/paper/Secret-Key-Reconciliation-by-Public-Discussion-Brassard-Salvail/9e96f36ee32f9ca61e62e4e8fd76cc27e7b87e45) |
+| **LDPC (Low-Density Parity-Check)** | 2003 | Belief-propagation decoding | ~1.03–1.1 | ≤11% | Near-Shannon-limit; one-pass; parallelizable; dominant in CV-QKD [[1]](https://arxiv.org/abs/0901.2140) |
+| **Polar codes** | 2009 | Successive cancellation / list decoding | ~1.01–1.05 | ≤15% | Approaching Shannon limit; capacity-achieving for large blocks [[1]](https://arxiv.org/abs/0902.4803) |
+| **Raptor codes (rateless LDPC)** | 2010 | LT + LDPC codes | ~1.04 | Variable QBER | Adaptive rate; useful when QBER fluctuates [[1]](https://arxiv.org/abs/1006.0500) |
+| **LDPC for CV-QKD (multi-edge)** | 2015 | Multi-edge LDPC, Gaussian channel | ~1.02 | High QBER (CV) | Multi-edge type LDPC codes optimized for Gaussian channels [[1]](https://arxiv.org/abs/1601.01654) |
+
+**CASCADE protocol:** Brassard and Salvail (1994) introduced CASCADE as the first practical reconciliation algorithm. Alice and Bob shuffle their bit strings with a random (but shared) permutation, then exchange parities of blocks of size k₁ = ⌈0.73/(2Q)⌉. Any block with a parity mismatch is bisected recursively (binary search) until the error is located. After one pass, a new shuffle is applied and the process repeats. Each located error leaks ~log₂n bits. CASCADE is highly interactive (many rounds of classical communication) and inefficient (f ≈ 1.16 near the Shannon limit), but is provably correct and easy to analyze. It remains widely used in DV-QKD systems where latency is acceptable.
+
+**LDPC-based reconciliation:** Modern systems (especially CV-QKD and high-rate DV-QKD) replace CASCADE with LDPC codes operating in a one-pass (non-interactive) mode. Alice encodes her key bits using a rate-R LDPC code and sends the syndrome to Bob (n(1−R) bits). Bob runs belief-propagation decoding to recover Alice's codeword. At optimal rate R ≈ 1 − H(Q), the syndrome size matches the entropy deficit — but practical LDPC efficiency reaches f ≈ 1.02–1.05 of the Shannon limit. For CV-QKD over long distances with QBER ≈ 10–15%, multi-edge type LDPC codes are the only practical option given the high error rates.
+
+**Privacy amplification:** After reconciliation, Alice and Bob compress the corrected key by a factor equal to the conditional entropy minus leaked information, using a universal hash function (e.g., Toeplitz matrices). The output is a shorter key about which an eavesdropper holds negligible information. Together, reconciliation + privacy amplification constitute the classical post-processing pipeline that converts raw quantum correlations into a secure key.
+
+**State of the art:** LDPC codes with belief-propagation decoding at f ≈ 1.02–1.05 are the current best practice for high-rate QKD systems. Polar codes are emerging for future systems. CASCADE remains deployed in legacy DV-QKD hardware. See [Quantum Key Distribution (QKD)](#quantum-key-distribution-qkd) and [Continuous-Variable QKD (CV-QKD)](#continuous-variable-qkd-cv-qkd) for context.
+
+---
+
+## Commercial QKD Systems and Quantum Network Deployments
+
+**Goal:** Survey the practical landscape of deployed quantum key distribution hardware and network infrastructure. QKD is unique among the schemes in this repository in requiring specialized quantum hardware — photon sources, single-photon detectors, quantum channels — rather than software running on classical processors. Several companies and government programs have moved beyond the lab to field-deployed systems.
+
+| System / Organization | Protocol | Distance | Key Rate | Deployment | Note |
+|-----------------------|----------|---------|---------|-----------|------|
+| **Toshiba QKD** | BB84 / CV-QKD | up to 600 km (TF-QKD) | 13.7 Mbps (short), 10 kbps (100 km) | Cambridge, Tokyo, BT fiber trials | Longest-range commercial TF-QKD; chip-scale implementations [[1]](https://www.toshiba.eu/pages/europe/tech/quantum-information/quantum-key-distribution/) |
+| **ID Quantique (IDQ) Clavis XG** | BB84 | up to 100 km | ~10 kbps at 40 km | Switzerland banks, Gov. of Geneva, Korea KTMF | First commercial QKD product (2004); ETSI-compliant API; widely deployed [[1]](https://www.idquantique.com/quantum-safe-security/products/quantum-key-distribution/) |
+| **MagiQ Technologies QPN** | BB84 | up to 100 km | ~1–10 kbps | US financial sector, government labs | Early commercial deployment; now primarily government research [[1]](https://www.magiqtech.com/) |
+| **China Micius satellite QKD** | BB84 (satellite) | 7,600 km (ground-to-ground via satellite) | kbps over satellite link | Beijing–Vienna secure call (2017); Beijing–Shanghai backbone | Largest operational QKD network (>2,000 km Beijing-Shanghai fiber + satellite) [[1]](https://www.nature.com/articles/nature23655) |
+| **Jinan-1 microsatellite** | BB84 | 12,900 km ground-to-ground relay | 1.07 M bits/pass | 23 kg microsatellite; LEO orbit; 2025 | Smallest quantum satellite; Nature 2025; proof of miniaturized space QKD [[1]](https://www.nature.com/articles/s41586-025-08739-z) |
+| **SK Telecom / Samsung QKD** | BB84 | Metropolitan network | — | Seoul 5G core network integration | First QKD integration into commercial 5G core infrastructure [[1]](https://www.sktelecom.com/en/press/press_detail.do?idx=1532) |
+| **BT / Toshiba UK QKD trial** | BB84 / TF-QKD | 40 km (London metro) | — | BT OpenReach fiber; 2022–2024 | First UK commercial-grade QKD trial on production telecom fiber [[1]](https://www.bt.com/about/bt/policy-and-regulation/technology/quantum) |
+
+**IETF QIRG (Quantum Internet Research Group):** The IETF Quantum Internet Research Group (QIRG) is developing the architectural framework for a future quantum internet. Key documents include draft-irtf-qirg-quantum-internet-use-cases (use cases) and draft-irtf-qirg-principles (architectural principles). QIRG defines a layered quantum network stack: physical layer (photon sources, detectors, fiber), link layer (entanglement generation + heralding), network layer (entanglement routing and swapping), and application layer (QKD key delivery, distributed quantum computation). This mirrors the classical Internet's OSI model but with fundamentally different constraints (no-cloning, quantum memory decoherence) [[1]](https://datatracker.ietf.org/rg/qirg/about/).
+
+**ITU-T standardization:** The ITU-T Study Group 13 (SG-13) standardized quantum network reference architecture in 2025 (Y.3800 series). These define functional architecture, interface specifications, and security requirements for QKD networks integrated into classical telecommunications. ETSI (European Telecommunications Standards Institute) has produced the QKD API standard (GS QKD 004) specifying the interface between QKD hardware and the key management system that delivers keys to applications [[1]](https://www.etsi.org/technologies/quantum-key-distribution).
+
+**Key management integration:** Deployed QKD systems do not deliver keys directly to applications — they feed into a Quantum Key Management System (QKMS) that stores, routes, and provisions QKD-derived keys to classical applications (TLS, IPsec, storage encryption). The ETSI QKD API standardizes the interface between QKD hardware and the QKMS. NIST SP 1800-38 provides guidance on integrating QKD with classical network infrastructure [[1]](https://www.nist.gov/publications/migration-post-quantum-cryptography).
+
+**Trusted node networks:** Current metropolitan QKD deployments (Beijing-Shanghai backbone, Geneva network, Tokyo QKD network) use "trusted relay" nodes where the QKD key is decrypted and re-encrypted at each intermediate node — classical security is required at every relay. True end-to-end information-theoretic security requires quantum repeaters (not yet available at field scale). Trusted-node networks are QKD + classical security, not purely quantum-secure end-to-end.
+
+**State of the art:** ID Quantique and Toshiba are the leading commercial DV-QKD vendors; SK Telecom has the first 5G-integrated deployment; China operates the largest network (2,000+ km). IETF QIRG and ITU-T SG-13 are developing the standards layer. Full quantum-secure long-distance networking awaits third-generation quantum repeaters. See [Quantum Key Distribution (QKD)](#quantum-key-distribution-qkd), [Twin-Field QKD (TF-QKD)](#twin-field-qkd-tf-qkd), [Continuous-Variable QKD (CV-QKD)](#continuous-variable-qkd-cv-qkd), and [Quantum Repeaters and Quantum Networks](#quantum-repeaters-and-quantum-networks).
+
+---
+
 ---

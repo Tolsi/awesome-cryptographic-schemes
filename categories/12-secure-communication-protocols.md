@@ -937,4 +937,283 @@ Allows the CA to signal the optimal renewal window to clients, enabling mass-ren
 
 ---
 
+## WhatsApp Key Transparency / Auditable Key Directory (AKD)
+
+**Goal:** Let users verify that the public keys their messaging app uses for end-to-end encryption are the same keys that all other users see — preventing a server from silently substituting a backdoor key for a targeted user without being detected.
+
+**Problem context:** In systems like WhatsApp and Signal, the server distributes each user's X3DH identity keys and pre-keys to other participants. A malicious or compromised server could swap these keys for attacker-controlled ones, silently enabling MITM on specific users. Key transparency makes the key directory auditable without requiring every user to manually verify fingerprints.
+
+**Auditable Key Directory (AKD) design (Keyless et al., USENIX Security 2022; Meta deployment 2023):**
+
+| Component | Mechanism |
+|-----------|-----------|
+| **Append-only log** | All key insertions and updates logged in a Merkle tree; every entry is timestamped and sequenced |
+| **Verifiable Random Function (VRF)** | Maps username → a deterministic, unpredictable position in the tree; prevents enumeration of user list |
+| **Inclusion proofs** | Any client can request a Merkle proof that its own key is in the tree as published |
+| **Consistency proofs** | Between two tree epochs, a client can verify the tree only grew (no deletions or retroactive changes) |
+| **Audit log** | An independent auditor (or any client) can verify the log is consistent over time |
+
+**VRF-based lookup — privacy property:** Unlike Certificate Transparency (which exposes all domain names), AKD's VRF maps usernames to opaque leaf positions. A third party cannot enumerate the directory to harvest usernames, but any client can prove its own key is correctly listed.
+
+**WhatsApp deployment (2023):**
+- Meta deployed AKD for WhatsApp in 2023; key directory is publicly verifiable
+- Each client periodically fetches a consistency proof for its own key
+- Users can manually compare safety numbers (derived from the key log epoch) out-of-band
+- The AKD backend is `transparency.whatsapp.com`; inclusion proofs can be independently fetched
+
+| Scheme | Year | Note |
+|--------|------|------|
+| **AKD (Auditable Key Directory)** | 2022 | Koh–Tyagi et al.; Merkle tree + VRF; open-source Rust library [[1]](https://eprint.iacr.org/2021/1263) |
+| **WhatsApp Key Transparency** | 2023 | Production deployment of AKD for ~2 billion users [[1]](https://engineering.fb.com/2023/04/13/security/whatsapp-key-transparency/) |
+| **CONIKS** | 2015 | Earlier key transparency scheme; per-user Merkle prefix trees; influenced AKD [[1]](https://www.usenix.org/system/files/conference/usenixsecurity15/sec15-paper-melara.pdf) |
+| **Key Transparency (Google)** | 2017 | Similar design for Google end-to-end encrypted services [[1]](https://security.googleblog.com/2017/01/security-through-transparency.html) |
+
+**Comparison with Certificate Transparency (CT):**
+
+| Property | Certificate Transparency | AKD |
+|----------|------------------------|-----|
+| Scope | TLS certificates (domain → cert) | Messaging keys (user → X3DH keys) |
+| Privacy | All domains exposed | VRF hides user list |
+| Monitor | Any party can watch all certs | Only user can prove their own key |
+| Audit | CT logs publicly enumerable | Log consistency verifiable without enumeration |
+
+**State of the art:** AKD (2022) is the leading design; deployed by WhatsApp (2023). See [Key Transparency](categories/03-key-exchange-key-management.md#key-transparency), [X3DH](#x3dh--extended-triple-dh-key-agreement), [Certificate Transparency](categories/14-applied-infrastructure-pki.md).
+
+---
+
+## TLS 1.3 0-RTT / Early Data Security Properties
+
+**Goal:** Eliminate the latency cost of TLS handshake round-trips for returning clients by allowing encrypted application data to be sent in the very first flight — before the handshake completes — at the cost of weakened security properties that applications must explicitly account for.
+
+**How 0-RTT works (RFC 8446 §2.3):**
+
+```
+Client (has session ticket)          Server
+  │                                    │
+  ├─ ClientHello + early_data ────────►│   ← 0-RTT: encrypted under resumption key
+  ├─ (early data: GET /index.html) ───►│   ← sent before server responds
+  │◄── ServerHello + ... ─────────────┤
+  │◄── EncryptedExtensions ────────────┤
+  │◄── Finished ───────────────────────┤
+  ├─ Finished ────────────────────────►│
+```
+
+**Session ticket key derivation:**
+
+| Key | Derivation | Purpose |
+|-----|-----------|---------|
+| `resumption_master_secret` | From TLS 1.3 key schedule (HKDF) after full handshake | Source of 0-RTT key material |
+| `early_secret` | `HKDF-Extract(0, PSK)` where PSK = ticket key | Used to derive `client_early_traffic_secret` |
+| `client_early_traffic_secret` | `HKDF-Expand-Label(early_secret, "c e traffic", CH, HashLen)` | Actual 0-RTT encryption key |
+
+**Security properties — what 0-RTT loses:**
+
+| Property | 1-RTT (standard TLS 1.3) | 0-RTT |
+|----------|--------------------------|-------|
+| Forward secrecy | Yes (ephemeral DH) | **No** — 0-RTT key derived from static ticket |
+| Replay protection | Yes (ephemeral key uniqueness) | **No** — server cannot distinguish replayed early data |
+| Downgrade protection | Yes | Yes (same ClientHello authentication) |
+| Server authentication before data sent | Yes | **No** — data sent before server Finished |
+
+**Replay attack on 0-RTT:**
+
+A network adversary who captures a client's 0-RTT flight can replay it to a different server instance (e.g., a different CDN node) that holds the same session ticket key. The replayed data will decrypt and be processed by the server.
+
+**Countermeasures (RFC 8446 §8):**
+
+| Countermeasure | Mechanism | Limitation |
+|---------------|-----------|-----------|
+| Single-use tickets | Server marks ticket consumed; rejects replays | Requires shared state across all server instances |
+| Client Hello recording | Server stores hash of each 0-RTT ClientHello | Scales poorly in distributed deployments |
+| Time-window restriction | Accept 0-RTT only within a short window (e.g., 5 seconds) | Reduces but does not eliminate replay window |
+| Application-layer idempotency | Only allow 0-RTT for idempotent requests (HTTP GET, not POST) | Application must enforce; not automatic |
+
+**Deployment reality (RFC 8446 §2.3, §8.2):**
+- Cloudflare, Google, and major CDNs enable 0-RTT for HTTP GET requests only
+- TLS stacks (OpenSSL 1.1.1+, BoringSSL, NSS) support 0-RTT but require explicit opt-in
+- HTTP/3 (QUIC) also supports 0-RTT with the same replay caveats (RFC 9001 §9.2)
+- gRPC over HTTP/2 generally disables 0-RTT due to non-idempotent RPC semantics
+
+**State of the art:** RFC 8446 (TLS 1.3, 2018) specifies 0-RTT. The consensus recommendation is to use 0-RTT only for idempotent, replay-safe operations and to treat 0-RTT data as unauthenticated until the handshake completes. See [Secure Channels](#secure-channels--protocol-constructions), [QUIC Packet Protection](#quic-packet-protection).
+
+---
+
+## QUIC Connection Migration and Security
+
+**Goal:** Allow a QUIC connection to survive changes in the client's IP address or port — such as switching from Wi-Fi to cellular — without a new handshake, while preventing attackers from hijacking connections or launching amplification attacks via forged migration.
+
+**Connection ID (CID) design (RFC 9000 §5):**
+
+Unlike TCP (identified by 4-tuple: src IP, src port, dst IP, dst port), QUIC connections are identified by Connection IDs chosen by each endpoint. When the client's network path changes, it can continue the connection by sending packets with the same CID from a new IP/port.
+
+```
+Client (Wi-Fi: 192.168.1.5:4321) ──────────────► Server
+  │  [CID = 0xAB1234]                              │
+  │  switches to LTE: 10.0.0.7:5555               │
+  │                                                │
+Client (LTE: 10.0.0.7:5555) ───────────────────► Server
+  │  [CID = 0xAB1234]  ← same CID, new path       │
+```
+
+**Security challenges in connection migration:**
+
+| Attack | Description | Mitigation |
+|--------|-------------|-----------|
+| **Path hijacking** | Attacker sends packets with victim's CID from new IP | Path validation: server sends `PATH_CHALLENGE`; client must echo `PATH_RESPONSE` |
+| **Amplification via forged migration** | Attacker forges a migration to a victim IP; server sends large responses to victim | Server limits data to 3× unvalidated bytes until `PATH_RESPONSE` received |
+| **Linkability across paths** | Observing same CID on two paths links them to same connection | CID rotation: each endpoint provides multiple CIDs via `NEW_CONNECTION_ID`; client uses fresh CID after migration |
+| **Stateless reset replay** | Attacker uses a stolen stateless reset token to tear down a connection | Tokens are AEAD-encrypted under a server secret and bound to the CID |
+
+**CID rotation for privacy (RFC 9000 §9.5):**
+
+```
+Server issues: NEW_CONNECTION_ID frames (each with a unique CID + stateless_reset_token)
+Client on migration: retires old CID via RETIRE_CONNECTION_ID; begins using a fresh CID
+Result: observers on the new path see a different CID → cannot correlate with old path
+```
+
+**Path validation protocol:**
+
+1. Server receives a packet from a new 4-tuple claiming the same CID
+2. Server sends `PATH_CHALLENGE(random_data_8_bytes)` on the new path
+3. Client sends `PATH_RESPONSE(same_random_data)` — proves it controls the new address
+4. Server begins accepting the new path; anti-amplification limit lifted
+
+**Multi-path QUIC (RFC 9000 extension draft):**
+- A single QUIC connection can use multiple active paths simultaneously (e.g., Wi-Fi + LTE)
+- Each path has independent packet number space and loss recovery
+- Allows bandwidth aggregation or seamless failover
+
+**Deployments:** All QUIC implementations support connection migration (Chrome, Firefox, curl/quiche, QUIC-Go, MsQuic). Apple uses QUIC connection migration in the FaceTime and iMessage stacks on iOS. HTTP/3 connections over QUIC automatically migrate when the device switches networks.
+
+**State of the art:** RFC 9000 (2021) specifies connection migration; CID rotation is required for migration privacy. Multi-path QUIC is in active IETF standardization (`draft-ietf-quic-multipath`). See [QUIC Packet Protection](#quic-packet-protection), [DTLS](#dtls--datagram-tls).
+
+---
+
+## RPKI / BGPsec (Route Origin Authentication)
+
+**Goal:** Cryptographically bind IP address prefixes to the Autonomous Systems (ASes) authorized to originate them in BGP — preventing route hijacks (where an AS fraudulently announces ownership of another's prefixes) and route leaks that can redirect internet traffic through unintended paths.
+
+**BGP hijacking threat:** Without RPKI, any AS can announce any prefix. High-profile incidents: Pakistan Telecom hijacking YouTube (2008), Rostelecom hijacking AWS/Google prefixes (2020), China Telecom routing misconfigurations affecting major cloud providers.
+
+**RPKI architecture (RFC 6480):**
+
+```
+IANA ──► Regional Internet Registries (ARIN, RIPE, APNIC, LACNIC, AFRINIC)
+            └─ LIRs / ISPs ── Hosted RPKI or Delegated RPKI
+                   └─ Route Origin Authorizations (ROAs)
+                            └─ Signed with X.509 resource certificates
+```
+
+**Route Origin Authorization (ROA, RFC 6482):**
+
+| Field | Content |
+|-------|---------|
+| **AS Number** | The AS authorized to announce the prefix |
+| **IP Prefix** | The prefix (e.g., `198.51.100.0/24`) |
+| **maxLength** | Maximum prefix length allowed (prevents deaggregation attacks) |
+| **Validity** | NotBefore / NotAfter (X.509 validity period) |
+| **Signature** | CMS/PKCS7 over ROA content, signed by the address holder's resource certificate |
+
+**Validation states (RFC 6811):**
+
+| State | Meaning |
+|-------|---------|
+| **Valid** | A ROA exists covering this prefix + origin AS pair |
+| **Invalid** | A ROA exists but the origin AS or prefix length does not match |
+| **Not Found** | No ROA covers this prefix (unknown; cannot assert authorization) |
+
+**BGPsec (RFC 8205) — path authentication:**
+
+RPKI secures route *origin*; BGPsec extends this to the entire AS path:
+
+| Feature | RPKI | BGPsec |
+|---------|------|--------|
+| What is signed | Prefix → origin AS binding (ROA) | Each AS-path hop; entire path authenticated |
+| Deployment | Widely deployed (~50% of prefixes, 2024) | Very limited deployment (complex, performance overhead) |
+| Protection | Route origin hijacks | Both hijacks and path manipulation |
+
+**Cryptographic primitives:**
+
+| Component | Algorithm |
+|-----------|-----------|
+| Resource certificates | X.509v3 with IP Address and AS Number extensions (RFC 3779) |
+| ROA signature | CMS SignedData, ECDSA P-256 (RFC 8608) |
+| BGPsec path signature | ECDSA P-256 per AS hop; each AS signs the path segment it received + its own ASN |
+| Trust anchor | Five RIR trust anchors (self-signed certificates) |
+
+**Deployment (2024):**
+- ~50% of global BGP prefixes have valid ROAs (RIPE NCC data)
+- Major ISPs (AT&T, Comcast, Verizon, Deutsche Telekom) drop RPKI-invalid routes
+- Cloudflare, AWS, Google all publish ROAs and perform origin validation
+- BGPsec: fewer than 1% of ASes; practical deployment blocked by performance and chicken-and-egg problems
+
+**State of the art:** RPKI origin validation (RFC 6480/6482/6811) is the deployed standard; reaching ~50% global prefix coverage. BGPsec (RFC 8205) is standardized but minimally deployed. ASPA (Autonomous System Provider Authorization, `draft-ietf-sidrops-aspa-profile`) is the next step — encodes customer-provider relationships to detect route leaks without full BGPsec. See [Applied Infrastructure PKI](categories/14-applied-infrastructure-pki.md#dnssec), [Secure Channels](#secure-channels--protocol-constructions).
+
+---
+
+## MASQUE / HTTP/3-Based Tunneling Security
+
+**Goal:** Enable general-purpose IP and UDP tunneling over HTTP/3 (QUIC) — allowing VPN-like connectivity, proxying, and network traversal through HTTP infrastructure — with the same security properties as QUIC/TLS 1.3 and without the protocol fingerprinting problems of traditional VPN protocols.
+
+**MASQUE (Multiplexed Application Substrate over QUIC Encryption) — RFC 9484 / RFC 9298:**
+
+MASQUE uses HTTP/3's CONNECT method extended with `connect-udp` and `connect-ip` to tunnel UDP datagrams and IP packets over an HTTP/3 connection, using QUIC streams and datagrams.
+
+**Protocol variants:**
+
+| Variant | RFC | Transport | Use case |
+|---------|-----|-----------|---------|
+| **CONNECT-UDP** (H3 CONNECT) | RFC 9298 (2022) | UDP datagrams over HTTP/3 | Proxying QUIC connections; UDP tunneling |
+| **CONNECT-IP** | RFC 9484 (2023) | IP packets over HTTP/3 | Full IP-layer VPN over HTTP/3 |
+| **IP Proxying in HTTP** | RFC 9484 | Both TCP + UDP | General-purpose IP tunnel |
+
+**Architecture:**
+
+```
+Client ──(QUIC/TLS 1.3)──► MASQUE Proxy ──(native QUIC)──► Target
+  │                              │
+  │  HTTP/3 CONNECT-UDP          │  UDP packet forwarding
+  │  to proxy.example.com        │
+  │                              │
+  └── Capsule protocol (RFC 9297): encapsulates UDP/IP payloads in HTTP/3 DATA frames
+```
+
+**Capsule protocol (RFC 9297):**
+
+UDP payloads are carried as HTTP/3 DATA frames in `Capsule` format:
+
+```
+Capsule Type (varint) | Capsule Length (varint) | Capsule Data
+  └─ DATAGRAM_CAPSULE: contains a UDP payload or IP packet
+```
+
+**Security properties:**
+
+| Property | Detail |
+|----------|--------|
+| Encryption | TLS 1.3 (via QUIC); all tunneled data encrypted |
+| Authentication | Proxy authenticates client via HTTP authentication (Bearer token, mTLS, etc.) |
+| Confidentiality of tunneled protocol | Observer sees HTTP/3 traffic; cannot distinguish MASQUE tunneling from normal CONNECT |
+| Metadata exposure | Proxy IP and SNI of proxy host visible; target server IP hidden from network observer |
+| Forward secrecy | Inherited from QUIC/TLS 1.3 handshake |
+
+**MASQUE vs. traditional VPN:**
+
+| Property | WireGuard / IPsec | MASQUE over HTTP/3 |
+|----------|-------------------|--------------------|
+| Protocol fingerprint | Distinct WireGuard/ESP UDP fingerprint | Indistinguishable from HTTPS traffic |
+| Firewall traversal | Blocked by UDP-blocking firewalls | Traverses any HTTPS-allowing firewall |
+| Latency overhead | Minimal | HTTP/3 framing overhead; QUIC stream per flow |
+| Key management | WireGuard: static keys; IPsec: IKEv2 | TLS 1.3 certificate / token auth |
+| Multi-hop | Not native | HTTP CONNECT chains naturally |
+
+**Deployments:**
+- Apple iCloud Private Relay uses a MASQUE-based architecture (two-hop CONNECT tunneling)
+- Cloudflare WARP (2024) uses CONNECT-UDP for QUIC proxying
+- Google's QUIC proxying infrastructure uses HTTP/3 CONNECT
+- IETF MASQUE working group actively standardizing extensions (ECH + MASQUE, authenticated CONNECT)
+
+**State of the art:** RFC 9298 (CONNECT-UDP, 2022) and RFC 9484 (CONNECT-IP, 2023) are the current standards. The IETF MASQUE working group is extending to multipath, happy eyeballs, and authenticated IP proxying. Primary use cases are privacy proxies (iCloud Private Relay), CDN edge proxying, and WebRTC NAT traversal. See [QUIC Packet Protection](#quic-packet-protection), [QUIC Connection Migration](#quic-connection-migration-and-security), [Oblivious HTTP](#oblivious-http-ohttp), [IKEv2 / IPsec](#ikev2--ipsec-esp).
+
 ---

@@ -684,3 +684,93 @@ HKDF-Expand(PRK, info, L)  →  OKM  (output keying material, L bytes)
 **State of the art:** NIST SP 800-185 (2016); all four functions are unbroken and safe for production use. TupleHash is increasingly used in ZK protocol transcripts and commitment schemes where domain separation is critical. See [Sponge Construction](#sponge-construction--duplex) for the underlying Keccak permutation.
 
 ---
+
+## RIPEMD-160
+
+**Goal:** Collision-resistant 160-bit hash optimized for software and used as a compact fingerprint in legacy PKI and Bitcoin address derivation. Designed by Dobbertin, Bosselaers, and Preneel (1996) as a strengthened replacement for RIPEMD-128, independent of the NSA/NIST SHA lineage.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **RIPEMD-128** | 1996 | MD (dual-stream Feistel) | 128-bit output; predecessor, now considered weak [[1]](https://homes.esat.kuleuven.be/~bosselae/ripemd160.html) |
+| **RIPEMD-160** | 1996 | MD (dual parallel stream) | 160-bit output; two parallel Merkle-Damgård streams merged; ISO/IEC 10118-3 [[1]](https://homes.esat.kuleuven.be/~bosselae/ripemd160.html) |
+| **RIPEMD-256 / RIPEMD-320** | 1997 | MD (parallel streams) | Extended variants; wider output; no additional security over 160/128-bit [[1]](https://homes.esat.kuleuven.be/~bosselae/ripemd160.html) |
+
+**Design:** Two independent streams of 80 rounds each, using different constants and round-function orderings, then combined with a final merge step. Avoids length-extension attacks through independent left/right processing.
+
+**Used in:** Bitcoin address derivation (`HASH160 = RIPEMD-160(SHA-256(pubkey))`), PGP key fingerprints (OpenPGP legacy), X.509 certificate fingerprints (historical). No known practical collision attack against RIPEMD-160 (unlike MD5/SHA-1).
+
+**State of the art:** No practical collision found as of 2024; theoretical attack on reduced rounds by Liu-Mendel-Wang (2022) reaches 36/80 rounds. Still considered acceptable for the specific Bitcoin use case, but new designs should prefer SHA-256 or SHA-3. See [Hash Functions](#hash-functions).
+
+---
+
+## SM3 Hash Function
+
+**Goal:** Sovereign cryptographic hash for Chinese national standards. SM3 is the Chinese national standard hash function (GM/T 0004-2012 / GB/T 32905-2016), producing 256-bit digests. Mandatory in Chinese government, finance, and 5G systems; increasingly adopted in international standards as an alternative to SHA-256.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **SM3** | 2010 | Merkle-Damgård + Davies-Meyer | 256-bit output; 64 rounds; 512-bit blocks; GB/T 32905-2016; ISO/IEC 10118-3:2018 [[1]](https://www.rfc-editor.org/rfc/rfc8998) |
+
+**Design:** SM3 uses a Merkle-Damgård construction with a modified Davies-Meyer compression function. Key differences from SHA-256: a more complex message expansion (60-step mixing vs SHA-256's simple σ functions), a different round function with two non-linear Boolean functions, and additional XOR mixing of message words. The design resists the Wang-style differential attacks that broke MD5 and SHA-1.
+
+**Used in:** SM2 signature verification (SM3 as the hash), TLS 1.3 cipher suites in China (RFC 8998), Chinese banking (UnionPay), national PKI and e-government. IETF RFC 8998 defines TLS_SM4_GCM_SM3 and TLS_SM4_CCM_SM3 cipher suites.
+
+**State of the art:** GB/T 32905-2016 and ISO/IEC 10118-3:2018; no practical collision or preimage attack known. Widely deployed in Chinese critical infrastructure alongside [SM4 / Chinese National Standard Block Ciphers](#sm4--chinese-national-standard-block-ciphers).
+
+---
+
+## GOST R 34.11-2012 (Streebog) and GOST R 34.10-2012
+
+**Goal:** Russian national cryptographic standards for hashing and digital signatures, replacing the 1994-era GOST R 34.11-94 hash and GOST R 34.10-2001 signature. Streebog provides 256-bit and 512-bit hash outputs; GOST R 34.10-2012 defines ECDSA-like signatures over Russian standardized elliptic curves. Both are mandatory for Russian government use and specified in IETF RFCs.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Streebog-256 (GOST R 34.11-2012)** | 2012 | Merkle-Damgård + AES-like SPN | 256-bit output; 512-bit internal state; 12-round compression; RFC 6986 [[1]](https://www.rfc-editor.org/rfc/rfc6986) |
+| **Streebog-512 (GOST R 34.11-2012)** | 2012 | Merkle-Damgård + AES-like SPN | 512-bit output; full internal state used; RFC 6986 [[1]](https://www.rfc-editor.org/rfc/rfc6986) |
+| **GOST R 34.10-2012** | 2012 | ECDSA variant | 256-bit and 512-bit modes; Weierstrass curves (id-tc26-gost-3410-2012-256/512); RFC 7091 [[1]](https://www.rfc-editor.org/rfc/rfc7091) |
+| **GOST R 34.11-94 (historical)** | 1994 | MD + custom compression | Predecessor hash; replaced 2013; weaknesses discovered by Mendel et al. [[1]](https://eprint.iacr.org/2008/421) |
+
+**Streebog design:** The compression function resembles AES — SubBytes (8×8 S-box), ShiftBytes, MixColumns (MDS over GF(2⁸)), and AddRoundKey, iterated 12 rounds with 512-bit block and state size. A Miyaguchi-Preneel feed-forward links compression rounds to the chaining value. An additional checksum accumulation step strengthens collision resistance.
+
+**State of the art:** Streebog and GOST R 34.10-2012 are mandatory in Russian federal IT systems. RFC 6986 (Streebog) and RFC 7091 (GOST 34.10-2012) enable interoperability. Third-party cryptanalysis (Guo-Peyrin-Sasaki-Wang 2013) found rebound attacks on reduced-round Streebog but no practical break. See [Hash Functions](#hash-functions) and [Digital Signatures](#digital-signatures).
+
+---
+
+## Whirlpool and Tiger Hash Functions
+
+**Goal:** Legacy cryptographic hashes designed as alternatives to SHA-1/SHA-2 with independent security analysis. Whirlpool (ISO/IEC 10118-3) produces 512-bit digests from a Miyaguchi-Preneel construction over a dedicated AES-inspired block cipher. Tiger was designed for 64-bit platforms and became widely used in P2P file-sharing via Tiger Tree Hash (TTH).
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Whirlpool** | 2003 | Miyaguchi-Preneel + W block cipher | 512-bit output; 10-round W cipher; ISO/IEC 10118-3:2004; designed by Barreto & Rijmen [[1]](https://www.larc.usp.br/~pbarreto/whirlpool.zip) |
+| **Tiger** | 1995 | 3-pass Davies-Meyer style | 192-bit output (3×64-bit); 24 rounds; designed for 64-bit CPUs; Ross Anderson & Eli Biham [[1]](https://www.cl.cam.ac.uk/~rja14/Papers/tiger.pdf) |
+| **Tiger2** | 2003 | Tiger + revised padding | Revised padding compatible with MD-strengthening; recommended over Tiger [[1]](https://www.cl.cam.ac.uk/~rja14/Papers/tiger.pdf) |
+| **Tiger Tree Hash (TTH)** | 1998 | Merkle tree over Tiger | Root of a binary Merkle tree hashing 1 KB leaves with Tiger; used in eD2k, DC++, THEX [[1]](https://www.open-content.net/specs/draft-jchapweske-thex-02.html) |
+
+**Whirlpool:** W is an AES-like cipher with 8×8 bytes, 10 rounds, a different S-box (π), and a 512-bit block. The Miyaguchi-Preneel feed-forward (h ← E_m(h) ⊕ m ⊕ h) provides strong second-preimage resistance. No practical collision or preimage attack; cryptanalysis reaches at most 9.5/10 rounds.
+
+**Tiger:** Three 8×8 lookup tables (s-boxes) provide diffusion; three passes over the message with different multipliers. Designed to be fast on 64-bit Alphas. Practical collision attacks on Tiger up to 19/23 rounds (Mendel-Rijmen 2006), but the full 23-round Tiger has no known practical collision. TTH is truncated to 192 bits (three 64-bit words), often encoded as base32 magnet links.
+
+**State of the art:** Whirlpool is an ISO/IEC standard and unbroken; rarely used in new designs. Tiger/TTH was standard in early 2000s P2P networks (eD2k, DC++); superseded by SHA-1/SHA-256 tree hashes. New designs should use [Hash Functions](#hash-functions) (BLAKE3 for tree hashing, SHA-3/SHA-256 for general use).
+
+---
+
+## Non-Cryptographic Hash Functions (FNV / MurmurHash / xxHash)
+
+**Goal:** Fast, high-quality hash functions for hash tables, checksums, and data deduplication — explicitly NOT designed for cryptographic security. These functions prioritize throughput and distribution quality over collision resistance, preimage resistance, or resistance to adversarial inputs. They should never be used where an adversary can control inputs (use [SipHash](#siphash) instead) but are appropriate for in-process hash tables with random seeds or offline data structures.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **FNV-1a** | 1991 | Multiply-XOR (Fowler-Noll-Vo) | 32/64/128-bit variants; simplest non-crypto hash; fast on short strings; no seed [[1]](http://www.isthe.com/chongo/tech/comp/fnv/) |
+| **MurmurHash3** | 2008 | Multiply-rotate-XOR | 32/128-bit output; finalization avalanche; fast bulk throughput; Austin Appleby [[1]](https://github.com/aappleby/smhasher) |
+| **xxHash32 / xxHash64** | 2012 | Multiple lanes + finalize | Yann Collet; ~10 GB/s; used in LZ4, RocksDB, ClickHouse, Zstandard [[1]](https://xxhash.com/) |
+| **XXH3 / XXH128** | 2019 | SIMD-friendly, secret-seeded | Vectorized; ~30–60 GB/s; secret (per-process random) seed for HashDoS resistance [[1]](https://xxhash.com/) |
+| **CRC-32 / CRC-64** | 1961 | Linear feedback (GF(2) polynomial) | Error-detection only; not a hash function; easily forged; used in Ethernet, ZIP, gzip [[1]](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) |
+
+**CRC vs cryptographic hash:** A CRC is a remainder from polynomial long division over GF(2); it detects accidental bit errors efficiently but provides zero security against intentional manipulation — any desired CRC value can be computed in O(1). Cryptographic hashes (SHA-256, BLAKE3) provide collision and preimage resistance but are 10–100× slower for bulk data.
+
+**HashDoS context:** Unkeyed non-cryptographic hashes (FNV, early MurmurHash) are vulnerable to hash-flooding attacks: an adversary who knows the hash function can craft inputs that all map to the same bucket, degrading hash-table lookup from O(1) to O(n). Solutions: per-process random seed (XXH3 secret), or switch to a keyed PRF ([SipHash-2-4](#siphash)) for externally influenced keys.
+
+**State of the art:** xxHash3 / XXH128 (2019) for highest-throughput non-cryptographic hashing; SipHash-2-4 when adversarial input is possible; SHA-256 or BLAKE3 for any security-relevant use. See [Universal Hash Functions (Carter-Wegman)](#universal-hash-functions-carter-wegman) for the information-theoretically secure alternative.
+
+---

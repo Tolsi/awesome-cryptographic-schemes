@@ -843,3 +843,331 @@ Each signature covers both DH values in order, binding the key exchange to the a
 **State of the art:** Original paper [[1]](https://link.springer.com/article/10.1007/BF00124891) (Diffie, van Oorschot, Wiener, 1992). Superseded by [SIGMA](#sigma-protocol-sign-and-mac) in all modern designs. Still historically important as the root of authenticated key exchange. Related to [Key Exchange / Key Agreement](#key-exchange--key-agreement) and [SIGMA Protocol](#sigma-protocol-sign-and-mac).
 
 ---
+
+## IKEv1 vs IKEv2 (Internet Key Exchange)
+
+**Goal:** Negotiate and authenticate IPsec security associations (SAs) — agree on cryptographic algorithms, exchange keys, and establish the ISAKMP/IKE SA that protects all subsequent ESP/AH traffic. IKEv2 (RFC 7296) redesigns the baroque IKEv1 (RFC 2409) into a clean, minimal four-message exchange with built-in EAP and mobility support.
+
+### IKEv1 (RFC 2409, 1998)
+
+IKEv1 runs in two phases. Phase 1 establishes the ISAKMP SA that protects Phase 2; Phase 2 negotiates the actual IPsec SAs. Phase 1 has six modes offering different trade-offs between flexibility and identity protection.
+
+**Phase 1 modes:**
+
+| Mode | Messages | Identity protection | Use case |
+|------|----------|---------------------|----------|
+| **Main Mode** | 6 | Yes (identity encrypted) | Site-to-site; standard |
+| **Aggressive Mode** | 3 | No (identity in cleartext) | Fast; required for PSK + dynamic IPs |
+| **Base Mode** | 4 | Partial | Rarely used |
+
+**Phase 1 authentication methods:**
+
+| Method | Mechanism |
+|--------|-----------|
+| **Pre-Shared Key (PSK)** | HMAC over negotiated values using PSK; susceptible to offline dictionary attacks in Aggressive Mode |
+| **RSA Digital Signatures** | SIGMA-style; sign the DH exchange; certificates optional |
+| **RSA Public Key Encryption** | Encrypt nonces under peer's RSA key; identity protection without certificates |
+| **Revised RSA Encryption** | Hybrid of above; reduced messages |
+
+**Phase 1 (Main Mode, PSK) message sequence:**
+
+```
+→ SA proposal (algorithms)
+← SA selected
+→ g^x (initiator DH)
+← g^y (responder DH)
+  [both derive SKEYID = prf(PSK, Ni || Nr)]
+→ {ID_I, HASH_I} encrypted under Ke
+← {ID_R, HASH_R} encrypted under Ke
+```
+
+**Phase 2 (Quick Mode):** Three messages protected under Phase 1 SA; negotiates ESP/AH algorithms, SPI, and derives per-SA keys from SKEYID_d.
+
+### IKEv2 (RFC 7296, 2014)
+
+IKEv2 collapses the six-mode IKEv1 Phase 1 into exactly four messages (two round-trips), embedding child SA negotiation into the initial exchange. The cryptographic core is a [SIGMA-I](#sigma-protocol-sign-and-mac) construction.
+
+**IKEv2 initial exchange:**
+
+```
+IKE_SA_INIT:
+  → SAi1, KEi (g^x), Ni
+  ← SAr1, KEr (g^y), Nr, [CERTREQ]
+
+IKE_AUTH:
+  → {IDi, [CERT], [CERTREQ], [IDr], AUTH, SAi2, TSi, TSr}
+  ← {IDr, [CERT], AUTH, SAr2, TSi, TSr}
+```
+
+AUTH payload = signature or MAC over `(RealMessage1, NonceR, prf(SK_pi, IDi))`, binding identity to the DH exchange in SIGMA fashion.
+
+**Key differences IKEv1 → IKEv2:**
+
+| Feature | IKEv1 | IKEv2 |
+|---------|-------|-------|
+| Message count (initial) | 6 (Main) or 3 (Aggressive) | 4 |
+| Phases | 2 (ISAKMP + IPsec) | 1 (unified exchange) |
+| EAP support | No | Yes (IKE_AUTH can carry EAP) |
+| Mobility (MOBIKE) | No | RFC 4555 |
+| Dead peer detection | Vendor-specific | Built-in (IKE_INFORMATIONAL) |
+| XAUTH (legacy auth) | Vendor extension | Replaced by EAP |
+| DoS resilience | None | Cookie challenge |
+| Traffic selector | Phase 2 ID payloads | TSi/TSr in IKE_AUTH |
+| Cryptographic agility | Yes (ISAKMP transforms) | Yes (SAi1/SAr1) |
+
+**IKEv2 key derivation:**
+
+```
+SKEYSEED = prf(Ni || Nr, g^(xy))
+{SK_d | SK_ai | SK_ar | SK_ei | SK_er | SK_pi | SK_pr}
+    = prf+(SKEYSEED, Ni || Nr || SPIi || SPIr)
+```
+
+SK_e* = encryption, SK_a* = integrity (MAC), SK_d = child SA derivation, SK_p* = AUTH computation.
+
+**State of the art:** IKEv2 RFC 7296 (2014) [[1]](https://www.rfc-editor.org/rfc/rfc7296); IKEv1 deprecated. Extensions: RFC 7427 (signature authentication), RFC 8784 (post-quantum PSK mixing), RFC 9370 (multiple key exchanges for PQ). Deployed in every enterprise VPN, StrongSwan, Cisco IOS, Windows IKEv2. Related to [SIGMA Protocol](#sigma-protocol-sign-and-mac) and [WireGuard Cryptographic Protocol](#wireguard-cryptographic-protocol).
+
+---
+
+## SCEP (Simple Certificate Enrollment Protocol, RFC 8894)
+
+**Goal:** Allow network devices (routers, printers, mobile clients) to automatically request and obtain X.509 certificates from a CA using only symmetric-key primitives available before a certificate exists — bootstrapping PKI enrollment with nothing more than a pre-shared challenge password.
+
+SCEP was originally a Cisco proprietary protocol (draft-nourse-scep) widely deployed in network device enrollment. RFC 8894 (2020) standardized and updated it. SCEP is intentionally simple: it wraps PKCS#7 (CMS) messages over HTTP, requiring only an OTP (challenge password) to prove identity during initial enrollment.
+
+**Protocol flow:**
+
+```
+1. Device generates RSA or EC key pair locally
+2. Device fetches CA certificate:
+      GET /cgi-bin/pkiclient.exe?operation=GetCACert
+      ← CA cert (DER) or chain (PKCS#7)
+
+3. Device sends CSR (PKCS#10) wrapped in PKCS#7 SignedData:
+      PKCSReq message:
+        - Outer SignedData: signed with self-signed cert (proves key possession)
+        - Inner EnvelopedData: encrypted to CA's public key
+        - challengePassword attribute: OTP issued out-of-band
+
+4. CA responds:
+      CertRep: SUCCESS → issued cert in SignedData
+               PENDING → enrollment queued (manual approval)
+               FAILURE → error code
+```
+
+**Message types (SCEP OIDs):**
+
+| Message | OID | Purpose |
+|---------|-----|---------|
+| **PKCSReq** | 3 | Initial enrollment CSR |
+| **CertRep** | 3 | CA's response (cert or error) |
+| **GetCertInitial** | 20 | Poll when PENDING |
+| **GetCert** | 21 | Fetch cert by issuer+serial |
+| **GetCRL** | 22 | Fetch CRL |
+
+**Cryptographic structure:**
+
+Each SCEP message is a CMS SignedData wrapping a CMS EnvelopedData (for requests) or vice versa. The outer SignedData authenticates the sender; the inner EnvelopedData encrypts the payload to the recipient's certificate.
+
+**Security considerations:**
+- Challenge password transmitted inside EnvelopedData (encrypted to CA key) — not in the clear
+- Self-signed cert used for initial request signature; CA verifies challenge password instead of cert chain
+- RFC 8894 mandates TLS for transport (earlier deployments used plain HTTP)
+- No renewal automation — contrast with [ACME](#acme-protocol--automated-certificate-management)
+
+| Deployment | Usage |
+|------------|-------|
+| **Cisco IOS / ASA** | Network device cert enrollment |
+| **Microsoft NDES** | Network Device Enrollment Service (Windows Server) |
+| **Apple MDM** | iOS/macOS device certificate provisioning via MDM payload |
+| **strongSwan** | Linux IPsec gateway auto-enrollment |
+
+**State of the art:** RFC 8894 (2020) [[1]](https://www.rfc-editor.org/rfc/rfc8894). Widely deployed in MDM and network device PKI; simpler than [CMP](#cmp-certificate-management-protocol-rfc-42109483) but less feature-rich. Being supplemented by [EST](#est-enrollment-over-secure-transport-rfc-7030) in newer deployments. Related to [ACME Protocol](#acme-protocol--automated-certificate-management) and [PKIX / X.509 v3](#pkix--x509-v3-certificate-profile-rfc-5280).
+
+---
+
+## EST (Enrollment over Secure Transport, RFC 7030)
+
+**Goal:** A modern, TLS-native certificate enrollment and renewal protocol that replaces SCEP's HTTP+PKCS#7 stack with a clean HTTPS REST API — supporting automatic re-enrollment, CA certificate distribution, and server-side key generation over mutually authenticated TLS.
+
+EST (RFC 7030, 2013) was designed by the IETF PKIX WG as a simpler, more secure successor to SCEP. It runs entirely over HTTPS (port 443 or 8443), uses the existing TLS certificate for renewal authentication, and expresses all operations as RESTful endpoints under `/.well-known/est/`.
+
+**EST endpoint structure:**
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/.well-known/est/cacerts` | GET | Fetch current CA certificate(s) |
+| `/.well-known/est/simpleenroll` | POST | Initial enrollment (CSR → cert) |
+| `/.well-known/est/simplereenroll` | POST | Renew using existing client cert |
+| `/.well-known/est/serverkeygen` | POST | Request server-side key generation |
+| `/.well-known/est/csrattrs` | GET | Fetch required CSR attributes |
+
+**Enrollment flow (initial):**
+
+```
+1. Client fetches /cacerts → verifies CA cert fingerprint (out-of-band trust anchor)
+2. Client generates key pair, creates PKCS#10 CSR
+3. Client POSTs CSR to /simpleenroll:
+     - TLS client auth: HTTP Basic (username+OTP) or existing certificate
+     - Body: base64(DER(CSR)), Content-Type: application/pkcs10
+4. EST server responds:
+     200 OK: base64(DER(cert)), Content-Type: application/pkcs7-mime
+     202 Accepted: enrollment pending (retry-after header)
+```
+
+**Re-enrollment (renewal):**
+
+```
+Client POSTs to /simplereenroll authenticated by the existing client certificate
+(mutual TLS). No OTP required — cert proves identity. New cert can be fetched
+before expiry, enabling seamless rotation.
+```
+
+**Comparison with SCEP and CMP:**
+
+| Feature | SCEP (RFC 8894) | EST (RFC 7030) | CMP (RFC 4210) |
+|---------|-----------------|----------------|----------------|
+| Transport | HTTP + CMS | HTTPS REST | HTTP / TCP |
+| Crypto wrapping | PKCS#7 / CMS | PKCS#10 + PKCS#7 | CMP ASN.1 |
+| Auto-renewal | No | Yes (simplereenroll) | Yes |
+| Server key gen | No | Yes | Yes |
+| Complexity | Low | Medium | High |
+| RFC status | 8894 (2020) | 7030 (2013) | 9483 (2023) |
+
+**State of the art:** RFC 7030 (2013) [[1]](https://www.rfc-editor.org/rfc/rfc7030); updated by RFC 8295 (additional attrs). Widely adopted in industrial IoT (IEC 62351-8), automotive (AUTOSAR), and enterprise MDM. Cisco, Microsoft, and DigiCert all support EST. Related to [SCEP](#scep-simple-certificate-enrollment-protocol-rfc-8894), [CMP](#cmp-certificate-management-protocol-rfc-42109483), and [ACME Protocol](#acme-protocol--automated-certificate-management).
+
+---
+
+## CMP (Certificate Management Protocol, RFC 4210/9483)
+
+**Goal:** A comprehensive ASN.1-based protocol for the full lifecycle of X.509 certificates — initialization, certification, key update, revocation, cross-certification, and CA key rollover — supporting both online and store-and-forward (offline) operation via any transport.
+
+CMP (Certificate Management Protocol) has its roots in PKIX WG work from 1999 (RFC 2510, updated to RFC 4210 in 2005). RFC 9483 (2023) produced a modern "lightweight" profile for constrained environments (IoT, automotive). CMP is more powerful than SCEP or EST but significantly more complex, making it the choice for high-assurance and industrial PKI.
+
+**PKIMessage structure (ASN.1):**
+
+```
+PKIMessage ::= SEQUENCE {
+  header        PKIHeader,       -- sender, recipient, messageTime, nonce, transactionID
+  body          PKIBody,         -- request or response (one of 28 message types)
+  protection    [0] PKIProtection OPTIONAL,   -- signature or MAC
+  extraCerts    [1] SEQUENCE OF Certificate OPTIONAL
+}
+```
+
+**Core message types:**
+
+| Type | Tag | Purpose |
+|------|-----|---------|
+| **ir** | 0 | Initialization Request — first cert from a new entity |
+| **ip** | 1 | Initialization Response |
+| **cr** | 2 | Certification Request — subsequent certs |
+| **cp** | 3 | Certification Response |
+| **kur** | 7 | Key Update Request — renew before expiry |
+| **kup** | 8 | Key Update Response |
+| **rr** | 11 | Revocation Request |
+| **rp** | 12 | Revocation Response |
+| **certConf** | 24 | Certificate Confirmation — client acknowledges receipt |
+| **pkiconf** | 19 | PKI Confirmation — CA acknowledges certConf |
+
+**Three-pass enrollment (ir → ip → certConf → pkiconf):**
+
+```
+Client → CA:  ir   (CSR + proof-of-possession + protection)
+CA → Client:  ip   (issued cert or waitingIndication)
+Client → CA:  certConf  (confirm cert accepted; HMAC over cert hash)
+CA → Client:  pkiconf   (finalize transaction)
+```
+
+Proof-of-possession (POP) is cryptographic: for signing keys, the CSR itself is signed; for encryption keys, the CA encrypts a challenge that the client must decrypt.
+
+**Protection mechanisms:**
+
+| Method | When used |
+|--------|-----------|
+| Signature (existing cert) | Renewal/key-update when entity already has a cert |
+| MAC (shared secret) | Initial enrollment with out-of-band reference value |
+| Null (no protection) | Trusted network; CA verifies via TLS client auth |
+
+**RFC 9483 lightweight CMP profile (2023):** Restricts the full CMP to a practical subset for constrained IoT devices — HTTP transport, single-pass where possible, mandatory nonces, and a defined set of message types and algorithms.
+
+| Standard / Deployment | Usage |
+|----------------------|-------|
+| **RFC 4210** (2005) | Full CMP; enterprise PKI [[1]](https://www.rfc-editor.org/rfc/rfc4210) |
+| **RFC 9483** (2023) | Lightweight CMP profile for IoT/automotive [[1]](https://www.rfc-editor.org/rfc/rfc9483) |
+| **Siemens / BMW** | Automotive PKI (V2X, OTA updates) |
+| **openssl-cmp** | Reference implementation in OpenSSL 3.x |
+| **EJBCA** | Open-source CA with full CMP support |
+
+**State of the art:** RFC 9483 (lightweight CMP, 2023) is the current focus, driven by AUTOSAR and IEC 62351 for industrial/automotive. Full RFC 4210 remains the standard for high-assurance government and enterprise PKI. Related to [EST](#est-enrollment-over-secure-transport-rfc-7030), [SCEP](#scep-simple-certificate-enrollment-protocol-rfc-8894), and [PKIX / X.509 v3](#pkix--x509-v3-certificate-profile-rfc-5280).
+
+---
+
+## PKCS#12 / PFX (Private Key + Certificate Bundle)
+
+**Goal:** A portable, password-encrypted container format that packages a private key, its corresponding certificate, and any intermediate CA certificates into a single binary file — enabling one-click import/export of a complete cryptographic identity across browsers, servers, and operating systems.
+
+PKCS#12 (originally PFX — Personal inFormation eXchange) was developed by Microsoft and standardized by RSA Security; it is now maintained as RFC 7292 (2014). Despite being notoriously complex (layered ASN.1 with multiple encryption and integrity mechanisms), it remains the universal interchange format: every web server, browser, HSM, and mobile OS can read and write `.p12` / `.pfx` files.
+
+**File structure (nested ASN.1):**
+
+```
+PFX ::= SEQUENCE {
+  version    INTEGER (v3 = 3),
+  authSafe   ContentInfo,       -- PKCS#7 Data or EncryptedData
+  macData    MacData OPTIONAL   -- HMAC-SHA1/256 over authSafe
+}
+
+authSafe contains a SEQUENCE OF SafeContents, each a PKCS#7 wrapper:
+  SafeBag types:
+    keyBag          — unencrypted PKCS#8 PrivateKeyInfo
+    pkcs8ShroudedKeyBag — password-encrypted PKCS#8 (PBES2 recommended)
+    certBag         — DER certificate (X.509 or SDSI)
+    crlBag          — DER CRL
+    safeContentsBag — nested SafeContents (recursive)
+```
+
+**Encryption layers:**
+
+| Layer | Algorithm (legacy) | Algorithm (modern) |
+|-------|-------------------|-------------------|
+| Key encryption | PBEWithSHAAnd3-KeyTripleDES-CBC | PBES2: PBKDF2-SHA256 + AES-256-CBC |
+| Cert encryption | PBEWithSHAAnd40BitRC2-CBC (export-grade!) | PBES2: PBKDF2-SHA256 + AES-256-CBC |
+| MAC integrity | HMAC-SHA1 | HMAC-SHA256 |
+| KDF | PKCS#12-KDF (proprietary, fragile) | PBKDF2 (RFC 8018) |
+
+**PKCS#12-KDF flaw:** The legacy key-derivation function (Appendix B of RFC 7292) is a SHA-1-based construction designed for export-grade restrictions; it is not PBKDF2-compatible and produces weak key material. Modern tools (OpenSSL 3.x with `-legacy` removed, macOS Keychain, iOS 16+) default to PBES2/PBKDF2-SHA256.
+
+**Friendly name and local key ID (PKCS#9 attributes):**
+
+Each SafeBag carries optional attributes linking keys to certificates:
+- `friendlyName` (UTF8String): human-readable label, e.g., `"My TLS Certificate"`
+- `localKeyId` (OCTET STRING): matching key and cert bags by shared byte string
+
+**Common operations:**
+
+```bash
+# Export cert + key from PEM to PKCS#12
+openssl pkcs12 -export -out bundle.p12 \
+  -inkey private.key -in cert.pem -certfile chain.pem
+
+# Import PKCS#12; extract PEM
+openssl pkcs12 -in bundle.p12 -nodes -out combined.pem
+```
+
+**Security considerations:**
+- Weak legacy KDF + short passwords make offline brute-force feasible; use long random passwords
+- Some implementations accept PKCS#12 without verifying the MAC — allowing cert substitution
+- JKS (Java KeyStore) is a Java-specific alternative; P12 is now preferred (Java 9+)
+- PKCS#8 (RFC 5958) + PEM is a simpler format for key-only storage without bundling
+
+| Format | Contents | Use case |
+|--------|----------|----------|
+| **.p12 / .pfx** | Key + cert + chain | Full identity transport |
+| **.pem** | Any (base64 DER) | Server config; human-readable |
+| **.der** | Single object (binary) | Cert-only; embedded devices |
+| **JKS / PKCS#11** | Key store (Java / HSM) | Java apps; hardware tokens |
+
+**State of the art:** RFC 7292 (2014) [[1]](https://www.rfc-editor.org/rfc/rfc7292); PBES2 migration tracked in RFC 9579 (2024) which updates PKCS#12 to mandate PBKDF2 and AES. Supported natively by Windows (CertMgr), macOS Keychain, iOS, Android, Firefox, and all major TLS servers. Related to [PKIX / X.509 v3](#pkix--x509-v3-certificate-profile-rfc-5280), [ACME Protocol](#acme-protocol--automated-certificate-management), and [Key Wrapping / Envelope Encryption](#key-wrapping--envelope-encryption).
+
+---

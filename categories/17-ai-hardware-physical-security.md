@@ -197,6 +197,90 @@ EM side-channel attacks were first formalised by Gandolfi, Mourtel, and Olivier 
 
 ---
 
+## Side-Channel Resistant AES Implementations
+
+**Goal:** Implement AES in software or hardware without creating exploitable data-dependent timing or power variation. Naive AES uses lookup tables (T-tables) whose memory-access patterns depend on the secret key; resistant implementations eliminate this leakage through bitslicing, operand shuffling, or masking each table lookup.
+
+| Technique | Year | Basis | Note |
+|-----------|------|-------|------|
+| **T-table AES (OpenSSL legacy)** | 2002 | 4 KB lookup tables | Fastest naive implementation; four 1 KB tables collapse SubBytes + MixColumns; completely vulnerable to cache-timing attacks [[1]](https://cr.yp.to/antiforgery/cachetiming-20050414.pdf) |
+| **Bitsliced AES (Matsui-Nakajima)** | 2007 | SIMD bitslicing | Represent 128 AES instances in bit-parallel form using SSE registers; inherently constant-time; no table lookups [[1]](https://link.springer.com/chapter/10.1007/978-3-540-74619-5_23) |
+| **Shuffled T-table / Scatter-Gather** | 2008 | Table reordering + masking | Randomise table access order or use Boolean-masked table lookups; reduces DPA order at cost of speed [[1]](https://link.springer.com/chapter/10.1007/978-3-540-85053-3_27) |
+| **Compact Masked S-box (Canright-Batina)** | 2008 | Tower field arithmetic | Compute AES S-box in GF(2^4)^2 tower; amenable to low-cost masking without tables; area-efficient hardware [[1]](https://link.springer.com/chapter/10.1007/978-3-540-85053-3_22) |
+| **AES-NI + Constant-Time (libsodium/BoringSSL)** | 2010+ | Hardware AES instructions | x86 AES-NI instructions are inherently constant-time and table-free; universally adopted in crypto libraries as the preferred resistant implementation [[1]](https://www.intel.com/content/www/us/en/developer/articles/technical/advanced-encryption-standard-instructions-aes-ni.html) |
+
+**State of the art:** AES-NI (available on all modern x86 and ARM cores) is the recommended constant-time implementation; bitslicing is used where hardware AES is absent. Masking techniques from [Power Analysis Attacks & Masking Countermeasures](#power-analysis-attacks--masking-countermeasures) are layered on top when DPA resistance is also required. Resistant AES implementations underpin [AEAD](categories/02-authenticated-structured-encryption.md#authenticated-encryption-with-associated-data-aead) and [Disk Encryption](categories/02-authenticated-structured-encryption.md#disk-encryption--volume-encryption).
+
+---
+
+## Secure MPC / HE for Private ML Inference
+
+**Goal:** Run ML model inference on a user's private input against a provider's private model — without either party learning the other's data. Combines garbled circuits, secret sharing, or homomorphic encryption to produce the correct prediction while keeping both input and model weights confidential.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SecureML (Mohassel-Zhang)** | 2017 | 2-party MPC + OT | Secure 2PC for linear layers using OT-based multiplication; first practical MPC training on real datasets [[1]](https://ieeexplore.ieee.org/document/7958569) |
+| **GAZELLE (Juvekar et al.)** | 2018 | HE + garbled circuits | Hybrid: BFV for linear layers, garbled circuits for ReLU; first sub-second private inference on a CNN [[1]](https://www.usenix.org/conference/usenixsecurity18/presentation/juvekar) |
+| **CrypTen (Facebook AI)** | 2021 | 3-party secret sharing | Open-source framework; secret-shared arithmetic and Boolean MPC for PyTorch models; practical benchmarks [[1]](https://arxiv.org/abs/2109.00984) |
+| **Cheetah (Huang et al.)** | 2022 | HE + correlated OT | Efficient homomorphic convolution with low-communication correlated-OT-based nonlinear layers; ~3× faster than GAZELLE [[1]](https://www.usenix.org/conference/usenixsecurity22/presentation/huang-zhicong) |
+| **Iron (Hao et al.)** | 2022 | HE (CKKS) | Transformer inference using CKKS; first practical private GPT-2 inference end-to-end [[1]](https://proceedings.neurips.cc/paper_files/paper/2022/hash/0a4729f16e04f59a3f37b3ab1b4c2fcf-Abstract-Conference.html) |
+| **BumbleBee / BOLT** | 2023 | HE + MPC hybrid | Efficient private inference for BERT-scale transformers; reduces communication by ~10× vs Iron [[1]](https://eprint.iacr.org/2023/1678) |
+
+**State of the art:** Hybrid HE+MPC frameworks (Cheetah, BOLT) achieve practical latency for image classification; transformer-scale private inference (Iron, BumbleBee) remains expensive but feasible. Active area bridging [HE](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-he), [MPC](categories/06-multi-party-computation.md#secure-multi-party-computation-mpc), and [Confidential ML / TEE-Based Inference](#confidential-ml--tee-based-inference).
+
+---
+
+## Federated Learning Security: Poisoning & Byzantine Robustness
+
+**Goal:** Train a global model across untrusted participants without a central data repository — while defending against malicious clients who submit poisoned gradients to corrupt the model or infer others' private training data. Security properties include Byzantine robustness, backdoor resistance, and gradient-inversion defenses.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **FedAvg (McMahan et al.)** | 2017 | Gradient averaging | Baseline federated learning algorithm; insecure against Byzantine clients by construction [[1]](https://arxiv.org/abs/1602.05629) |
+| **Krum (Blanchard et al.)** | 2017 | Robust aggregation | First Byzantine-robust aggregation rule; selects the update closest to its n−f−2 neighbors; provably tolerates f Byzantine clients [[1]](https://proceedings.neurips.cc/paper/2017/hash/f4b9ec30ad9f68f89b29639786cb62ef-Abstract.html) |
+| **Gradient Inversion / DLG (Zhu et al.)** | 2019 | Optimization-based attack | Reconstruct training images pixel-accurately from shared gradients; motivates gradient noise and compression defenses [[1]](https://proceedings.neurips.cc/paper/2019/hash/60a6c4002cc7b29142def8871531281a-Abstract.html) |
+| **Flame (Nguyen et al.)** | 2022 | Clustering + noise | Cluster client updates, prune outliers, add DP noise; robust to both model-poisoning and backdoor attacks [[1]](https://www.usenix.org/conference/usenixsecurity22/presentation/nguyen) |
+| **FLTrust (Cao et al.)** | 2022 | Server-side trust scores | Server computes a trusted reference gradient on a small clean dataset; down-weights client updates by cosine similarity [[1]](https://arxiv.org/abs/2012.13995) |
+| **FLGUARD / Secure Aggregation + DP** | 2023 | MPC + DP | Combines cryptographic secure aggregation (Bonawitz et al.) with DP noise; hides individual updates and provides poisoning resistance [[1]](https://arxiv.org/abs/2101.02281) |
+
+**State of the art:** Byzantine-robust aggregation (Krum, FLTrust) and secure aggregation with DP are the main defenses; no single scheme handles all attack vectors simultaneously. Gradient inversion remains an open problem without DP or compression. Interacts with [Differential Privacy in ML](#differential-privacy-in-ml-dp-sgd) and [Secure Aggregation](categories/06-multi-party-computation.md#secure-multi-party-computation-mpc).
+
+---
+
+## Model Extraction Attacks & Defenses
+
+**Goal:** Prevent an adversary from reconstructing a proprietary ML model by querying its inference API. A model extraction attack adaptively queries the model to build a surrogate with equivalent accuracy and decision boundaries — stealing intellectual property without accessing weights directly. Defenses use rate limiting, output perturbation, watermarking, or cryptographic query auditing.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Tramer et al. Stealing ML Models** | 2016 | Equation-solving queries | First systematic study; polynomial-query exact extraction of logistic regression, SVMs, and shallow neural nets via API [[1]](https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/tramer) |
+| **Knockoff Nets (Orekondy et al.)** | 2019 | Active learning queries | Transfer-learning based extraction of deep CNNs using adaptive query selection; matches victim accuracy with ≤20 K queries [[1]](https://openaccess.thecvf.com/content_CVPR_2019/html/Orekondy_Knockoff_Nets_Stealing_Functionality_of_Black-Box_Models_CVPR_2019_paper.html) |
+| **PRADA (Juuti et al.)** | 2019 | Query pattern detection | Detect extraction attacks by monitoring the distribution of incoming queries; flags abnormal query sequences [[1]](https://ieeexplore.ieee.org/document/8806737) |
+| **Prediction Poisoning (Orekondy et al.)** | 2020 | Adversarial perturbation of outputs | Minimally perturb API outputs to maximize surrogate model degradation without harming legitimate users [[1]](https://arxiv.org/abs/1906.10908) |
+| **Cryptographic Model Fingerprinting (Cao et al.)** | 2021 | Backdoor + ZK proof | Embed a verifiable fingerprint (secret backdoor pattern) in the model; owner proves ownership via ZK without revealing the trigger [[1]](https://www.usenix.org/conference/usenixsecurity21/presentation/cao) |
+| **SEAT (Li et al.)** | 2023 | Watermark-based ownership | Dataset watermarking that survives extraction; verify ownership of a stolen surrogate using statistical hypothesis test [[1]](https://arxiv.org/abs/2301.10205) |
+
+**State of the art:** No defense simultaneously prevents extraction and maintains full utility; watermarking-based ownership verification (SEAT, fingerprinting) is the pragmatic approach. Cryptographic ZK-based model ownership proofs remain nascent. Related to [Cryptographic Watermarking for AI / Pseudorandom Codes](#cryptographic-watermarking-for-ai--pseudorandom-codes) and [Confidential ML / TEE-Based Inference](#confidential-ml--tee-based-inference).
+
+---
+
+## Differential Privacy in ML (DP-SGD)
+
+**Goal:** Train machine learning models with a formal, mathematically provable privacy guarantee. Differentially private stochastic gradient descent (DP-SGD) clips per-sample gradients and adds calibrated Gaussian noise each iteration, so the trained model's parameters reveal no individual training record with probability bounded by (ε, δ).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Dwork et al. Differential Privacy** | 2006 | Randomized response + composition | Foundational definition: changing one record changes output distribution by at most e^ε; composition and post-processing theorems [[1]](https://link.springer.com/chapter/10.1007/11681878_14) |
+| **DP-SGD (Abadi et al.)** | 2016 | Gradient clipping + Gaussian noise | Clip per-sample gradients to L2 norm C, add N(0, σ²C²I) noise; moments accountant tracks privacy loss across iterations; CCS 2016 [[1]](https://dl.acm.org/doi/10.1145/2976749.2978318) |
+| **Rényi DP / RDP Accountant (Mironov)** | 2017 | Rényi divergence | Tighter privacy accounting via Rényi divergence; composes better than (ε, δ)-DP under subsampling [[1]](https://ieeexplore.ieee.org/document/8049725) |
+| **Privacy Amplification by Subsampling** | 2019 | Poisson subsampling | Randomly subsampling a fraction q of data amplifies privacy from ε to O(qε); fundamental to practical DP-SGD [[1]](https://proceedings.mlr.press/v97/zhu19c.html) |
+| **Opacus (Meta)** | 2021 | DP-SGD library | Production DP training library for PyTorch; per-sample gradient computation via functorch; used in production ML systems [[1]](https://arxiv.org/abs/2109.12298) |
+| **Handcrafted Backdoors in DP Models (Bagdasaryan et al.)** | 2022 | DP does not prevent poisoning | Shows DP-SGD does not prevent model poisoning; privacy and robustness are orthogonal properties [[1]](https://arxiv.org/abs/2204.00032) |
+
+**State of the art:** DP-SGD with RDP accounting and privacy amplification by subsampling is the standard approach; Opacus and TensorFlow Privacy are the main libraries. Typical deployments target ε ∈ [1, 10] with meaningful utility. DP and robustness are orthogonal — see [Federated Learning Security](#federated-learning-security-poisoning--byzantine-robustness). Foundational to [Differential Privacy](categories/10-privacy-preserving-computation.md#differential-privacy) in the broader privacy-preserving computation context.
+
+---
+
 ## Acoustic Cryptanalysis
 
 **Goal:** Recover cryptographic secret keys by analysing the high-frequency sound emitted by a computer's electronic components (capacitors, coils) during cryptographic computation — a completely passive, software-free side channel exploitable with commodity microphones.

@@ -892,3 +892,733 @@ The GSMA operates a GSMA Certificate Issuer (CI) and issues Sub-CI certificates 
 **State of the art:** GSMA SGP.22 v3.1 (2023) [[1]](https://www.gsma.com/solutions-and-impact/technologies/esim/gsma_resources/sgp-22-v3-1/); SGP.32 v1.0 (2023) for IoT [[2]](https://www.gsma.com/solutions-and-impact/technologies/esim/esim-specification/). Post-quantum secure channel research active [[3]](https://eprint.iacr.org/2024/2005.pdf). See [EMV Cryptographic Authentication](#emv-cryptographic-authentication) and [TEE Remote Attestation](#tee-remote-attestation).
 
 ---
+
+## PKCS#7 / CMS — Cryptographic Message Syntax
+
+**Goal:** Provide a general-purpose, ASN.1-encoded container format for cryptographically protected messages — supporting digital signatures, encryption, and authenticated envelopes over arbitrary content. CMS is the foundation of S/MIME, code signing (Authenticode), PKCS#12 key stores, RPKI signed objects, and many PKI protocols.
+
+Originally PKCS#7 (RSA Security, 1993); superseded and extended by CMS (RFC 5652, 2009) as an IETF standard.
+
+**Top-level content types:**
+
+| CMS ContentType OID | Purpose | Typical use |
+|---|---|---|
+| `id-data` (1.2.840.113549.1.7.1) | Raw octet string | Plaintext payload |
+| `id-signedData` (1.2.840.113549.1.7.2) | One or more signatures over content | S/MIME signed mail, code signing, RPKI |
+| `id-envelopedData` (1.2.840.113549.1.7.3) | Encrypted for one or more recipients | S/MIME encrypted mail |
+| `id-digestedData` (1.2.840.113549.1.7.5) | Content + digest only (no signature) | Integrity without authentication |
+| `id-encryptedData` (1.2.840.113549.1.7.6) | Symmetrically encrypted; key managed externally | Password-protected archives |
+| `id-authEnvelopedData` (RFC 5083) | AEAD encryption (AES-GCM, AES-CCM) | Authenticated encryption for messages |
+
+**SignedData structure (most common):**
+```
+SignedData ::= SEQUENCE {
+  version          CMSVersion,
+  digestAlgorithms DigestAlgorithmIdentifiers,   -- e.g., SHA-256
+  encapContentInfo EncapsulatedContentInfo,       -- the signed content (or detached)
+  certificates     [0] IMPLICIT CertificateSet OPTIONAL,
+  crls             [1] IMPLICIT RevocationInfoChoices OPTIONAL,
+  signerInfos      SET OF SignerInfo
+}
+
+SignerInfo ::= SEQUENCE {
+  version            CMSVersion,
+  sid                SignerIdentifier,     -- issuerAndSerialNumber or subjectKeyIdentifier
+  digestAlgorithm    AlgorithmIdentifier, -- SHA-256
+  signedAttrs        [0] IMPLICIT Attributes OPTIONAL,
+  signatureAlgorithm AlgorithmIdentifier, -- e.g., id-RSASSA-PSS or ecdsa-with-SHA256
+  signature          OCTET STRING,
+  unsignedAttrs      [1] IMPLICIT Attributes OPTIONAL
+}
+```
+
+**Signed attributes (authenticated metadata in SignerInfo):**
+
+| Attribute OID | Content | Required |
+|---|---|---|
+| `id-contentType` | OID of the encapsulated content | Yes |
+| `id-signingTime` | UTCTime / GeneralizedTime of signing | Common |
+| `id-messageDigest` | SHA-256 of the encapsulated content | Yes |
+| `id-countersignature` | Unsigned: timestamping co-signer | Optional |
+| `id-aa-signingCertificateV2` (RFC 5035) | Hash of the signing certificate; prevents cert substitution attacks | Recommended |
+
+**EnvelopedData (encryption to recipients):**
+```
+EnvelopedData ::= SEQUENCE {
+  version          CMSVersion,
+  recipientInfos   RecipientInfos,    -- one entry per recipient; each contains encrypted CEK
+  encryptedContent EncryptedContentInfo
+}
+-- CEK (Content Encryption Key) encrypted per recipient via:
+--   KeyTransRecipientInfo: RSA-OAEP wraps CEK (for RSA recipients)
+--   KeyAgreeRecipientInfo: ECDH + AES-KeyWrap (for EC recipients)
+--   KEKRecipientInfo: pre-shared symmetric KEK wraps CEK
+```
+
+**Content encryption algorithms (RFC 3565, RFC 5084):**
+- AES-128/192/256-CBC (legacy) — `id-aes256-CBC`
+- AES-128/256-GCM (RFC 5084) — `id-aes256-GCM`; provides authenticated encryption; preferred in modern CMS
+
+**CMS and PKCS#12:** PKCS#12 (PFX) files — the `.p12`/`.pfx` format used to export private key + cert chain — use nested CMS `EncryptedData` and `SafeBag` structures internally.
+
+**State of the art:** RFC 5652 (CMS, 2009); RFC 5083 (AuthEnvelopedData with AEAD); RFC 8933 (2020, updates CMS for SHA-3 and modern algorithms). Implemented in OpenSSL (`openssl cms`), Bouncy Castle, and Microsoft's `System.Security.Cryptography.Pkcs`. Foundation for [S/MIME](#smime--securemultipurpose-internet-mail-extensions), [Code Signing](#code-signing--authenticode-apple-notarization-android-signing), and [RPKI](#rpki--resource-public-key-infrastructure).
+
+---
+
+## S/MIME — Secure/Multipurpose Internet Mail Extensions
+
+**Goal:** Apply CMS-based digital signatures and encryption to MIME-formatted email, enabling end-to-end authentication of sender identity and confidentiality of message content — using each party's X.509 certificate as the basis of trust.
+
+**S/MIME versions and RFCs:**
+
+| Version | RFC | Year | Notes |
+|---|---|---|---|
+| S/MIME v2 | RFC 2311–2315 | 1998 | RC2/RC5; deprecated |
+| **S/MIME v3.2** | RFC 5751 | 2010 | RSA + AES; current baseline |
+| **S/MIME v4.0** | RFC 8551 | 2019 | AES-GCM AuthEnvelopedData; EdDSA; deprecates weak algs |
+
+**Message types (MIME content types):**
+
+| Operation | MIME type | CMS type inside |
+|---|---|---|
+| Signed (opaque) | `application/pkcs7-mime; smime-type=signed-data` | `SignedData` |
+| Signed (clear-sign) | `multipart/signed; protocol="application/pkcs7-signature"` | Detached `SignedData` |
+| Encrypted | `application/pkcs7-mime; smime-type=enveloped-data` | `EnvelopedData` |
+| Signed + Encrypted | Nested: sign first, then encrypt | `EnvelopedData` wrapping `SignedData` |
+| Cert-only | `application/pkcs7-mime; smime-type=certs-only` | Degenerate `SignedData` |
+
+**Signing flow (clear-sign multipart):**
+```
+From: alice@example.com
+Content-Type: multipart/signed; protocol="application/pkcs7-signature";
+              micalg="sha-256"; boundary="boundary"
+
+--boundary
+Content-Type: text/plain
+Hello, Bob.
+
+--boundary
+Content-Type: application/pkcs7-signature
+<DER-encoded detached SignedData: SignerInfo with Alice's cert + ECDSA sig over message>
+--boundary--
+```
+- Clear-signed messages remain readable in non-S/MIME clients
+- Opaque signed messages wrap the body inside the CMS object (not human-readable without S/MIME support)
+
+**Encryption flow:**
+1. Sender fetches recipient's X.509 certificate (from LDAP, SMIMEA DNS record, or prior signed email)
+2. Generates random CEK (AES-256)
+3. Encrypts CEK with recipient's RSA-OAEP or ECDH public key → `KeyTransRecipientInfo`
+4. Encrypts message body with CEK under AES-256-GCM (S/MIME v4) or AES-256-CBC (v3.2)
+5. Sends `EnvelopedData` MIME part; only the recipient's private key can decrypt
+
+**Certificate trust in S/MIME:**
+- Certificates issued by commercial CAs (DigiCert, Sectigo, GlobalSign) under the S/MIME Baseline Requirements (CA/B Forum, adopted 2022)
+- S/MIME BR defines four certificate profiles: Mailbox-Validated, Organization-Validated, Sponsor-Validated, Individual-Validated
+- CA/B Forum mandates S/MIME certificates be logged to Certificate Transparency logs (2024 requirement)
+
+**Key discovery via SMIMEA (RFC 8162):** Publishing `_smimecert._tcp.user.example.com` TLSA-like records in DNSSEC-signed DNS allows senders to automatically discover a recipient's certificate. Eliminates manual cert exchange.
+
+**Deployment:** Outlook (Windows/Mac), Apple Mail, Thunderbird (with add-ons), iOS Mail all support S/MIME. Enterprise deployments via Microsoft Exchange / Purview (formerly IRM), Symantec/Broadcom Email Security. Declining in consumer use relative to Signal/WhatsApp; dominant in regulated industries (healthcare, finance, government) where non-repudiation and legal admissibility matter.
+
+**Comparison to PGP/OpenPGP:** S/MIME uses X.509 certificates with CA-based trust; OpenPGP uses a web-of-trust model with self-signed keys. S/MIME is better for enterprise (centralized CA); OpenPGP is better for decentralized trust. Both are end-to-end encrypted.
+
+**State of the art:** RFC 8551 (S/MIME v4.0, 2019); CA/B Forum S/MIME Baseline Requirements v1.0 (2022). AES-256-GCM and EdDSA are the recommended algorithms in v4.0. See [PKCS#7 / CMS](#pkcs7--cms--cryptographic-message-syntax), [DNSSEC-Based Key Infrastructure](#dnssec-based-key-infrastructure-sshfp-tlsa-smimea), and [Certificate Transparency](#certificate-transparency-ct).
+
+---
+
+## Code Signing — Authenticode, Apple Notarization, Android Signing
+
+**Goal:** Cryptographically bind an executable, installer, or app package to its publisher's identity — so that an operating system, app store, or end user can verify that the software was produced by a known entity and has not been modified since signing. Prevents supply-chain tampering and enables OS-level execution policy (e.g., only run signed code).
+
+**Platform comparison:**
+
+| Platform | Scheme | Certificate source | OS enforcement |
+|---|---|---|---|
+| **Windows (Authenticode)** | CMS/PKCS#7 SignedData over PE hash | EV Code Signing cert from CA/B Forum CA | SmartScreen, Driver signing (WHQL), WDAC |
+| **macOS (Apple code signing)** | Apple-internal CMS; Mach-O signature embedded | Apple Developer ID certificate (Apple CA) | Gatekeeper, SIP; mandatory for distribution |
+| **macOS notarization** | Additional Apple online approval after signing | Same Developer ID cert | Gatekeeper ticket stapled to bundle |
+| **iOS / iPadOS** | Apple-internal; embedded in IPA | Apple distribution certificate | App Store mandatory; sideload restricted |
+| **Android (APK signing)** | JAR signing (v1), APKv2, APKv3, APKv4 | Self-signed developer key (no CA) | Play Protect; install-time verification |
+| **Linux (Secure Boot)** | PE/COFF with PKCS#7 sig (shim/UEFI db) | Distribution key or OEM key | UEFI db allowlist |
+| **NuGet / npm / PyPI** | Sigstore keyless signing (OIDC + cosign) | Ephemeral cert from Fulcio | Package manager verification |
+
+**Windows Authenticode (PE signing):**
+```
+1. Compute Authenticode hash:
+   - Parse PE headers; skip the checksum field, security directory, and certificate table
+   - Hash remaining PE content with SHA-256
+2. Build PKCS#7 SpcIndirectDataContent:
+   SpcIndirectDataContent ::= SEQUENCE {
+     data     SpcAttributeTypeAndOptionalValue,  -- PE image digest
+     messageDigest DigestInfo                    -- SHA-256 of the above
+   }
+3. Wrap in CMS SignedData; include publisher's EV Code Signing cert + chain
+4. Embed resulting DER blob in PE Security Directory (offset 0x98 in optional header)
+```
+
+**Dual signatures (SHA-1 + SHA-256):** Windows supports co-signatures — a single PE file can carry both a SHA-1 signature (for legacy Windows XP/Vista) and a SHA-256 signature (for Windows 7+) simultaneously using the `2.16.840.1.114421.1.7.23.2` (`szOID_NESTED_SIGNATURE`) unsigned attribute.
+
+**Timestamping (RFC 3161):** Code signing certs expire; a countersignature from a TSA (Timestamp Authority) embeds a signed timestamp in the CMS `unsignedAttrs`. The OS accepts signatures where `timestamp.signingTime < cert.notAfter` even after the signing cert expires. Symantec, DigiCert, Sectigo all operate TSAs.
+
+**macOS Notarization flow (2023):**
+```
+1. Developer signs app with Developer ID Application cert (hardened runtime required)
+2. xcrun notarytool submit app.zip --apple-id ... --password ...
+   -> Uploads to Apple notarization service (online)
+3. Apple scans for malware; checks entitlements; verifies code signature
+4. Apple issues notarization ticket (signed staple)
+5. xcrun stapler staple app.app
+   -> Ticket embedded in app bundle; Gatekeeper verifies offline
+```
+Without notarization, macOS Gatekeeper blocks unsigned apps with "cannot be opened" dialogs.
+
+**Android APK signing scheme evolution:**
+
+| Version | Introduced | Scope | Key feature |
+|---|---|---|---|
+| **v1 (JAR signing)** | Android 1.0 | Per-file ZIP entries | Based on PKCS#7; slow; ZIP alignment issues |
+| **v2** | Android 7.0 (API 24) | Entire APK bytes | Covers APK as a whole; faster verification |
+| **v3** | Android 9.0 (API 28) | APK + key rotation | Adds signing certificate lineage for key rotation |
+| **v3.1** | Android 13 (API 33) | v3 + SDK targeting | Per-SDK platform version signing |
+| **v4** | Android 11 (API 30) | Incremental FS | fs-verity-based; streaming verification |
+
+Android signing uses developer-held self-signed certs (no CA); the same certificate must sign all updates to an app. Play App Signing (optional) lets Google hold the upload key, providing key recovery for lost developer keys.
+
+**Driver signing (Windows KMCS):** Kernel-mode code requires Microsoft cross-signature (pre-2015) or attestation signing via the Windows Hardware Dev Center (WHQL portal). Since Windows 10 1607 (Anniversary Update), new third-party kernel modules must be signed by Microsoft's WHQL attestation service — not just by the developer.
+
+**State of the art:** Authenticode defined in Microsoft PE/COFF specification + RFC 5652; RFC 3161 (TSA). Apple notarization requirements tightened annually (hardened runtime mandatory since 2019). Android APKv3.1 current. Sigstore keyless signing increasingly used for open-source packages (PyPI PEP 740, npm provenance). See [PKCS#7 / CMS](#pkcs7--cms--cryptographic-message-syntax) and [Sigstore / Keyless Code Signing](#sigstore--keyless-code-signing).
+
+---
+
+## Certificate Transparency (CT)
+
+**Goal:** Make TLS certificate issuance publicly auditable by requiring all WebPKI certificates to be submitted to publicly accessible, append-only, cryptographically verifiable logs before browsers accept them. Detects rogue or mis-issued certificates within hours of issuance rather than months or years.
+
+**Core cryptographic structure — Merkle Hash Tree:**
+```
+Tree over all log entries (each entry = one certificate + metadata):
+
+                [Root Hash]
+               /            \
+        [Hash(L,R)]        [Hash(L,R)]
+        /       \           /       \
+  [H(cert0)] [H(cert1)] [H(cert2)] [H(cert3)]
+```
+- Each leaf: `SHA-256(0x00 || leaf_input)` where leaf_input encodes the certificate and timestamp
+- Each internal node: `SHA-256(0x01 || left_child || right_child)`
+- The Signed Tree Head (STH) = `{tree_size, timestamp, root_hash}` signed by the log's ECDSA key
+
+**Signed Certificate Timestamp (SCT):**
+```
+SCT structure (TLS extension, OCSP, or embedded X.509 extension):
+  {
+    version:    1,
+    log_id:     SHA-256(log's public key),   -- identifies which log
+    timestamp:  milliseconds since epoch,
+    extensions: (empty or domain name hint),
+    signature:  ECDSA-P256 over (version || signature_type || timestamp || entry_type || cert_data)
+  }
+```
+The SCT is a promise from the log operator: "This certificate will be included in our append-only log within the Maximum Merge Delay (MMD), typically 24 hours."
+
+**CT delivery mechanisms:**
+
+| Method | Where SCT travels | Notes |
+|---|---|---|
+| **TLS extension** (RFC 6962) | In TLS handshake `signed_certificate_timestamp` extension | Server sends without cert modification |
+| **OCSP stapling** | Embedded in stapled OCSP response | Server fetches from log; staples to handshake |
+| **X.509 extension** | In leaf certificate OID `1.3.6.1.4.1.11129.2.4.2` | CA embeds at issuance time; most common for WebPKI |
+
+**CT v2 (RFC 9162, 2022):** Replaces RFC 6962; introduces:
+- Structured leaf data (SctVersion + LogID as structured fields)
+- Improved inclusion/consistency proofs
+- `tile`-based log retrieval (more efficient for mirrors and monitors)
+- Support for pre-certificates and final certificates both
+
+**Browser CT policy:**
+- **Chrome:** Requires 2 SCTs from distinct CT logs for certificates with lifetime ≤180 days; 3 SCTs for lifetime >15 months; enforced since April 2018
+- **Safari (Apple):** Requires 2 SCTs for certs ≤180 days, 3 for longer; enforced since October 2018
+- **Firefox:** Currently relies on Chrome/Apple's CT logs list; CT hard-fail enforcement planned
+
+**Merkle inclusion proof:**
+```
+To prove cert[i] is in a tree of size n, the log provides:
+  - The leaf hash for cert[i]
+  - O(log n) sibling hashes (the audit path)
+Client verifies: recompute root from leaf + audit path == published root hash
+```
+This allows any party to verify inclusion without downloading the full log.
+
+**CT monitoring and transparency ecosystem:**
+- **crt.sh** (Sectigo) — public search over all CT logs; monitors for unexpected issuance
+- **Google Trillian** — open-source Merkle log framework powering many CT logs
+- **Certificate Transparency Policy (CA/B Forum)** — CAs must submit to qualified CT logs
+- **CT log list** — Chrome and Apple each maintain lists of qualified logs; certificates must have SCTs from logs on these lists
+
+**Limitation:** CT detects but does not prevent mis-issuance. A rogue CA can issue a certificate and it will appear in logs — but only after the fact. Domain owners must actively monitor CT logs (via crt.sh, Facebook CT monitor, etc.) to discover unauthorized certificates.
+
+**State of the art:** RFC 9162 (CT v2, 2022); Chrome and Safari enforce CT for all public certificates. Over 10 billion certificates logged (2024). Sigstore Rekor uses a CT-compatible Merkle log for software artifact signatures. See [CAA / Certification Authority Authorization](#caa--certification-authority-authorization), [OCSP Stapling and Certificate Revocation](#ocsp-stapling-and-certificate-revocation), and [Sigstore / Keyless Code Signing](#sigstore--keyless-code-signing).
+
+---
+
+## COSE / CWT — CBOR Object Signing and Encryption
+
+**Goal:** Provide a compact, binary encoding for signed and encrypted messages — analogous to JOSE/JWT but using CBOR (Concise Binary Object Representation) instead of JSON. Designed for constrained IoT devices, mobile credentials (ISO 18013-5 mDL), and protocols where JSON is too verbose.
+
+**Relationship to JOSE:**
+
+| Concept | JOSE (JSON-based) | COSE (CBOR-based) | RFC |
+|---|---|---|---|
+| Signed message | JWS (JSON Web Signature) | COSE_Sign / COSE_Sign1 | RFC 7515 / RFC 9052 |
+| Encrypted message | JWE (JSON Web Encryption) | COSE_Encrypt / COSE_Encrypt0 | RFC 7516 / RFC 9052 |
+| Key format | JWK | COSE_Key | RFC 7517 / RFC 9052 |
+| Token | JWT | CWT (CBOR Web Token) | RFC 7519 / RFC 8392 |
+| MAC | JWS with HMAC | COSE_Mac / COSE_Mac0 | RFC 7515 / RFC 9052 |
+
+**COSE message types (CBOR tag):**
+
+| Tag | Name | Use |
+|---|---|---|
+| 18 | `COSE_Sign1` | Single-signer; most common |
+| 98 | `COSE_Sign` | Multi-signer |
+| 16 | `COSE_Encrypt0` | Single-recipient symmetric encryption |
+| 96 | `COSE_Encrypt` | Multi-recipient |
+| 17 | `COSE_Mac0` | Single-key MAC |
+| 97 | `COSE_Mac` | Multi-key MAC |
+
+**COSE_Sign1 structure (CBOR diagnostic notation):**
+```
+/ COSE_Sign1 / 18(
+  [
+    / protected /   h'a10126',       -- {1: -7} = alg: ES256 (ECDSA P-256)
+    / unprotected / {4: h'...'},     -- {4: kid} key ID
+    / payload /     h'...',          -- the data being signed (or nil if detached)
+    / signature /   h'...'           -- 64-byte ECDSA P-256 signature
+  ]
+)
+```
+The protected header is serialized to bytes and included in the signature computation as a CBOR bstr; this prevents header stripping attacks.
+
+**COSE algorithm identifiers (selected):**
+
+| COSE alg ID | Algorithm | Notes |
+|---|---|---|
+| -7 | ES256 (ECDSA P-256 + SHA-256) | Most common; WebAuthn default |
+| -8 | EdDSA (Ed25519 or Ed448) | Compact; efficient verification |
+| -35 | ES384 (ECDSA P-384 + SHA-384) | Higher security level |
+| -37 | PS256 (RSASSA-PSS + SHA-256) | RSA; larger signatures |
+| 1 | AES-GCM-128 | Encryption |
+| 3 | AES-GCM-256 | Encryption |
+| -6 | HMAC-SHA256/64 (truncated) | MAC |
+| -16 | SHA-256 | Digest |
+
+**CBOR Web Token (CWT, RFC 8392):**
+
+CWT is to COSE as JWT is to JWS — a COSE_Sign1 (or COSE_Mac0) wrapping a CBOR map of standard claims:
+
+```
+/ CWT / COSE_Sign1([
+  protected:   {1: -7},            -- alg: ES256
+  unprotected: {},
+  payload: {
+    1:  "issuer.example.com",      -- iss
+    2:  "subject@example.com",     -- sub
+    4:  1735689600,                -- exp (UNIX timestamp)
+    5:  1704067200,                -- nbf
+    8:  h'...',                    -- cnf: proof-of-possession key
+  },
+  signature: h'...'
+])
+```
+
+**Major deployments:**
+
+| Application | Uses COSE/CWT because |
+|---|---|
+| **ISO 18013-5 mDL** (mobile driver's license) | Device-signed COSE_Sign1 over CBOR-encoded credential; NFC/BLE offline verification |
+| **EU EUDI Wallet** (eIDAS 2.0) | SD-JWT and mdoc both support COSE; mdoc format uses COSE_Sign1 |
+| **FIDO2 / WebAuthn** | `authenticatorData` and attestation objects CBOR-encoded; algorithms identified by COSE alg IDs |
+| **IETF RATS / EAT** | Entity Attestation Token (RFC 9528) is a CWT carrying hardware attestation claims |
+| **W3C Verifiable Credentials** | VC-JOSE-COSE profile uses COSE_Sign1 as alternative to JWT |
+| **CoAP / OSCORE** | OSCORE (RFC 8613) uses COSE_Encrypt0 to protect CoAP messages end-to-end |
+
+**EAT (Entity Attestation Token, RFC 9528):** A CWT profile for device attestation — carries claims like `UEID` (unique device identifier), `boot-seed`, `sw-components` (measured firmware layers), and `nonce`. Used by IETF RATS to express TEE / DICE attestation evidence as a standard token.
+
+**COSE vs JOSE size (ES256 signed 100-byte payload):**
+- JWS compact serialization: ~400 bytes (Base64url overhead)
+- COSE_Sign1: ~200 bytes (binary CBOR; no Base64 encoding)
+
+**State of the art:** RFC 9052 (COSE, 2022, replaces RFC 8152); RFC 8392 (CWT, 2018); RFC 9528 (EAT, 2024). Implementations: python-cwt, go-cose, cose-js, Bouncy Castle. Mandatory in ISO 18013-5 (mDL) and EU EUDI Wallet. See [W3C DID and Verifiable Credentials](#w3c-decentralized-identifiers-did-and-verifiable-credentials), [TEE Remote Attestation](#tee-remote-attestation), and [FIDO2 / WebAuthn / Passkeys](#fido2--webauthn--passkeys).
+
+---
+
+## AMD SEV-SNP — Attestation Report Structure
+
+**Goal:** Enable a confidential virtual machine (CVM) running under AMD Secure Encrypted Virtualization with Secure Nested Paging (SEV-SNP) to prove to a remote verifier — cryptographically and without trusting the hypervisor — that it is a genuine AMD SEV-SNP VM running an unmodified guest image, and to bind arbitrary user data (such as a public key or nonce) to that attestation.
+
+AMD SEV-SNP (2021) extends earlier AMD SEV (memory encryption) and SEV-ES (register state encryption) by adding memory integrity protection via a Reverse Map Table (RMP), preventing the hypervisor from remapping, aliasing, or replaying guest memory pages.
+
+**Attestation report structure (AMD SEV-SNP ABI specification §7.3):**
+
+```
+struct snp_attestation_report {
+  uint8_t  version;            // Report version (current: 2)
+  uint8_t  guest_svn;          // Guest security version number
+  uint64_t policy;             // Guest policy: SMT allowed, min ABI version, debug, migrate-MA
+  uint8_t  family_id[16];      // Family UUID (set by hypervisor)
+  uint8_t  image_id[16];       // Image UUID (set by hypervisor)
+  uint32_t vmpl;               // VMPL level (0–3) at which report was requested
+  uint32_t signature_algo;     // 1 = ECDSA P-384 with SHA-384
+  struct tcb_version platform_version;  // Current TCB version (microcode, SNP FW, etc.)
+  uint64_t platform_info;      // SMT enabled, TSME enabled flags
+  uint8_t  measurement[48];    // SHA-384 of the initial guest memory (OVMF / kernel)
+  uint8_t  host_data[32];      // Hypervisor-provided opaque blob (e.g., policy hash)
+  uint8_t  id_key_digest[48];  // SHA-384 of the ID key used to sign the launch
+  uint8_t  author_key_digest[48];
+  uint8_t  report_id[32];      // Random report ID; fresh per attestation
+  uint8_t  report_id_ma[32];   // Migration agent report ID
+  struct tcb_version reported_tcb;
+  uint8_t  chip_id[64];        // SHA-384(VCEK public key) — unique per chip
+  uint8_t  report_data[64];    // User-supplied data (nonce, public key hash, etc.)
+  // ... signature covers all fields above
+  struct ecdsa_sig signature;  // ECDSA P-384 signature by VCEK or VLEK
+};
+```
+
+**Signing key hierarchy:**
+
+| Key | Full name | Scope | Certified by |
+|-----|-----------|-------|-------------|
+| **ARK** | AMD Root Key | AMD global root | Self-signed |
+| **ASK** | AMD SEV Key | Per-product family | ARK |
+| **VCEK** | Versioned Chip Endorsement Key | Per-chip + TCB version | ASK |
+| **VLEK** | Versioned Loaded Endorsement Key | Per-cloud-provider | ASK (via AMD KDS) |
+
+The VCEK is unique to each physical CPU chip and the currently installed TCB version (microcode + SNP firmware). The AMD Key Distribution Service (KDS) issues VCEK certificates at `kds.amd.com/vcek/{product}/{chip_id}?blSPL=...&teeSPL=...&snpSPL=...&ucodeSPL=...`. A relying party downloads the VCEK certificate from KDS and verifies the attestation report signature against it.
+
+**Attestation flow:**
+
+```
+1. Guest calls sev-guest driver: ioctl(SNP_GET_REPORT, {user_data: nonce || pub_key_hash})
+2. PSP (Platform Security Processor) generates attestation report; signs with VCEK (ECDSA P-384)
+3. Guest forwards report + VCEK cert chain to verifier
+4. Verifier:
+   a. Downloads ARK + ASK from AMD; verifies cert chain to VCEK
+   b. Verifies ECDSA P-384 signature over the report
+   c. Checks measurement == expected(OVMF + kernel cmdline)
+   d. Checks guest policy: no debug mode, correct minimum TCB
+   e. Checks report_data == committed nonce / public key
+5. If all checks pass: verifier trusts the guest and provisions secrets
+```
+
+**Measurement (initial guest state):** The `measurement` field is a SHA-384 digest of the initial guest memory pages as loaded by the firmware (OVMF), the kernel, and initrd — computed by the AMD PSP before any guest code executes. Any modification to the boot image changes the measurement and invalidates the attestation.
+
+**Guest policy field (64-bit bitmask):**
+- `SMT_ALLOWED` — whether simultaneous multithreading is permitted
+- `DEBUG_ALLOWED` — if set, guest memory can be inspected (report is untrusted for production)
+- `MIGRATE_MA` — migration agent policy
+- `ABI_MAJOR/MINOR` — minimum SNP firmware version required
+
+**Deployment:** Azure Confidential VMs (DCasv5/ECasv5), Google Cloud Confidential VMs (N2D/C2D), AWS (on AMD Epyc via SEV-SNP preview). Used for confidential ML inference (NVIDIA H100 integrates with SEV-SNP attestation via NVIDIA HOPPER Confidential Computing), key release policies in Azure mHSM, and cryptographic protocol binding for confidential enclaves.
+
+**State of the art:** AMD SEV-SNP ABI specification v1.55 (2023) [[1]](https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/56860.pdf); IETF draft-ietf-rats-sev-snp (2024). See [TEE Remote Attestation](#tee-remote-attestation) and [Azure Confidential Computing](#azure-confidential-computing--sgx--tdx-attestation).
+
+---
+
+## Azure Confidential Computing — SGX and TDX Attestation
+
+**Goal:** Allow workloads running in Azure confidential VMs and confidential containers to obtain cryptographic proof — verifiable by any external party — that they are executing inside a genuine Intel SGX enclave or Intel TDX Trust Domain, on hardware whose TCB is current, and that their code has not been modified. Azure acts as a coordinating platform but is explicitly excluded from the trust boundary.
+
+**Attestation infrastructure components:**
+
+| Component | Role |
+|-----------|------|
+| **Microsoft Azure Attestation (MAA)** | Cloud attestation service; validates SGX/TDX/AMD SEV-SNP evidence; issues signed JWT attestation tokens |
+| **Intel PCCS** (Provisioning Certificate Caching Service) | Fetches and caches SGX/TDX platform certificates (PCK certs) from Intel PCS |
+| **Intel PCS** (Provisioning Certification Service) | Intel's online service issuing PCK certificates and TCB info |
+| **DCAP** (Data Center Attestation Primitives) | Intel's SDK for generating quotes without calling Intel directly; used in Azure |
+| **Azure vTPM** | Virtual TPM backed by SEV-SNP or TDX; issues TPM quotes for confidential VMs |
+
+**Intel TDX attestation flow in Azure (CVM path):**
+
+```
+1. TD Guest generates a TDREPORT:
+   TD call: TDG.MR.REPORT(report_data=nonce)
+   -> TDREPORT_STRUCT {
+        attributes, xfam,
+        MRTD      (TD measurement — hash of initial TD image),
+        MRCONFIGID, MROWNER, MROWNERCONFIG,
+        RTMR[0..3] (runtime measurements, extended by TD),
+        report_data (64 bytes user data — nonce or pub key hash)
+      }
+   Signed by TD-specific signing key inside TDX module (not exportable)
+
+2. TDREPORT converted to TDX Quote by Quoting Enclave (QE):
+   QE runs in a separate SGX enclave on the same host;
+   QE wraps TDREPORT in a TDX Quote, signs with QE's ECDSA P-256 Attestation Key
+   Quote header includes: QE identity, PCK cert hash, TCB level
+
+3. Quote submitted to MAA (or verified locally with DCAP):
+   MAA fetches PCK cert + TCB info from Intel PCCS
+   Verifies ECDSA signature on Quote
+   Checks PCK cert chain: Intel Root CA → Intel Platform CA → PCK Cert
+   Checks TCB level against Intel's published TCB info (is the platform patched?)
+   Issues signed JWT attestation token:
+     { x-ms-attestation-type: "tdxvm",
+       x-ms-tdx-td-attributes: {...},
+       x-ms-tdx-mrtd: "<base64-measurement>",
+       x-ms-tdx-rtmrs: [...],
+       x-ms-tdx-report-data: "<nonce>",
+       exp, nbf, iss: "https://sharedneu.neu.attest.azure.net" }
+```
+
+**Intel SGX DCAP attestation (used for confidential containers / AKS CoCo):**
+
+```
+Measurement registers:
+  MRENCLAVE — SHA-256 of enclave pages (code + data loaded at initialization)
+  MRSIGNER  — SHA-256 of the enclave signing key (developer identity)
+  ISVSVN    — ISV Security Version Number (monotonic; prevents rollback)
+  ISVPRODID — product ID distinguishes multiple enclaves per signer
+
+ECDSA Quote structure:
+  ISV Report (REPORT): 432 bytes signed by CPU Report Key (hardware)
+  QE Report: signed by QE Attestation Key (ECDSA P-256)
+  QE Certification Data: PCK cert chain (DER)
+  ISV Signature: ECDSA P-256 over ISV Report by QE Attestation Key
+```
+
+**Confidential Containers (Azure AKS CoCo):** Kata Containers + TDX/SNP; each pod runs in its own TD; hardware attestation gates secret injection via Azure Key Vault managed HSM. Policy expressed as Rego (OPA) rules evaluated inside the TD.
+
+**Attestation token (MAA JWT claims):**
+
+| Claim | Meaning |
+|-------|---------|
+| `x-ms-attestation-type` | `"sgxvm"`, `"tdxvm"`, or `"sevsnpvm"` |
+| `x-ms-sgx-mrenclave` | SHA-256 of enclave code |
+| `x-ms-sgx-mrsigner` | SHA-256 of signer key |
+| `x-ms-sgx-is-debuggable` | Must be `false` in production |
+| `x-ms-tdx-mrtd` | TD image measurement |
+| `x-ms-compliance-status` | `"azure-compliant-cvm"` — Azure policy check result |
+
+**Key release via mHSM:** Azure Managed HSM supports secure key release (SKR) — an HSM policy rule specifying an MAA attestation claim predicate. Only an attested CVM that presents a valid MAA token matching the policy can receive the unwrapped key; the HSM verifies the MAA JWT's signature (using MAA's JWKS endpoint) and evaluates the Rego policy.
+
+**State of the art:** Azure Confidential Computing GA (2022); TDX support (2023, DCesv5 VMs); AKS Confidential Containers preview (2024). Intel TDX Module 1.5 specification [[1]](https://cdrdv2.intel.com/v1/dl/getContent/733577). IETF draft-ietf-rats-intel-tee-appraisal (2024). See [TEE Remote Attestation](#tee-remote-attestation) and [AMD SEV-SNP](#amd-sev-snp--attestation-report-structure).
+
+---
+
+## Post-Quantum PKI Transition — Hybrid Certificates
+
+**Goal:** Migrate the global PKI from classical asymmetric algorithms (RSA, ECDSA, ECDH) to post-quantum algorithms (ML-DSA / ML-KEM, SLH-DSA, FN-DSA) in a way that maintains backward compatibility during the multi-year transition period. Hybrid certificates carry both a classical and a post-quantum key and signature simultaneously, ensuring security against both classical adversaries (now) and quantum adversaries (later), without breaking existing relying parties.
+
+**Why a hybrid period is necessary:** A "harvest now, decrypt later" (HNDL) adversary can record TLS traffic today and decrypt it once a sufficiently powerful quantum computer exists. For long-lived certificates (CA roots, code signing, device identity), the classical algorithms may still be active when quantum computers arrive. Hybrid schemes provide defense in depth.
+
+**Hybrid certificate approaches (IETF LAMPS WG, 2024):**
+
+| Approach | Draft | Mechanism | Note |
+|----------|-------|-----------|------|
+| **Composite signatures** | draft-ietf-lamps-pq-composite-sigs | Single X.509 cert; `subjectPublicKeyInfo` holds a CompositePublicKey encoding both keys; `signature` is a CompositeSignature (SEQUENCE of two signatures) | Both classical + PQ sig must verify; backward incompatible |
+| **Composite KEM** | draft-ietf-lamps-pq-composite-kem | `subjectPublicKeyInfo` encodes both KEM keys; combined shared secret = KDF(ss_classical \|\| ss_pq) | Used for TLS hybrid key exchange |
+| **SubjectAltPublicKeyInfo** (SAPKI) | draft-ietf-lamps-cert-binding-for-multi-key | Classical cert + X.509 extension carrying the PQ public key; separate PQ signature in another extension | Backward compatible: old clients ignore the extension |
+| **Dual certificates** | Operational approach | Issue two parallel certs per entity (one classical, one PQ); server presents both in TLS | No cert format changes; requires dual-chain support |
+
+**CompositeSignature OID structure:**
+
+```
+-- Composite ML-DSA-44 with ECDSA-P256 (example)
+id-MLDSA44-ECDSA-P256-SHA256 OBJECT IDENTIFIER ::= { ... }
+
+CompositePublicKey ::= SEQUENCE SIZE (2) OF BIT STRING
+-- [0] ML-DSA-44 public key (1312 bytes)
+-- [1] ECDSA P-256 public key (65 bytes uncompressed)
+
+CompositeSignature ::= SEQUENCE SIZE (2) OF BIT STRING
+-- [0] ML-DSA-44 signature (2420 bytes)
+-- [1] ECDSA P-256 signature (72 bytes DER)
+
+-- Both signatures computed over the same message (with domain separation)
+-- Verification: BOTH must be valid; failure of either = rejection
+```
+
+**Hybrid TLS 1.3 key exchange (deployed today):**
+
+| Hybrid KEM | Classical | PQ | Status |
+|---|---|---|---|
+| `X25519Kyber768Draft00` | X25519 | Kyber-768 (pre-standard) | Deployed by Chrome, Cloudflare (2023) |
+| `x25519_ml_kem_768` (RFC 8446 NamedGroup) | X25519 | ML-KEM-768 | IANA registered; replacing draft Kyber |
+| `SecP256r1MLKEM768` | P-256 ECDH | ML-KEM-768 | NIST SP 800-227 recommendation |
+
+The combined shared secret is `HKDF(ss_X25519 || ss_ML-KEM)`; a passive quantum adversary must break ML-KEM to decrypt; an active classical adversary must break X25519. Security is the stronger of the two.
+
+**NIST PQC algorithm standardization (2024):**
+
+| Algorithm | NIST Standard | Role | Key/Sig sizes |
+|-----------|--------------|------|---------------|
+| **ML-KEM** (Kyber) | FIPS 203 | KEM | PK: 1184 B, CT: 1088 B (level 3) |
+| **ML-DSA** (Dilithium) | FIPS 204 | Signature | PK: 1952 B, Sig: 3293 B (level 3) |
+| **SLH-DSA** (SPHINCS+) | FIPS 205 | Signature (hash-based) | PK: 32 B, Sig: 17 kB (small-sig variant) |
+| **FN-DSA** (FALCON) | FIPS 206 | Signature (lattice) | PK: 897 B, Sig: 666 B (level 1) |
+
+**CA/Browser Forum and WebPKI transition timeline:** CA/B Forum Ballot SC-081 (2024 draft) addresses PQ algorithm agility in the Baseline Requirements. NIST IR 8547 (2024) recommends deprecating RSA and ECDSA by 2035. CNSA 2.0 (NSA, 2022) mandates PQ algorithms for national security systems by 2030–2033.
+
+**Certificate size impact:** A composite ML-DSA-44 + ECDSA-P256 leaf certificate is approximately 4–5 kB vs ~1 kB for a classical ECDSA cert. Intermediate and root certificates are similarly enlarged. TLS handshake fragmentation and DTLS/QUIC implications are active research areas.
+
+**State of the art:** FIPS 203/204/205 (2024) finalized; FIPS 206 (FN-DSA) in final draft (2024). draft-ietf-lamps-pq-composite-sigs-02 (2024); draft-ietf-lamps-cert-binding-for-multi-key-07 (2024). Chrome deployed X25519+ML-KEM hybrid for TLS 1.3 by default (2024). See [Digital Signatures](categories/08-signatures-advanced.md#digital-signatures), [TEE Remote Attestation](#tee-remote-attestation), and [COSE / CWT](#cose--cwt--cbor-object-signing-and-encryption).
+
+---
+
+## CMC Protocol / Certificate Lifecycle Management
+
+**Goal:** Automate the full lifecycle of X.509 certificates — enrollment, renewal, revocation, and key archival — in enterprise and large-scale PKI deployments, using standardized protocols that allow certificate management clients (devices, servers, applications) to communicate with CAs without manual intervention.
+
+**Certificate lifecycle stages:**
+
+```
+Key generation → Enrollment / CSR → Issuance → Deployment →
+  Monitoring (expiry, CT logs) → Renewal → Revocation → Archival
+```
+
+**Certificate management protocols:**
+
+| Protocol | RFC | Transport | Use case | Key feature |
+|----------|-----|-----------|----------|-------------|
+| **CMC** (Certificate Management over CMS) | RFC 5272, 5273, 5274 | HTTP, HTTPS, email | Enterprise PKI; DoD PKI | Full lifecycle; signed CMS-wrapped requests; RA support |
+| **SCEP** (Simple Certificate Enrollment Protocol) | RFC 8894 | HTTP | Network devices (Cisco, Juniper) | Simple; widely deployed; uses PKCS#7 |
+| **EST** (Enrollment over Secure Transport) | RFC 7030 | HTTPS | IoT; enterprise | TLS client auth; simpler than CMC; RESTful |
+| **ACME** (Automatic Certificate Management) | RFC 8555 | HTTPS | WebPKI; Let's Encrypt | Domain validation challenges; JSON/JWS |
+| **CMP** (Certificate Management Protocol) | RFC 4210, 9480 | HTTP, CoAP | Telecom; automotive (AUTOSAR) | Full PKI management messages; ASN.1 |
+| **PKCS#15** | PKCS#15 | Smart card | Smart card key/cert storage | On-card file layout standard |
+
+**CMC (RFC 5272) architecture:**
+
+```
+CMC Full PKI Request (CMS SignedData wrapping):
+  PKIData ::= SEQUENCE {
+    controlSequence   SEQUENCE OF TaggedAttribute,   -- CMC controls
+    reqSequence       SEQUENCE OF TaggedRequest,     -- PKCS#10 CSRs or CRMF
+    cmsSequence       SEQUENCE OF TaggedContentInfo, -- nested CMS objects
+    otherMsgSequence  SEQUENCE OF OtherMsg
+  }
+
+Key CMC controls:
+  id-cmc-regInfo          -- registration info (device identity)
+  id-cmc-responseInfo     -- CA response data
+  id-cmc-statusInfoV2     -- per-request status codes
+  id-cmc-revokeRequest    -- revocation request
+  id-cmc-decryptedPOP     -- proof of possession for encryption keys
+  id-cmc-lraPOPWitness    -- RA witnesses proof of possession
+```
+
+**EST (RFC 7030) endpoints (RESTful, simpler than CMC):**
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/.well-known/est/cacerts` | GET | Fetch current CA certificate(s) |
+| `/.well-known/est/simpleenroll` | POST | Enroll with PKCS#10 CSR (Base64 DER) |
+| `/.well-known/est/simplereenroll` | POST | Renew existing certificate |
+| `/.well-known/est/fullcmc` | POST | Full CMC request |
+| `/.well-known/est/serverkeygen` | POST | Request server-side key generation + cert |
+
+Authentication: TLS client certificate (for re-enrollment) or HTTP Basic (initial enrollment); TLS mandatory.
+
+**NIST CSWP 25 (Automation of Certificate Management in Enterprise Environments, 2023):**
+NIST Cybersecurity White Paper 25 documents the operational framework for enterprise certificate lifecycle automation:
+- Certificate discovery (passive TLS scan, CT log monitoring, asset inventory)
+- Certificate inventory and expiry alerting
+- Automated renewal triggers (e.g., 30 days before expiry)
+- Integration with CMDBs, SIEM, and secrets managers
+- Revocation workflows (HR offboarding triggers OCSP revocation)
+
+**Enterprise CLM platforms:** Venafi Trust Protection Platform, DigiCert CertCentral, AppViewX CERT+, Sectigo Certificate Manager, HashiCorp Vault PKI secrets engine. Cloud-native: AWS ACM (auto-renews ACM-issued certs), GCP Certificate Authority Service, Azure Key Vault certificates.
+
+**Key archival (CMC):** For encryption certificates (S/MIME, document encryption), the private key must be escrowed with the CA or a Key Archival Authority (KAA) so that encrypted data can be recovered if the key is lost. CMC supports `id-cmc-decryptedPOP` and key archival request/response to transfer the private key securely (wrapped under the CA's encryption key) at enrollment time. FIPS 140-level HSMs at the CA decrypt and re-wrap under the archival key.
+
+**Automotive / IoT (CMP v3, RFC 9480):** CMP version 3 (2023) adds lightweight HTTP transport, CoAP support (for constrained devices), and asymmetric key wrapping improvements — targeting automotive ECUs, industrial controllers, and IoT gateways following UNECE WP.29 R155/R156 (vehicle cybersecurity regulations).
+
+**State of the art:** RFC 5272/5273/5274 (CMC); RFC 7030 (EST); RFC 9480 (CMP v3, 2023); RFC 8894 (SCEP, 2020); NIST CSWP 25 (2023) [[1]](https://csrc.nist.gov/pubs/cswp/25/automating-certificate-management-in-enterprise/final). See [ACME Protocol](categories/03-key-exchange-key-management.md#acme-protocol--automated-certificate-management), [OCSP Stapling and Certificate Revocation](#ocsp-stapling-and-certificate-revocation), and [PKCS#7 / CMS](#pkcs7--cms--cryptographic-message-syntax).
+
+---
+
+## Hardware Attestation in Mobile — Android Keystore and Apple Secure Enclave
+
+**Goal:** Allow mobile applications and remote services to verify that a cryptographic key was generated inside a hardware-backed secure environment (Secure Element / TEE) on a specific device, and that the device meets a minimum security posture — enabling use cases like FIDO2 attestation, mobile banking, enterprise MDM compliance checking, and DRM without trusting application-layer software.
+
+**Platform comparison:**
+
+| Aspect | Android Keystore (StrongBox) | Apple Secure Enclave |
+|--------|------------------------------|---------------------|
+| Hardware isolation | Dedicated security chip (StrongBox HAL) or ARM TrustZone (TEE) | Dedicated Apple-designed SoC coprocessor |
+| Key generation | Generated inside secure element; private key never exported | Generated inside SE; private key never leaves SE |
+| Attestation | Android Key Attestation (X.509 cert chain from Google root) | Device Attestation (CBOR/COSE from Apple) |
+| Supported algorithms | ECDSA P-256, RSA 2048/4096, AES-GCM, HMAC | ECDSA P-256, ECDH P-256, Curve25519 (iOS 17+) |
+| Biometric binding | `setUserAuthenticationRequired()` + BiometricPrompt | SecAccessControl with biometry / Passcode |
+
+**Android Key Attestation (X.509 extension OID `1.3.6.1.4.1.11129.2.1.17`):**
+
+```
+Key attestation certificate chain:
+  Google Hardware Attestation Root CA (offline, pinned)
+    └── Google Intermediate CA (device batch)
+          └── Attestation Certificate (per device, per key pair)
+                 └── Application Certificate (the actual key)
+
+KeyDescription ::= SEQUENCE {
+  attestationVersion     INTEGER,    -- 300 for KeyMint 3.0
+  attestationSecurityLevel  SecurityLevel,  -- TrustedEnvironment or StrongBox
+  keyMintVersion            INTEGER,
+  keyMintSecurityLevel      SecurityLevel,
+  attestationChallenge      OCTET STRING,   -- nonce from relying party
+  uniqueId                  OCTET STRING,   -- rotatable device fingerprint
+  softwareEnforced          AuthorizationList,
+  hardwareEnforced          AuthorizationList   -- properties enforced by secure HW
+}
+
+AuthorizationList (hardware-enforced) key properties:
+  purpose:       SIGN | VERIFY | ENCRYPT | DECRYPT | WRAP_KEY
+  algorithm:     EC | RSA | AES | HMAC
+  keySize:       256 | 2048 | ...
+  digest:        SHA_2_256 | ...
+  ecCurve:       P_256
+  userAuthType:  FINGERPRINT | STRONG_BOX_SPECIFIC_PIN
+  noAuthRequired / authTimeout
+  bootPatchLevel, osPatchLevel, osVersion  -- device security posture
+  rollbackResistance  -- key survives factory reset only if this is set
+```
+
+The `hardwareEnforced` authorization list is signed by the attestation key inside the secure element; its contents cannot be forged by a compromised OS. A remote verifier checks: (1) cert chain to Google root, (2) `attestationChallenge` matches the nonce, (3) `attestationSecurityLevel == StrongBox`, (4) security patch level is current.
+
+**StrongBox vs TEE-backed keys:**
+- **TEE (Trusted Execution Environment):** ARM TrustZone; isolated from Android OS but shares the main SoC. `attestationSecurityLevel = TrustedEnvironment`.
+- **StrongBox:** Separate tamper-resistant security chip (e.g., Titan M2 on Google Pixel, Samsung SE050); physically isolated from the main SoC. `attestationSecurityLevel = StrongBox`. More resistant to hardware attacks.
+
+**Apple Secure Enclave attestation (DCAttestation, iOS 14+):**
+
+```
+// App-level attestation (AppAttest, using DCAppAttestService)
+let challenge = Data(/* nonce from server */)
+DCAppAttestService.shared.generateKey { keyId, error in
+    DCAppAttestService.shared.attestKey(keyId, clientDataHash: SHA256(challenge)) { attestation, error in
+        // attestation: CBOR object containing:
+        //   fmt: "apple-appattest"
+        //   attStmt: { x5c: [cert, intermediate, root], receipt: Data }
+        //   authData: { rpIdHash, flags, counter, AAGUID, credentialId, credentialPublicKey }
+        // cert is signed by Apple App Attestation CA
+        // SubjectPublicKeyInfo of attestation cert == generated P-256 key
+        // Server verifies: chain to Apple root, nonce in cert extension, bundle ID
+    }
+}
+```
+
+Apple's Device Attestation (DeviceCheck) additionally provides a server-API-based device signal (two per-device bits persisted by Apple). The App Attest API provides hardware-level key attestation where the private key is generated and stored in the Secure Enclave, and the attestation certificate chain roots in Apple's private CA.
+
+**FIDO2 / WebAuthn integration:**
+- Android: `android-key` attestation format — the FIDO2 attestation statement contains the Android Keystore attestation certificate chain; relying parties verify the StrongBox or TEE backing.
+- Apple: `apple` attestation format — Apple-specific anonymous attestation CA; device model not disclosed, but SE backing is guaranteed.
+- Both integrate with platform FIDO2 authenticators (passkeys), where the ECDSA P-256 resident key is SE/StrongBox-resident.
+
+**Remote Key Provisioning (RKP, Android 12+):** Replaces factory-burned attestation root certs with an online provisioning system. Devices generate an ephemeral ECDH key pair in StrongBox, perform a remote key provisioning protocol with Google's backend (using hybrid encryption + CBOR/COSE), and receive fresh attestation certificates signed by Google. This enables certificate rotation without firmware updates and eliminates the need to burn per-device certs at the factory — using DICE-based identity as the provisioning root.
+
+**State of the art:** Android KeyMint 3.0 (Android 14, 2023); StrongBox HAL v4 (Android 14); Google Titan M2 security chip. Apple Secure Enclave Processor (all devices since iPhone 5s, 2013); App Attest API (iOS 14+, 2020); FIDO2 platform authenticator (iOS 16+). See [FIDO2 / WebAuthn / Passkeys](#fido2--webauthn--passkeys), [DICE — Device Identifier Composition Engine](#dice--device-identifier-composition-engine), and [TEE Remote Attestation](#tee-remote-attestation).
+
+---

@@ -545,3 +545,119 @@ The protocol runs in parallel rounds: the prover commits to random values, the v
 **State of the art:** FFS and GQ are of historical importance — superseded in practice by Schnorr-based identification (EdDSA, passkeys) and general-purpose [Sigma Protocols](categories/04-zero-knowledge-proof-systems.md#sigma-protocols). The Fiat-Shamir transform derived from these works remains ubiquitous for making interactive proofs non-interactive. See [[1]](https://link.springer.com/article/10.1007/BF02351717).
 
 ---
+
+## Polynomial Commitment Scheme Comparison
+
+**Goal:** Structured selection guide. Polynomial commitment schemes (PCS) are the cryptographic core of modern SNARKs — choosing the right one determines proof size, prover speed, verification cost, trusted-setup requirements, and post-quantum safety. This section systematises the main families and their trade-offs.
+
+| Scheme | Basis | Proof size | Verifier cost | Trusted setup | Post-quantum | Representative use |
+|--------|-------|-----------|---------------|---------------|--------------|--------------------|
+| **KZG** | Pairings (BLS12-381) | O(1) — 1 group element | 1 pairing check | Yes (per-degree SRS) | No | PLONK, Ethereum EIP-4844 [[1]](https://eprint.iacr.org/2010/274) |
+| **FRI** | Hash + Reed-Solomon codes | O(log² n) | O(log² n) hash checks | No (transparent) | Yes | STARKs, Plonky2, Polygon zkEVM [[1]](https://eprint.iacr.org/2018/046) |
+| **IPA (Bulletproofs)** | Discrete log (Pedersen) | O(log n) group elements | O(n) scalar mults | No (transparent) | No | Halo2, Zcash Orchard [[1]](https://eprint.iacr.org/2017/1066) |
+| **Dory** | Pairings (inner-pairing product) | O(log n) | O(log n) pairing ops | No (transparent) | No | Multilinear PCS research [[1]](https://eprint.iacr.org/2020/1274) |
+| **Brakedown / Orion** | Hash + linear codes | O(√n) | O(√n) | No (transparent) | Yes | Binius, linear-time zkVM backends [[1]](https://eprint.iacr.org/2021/1043) |
+| **Zeromorph** | KZG (univariate reduction) | O(1) | O(log n) + 1 pairing | Yes (reuses KZG SRS) | No | HyperPlonk, multilinear SNARKs [[1]](https://eprint.iacr.org/2023/917) |
+
+Key trade-off axes:
+
+- **Proof size vs. verifier cost:** KZG achieves the smallest proofs (O(1)) but requires a pairing. FRI avoids pairings at the cost of O(log² n) proofs.
+- **Trusted setup:** KZG and Zeromorph require a structured reference string (SRS) with toxic waste; all hash-based schemes (FRI, Brakedown) and DL-based IPA are transparent.
+- **Post-quantum safety:** Only hash-based schemes (FRI, Brakedown, Ligero) are conjectured post-quantum secure; pairing- and DL-based schemes are broken by Shor's algorithm.
+- **Multilinear vs. univariate:** IPA, Dory, Zeromorph, and Brakedown naturally support multilinear polynomials; KZG and FRI are natively univariate (multilinear extensions require extra work).
+
+**State of the art:** KZG dominates production SNARKs (PLONK, Groth16-derived systems) and Ethereum's data availability layer. FRI underpins the STARK ecosystem (StarkWare, Polygon). IPA-based Halo2 serves Zcash and EVM-compatible chains without a trusted setup. Dory and Zeromorph are the leading transparent and KZG-reusing multilinear PCS respectively. See [KZG Polynomial Commitments](#kzg-polynomial-commitments), [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment), [Multilinear Polynomial Commitments](#multilinear-polynomial-commitments), and [Brakedown Polynomial Commitments](#brakedown-polynomial-commitments).
+
+---
+
+## Threshold VRF and Distributed Randomness
+
+**Goal:** Unbiasable, publicly verifiable randomness from a threshold of signers. A single VRF signer can abort or bias output by choosing whether to publish. Threshold VRF (DVRF / PVRF) requires t-of-n nodes to cooperate; no single node can predict or withhold the output, and the result is verifiable by anyone. The canonical application is a decentralised randomness beacon for blockchain consensus, leader election, and on-chain lotteries.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DVRF (Galindo et al.)** | 2020 | DKG + BLS | First formal threshold VRF; t-of-n BLS signature as VRF; unpredictable until threshold reached [[1]](https://eprint.iacr.org/2020/096) |
+| **GLOW-DVRF** | 2020 | Pairing-based DKG | Non-interactive DVRF; avoids interactive DKG; assumes DKG public key known [[1]](https://eprint.iacr.org/2020/096) |
+| **Dfinity / BLS Threshold Signature Beacon** | 2018 | Threshold BLS over BLS12-381 | ICP / Dfinity random beacon; threshold BLS signature on round number; O(1) proof [[1]](https://eprint.iacr.org/2018/601) |
+| **Pedersen DKG + ECVRF** | 2023 | DKG (Pedersen) + ECVRF (RFC 9381) | Threshold ECVRF; RFC 9381-compatible; used in research prototypes [[1]](https://eprint.iacr.org/2023/1682) |
+| **CHURP** | 2019 | Proactive secret sharing + VRF | Resharing-friendly threshold VRF; tolerates churn in the committee [[1]](https://eprint.iacr.org/2019/017) |
+
+Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-cryptography.md#distributed-key-generation-dkg) to establish a shared public key; (2) each node applies its key share to the round input (a beacon epoch number or block hash); (3) shares are combined with Lagrange interpolation to yield the VRF output; (4) anyone verifies using the shared public key.
+
+**State of the art:** BLS threshold signatures (Dfinity/ICP, drand) are the dominant production approach — short proofs, efficient aggregation, and well-studied DKG protocols. GLOW-DVRF and CHURP address the resharing and committee-churn problem. Related to [Verifiable Random Functions (VRF)](#verifiable-random-functions-vrf), [DKG](categories/05-secret-sharing-threshold-cryptography.md#distributed-key-generation-dkg), and [drand / League of Entropy](#drand--league-of-entropy-randomness-beacon).
+
+---
+
+## drand / League of Entropy Randomness Beacon
+
+**Goal:** Production-grade decentralised public randomness. drand (Distributed Randomness) is an open network of independent nodes that jointly produce bias-resistant, publicly verifiable random values at regular intervals using threshold BLS signatures. The League of Entropy is the consortium of organisations (Cloudflare, Protocol Labs, Ethereum Foundation, EPFL, University of Chile, and others) operating the drand network since 2020.
+
+| Property | Value |
+|----------|-------|
+| **Protocol** | Threshold BLS (t-of-n) over BLS12-381 |
+| **Beacon period** | 3 seconds (default chain); 30 seconds (unchained mode) |
+| **Proof size** | 1 BLS group element (48 bytes) — constant |
+| **Verification** | Single pairing check against group public key |
+| **Bias resistance** | t honest nodes sufficient to produce unbiased output |
+| **Unpredictability** | Output for round r unpredictable until threshold nodes contribute |
+| **Unchained mode** | Each beacon independently verifiable without prior chain (2022+) |
+
+| Component | Detail |
+|-----------|--------|
+| **DKG phase** | Pedersen DKG (or resharing) establishes shared BLS key across nodes [[1]](https://eprint.iacr.org/2023/728) |
+| **Randomness generation** | Each node signs round number; t partial sigs aggregated to full BLS sig [[1]](https://eprint.iacr.org/2023/728) |
+| **Public API** | `https://drand.cloudflare.com/` — JSON endpoint returning (round, randomness, signature) [[1]](https://drand.love/) |
+| **Filecoin integration** | Filecoin uses drand beacons as the chain's randomness source for leader election [[1]](https://spec.filecoin.io/#section-libraries.drand) |
+| **Timelock encryption** | tlock scheme (2023): encrypt to future drand round; decrypt only when beacon is published [[1]](https://eprint.iacr.org/2023/189) |
+
+**State of the art:** drand is the most widely deployed decentralised randomness beacon in production — integrated into Filecoin, used by Ethereum research, and publicly accessible. The 2023 unchained mode makes each beacon epoch independently verifiable, improving resilience. The tlock timelock encryption scheme (CRYPTO 2023) demonstrates that drand's BLS structure enables identity-based encryption to future beacon values. Related to [Threshold VRF and Distributed Randomness](#threshold-vrf-and-distributed-randomness), [Randomness Beacons / Coin Tossing](#randomness-beacons--coin-tossing), and [Delay Encryption](#delay-encryption).
+
+---
+
+## Aurora and Fractal (Recursive IOP-Based Proof Systems)
+
+**Goal:** Transparent, succinct proof systems for general arithmetic circuits with recursive proof composition. Aurora is a zkSNARK built on algebraic IOPs (AIPs) and Reed-Solomon codes — achieving O(log² |C|) proof size for R1CS circuits with no trusted setup. Fractal extends Aurora with a holographic preprocessing technique enabling efficient recursive proof composition: a proof system that can efficiently verify its own proofs, enabling proof-carrying data (PCD) and incrementally verifiable computation (IVC) without pairing-based SNARKs.
+
+| Property | Aurora | Fractal |
+|----------|--------|---------|
+| **Circuit representation** | R1CS | R1CS (holographic) |
+| **Proof size** | O(log² |C|) field elements | O(log² |C|) field elements |
+| **Verifier cost** | O(log² |C|) | O(log² |C|) |
+| **Trusted setup** | None (transparent) | None (transparent) |
+| **Post-quantum** | Yes (hash-based) | Yes (hash-based) |
+| **Recursive composition** | Not directly | Yes — verifier circuit is small; enables PCD |
+| **Underlying technique** | Univariate sumcheck + RS code proximity | Holographic IOP + RS codes |
+
+| Scheme | Year | Note |
+|--------|------|------|
+| **Aurora (Ben-Sasson et al.)** | 2019 | O(log² n) transparent zkSNARK for R1CS; uses RS-encoded witness + univariate sumcheck; EUROCRYPT 2019 [[1]](https://eprint.iacr.org/2018/828) |
+| **Fractal (Chiesa et al.)** | 2020 | Holographic IOP enabling recursive SNARKs without pairings; verifier is O(log² n) and can itself be proved; EUROCRYPT 2020 [[1]](https://eprint.iacr.org/2019/1076) |
+| **Ligero (predecessor)** | 2017 | Earlier RS-based transparent proof system; see [Ligero / Ligero++](#ligero--ligero-mpc-in-the-head-commitments) [[1]](https://eprint.iacr.org/2022/1608) |
+
+**State of the art:** Aurora established that transparent, polylogarithmic-communication SNARKs for R1CS are achievable purely from algebraic coding theory and hash functions — without the trusted setups of Groth16/PLONK or the large proofs of Ligero. Fractal's holographic IOP was the first to enable efficient recursive composition in the transparent/post-quantum setting, predating Nova's folding-scheme approach. Both are primarily of theoretical and research importance today — practical recursive SNARKs have moved toward folding schemes (Nova, HyperNova) for prover efficiency. See [Ligero / Ligero++](#ligero--ligero-mpc-in-the-head-commitments), [Verifiable Computation (VC)](#verifiable-computation-vc), and [Proof-Carrying Data / IVC](categories/04-zero-knowledge-proof-systems.md#proof-carrying-data-pcd--incrementally-verifiable-computation-ivc).
+
+---
+
+## Commit-and-Prove SNARKs (LegoSNARK)
+
+**Goal:** Composable proof systems with shared committed witnesses. A commit-and-prove (CP) SNARK allows a prover to (1) commit to a witness w using a standard commitment scheme, then (2) prove arbitrary statements about w in zero knowledge — with the commitment serving as the interface between independently designed proof components. LegoSNARK (Campanelli et al., 2019) is the first formal framework for composing CP-SNARKs, enabling modular proof system design: different sub-proofs share witnesses via commitments without recomputing the entire relation.
+
+| Property | Value |
+|----------|-------|
+| **Core idea** | Decouple commitment from proof; commitment is the "glue" between proof modules |
+| **Composability** | Proofs for sub-relations sharing committed witness can be combined without trusted setup per combination |
+| **Commitment scheme** | Any extractable commitment (Pedersen, KZG, etc.) |
+| **Link soundness** | Extractability of the commitment ensures the same witness underlies all proofs |
+| **Applications** | Privacy-preserving credentials, anonymous payments, range proofs over committed values |
+
+| Scheme | Year | Note |
+|--------|------|------|
+| **LegoSNARK (Campanelli et al.)** | 2019 | Formal framework for CP-SNARKs; defines link soundness; toolkit of composable CP proof components; CCS 2019 [[1]](https://eprint.iacr.org/2019/142) |
+| **LegoGro16** | 2019 | Groth16-based CP-SNARK component in LegoSNARK; prover-efficient; constant-size proof [[1]](https://eprint.iacr.org/2019/142) |
+| **CP-SNARK from Pedersen** | 2019 | Transparent CP component; uses Pedersen commitments; compatible with range proofs and set membership [[1]](https://eprint.iacr.org/2019/142) |
+| **Snarky Ceremonies (Straka et al.)** | 2021 | Applies CP-SNARK ideas to ceremony transcripts; prove properties of MPC outputs without revealing secrets [[1]](https://eprint.iacr.org/2021/219) |
+| **Darlin** | 2022 | CP-SNARK for recursive proof composition using Marlin; enables IVC with commit-and-prove interface; used in Horizen research [[1]](https://eprint.iacr.org/2021/930) |
+
+**State of the art:** LegoSNARK (CCS 2019) is the canonical framework for modular CP-SNARK design. The core abstraction — commit once, prove many statements — is now standard practice in privacy-preserving credential and payment systems. Practical deployments combine Pedersen commitments (for homomorphic range checks) with Groth16 or Plonk sub-proofs for application logic. The Darlin system (2022) demonstrates recursive proof composition via CP-SNARKs without pairings. See also [Commitment Schemes](#commitment-schemes), [Verifiable Computation (VC)](#verifiable-computation-vc), and [Trapdoor Commitments](#trapdoor-commitments-equivocable-commitments).
+
+---

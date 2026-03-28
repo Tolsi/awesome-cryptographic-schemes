@@ -658,3 +658,101 @@ BLISS introduced the bimodal trick: instead of sampling a standard Gaussian nonc
 **State of the art:** Neither BLISS nor qTESLA was standardized; superseded by ML-DSA (FIPS 204) and Falcon/FN-DSA (FIPS 206). Historically important as the proof-of-concept lattice signature schemes that established the viability of the Fiat-Shamir-with-aborts paradigm. See [NIST PQC Signature Standards](#nist-pqc-signature-standards-ml-dsa--slh-dsa) and [Falcon / FN-DSA](#falcon--fn-dsa-ntru-based-lattice-signatures).
 
 ---
+
+## Fiat-Shamir with Aborts (Lattice Signature Paradigm)
+
+**Goal:** Efficient lattice signatures via controlled rejection sampling. Extend the classical Fiat-Shamir transform — which converts interactive identification schemes into signatures via a hash challenge — to lattice settings where nonce distributions must be carefully masked to prevent leakage of the secret key. The "abort" mechanism restarts signing when a sampled nonce is deemed too revealing, ensuring the output distribution is independent of the secret.
+
+| Scheme / Concept | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Lyubashevsky's Identification Scheme** | 2008 | Ring-SIS | First lattice ID scheme via Fiat-Shamir; nonce y sampled large; response z = y + cs masked [[1]](https://eprint.iacr.org/2008/481) |
+| **Fiat-Shamir with Aborts (Lyubashevsky)** | 2009 | Ring-SIS + rejection sampling | Formal framework: reject response z if it reveals information about secret s; abort probability controlled by Rényi divergence [[1]](https://eprint.iacr.org/2011/537) |
+| **Dilithium (CRYSTALS)** | 2017 | Module-SIS + Module-LWE | Direct FSA instantiation over module lattices; uses uniform rejection (simpler than Gaussian); basis of ML-DSA (FIPS 204) [[1]](https://eprint.iacr.org/2017/633) |
+| **Raccoon** | 2023 | Module-SIS + masking | FSA variant designed for side-channel masking; probabilistic rejection sampling compatible with masked arithmetic [[1]](https://eprint.iacr.org/2023/1943) |
+| **Mitaka** | 2022 | NTRU + hybrid Gaussian sampling | Alternative to Falcon: FSA over NTRU lattice using simpler independent Gaussian sampler; slightly larger sigs than Falcon but easier to mask [[1]](https://eprint.iacr.org/2021/1486) |
+
+The Fiat-Shamir with Aborts paradigm proceeds as follows: the signer samples a masking nonce y from a large domain, computes a commitment w = Ay mod q, derives a challenge c = H(w ‖ message), and computes a response z = y + cs. The abort condition checks whether the distribution of z reveals the secret s — concretely, if z is too large or falls outside a "good" region, the signer discards it and restarts. The abort probability is tuned so that the output distribution of z is statistically close to a fixed distribution independent of s, enabling a simulation-based security proof under the Short Integer Solution (SIS) assumption. Dilithium uses uniform rejection (reject if any coefficient of z exceeds a bound γ₁ − β), achieving a clean constant-time implementation with no Gaussian sampler. Raccoon extends the FSA framework to support masked implementations natively, addressing the side-channel weakness of unmasked Dilithium in hardware-constrained settings.
+
+**State of the art:** Dilithium/ML-DSA (FIPS 204) is the primary standardized instantiation; Raccoon and Mitaka represent next-generation FSA designs prioritizing side-channel resistance. Foundational to [BLISS & qTESLA](#bliss--qtesla-early-lattice-signature-schemes), [ML-DSA & SLH-DSA](#nist-pqc-signature-standards-ml-dsa--slh-dsa), and [Falcon / FN-DSA](#falcon--fn-dsa-ntru-based-lattice-signatures).
+
+---
+
+## Multi-Designated Verifier Signatures (MDVS)
+
+**Goal:** Restricted verifiability for a defined set of recipients. Extend [Designated Verifier Signatures](#designated-verifier-signatures--proofs) from a single verifier to a set of k designated verifiers: any member of the set can verify, but no one outside the set can, and no member can transfer conviction to outsiders (since each verifier could have simulated the signature themselves).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Jakobsson-Sako-Impagliazzo MDVS** | 1996 | DLP | Conceptual extension of DVS to multiple designated verifiers; each verifier can simulate [[1]](https://link.springer.com/chapter/10.1007/3-540-68339-9_13) |
+| **Laguillaumie-Vergnaud MDVS** | 2004 | Pairings | First efficient pairing-based MDVS; constant-size signatures regardless of verifier count [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30564-4_22) |
+| **Dent-Libert-Paterson MDVS** | 2006 | Pairings (standard model) | MDVS in the standard model (no random oracle); verifier anonymity as additional property [[1]](https://eprint.iacr.org/2006/236) |
+| **Lattice MDVS (Zhang et al.)** | 2021 | Ring-LWE | Post-quantum MDVS from ring learning with errors [[1]](https://eprint.iacr.org/2021/829) |
+| **Strong MDVS (Schuldt-Matsuura)** | 2009 | Pairings | Strong variant: even members of the designated set cannot transfer conviction to other members [[1]](https://link.springer.com/chapter/10.1007/978-3-642-10433-6_12) |
+
+MDVS is motivated by scenarios where a message must be privately authenticated to a board or committee — each member can individually verify, but collective non-transferability means no subset can prove the signer's identity to outsiders. The simulatability condition requires that each designated verifier Di can produce transcripts (σ*, m) that are computationally indistinguishable from real signatures, without knowing the signer's key. Verifier anonymity (Dent-Libert-Paterson) adds the property that the signature does not reveal which verifiers were designated. Strong MDVS further prevents intra-set transfers: even if all k verifiers collude, they cannot convince an outsider — because any such coalition could have simulated the signature cooperatively.
+
+**State of the art:** Pairing-based MDVS (Laguillaumie-Vergnaud style) in standard model; lattice MDVS for PQ settings. Extends [Designated Verifier Signatures / Proofs](#designated-verifier-signatures--proofs) to the multi-verifier case.
+
+---
+
+## Unforgeability Notions: EUF-CMA, SUF-CMA, and Beyond
+
+**Goal:** Formal security definitions for digital signatures. Precisely characterize what it means for a signature scheme to be secure: which adversarial capabilities are modeled (chosen-message attacks), and what counts as a forgery (existential vs. strong vs. selective). These definitions underpin all provable security results in the signature literature.
+
+| Notion | Year | Definition | Note |
+|--------|------|-----------|------|
+| **EUF-CMA (Existential Unforgeability under CMA)** | 1988 | Goldwasser-Micali-Rivest | Adversary wins if it outputs (m*, σ*) where m* was never queried; the standard security notion for signatures [[1]](https://doi.org/10.1137/0217017) |
+| **SUF-CMA (Strong Unforgeability under CMA)** | 2005 | Boneh-Shen-Waters | Adversary wins if it outputs (m*, σ*) where the pair (m*, σ*) was never returned by the signing oracle; prevents new signatures on previously signed messages [[1]](https://eprint.iacr.org/2005/336) |
+| **SEU-CMA (Selective Existential Unforgeability)** | 1988 | GMR | Adversary commits to the forgery message m* before seeing the public key; weaker than EUF-CMA; sufficient for some applications [[1]](https://doi.org/10.1137/0217017) |
+| **UF-NMA (Unforgeability under No-Message Attack)** | — | Generic | Adversary gets no signing queries; models schemes where chosen-message attacks are not meaningful [[1]](https://eprint.iacr.org/2004/171) |
+| **Online/Offline EUF-CMA** | 2001 | Even-Goldreich-Micali | Separates signing into offline precomputation + fast online phase; same security notion, different efficiency profile [[1]](https://doi.org/10.1007/BF02351741) |
+| **Tight EUF-CMA reduction** | 2003 | Waters / Coron | A tight reduction loses no factor in the security reduction from assumption to EUF-CMA game; implies smaller key sizes for equivalent concrete security [[1]](https://eprint.iacr.org/2005/097) |
+
+The gap between EUF-CMA and SUF-CMA is practically significant: ECDSA is EUF-CMA secure (standard notion) but not SUF-CMA because the algebraic malleability (r, s) → (r, −s mod n) produces a second valid signature on the same message. Bitcoin's BIP 62 low-s restriction and Schnorr/EdDSA's structural non-malleability both achieve SUF-CMA. In composable protocols (e.g., constructing authenticated encryption or anonymous credentials from signatures), SUF-CMA is often needed to prevent new-signature attacks, where an adversary reuses a signature in a modified message context. Tight reductions matter for concrete parameter selection: a non-tight reduction with a factor-q(n) security loss (where q is the number of signing queries) requires commensurately larger key sizes to maintain the same concrete bit-security level. Waters signatures and the PSS padding for RSA achieve tight reductions; plain BLS and ECDSA do not.
+
+**State of the art:** EUF-CMA is the baseline standard; SUF-CMA required for composable and blockchain applications. Tight reductions (e.g., Waters signatures, RSA-PSS) justify smaller parameters. Cross-links: [ECDSA — Details, Vulnerabilities, and RFC 6979](#ecdsa--details-vulnerabilities-and-rfc-6979), [Boneh-Boyen (BB) Short Signatures](#boneh-boyen-bb-short-signatures), [RSA-PSS vs. PKCS#1 v1.5 Signatures](#rsa-pss-vs-pkcs1-v15-signatures).
+
+---
+
+## Batch Verification of Signatures
+
+**Goal:** Amortize verification cost. Check the validity of n signatures simultaneously at a cost significantly less than n independent verifications. Critical for high-throughput systems such as blockchain nodes, certificate transparency logs, and TLS session resumption servers that must validate large volumes of signatures.
+
+| Scheme / Technique | Year | Basis | Note |
+|-------------------|------|-------|------|
+| **RSA Batch Verification (Bellare-Garay-Rabin)** | 1998 | RSA | Combine n RSA signature equations into one using random linear combination; reduces n exponentiations to ~n/2 [[1]](https://link.springer.com/chapter/10.1007/BFb0054147) |
+| **BLS Batch Verification** | 2001 | Pairings | Verify n BLS sigs with n+1 pairings (vs. 2n); multiply public keys with random coefficients; prevents forgery via rogue aggregation [[1]](https://eprint.iacr.org/2002/029) |
+| **Schnorr / EdDSA Batch Verification** | 2020 | Schnorr / Edwards curve | BIP 340: verify n Schnorr sigs with one multi-scalar multiplication; ~2× speedup over n independent checks; used in Bitcoin full nodes [[1]](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki) |
+| **ML-DSA Batch Verification** | 2023 | Module lattice | Batching Dilithium/ML-DSA verifications via aggregated hint vectors; reduces polynomial NTT operations [[1]](https://eprint.iacr.org/2022/1548) |
+| **ECDSA Batch Verification (Antipa et al.)** | 2005 | ECDSA + Shamir's trick | Simultaneous multi-scalar multiplication reduces per-sig EC operations; no security assumption change [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30564-4_2) |
+| **Probabilistic Batch Verification** | 1998 | Random linear combination | Assign random scalars r₁,...,rₙ to each equation before combining; incorrect batch fails with overwhelming probability; applies to any linear-equation signature scheme [[1]](https://link.springer.com/chapter/10.1007/BFb0054147) |
+
+Batch verification works by exploiting the linearity of most signature verification equations. For Schnorr signatures, verification requires checking Rᵢ = sᵢ·G − eᵢ·Pᵢ for each i; batching multiplies each equation by a random scalar λᵢ and sums: Σλᵢ·Rᵢ = (Σλᵢ·sᵢ)·G − Σ(λᵢ·eᵢ·Pᵢ), a single multi-scalar multiplication. The random scalars prevent an adversary from mixing valid and invalid signatures to make the batch check pass. For BLS, batching reduces the number of Miller loop evaluations (the expensive part of a pairing): n BLS verifications normally cost 2n pairings; batched verification checks one random linear combination of all n equations using n+1 pairings. For RSA, batching replaces n modular exponentiations with ~n/2 squarings via a product-check shortcut. Probabilistic batch verification introduces a negligible (2^{−128}) probability of accepting a batch containing one invalid signature, acceptable in most contexts. Deterministic batch verification (guaranteed soundness) is harder and scheme-specific.
+
+**State of the art:** Schnorr batch verification (BIP 340, Bitcoin); BLS batch verification (Ethereum consensus); EdDSA batch (libsodium, BoringSSL). Foundational optimization for any high-throughput signature-using system. See [Aggregate Signatures (BLS Aggregate)](#aggregate-signatures-bls-aggregate) for a related (but distinct) concept.
+
+---
+
+## Post-Quantum Signature Comparison: ML-DSA vs. SLH-DSA vs. FN-DSA
+
+**Goal:** Practical comparison of the three NIST-standardized post-quantum signature algorithms. ML-DSA (FIPS 204), SLH-DSA (FIPS 205), and FN-DSA (FIPS 206) address different deployment scenarios — lattice speed, hash-only conservatism, and compact-size respectively — and choosing between them requires understanding their security assumptions, performance profiles, and implementation complexity trade-offs.
+
+| Property | **ML-DSA** (FIPS 204) | **SLH-DSA** (FIPS 205) | **FN-DSA** (FIPS 206) |
+|----------|-----------------------|-----------------------|-----------------------|
+| **Underlying family** | Module lattices (MLWE/MSIS) | Hash functions only (WOTS+, FORS) | NTRU lattices + FFT |
+| **Security assumption** | Module-LWE + Module-SIS | Hash preimage + collision resistance | NTRU-hardness + SIS |
+| **Stateful?** | No | No | No |
+| **Public key (Level 2)** | 1312 B | 32 B | 897 B |
+| **Signature (Level 2)** | 2420 B | 7856 B (fast) / 17088 B (small) | ~666 B (average) |
+| **Signing speed** | Fast (~ms) | Slow (100ms–1s) | Fast (~ms) |
+| **Verification speed** | Fast | Moderate | Fast |
+| **Implementation complexity** | Moderate (NTT, rejection sampling) | Low (only hash calls) | High (FFT, Gaussian sampler, constant-time float) |
+| **Side-channel resistance** | Moderate (masking feasible) | High (hash-based, easy to mask) | Difficult (Gaussian sampler, floating-point) |
+| **FIPS standard** | FIPS 204 (Aug 2024) [[1]](https://csrc.nist.gov/pubs/fips/204/final) | FIPS 205 (Aug 2024) [[1]](https://csrc.nist.gov/pubs/fips/205/final) | FIPS 206 (Aug 2024) [[1]](https://csrc.nist.gov/pubs/fips/206/final) |
+| **NIST recommendation** | Primary standard | Conservative backup | Compact-size niche |
+
+ML-DSA is NIST's primary recommendation for general-purpose post-quantum signing. Its module-lattice structure enables efficient NTT-based arithmetic, yielding fast signing and verification at the cost of 2–5 KB signatures. SLH-DSA is the conservative "hash-only" choice: its security reduces entirely to standard hash function properties with no algebraic assumptions, making it the right answer when distrust of lattice hardness is a concern. Its weakness is signature size (8–50 KB depending on variant) and slow signing. FN-DSA (Falcon) fills a niche where signature compactness dominates: at ~666 bytes for Level 1, it is 3.6× smaller than ML-DSA-44, making it attractive for IoT certificate chains, embedded TLS, and bandwidth-constrained settings. However, its constant-time implementation is difficult — the discrete Gaussian sampler over NTRU lattices requires careful fixed-point arithmetic or dedicated hardware, and several early implementations had timing side-channels. CNSA 2.0 (NSA's guidance for national security systems) mandates ML-DSA as the primary PQ signature algorithm and permits SLH-DSA as an alternative; FN-DSA is approved but not preferred due to implementation concerns. All three are stateless (unlike XMSS/LMS), require no per-signature state management, and can be used as drop-in replacements for ECDSA in most protocol roles.
+
+**State of the art:** All three finalized August 2024. Migration deadline for US federal systems is 2030. NIST recommends ML-DSA as default; SLH-DSA when algebraic assumptions are unacceptable; FN-DSA when bandwidth is severely constrained. Cross-links: [NIST PQC Signature Standards (ML-DSA & SLH-DSA)](#nist-pqc-signature-standards-ml-dsa--slh-dsa), [Falcon / FN-DSA](#falcon--fn-dsa-ntru-based-lattice-signatures), [SPHINCS & SPHINCS+](#sphincs--sphincs-stateless-hash-based-signatures), [Stateful Hash-Based Signatures (XMSS & LMS)](#stateful-hash-based-signatures-xmss--lms), [Fiat-Shamir with Aborts](#fiat-shamir-with-aborts-lattice-signature-paradigm).
+
+---

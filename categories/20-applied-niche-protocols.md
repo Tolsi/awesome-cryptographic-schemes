@@ -361,3 +361,94 @@ The central insight unifying these systems is that **a signature on a final arti
 **State of the art:** Sigstore/cosign (default for Kubernetes/CNCF ecosystem); npm provenance (default for new npm publishes); TUF (PyPI, Rust crates). See [Sigstore / Certificate Transparency](categories/14-applied-infrastructure-pki.md#sigstore-rekor--software-signing-transparency) and [C2PA/SLSA](categories/14-applied-infrastructure-pki.md#c2pacai-content-provenance--slsa) for related entries in category 14.
 
 ---
+
+## Blind Signature-Based E-Cash (Chaum DigiCash)
+
+**Goal:** Achieve electronic cash with bank-grade anonymity. A bank signs a denomination token blindly — it cannot link the coin it issued to the coin presented for redemption — while still being able to detect double-spending via a serial number database. The combination gives information-theoretic unlinkability between withdrawal and payment.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chaum Blind Signature E-Cash** | 1982 | RSA blind signatures | First e-cash; bank signs blinded serial number; unblinding gives a valid coin the bank cannot link to the withdrawal session [[1]](https://doi.org/10.1007/978-1-4757-0602-4_18) |
+| **DigiCash / eCash** | 1994 | Chaum blind sigs + double-spend DB | Commercial deployment; payer withdraws coins, spends with merchant, merchant deposits; bank checks serial number for double-spend; folded 1998 [[1]](https://groups.csail.mit.edu/mac/classes/6.805/articles/money/nsamint/nsamint.htm) |
+| **Compact E-Cash (Camenisch-Lysyanskaya)** | 2005 | CL signatures + ZK | Withdraw 2ᵏ coins in O(k) communication; serial numbers derived from a pseudorandom function over a secret; first efficient offline e-cash [[1]](https://eprint.iacr.org/2005/060) |
+| **Brands Offline E-Cash** | 1994 | DLP-based restrictive blind sigs | Double-spending reveals the payer's identity via algebraic trap; no online double-spend check needed [[1]](https://link.springer.com/chapter/10.1007/3-540-48285-7_5) |
+| **Anonymous Credential E-Cash (Fuchsbauer et al.)** | 2009 | Structure-preserving sigs + GS proofs | Efficient offline e-cash with transferability and anonymity revocation [[1]](https://eprint.iacr.org/2009/620) |
+
+The blind signature trick: the user picks a random serial number s, blinds it as b = s · rᵉ mod n (for RSA with exponent e), sends b to the bank, bank signs bᵈ mod n = (s · rᵉ)ᵈ = sᵈ · r mod n, user divides by r to get sᵈ mod n — a valid RSA signature on s the bank has never seen. The practical failure of DigiCash (bankruptcy 1998) was commercial, not cryptographic: merchants were reluctant to adopt, banks delayed integration, and the internet payment landscape moved to credit cards. The double-spend database creates a central bottleneck and a privacy risk if the bank retains serial numbers. Brands' scheme eliminates the online check but requires trust that the identity-revealing mechanism deters cheating.
+
+**State of the art:** Blind-signature e-cash is the cryptographic foundation of [Privacy Pass](categories/11-anonymity-credentials.md#privacy-pass--private-authentication-tokens) (anonymous rate-limiting tokens) and underlies [GNU Taler](#gnu-taler-practical-e-cash). See also [Anonymous Credentials](categories/11-anonymity-credentials.md#anonymous-credentials) and [E-Cash](categories/11-anonymity-credentials.md#e-cash--electronic-cash).
+
+---
+
+## GNU Taler: Practical E-Cash with Income Transparency
+
+**Goal:** Electronic payments that are anonymous for payers but transparent for merchants — so tax evasion is impossible while payer privacy is preserved. Designed as a practically deployable e-cash system with regulatory compliance built in rather than bolted on.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **GNU Taler Protocol** | 2016 | Chaum blind sigs + RSA / EdDSA | Mint (exchange) issues blind-signed coins; payer spends anonymously; merchant deposit is publicly logged; merchant income is auditable [[1]](https://taler.net/papers/taler2017.pdf) |
+| **Taler Refresh Protocol** | 2016 | Cut-and-choose + blind sigs | Allows change: partially spent coins are refreshed into new coins without the exchange linking old to new; protects payer privacy even for partial payments [[1]](https://taler.net/papers/taler-fc17.pdf) |
+| **Taler Auditor** | 2019 | Merkle log + signatures | Third-party auditor verifies exchange's coin issuance and redemption logs without learning individual transactions; detects coin forging or double-spend concealment [[1]](https://docs.taler.net/design-documents/auditor.html) |
+| **Taler KYC Integration** | 2022 | Threshold reveal | Optional KYC: payer identity can be cryptographically revealed to a regulator under a threshold of authorities, without revealing to the exchange in normal operation [[1]](https://taler.net/papers/) |
+
+The key design asymmetry: payer anonymity is information-theoretic (the exchange signed a blinded coin and cannot link it to redemption), but merchant income transparency is mandatory (the merchant must deposit with their real identity to receive payment). The Refresh protocol solves the "change" problem: in Chaum's original scheme, returning change to the payer would allow the exchange to link the original and refreshed coins. GNU Taler's refresh uses a cut-and-choose protocol where the exchange signs k candidate refresh requests and the payer reveals k−1, forcing honest behavior. The system was piloted by the Swiss canton of Zurich in 2022 as a government digital currency experiment.
+
+**State of the art:** GNU Taler v0.9+ (production-capable); Swiss cantonal pilot (2022). Compare [Chaum DigiCash](#blind-signature-based-e-cash-chaum-digicash) (full payer and payee anonymity) and [Monero / Confidential Transactions](categories/13-blockchain-distributed-ledger.md#confidential-transactions--mimblewimble) (blockchain-based full anonymity with no income transparency).
+
+---
+
+## Cryptographic Audit Logs and Append-Only Integrity
+
+**Goal:** Produce a tamper-evident, append-only log such that any deletion, reordering, or modification of log entries is detectable — even by a compromised log server — while allowing efficient verification of individual entries and the log's completeness. Deployed in security audit trails, certificate transparency, and distributed databases.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Haber-Stornetta Hash Chain** | 1991 | SHA hash chain | Each log entry includes the hash of the previous entry; any modification breaks the chain; the direct precursor to all later schemes [[1]](https://doi.org/10.1007/BF00196791) |
+| **Crosby-Wallach Efficient Data Structures for Tamper-Evident Logging** | 2009 | Skip list + hash tree | O(log n) proof that entry i is in a log of size n; O(log n) proof of log consistency between two sizes; first practical audit-log data structure [[1]](https://www.usenix.org/legacy/event/sec09/tech/full_papers/crosby.pdf) |
+| **Certificate Transparency (RFC 6962 / RFC 9162)** | 2013 | Merkle hash tree + STH | Append-only Merkle tree of TLS certificates; any CA-issued cert must appear before browsers accept it; signed tree heads (STHs) committed to by multiple witnesses [[1]](https://www.rfc-editor.org/rfc/rfc9162) |
+| **CONIKS** | 2015 | Merkle prefix tree (Patricia trie) + signed tree roots | Append-only key directory for end-to-end messaging; per-user history trees; consistency proofs between consecutive epochs [[1]](https://www.usenix.org/system/files/conference/usenixsecurity15/sec15-paper-melara.pdf) |
+| **Verifiable Data Structures (Google Trillian)** | 2015 | Merkle log + Merkle map | Open-source infrastructure backing Certificate Transparency logs; supports both append-only logs and verifiable maps [[1]](https://github.com/google/trillian) |
+| **Transparent Logs (Russ Cox / Go Checksum DB)** | 2019 | Tile-based Merkle log | Go module checksum database; efficient client verification using fixed-size tiles; 128-byte tree nodes for cache-friendly proofs [[1]](https://research.swtch.com/tlog) |
+
+The core primitive is a **Merkle hash tree** over ordered log entries, with a **signed tree head (STH)** committing to the tree's root hash and size at each epoch. Consistency proofs between two sizes (n₁ < n₂) demonstrate that the new log is a strict extension of the old one — no entries were removed or reordered. Inclusion proofs (O(log n) hashes) demonstrate that a specific entry is in the log. The key security property — that a server cannot present different log views to different observers — is enforced by **gossip protocols** or **witnesses** that compare STHs. Crosby-Wallach's skip-list design enables efficient queries by time range; Merkle-tree designs (CT, Trillian) prioritize verifiable inclusion proofs.
+
+**State of the art:** Certificate Transparency (mandatory for Chrome/Safari TLS since 2018); Go checksum database (default for `go get`); Sigstore Rekor (software signing). Related to [Linked Timestamping](#linked-timestamping), [OpenTimestamps](#opentimestamps), [Key Transparency](categories/03-key-exchange-key-management.md#key-transparency--whatsapp-key-transparency).
+
+---
+
+## Privacy-Preserving Analytics (PAAPI, ITP, VDAF/Prio)
+
+**Goal:** Enable measurement of advertising effectiveness, user behavior, and aggregate statistics without revealing any individual's browsing history, conversion events, or behavioral profile to advertisers, publishers, or browsers — replacing cookie-based tracking with cryptographically private alternatives.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Apple Intelligent Tracking Prevention (ITP)** | 2017 | Partitioned cookies + first-party classification | ML classifier partitions cross-site cookies; storage access API for explicit consent; no cryptography but sets the policy baseline [[1]](https://webkit.org/blog/7675/intelligent-tracking-prevention/) |
+| **Google Privacy Sandbox / PAAPI** | 2023 | Local interest groups + on-device auction | Protected Audience API (formerly FLEDGE); interest groups stored on-device; auction runs in a Trusted Execution Environment; advertiser learns only the winning bid, not the user's other interest groups [[1]](https://developer.chrome.com/docs/privacy-sandbox/protected-audience/) |
+| **Private Click Measurement (PCM)** | 2019 | Blind HTTP redirect + delayed, noisy reporting | Apple's approach for click-through attribution; 6-bit campaign ID + 4-bit conversion value; 24–48 h delay + noise defeats timing correlation; no cross-site identity [[1]](https://webkit.org/blog/11529/introducing-private-click-measurement-pcm/) |
+| **Attribution Reporting API** | 2021 | Differential privacy + aggregation service | Google's click attribution API; event-level reports with ε-DP noise; summary reports computed inside a TEE by an aggregation service; no individual-level data leaves the browser [[1]](https://developer.chrome.com/docs/privacy-sandbox/attribution-reporting/) |
+| **Prio (VDAF)** | 2017 | Additive secret sharing + ZK validity proofs | Each client secret-shares its metric value across two non-colluding servers; servers compute aggregate without learning individual values; ZK proof prevents malformed inputs [[1]](https://www.usenix.org/system/files/conference/nsdi17/nsdi17-corrigan-gibbs.pdf) |
+| **Poplar (VDAF for heavy hitters)** | 2021 | Incremental DPF + aggregation | Privately find the most common URL prefixes / search terms across clients without any server learning individual values; IETF VDAF standard [[1]](https://eprint.iacr.org/2021/017) |
+
+The ecosystem divides into two design philosophies. **On-device computation** (PAAPI, PCM) moves the sensitive logic — interest group matching, auction, attribution — into the browser or a TEE, so no server ever sees raw behavioral data. **Cryptographic aggregation** (Prio, Poplar) sends only secret-shared or differentially private contributions to servers, which compute only aggregate statistics. The IETF VDAF (Verifiable Distributed Aggregation Function) standard formalizes the Prio approach: clients produce a pair of secret shares, each with a ZK validity proof (using a VOLE-based or Fiat-Shamir argument), sent to two aggregation servers; servers check validity and sum shares; no individual value is ever reconstructed. Firefox Telemetry, ISRG (Let's Encrypt's parent), and the DAP (Distributed Aggregation Protocol) working group deploy Prio3 for privacy-preserving telemetry.
+
+**State of the art:** Chrome PAAPI (GA 2023); Apple PCM (Safari production); DAP/Prio3 (IETF draft, Firefox/ISRG deployment). Related to [Differential Privacy](categories/10-privacy-preserving-computation.md#differential-privacy), [VDAF/Prio](categories/10-privacy-preserving-computation.md#prio--vdaf--private-statistics), and [TEE Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation).
+
+---
+
+## Proof of Unique Human (Worldcoin, Proof of Personhood)
+
+**Goal:** Prove that a credential belongs to a unique biological human — without revealing the holder's identity. Prevents Sybil attacks (one person claiming many identities) in settings where per-person fairness matters: UBI distribution, one-person-one-vote, airdrop eligibility, rate-limiting AI services.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Worldcoin / World ID** | 2023 | Iris biometric + ZK semaphore | Custom IR camera ("Orb") captures iris codes; iris code stored on-device as a ZK commitment; semaphore ZK proof proves membership in the set of registered humans without revealing which one [[1]](https://whitepaper.worldcoin.org/) |
+| **Proof of Humanity (PoH)** | 2021 | Video + social vouching + Kleros dispute | On-chain registry; applicant submits video + existing member vouches; disputes resolved by Kleros decentralized jury; no biometrics, Sybil resistance relies on social graph [[1]](https://proofofhumanity.id/) |
+| **BrightID** | 2020 | Social graph analysis | Sybil resistance via graph algorithms on a social connection graph; no biometrics; estimates "unique human" by detecting community structure [[1]](https://brightid.org/) |
+| **Idena (Flip-based PoP)** | 2019 | Turing test (image puzzle) | Simultaneous CAPTCHA-like flip ceremonies; solving requires human cognition; Sybil attack requires proportional human labor [[1]](https://idena.io/wp.pdf) |
+| **ZK-biometric credentials (general)** | 2022 | Biometric commitment + SNARK | Biometric hash (face/iris) committed on-device; ZK proof that commitment is in the registry; selective disclosure of age/nationality without revealing identity [[1]](https://eprint.iacr.org/2022/1677) |
+
+The core tension is **privacy vs. Sybil-resistance**: strong biometric-based systems (Worldcoin) provide high Sybil resistance but require collecting sensitive biometric data and trusting the hardware manufacturer's attestation that the Orb did not retain iris images. Social vouching systems (PoH, BrightID) avoid biometrics but are vulnerable to collusion. Idena's flip ceremonies require synchronized global participation. The Worldcoin approach uses **semaphore** — a ZK membership proof where the user proves knowledge of a secret that hashes to one of the registered iris commitments, without revealing which commitment. The iris code itself is never sent to any server after the Orb ceremony; only a commitment is recorded on-chain. The system provides **nullifier-based anonymity**: the same secret produces the same nullifier for a given context (preventing double-voting) but different nullifiers across contexts (preventing linkage).
+
+**State of the art:** Worldcoin World ID v2 (2024, deployed in 35+ countries); PoH v2 (on Gnosis Chain). Related to [Semaphore / RLN](categories/11-anonymity-credentials.md#semaphore--rate-limiting-nullifier-rln), [Anonymous Credentials](categories/11-anonymity-credentials.md#anonymous-credentials), and [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md).
+
+---

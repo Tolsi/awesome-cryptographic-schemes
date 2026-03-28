@@ -582,3 +582,137 @@ The design targets VAES (vectorized AES-NI on AVX-512) for 4-lane parallel AES e
 **State of the art:** Camellia-GCM and ARIA-GCM are deployed in TLS 1.2 stacks within Japanese and Korean government, financial, and defense networks. TLS 1.3 did not include Camellia or ARIA cipher suites in its mandatory set (only AES-GCM and ChaCha20-Poly1305), limiting these ciphers to TLS 1.2 and proprietary protocol stacks. OpenSSL ships Camellia support; ARIA is available in NSS and Korean-market TLS libraries.
 
 ---
+
+## Ascon-128 / Ascon-128a (NIST LWC Standard)
+
+**Goal:** The NIST Lightweight Cryptography (LWC) standard AEAD for constrained devices — microcontrollers, RFID tags, IoT sensors — providing 128-bit security with a minimal footprint, a single hardware-friendly permutation, and a clean duplex-sponge design that covers both AEAD and hashing under one primitive family.
+
+| Variant | Rate | Capacity | Rounds (p^a / p^b) | Tag | Throughput (SW) | Note |
+|---------|------|----------|---------------------|-----|-----------------|------|
+| **Ascon-128** | 64-bit | 256-bit | 12 / 6 | 128-bit | ~7 cpb (ARM Cortex-M) | Default; conservative; 64-bit rate [[1]](https://ascon.iaik.tugraz.at/) |
+| **Ascon-128a** | 128-bit | 192-bit | 12 / 8 | 128-bit | ~4 cpb (ARM Cortex-M) | Faster; 128-bit rate; fewer capacity bits — acceptable for most IoT threat models [[1]](https://ascon.iaik.tugraz.at/) |
+| **Ascon-80pq** | 64-bit | 256-bit | 12 / 6 | 128-bit | ~7 cpb | 160-bit key; post-quantum conservative variant against Grover [[1]](https://ascon.iaik.tugraz.at/) |
+| **Ascon-Hash / Ascon-Hasha** | — | — | 12 / 12 or 8 | — | — | Companion hash functions from the same permutation family [[1]](https://ascon.iaik.tugraz.at/) |
+
+**Designers:** Christoph Dobraunig, Maria Eichlseder, Florian Mendel, Martin Schläffer (Graz University of Technology / Infineon), 2015. Selected as NIST LWC standard in February 2023; published as NIST SP 800-232 (2025).
+
+**Permutation (Ascon-p):** The state is 320 bits (5 × 64-bit words). Each round applies three layers:
+1. **pC** — constant addition: a round constant XOR'd into word 2, differing each round.
+2. **pS** — non-linear substitution: a 5-bit S-box applied bit-sliced across all 64 columns of the 5-word state.
+3. **pL** — linear diffusion: two rotations XOR'd into each word (e.g., word 0: `x0 ⊕= (x0 >>> 19) ⊕ (x0 >>> 28)`).
+
+Initialization: state ← Ascon-p^12(IV ‖ Key ‖ Nonce). Processing: each 64-bit (Ascon-128) or 128-bit (Ascon-128a) block of associated data or plaintext is XOR'd into the rate portion and followed by Ascon-p^6 (or p^8). Finalization: Key is XOR'd into the capacity, then Ascon-p^12 is applied, and the 128-bit tag is extracted.
+
+**Security:** 128-bit security under nonce-respecting conditions. Capacity bits (256 for Ascon-128, 192 for Ascon-128a) are never exposed, providing the security buffer. Nonce reuse leaks plaintext XOR but does not break authentication (unlike GCM). Best-known attack is a differential distinguisher on 6-round reduced Ascon-p; full 12-round initialization has no known shortcut.
+
+**Hardware footprint:** ~1 400–2 006 gate equivalents for ASIC depending on implementation style; 320-bit state fits in a compact SRAM cell array. On 64-bit CPUs, the five 64-bit word state maps naturally to registers, giving good software performance.
+
+**Deployments:** Nordic Semiconductor nRF9160 SDK; RIOT-OS; Zephyr RTOS; ARM Cortex-M reference implementation in NIST SP 800-232. See also [SpongeWrap / Duplex-Based AEAD](#spongwrap--duplex-based-aead) and [CAESAR Lightweight Winners](#caesar-lightweight-winners-acorn-gift-cofb).
+
+**State of the art:** NIST SP 800-232 (2025) designates Ascon-128 as the primary AEAD for constrained devices, with Ascon-128a as an approved faster alternative. Ascon-80pq is recommended where 128-bit post-quantum key security is required. The Ascon family supersedes ad-hoc lightweight AEAD constructions for new IoT designs.
+
+---
+
+## CWC Mode (Carter-Wegman + CTR)
+
+**Goal:** Provide an authenticated encryption with associated data (AEAD) mode that achieves ~128-bit authentication security by combining CTR-mode encryption with a Carter-Wegman MAC built on a 96-bit prime-field universal hash function — offering a provably-secure, patent-free alternative to GCM at the cost of heavier (but parallelisable) authentication arithmetic.
+
+| Property | Value |
+|----------|-------|
+| **Authors** | Kohno, Viega, Whiting (2004) |
+| **Publication** | FSE 2004 [[1]](https://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/cwc/cwc-spec.pdf) |
+| **Block cipher** | AES-128 (or any 128-bit cipher) |
+| **MAC basis** | Universal hash over GF(2^127 − 1) (96-bit prime-field arithmetic) |
+| **Nonce length** | 96 bits |
+| **Tag length** | 128 bits |
+| **Parallelism** | Yes — authentication blocks are independent |
+| **Patent status** | Unencumbered |
+
+**Construction:** CWC separates authentication and encryption into two explicitly independent components:
+1. **Encryption:** standard CTR mode using the block cipher.
+2. **Authentication:** a Carter-Wegman MAC using a key-derived authentication subkey `H` and a polynomial hash over the associated data and ciphertext in the field GF(2^127 − 1). The polynomial is evaluated using 96-bit arithmetic (multiplications modulo the prime 2^127 − 1) rather than GF(2^128) binary-field arithmetic.
+
+**CWC vs GCM:** Both are Carter-Wegman AEADs. GCM uses binary-field GHASH (GF(2^128)), which maps cleanly to hardware carry-less multiply (CLMUL/PMULL) instructions. CWC uses prime-field arithmetic, favored in 2004 because the security analysis is simpler (prime-field polynomial hashing has a classical universal-hash proof without the subtleties of binary-field near-collisions), but slower in software without dedicated prime-field hardware. GCM's adoption of CLMUL made it dramatically faster than CWC on modern CPUs, and NIST standardized GCM (SP 800-38D, 2007) rather than CWC.
+
+**Security:** Provably secure (IND-CCA2 + INT-CTXT) under standard block-cipher assumptions. The prime-field MAC has a tight 128-bit authentication bound. Nonce misuse is catastrophic (same as GCM — nonce reuse leaks plaintext XOR and breaks authentication).
+
+**State of the art:** CWC is not deployed in any current standard or widely-used library. It is historically important as one of three patent-free AEAD modes (with EAX and GCM) submitted to NIST consideration in 2004 and directly influenced GCM's design. For deployed alternatives see [Authenticated Encryption (AEAD)](#authenticated-encryption-aead).
+
+---
+
+## AES Key Wrap (KW / KWP, RFC 5649 / NIST SP 800-38F)
+
+**Goal:** Integrity-protected transport of cryptographic key material using only a block cipher — no separate MAC or IV randomness required. Key wrap produces a deterministic ciphertext from which any single-bit modification is detected with overwhelming probability, making it suitable for storing or transmitting keys in environments that must use only a block cipher primitive.
+
+| Scheme | Year | Standard | Input constraint | Output expansion | Note |
+|--------|------|----------|-----------------|-----------------|------|
+| **AES-KW** | 2001 | RFC 3394 / NIST SP 800-38F [[1]](https://www.rfc-editor.org/rfc/rfc3394) | Multiple of 8 bytes, ≥ 16 bytes | +8 bytes | Schaad-Housley; 6n AES-ECB calls for n 8-byte blocks |
+| **AES-KWP** | 2009 | RFC 5649 / NIST SP 800-38F [[1]](https://www.rfc-editor.org/rfc/rfc5649) | Any length ≥ 1 byte | +8 to +15 bytes | Adds length-encoding padding; supersedes RFC 3394 for variable-length keys |
+| **NIST SP 800-38F** | 2012 | NIST [[1]](https://csrc.nist.gov/publications/detail/sp/800/38/f/final) | Both | Both | Authoritative NIST formalization; mandates AES-256 for wrapping keys ≥ 128 bits |
+| **JWE AES Key Wrap** | 2015 | RFC 7516 [[1]](https://www.rfc-editor.org/rfc/rfc7516) | Content encryption key | Wrapped CEK | `A128KW`, `A192KW`, `A256KW` algorithm identifiers in JSON Web Encryption |
+
+**AES-KW construction (RFC 3394):** Input is n 64-bit semi-blocks (n ≥ 2). The algorithm runs 6n iterations of an AES-ECB encryption of the concatenation `(A ‖ R_i)` where A is a 64-bit "integrity check register" initialized to `0xA6A6A6A6A6A6A6A6` and R_1..R_{n-1} are the data semi-blocks. Each iteration updates A and one R_i. The output is the final A prepended to R_1..R_{n-1}. No randomness is used — output is deterministic for identical inputs under the same key.
+
+**AES-KWP construction (RFC 5649):** Extends KW by prepending an 8-byte alternative IV `0xA65959A6 ‖ len(plaintext)` to the padded input. For plaintexts of 1–8 bytes, a single AES-ECB call on the 16-byte block suffices, producing 24 bytes of output.
+
+**Security:** KW is proven IND-CPA and INT-CTXT under the PRP assumption for AES. Determinism means it is not IND-CCA2 — an adversary who queries the same key twice gets identical wrapped output, leaking equality. This is acceptable for key material, which is sampled uniformly at random and never reused under the same wrapping key in correct usage.
+
+**Deployments:** PKCS #7 / CMS EnvelopedData key transport; XML Encryption; JWE; KMIP (Key Management Interoperability Protocol); ANSI X9.73; every PKCS#11-compliant HSM (`C_WrapKey` / `C_UnwrapKey` mechanisms). OpenSSL implements KW as `AES_wrap_key` / `AES_unwrap_key`.
+
+**State of the art:** AES-KWP (RFC 5649) is the current standard for symmetric key transport. AES-KW (RFC 3394) is deprecated for inputs not a multiple of 8 bytes — use KWP. For public-key key transport see [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem--dem-paradigm) and [Hybrid Public Key Encryption (HPKE)](#hybrid-public-key-encryption-hpke).
+
+---
+
+## Ciphertext Stealing (CTS)
+
+**Goal:** Encrypt a plaintext of arbitrary byte length using a block cipher in CBC (or ECB) mode without ciphertext expansion — output length exactly equals input length — by rearranging the last two output blocks to absorb the final short plaintext block without adding padding bytes.
+
+| Variant | Last-block handling | Standard | Primary use |
+|---------|---------------------|----------|-------------|
+| **CBC-CS1** | Swap last two ciphertext blocks unconditionally | — | Rare; last block always shorter than full block |
+| **CBC-CS2** | Swap if last block is partial; no swap if full | — | Conditional swap; uncommon |
+| **CBC-CS3** | No swap; last full block precedes short final block | NIST SP 800-38A Addendum (2010) [[1]](https://csrc.nist.gov/publications/detail/sp/800/38/a/addendum/final) | NIST preferred variant |
+| **Kerberos CBC-CTS** | CS3 variant with Kerberos IV | RFC 3962, RFC 8009 [[1]](https://www.rfc-editor.org/rfc/rfc3962) | AES-CTS-HMAC-SHA1-96 Kerberos encryption type |
+| **XTS-AES with CTS** | XEX-based stealing for partial final sector | IEEE Std 1619-2007 [[1]](https://ieeexplore.ieee.org/document/4493450) | Disk encryption of sectors not a multiple of 16 bytes |
+
+**CS3 mechanics:** Given plaintext P of length L = n·B + r where B = block size and 0 < r ≤ B:
+1. Encrypt blocks P_1 … P_{n−1} in standard CBC, producing C_1 … C_{n−1}.
+2. Encrypt C_{n−1} with the block cipher to obtain intermediate value T.
+3. XOR T with P_n (zero-padded to B bytes) to produce C_n (the penultimate output block, full length B).
+4. Truncate T to r bytes; this becomes C_{n+1-like} (the final output block, length r).
+
+Decryption reverses the process: the receiver reconstructs the zero-padded P_n from C_n and T, then strips the r-byte fragment. Total output length = n·B − (B − r) = L. No padding bytes are transmitted.
+
+**Constraint:** The plaintext must be at least one full block (B bytes) long for CTS to be applicable. For very short inputs (< B bytes), PKCS#7 padding or a stream cipher must be used instead.
+
+**CTS does not provide authentication.** Like all raw CBC variants, CTS is confidentiality-only. It must always be combined with an external MAC or used inside an authenticated mode. See [Authenticated Encryption (AEAD)](#authenticated-encryption-aead) and [CBC Mode Padding and Padding Oracle Attacks](#cbc-mode-padding-and-padding-oracle-attacks).
+
+**State of the art:** CTS is deployed in Kerberos (RFC 3962, RFC 8009) for AES-encrypted tickets and in XTS-AES for partial-sector disk encryption. For new designs, AEAD modes are strongly preferred. CTS remains useful only when ciphertext expansion is structurally prohibited (e.g., fixed-size Kerberos ticket fields or fixed-sector-size storage media).
+
+---
+
+## CBC Mode Padding and Padding Oracle Attacks
+
+**Goal:** Understanding the PKCS#7 padding convention used with CBC mode and the padding oracle attack family that makes any encryption-without-authentication under CBC catastrophically vulnerable to chosen-ciphertext decryption — motivating the universal adoption of AEAD modes for all new designs.
+
+| Scheme / Attack | Year | Reference | Note |
+|----------------|------|-----------|------|
+| **PKCS#7 Padding** | 1993 | RFC 5652 §6.3 [[1]](https://www.rfc-editor.org/rfc/rfc5652) | Append n bytes of value n to reach a block boundary; n ∈ {1, …, 16} for AES |
+| **CBC-MAC (Encrypt-then-MAC)** | 1994 | Bellare-Kilian-Rogaway [[1]](https://link.springer.com/chapter/10.1007/3-540-68697-5_32) | Correct composition: MAC over ciphertext; verify before decryption |
+| **Vaudenay Padding Oracle** | 2002 | Eurocrypt 2002 [[1]](https://link.springer.com/chapter/10.1007/3-540-46035-7_35) | Seminal: any padding-distinguishing oracle decrypts any CBC ciphertext, ≤ 256 queries/byte |
+| **BEAST (TLS 1.0)** | 2011 | Duong-Rizzo [[1]](https://vnhacker.blogspot.com/2011/09/beast.html) | Predictable IV in TLS 1.0 CBC; chosen-plaintext attack on streaming connections |
+| **Lucky Thirteen** | 2013 | AlFardan-Paterson, IEEE S&P 2013 [[1]](https://ieeexplore.ieee.org/document/6547131) | Timing oracle in TLS HMAC-then-decrypt; 13-byte MAC header creates measurable timing signal |
+| **POODLE (SSL 3.0)** | 2014 | Möller-Duong-Kotowicz, CVE-2014-3566 [[1]](https://www.openssl.org/~bodo/ssl-poodle.pdf) | Practical padding oracle on SSL 3.0 CBC; triggered protocol downgrade attack |
+| **POODLE-TLS** | 2014 | CVE-2014-8730 [[1]](https://drownattack.com/) | Several TLS 1.x implementations incorrectly accepted SSL 3.0-style padding; same oracle |
+
+**PKCS#7 padding rule:** For a B-byte block cipher, the last block of plaintext is padded by appending n bytes of value n, where n = B − (len(plaintext) mod B), with n = B if the plaintext is already a multiple of B. For AES (B = 16): `...03 03 03` for 3 bytes padding, `...10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10` (16 bytes of 0x10) for a full padding block.
+
+**Vaudenay attack:** In AES-CBC decryption, plaintext block P_i = BlockCipherDecrypt(C_i) ⊕ C_{i−1}. An attacker who controls C_{i−1} and has an oracle that reports "valid padding" vs. "invalid padding" can recover P_i one byte at a time. To find the last byte of P_i: iterate C_{i−1}[-1] from 0x00 to 0xFF until the oracle returns "valid 0x01 padding". The correct value of BlockCipherDecrypt(C_i)[-1] is then C_{i−1}[-1] ⊕ 0x01. Extend to full block: adjust found bytes to target padding 0x02, 0x03, etc. Worst case: 256 queries per byte × 16 bytes = 4096 queries per 16-byte block.
+
+**Why Encrypt-then-MAC (EtM) eliminates the attack:** If a MAC over the ciphertext is verified before any decryption attempt, the attacker cannot obtain padding oracle responses — any modified ciphertext fails MAC verification before the block cipher is invoked. TLS 1.3 (RFC 8446) removed all CBC cipher suites. RFC 7366 (Encrypt-then-MAC) provides EtM for TLS 1.2 CBC suites as a mitigation.
+
+**Implementation pitfalls:** Constant-time padding validation is required even with EtM (to avoid timing oracles in the MAC-then-decrypt path). OpenSSL's pre-2013 TLS implementation had non-constant-time padding checks exploited by Lucky Thirteen. The correct fix is to always process the MAC over a fully zero-padded block and use `CRYPTO_memcmp`.
+
+**State of the art:** PKCS#7 + CBC is strictly legacy. TLS 1.3 (deployed everywhere), modern AEAD APIs (AES-GCM, ChaCha20-Poly1305, Ascon-128), and all recommended cryptographic libraries eliminate CBC padding entirely. See [Authenticated Encryption (AEAD)](#authenticated-encryption-aead) and [Ciphertext Stealing (CTS)](#ciphertext-stealing-cts) for alternatives that avoid padding.
+
+---

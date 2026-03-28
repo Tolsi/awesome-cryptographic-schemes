@@ -939,3 +939,195 @@ Orchard replaces Sapling's Spend/Output circuits (Groth16 over BLS12-381) with H
 **State of the art:** Halo2 deployed in Zcash Orchard (NU5 upgrade, May 2022). Original Halo paper (Bowe-Grigg-Hopwood, 2019) [[1]](https://eprint.iacr.org/2019/1021); halo2 book [[2]](https://zcash.github.io/halo2/). See [Groth16 / Zcash Sapling zk-SNARK](#groth16--zcash-sapling-zk-snark), [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems-overview), [Mina Protocol](#mina-protocol--pickles-recursive-snark-22-kb-blockchain).
 
 ---
+
+## Ethereum PBS — Proposer-Builder Separation and MEV
+
+**Goal:** Decouple the roles of block *builder* (who selects and orders transactions to extract MEV) from block *proposer* (a staking validator who simply signs the most profitable header offered to them), so that validators do not need sophisticated MEV extraction software and the network avoids centralisation pressure from MEV economies of scale.
+
+**MEV background:** Miners/validators who control transaction ordering can profit by inserting, reordering, or censoring transactions — sandwich attacks on AMM trades, liquidation front-running, arbitrage. This Maximal Extractable Value (MEV) historically flowed entirely to miners, and creates centralising incentives as larger operators can afford better order-flow pipelines.
+
+**PBS architecture (Ethereum PoS):**
+
+```
+Builders (specialised firms)
+  │ Assemble full blocks; bid a fee to the proposer
+  ▼
+MEV-Boost relay (trusted intermediary, e.g. Flashbots, BloXroute)
+  │ Receives sealed blocks + bids; reveals winning block header only after proposer commits
+  ▼
+Proposer (validator)
+  │ Signs the highest-bid header blind (does not see transaction contents until committed)
+  │ Cannot substitute own transactions after seeing the header
+  ▼
+Ethereum Beacon chain finalises the block
+```
+
+**Cryptographic commitment mechanism:** The relay reveals the full block body to the proposer only after the proposer has signed and published the *blinded* header. This prevents the proposer from stealing MEV after learning the transaction order. The blinded-header scheme requires the proposer to trust the relay not to equivocate — a limitation that in-protocol PBS (ePBS, EIP-7732) will fix via an on-chain commitment.
+
+**ePBS — enshrined PBS (EIP-7732):**
+
+| Property | MEV-Boost (current) | ePBS (EIP-7732, proposed) |
+|----------|--------------------|-----------------------------|
+| Relay trust | Trusted intermediary | Eliminated — protocol enforces commitment |
+| Builder payment | Off-chain (relay settles) | On-chain in the Beacon chain |
+| Equivocation protection | None (relay is centralised) | Slashable on-chain if builder equivocates |
+| Inclusion lists | Not enforced | Proposer can mandate a set of txs builders must include |
+
+**Inclusion lists (EIP-7547):** Proposers can publish a list of transactions that the chosen builder *must* include, restoring censorship resistance — builders who omit listed transactions have their block rejected.
+
+**State of the art:** MEV-Boost (Flashbots, 2022) runs on >90% of Ethereum blocks; ePBS (EIP-7732) is under active research and targeted for a future fork. Inclusion lists (EIP-7547) are planned alongside ePBS. See [Encrypted Mempools](#encrypted-mempools--threshold-encryption-for-transaction-ordering), [Flashbots and SUAVE](#flashbots-and-suave--encrypted-order-flow-and-tee-based-mev), [Casper FFG](#casper-ffg--ethereum-proof-of-stake-finality).
+
+---
+
+## Flashbots and SUAVE — Encrypted Order Flow and TEE-Based MEV
+
+**Goal:** Provide infrastructure that (a) makes MEV extraction transparent and democratised rather than opaque and centralising, and (b) ultimately moves toward a world where transaction order-flow is processed inside a Trusted Execution Environment (TEE) so that neither the builder nor the relay can front-run user transactions.
+
+**Flashbots MEV-Boost (2022):** An out-of-protocol marketplace that lets searchers (bots) submit *bundles* — ordered groups of transactions with a bid — directly to builders, who include them if profitable. Bundles are delivered via a private off-chain channel, bypassing the public mempool. This reduces failed front-running attempts (gas waste) and makes MEV more observable, but does not eliminate it.
+
+**SUAVE — Single Unifying Auction for Value Expression (2023):**
+
+SUAVE is Flashbots' long-term architecture: a decentralised block-building chain where transaction preferences (bids, order-flow bundles, intents) are processed inside Intel SGX / TDX TEEs. The TEE acts as a confidential compute environment:
+
+```
+User submits encrypted transaction preference to SUAVE network
+  │ Encrypted under SUAVE TEE's public key
+  ▼
+SUAVE node (running inside SGX/TDX enclave)
+  │ Decrypts, evaluates, matches preferences without leaking to operators
+  │ Produces an optimal block-building plan
+  ▼
+Block submitted to target chain (Ethereum, Polygon, …)
+  │ TEE attestation proves the build was computed correctly
+```
+
+| Component | Mechanism | Property |
+|-----------|-----------|---------|
+| Confidential compute | Intel SGX / TDX TEE | Operator cannot read plaintext preferences |
+| Remote attestation | DCAP attestation quote | Verifiable proof that correct SUAVE code ran inside TEE |
+| SUAVE chain | EVM-based preference settlement chain | Decentralised coordination of builders |
+| Confidential data records | Encrypted key-value store in SUAVE runtime | Preferences persist encrypted; auditable via attestation |
+
+**Kettle:** SUAVE's TEE execution environment for running "SUAPPs" (SUAVE applications). A Kettle node produces an attestation quote that any client can verify to confirm the correct SUAVE binary is running — no trust in the operator required.
+
+**Comparison with threshold encryption mempools:**
+
+| Approach | Trust model | Latency | Deployed |
+|----------|-------------|---------|---------|
+| Threshold encryption (Shutter) | Threshold committee | Adds key-generation round | Testnet / early mainnet |
+| TEE (SUAVE) | TEE manufacturer (Intel) + attestation | Near-zero overhead | Devnet / early 2025 |
+| Commit-reveal | No additional trust | Adds one block delay | Widely used (simple protocols) |
+
+**State of the art:** SUAVE devnet launched 2024; Rigil testnet (2024) is the first public SUAVE deployment. MEV-Boost (non-TEE) remains the dominant production system. SUAVE paper [[1]](https://writings.flashbots.net/the-future-of-mev-is-suave); TEE attestation background in [TEE Remote Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation). See [Encrypted Mempools](#encrypted-mempools--threshold-encryption-for-transaction-ordering), [Ethereum PBS](#ethereum-pbs--proposer-builder-separation-and-mev).
+
+---
+
+## Ethereum DVT — Distributed Validator Technology
+
+**Goal:** Allow a single Ethereum validator key to be operated by a *cluster* of nodes using threshold cryptography — so that no single machine holds the full BLS private key, validator duties continue even if some nodes in the cluster go offline, and solo stakers can achieve high availability without trusting a centralised staking service.
+
+**Problem:** Ethereum's proof-of-stake requires each validator to remain continuously online (to attest every epoch) or face inactivity penalties. Running a single server creates a single point of failure; commercial liquid staking operators (Lido, Rocket Pool) centralise key custody. DVT allows validator keys to be split across multiple independent operators.
+
+**Threshold BLS signing for validator duties:**
+
+A validator key `sk` is split into `n` shares `sk_1, …, sk_n` using a `(t, n)` threshold secret sharing scheme (Shamir-based DKG). Each node holds one share and produces a *partial BLS signature* when it is time to attest or propose. A combiner aggregates `t` partial signatures into a full BLS signature that is identical to what a single-key validator would produce — the Beacon chain cannot distinguish DVT validators from normal ones.
+
+| Component | Mechanism |
+|-----------|-----------|
+| Key generation | Distributed Key Generation (DKG) — no dealer ever holds full key |
+| Partial signing | Each DVT node signs with its BLS share |
+| Signature combination | Lagrange interpolation over BLS12-381 G₁ → full BLS sig |
+| Consensus within cluster | BFT or leader-based protocol to agree on what to sign before any node signs |
+| Slashing protection | Distributed slashing database — cluster refuses to sign equivocating messages |
+
+**Production DVT systems:**
+
+| Project | DKG scheme | Cluster consensus | Notes |
+|---------|-----------|-------------------|-------|
+| **Obol Network** | Charon DVT client; threshold BLS via `dkg.obol.tech` | Multi-round simple consensus | Open-source; multiple operators per validator |
+| **SSV Network** | `ssv-dkg` tool; Shamir secret sharing | Istanbul BFT (iBFT) | On-chain fee market; decentralised operator registry |
+| **Diva Staking** | DVT-native liquid staking; keyshares from deposit | Custom | Liquid staking built natively on DVT |
+
+**EIP-7441 — Whisk interaction:** EIP-7441 proposes a shuffled secret leader election (Whisk) for Ethereum that hides the next block proposer's identity until proposal time, complicating coordinated attacks on DVT clusters. DVT integration with Ethereum's validator duties is being standardised across the ecosystem.
+
+**State of the art:** Obol and SSV both have validators on Ethereum mainnet (2024); tens of thousands of ETH secured via DVT. SSV whitepaper [[1]](https://ssv.network/tech-paper/); Obol documentation [[2]](https://docs.obol.org/). See [Threshold Signatures](categories/08-signatures-advanced.md#threshold-signature-schemes-tss), [Distributed Key Generation](categories/05-secret-sharing-threshold-cryptography.md#distributed-key-generation-dkg), [Casper FFG](#casper-ffg--ethereum-proof-of-stake-finality).
+
+---
+
+## RANDAO and VDF — Unbiasable Randomness Beacon for Ethereum
+
+**Goal:** Provide a public, unbiasable source of randomness for Ethereum consensus — used to assign validators to committees, elect block proposers, and seed randomness-dependent protocols — by combining RANDAO (XOR-based commit-reveal across all validators) with a Verifiable Delay Function (VDF) that prevents last-revealer bias.
+
+**RANDAO — baseline randomness accumulation:**
+
+At each epoch, every validator contributes a randomness reveal: a BLS signature over the current epoch number (deterministic under their key). The epoch randomness is the XOR of all reveals. Because reveals are BLS signatures, they are deterministic per key — validators cannot choose a different reveal, only choose to withhold it.
+
+```
+randao_mix(epoch) = XOR of BLS_sign(sk_i, epoch) for all i that reveal
+```
+
+**Last-revealer bias attack:** The last validator to reveal can observe the running XOR and compute whether revealing or withholding produces a more favourable outcome (e.g., self-selecting as the next block proposer). With ~500,000 validators, this manipulation is small but non-zero.
+
+**VDF as a bias-prevention layer:**
+
+A Verifiable Delay Function `(y, π) = VDF.Eval(x, T)` takes the RANDAO output `x` as input and produces `y` after `T` sequential steps — too slow to be computed before the reveal window closes, but fast to verify given `π`.
+
+```
+RANDAO output (current epoch)
+  │
+  └─ VDF.Eval(T steps, ~100 seconds delay)
+       │
+       ├─ VDF output y  (unbiasable randomness)
+       │
+       └─ Proof π: VDF.Verify(x, y, π) = 1  (succinct; O(log T))
+```
+
+Because the VDF takes longer than the reveal window, the last revealer cannot compute the final randomness before deciding to reveal — eliminating the bias.
+
+| Component | Mechanism | Note |
+|-----------|-----------|------|
+| RANDAO | BLS signatures XOR-accumulated | Deployed in Ethereum PoS today |
+| VDF candidate | MinRoot VDF (Ethereum research, 2022) | Replaces earlier class-group VDF proposals |
+| VDF hardware | Dedicated ASIC (~100 steps/s) | Needed to evaluate VDF faster than adversary's hardware |
+| VDF proof | Wesolowski or Pietrzak succinct proof | O(log T) or O(√T) verification |
+
+**MinRoot VDF (2022):** Ethereum's current preferred VDF construction iterates `(x, y) ↦ (y, (x + y)^{1/5})` over a large prime field — the inverse fifth-power is the sequential bottleneck. Faster than class-group VDFs on hardware [[1]](https://eprint.iacr.org/2022/1626).
+
+**Current deployment:** Ethereum PoS uses RANDAO alone (VDF not yet live); VDF integration awaits ASIC hardware development and protocol specification. RANDAO spec [[2]](https://eth2book.info/capella/part2/building_blocks/randomness/). See [Verifiable Delay Functions](categories/09-commitments-verifiability.md#verifiable-delay-functions-vdf), [Secret Leader Election](#secret-leader-election), [Casper FFG](#casper-ffg--ethereum-proof-of-stake-finality).
+
+---
+
+## Incremental Verifiable Computation (IVC) for Blockchain
+
+**Goal:** Prove the correctness of an *incremental* computation — one that adds one step at a time — using a proof that remains constant-size regardless of the number of steps, enabling blockchain nodes to verify the entire chain history or a long-running program execution with a single succinct proof.
+
+**Formal definition:** An IVC scheme for a function `F` produces, for a sequence of steps `z_0 → z_1 → … → z_n`, a proof `π_n` certifying: "starting from `z_0`, applying `F` exactly `n` times yields `z_n`." Proof size and verification time are `O(1)` in `n`.
+
+**Why IVC matters for blockchains:**
+
+| Application | IVC role |
+|-------------|---------|
+| Mina Protocol (22 KB blockchain) | IVC over the block transition function; full chain proof in ~22 KB |
+| zkEVM execution proofs | IVC over EVM step function; prove N instructions without prover memory growing with N |
+| zkVM (SP1, RISC Zero) | IVC over RISC-V instruction execution; prove arbitrary programs |
+| Proof aggregation | Aggregate N independent batch proofs into one final proof |
+| Rollup state compression | IVC accumulates all state transitions; L1 sees only final proof |
+
+**Key constructions:**
+
+| Scheme | Year | Recursion technique | Proof system | Trusted setup |
+|--------|------|--------------------|--------------|----|
+| **Halo (Bowe-Grigg-Hopwood)** | 2019 | Accumulation over Pasta cycle | IPA (no pairings) | None |
+| **Nova (Kothapalli-Setty-Tzialla)** | 2021 | Folding scheme for R1CS | Pedersen commitments | None [[1]](https://eprint.iacr.org/2021/370) |
+| **SuperNova** | 2022 | Non-uniform IVC via folding | R1CS per step function | None [[2]](https://eprint.iacr.org/2022/1758) |
+| **HyperNova** | 2023 | CCS (generalised R1CS) folding | HyperKZG | None [[3]](https://eprint.iacr.org/2023/573) |
+| **Sangria** | 2023 | Folding for PLONK | KZG | KZG setup |
+| **ProtoStar** | 2023 | Special-sound IVC for PLONK | IPA/KZG | Optional |
+
+**Nova folding scheme (key insight):** Rather than verifying one proof inside another circuit (expensive), Nova *folds* two R1CS instances into one *relaxed* R1CS instance using a random linear combination. The fold is cheap (linear in circuit size); only the final accumulated instance needs to be proven with a full SNARK. This makes recursive proving ~10–100× faster than classical in-circuit verification.
+
+**Relationship to folding schemes and PCD:** IVC generalises to Proof-Carrying Data (PCD) — where each computation step carries a proof verified by the next step, enabling distributed/parallel incremental proving. See [Folding Schemes and PCD](categories/04-zero-knowledge-proof-systems.md#folding-schemes-and-proof-carrying-data-pcd).
+
+**State of the art:** Nova and HyperNova are the leading theoretical constructions (2023–2024); both are integrated into production zkVMs (SP1, RISC Zero). Mina's Pickles is the most prominent production IVC system. Survey [[4]](https://eprint.iacr.org/2023/620). See [Mina Protocol](#mina-protocol--pickles-recursive-snark-22-kb-blockchain), [Halo2](#halo2--recursive-snarks-without-trusted-setup-zcash-orchard), [ZK Rollups](#zk-rollups-and-optimistic-rollups), [Folding Schemes](categories/04-zero-knowledge-proof-systems.md#folding-schemes-and-proof-carrying-data-pcd).
+
+---

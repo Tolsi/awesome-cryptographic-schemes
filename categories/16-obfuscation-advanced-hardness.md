@@ -319,3 +319,85 @@
 **State of the art:** OWF → PRG (HILL 1999) is the central result of complexity-based cryptography; the construction is not practical (many rounds of the GL hard-core bit extractor) but the equivalence is foundational. Practical PRGs (AES-CTR, ChaCha20) are built directly from block ciphers. Related to [PRF/PRP and PRG](categories/01-foundational-primitives.md) and [theoretical foundations](categories/19-theoretical-foundations.md).
 
 ---
+
+## MPC from Minimal Assumptions (MPC from OWF)
+
+**Goal:** Secure multi-party computation on the weakest possible assumption. It has long been known that OT — and hence general MPC — requires one-way functions. The converse direction, that OWFs suffice, was open for decades. A sequence of results culminating in Applebaum-Ishai-Kushilevitz (2006) and Ishai-Kushilevitz-Ostrovsky-Prabhakaran-Sahai-Wullschleger (2013) established that semi-honest and then malicious-secure MPC for all functionalities can be built from OWFs alone, confirming OWF as the exact threshold for MPC.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **OT from OWF is impossible classically** | 1994 | Impagliazzo-Rudich | OT (and hence MPC) cannot be black-box reduced to OWFs alone without further structure; formal black-box separation [[1]](https://dl.acm.org/doi/10.1145/195058.195134) |
+| **OT from enhanced TDF (Bellare-Micali)** | 1989 | Trapdoor functions (TDF) | Oblivious transfer from any enhanced trapdoor permutation; trapdoor permutations follow from factoring or DDH [[1]](https://dl.acm.org/doi/10.1145/73007.73010) |
+| **Garbled circuits + OT → MPC (Yao / GMW)** | 1986–87 | OWF + OT | Yao garbling + Goldreich-Micali-Wigderson compiler: semi-honest then malicious-secure MPC for any polynomial-time function from OT [[1]](https://dl.acm.org/doi/10.1145/3335741.3335756) |
+| **MPC from OWF (Ishai et al.)** | 2013 | OWF + NC¹ garbling | Constructs constant-round semi-honest MPC protocols whose communication complexity is polynomial in the OWF security parameter; OWF is sufficient for MPC [[1]](https://eprint.iacr.org/2013/267) |
+| **Malicious MPC from OWF (Goyal-Jain-Jin-Srinivasan)** | 2022 | OWF | Constant-round maliciously-secure MPC from OWFs in the plain model; completes the equivalence for malicious adversaries [[1]](https://eprint.iacr.org/2022/1194) |
+| **Round-optimal MPC from OWF** | 2020 | OWF + NIZK | Two-round MPC for general functions from OWF (via NIZK in the CRS model); optimal interaction [[1]](https://eprint.iacr.org/2020/1204) |
+
+**State of the art:** OWF ↔ MPC (semi-honest 2013, malicious 2022); the equivalence is now complete. In practice, MPC protocols use OT from DDH or LWE for efficiency. Foundationally related to [OWF → PRG](#pseudorandom-generators-from-one-way-functions), [garbled circuits](categories/06-multi-party-computation.md#garbled-circuits), and [oblivious transfer](categories/06-multi-party-computation.md#oblivious-transfer-ot).
+
+---
+
+## Succinct Functional Encryption for Turing Machines
+
+**Goal:** Functional encryption (FE) where ciphertext size is independent of the computation time. Standard FE for circuits requires ciphertext size to grow with circuit depth. Succinct FE for Turing machines (or RAM programs) allows encrypting an input x with |ct| = poly(|x|, λ) such that a function key sk_M for a Turing machine M evaluates M(x) in time T(|x|) — with decryption cost poly(|x|, λ), independent of T. This achieves fully succinct FE and is closely tied to iO and diO.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **FE for Turing machines (ABSV)** | 2013 | diO + OWF | Ananth-Boneh-Sahai-Vaikuntanathan construct the first FE for Turing machines from differing-inputs obfuscation; ciphertexts are succinct in the input length [[1]](https://ntt-research.com/wp-content/uploads/2022/08/Differing-inputs-obfuscation-and-applications.pdf) |
+| **Succinct FE from sub-exp iO** | 2016 | Sub-exp iO + OWF | Ananth-Jain-Kiyoshima-Sahai remove diO; replace with sub-exponentially secure iO; yields semi-adaptive succinct FE for Turing machines [[1]](https://eprint.iacr.org/2015/163) |
+| **FE for RAM programs (Cho-Döttling-Garg-Gupta-Miao-Srinivasan)** | 2020 | iO + ORAM | Construct FE for RAM programs where decryption time matches RAM running time, not circuit depth; uses ORAM to handle memory [[1]](https://eprint.iacr.org/2020/501) |
+| **Laconic FE for Turing machines** | 2023 | Laconic OT + LWE | Succinct ciphertext FE for Turing machines from laconic cryptography and LWE; avoids iO entirely for bounded computation time [[1]](https://eprint.iacr.org/2023/398) |
+| **Succinct FE implies diO (Garg-Gentry-Halevi-Wichs)** | 2014 | Reverse direction | Fully succinct single-key FE for Turing machines implies differing-inputs obfuscation; establishes tight equivalence between the two [[1]](https://link.springer.com/chapter/10.1007/978-3-662-44371-2_29) |
+
+**State of the art:** Succinct FE for Turing machines is achievable from iO (2016); the equivalence with diO (2014) is foundational but diO itself is fragile (see [diO](#differing-inputs-obfuscation-dio)). Practical deployment awaits efficient iO. Relates to [Functional Encryption from iO](#functional-encryption-from-io), [Bootstrapping iO](#bootstrapping-io-functional-encryption--io), [Garbled RAM](categories/06-multi-party-computation.md#garbled-ram), and [Laconic Cryptography](#laconic-cryptography).
+
+---
+
+## Approximate Indistinguishability Obfuscation (aiO)
+
+**Goal:** A relaxed obfuscation guarantee sufficient for many applications. Full iO requires that obfuscations of any two equivalent circuits are computationally indistinguishable. Approximate iO (aiO) weakens this to allow a small statistical distance between the obfuscated circuit's output distribution and the original, or to allow indistinguishability to hold only against a restricted class of adversaries. This relaxation enables constructions from weaker assumptions — and in some formulations from falsifiable assumptions — while retaining enough security for applications such as witness encryption and software watermarking.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Approximate obfuscation (Bitansky-Canetti-Cohn-Goldwasser-Kalai-Paneth-Rosen)** | 2014 | Sub-exp LWE | Introduce aiO as a relaxation of iO; construct an approximate obfuscator for NC¹ circuits with a polynomially small approximation error under LWE [[1]](https://eprint.iacr.org/2014/264) |
+| **aiO for all circuits from LWE** | 2016 | Sub-exp LWE + PRG | Extend aiO to polynomial-size circuits; error is negligible for most inputs; basis for practical applications without full iO [[1]](https://eprint.iacr.org/2016/014) |
+| **Weak iO (Brzuska-Mittelbach)** | 2014 | Complexity assumptions | Formalize "weak" iO where indistinguishability holds only for programs with a hard-to-find differing input; strictly weaker than diO and stronger than iO [[1]](https://eprint.iacr.org/2014/304) |
+| **Functional encryption → aiO (Ananth-La Placa)** | 2021 | Compact FE | Show that single-key compact FE with a mild approximation in security implies aiO for all circuits; broadens the FE-to-iO bootstrapping landscape [[1]](https://eprint.iacr.org/2020/1003) |
+| **Obfustopia (Brakerski-Döttling-Garg-Malavolta)** | 2020 | LWE + PRG in NC¹ | Construct aiO-style primitives sufficient for witness encryption and ABE from LWE + PRG in NC¹, without assuming full iO; important step toward iO from standard assumptions [[1]](https://eprint.iacr.org/2020/1003) |
+
+**State of the art:** aiO from LWE (with sub-exponential security) is achievable (2016) and implies many iO applications; it is a leading intermediate milestone on the path from LWE to full iO. Relates to [iO](#indistinguishability-obfuscation-io), [VBB Impossibility](#vbb-obfuscation-impossibility), [Differing-Inputs Obfuscation](#differing-inputs-obfuscation-dio), and [Evasive LWE](#evasive-lwe--tensor-lwe).
+
+---
+
+## Predicate Encryption and Attribute Hiding
+
+**Goal:** Fine-grained access control where the access policy itself is hidden. In standard attribute-based encryption (ABE), the ciphertext attributes are visible to all parties. Predicate encryption (PE) hides both the plaintext and the ciphertext attributes, revealing only whether the key predicate matches — and nothing else. This attribute-hiding property is essential for privacy-preserving encrypted search, anonymous credential systems, and oblivious access control. Achieving PE for rich predicates (beyond equality or inner product) requires techniques closely related to obfuscation.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Predicate Encryption (Katz-Sahai-Waters)** | 2008 | Bilinear pairings | First formal PE definition; constructs inner-product PE (IP-PE) over composite-order groups; attributes and predicate mutually hidden [[1]](https://eprint.iacr.org/2008/290) |
+| **Hidden Vector Encryption (Boneh-Waters)** | 2007 | Bilinear pairings | PE for conjunctive equality, subset, and range queries with wildcard support; decrypt iff ciphertext vector matches key pattern [[1]](https://eprint.iacr.org/2007/013) |
+| **PE for CNF/DNF (Shi-Waters)** | 2008 | Bilinear pairings | Predicate encryption for boolean formulas; attribute-hiding guarantees; security under DBDH [[1]](https://eprint.iacr.org/2008/290) |
+| **Lattice PE for inner product (Agrawal-Freeman-Vaikuntanathan)** | 2011 | LWE | Post-quantum inner-product PE from LWE; attribute hiding under LWE; compact ciphertexts [[1]](https://eprint.iacr.org/2011/457) |
+| **PE for all circuits from iO (Waters)** | 2015 | iO + OWF | Full-attribute-hiding PE for any circuit predicate constructed from iO and OWF; establishes iO as the sufficient assumption for the strongest PE notion [[1]](https://eprint.iacr.org/2012/315) |
+| **PE from evasive LWE (Wee)** | 2022 | Evasive LWE | Attribute-hiding CP-ABE and PE for NC¹ from evasive LWE without iO; post-quantum and with near-optimal parameter sizes [[1]](https://eprint.iacr.org/2023/906) |
+
+**State of the art:** Attribute-hiding PE for NC¹ from evasive LWE (Wee 2022) is the leading post-quantum construction; full-circuit PE requires iO (2015). The distinction from standard ABE is the hiding of ciphertext attributes, which fundamentally raises the hardness requirements. Cross-references: [Functional Encryption from iO](#functional-encryption-from-io), [Evasive LWE](#evasive-lwe--tensor-lwe), [HVE and ABE/FE](categories/07-homomorphic-functional-encryption.md#hidden-vector-encryption-hve), [Laconic Cryptography](#laconic-cryptography).
+
+---
+
+## Software Copy-Protection from iO
+
+**Goal:** Distribute a software program so that any user who receives a copy can run it but cannot produce a second working copy. Copy-protection is a classical software-security goal that, informally, requires programs to be "unclonable" — a property impossible to achieve with classical software alone since code is copyable data. Using iO, one can construct cryptographic copy-protection schemes for specific function classes (such as point functions and compute-and-compare programs), where any successful copy of the obfuscated program would violate a computational hardness assumption.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Copy-protection from iO (Ananth-La Placa)** | 2021 | iO + quantum random oracle | First formal copy-protection for unlearnable function classes using iO; adversary that clones the program implicitly solves a hard problem [[1]](https://eprint.iacr.org/2020/1212) |
+| **Copy-protection for point functions (classical)** | 2021 | iO + LWE | Classical (non-quantum) copy-protection for point functions: distribute an iO-obfuscated program tied to a hardware token or licensing mechanism [[1]](https://eprint.iacr.org/2020/1212) |
+| **Watermarking from iO (Cohen-Holmgren-Nishimaki-Vaikuntanathan-Wichs)** | 2016 | iO + PRF | Unremovable software watermarking: embed a detectable mark in a PRF that cannot be removed without destroying functionality; first from iO [[1]](https://eprint.iacr.org/2015/1096) |
+| **Watermarking PRFs from LWE (Kim-Wu)** | 2017 | LWE | Construct watermarkable PRFs from LWE without iO; minimal assumption for watermarking structured programs [[1]](https://eprint.iacr.org/2017/641) |
+| **Traceable secret sharing for copy detection** | 2024 | Bilinear maps | Use tracing techniques to identify which copy of a program was used to produce unauthorized decryptions; copyright enforcement for FE keys [[1]](https://eprint.iacr.org/2024/081) |
+
+**State of the art:** Classical (non-quantum) copy-protection requires iO or hardware assumptions; quantum copy-protection (see [Quantum Copy-Protection](categories/15-quantum-cryptography.md#quantum-copy-protection--uncloneable-encryption)) achieves it from the no-cloning theorem. Software watermarking from LWE (2017) is the most practical deployed-oriented construction. Relates to [iO](#indistinguishability-obfuscation-io), [Constrained PRFs](#constrained-pseudorandom-functions-cprf), [Functional Encryption from iO](#functional-encryption-from-io), and [Quantum Copy-Protection](categories/15-quantum-cryptography.md#quantum-copy-protection--uncloneable-encryption).
+
+---

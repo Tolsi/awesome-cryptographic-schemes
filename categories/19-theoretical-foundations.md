@@ -380,3 +380,85 @@
 | **Weak to strong OWF (Goldreich-Levin based)** | 1993 | Goldreich–Levin (HILL amplification) | Amplification via Goldreich-Levin extraction: a function that is weak-OWF for any noticeable fraction can be amplified to strong OWF by chaining GL bits; integral to HILL PRG construction [[1]](https://doi.org/10.1137/S0097539793244708) |
 
 **State of the art:** Security amplification is a fundamental meta-theorem of cryptography. Raz's parallel repetition theorem is the canonical tool for amplifying interactive proofs and MPC protocols. Direct product theorems underlie multi-instance security arguments used in batching and aggregate signatures. See [Hardcore Predicates and the Goldreich-Levin Theorem](#hardcore-predicates-and-the-goldreich-levin-theorem) and [Concrete Security and Reduction Tightness](#concrete-security-and-reduction-tightness).
+
+---
+
+## Simulation-Based Security (SIM) vs. Indistinguishability-Based Security (IND)
+
+**Goal:** Understand two fundamental paradigms for defining cryptographic security. Indistinguishability-based definitions (IND) specify security via a game in which an adversary cannot distinguish between two explicitly chosen distributions — for example, encryptions of two messages of its choice. Simulation-based definitions (SIM) instead compare a real protocol execution to an ideal execution with a trusted party: a protocol is secure if any real-world adversary can be "simulated" by an ideal-world adversary that talks only to the ideal functionality, obtaining no more information. SIM-security is strictly stronger and composes modularly (the basis of UC); IND-based security is game-specific and may not compose, but is often easier to work with and sufficient for standalone primitives.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **IND-CPA / semantic security** | 1984 | Goldwasser–Micali | Canonical IND definition: adversary cannot distinguish encryptions of chosen plaintexts; equivalent to semantic security [[1]](https://mit6875.github.io/PAPERS/probabilistic_encryption.pdf) |
+| **SIM-security for OT** | 1987 | Goldreich–Micali–Wigderson | Ideal-world / real-world paradigm for oblivious transfer; adversary's view in the real protocol is simulatable given only the ideal output [[1]](https://doi.org/10.1145/28395.28420) |
+| **SIM vs. IND for encryption (non-equivalence)** | 2000 | Canetti–Dwork–Naor–Ostrovsky | SIM-secure (non-committing) encryption requires communication overhead; IND-CCA2 encryption does not achieve SIM-security against adaptive corruptions [[1]](https://eprint.iacr.org/1996/058) |
+| **Ideal functionality paradigm (UC)** | 2001 | Canetti | Formalised real/ideal world comparison as universal composition; every UC-secure protocol is SIM-secure in the strongest sense [[1]](https://eprint.iacr.org/2000/067) |
+| **IND ↛ SIM for PKE under adaptive corruptions** | 2011 | Nielsen–Wichs | Separation: IND-CCA2-secure PKE does not achieve SIM-based security when the receiver can be adaptively corrupted; non-committing encryption is necessary [[1]](https://eprint.iacr.org/2011/215) |
+
+**State of the art:** IND-CPA/IND-CCA2 remain the standard for standalone primitives (PKE, KEM, signatures). SIM-based / UC security is required for protocols that must compose — [MPC](categories/06-multi-party-computation.md#multi-party-computation-mpc), [CGKA/MLS](categories/12-secure-communication-protocols.md#cgkamls), [OT](categories/06-multi-party-computation.md#oblivious-transfer-ot). Non-committing encryption bridges the gap when adaptive corruptions are needed under SIM. See [Universal Composability (UC) Framework](#universal-composability-uc-framework) and [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa--ind-cca-security).
+
+---
+
+## Adaptive vs. Static Corruptions in Multi-Party Protocols
+
+**Goal:** Model how an adversary may choose which parties to corrupt. A *static* adversary fixes the set of corrupted parties before the protocol begins; an *adaptive* adversary may corrupt parties during execution, choosing whom to corrupt based on messages it has observed so far. Adaptive corruption is far more realistic — a real attacker can target a party after seeing its public messages — but is much harder to achieve: it typically requires non-committing encryption or erasure assumptions, because the simulator must be able to explain honestly generated messages after the fact, having not yet fixed the corrupted party's internal state.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Adaptive security definition** | 1996 | Canetti–Feige–Goldreich–Naor | Formal separation between static and adaptive adversaries in MPC; showed that standard garbled-circuit constructions are only statically secure [[1]](https://eprint.iacr.org/1996/058) |
+| **Non-committing encryption (NCE)** | 1996 | Canetti–Feige–Goldreich–Naor | NCE enables adaptively secure MPC: the simulator can equivocate on ciphertexts after a party is corrupted; implies log-factor communication overhead [[1]](https://eprint.iacr.org/1996/058) |
+| **Adaptive security from erasures** | 2007 | Goldwasser–Lindell | If parties can securely erase their randomness, adaptive security is achievable without NCE; erasure model simplifies protocol design [[1]](https://eprint.iacr.org/2002/012) |
+| **Adaptive OT** | 2009 | Green–Hohenberger | Oblivious transfer adaptively secure under DDH; first practical adaptive OT; underlying tool for adaptively secure two-party computation [[1]](https://eprint.iacr.org/2009/190) |
+| **Adaptively secure garbled circuits** | 2014 | Lindell–Oxman–Pinkas | Garbled circuits achieving adaptive security without erasures via re-garbling techniques; O(1)-round adaptively secure 2PC [[1]](https://eprint.iacr.org/2013/167) |
+| **YOSO model (adaptive roles)** | 2021 | Gentry–Halevi–Krawczyk–Rabin–Simon–Srinivasan–Woodruff | You Only Speak Once: adversary adaptively corrupts parties only after they have broadcast; avoids NCE at the cost of one-shot communication [[1]](https://eprint.iacr.org/2021/210) |
+
+**State of the art:** Adaptive security is the correct model for internet-scale protocols. Non-committing encryption (NCE) is unavoidable in the no-erasure setting; practical NCE constructions from lattices (Döttling et al. 2020) are now available. The YOSO model offers an alternative architectural approach used in blockchain leader election. See [MPC](categories/06-multi-party-computation.md#multi-party-computation-mpc) and [Universal Composability (UC) Framework](#universal-composability-uc-framework).
+
+---
+
+## Indifferentiability Framework
+
+**Goal:** Prove that a construction using a simpler ideal primitive is as secure as if a stronger ideal primitive were used directly. Maurer, Renner, and Holenstein (2004) introduced indifferentiability to capture when a hash construction built from an ideal compression function (or block cipher) is "as good as" a random oracle. A construction C[P] (using primitive P) is indifferentiable from an ideal primitive Q if there is a simulator S such that (C[P], P) is computationally indistinguishable from (Q, S^Q) — meaning any system that uses C[P] behaves as if it used Q directly. This justifies plugging hash constructions into random-oracle proofs without invalidating them.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Indifferentiability framework** | 2004 | Maurer–Renner–Holenstein | Foundational definition; indifferentiability implies security in any single-stage cryptographic game that uses the ideal primitive as a subroutine [[1]](https://link.springer.com/chapter/10.1007/978-3-540-24638-1_2) |
+| **Merkle-Damgård is NOT indifferentiable** | 2004 | Coron–Dodis–Malinaud–Puniya | MD construction leaks structure: length extension attacks mean MD[π] is not indifferentiable from a RO; motivates sponge and prefix-free MD variants [[1]](https://eprint.iacr.org/2005/210) |
+| **Sponge construction is indifferentiable** | 2008 | Bertoni–Daemen–Peeters–Van Assche | Sponge functions built from a random permutation are indifferentiable from a random oracle; theoretical foundation for SHA-3/Keccak [[1]](https://keccak.team/files/SpongeFunctions.pdf) |
+| **HMAC indifferentiability** | 2012 | Gazi–Maurer | HMAC built from an ideal compression function is indifferentiable from a PRF; justifies HMAC's security proofs in the random oracle model [[1]](https://link.springer.com/chapter/10.1007/978-3-642-32009-5_21) |
+| **Multi-stage security and indifferentiability limits** | 2011 | Ristenpart–Shacham–Shrimpton | Indifferentiability does not imply security for multi-stage games (e.g., RKA, related-key attacks); delineates the boundary of what indifferentiability guarantees [[1]](https://eprint.iacr.org/2011/005) |
+
+**State of the art:** Indifferentiability is the standard tool for justifying hash-construction security in the ROM. SHA-3's sponge design was chosen partly because it achieves indifferentiability from a random oracle (given a random permutation), unlike Merkle-Damgård. The Ristenpart-Shacham-Shrimpton limitation is important: indifferentiability does not cover all security properties. See [Random Oracle Model (ROM) vs. Standard Model](#random-oracle-model-rom-vs-standard-model).
+
+---
+
+## Symbolic Model (Dolev-Yao) vs. Computational Model
+
+**Goal:** Understand two complementary paradigms for reasoning about protocol security. The *symbolic model* (Dolev-Yao, 1983) treats cryptographic operations as perfect black-box functions defined by algebraic term rewriting: an adversary can intercept, forward, and compose messages but cannot break the underlying primitives. This enables automated analysis via model checking and theorem proving. The *computational model* treats messages as bit strings, adversaries as probabilistic polynomial-time algorithms, and security as indistinguishability of probability distributions — the setting of provable security. Bridging the two models — showing that symbolic security implies computational security — is a central research challenge.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Dolev-Yao adversary model** | 1983 | Dolev–Yao | Formalised symbolic Dolev-Yao attacker: controls the network, can compose and decompose messages, cannot break encryption; enables decidability of security properties for finite protocols [[1]](https://doi.org/10.1109/TIT.1983.1056650) |
+| **Abadi-Rogaway computational soundness** | 2002 | Abadi–Rogaway | Formal languages (symbolic expressions) are *computationally sound*: if a property holds symbolically, it holds computationally under CPA-secure encryption; first rigorous bridge [[1]](https://doi.org/10.1145/503387.503389) |
+| **Computational soundness for active adversaries** | 2005 | Cortier–Warinschi | Extended Abadi-Rogaway to CCA2 and active (Dolev-Yao) adversaries; symbolic security implies computational security for a richer class of protocols [[1]](https://link.springer.com/chapter/10.1007/11691372_17) |
+| **Computationally complete symbolic attacker** | 2012 | Bana–Comon-Lundh | Axiomatic approach: add computational axioms to the symbolic model on the fly to make symbolic proofs complete for the computational model; used in CCSA logic [[1]](https://link.springer.com/chapter/10.1007/978-3-642-35289-8_22) |
+| **Limitation: symbolic ↛ computational for all primitives** | 2006 | Backes–Pfitzmann | Symbolic soundness fails for hash functions and digital signatures without additional conditions; gap between Dolev-Yao and computational hash models [[1]](https://link.springer.com/chapter/10.1007/11681878_26) |
+
+**State of the art:** The symbolic model remains the foundation for automated protocol verification tools (ProVerif, Tamarin — see [Automated Protocol Verification](#automated-protocol-verification-proverif-tamarin-easycrypt)). Computational soundness results make symbolic proofs rigorous for specific primitives (CCA2 encryption, MACs). A fully general bridge does not yet exist. The two models are complementary: symbolic for finding attacks efficiently, computational for rigorous security guarantees.
+
+---
+
+## Automated Protocol Verification (ProVerif, Tamarin, EasyCrypt)
+
+**Goal:** Machine-check cryptographic protocol security. As protocols grow more complex — multi-round, multi-party, concurrent — manual proofs become error-prone and hard to verify. Automated tools offer two complementary approaches: *symbolic model checkers* (ProVerif, Tamarin) that reason about Dolev-Yao-style adversaries and can verify secrecy, authentication, and equivalence properties automatically for unbounded sessions; and *proof assistants / game-based frameworks* (EasyCrypt, CryptHOL) that formalise computational security proofs with machine-checked arithmetic, enabling verification of complex reduction arguments.
+
+| Tool / Result | Year | Authors | Note |
+|---------------|------|---------|------|
+| **ProVerif** | 2001 | Blanchet | Horn-clause-based symbolic verifier; automatically decides secrecy and authentication for unbounded sessions; applied protocols: TLS, SSH, Signal [[1]](https://bblanche.gitlabpages.inria.fr/proverif/) |
+| **Tamarin prover** | 2012 | Meier–Schmidt–Cremers–Basin | Constraint-solving symbolic verifier; handles stateful protocols, exclusive-or, Diffie-Hellman; used to find attack on PKCS#11 and verify TLS 1.3 [[1]](https://tamarin-prover.com) |
+| **TLS 1.3 formal verification** | 2017 | Cremers–Horvat–Hoyland–Scott–van der Merwe | Tamarin-verified TLS 1.3: proved key secrecy and mutual authentication for all handshake modes before RFC publication; influenced final design [[1]](https://eprint.iacr.org/2016/081) |
+| **EasyCrypt** | 2011 | Barthe–Grégoire–Heraud–Zanella Béguelin | Probabilistic relational Hoare logic for computational proofs; machine-checked ROM proofs of OAEP, HMAC, Merkle-Damgård; used for Signal's X3DH [[1]](https://eprint.iacr.org/2011/091) |
+| **CryptHOL** | 2018 | Basin–Lochbihler–Sefidgar | Game-based security proofs in Isabelle/HOL; formal proof of CPA-secure ElGamal, PRF-PRG security; foundational for large-scale verified cryptography [[1]](https://eprint.iacr.org/2017/753) |
+| **DY* (Dolev-Yao star)** | 2021 | Bhargavan–Bichhawat–Do–Höfner–Kohlweiss–Sasse–Veronese | F*-based verified protocol implementation: symbolic security proof and executable code in the same language; applied to TLS 1.3 record layer [[1]](https://eprint.iacr.org/2021/097) |
+
+**State of the art:** ProVerif and Tamarin are the dominant symbolic tools and are routinely used to analyse IETF protocol drafts (TLS 1.3, MLS, WireGuard). EasyCrypt is the leading computational proof assistant; it has been used to verify ML-KEM components. DY* and CryptHOL push toward verified implementations. See [Symbolic Model (Dolev-Yao) vs. Computational Model](#symbolic-model-dolev-yao-vs-computational-model) and [Universal Composability (UC) Framework](#universal-composability-uc-framework).

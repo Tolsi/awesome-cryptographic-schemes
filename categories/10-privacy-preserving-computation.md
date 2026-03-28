@@ -538,3 +538,81 @@
 **State of the art:** PEGASUS (2021) for fast ReLU via scheme switching; GAZELLE hybrid approach for practical CNNs; Iron/HELiKs for transformer models. Complements [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd--pate) (privacy during training) by providing privacy during inference. Relies on [Homomorphic Encryption](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-he) and [zkML](categories/04-zero-knowledge-proof-systems.md#zkml--verifiable-ml-inference) (for verifiable inference).
 
 ---
+
+## Differentially Private Synthetic Data Generation (DP-GAN / DP-VAE)
+
+**Goal:** Generate synthetic datasets that are statistically similar to private training data but provide formal differential privacy guarantees. The synthetic dataset can be shared publicly or used for downstream ML without leaking information about any individual record. Used in healthcare, finance, and census data release.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DPGAN (Xie et al.)** | 2018 | GAN + DP-SGD | Train GAN with differentially private discriminator updates; first DP generative adversarial network for synthetic tabular data [[1]](https://arxiv.org/abs/1801.01594) |
+| **DP-VAE / DP-CVAE** | 2020 | VAE + Gaussian mechanism | Variational autoencoder trained with DP-SGD; supports conditional generation; better mode coverage than DP-GANs for structured data [[1]](https://arxiv.org/abs/2001.00490) |
+| **DP-MERF (Harder et al.)** | 2021 | Maximum mean discrepancy + DP | Fit a generative model to DP-noised kernel mean embeddings; avoids adversarial training instability; AISTATS 2021 [[1]](https://arxiv.org/abs/2002.11603) |
+| **AIM (McKenna et al.)** | 2022 | Adaptive marginal selection + DP | Iteratively select and measure marginals; synthesize via graphical models; winner of NIST DP Synthetic Data Competition [[1]](https://arxiv.org/abs/2201.12677) |
+| **PATE-GAN (Jordon et al.)** | 2019 | PATE + GAN discriminator | Use PATE teacher ensemble to label GAN-generated samples; avoids DP-SGD on generator; ICLR 2019 [[1]](https://openreview.net/forum?id=S1zk9iRqF7) |
+
+**State of the art:** AIM (McKenna et al., 2022) leads for tabular/statistical data; DP-MERF avoids GAN instability; PATE-GAN for image-like data. All rely on [Differential Privacy](#differential-privacy) mechanisms and extend [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd--pate) to generative models.
+
+---
+
+## Privacy-Preserving Federated Learning
+
+**Goal:** Train machine learning models collaboratively across many clients (devices or organizations) without centralizing raw data. Each client trains locally on private data and shares only model updates (gradients or weights); a central aggregator combines them. Privacy is strengthened by combining with differential privacy, secure aggregation, or MPC.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **FedAvg (McMahan et al.)** | 2017 | Local SGD + averaging | Foundational federated learning algorithm; clients train multiple local steps, server averages weights; Google Keyboard [[1]](https://arxiv.org/abs/1602.05629) |
+| **DP-FedAvg (McMahan et al.)** | 2018 | FedAvg + DP-SGD + SecAgg | Add user-level DP to FedAvg; clip and noise updates before aggregation; formal (ε,δ)-DP guarantee for the central model [[1]](https://arxiv.org/abs/1710.06963) |
+| **PySyft (OpenMined)** | 2018 | MPC + FHE + SecAgg | Open-source library for privacy-preserving federated learning with MPC and HE backends; supports SMPC-based aggregation [[1]](https://arxiv.org/abs/1811.04017) |
+| **TensorFlow Federated (TFF)** | 2019 | FedAvg + DP + SecAgg | Google's production framework; integrates SecAgg and DP mechanisms; used in Gboard on-device language models [[1]](https://arxiv.org/abs/1902.01046) |
+| **Flower (flwr)** | 2020 | Framework-agnostic FL | Open-source FL framework supporting PyTorch, TF, JAX; heterogeneous clients; pluggable aggregation strategies; widely adopted in research [[1]](https://arxiv.org/abs/2007.14390) |
+
+**State of the art:** TensorFlow Federated (production at Google), Flower (research standard); both support DP and SecAgg. Privacy relies on [Differential Privacy](#differential-privacy), [Secure Aggregation](categories/06-multi-party-computation.md#secure-aggregation-secagg), and [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd--pate).
+
+---
+
+## Secure Multi-Party Machine Learning (CrypTen / MOTION2NX)
+
+**Goal:** Train or run inference on ML models where multiple parties jointly compute over their private datasets using MPC — without any party seeing another's raw data. Stronger than federated learning (no gradient leakage) but more expensive; targets settings where parties distrust each other's infrastructure entirely.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CrypTen (Knott et al. / Meta)** | 2021 | Secret sharing (SPDZ-like) | PyTorch-compatible framework for secret-shared ML; supports training and inference; ArithmeticSharedTensor API mirrors PyTorch tensors; open-sourced by Meta [[1]](https://arxiv.org/abs/2109.00016) |
+| **MOTION2NX (Braun et al.)** | 2022 | GMW + BMR + CKKS hybrid | High-performance MPC framework targeting neural network inference; combines arithmetic (GMW), boolean, and CKKS protocols; used in MOTION4ML [[1]](https://eprint.iacr.org/2020/1137) |
+| **Crypten+SMPC Training (Ryffel et al.)** | 2020 | SPDZ + DP | Combine MPC-based training with DP noise injection; privacy-by-design ML pipeline [[1]](https://arxiv.org/abs/1811.04017) |
+| **Piranha (Watson et al.)** | 2022 | GPU-accelerated 3-party MPC | GPU-friendly secret-sharing for ML; 16–48× speedup over CPU MPC for ResNet inference; USENIX Security 2022 [[1]](https://eprint.iacr.org/2022/892) |
+| **ELSA (Rathee et al.)** | 2023 | Linear secret sharing + OT | Efficient 2-party DNN inference; 2.5× less communication than prior work; IEEE S&P 2023 [[1]](https://eprint.iacr.org/2023/013) |
+
+**State of the art:** CrypTen (Meta, production-oriented 2-party/N-party); Piranha (GPU-accelerated 3PC); ELSA (communication-efficient 2PC inference). Builds on [MPC](categories/06-multi-party-computation.md#multi-party-computation-mpc), [Garbled Circuits](categories/06-multi-party-computation.md#garbled-circuits-expanded), and [OLE/VOLE](categories/06-multi-party-computation.md#oblivious-linear-evaluation-ole--vole). Complements [HE for ML Inference](#homomorphic-encryption-for-ml-inference-cryptonets) (HE-only path) and [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd--pate) (DP path).
+
+---
+
+## Private Nearest-Neighbor Search (Private Embedding Retrieval)
+
+**Goal:** Retrieve the nearest neighbor to a query vector from a private database without revealing the query or which item was fetched. Increasingly critical as ML systems embed data into high-dimensional vector spaces (semantic search, face recognition, recommendation). Combines PIR/ORAM techniques with approximate nearest-neighbor (ANN) data structures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **NN-PIR (Aggarwal et al.)** | 2022 | PIR + locality-sensitive hashing | Apply LSH to partition the embedding database; run PIR on each bucket; first sublinear-communication private ANN [[1]](https://eprint.iacr.org/2022/1041) |
+| **FrodoPIR for Embeddings** | 2023 | Plain LWE PIR + quantized embeddings | Adapt FrodoPIR offline-preprocessing model to vector databases; client computes ANN candidate set privately; ePrint 2022/981 extension [[1]](https://eprint.iacr.org/2022/981) |
+| **SPiral-ANN (Menon-Wu style)** | 2023 | Spiral PIR + HNSW index | Use Spiral's lattice-based PIR on HNSW graph indices; hides both query vector and graph traversal path [[1]](https://eprint.iacr.org/2023/296) |
+| **HADES (Private Vector Search)** | 2024 | Hybrid ORAM + ANN | Full oblivious ANN search: hides query, result, and access pattern; uses Path ORAM over ANN index; CCS 2024 [[1]](https://dl.acm.org/doi/10.1145/3658644.3690268) |
+
+**State of the art:** HADES (CCS 2024) for full obliviousness; NN-PIR for query-only privacy with sublinear communication. Active area driven by private retrieval-augmented generation (RAG) and biometric matching. Extends [PIR](#private-information-retrieval-pir), [Keyword PIR](#keyword-pir), and [ORAM](#oblivious-ram-oram) to vector/embedding databases.
+
+---
+
+## Private Equality Testing (PET)
+
+**Goal:** Two parties each hold a private value; they want to learn whether their values are equal — and nothing else. Stronger than PSI (which reveals the matching element): PET reveals only a single bit (equal or not). Used in threshold signature coordination, duplicate detection, and identity verification without exposing the value itself.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DH-Based PET (Meadows)** | 1986 | DDH | Commit-and-compare using Diffie-Hellman; O(1) rounds; semi-honest [[1]](https://link.springer.com/chapter/10.1007/3-540-39799-X_16) |
+| **Maliciously Secure PET (Jarecki-Liu)** | 2009 | OPRF + ZK proofs | UC-secure PET; uses OPRF so neither party learns the other's value on inequality; ACM CCS 2009 [[1]](https://eprint.iacr.org/2009/600) |
+| **Batch PET from VOLE (Rindal et al.)** | 2021 | VOLE + hashing | Amortize many equality tests using VOLE; O(n) communication for n tests; building block for multi-query PSI [[1]](https://eprint.iacr.org/2021/026) |
+| **PET for Threshold Signatures (SPRINT)** | 2023 | PET + threshold ECDSA | Use private equality testing to check shares match without reconstruction; applied in asynchronous threshold signing; ACM CCS 2023 [[1]](https://eprint.iacr.org/2023/427) |
+
+**State of the art:** Batch PET from VOLE (2021) for high-throughput equality testing; UC-secure PET (Jarecki-Liu) when malicious security is required. Closely related to [PSI](#private-set-intersection-psi) (equality at scale) and [OPRF](#oblivious-prf-oprf) (the key building block); useful in [Threshold Signatures](categories/08-signatures-advanced.md#threshold-signatures-tss) and [Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#secret-sharing-shamir-ss).
+
+---

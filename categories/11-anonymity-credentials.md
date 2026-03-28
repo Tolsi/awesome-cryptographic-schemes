@@ -402,3 +402,82 @@
 **State of the art:** Bulletproofs (no trusted setup, O(log n) size) are widely deployed for range proofs on blockchain; LegoSNARK and BBS+ predicate proofs bring composable range proofs to anonymous credential presentations. The EU EUDI Wallet (eIDAS 2.0) is evaluating ZKP-based age verification over SD-JWT VCs. Depends on [Anonymous Credentials](#anonymous-credentials), [BBS+ Anonymous Credentials](#bbs-anonymous-credentials), and [Bulletproofs / Range Proofs](categories/13-blockchain-distributed-ledger.md#range-proofs).
 
 ---
+
+## SD-JWT and JSON Web Proof (JWP)
+
+**Goal:** Selective disclosure for JSON-based credentials. SD-JWT (RFC 9591) extends the JWT standard with hash-based claim concealment: each attribute is individually salted and hashed; the holder releases only the digests and salted values they choose to disclose. JWP (IETF draft) generalises further by defining a proof-carrying JSON container that can wrap ZK-proof-based selective-disclosure schemes (BBS+, MAC-based) alongside simpler hash-based ones.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SD-JWT (Selective Disclosure JWT)** | 2025 | SHA-256 hash digests | RFC 9591; issuer replaces claims with `_sd` digest arrays; holder releases salted preimages selectively; JWT core remains standard [[1]](https://www.rfc-editor.org/rfc/rfc9591) |
+| **SD-JWT-VC** | 2024 | SD-JWT + W3C VC type system | IETF draft (draft-ietf-oauth-sd-jwt-vc); adds `vct` claim, status reference, key binding; mandated credential format for EU EUDI Wallet and ISO mDL interop [[1]](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/) |
+| **JSON Web Proof (JWP)** | 2024 | Proof-carrying JSON container | IETF JOSE WG draft; defines serializations (Compact, JSON) for proofs; algorithm registry covers BBS+ (`BBS-2023`), MAC-H256, MAC-H256-K; enables unlinkable presentations inside a JWT-like envelope [[1]](https://datatracker.ietf.org/doc/draft-ietf-jose-json-web-proof/) |
+| **JPA (JSON Proof Algorithms)** | 2024 | BBS+ / MAC over JSON | Companion draft to JWP; specifies concrete algorithm identifiers and proof generation/verification procedures [[1]](https://datatracker.ietf.org/doc/draft-ietf-jose-json-proof-algorithms/) |
+
+**State of the art:** SD-JWT (RFC 9591, 2025) is the primary selective-disclosure format for OAuth/OIDC ecosystems and is mandated by eIDAS 2.0 for the [EU EUDI Wallet](#eu-eudi-wallet-cryptographic-architecture-eidas-20). JWP remains an IETF draft but is the leading candidate for unlinkable presentations in JSON contexts. Complements [BBS+ Anonymous Credentials](#bbs-anonymous-credentials) (which JWP can wrap) and [Anonymous Credentials](#anonymous-credentials).
+
+---
+
+## OpenID for Verifiable Credentials (OID4VC)
+
+**Goal:** Credential issuance and presentation over OpenID Connect / OAuth 2.0. OID4VC is a family of IETF/OpenID Foundation protocols that add credential-specific endpoints to the existing OAuth ecosystem: wallets request credentials from issuers (OID4VCI) and present them to verifiers (OID4VP) without bespoke infrastructure. The cryptographic core — SD-JWT, BBS+, mDL COSE — is decoupled from the transport protocol.
+
+| Protocol | Year | Basis | Note |
+|----------|------|-------|------|
+| **OID4VCI (OpenID for VC Issuance)** | 2024 | OAuth 2.0 + credential endpoint | Issuer exposes `/credential` endpoint; wallet obtains SD-JWT-VC or mdoc via authorization-code or pre-authorized-code flow [[1]](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) |
+| **OID4VP (OpenID for VP)** | 2024 | OAuth 2.0 + presentation_definition | Verifier sends Presentation Definition (DIF PE); wallet returns VP Token (SD-JWT or mdoc); response_uri binding prevents replay [[1]](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html) |
+| **OID4VP over BLE / Proximity** | 2024 | OID4VP + ISO 18013-5 engagement | Near-field variant for in-person age checks (mDL handover); BLE or QR device engagement; same cryptographic presentation as remote OID4VP [[1]](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html) |
+| **SIOPv2 (Self-Issued OP v2)** | 2024 | OIDC + DID-based self-issued IdP | Wallet acts as its own OpenID Provider; no external IdP required; id_token signed with wallet key; used for DID-based login [[1]](https://openid.net/specs/openid-connect-self-issued-v2-1_0.html) |
+
+**State of the art:** OID4VCI + OID4VP (both reaching final spec in 2024) are the official issuance and presentation protocols for the EU [EUDI Wallet](#eu-eudi-wallet-cryptographic-architecture-eidas-20) ARF and are being adopted by NIST and ISO. SIOPv2 enables self-sovereign login using DID-anchored keys. Builds on [SD-JWT and JSON Web Proof](#sd-jwt-and-json-web-proof-jwp) credential formats and [DID/VCs](categories/14-applied-infrastructure-pki.md#decentralized-identifiers-dids--verifiable-credentials-vcs).
+
+---
+
+## EU EUDI Wallet Cryptographic Architecture (eIDAS 2.0)
+
+**Goal:** Pan-European privacy-preserving digital identity. The European Digital Identity Wallet (EUDI Wallet) mandates a specific cryptographic stack under eIDAS 2.0 (EU Regulation 2024/1183): wallets store PID (Person Identification Data) and attestations; issuance uses [OID4VCI](#openid-for-verifiable-credentials-oid4vc); presentation uses OID4VP; credential formats are SD-JWT-VC and ISO mDL (mdoc/COSE). Selective disclosure and key binding are mandatory; unlinkability via BBS+ is under active evaluation.
+
+| Component | Year | Basis | Note |
+|-----------|------|-------|------|
+| **eIDAS 2.0 (EU Reg 2024/1183)** | 2024 | Regulation + ARF v1.x | Legal framework; mandates EUDI Wallet availability in all EU member states; defines LoA High assurance for PID [[1]](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:L_202401183) |
+| **ARF (Architecture Reference Framework)** | 2024 | OID4VCI + OID4VP + SD-JWT-VC + mdoc | Technical spec published by EC; defines trust anchors, PID attestation format, wallet instance attestation, revocation via Status List [[1]](https://github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework) |
+| **Wallet Instance Attestation (WIA)** | 2024 | OAuth 2.0 Attestation-Based Client Auth | Wallet proves it is a certified EUDI Wallet to issuers/verifiers; signed by Wallet Provider; bound to wallet's ephemeral key [[1]](https://datatracker.ietf.org/doc/draft-ietf-oauth-attestation-based-client-auth/) |
+| **OAuth Status List (revocation)** | 2024 | Bitstring + JWT/CWT | Compact bit-array revocation list embedded in a signed JWT or CWT; used for PID and attestation revocation in EUDI Wallet [[1]](https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/) |
+| **EUDI Wallet Reference Implementation** | 2024 | Kotlin/Swift + OID4VC stack | EC-funded open-source iOS/Android reference apps; demonstrates full PID issuance and presentation lifecycle [[1]](https://github.com/eu-digital-identity-wallet) |
+
+**State of the art:** ARF v1.4 (2024) mandates SD-JWT-VC and mdoc as PID credential formats with OID4VC transport; BBS+ is listed as a future option for unlinkable presentations. All EU member states must offer EUDI Wallets to citizens by 2026. Depends on [SD-JWT and JWP](#sd-jwt-and-json-web-proof-jwp), [OID4VC](#openid-for-verifiable-credentials-oid4vc), [mDL ISO 18013-5](#mdl-mobile-drivers-license-iso-18013-5), [BBS+ Anonymous Credentials](#bbs-anonymous-credentials), and [Accumulators for Credential Revocation](#accumulators-for-credential-revocation).
+
+---
+
+## mDL (Mobile Driver's License, ISO 18013-5)
+
+**Goal:** Privacy-preserving machine-readable mobile identity document. ISO 18013-5 defines a mobile driver's licence stored on a smartphone that can be presented in-person (proximity) or remotely. The credential is a CBOR-encoded mdoc signed with COSE; selective attribute disclosure is native; device authentication via ECDH session keys prevents replay; the issuer signature is verified against a PKI (IACA).
+
+| Component | Year | Basis | Note |
+|-----------|------|-------|------|
+| **ISO 18013-5 (mDL standard)** | 2021 | CBOR + COSE (ECDSA P-256) | Core standard; mdoc data model; proximity engagement over BLE/NFC/Wi-Fi Aware; device authentication with ECDH session key; issuer authentication via IACA certificate [[1]](https://www.iso.org/standard/69084.html) |
+| **ISO 18013-7 (mdoc over OID4VP)** | 2024 | mdoc + OpenID for VP | Extends 18013-5 for remote presentation via OID4VP; session transcript binds the mdoc to the verifier's nonce [[1]](https://www.iso.org/standard/82772.html) |
+| **CBOR / COSE (RFC 8949 / RFC 9052)** | 2020 | Compact binary encoding | Underlying serialization and signing format for mdoc; COSE_Sign1 for issuer auth; COSE_Encrypt0 for optional data encryption [[1]](https://www.rfc-editor.org/rfc/rfc9052) |
+| **Apple Wallet mDL / Google Wallet mDL** | 2023 | ISO 18013-5 | Both platforms implemented ISO 18013-5 mDL; US state IDs accepted at TSA checkpoints and select verifiers [[1]](https://developer.apple.com/documentation/passkit/adding-an-identity-document-to-wallet) |
+| **mdoc Selective Disclosure** | 2021 | CBOR + per-element digest | Each data element hashed individually; holder presents only chosen elements plus digest; verifier checks IACA-signed digest tree; does not hide which elements were requested by the verifier [[1]](https://www.iso.org/standard/69084.html) |
+
+**State of the art:** ISO 18013-5 (2021) is the dominant machine-readable mDL format; deployed in Apple Wallet, Google Wallet, and US state DMVs (Maryland, Arizona, Georgia, Colorado). ISO 18013-7 (2024) bridges mDL to the [OID4VC](#openid-for-verifiable-credentials-oid4vc) / [EUDI Wallet](#eu-eudi-wallet-cryptographic-architecture-eidas-20) ecosystem. Selective disclosure is hash-based (like [SD-JWT](#sd-jwt-and-json-web-proof-jwp)) but uses CBOR/COSE rather than JSON/JOSE. Related to [Anonymous Credentials](#anonymous-credentials) and [DID/VCs](categories/14-applied-infrastructure-pki.md#decentralized-identifiers-dids--verifiable-credentials-vcs).
+
+---
+
+## Browser Fingerprinting and Anonymity Defenses
+
+**Goal:** Prevent passive de-anonymization via device and browser attributes. A web server can identify (fingerprint) a user by combining browser version, screen resolution, fonts, WebGL renderer, canvas rendering artefacts, and dozens of other signals — without cookies. These fingerprints can re-identify users across sessions and break anonymity even when using Tor or VPNs. Defenses range from attribute normalization to active noise injection and formal notions of k-anonymity sets.
+
+| Mechanism | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Panopticlick / AmIUnique** | 2010 | Entropy measurement | EFF study showing browser fingerprints uniquely identify ~83–95% of users; quantifies k-anonymity set size [[1]](https://coveryourtracks.eff.org/) |
+| **Tor Browser Letterboxing** | 2019 | Viewport normalization | Tor Browser rounds viewport size to multiples of 200×100 px; reduces screen-resolution fingerprint entropy to near zero [[1]](https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/23339) |
+| **Tor Browser Fingerprinting Resistance (RFP)** | 2016 | Attribute normalization | Firefox `privacy.resistFingerprinting`; normalizes user-agent, timezone (UTC), canvas noise, WebGL strings, fonts, media queries, hardware concurrency [[1]](https://www.torproject.org/docs/torbutton/design/) |
+| **Canvas Randomization (FPRandom)** | 2017 | Controlled noise injection | Inject sub-pixel randomness into Canvas2D/WebGL output; breaks pixel-level fingerprinting without perceptual quality loss [[1]](https://hal.inria.fr/hal-01527580) |
+| **k-Fingerprint (Laperdrix et al.)** | 2020 | Machine-learning analysis | Formal study of which attributes are most identifying; informs which signals deserve normalization priority [[1]](https://arxiv.org/abs/2001.04558) |
+| **Privacy Budget (Chrome)** | 2023 | API surface quantification | Proposed Chrome mechanism: track entropy consumed by JS APIs per origin; block calls exceeding a per-session budget [[1]](https://github.com/bslassey/privacy-budget) |
+
+**State of the art:** Tor Browser with Letterboxing + RFP (Firefox `privacy.resistFingerprinting`) is the most comprehensive deployed defense, aiming for a uniform fingerprint across all Tor Browser users. Brave Browser independently applies canvas noise and aggressive API normalization. Chrome's Privacy Budget remains experimental. Related to [Onion Routing](#onion-routing), [Tor v3 Onion Services](#tor-v3-onion-services), and [Differential Privacy](categories/10-privacy-preserving-computation.md#differential-privacy).
+
+---

@@ -648,3 +648,112 @@
 **State of the art:** CirC (USENIX Security 2022) remains the primary academic reference for multi-backend ZK/MPC compilation. Production compilers (Noir, Leo) adopt similar IR strategies. See [Circom and SnarkJS](#circom-and-snarkjs), [ZK Circuit DSLs](#zk-circuit-dsls-noir-leo-cairo), [MPC](#multi-party-computation-mpc).
 
 ---
+
+## Spartan (Transparent R1CS SNARK via Sumcheck)
+
+**Goal:** Zero-knowledge proofs for R1CS with no trusted setup and no FFTs. Spartan (Setty, CRYPTO 2020) reduces R1CS satisfiability directly to multilinear polynomial evaluations using the sumcheck protocol, producing a transparent SNARK whose prover cost is dominated by two multi-scalar multiplications and one sumcheck execution — with no structured reference string required.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Spartan** | 2020 | Sumcheck + multilinear PCS | Transparent zkSNARK for R1CS; no trusted setup; no FFTs; fastest prover among transparent SNARKs at release; CRYPTO 2020 [[1]](https://eprint.iacr.org/2019/550) |
+| **Spartan with Hyrax PCS** | 2020 | Pedersen + multilinear | Instantiated with Hyrax polynomial commitment; O(√N) proof size; DL-based [[1]](https://eprint.iacr.org/2019/550) |
+| **Spartan with Brakedown/Orion PCS** | 2022 | Expander-code PCS | Plug in linear-time PCS ([Brakedown](#orion-and-brakedown-linear-time-snarks)) for fully linear prover end-to-end [[1]](https://eprint.iacr.org/2021/1043) |
+
+**Key contribution:** Prior transparent SNARKs (STARKs, Ligero) use FFTs or Reed-Solomon encoding. Spartan avoids both by encoding R1CS as a multilinear extension: given an R1CS instance with matrices A, B, C, Spartan reduces the relation Az ∘ Bz = Cz (where ∘ is componentwise multiplication) to a single sumcheck over the boolean hypercube. The sumcheck reduces to a single multilinear polynomial evaluation, which any polynomial commitment scheme can open. This separation — sumcheck IOP + pluggable PCS — makes Spartan the canonical example of the "polynomial IOP + PCS" paradigm later formalized for PLONK and Marlin.
+
+**Arithmetic details:** The prover computes multilinear extensions of A, B, C over GF(p), then runs sumcheck to reduce the R1CS check to point evaluations at a random point r. Committing to the witness polynomial W and opening at r gives the complete proof. Verification is O(log N) field operations plus one PCS opening check.
+
+**State of the art:** Spartan (CRYPTO 2020) is the foundational transparent R1CS SNARK and the theoretical core of [HyperNova](#folding-schemes), [Jolt](#sumcheck-protocol), and recent multilinear proof systems. See [[1]](https://eprint.iacr.org/2019/550).
+
+---
+
+## Marlin and Lunar (Universal SNARKs for R1CS)
+
+**Goal:** Universal and updatable SNARKs for R1CS with a single structured reference string (SRS) that works for all circuits up to a size bound. Marlin (Chiesa-Hu-Maller-Sasson, EUROCRYPT 2020) and its generalization Lunar (Campanelli-Faonio-Fiore-Querol, ASIACRYPT 2021) give efficient polynomial IOPs for R1CS that, when compiled with KZG commitments, achieve O(1) proof size and O(1) verifier time — with an updatable universal setup.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Marlin** | 2020 | Polynomial IOP + KZG | Universal updatable SRS; O(1) proof (3 elements + 13 field elements); O(N log N) prover; EUROCRYPT 2020 [[1]](https://eprint.iacr.org/2019/1047) |
+| **AHP (Algebraic Holographic Proof)** | 2020 | Holographic polynomial IOP | Marlin's underlying IOP; holographic = index-dependent oracle; enables universal setup [[1]](https://eprint.iacr.org/2019/1047) |
+| **Lunar** | 2021 | Marlin + commit-and-prove | Generalises Marlin with commit-and-prove extensions; modular; supports lookups and custom gates; ASIACRYPT 2021 [[1]](https://eprint.iacr.org/2020/1069) |
+| **Aleo / Leo backend** | 2021 | Marlin on BLS12-377 | Production deployment of Marlin in the Aleo blockchain; Leo language compiles to Marlin R1CS [[1]](https://aleo.org/) |
+
+**Key contribution:** Groth16 requires a per-circuit SRS (O(N) elements, circuit-specific toxic waste). Marlin achieves universality by moving to a *holographic* polynomial IOP: the verifier's oracle queries depend on the circuit index (the matrices A, B, C) rather than on the witness, so a single SRS can be shared across all R1CS instances. The SRS consists of the KZG commitment key evaluated at a secret point, plus an additional "index polynomial" commitment for each circuit (computed once per circuit, not per proof). This gives an O(3N) universal SRS and O(1)-size proofs.
+
+**Relation to PLONK:** Both Marlin and PLONK are polynomial IOPs compiled with KZG commitments. PLONK uses a "gate polynomial" approach over a multiplicative subgroup; Marlin uses a holographic algebraic IOP for R1CS directly. Marlin proofs are slightly larger (13 group elements + scalars) but have a cleaner R1CS interface. Lunar generalises both into a commit-and-prove framework that subsumes PLONK, Marlin, and Sonic.
+
+**State of the art:** Marlin (EUROCRYPT 2020) is deployed in Aleo and is the theoretical basis for [HyperPlonk](#hyperplonk) and Lunar. The AHP framework is a key reference for universal SNARK design. See [[1]](https://eprint.iacr.org/2019/1047).
+
+---
+
+## Bulletproofs Inner-Product Argument
+
+**Goal:** Compact range proofs and inner-product arguments without a trusted setup. Bulletproofs (Bünz-Bootle-Boneh-Poelstra-Wuille-Maxwell, S&P 2018) achieves O(log N) proof size for proving knowledge of vectors satisfying an inner product relation, using only the discrete logarithm assumption over ordinary elliptic curves — no trusted setup, no pairings. The primary application is confidential transaction range proofs (Monero, Liquid Network).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bulletproofs IPA** | 2018 | Pedersen commitments + DLP | O(log N) inner-product argument; no trusted setup; range proof in 600 bytes for 64-bit value; S&P 2018 [[1]](https://eprint.iacr.org/2017/1066) |
+| **Bulletproofs range proof** | 2018 | IPA over Pedersen | Aggregate m range proofs in O(log(m · n)) size; Monero uses single-output variant [[1]](https://eprint.iacr.org/2017/1066) |
+| **Bulletproofs+** | 2020 | Improved IPA | Halved prover computation via weighted inner products; same proof size [[1]](https://eprint.iacr.org/2020/735) |
+| **Generalized Bulletproofs** | 2022 | IPA + arithmetic circuits | Extend Bulletproofs to arbitrary arithmetic circuit satisfiability [[1]](https://eprint.iacr.org/2022/510) |
+| **Monero RingCT** | 2017 | Confidential transactions | Bulletproofs adopted in Monero (2018 hard fork) for range proofs in Ring Confidential Transactions [[1]](https://web.getmonero.org/resources/moneropedia/ringCT.html) |
+
+**Key insight:** A standard range proof using bit decomposition and Sigma protocols requires O(N) communication for an N-bit range. Bulletproofs reduce this to O(log N) via a recursive inner-product argument: the prover halves the problem at each step by folding two N/2-element vectors into one, sending only 2 group elements per round. After log N rounds the prover sends a single scalar, giving total proof size of 2 log N + 3 group elements.
+
+**Verification:** Bulletproofs verification requires O(N) scalar multiplications (the verifier must "unfold" the recursive argument), making it slower to verify than SNARK-based range proofs. Multi-scalar multiplication (MSM) can batch-verify m proofs in O(m · log N) group operations using a random linear combination trick.
+
+**Deployed in:** Monero (2018, range proofs in RingCT), Liquid Network (confidential assets), Grin/MimbleWimble, Zcash research. In ZK proof systems, the IPA technique is the commitment scheme underlying [Halo and Halo2](#halo-and-halo2) and the [Compressed Sigma Protocols](#compressed-sigma-protocols) framework.
+
+**State of the art:** Bulletproofs (S&P 2018) remains the gold standard for transparent range proofs under DL assumption. Superseded for general circuit ZK by [Halo2](#halo-and-halo2) (which uses IPA for polynomial commitments) and by STARKs (which are faster to verify). See [[1]](https://eprint.iacr.org/2017/1066).
+
+---
+
+## STARK Arithmetization: AIR and FRI
+
+**Goal:** Understand the internal structure of a STARK proof. STARKs (Ben-Sasson-Bentov-Horesh-Riabzev, IACR 2018) compile a computation into an Algebraic Intermediate Representation (AIR) — a set of polynomial constraints over an execution trace — then prove proximity of the trace polynomial to a low-degree polynomial using the FRI (Fast Reed-Solomon IOP of Proximity) protocol. No trusted setup; plausibly post-quantum.
+
+| Component | Year | Role | Note |
+|-----------|------|------|------|
+| **AIR (Algebraic Intermediate Representation)** | 2018 | Arithmetization | Encode computation as a matrix of field elements (execution trace) + polynomial constraints between adjacent rows [[1]](https://eprint.iacr.org/2018/046) |
+| **RAP (Randomized AIR with Preprocessing)** | 2022 | Extended AIR | Adds verifier-provided randomness between AIR columns; supports permutation/lookup arguments inside STARKs (used in Plonky3, Stwo) [[1]](https://eprint.iacr.org/2022/1530) |
+| **FRI (Fast Reed-Solomon IOPP)** | 2018 | Proximity test | Interactive Oracle Proof of Proximity for Reed-Solomon codes; O(log² N) query complexity; backbone of all STARK proof systems [[1]](https://eccc.weizmann.ac.il/report/2017/134/) |
+| **DEEP-FRI** | 2020 | FRI soundness boost | Out-of-domain sampling raises soundness from ρ⁻¹ to ≈1 per round; reduces query count; ITCS 2020 [[1]](https://eprint.iacr.org/2019/336) |
+| **ALI (Algebraic Linking IOP)** | 2018 | AIR + FRI glue | Connects AIR boundary/transition constraints to FRI via a linking polynomial; the "glue" of a STARK [[1]](https://eprint.iacr.org/2018/046) |
+
+**AIR construction:** Given a computation of T steps, the prover writes an execution trace — a T × w matrix where each row is the machine state at one step. Transition constraints are degree-d multivariate polynomials that must vanish on every adjacent pair of rows. Boundary constraints fix the initial and final state. The prover commits to the trace polynomial (column-by-column) using a Merkle tree over a Reed-Solomon codeword, then runs FRI to prove the trace polynomial is close to degree < T.
+
+**FRI protocol:** FRI folds a polynomial f of degree < N into one of degree < N/2 using a random challenge, repeating log N times. Each folding round sends one Merkle root; the verifier queries ≈ 40 positions total (with DEEP-FRI). The final polynomial is sent explicitly and checked directly. Soundness: a polynomial far from the RS code fails with probability ≈ 1 per round after DEEP sampling.
+
+**Concrete proof structure:**
+1. Prover commits to execution trace columns via Merkle trees.
+2. Verifier sends AIR composition randomness; prover forms composition polynomial.
+3. Prover runs FRI on composition polynomial; verifier queries a small set of positions.
+4. Proof = Merkle openings + FRI folding hashes. Size ≈ 45–200 KB for 128-bit security.
+
+**Production systems:** StarkWare's Cairo prover (AIR + DEEP-ALI + FRI), RISC Zero (AIR over BabyBear + FRI), SP1 (Plonky3 + AIR + FRI), Stwo (Circle STARKs over Mersenne31 with AIR). See [General-Purpose zkVMs](#general-purpose-zkvms) and [DEEP-FRI](#deep-fri).
+
+**State of the art:** STARK arithmetization (2018); RAP extensions (2022) for lookup/permutation arguments; DEEP-FRI (2020) for production soundness. STARKs are the dominant transparent proof system in deployment. See [[1]](https://eprint.iacr.org/2018/046).
+
+---
+
+## VOLE-Based Zero-Knowledge Proofs
+
+**Goal:** Efficient interactive ZK proofs for large Boolean/arithmetic circuits using Vector Oblivious Linear Evaluation (VOLE) as a black-box subprotocol. VOLE-based ZK (Weng-Yang-Katz-Wang, CCS 2021; Baum et al., CRYPTO 2021) achieves amortized prover cost of O(1) field operations per gate — the information-theoretic optimum — by replacing commitment-based witness encoding with VOLE correlations that the prover and verifier set up in a preprocessing phase.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **QuickSilver** | 2021 | VOLE over F₂/Fp | ZK proof for Boolean and arithmetic circuits; O(1) amortised cost per gate; prover sends O(|C|) field elements; CCS 2021 [[1]](https://eprint.iacr.org/2021/076) |
+| **Wolverine** | 2021 | Silent VOLE + ZK | ZK for arithmetic circuits from silent VOLE (PCG-based); fast preprocessing; CRYPTO 2021 [[1]](https://eprint.iacr.org/2020/925) |
+| **Mac'n'Cheese** | 2021 | VOLE + Beaver triples | ZK for Boolean/arithmetic with streaming; prover-efficient; S&P 2022 [[1]](https://eprint.iacr.org/2020/1410) |
+| **Limbo (MPC-in-VOLE)** | 2021 | VOLE + MPCitH | Hybrid of VOLE and MPCitH for shorter proofs in public-coin setting [[1]](https://eprint.iacr.org/2021/215) |
+| **VOLEitH / FAEST** | 2023 | VOLE-in-the-Head | Non-interactive VOLE-ZK via "in-the-head" simulation; yields PQ signatures; see [VOLEitH](#voleitH-vole-in-the-head) [[1]](https://eprint.iacr.org/2023/996) |
+
+**Core idea:** A VOLE correlation gives the verifier a pair (Δ, K) and the prover a pair (x, M) satisfying M = K + x · Δ over a field. This acts as an information-theoretic MAC on the prover's wire value x: the verifier can check authenticity of x at proof time by comparing M − x · Δ = K. The prover encodes each circuit wire as a VOLE-authenticated value, then proves gate satisfiability by sending small "proof polynomials" whose coefficients are linear combinations of VOLE-authenticated wires. The amortized cost is O(1) field multiplications per gate because all MAC checks can be batched into a single polynomial evaluation.
+
+**Preprocessing vs. online phase:** VOLE setup can be done offline (the "preprocessing" or "offline phase") using either OT-extension-based protocols (Wolverine, Mac'n'Cheese) or silent VOLE from PCGs (Pseudorandom Correlation Generators), making the online proving phase very fast. The total communication for QuickSilver over an N-gate circuit is ≈ 2N field elements for the prover — compared to ≈ 44N for Groth16 (in terms of MSM operations) or ≈ 10N for PLONK.
+
+**Relation to VOLEitH:** [VOLEitH](#voleitH-vole-in-the-head) makes VOLE-based ZK non-interactive by simulating the VOLE setup "in the head" (like MPCitH), at the cost of larger proof sizes. Interactive VOLE-ZK (QuickSilver, Wolverine, Mac'n'Cheese) is preferred when interaction is acceptable and proof size matters less than prover speed.
+
+**State of the art:** QuickSilver and Wolverine (2021) are the canonical interactive VOLE-ZK systems; Mac'n'Cheese for streaming/low-memory settings. Silent VOLE from PCGs (see [OLE/VOLE](categories/06-multi-party-computation.md#ole--vole)) gives practical offline setup. VOLEitH (2023) extends the paradigm to non-interactive proofs. See [[1]](https://eprint.iacr.org/2021/076).
+
+---

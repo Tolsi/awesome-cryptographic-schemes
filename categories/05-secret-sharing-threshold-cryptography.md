@@ -486,3 +486,81 @@
 **State of the art:** Aggregatable PVSS DKG (2021) is the most communication-efficient threshold BLS keygen; deployed in drand and Ethereum DVT. Builds on [DKG](#distributed-key-generation-dkg) and [PVSS](#publicly-verifiable-secret-sharing-pvss); produces keys for [BLS Aggregate Signatures](categories/08-signatures-advanced.md#bls-aggregate-signatures).
 
 ---
+
+## Pseudorandom Secret Sharing (PRSS / PRZS)
+
+**Goal:** Locally sample shared randomness without communication. All n parties hold correlated keys from a setup phase; at any later point, any subset of t parties can locally compute shares of a pseudorandom value — without any party sending a single message. Eliminates the online communication cost of distributing randomness in MPC.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **PRSS (Cramer-Damgård-Ishai)** | 2005 | PRF + access structure | Each party stores a PRF key per qualified set; any authorized subset evaluates its PRFs and XORs/adds locally to get shares of a pseudorandom secret; information-theoretically indistinguishable from fresh randomness [[1]](https://link.springer.com/chapter/10.1007/11535218_16) |
+| **PRZS (Pseudorandom Zero-Sharing)** | 2005 | PRF + cancel structure | Variant where shares sum to zero; parties in authorized subsets locally generate sharings of 0 — essential for masking and degree reduction in MPC without interaction [[1]](https://link.springer.com/chapter/10.1007/11535218_16) |
+| **PRSS from OWFs** | 2009 | PRG + span programs | Constructs PRSS from one-way functions under computational assumptions; extends to any LSSS access structure [[1]](https://link.springer.com/chapter/10.1007/978-3-642-03356-8_11) |
+| **Silent PRSS (PCG-based)** | 2022 | PCG + LPN | Replaces PRF-keyed setup with pseudorandom correlation generators; reduces setup communication from O(n²|secret|) to O(n · polylog); CRYPTO 2022 [[1]](https://eprint.iacr.org/2022/1014) |
+
+**State of the art:** CDI PRSS/PRZS (2005) is the standard; foundational to BGW-style MPC and [Packed SS](#packed-secret-sharing) — PRZS is used for degree-reduction without interaction. Silent PRSS via PCGs (2022) slashes setup cost. Closely related to [Pseudorandom Correlation Generators](categories/06-multi-party-computation.md#silent-ot--pseudorandom-correlation-generators) and [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## Secret Sharing with Fairness
+
+**Goal:** All-or-nothing reconstruction. Ensure that either all authorized parties reconstruct the secret simultaneously, or none do — preventing a cheating coalition from obtaining the secret while honest parties remain empty-handed. Standard (t,n)-SS has no fairness: whoever collects t shares first wins.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Gordon-Hazay-Katz-Lindell** | 2008 | Gradual release + commitments | Shows full information-theoretic fairness is impossible with dishonest majority; achieves it for honest majority [[1]](https://eprint.iacr.org/2007/285) |
+| **Timed-Release Fair SS (Garay-Jacobson)** | 2002 | Time-lock puzzles + SS | Parties release shares on a schedule; the last share is time-locked — no party can abort without forfeiting their share [[1]](https://doi.org/10.1007/3-540-45539-6_33) |
+| **Gradual SS (Katz-Maurer-Pinkas-Warinschi)** | 2014 | Computational time-lock | Computational fairness via gradual reveal of share fragments; asymptotically near-fair for computationally bounded parties [[1]](https://eprint.iacr.org/2014/990) |
+| **Fair SS via VDF** | 2021 | VDF + threshold SS | Share the secret with a VDF-delayed reveal; honest parties who abort early cannot compute the VDF faster than the delay; no trusted third party [[1]](https://eprint.iacr.org/2021/1273) |
+
+**State of the art:** Full unconditional fairness requires honest majority (Gordon et al. 2008); against dishonest majority, practical fairness uses VDFs or time-lock puzzles (2021). Related to [Verifiable Delay Functions](categories/09-commitments-verifiability.md#verifiable-delay-functions-vdf) and [Time-Lock Puzzles](categories/09-commitments-verifiability.md#time-lock-puzzles--timed-commitments). Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## Share Conversion (Arithmetic-to-Boolean and Boolean-to-Arithmetic)
+
+**Goal:** Convert secret shares between arithmetic (mod p or mod 2^k) and Boolean (XOR / bitwise) representations without reconstructing the secret. Mixed-mode MPC protocols compute arithmetic operations in one domain and bitwise operations in the other — share conversion bridges the gap with sub-linear communication.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Damgård-Fitzi-Kiltz-Nielsen-Toft A2B** | 2006 | Shared carry-ripple adder | First systematic A2B/B2A share conversion for MPC; binary adder circuit evaluated over Shamir shares; O(k) rounds for k-bit values; ASIACRYPT 2006 [[1]](https://eprint.iacr.org/2006/227) |
+| **Demmler-Schneider-Zohner (DSZ) conversion** | 2015 | GMW + OT | Constant-round A2B using OT extension; core of ABY framework: Arithmetic, Boolean, Yao — switches between all three [[1]](https://www.ndss-symposium.org/ndss2015/ndss-2015-programme/aby-framework-efficient-mixed-protocol-secure-two-party-computation/) |
+| **Mohassel-Zhang (SecureML)** | 2017 | Beaver triples + bit decomp | 2-party A2B via shared truncation and bit-decomposition; used in private ML inference [[1]](https://eprint.iacr.org/2017/396) |
+| **Edabit-Based A2B (Escudero et al.)** | 2020 | Edabits + LPN | Efficient A2B using edabits (correlated arithmetic + binary shares of the same value); CRYPTO 2020; significantly fewer OTs than prior work [[1]](https://eprint.iacr.org/2020/338) |
+| **Piranha / FantasticFour A2B** | 2022 | GPU + share conversion | GPU-accelerated A2B/B2A conversion in 4-party honest-majority MPC; enables fast private neural network inference [[1]](https://eprint.iacr.org/2022/1288) |
+
+**State of the art:** Edabit-based conversion (2020) is the communication-optimal approach; ABY/ABY3 provide practical mixed-protocol frameworks. Share conversion is the key bottleneck in hybrid [MPC](categories/06-multi-party-computation.md#multi-party-computation-mpc) protocols for private ML and private analytics. Builds on [Multiplicative SS](#multiplicative-secret-sharing) and [XOR-Based SS](#xor-based--binary-field-secret-sharing).
+
+---
+
+## Threshold Verifiable Random Functions (Threshold VRF)
+
+**Goal:** Distributed, bias-resistant pseudorandom outputs. A t-of-n threshold VRF allows t parties to jointly evaluate a VRF on an input x, producing a unique pseudorandom output y and a publicly verifiable proof — without any single party controlling the randomness. Prevents any minority coalition from biasing or predicting the output.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Dodis-Yampolskiy VRF (basis)** | 2005 | Pairings + DLIN | Single-party VRF; threshold version obtained by distributing the exponent via Shamir; output = e(g, H(x))^(1/sk) [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30576-7_24) |
+| **Threshold BLS VRF (Boldyreva)** | 2003 | BLS + Shamir | BLS signature as a VRF; t-of-n threshold via Shamir-shared key; output = H(x)^sk; bilinear pairing proves correctness [[1]](https://link.springer.com/chapter/10.1007/3-540-36288-6_3) |
+| **GLOW Threshold VRF** | 2020 | BLS12-381 + DKG | Efficient threshold VRF with a combined DKG + signing protocol; used in Drand v2 randomness beacon [[1]](https://eprint.iacr.org/2020/096) |
+| **Ring VRF (Pedersen-VRF threshold)** | 2023 | Schnorr + ring proofs | Anonymous threshold VRF where any authorized subset proves membership without revealing which parties signed; related to [Ring VRF](categories/08-signatures-advanced.md#ring-vrf--ring-signatures) [[1]](https://eprint.iacr.org/2023/002) |
+| **Threshold VRF for PoS Leader Election** | 2024 | Pairings + DKG | Blockchain-grade threshold VRF; unpredictable, unbiasable committee selection; deployed in Algorand and Ethereum PBS research [[1]](https://eprint.iacr.org/2024/506) |
+
+**State of the art:** BLS-based threshold VRF (Drand v2, GLOW 2020) is deployed in production randomness beacons used by Filecoin, Ethereum, and League of Entropy. Builds on [DKG](#distributed-key-generation-dkg), [Threshold BLS](#threshold-bls-key-generation), and relates to [VRF / VDF](categories/09-commitments-verifiability.md#verifiable-random-functions-vrf). Threshold VRF is the preferred primitive for unbiasable on-chain randomness over [PVSS](#publicly-verifiable-secret-sharing-pvss)-based beacons when non-interactivity matters.
+
+---
+
+## Online vs Offline Threshold Signing
+
+**Goal:** Amortize expensive threshold signing costs. Split threshold signature protocols into an *offline* phase (no message needed; run during idle time) and an *online* phase (message-dependent; ultra-low latency). The offline phase precomputes nonces, Beaver triples, or presignatures; the online phase uses them to sign in one or two rounds with minimal computation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **FROST Offline Precomputation** | 2020 | Schnorr + nonce pairs | FROST's 1.5-round mode: each party pre-broadcasts (D_i, E_i) binding nonce commitments; online phase = 1 message per party; eliminates one full round trip at signing time [[1]](https://eprint.iacr.org/2020/852) |
+| **Threshold ECDSA Presignature (GG18/GG20)** | 2018 | Paillier HE + offline MtA | GG18/GG20 split into offline (MtA for multiplicative-to-additive conversion; presignature r) and online (one round to complete s-share); offline cost dominates by ~100× [[1]](https://eprint.iacr.org/2019/114) |
+| **Lindell Offline-Online 2-Party ECDSA** | 2017 | OT + Paillier | First explicit offline/online separation for 2-of-2 ECDSA; online phase = 2 messages, ~1 ms; offline = 3 s; IEEE S&P 2017 [[1]](https://eprint.iacr.org/2017/552) |
+| **DKLS23 Offline/Online** | 2023 | OT + MtA | Explicit offline/online decomposition for t-of-n ECDSA; offline generates nonce and correlated randomness; online = one round; avoids HE entirely [[1]](https://eprint.iacr.org/2023/765) |
+| **Threshold Raccoon Offline Masks** | 2024 | OTM (one-time masks) | Lattice threshold signing: offline phase distributes one-time additive masks; online phase requires only local computation + broadcast; EUROCRYPT 2024 [[1]](https://eprint.iacr.org/2024/184) |
+
+**State of the art:** Offline/online separation is universal in practical threshold signing deployments — the offline phase is run in the background, amortizing expensive MPC sub-protocols so that online signing latency is sub-second. FROST (Schnorr), DKLS23 (ECDSA), and Threshold Raccoon (post-quantum) all support this pattern. Relates to [FROST](#frost-flexible-round-optimized-schnorr-threshold-signatures), [DKLS23](#dkls23-threshold-ecdsa-in-three-rounds), [Threshold Raccoon](#threshold-raccoon-post-quantum-lattice-threshold-signatures), and [MPC Preprocessing](categories/06-multi-party-computation.md#multi-party-computation-mpc).
+
+---

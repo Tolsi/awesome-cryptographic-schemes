@@ -290,3 +290,79 @@
 **State of the art:** Ker's square-root law governs undetectability limits; STCs (Filler-Judas-Fridrich 2011) achieve the practical capacity bound for additive distortion. Dirty-paper coding (Costa 1983) governs the robustness-capacity trade-off for watermarking. These results underpin all modern scheme design in [Content-Adaptive Image Steganography](#content-adaptive-image-steganography), [Spread-Spectrum Steganography](#spread-spectrum-steganography), and [Digital Watermarking / Fingerprinting](#digital-watermarking--fingerprinting).
 
 ---
+
+## Reversible Data Hiding / Lossless Steganography
+
+**Goal:** Embed a secret payload in a cover medium (image, audio, document) such that both the payload and the original, unmodified cover can be perfectly reconstructed by an authorised receiver. Unlike conventional steganography, which accepts permanent modification of the cover, reversible data hiding is lossless: the cover is restored to its exact original state after extraction.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Lossless Generalised LSB (Fridrich-Goljan-Du)** | 2002 | LSB compression | Compresses original LSBs with a lossless codec, stores compressed bits plus payload in the freed space; first systematic lossless spatial-domain scheme; recovery is exact with no information loss [[1]](https://doi.org/10.1117/12.465440) |
+| **Difference Expansion (Tian)** | 2003 | Integer Haar wavelet | Expands pixel-pair differences by 1 bit to embed message; inverse wavelet step restores exact cover values; dominant reversible scheme for the first decade [[1]](https://doi.org/10.1109/TCSVT.2003.815962) |
+| **Histogram Shifting (Ni et al.)** | 2006 | Peak–zero histogram bins | Shifts pixel histogram to create a gap bin; embeds bits by nudging peak-bin pixels ±1; zero pixel distortion at the peak; capacity ~100 kbits for a 512×512 image at PSNR > 48 dB [[1]](https://doi.org/10.1109/TCSVT.2006.867544) |
+| **PVO (Pixel Value Ordering)** | 2013 | Local prediction error | Exploits prediction-error expansion in sorted pixel quadruples; achieves high embedding capacity with very low distortion; state-of-the-art reversible image steganography [[1]](https://doi.org/10.1109/TIP.2013.2275005) |
+| **RDH in Encrypted Images (Zhang et al.)** | 2011 | Compressible encrypted domain | Encrypts image, vacates room by compressing a subset of bits, embeds payload in vacated space; receiver can extract payload or restore plaintext independently; enables reversible stego over encrypted cloud storage [[1]](https://ieeexplore.ieee.org/document/5762603) |
+
+**State of the art:** Histogram shifting (Ni et al. 2006) and PVO (2013) are the practical standards for unencrypted images; RDH-in-encrypted-images (Zhang 2011) is increasingly important for cloud storage scenarios. Reversible data hiding is used in medical imaging (where the original must be recoverable) and legal forensics. Related to [Content-Adaptive Image Steganography](#content-adaptive-image-steganography) (irreversible counterpart) and [Digital Watermarking / Fingerprinting](#digital-watermarking--fingerprinting).
+
+---
+
+## Coverless Steganography
+
+**Goal:** Transmit a hidden message without modifying any cover medium. Instead of embedding bits into an existing object, the sender selects an unaltered object (image, video clip, text) from a large database whose content hash, visual hash, or semantic index encodes the message. The receiver applies the same mapping to retrieve the message. Since the transmitted object is genuinely unmodified, it passes all statistical steganalysis tests.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Hash-Mapped Image Retrieval (Zhou et al.)** | 2015 | DCT hash indexing | Assigns a binary hash to each image in a repository using DCT coefficients; maps n-bit message blocks to images whose hash matches; receiver recomputes hashes to decode; first systematic coverless framework [[1]](https://arxiv.org/abs/1512.03948) |
+| **SIFT-Feature Coverless Stego (Luo et al.)** | 2020 | SIFT keypoint indexing | Indexes images by counts of SIFT keypoints in defined regions; each region-count pattern encodes bits; tolerant to JPEG re-compression since SIFT features are robust to lossy transforms [[1]](https://ieeexplore.ieee.org/document/8809696) |
+| **Text Coverless Stego (Chen et al.)** | 2018 | Knowledge-graph sentence retrieval | Selects genuine sentences from a news corpus whose knowledge-graph triples hash to message segments; retrieved sentences are forwarded unmodified; steganalysis cannot distinguish from ordinary news sharing [[1]](https://www.hindawi.com/journals/scn/2018/6941420/) |
+| **GAN-Synthesised Coverless (Hu et al.)** | 2021 | Conditional GAN image generation | Generates a photorealistic image conditioned on a secret key and message index; image is never stored — it is generated fresh, so no carrier database is needed; defeats passive steganalysis by construction [[1]](https://ieeexplore.ieee.org/document/9364920) |
+
+**State of the art:** Coverless steganography defeats all passive (statistical) steganalysis at the cost of requiring a shared corpus or generative model. GAN-based synthesis (2021) removes the database requirement. Active wardens that restrict which images may be transmitted can still block coverless channels. Related to [Steganalysis](#steganalysis) (the principal attack this approach evades) and [Adversarial / GAN Steganography](#adversarial--gan-steganography).
+
+---
+
+## Blockchain Steganography
+
+**Goal:** Exploit the public, immutable, and globally replicated nature of blockchain ledgers (Bitcoin, Ethereum) as covert communication channels. Hidden data is embedded in transaction fields — scripts, addresses, metadata — that are indistinguishable from routine on-chain activity, while the blockchain itself serves as the cover medium and delivery mechanism.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **OP_RETURN Embedding** | 2014 | Bitcoin scripting | Bitcoin's OP_RETURN opcode allows up to 80 bytes of arbitrary data per transaction output; used by Counterparty, Omni Layer, and covert channels alike; data is unspendable but permanently stored on-chain [[1]](https://bitcoin.org/en/transactions-guide#null-data) |
+| **P2PKH Address Steganography** | 2013 | Pseudo-random address generation | Encodes payload in the public key hash of a Bitcoin pay-to-public-key-hash address by generating key pairs until the address bytes match the target bits; indistinguishable from a normal address to an observer [[1]](https://www.sciencedirect.com/science/article/abs/pii/S2214212619301759) |
+| **Covert Communication via Ethereum Events (Li et al.)** | 2019 | Smart contract event logs | Deploys a smart contract that emits log events containing steganographic payload in event parameters; normal blockchain explorers display events as routine contract activity [[1]](https://ieeexplore.ieee.org/document/8845161) |
+| **Bitcoin Script Steganography** | 2020 | Witness / unlocking script fields | Embeds data in the unlocking script or SegWit witness fields of multi-signature transactions; fields must contain valid script data but have spare entropy that is not consensus-checked [[1]](https://arxiv.org/abs/2005.09630) |
+
+**State of the art:** OP_RETURN is the highest-capacity, simplest channel (80 bytes/tx, widely used by legitimate protocols). Script-field and address-generation methods provide higher imperceptibility at lower capacity. Blockchain steganography is resilient to censorship once confirmed, but transactions cost fees and capacity is low (~80 bytes/tx for OP_RETURN). Related to [Network / Protocol Steganography](#network--protocol-steganography) and [Blockchain & Distributed Ledger](categories/13-blockchain-distributed-ledger.md).
+
+---
+
+## Cloud Cache Covert Channels
+
+**Goal:** Exfiltrate data across security boundaries in shared cloud infrastructure by exploiting microarchitectural resources (CPU last-level cache, DRAM row buffer, memory bus) that are shared between co-resident virtual machines or containers. The attacker encodes bits in cache occupancy or timing, creating a covert channel invisible to network-level monitoring.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Cross-VM LLC Flush+Reload (Yarom-Falkner)** | 2014 | Last-level cache timing | Sender accesses cache sets encoding bit 1; receiver times its own accesses to detect presence/absence of cache lines; demonstrated cross-VM bandwidth of ~1.6 Mb/s on Xeon shared LLC [[1]](https://www.usenix.org/conference/usenixsecurity14/technical-sessions/presentation/yarom) |
+| **Prime+Probe LLC Covert Channel** | 2015 | Cache-set occupancy | Sender primes LLC sets; receiver probes access latency; usable without shared memory pages; demonstrated on AWS EC2 between co-resident VMs [[1]](https://www.cs.tau.ac.il/~tromer/papers/cache.pdf) |
+| **DRAM Row-Buffer Covert Channel (Pessl et al.)** | 2016 | DRAM row activation timing | Encodes bits in row-buffer hit/miss timing across process boundaries; achieves ~12 Mb/s; bypasses LLC isolation mechanisms such as Intel CAT [[1]](https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/pessl) |
+| **Memory-Bus Locking Covert Channel** | 2021 | LOCK prefix bus contention | Sender issues LOCK-prefixed instructions to saturate the memory bus; receiver measures instruction latency; demonstrated across containers on the same host at ~100 kb/s [[1]](https://arxiv.org/abs/2107.14808) |
+
+**State of the art:** Flush+Reload and Prime+Probe are the foundational demonstrations; Intel CAT and page-deduplication disablement are the main mitigations. These channels exploit the same mechanisms as [Spectre/Meltdown](categories/17-ai-hardware-physical-security.md#hardware-side-channels--physical-attacks)-class side channels but target covert exfiltration rather than leaking secrets. Related to [Kleptography / ASA](#kleptography--algorithm-substitution-attacks-asa) (covert exfiltration of key material).
+
+---
+
+## Social Network Steganography
+
+**Goal:** Exploit the re-encoding, normalisation, and metadata-stripping pipelines of social network platforms (Instagram, Twitter, Facebook) as a steganographic channel, or embed covert data in publicly observable profile attributes and posting patterns so that the platform's content-inspection systems cannot distinguish the covert traffic from ordinary user behaviour.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **StegoSocial (Tolosana et al.)** | 2019 | JPEG re-encoding profile | Characterises each platform's fixed re-encoding parameters (quality factor, chroma subsampling, resizing); embeds payload using a distortion function calibrated to survive that specific pipeline; decoded after platform re-compression [[1]](https://doi.org/10.1145/3335203.3335714) |
+| **Social-Timing Covert Channel** | 2016 | Post-timing encoding | Sender encodes bits in inter-post delays on a public social account; receiver monitors the account's public timeline; 0/1 encoded as short/long inter-arrival gaps; undetectable by content analysis [[1]](https://doi.org/10.1145/2976749.2978381) |
+| **Profile-Field Steganography** | 2021 | Unicode homoglyph substitution | Replaces visible ASCII characters in bio or username fields with lookalike Unicode codepoints (e.g., Cyrillic 'а' for Latin 'a'); bit encoding via the homoglyph choice; survives text normalisation pipelines that do not Unicode-normalise [[1]](https://www.usenix.org/conference/usenixsecurity21/presentation/boucher) |
+| **Image-Sequence Steganography (Cao et al.)** | 2020 | Album-order encoding | Encodes bits in the ordering of images within a multi-photo post or album; 2^k orderings of k images carry log₂(k!) bits; no modification of image content required; a form of coverless steganography over social media [[1]](https://ieeexplore.ieee.org/document/9112185) |
+
+**State of the art:** Pipeline-calibrated image embedding (StegoSocial) achieves the highest capacity (~0.1 bpp after re-encoding); timing and ordering channels are lower capacity but trivially evade image steganalysis. Platform defences include image transcoding, timestamp randomisation, and Unicode normalisation. Related to [Coverless Steganography](#coverless-steganography) (ordering-based methods) and [Content-Adaptive Image Steganography](#content-adaptive-image-steganography) (pipeline-calibrated methods).
+
+---
