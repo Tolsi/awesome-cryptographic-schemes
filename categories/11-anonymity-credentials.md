@@ -261,6 +261,69 @@
 
 ---
 
+## BBS+ Anonymous Credentials
+
+**Goal:** Selective-disclosure unlinkable credentials from a single multi-message signature. An issuer signs a vector of attributes with one BBS signature; the holder derives an unlinkable zero-knowledge proof of knowledge of that signature, revealing only chosen attributes. Unlike CL signatures, BBS+ works over pairing-friendly elliptic curves and produces short, constant-size proofs regardless of the number of hidden attributes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BBS Short Group Sig (Boneh-Boyen-Shacham)** | 2004 | Pairings / q-SDH + DLIN | Original BBS construction; constant-size group signature; anonymous credential ancestor [[1]](https://eprint.iacr.org/2004/174) |
+| **BBS+ (Au-Susilo-Mu)** | 2006 | Pairings | First provably secure BBS stand-alone signature; added blinding factor enabling ZK proofs of possession [[1]](https://eprint.iacr.org/2009/095) |
+| **Revisiting BBS (Tessaro-Zhu)** | 2023 | Pairings / ROM + AGM | Tight security proofs in ROM + algebraic group model; basis for IETF standardization [[1]](https://eprint.iacr.org/2023/275) |
+| **IETF CFRG BBS Draft** | 2023– | BLS12-381 + SHAKE-256 | Ongoing IRTF/CFRG standardization of BBS signatures and proof generation; public keys in G2, sigs in G1 [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-bbs-signatures/) |
+| **W3C VC DI BBS Cryptosuites** | 2024 | BBS + JSON-LD Data Integrity | W3C Technical Report; issuer signs full credential; holder derives selective-disclosure proof; proofs are unlinkable across presentations [[1]](https://www.w3.org/TR/vc-di-bbs/) |
+
+**State of the art:** W3C VC DI BBS Cryptosuites v1.0 (W3C TR, 2024) with BBS signatures over BLS12-381; mandated for EU eIDAS 2.0 digital identity wallets alongside [SD-JWT](#anonymous-credentials). Issuer-verifiable variant covered under [Rerandomizable Signatures / PS Signatures](categories/08-signatures-advanced.md#rerandomizable-signatures-ps-signatures); threshold issuance in [Coconut Credentials](#coconut-credentials).
+
+---
+
+## Monero's Privacy Stack
+
+**Goal:** Full transaction-graph anonymity on a public blockchain. Monero hides all three components that blockchain surveillance exploits: the spending key (who sent), the recipient address (who received), and the transaction amount. The three mechanisms are independent but complementary — each closes a surveillance gap the others leave open.
+
+| Component | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Ring Signatures (MLSAG)** | 2015 | Multilayered Linkable SAG | Sender signs among n decoy inputs; key image prevents double-spend without revealing which input is real [[1]](https://eprint.iacr.org/2015/1098) |
+| **Stealth Addresses (one-time keys)** | 2014 | Dual-key ECDH | Sender derives a fresh one-time address per transaction from recipient's view+spend keys; recipient scans chain with view key [[1]](https://www.getmonero.org/resources/moneropedia/stealthaddress.html) |
+| **RingCT (Ring Confidential Transactions)** | 2017 | Pedersen commitments + Borromean ring proofs | Hides amounts; network verifies sum-balance without seeing values; mandatory since block 1 220 516 [[1]](https://eprint.iacr.org/2015/1098) |
+| **Bulletproofs (range proofs)** | 2018 | Inner-product argument | Replaced Borromean ring range proofs; ~80% transaction-size reduction [[1]](https://eprint.iacr.org/2017/1066) |
+| **CLSAG (Compact LSAG)** | 2020 | Compact linkable SAG | Replaced MLSAG; ~25% smaller, ~20% faster verify; same privacy guarantees [[1]](https://eprint.iacr.org/2019/654) |
+| **Bulletproofs+** | 2022 | Improved reciprocal-weight IPA | ~5–7% smaller and faster than Bulletproofs; deployed in Monero network upgrade Oct 2022 [[1]](https://eprint.iacr.org/2022/510) |
+
+**State of the art:** Monero (2022 network upgrade) uses CLSAG ring signatures (ring size 16), dual-key stealth addresses, and RingCT with Bulletproofs+ range proofs. Seraphis (in design) would decouple membership proofs from ownership proofs for more modular upgrades. Relies on [Ring & Group Signatures](categories/08-signatures-advanced.md#ring--group-signatures), [Stealth Addresses](#stealth-addresses), and [Range Proofs](categories/13-blockchain-distributed-ledger.md#range-proofs).
+
+---
+
+## CoinJoin / WabiSabi
+
+**Goal:** UTXO-level unlinkability on Bitcoin. Multiple users collaboratively construct a single on-chain transaction merging their inputs and outputs; the mapping between inputs and outputs is hidden from external observers and (in the WabiSabi variant) from the coordinator. Unlike shielded protocols, CoinJoin reuses the existing Bitcoin UTXO model with no consensus changes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CoinJoin (Maxwell)** | 2013 | Multi-party Bitcoin tx | Informal proposal; users coordinate equal-value outputs; coordinator-blind via Chaum blind sigs in practice [[1]](https://bitcointalk.org/index.php?topic=279249) |
+| **ZeroLink / Wasabi v1** | 2018 | Chaumian blind sigs | Fixed-denomination mixing; coordinator blind-signs output tokens; deployed in Wasabi Wallet [[1]](https://github.com/nopara73/ZeroLink) |
+| **WabiSabi** | 2021 | KVAC + homomorphic amount commitments | Replaces blind sigs with keyed-verification anonymous credentials; supports arbitrary output amounts; coordinator learns nothing about input→output mapping [[1]](https://eprint.iacr.org/2021/206) |
+| **PayJoin (BIP 78)** | 2020 | Collaborative 2-party tx | Sender and receiver co-sign one tx; breaks common-input-ownership heuristic; indistinguishable from regular payments [[1]](https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki) |
+| **Async PayJoin (BIP 77)** | 2023 | PayJoin + asynchronous relay | Removes requirement for simultaneous online presence; relay server learns nothing [[1]](https://github.com/bitcoin/bips/blob/master/bip-0077.mediawiki) |
+
+**State of the art:** WabiSabi (deployed in Wasabi Wallet 2.0, 2022) is the cryptographically strongest coordinator-blind CoinJoin, building directly on [KVAC](#keyed-verification-anonymous-credentials-kvac). PayJoin (BIP 78) is a simpler two-party variant requiring no mixing round. Related to [E-Cash / Chaumian Digital Cash](#e-cash--chaumian-digital-cash) and [Blind Signatures](categories/08-signatures-advanced.md#blind-signatures).
+
+---
+
+## Privacy Pools
+
+**Goal:** Compliance-friendly anonymous on-chain payments. Extends Tornado Cash-style mixing with zero-knowledge proofs that let depositors prove their funds belong to a "good" association set (e.g., excluding sanctioned wallets) — without revealing which deposit is theirs. Honest users retain privacy; malicious actors cannot create a valid inclusion proof for a clean set.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Tornado Cash** | 2019 | zk-SNARK (Groth16) + Merkle | Deposit ETH, withdraw to fresh address; ZK proof of Merkle membership hides which deposit; no association-set filtering [[1]](https://eprint.iacr.org/2019/953) |
+| **Privacy Pools (Buterin et al.)** | 2023 | zk-SNARK + dual Merkle proof | User proves deposit is in the full pool AND in a curated association set; withdrawer reveals neither deposit leaf nor set membership, only validity [[1]](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4563364) |
+| **0xbow Privacy Pools (deployed)** | 2024 | Groth16 + Ethereum smart contract | Production implementation of the Buterin et al. design; association set providers (ASPs) publish compliance-filtered trees [[1]](https://www.theblock.co/post/348959/0xbow-privacy-pools-new-cypherpunk-tool-inspired-research-ethereum-founder-vitalik-buterin) |
+
+**State of the art:** 0xbow Privacy Pools (2024) deploys the dual-Merkle zkSNARK design. Extends [Zcash Shielded Protocols](#zcash-shielded-protocols-sapling--orchard) with compliance-aware association sets. The underlying ZK circuit relies on [Groth16](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems-overview) and [Merkle-tree membership proofs](categories/09-commitments-verifiability.md#vector-commitments).
+
+---
+
 ## Group Encryption
 
 **Goal:** Encrypt for a group with accountability. Anyone can encrypt to the group; any group member can decrypt; the group manager can identify which member decrypted. The encryption dual of group signatures.

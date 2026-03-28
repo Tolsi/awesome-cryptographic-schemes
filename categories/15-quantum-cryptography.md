@@ -266,3 +266,92 @@ Schemes designed to resist attacks from quantum computers (Shor's algorithm brea
 **State of the art:** X25519MLKEM768 is deployed in Chrome, Firefox, and Cloudflare (2024); OpenSSH uses sntrup761x25519 by default. RFC 9794 standardizes hybrid terminology. IETF draft-ietf-tls-hybrid-design governs TLS 1.3 hybrid design. The NSA and NCSC recommend hybrid as the preferred near-term deployment strategy [[1]](https://www.ncsc.gov.uk/blog-post/new-standard-for-post-quantum-terminology). Closely related to [Post-Quantum Cryptography](#post-quantum-cryptography) and [NTRU Prime](#ntru-prime--streamlined-ntru-prime).
 
 ---
+
+## Continuous-Variable QKD (CV-QKD)
+
+**Goal:** Distribute secret keys using the amplitude and phase quadratures of coherent laser light, measured with standard telecom homodyne/heterodyne detectors — no single-photon detectors required. CV-QKD protocols achieve information-theoretic security from the uncertainty principle and are directly compatible with existing fiber-optic telecommunications infrastructure and photonic integrated circuits.
+
+All protocols in the table above (BB84, E91, MDI-QKD) are discrete-variable (DV) schemes that encode bits in single-photon states and require single-photon detectors (SPDs), which are expensive and cryogenic. CV-QKD encodes information in the continuous quadratures (x̂, p̂) of coherent or squeezed light pulses and detects them with shot-noise-limited homodyne/heterodyne receivers — the same hardware used in classical coherent optical communications.
+
+| Protocol | Year | Encoding | Detection | Note |
+|----------|------|----------|-----------|------|
+| **GG02** | 2002 | Gaussian-modulated coherent states | Homodyne | Foundational CV-QKD protocol; security proven against collective and coherent attacks [[1]](https://pubs.aip.org/aip/apr/article/11/1/011318/3279669/Continuous-variable-quantum-key-distribution) |
+| **No-Switching (NS) Protocol** | 2006 | Coherent states | Heterodyne | Simultaneously measures both quadratures; higher symbol rate than GG02 [[1]](https://arxiv.org/pdf/1703.09278) |
+| **Discrete-Modulated CV-QKD (DM-CV-QKD)** | 2009 | QPSK/4-state coherent | Heterodyne | Finite constellation; simpler reconciliation; composable key proven 2025 [[1]](https://www.nature.com/articles/s41377-025-01924-9) |
+| **CV-MDI-QKD** | 2013 | Gaussian states | Untrusted relay homodyne | Measurement-device-independent variant; removes detector side-channels [[1]](https://www.nature.com/articles/s41598-023-37699-5) |
+| **Squeezed-State CV-QKD** | 2019 | Squeezed vacuum states | Homodyne | Higher key rates and noise resilience than coherent-state variants; demonstrated 2025 [[1]](https://arxiv.org/abs/2506.19438) |
+| **Free-Space CV-QKD** | 2025 | Coherent states, 1550 nm | Heterodyne | First daytime free-space demonstration over 860 m in rain; toward satellite CV-QKD [[1]](https://www.nature.com/articles/s41534-025-01009-w) |
+
+**Security framework:** GG02 security was first proven in the asymptotic limit using Gaussian optimality; composable finite-size security proofs against general coherent attacks were established by 2022 (Pirandola et al., Nature Communications). A 2025 improvement [[1]](https://arxiv.org/html/2301.10270) tightens finite-size key rates substantially. The composable framework accounts for all post-processing (reconciliation, privacy amplification) and is the accepted standard for practical deployment analysis.
+
+**Advantages over DV-QKD:** CV-QKD detectors operate at room temperature (vs. ≥80 K for SPDs), have GHz-range bandwidth, and are integrable on photonic chips. The 2025 adaptive-filter protocol (Nature Communications Physics) demonstrates 3× key-rate improvement over prior CV-QKD and up to 400× in satellite channel simulations [[1]](https://www.nature.com/articles/s42005-025-02317-5).
+
+**State of the art:** Composable security proofs are mature (2022–2025); DM-CV-QKD has demonstrated composable key generation over 20 km fiber (2025). Commercial CV-QKD systems are available (e.g., Toshiba, ID Quantique); photonic-integrated-circuit implementations are emerging. Extends [Quantum Key Distribution (QKD)](#quantum-key-distribution-qkd); complements [Twin-Field QKD](#twin-field-qkd-tf-qkd) for distance scaling [[1]](https://arxiv.org/abs/2512.01758).
+
+---
+
+## Quantum Repeaters and Quantum Networks
+
+**Goal:** Extend quantum key distribution and entanglement distribution to continental and global scales. Direct QKD over optical fiber is limited to ~500–600 km by photon loss, and amplifiers cannot clone quantum states (no-cloning theorem). Quantum repeaters overcome this by dividing long links into elementary segments, generating entanglement locally, and extending it via entanglement swapping — without ever measuring the secret quantum state.
+
+**Why classical repeaters do not work:** A classical optical amplifier copies signal power; copying a quantum state is forbidden. Quantum repeaters instead generate entanglement between neighboring nodes, then teleport entanglement across nodes using Bell measurements and classical communication, consuming local entanglement without revealing the key.
+
+| Protocol / Generation | Year | Memory | Error Correction | Note |
+|----------------------|------|--------|-----------------|------|
+| **DLCZ (1st-gen)** | 2001 | Atomic ensembles | None (probabilistic) | Duan-Lukin-Cirac-Zoller; entanglement via Stokes photon interference; no QEC [[1]](https://arxiv.org/pdf/0906.2699) |
+| **2nd-gen repeaters** | ~2010 | Single atoms / NV centers | Encoded logical qubits | Add quantum error detection; reduce memory time requirements; fault-tolerant swapping [[1]](https://arxiv.org/pdf/0906.2699) |
+| **3rd-gen repeaters** | ~2015 | Fast quantum memories | Full QEC, fault-tolerant | Rate scales polynomially with distance; Bell-state measurement + QEC at every node [[1]](https://arxiv.org/pdf/0906.2699) |
+| **Multiplexed repeaters** | 2024 | Multimode atomic memory | Temporal + wavelength MUX | 12 km heralded atom-photon entanglement with 50× rate improvement via multiplexing [[1]](https://www.nature.com/articles/s41467-024-54691-3) |
+| **18-user quantum network** | 2025 | Entanglement swapping | Multi-user MUX | Two independent networks fused via active temporal/wavelength MUX; fidelities >84% [[1]](https://phys.org/news/2025-11-independent-quantum-networks-successfully-fused.html) |
+| **NV-center teleportation** | 2025 | Nitrogen-vacancy (diamond) | Absorption-emission | Quantum teleportation over 10 km fiber via NV emission; robust to phase/intensity errors [[1]](https://www.nature.com/articles/s41534-025-01169-9) |
+
+**Entanglement swapping:** At each repeater node, two entangled pairs (one from each neighboring segment) undergo a Bell-state measurement. The measurement result is sent classically to the endpoints, which apply a Pauli correction. The endpoints are now entangled, despite having no direct quantum channel — this is entanglement swapping (quantum teleportation without a pre-existing channel).
+
+**Quantum internet vision:** The full quantum internet stack (analogous to TCP/IP) is under active design by IETF and ITU-T (SG-13). The ITU-T standardized quantum network reference architecture in 2025 [[1]](https://www.ietf.org/lib/dt/documents/LIAISON/liaison-2025-09-03-itu-t-sg-13-ops-work-progress-on-quantum-key-distribution-qkd-network-in-itu-t-sg13-as-of-july-2025-attachment-18.pdf). Near-term "quantum-classical hybrid" networks relay QKD keys through trusted relay nodes; full repeater-based networks require third-generation hardware not yet available at scale.
+
+**State of the art:** Lab-scale quantum network fusion demonstrated (2025, 18 users); 10 km NV-center teleportation (2025); multiplexed atom-photon entanglement over 12 km (2024). No field-deployed quantum repeater exists yet — the dominant bottleneck is quantum memory coherence time vs. entanglement generation rate. Extends [Quantum Key Distribution (QKD)](#quantum-key-distribution-qkd) and [Twin-Field QKD](#twin-field-qkd-tf-qkd) to the network scale.
+
+---
+
+## Multivariate PQ Signatures (UOV / MAYO)
+
+**Goal:** Post-quantum digital signatures from the hardness of solving multivariate quadratic (MQ) systems. The MQ problem — find x such that a system of m quadratic equations over a finite field F_q evaluates to zero — is NP-hard in general and conjectured to resist quantum attacks. Multivariate schemes offer fast signing, very short signatures, and simple constant-time implementations, making them attractive for constrained devices and high-throughput applications.
+
+**Background:** The Oil and Vinegar (OV) scheme (Patarin 1997) introduced a trapdoor structure: variables are partitioned into "oil" (o) and "vinegar" (v) sets. Signing is easy knowing the partition; verification is evaluating the public map. Balanced OV was broken immediately; Unbalanced OV (UOV, Kipnis-Patarin-Goubin 1999) survived by making the vinegar set larger. Rainbow (Ding-Schmidt 2005) layered UOV stages for smaller keys — but was broken by Beullens' 2022 rectangular MinRank attack. MAYO (2022) revives UOV with a "whipping" technique that dramatically shrinks public keys.
+
+| Scheme | Year | Problem | Sig size | PK size | Note |
+|--------|------|---------|----------|---------|------|
+| **UOV** | 1999 | Multivariate quadratic (OV) | ~96 B | ~66 KB | Classical scheme; NIST Additional Sigs Round 2 (2025) [[1]](https://csrc.nist.gov/projects/pqc-dig-sig/round-2-additional-signatures) |
+| **Rainbow** | 2005 | Layered OV (MQ) | ~66 B | ~58 KB | *Broken* (2022, Beullens rectangular MinRank); withdrawn from NIST [[1]](https://eprint.iacr.org/2022/214) |
+| **MAYO** | 2022 | Whipped OV (MQ) | ~321 B | ~1.3 KB | "Whipping" maps OV to a larger space; NIST Additional Sigs Round 2 [[1]](https://csrc.nist.gov/csrc/media/Projects/pqc-dig-sig/documents/round-2/spec-files/mayo-spec-round2-web.pdf) |
+| **SNOVA** | 2022 | Structured OV (module) | ~187 B | ~1.1 KB | Module structure over small field; NIST Additional Sigs Round 2 [[1]](https://csrc.nist.gov/projects/pqc-dig-sig/round-2-additional-signatures) |
+| **QR-UOV** | 2022 | Quotient ring OV | ~109 B | ~10 KB | UOV over quotient ring for smaller public keys [[1]](https://csrc.nist.gov/projects/pqc-dig-sig/round-2-additional-signatures) |
+
+**MAYO vs. UOV trade-offs:** Standard UOV has public keys ~66 KB at NIST Level 1 — impractical for many applications. MAYO's "whipping" lifts the map to a higher-dimensional ambient space, then slices back down; the public key collapses to ~1.3 KB while signature sizes remain small (~320 B). A 2025 exterior-algebra analysis found that MAYO₂ and UOV-Ip lose 4–11 bits of security under a new attack; the Round 2 parameter sets account for this [[1]](https://eprint.iacr.org/2025/1143).
+
+**Why multivariate matters:** ML-DSA and Falcon are both lattice-based — a structural breakthrough in lattice cryptanalysis would break both simultaneously. MAYO and UOV rest on the MQ hardness assumption, which is algebraically unrelated to lattices or hash functions, providing genuine cryptographic diversity. Signing and verification are extremely fast (µs range) with no floating-point arithmetic.
+
+**State of the art:** MAYO and UOV are NIST Additional Signatures Round 2 (2025); Rainbow broken and withdrawn. No multivariate scheme is yet standardized. Complements [Post-Quantum Cryptography](#post-quantum-cryptography) (lattice-based FIPS 204/206) and [Equivalence-Based PQ Signatures](#equivalence-based-pq-signatures) as a third independent assumption class for PQ signatures [[1]](https://blog.cloudflare.com/another-look-at-pq-signatures/).
+
+---
+
+## FAEST / VOLE-in-the-Head (Symmetric-Key PQ Signatures)
+
+**Goal:** Post-quantum digital signatures whose unforgeability rests solely on the security of a standard block cipher (AES) — no lattice, code, or isogeny assumption required. FAEST (2023) uses a new paradigm called VOLE-in-the-Head (VOLEitH) to construct a zero-knowledge proof that "I know the AES key K such that AES_K(nonce) = ciphertext," then converts it into a signature via the Fiat-Shamir transform. If AES is secure, FAEST is unforgeable.
+
+The Picnic signature scheme (2017, predecessor) used MPC-in-the-Head to prove knowledge of a block cipher preimage. FAEST replaces the MPC subprotocol with a more efficient Vector Oblivious Linear Evaluation (VOLE) argument — reducing signature sizes by ~30% and improving speed. Unlike MPC-in-the-Head, VOLEitH does not simulate multi-party computation; it generates a consistency proof via VOLE correlations, a structurally different primitive.
+
+| Scheme | Year | Primitive | Sig size (L1) | Security basis | Note |
+|--------|------|-----------|--------------|---------------|------|
+| **Picnic** | 2017 | LowMC + MPCitH | ~12 KB | MPC security + block cipher | First MPCitH signature; NIST Round 3 alternate; withdrawn [[1]](https://eprint.iacr.org/2017/279) |
+| **FAEST** | 2023 | AES + VOLEitH | ~5.6 KB | AES security only | NIST Additional Sigs Round 2; 2× smaller than Picnic [[1]](https://csrc.nist.gov/csrc/media/Projects/pqc-dig-sig/documents/round-2/spec-files/faest-spec-round2-web.pdf) |
+| **FAEST-EM** | 2023 | AES-EM + VOLEitH | ~6.1 KB | AES Even-Mansour security | Even-Mansour variant; slightly larger but simpler security reduction [[1]](https://csrc.nist.gov/csrc/media/Projects/pqc-dig-sig/documents/round-2/spec-files/faest-spec-round2-web.pdf) |
+| **FAEST v2** | 2024 | AES + VOLEitH (optimized) | ~4.5 KB | AES security only | NIST Round 2 submission; shorter/tighter QROM analysis [[1]](https://csrc.nist.gov/csrc/media/Projects/pqc-dig-sig/documents/round-2/spec-files/faest-spec-round2-web.pdf) |
+
+**Security argument:** FAEST reduces signature unforgeability to two assumptions: (1) the AES circuit is collision-resistant (standard assumption), and (2) the VOLE correlation is computationally hiding (from LPN or random-oracle model). There is no lattice assumption, no code assumption, and no isogeny assumption — making FAEST the most assumption-conservative PQ signature available if one is willing to pay the ~4–6 KB signature overhead.
+
+**Comparison with hash-based schemes:** SLH-DSA (FIPS 205) also avoids algebraic assumptions, but relies only on hash-function properties. SLH-DSA signatures are ~8–50 KB depending on variant. FAEST at ~4.5 KB (Level 1) is smaller than SLH-DSA-fast but larger than ML-DSA (~2.4 KB) or Falcon (~0.7 KB). FAEST signing is slower than ML-DSA but faster than SPHINCS+.
+
+**State of the art:** FAEST v2 is a NIST Additional Signatures Round 2 candidate (2024–2025). No standardization decision yet; final selection expected ~2026–2027. The NIST PQC seminar (June 2024) highlighted VOLEitH as a technically distinct and promising paradigm [[1]](https://csrc.nist.gov/csrc/media/Projects/post-quantum-cryptography/documents/pqc-seminars/presentations/15-vole-in-the-head-06182024.pdf). Complements [Post-Quantum Cryptography](#post-quantum-cryptography) with a purely symmetric-key security foundation alongside [Equivalence-Based PQ Signatures](#equivalence-based-pq-signatures) and [Multivariate PQ Signatures](#multivariate-pq-signatures-uov--mayo).
+
+---

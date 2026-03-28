@@ -635,3 +635,258 @@ Used to prove an AK is co-resident with a known EK on the same TPM. A CA encrypt
 **State of the art:** W3C WebAuthn Level 2 (2021); CTAP 2.1 (2021); passkeys specification (FIDO Alliance, 2022). WebAuthn Level 3 draft (2024) adds hybrid transport, credential management. See [TOTP/FIDO2/WebAuthn](categories/12-secure-communication-protocols.md#totpfido2webauthn) and [TPM 2.0](#tpm-20--trusted-platform-module).
 
 ---
+
+## PKCS#11 / Cryptoki — HSM C API
+
+**Goal:** Provide a vendor-neutral C API (called "Cryptoki") for applications to perform cryptographic operations and manage key material inside a Hardware Security Module (HSM), smart card, or other cryptographic token — without any key material ever leaving the secure boundary of the device.
+
+Originally published by RSA Security (PKCS #11 v2.20, 2004), now maintained by OASIS; currently at version 3.1 (2023).
+
+**Object model:**
+
+| Object class | Examples | Attribute flags |
+|---|---|---|
+| **Secret key** | AES-256, 3DES, HMAC | `CKA_SENSITIVE`, `CKA_EXTRACTABLE`, `CKA_TOKEN` |
+| **Private key** | RSA, ECDSA, Ed25519 | `CKA_SENSITIVE=TRUE`, `CKA_EXTRACTABLE=FALSE` |
+| **Public key** | RSA pub, EC pub | Exportable by default |
+| **Certificate** | X.509 DER | Stored for lookup |
+| **Data** | Arbitrary blobs | Application-defined |
+
+Setting `CKA_SENSITIVE=TRUE` and `CKA_EXTRACTABLE=FALSE` prevents a key from ever leaving the token in plaintext — the fundamental HSM guarantee.
+
+**Session model:**
+```
+C_OpenSession(slot, CKF_SERIAL_SESSION, ...) → session handle
+C_Login(session, CKU_USER, pin, pinLen)
+  // perform operations within session
+C_Sign(session, &mechanism, key, data, dataLen, sig, &sigLen)
+C_CloseSession(session)
+```
+
+**Mechanisms (selected):**
+
+| Mechanism | CKM constant | Operation |
+|---|---|---|
+| RSA PKCS#1 v1.5 | `CKM_RSA_PKCS` | Sign / decrypt |
+| RSA-OAEP | `CKM_RSA_PKCS_OAEP` | Encrypt / wrap |
+| ECDSA | `CKM_ECDSA` | Sign |
+| ECDH derive | `CKM_ECDH1_DERIVE` | Key agreement |
+| AES-GCM | `CKM_AES_GCM` | Encrypt |
+| AES key wrap | `CKM_AES_KEY_WRAP` | Wrap another key |
+| HMAC-SHA256 | `CKM_SHA256_HMAC` | MAC |
+
+**Key wrapping (inter-HSM key transfer):**
+```
+C_WrapKey(session, &wrapMech, wrappingKey, targetKey, wrappedKeyBuf, &wrappedLen)
+// wrappedKeyBuf: encrypted blob; targetKey never leaves HSM in plaintext
+C_UnwrapKey(session, &wrapMech, wrappingKey, wrappedKeyBuf, ...)
+```
+This is how keys migrate between HSMs — always in encrypted form, never as plaintext.
+
+**PKCS#11 v3.x additions (over v2.40):**
+- Message-based API: incremental `C_MessageEncryptInit` / `C_EncryptMessage` for streaming GCM
+- EdDSA (Ed25519, Ed448) mechanisms
+- Extended TLS 1.3 PRF / HKDF mechanisms
+- Improved provider/profile model to describe token capability subsets
+
+**Major HSM vendors and their PKCS#11 libraries:**
+
+| Vendor | Product | Library |
+|---|---|---|
+| Thales (Gemalto) | Luna Network HSM | `libCryptoki2_64.so` |
+| Thales | nShield Connect/Solo | `libcknfast.so` |
+| Entrust | nShield (post-acquisition) | `libcknfast.so` |
+| AWS | CloudHSM | `libcloudhsm_pkcs11.so` |
+| Utimaco | SecurityServer | `libcs_pkcs11_R3.so` |
+| SoftHSMv2 | Software emulation | `libsofthsm2.so` |
+
+**Common consumers:** OpenSSL (via engine/provider), Java (PKCS#11 JCE provider), NSS (Firefox/Chrome TLS), NGINX (hardware offload), HashiCorp Vault (PKCS#11 seal), Kubernetes (KMS plugin), code signing pipelines.
+
+**State of the art:** OASIS PKCS #11 Specification v3.1 (July 2023) [[1]](https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.1/os/pkcs11-spec-v3.1-os.html); v3.2 draft in progress. Widely used as the integration layer between PKI software and physical HSMs. See [HSM Key Ceremony](#hsm-key-ceremony--split-knowledge--dual-control) and [TUF / The Update Framework](#tuf--the-update-framework).
+
+---
+
+## HSM Key Ceremony / Split Knowledge / Dual Control
+
+**Goal:** Ensure that no single person ever has sole access to a high-value cryptographic key — in particular an HSM master key, a CA root key, or a DNSSEC KSK. The key ceremony is a formal, witnessed procedure that uses _split knowledge_ (Shamir/XOR shares across multiple custodians) and _dual control_ (two persons required for each sensitive operation) to provide both confidentiality and integrity guarantees rooted in human-enforced access policy.
+
+**Definitions:**
+
+| Concept | Meaning | FIPS 140 reference |
+|---|---|---|
+| **Split knowledge** | A secret is divided into _k_ shares such that any single share reveals nothing; only a threshold of _m-of-k_ shares reconstruct the secret | SP 800-57 Part 1, §8.2.2 |
+| **Dual control** | Two authorized persons must be simultaneously present and acting to perform a sensitive operation; neither can act alone | FIPS 140-3 §TE.07.09 |
+| **Key custodian** | An individual entrusted with one share (e.g., on a smart card or paper) | — |
+| **Crypto officer (CO)** | Role authorized to operate the HSM; logs every action | FIPS 140-3 §4.4 |
+
+**Key ceremony lifecycle:**
+
+```
+1. Preparation
+   - Conduct in a physically secured room; video recorded; witnesses sign script
+   - All participants' identities verified against pre-issued credentials
+   - Brand-new HSM brought in sealed packaging; serial number verified
+
+2. HSM initialization
+   - HSM factory reset; firmware version logged
+   - Generate or load master key (MK) using m-of-k smart cards (e.g., 3-of-5)
+   - Each card holder sees only their own share; never the full key
+
+3. Root / CA key generation
+   - HSM generates key pair; private key never leaves HSM
+   - Public key exported and recorded in ceremony log
+   - Key wrapped under MK; backup written to N smartcards or HSM clones
+
+4. Key signing (for DNSSEC KSK or CA root cert)
+   - Signing performed inside HSM via PKCS#11 or vendor API
+   - m-of-k COs present simultaneously to authorize the operation
+
+5. Close and seal
+   - HSM returned to secure facility
+   - Smart cards distributed to geographically separated custodians
+   - Full ceremony log signed by all participants; hash published
+```
+
+**Real-world example — ICANN DNS Root KSK ceremony:**
+- Held quarterly at two geographically separate KMFs (Los Angeles and Culpeper, VA)
+- 7 Crypto Officers per facility; any 3 can operate the HSM (3-of-7 threshold)
+- 7 Recovery Key Share Holders (RKSHs) hold shares of the emergency storage key; 5-of-7 required for disaster recovery
+- Ceremony is live-streamed and fully auditable [[1]](https://www.iana.org/dnssec/ceremonies)
+
+**Cryptographic underpinning of share distribution:**
+- **Shamir's Secret Sharing (SSS):** Secret is the constant term of a random polynomial of degree _m−1_ over GF(p); each custodian receives one point on the polynomial. Any _m_ points reconstruct the polynomial via Lagrange interpolation; fewer than _m_ reveal nothing. See [Secret Sharing](#shamir-secret-sharing-sss).
+- **XOR split (2-of-2):** simpler but only works for exactly 2 parties; share₁ = random, share₂ = secret XOR share₁.
+- **Smart card–based schemes:** Each smart card is a PKCS#11 token holding one share as a non-exportable key.
+
+**FIPS 140-3 requirements:** Level 3+ HSMs must enforce dual control for critical security parameters (CSPs); roles and services must be documented; all operations logged to tamper-evident audit log.
+
+**State of the art:** NIST SP 800-57 Part 1 Rev. 5 (2020) [[1]](https://csrc.nist.gov/publications/detail/sp/800-57-part-1/rev-5/final) defines key management lifecycle including split knowledge. FIPS 140-3 (2019, ISO/IEC 19790) governs HSM security levels. See [PKCS#11 / Cryptoki](#pkcs11--cryptoki--hsm-c-api), [DNSSEC](#dnssec--dns-security-extensions), and [Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#shamir-secret-sharing-sss).
+
+---
+
+## DICE — Device Identifier Composition Engine
+
+**Goal:** Provide IoT and embedded devices — where a TPM is infeasible — with a hardware root of trust that generates a cryptographically unique per-device, per-firmware identity at every boot, without requiring a factory-provisioned secret per device. Each firmware layer receives a Compound Device Identifier (CDI) that binds the device's unique secret to the _exact measurement_ of the next layer, enabling remote attestation and a PKI-like certificate chain from bare metal through application firmware.
+
+Originally proposed by Microsoft Research (RIoT, 2016); standardized by TCG as the DICE Architecture; referenced in IETF RFC 9360 (CBOR/COSE certificate transport).
+
+**Boot-time key derivation:**
+
+```
+UDS  (Unique Device Secret — fused into hardware, never readable by software)
+  │
+  ▼  CDI_0 = KDF(UDS, H(Layer_0_code || Layer_0_config))
+Layer 0 (immutable ROM boot code)
+  │
+  ▼  CDI_1 = KDF(CDI_0, H(Layer_1_code || Layer_1_config))
+Layer 1 (first-stage bootloader / UEFI)
+  │
+  ▼  CDI_n = KDF(CDI_{n-1}, H(Layer_n_code || config))
+Application firmware
+```
+
+KDF is typically HMAC-SHA256 or HKDF. Each CDI is derived from the parent CDI and the SHA-256 measurement of the next layer's code; it is only accessible inside that layer.
+
+**Alias Key and certificate chain:**
+
+Each DICE layer generates an _Alias Key Pair_ derived from its CDI:
+```
+AliasSeed  = KDF(CDI, "Alias key")
+AliasPriv  = deterministic ECDSA P-256 key from AliasSeed (RFC 6979)
+AliasCert  = X.509 cert, issued by previous layer's Alias Key,
+             SubjectAltName carries the CDI hash (layer measurement)
+```
+This produces a certificate chain: Root CA → Layer0 cert → Layer1 cert → Application cert. The chain proves the exact firmware stack running on the device to any remote verifier.
+
+**TCG DICE layers:**
+
+| Layer | Name | Contents signed into next CDI |
+|---|---|---|
+| L0 | Hardware DICE | UDS (never exported), fused in silicon |
+| L1 | ROM / immutable code | Hash of L1 bootloader |
+| L2 | Mutable bootloader | Hash of OS / firmware image |
+| L3+ | OS / application | Hash of application binary + config |
+
+**Open DICE (Google/Pigweed):** Google's open-source implementation of the DICE specification; used in Android (android.googlesource.com/open-dice), ChromeOS, Zephyr RTOS, and Tock OS. Provides CBOR-encoded CDI certificates for constrained devices.
+
+**DICE in Android:** Android 13+ uses DICE for the Remote Key Provisioning (RKP) stack — device attestation certificates are DICE-chained from hardware all the way to the application key, enabling provable firmware-bound attestation without factory per-device key provisioning.
+
+**Security properties:**
+- Changing any firmware layer produces a different CDI/Alias Key → stale or modified firmware cannot impersonate the expected identity
+- UDS never exposed to software → no firmware exploit can exfiltrate the root secret
+- Works on microcontrollers with as little as 2 kB of ROM
+
+**State of the art:** TCG DICE Architecture v1.0 (2020) [[1]](https://trustedcomputinggroup.org/wp-content/uploads/Device-Identifier-Composition-Engine-Rev69_Public-Review.pdf); TCG Hardware Requirements for DICE v1.0 rev. 0.91 (2024). Open DICE specification [[2]](https://pigweed.googlesource.com/open-dice/+/HEAD/docs/specification.md). Deployed in Android 13+, ChromeOS, Zephyr, Tock. See [TEE Remote Attestation](#tee-remote-attestation) and [TPM 2.0](#tpm-20--trusted-platform-module).
+
+---
+
+## GSMA eSIM / Remote SIM Provisioning (RSP)
+
+**Goal:** Enable cellular network profiles (IMSI, Ki, operator keys) to be downloaded, installed, and switched over-the-air onto an embedded Universal Integrated Circuit Card (eUICC / eSIM) soldered into a device — without physical SIM card swapping — using a mutually authenticated, end-to-end encrypted channel from the operator's servers to the tamper-resistant eUICC secure element.
+
+**Specification family:**
+
+| Spec | Scope | Latest version |
+|---|---|---|
+| **SGP.21** | RSP Architecture (M2M) | v4.2 |
+| **SGP.22** | RSP Technical Specification — Consumer devices | v3.1 (Dec 2023) |
+| **SGP.02** | M2M RSP (industrial/automotive) | v4.2 |
+| **SGP.32** | RSP for IoT (headless devices, no LPA UI) | v1.0 (2023) |
+
+**PKI and trust anchor hierarchy:**
+
+```
+GSMA Root CI (Certificate Issuer)
+  ├── Operator Sub-CI
+  │     └── SM-DP+ certificate (ECDSA P-256 / brainpoolP256r1)
+  └── eUICC Manufacturer Sub-CI
+        └── eUICC CI certificate (per device; burned at manufacture)
+```
+
+The GSMA operates a GSMA Certificate Issuer (CI) and issues Sub-CI certificates to SM-DP+ operators and eUICC manufacturers. Trust is rooted in the GSMA CI public key, which is pre-loaded into every eUICC at manufacture.
+
+**Cryptographic profile download flow (SGP.22):**
+
+```
+1. Common Mutual Authentication (CMA)
+   LPA (device) ←→ SM-DP+: ECDH key agreement (prime256v1 or brainpoolP256r1)
+   Both sides present X.509 certs; mutual TLS-like auth over HTTP/S
+   Session keys derived: K_S_enc, K_S_mac, K_S_mac_r via HKDF-SHA-256
+
+2. Profile Package download
+   SM-DP+ encrypts Profile Package using SCP03t (AES-128-CBC + CMAC):
+     - Command data encrypted with K_S_enc (AES-128-CBC)
+     - Integrity protected with K_S_mac (AES-128 CMAC)
+   Profile Package TLV-encoded, ASN.1 structure per SGP.22 §3.1
+
+3. Profile installation (inside eUICC secure element)
+   eUICC decrypts and installs profile into isolated slot
+   Profile binding key KB derived: KB = HMAC-SHA256(ISD-P key, profile_binding_data)
+   Profile contains: IMSI, Ki (AKA root key), OPc, transport keys
+
+4. Profile activation
+   LPA sends ES10b.EnableProfile; eUICC authenticates command via CMAC
+```
+
+**Key cryptographic mechanisms:**
+
+| Operation | Algorithm |
+|---|---|
+| Mutual authentication | ECDSA P-256 / brainpoolP256r1 on X.509 certs |
+| Session key agreement | ECKA-DH (ECDH with cofactor) → HKDF-SHA-256 |
+| Profile encryption | SCP03t: AES-128-CBC + CMAC (NIST SP 800-38B) |
+| Profile binding | HMAC-SHA-256 keyed to ISD-P |
+| eUICC attestation | eUICC signs EID + nonce with eUICC private key |
+| Certificate chain | GSMA CI → Sub-CI → device/server cert |
+
+**eUICC (embedded UICC) hardware:**
+- Separate secure element chip (or iSIM integrated into SoC) meeting ETSI TS 102 221 (UICC spec)
+- Common Criteria EAL4+ or higher certification required
+- Stores multiple profiles in isolated ISD-P (Issuer Security Domain Profile) containers
+- EID (eUICC Identifier): 32-digit globally unique identity burned in at manufacture
+
+**iSIM:** An integrated SIM where the eUICC secure element is merged into the application SoC die (e.g., Qualcomm 5G modems, Apple M-series chips). Functionally identical to eUICC for RSP; smaller, lower power. Used in Apple Watch (Series 3+), iPhone (Series 14+, US models).
+
+**Deployment:** All modern flagship smartphones (2022+) support eSIM. Over 2.5 billion eSIM-capable devices shipped by 2024 (GSMA). Apple removed physical SIM entirely in US iPhone 14 (2022). SGP.32 (IoT) deployed in connected cars, smart meters, industrial M2M.
+
+**State of the art:** GSMA SGP.22 v3.1 (2023) [[1]](https://www.gsma.com/solutions-and-impact/technologies/esim/gsma_resources/sgp-22-v3-1/); SGP.32 v1.0 (2023) for IoT [[2]](https://www.gsma.com/solutions-and-impact/technologies/esim/esim-specification/). Post-quantum secure channel research active [[3]](https://eprint.iacr.org/2024/2005.pdf). See [EMV Cryptographic Authentication](#emv-cryptographic-authentication) and [TEE Remote Attestation](#tee-remote-attestation).

@@ -322,3 +322,73 @@
 **State of the art:** Barnett-Smart (efficient, ZK-based); blockchain variants for trustless online play. The first example of [Secure Computation](#multi-party-computation-mpc) — historically predates general MPC.
 
 ---
+
+## TinyOT (Maliciously Secure 2PC from OT)
+
+**Goal:** Maliciously secure two-party computation over Boolean circuits using only symmetric-key primitives. TinyOT (Nielsen-Nordholt-Orlandi-Burra, CRYPTO 2012) departs entirely from Yao's garbled-circuit tradition: it uses correlated oblivious transfer (COT) to authenticate wire values with information-theoretic MACs, producing actively secure AND-triples in an offline phase and then evaluating the circuit gate-by-gate online. The result is the first OT-based (non-GC) protocol to beat garbled-circuit approaches in practice.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **TinyOT (NNOB)** | 2012 | OT extension + IT-MACs | Malicious 2PC via committed OT; 20 000+ AND gates/s in LAN; CRYPTO 2012 [[1]](https://eprint.iacr.org/2011/091) |
+| **TinyKeys for TinyOT** | 2018 | TinyOT + packed MACs | Reduce MAC key length; scale to large circuits with active security; ASIACRYPT 2018 [[1]](https://link.springer.com/chapter/10.1007/978-3-030-03332-3_4) |
+| **TinyTable** | 2017 | TinyOT + table garbling | Gate-scrambling variant; efficient for small look-up table gates; CRYPTO 2017 [[1]](https://eprint.iacr.org/2016/695) |
+
+**State of the art:** TinyOT remains the canonical OT-based alternative to cut-and-choose for malicious 2PC; largely superseded for garbled-circuit workloads by [Authenticated Garbling (WRK)](#cut-and-choose-for-garbled-circuits-malicious-2pc), but still competitive for Boolean circuits in high-latency networks. Foundation of [MASCOT](#mascot-malicious-arithmetic-mpc-via-ot) and many MPC frameworks.
+
+---
+
+## Sharemind (MPC Platform)
+
+**Goal:** Practical, deployable MPC for real-world data analysis. Sharemind (Bogdanov-Laur-Willemson, ESORICS 2008) is a virtual-machine framework for privacy-preserving computation over additive 3-party secret sharing — three non-colluding servers jointly evaluate arbitrary programs written in the SecreC language without any server seeing individual input values. Designed from the start with engineering concerns (performance, ease of deployment) rather than only theoretical security.
+
+| Component | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Sharemind core** | 2008 | Additive 3-party SS | Semi-honest security; information-theoretically secure; custom bytecode VM; ESORICS 2008 [[1]](https://eprint.iacr.org/2008/289) |
+| **SecreC language** | 2013 | Sharemind VM | High-level language for writing privacy-preserving programs; compiles to MPC bytecode [[1]](https://link.springer.com/article/10.1007/s10207-012-0177-2) |
+| **Sharemind MPC (commercial)** | 2015+ | SPDZ / 3-party SS | Production platform (Cybernetica); deployed for national statistics, healthcare, tax data [[1]](https://sharemind.cyber.ee/sharemind-mpc/multi-party-computation/) |
+
+**State of the art:** Sharemind is one of the longest-running deployed MPC platforms; used in Estonia for privacy-preserving national statistics (tax board, health data). Conceptually close to [MP-SPDZ](#multi-party-computation-mpc) but designed around a client/server model with a fixed 3-server topology. See also [SCALE-MAMBA](#scale-mamba-mpc-framework) and [Carbyne Stack](#carbyne-stack-cloud-native-mpc).
+
+---
+
+## SCALE-MAMBA (MPC Framework)
+
+**Goal:** A unified, actively secure MPC framework supporting both dishonest-majority and honest-majority settings. SCALE-MAMBA (Smart, KU Leuven; successor to Bristol's SPDZ-2) integrates SPDZ-style preprocessing with a MAMBA high-level language (Python-like), supporting prime fields, binary fields, and rings. It combines linear secret-sharing-based (LSSS) MPC with garbled-circuit evaluation in a single protocol, allowing users to switch paradigms mid-computation for optimal performance.
+
+| Component | Year | Basis | Note |
+|-----------|------|-------|------|
+| **SCALE-MAMBA core** | 2018 | SPDZ + LSSS | Actively secure arithmetic MPC; dishonest and honest majority; MAMBA scripting language [[1]](https://nigelsmart.github.io/SCALE/) |
+| **Zaphod (LSSS + GC in SCALE)** | 2019 | SCALE + half-gates | Combine LSSS and garbled circuits in one protocol; switch per gate type for efficiency; ePrint 2019/974 [[1]](https://eprint.iacr.org/2019/974) |
+| **Actively Secure Setup for SPDZ** | 2019 | SCALE + threshold DKG | First actively secure distributed key generation for SPDZ preprocessing; ePrint 2019/1300 [[1]](https://eprint.iacr.org/2019/1300) |
+
+**State of the art:** SCALE-MAMBA is widely used in academic MPC research (KU Leuven, Bristol); MP-SPDZ (data61) has largely taken over as the benchmark framework, but SCALE-MAMBA remains the reference for SPDZ with actively secure key setup. GitHub: [KULeuven-COSIC/SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA). Related to [MASCOT](#mascot-malicious-arithmetic-mpc-via-ot), [Overdrive](#mascot-malicious-arithmetic-mpc-via-ot), and [MP-SPDZ](#multi-party-computation-mpc).
+
+---
+
+## Carbyne Stack (Cloud-Native MPC)
+
+**Goal:** Deploy MPC as a cloud-native microservice. Carbyne Stack (Bosch Research, open-sourced 2021) wraps SPDZ-like MPC protocols in a Kubernetes/Knative/Istio stack — each MPC party runs as an independent cloud service, with correlated-randomness generation, secret storage, and serverless computation all exposed as REST/gRPC APIs. The goal is to make MPC accessible to organizations without in-house cryptography expertise.
+
+| Component | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Carbyne Stack platform** | 2021 | SPDZ2k + MP-SPDZ + Kubernetes | Open-source; Apache 2.0; 3-party SPDZ in cloud-native microservices; German IT Security Award 2022 [[1]](https://github.com/carbynestack/carbynestack) |
+| **Klyshko (correlated randomness)** | 2022 | PCG / offline preprocessing | Kubernetes operator managing offline triple generation; decoupled from online compute [[1]](https://github.com/carbynestack/klyshko) |
+| **Ephemeral (serverless compute)** | 2022 | MP-SPDZ + Knative | Serverless MPC functions; spin up secure compute on demand; scales with Knative autoscaling [[1]](https://github.com/carbynestack/ephemeral) |
+
+**State of the art:** Carbyne Stack is the leading open-source cloud-native MPC deployment platform (Linux Foundation Europe member 2023); used by Bosch and partners for cross-organization data analysis. Distinct from [MP-SPDZ](#multi-party-computation-mpc) (protocol benchmark) and [Sharemind](#sharemind-mpc-platform) (fixed-server model) — Carbyne Stack targets elastic cloud deployments. See [SCALE-MAMBA](#scale-mamba-mpc-framework) for the underlying protocol lineage.
+
+---
+
+## SuperPack (Dishonest Majority MPC with Constant Online Communication)
+
+**Goal:** Reduce online communication in dishonest-majority MPC to a constant number of field elements per multiplication gate, independent of the number of parties. SuperPack (Escudero-Goyal-Polychroniadou-Song-Weng, EUROCRYPT 2023) combines packed secret sharing with ideas from honest-majority TurboPack to achieve, for the first time, O(1/ε) online communication per AND/multiplication gate in a dishonest-majority (up to 1−ε fraction of parties corrupt) actively secure setting — a factor ≥25× improvement over prior works.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SuperPack** | 2023 | Packed SS + dishonest majority | 6/ε field elements online per multiplication gate (circuit-dep. preprocessing); EUROCRYPT 2023 [[1]](https://eprint.iacr.org/2023/307) |
+| **Sharing Transformation (CRYPTO 2022)** | 2022 | Packed SS + dishonest majority | Predecessor: share-conversion enables packed SS for dishonest majority; enables SuperPack [[1]](https://eprint.iacr.org/2022/831) |
+| **TurboPack** | 2022 | Packed SS + honest majority | Inspiration for SuperPack; constant-communication honest-majority MPC; CCS 2022 [[1]](https://eprint.iacr.org/2022/1316) |
+
+**State of the art:** SuperPack is the state of the art for communication-efficient dishonest-majority MPC as of 2023; closes the long-standing gap between honest- and dishonest-majority communication complexity. Complements [SPDZ / SPDZ2k](#multi-party-computation-mpc) (which have linear online communication per gate). Related to [Beaver Triples](#beaver-triples-multiplication-triples) and [Silent OT / PCG](#silent-ot--pseudorandom-correlation-generators-pcg) for preprocessing.
+
+---

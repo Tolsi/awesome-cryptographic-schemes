@@ -58,6 +58,19 @@
 
 ---
 
+## Frequency-Smoothing Oblivious Datastores (PANCAKE / Waffle)
+
+**Goal:** Hide access patterns for key-value stores with practical overhead. Full ORAM protects against arbitrary adversaries but incurs high bandwidth overhead. When the adversary is a passive persistent observer (no query injection), frequency smoothing transforms skewed plaintext access distributions into uniform encrypted access distributions — achieving orders-of-magnitude better throughput than Path ORAM. PANCAKE requires a known access distribution; Waffle extends this to unknown, adaptive distributions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **PANCAKE (Grubbs et al.)** | 2020 | Frequency smoothing + encrypted key-value store | First system for passive-persistent-adversary access-pattern hiding; 229× better throughput than non-recursive Path ORAM; within 3–6× of insecure baselines; USENIX Security 2020 Distinguished Paper [[1]](https://eprint.iacr.org/2020/1501) |
+| **Waffle (Maiyya et al.)** | 2024 | Online frequency smoothing + adaptive batching | Extends PANCAKE to unknown/changing access distributions; no prior knowledge of query distribution needed; 45–57% faster than PANCAKE; 102× faster than TaoStore ORAM; SIGMOD 2024 [[1]](https://eprint.iacr.org/2023/1285) |
+
+**State of the art:** Waffle (SIGMOD 2024) for adaptive settings; PANCAKE (USENIX Sec 2020) when the access distribution is known. Both sit between insecure key-value stores and full [ORAM](#oblivious-ram-oram) in the security/performance tradeoff space. The weaker threat model (no query-injection adversary) is appropriate for many cloud storage deployments.
+
+---
+
 ## Private Information Retrieval (PIR)
 
 **Goal:** Query privacy. A client retrieves an element from a database without the server learning which element was fetched.
@@ -68,8 +81,10 @@
 | **Kushilevitz-Ostrovsky PIR** | 1997 | Quadratic residues | First single-server computational PIR [[1]](https://dl.acm.org/doi/10.1145/258533.258559) |
 | **SealPIR** | 2018 | RLWE / BFV | Practical single-server PIR; ~1 ms/query [[1]](https://eprint.iacr.org/2017/1142) |
 | **SimplePIR / DoublePIR** | 2023 | LWE | Fastest practical PIR; near-optimal [[1]](https://eprint.iacr.org/2022/949) |
+| **FrodoPIR** | 2023 | Plain LWE | Single-server; client-independent offline phase; ~1 s per query on 1M×1KB DB; ePrint 2022/981; PoPETS 2023 [[1]](https://eprint.iacr.org/2022/981) |
+| **Checklist** | 2021 | 2-server; offline/online hints | Sublinear server time per query via client-stored hints; first system for private Safe-Browsing lookups; 6.7× faster than prior 2-server PIR; USENIX Sec 2021 [[1]](https://eprint.iacr.org/2021/345) |
 
-**State of the art:** SimplePIR/DoublePIR (speed), IT-PIR (information-theoretic setting).
+**State of the art:** SimplePIR/DoublePIR (speed), Spiral (throughput, see [Advanced Single-Server PIR](#advanced-single-server-pir-onionpir--spiral)), FrodoPIR (scalable single-server with offline preprocessing), Checklist (sublinear server time with client hints), IT-PIR (information-theoretic setting).
 
 ---
 

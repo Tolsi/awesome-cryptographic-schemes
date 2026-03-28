@@ -502,3 +502,96 @@ HKDF-Expand(PRK, info, L)  →  OKM  (output keying material, L bytes)
 **State of the art:** Random linear combination technique (universal); BLS batch verification in Ethereum consensus. See [Aggregate Signatures](#aggregate-signatures-bls-aggregate), [Digital Signatures](#digital-signatures).
 
 ---
+
+## SM4 / Chinese National Standard Block Ciphers
+
+**Goal:** Sovereign symmetric encryption. China's national commercial cryptography standards define a family of block ciphers and stream ciphers that serve as mandatory alternatives to AES in Chinese critical infrastructure, finance, and government systems — and increasingly in international standards via ISO/IEC.
+
+| Algorithm | Year | Type | Note |
+|-----------|------|------|------|
+| **SM4** | 2006 | Block cipher (SPN) | 128-bit block, 128-bit key, 32 rounds; Feistel-like with 8×8 S-box; Chinese national standard GB/T 32907-2016; ISO/IEC 18033-3/Amd.1 (2021) [[1]](https://www.rfc-editor.org/rfc/rfc8998) |
+| **SM1** | 2006 | Block cipher | 128-bit block/key; classified algorithm; hardware-only (used in smart cards, IC chips) [[1]](https://en.wikipedia.org/wiki/SM1_(cipher)) |
+| **SSF33 / SM0** | ~2000 | Block cipher | Earlier classified predecessor; used in WLAN WAPI [[1]](https://en.wikipedia.org/wiki/WAPI) |
+| **ZUC (祖冲之)** | 2011 | Stream cipher | 128-bit key; eEA3/eIA3 in LTE/5G; also see [Hardware Stream Ciphers](#hardware-oriented-stream-ciphers-estream--3gpp) [[1]](https://www.gsma.com/security/wp-content/uploads/2019/05/ZUC_specification_3.pdf) |
+
+**SM4 structure:** 32-round Type-2 Feistel variant; non-linear layer uses a single 8×8 S-box applied four times; linear diffusion via the τ and L transforms. Constant-time implementations exist and TLS 1.3 cipher suites are standardized (RFC 8998).
+
+**State of the art:** SM4 is mandatory in China's TLCP/GM standard and supported in TLS 1.3 via RFC 8998 (2021). ISO/IEC 18033-3:2010/Amd.1:2021 makes it an international standard. Widely deployed in Chinese banking (UnionPay), government PKI, and 5G networks.
+
+---
+
+## ARIA Block Cipher
+
+**Goal:** Sovereign symmetric encryption (Korea). A national-standard 128-bit block cipher for Korean government and public-sector cryptography, designed as an independent alternative to AES while matching its security levels and supporting the same key sizes.
+
+| Variant | Key size | Rounds | Note |
+|---------|----------|--------|------|
+| **ARIA-128** | 128 bit | 12 | Korean standard KS X 1213:2004; RFC 5794 [[1]](https://www.rfc-editor.org/rfc/rfc5794) |
+| **ARIA-192** | 192 bit | 14 | Extended key schedule; same block size [[1]](https://www.rfc-editor.org/rfc/rfc5794) |
+| **ARIA-256** | 256 bit | 16 | Highest security level; 16 rounds [[1]](https://www.rfc-editor.org/rfc/rfc5794) |
+
+**Structure:** Substitution-permutation network (SPN) closely related to AES; uses two 8×8 S-boxes and their inverses alternating across rounds, plus a 128-bit binary matrix for diffusion. Efficient on 32-bit processors; PKCS#11 support since 2007; TLS cipher suites in RFC 6209.
+
+**State of the art:** ARIA is the South Korean national standard (KS X 1213:2004); specified in RFC 5794 (2010) and RFC 6209 (TLS). Mandatory for Korean government systems; also used in Korean financial sector and e-government. No practical attacks beyond those on the full AES.
+
+---
+
+## Tweakable Block Ciphers (LRW / XEX / XTS)
+
+**Goal:** Block cipher with a public per-invocation parameter (the "tweak") that changes the permutation without a full re-keying. Tweaks allow the same key to produce independent permutations for each disk sector, packet sequence number, or message index — eliminating codebook attacks and enabling parallelizable, nonce-based modes.
+
+**Formalization:** Liskov, Rivest, and Wagner (Crypto 2002) defined a tweakable block cipher as a family Ẽ(K, T, ·) where K is the secret key and T is the public tweak; security requires Ẽ(K, T₁, ·) and Ẽ(K, T₂, ·) to be independent random permutations for T₁ ≠ T₂.
+
+| Construction | Year | Formula | Note |
+|-------------|------|---------|------|
+| **LRW1 / LRW2** | 2002 | E_K(x ⊕ f(T)) or E_K(x) ⊕ f(T) | Liskov-Rivest-Wagner; birthday-bound secure; first formal definition [[1]](https://link.springer.com/article/10.1007/s00145-010-9073-y) |
+| **XEX** (xor-encrypt-xor) | 2004 | E_K(x ⊕ T·Δ) ⊕ T·Δ | Rogaway; single-key; tweak via GF(2¹²⁸) multiplication; efficient [[1]](https://www.cs.ucdavis.edu/~rogaway/papers/nonce.pdf) |
+| **XTS-AES** | 2010 | XEX with sector/index tweak | NIST SP 800-38E; IEEE P1619; disk encryption standard (BitLocker, FileVault, VeraCrypt) [[1]](https://csrc.nist.gov/pubs/sp/800/38/e/final) |
+| **SKINNY** | 2016 | Dedicated TBC | Tweakable lightweight cipher; NIST LWC; TWEAKEY framework [[1]](https://eprint.iacr.org/2016/660) |
+| **Deoxys-BC** | 2016 | Dedicated TBC | TWEAKEY-based; AES-like; used in Deoxys-II (CAESAR winner) [[1]](https://competitions.cr.yp.to/caesar-submissions.html) |
+
+**XTS-AES note:** The XEX tweak encodes sector address and block index via the field element Δ = E_K(i) · α^j (α primitive in GF(2¹²⁸)). Only encrypts full blocks; the last partial block uses ciphertext stealing. Provides no authentication — must be combined with a MAC or used in a verified-boot context.
+
+**State of the art:** XTS-AES (NIST SP 800-38E / IEEE P1619) is the universal disk-encryption standard. SKINNY and Deoxys-BC are the reference dedicated TBCs. Tweakable block ciphers underlie OCB, PMAC, and virtually all modern AEAD designs.
+
+---
+
+## Even-Mansour Construction
+
+**Goal:** Simplest provably secure block cipher. Build a pseudorandom permutation from a single public random permutation P (available to all parties) by XOR-ing secret keys before and after: E_K(x) = P(x ⊕ k₁) ⊕ k₂. Achieves optimal birthday-bound security n/2 bits with minimal secret material — the theoretical foundation for AES-like constructions and iterated permutation-based ciphers.
+
+**Construction variants:**
+
+| Variant | Year | Formula | Security | Note |
+|---------|------|---------|----------|------|
+| **Even-Mansour (2-key)** | 1991 | P(x ⊕ k₁) ⊕ k₂ | n/2 bits | Original; minimal keyed cipher from public permutation [[1]](https://link.springer.com/chapter/10.1007/3-540-57220-1_60) |
+| **Single-key Even-Mansour** | 2012 | P(x ⊕ k) ⊕ k | n/2 bits | k₁ = k₂; same security; simplest possible PRP [[1]](https://eprint.iacr.org/2011/541.pdf) |
+| **Iterated Even-Mansour (r rounds)** | 2012 | r applications of P_i with independent round keys | rn/(r+1) bits | Foundation of AES-like round structure [[1]](https://eprint.iacr.org/2012/620) |
+| **Tweakable Even-Mansour (TEM)** | 2015 | Round keys derived from key ⊕ f(tweak) | Beyond-birthday | Underlies SKINNY, Deoxys-BC [[1]](https://eprint.iacr.org/2015/363) |
+
+**Why it matters:** The 12-round iterated Even-Mansour construction (with independent public permutations and a key schedule) is indifferentiable from an ideal cipher. AES can be modeled as a 10/12/14-round iterated Even-Mansour cipher; this view justifies AES's security in the ideal cipher model and connects block cipher design to permutation-based cryptography.
+
+**Attacks:** Best attack on single-key Even-Mansour requires qE·qP ≈ 2ⁿ queries (information-theoretic lower bound); no sub-birthday attack is possible. The multi-key setting (Biryukov-Khovratovich 2015) gives ≈ 2^(n/2)/√u security against u users — relevant for TLS where millions of keys share the same protocol.
+
+**State of the art:** Even-Mansour provides the theoretical security foundation for AES and all modern SPN block ciphers. The tweakable variant underlies SKINNY/Deoxys (NIST LWC). See [Feistel Networks](#feistel-networks-luby-rackoff-construction) for the analogous result for Feistel ciphers.
+
+---
+
+## SipHash
+
+**Goal:** Fast short-input PRF for hash-table protection. A keyed hash function optimized for speed on short messages (≤ 64 bytes), designed specifically to defeat hash-flooding (HashDoS) denial-of-service attacks where adversaries craft inputs causing worst-case hash-table collisions. Provides PRF security (not just collision resistance) at higher speed than HMAC on short inputs.
+
+| Variant | Rounds | Output | Use case |
+|---------|--------|--------|----------|
+| **SipHash-2-4** | 2 compress + 4 finalize | 64 bit | Default; fast path for hash tables [[1]](https://eprint.iacr.org/2012/351) |
+| **SipHash-4-8** | 4 compress + 8 finalize | 64 bit | Conservative; higher security margin [[1]](https://eprint.iacr.org/2012/351) |
+| **SipHash-2-4-128** | 2 compress + 4 finalize | 128 bit | 128-bit tag variant; for MACs [[1]](https://github.com/veorq/SipHash) |
+| **HalfSipHash-2-4** | 2 + 4 | 32 bit | 32-bit platforms; OpenSSH protocol sequence numbers [[1]](https://github.com/veorq/SipHash) |
+
+**Design (Aumasson-Bernstein, INDOCRYPT 2012):** ARX (add-rotate-XOR) construction with a 256-bit internal state initialized from a 128-bit key. The SipRound mixes two 64-bit words with message words in an unkeyed compression function, then applies additional rounds at finalization. Unlike HMAC, SipHash requires no hash function and has almost zero overhead on short inputs.
+
+**Context:** Created in late 2011 in response to coordinated HashDoS attacks on Perl, PHP, Python, Ruby, Java, and ASP.NET, which all used unkeyed hash functions vulnerable to adversarial input. SipHash is now the default hash function seed in Rust's `HashMap`, Python 3.4+, Ruby 1.9+, Linux kernel (since 4.1), OpenSSH, and many network stacks.
+
+**State of the art:** SipHash-2-4 (Aumasson-Bernstein 2012) [[1]](https://eprint.iacr.org/2012/351) is the de-facto standard for keyed hash tables and short-input MACs. It is not a replacement for HMAC on long messages, but is the correct primitive for network packet authentication, hash-table salting, and any context requiring a fast PRF over short inputs.
+
+---

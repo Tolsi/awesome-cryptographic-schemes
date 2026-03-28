@@ -308,14 +308,18 @@
 
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
-| **RSA Accumulator** | 1993 | Strong RSA | Constant-size; add/delete + membership proofs [[1]](https://link.springer.com/chapter/10.1007/3-540-48285-7_24) |
-| **Bilinear Accumulator** | 2005 | Pairings | Efficient non-membership proofs [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30580-4_14) |
+| **Benaloh-de Mare RSA Accumulator** | 1993 | Quasi-commutative RSA | First accumulator; constant-size digest; membership witnesses via modular exponentiation; rigid-integer modulus [[1]](https://link.springer.com/chapter/10.1007/3-540-48285-7_24) |
+| **Barić-Pfitzmann Collision-Free Accumulator** | 1997 | Strong RSA | Strengthens Benaloh-de Mare to collision-freeness; enables fail-stop signatures with constant-size public keys and no Merkle tree [[1]](https://link.springer.com/chapter/10.1007/3-540-69053-0_33) |
+| **Camenisch-Lysyanskaya Dynamic Accumulator** | 2002 | Strong RSA | Supports dynamic add/delete with witness updates independent of set size; efficient ZK proof of membership; basis for anonymous credential revocation [[1]](https://link.springer.com/chapter/10.1007/3-540-45708-9_5) |
+| **Nguyen Bilinear Accumulator** | 2005 | Pairings (q-SDH) | First pairing-based accumulator; enables constant-size non-membership witnesses; used for group membership revocation and ID-based ring signatures [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30574-3_19) |
+| **Universal Accumulator (Li-Li-Xue)** | 2007 | Strong RSA | Adds efficient non-membership witnesses to the Camenisch-Lysyanskaya construction; supports both membership and non-membership in ZK [[1]](https://link.springer.com/chapter/10.1007/978-3-540-72738-5_17) |
+| **Boneh-Bünz-Fisch Batching** | 2019 | Groups of unknown order | Batch/aggregate arbitrarily many membership proofs into a single constant-size proof; enables stateless blockchain validation; also yields first constant-parameter vector commitment [[1]](https://eprint.iacr.org/2018/1188) |
 | **Merkle Tree** | 1979 | Hash | Simple; membership proof is O(log n); used everywhere [[1]](https://link.springer.com/chapter/10.1007/3-540-48184-2_32) |
 | **Verkle Tree** | 2018 | KZG + Merkle | Smaller proofs than Merkle; proposed for Ethereum [[1]](https://eprint.iacr.org/2010/274) |
 | **Bloom Filter** | 1970 | Hash-based | Probabilistic set membership test; false positives, no false negatives; ubiquitous [[1]](https://dl.acm.org/doi/10.1145/362686.362692) |
 | **Garbled Bloom Filter** | 2014 | Symmetric | Privacy-preserving set membership; used in PSI protocols [[1]](https://eprint.iacr.org/2013/620) |
 
-**State of the art:** Verkle Trees (blockchain), RSA Accumulators + batching [[1]](https://eprint.iacr.org/2018/1188).
+**State of the art:** RSA accumulators with Boneh-Bünz-Fisch batching (CRYPTO 2019) are the state of the art for stateless blockchains — Utreexo (Bitcoin), Verkle Trees (Ethereum). Universal accumulators (Li et al. 2007) are used in anonymous credential systems requiring non-membership proofs. See [[1]](https://eprint.iacr.org/2018/1188).
 
 ---
 
@@ -410,5 +414,22 @@
 | **Practical Delay Enc (Chvojka et al.)** | 2023 | Pairings + TLP | More efficient; combines time-lock puzzles with IBE techniques [[1]](https://eprint.iacr.org/2023/1060) |
 
 **State of the art:** Burdges-De Feo (2021); closely related to [VDFs](#verifiable-delay-functions-vdf) and [Time-Lock Puzzles](#time-lock-puzzles--timed-release-encryption). Active research area for fair blockchain protocols.
+
+---
+
+## Feige-Fiat-Shamir Identification Scheme
+
+**Goal:** Zero-knowledge proof of identity. A prover convinces a verifier that they know a secret (square roots modulo a composite N) without revealing the secret itself or any useful information. Seminal construction bridging commitment-based protocols and practical authentication.
+
+The protocol runs in parallel rounds: the prover commits to random values, the verifier issues a binary challenge vector, and the prover responds with values computed from the secret and the random commitments. The verifier checks consistency using the public key (squares of the secret). Soundness error is 2⁻ᵏ after k rounds; the scheme is honest-verifier zero-knowledge and can be made non-interactive via the [Fiat-Shamir transform](#commitment-schemes).
+
+| Variant | Year | Basis | Note |
+|---------|------|-------|------|
+| **Fiat-Shamir Identification** | 1986 | RSA / quadratic residues | Two-move simplified version; single-bit challenge per round; CRYPTO 1986 [[1]](https://link.springer.com/article/10.1007/BF02351717) |
+| **Feige-Fiat-Shamir (FFS)** | 1988 | RSA / quadratic residues | Multi-secret parallel variant; k-bit challenge per round; reduces rounds needed; CRYPTO 1987 / JoC 1988 [[1]](https://link.springer.com/article/10.1007/BF02351717) |
+| **Guillou-Quisquater (GQ)** | 1988 | RSA | Single-round variant using high-exponent RSA; more efficient in communication [[1]](https://link.springer.com/chapter/10.1007/0-387-34799-2_16) |
+| **Schnorr Identification** | 1989 | Discrete logarithm | DLP-based alternative; basis of EdDSA and Sigma protocols; see [Sigma Protocols](categories/04-zero-knowledge-proof-systems.md#sigma-protocols) [[1]](https://link.springer.com/article/10.1007/BF00196725) |
+
+**State of the art:** FFS and GQ are of historical importance — superseded in practice by Schnorr-based identification (EdDSA, passkeys) and general-purpose [Sigma Protocols](categories/04-zero-knowledge-proof-systems.md#sigma-protocols). The Fiat-Shamir transform derived from these works remains ubiquitous for making interactive proofs non-interactive. See [[1]](https://link.springer.com/article/10.1007/BF02351717).
 
 ---

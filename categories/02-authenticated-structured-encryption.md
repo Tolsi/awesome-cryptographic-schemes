@@ -369,3 +369,113 @@ The capacity portion (not XOR'd with input) acts as the secret state providing a
 **State of the art:** AES-SIV (RFC 5297) and AES-GCM-SIV (RFC 8452) are the deployed MRAE standards. AES-GCM-SIV is preferred for its efficiency (single-key, hardware-friendly). McOE-G remains a research reference for online misuse-resistant AE; no online MRAE scheme has been standardized as of 2026.
 
 ---
+
+## OCB Mode (Offset Codebook Mode)
+
+**Goal:** Single-pass, parallelisable AEAD at the cost of one block-cipher call per plaintext block — roughly the same work as bare encryption, with no separate MAC pass. Designed to be the fastest possible provably-secure authenticated encryption from a block cipher.
+
+| Version | Year | Note |
+|---------|------|------|
+| **OCB1 (Rogaway-Bellare-Black-Krovetz)** | 2001 | Original; one AES call per block; CPA + integrity [[1]](https://dl.acm.org/doi/10.1145/501983.502011) |
+| **OCB2** | 2004 | Extended associated-data handling; later found **insecure** (2019 forgery attack) [[1]](https://link.springer.com/article/10.1007/s00145-011-9107-9) |
+| **OCB3 (RFC 7253)** | 2011 | Revised offset schedule; faster on most platforms; current standard; CAESAR finalist [[1]](https://www.rfc-editor.org/rfc/rfc7253) |
+
+**Construction:** OCB uses a nonce-derived sequence of offsets (Δ₁, Δ₂, …) computed via a Gray-code-like recurrence over a single block-cipher call. Each plaintext block Mᵢ is XOR'd with Δᵢ, encrypted, and XOR'd with Δᵢ again. A final "checksum" block (XOR of all plaintext blocks) is processed to produce the authentication tag. Associated data is handled via a parallel HASH sub-function using the same offset technique.
+
+```
+Δᵢ = L[ntz(i)] ⊕ Δᵢ₋₁        // ntz = number of trailing zeros
+Cᵢ = E_K(Mᵢ ⊕ Δᵢ) ⊕ Δᵢ
+Tag = E_K(Checksum ⊕ Δ_final ⊕ L_$) ⊕ HASH_K(AD)
+```
+
+**Patent history:** Rogaway patented OCB to prevent military use; grants were royalty-free for open-source and non-military use. In 2021, Rogaway formally abandoned all OCB patents, making OCB3 fully patent-free and unencumbered. This resolved the main adoption barrier that had driven the creation of patent-free alternatives (EAX, GCM).
+
+**Performance:** OCB3 achieves ~1.0 cpb on AES-NI hardware — roughly 2× faster than AES-GCM (which requires GHASH in addition to AES). Supports parallelism: blocks are independent given the offset sequence.
+
+**State of the art:** OCB3 (RFC 7253, 2013) [[1]](https://www.rfc-editor.org/rfc/rfc7253). Patent-free since 2021. Implemented in OpenSSL, libsodium, Botan. Fastest standardized AEAD from AES alone (without CLMUL). Not a NIST standard (NIST standardized GCM instead), but widely available. OCB2 must not be used — a practical forgery attack was published in 2019.
+
+---
+
+## AEGIS (A Fast Authenticated Encryption Algorithm)
+
+**Goal:** Achieve the highest possible AEAD throughput on processors with AES-NI instructions by using multiple AES round functions per step in a dedicated state machine — not as a mode of an existing cipher, but as a purpose-built authenticated encryption algorithm.
+
+| Variant | Key | Nonce | State | Block/step | Performance (AES-NI) |
+|---------|-----|-------|-------|------------|----------------------|
+| **AEGIS-128** | 128-bit | 128-bit | 5×128-bit | 128-bit | ~0.66 cpb |
+| **AEGIS-128L** | 128-bit | 128-bit | 8×128-bit | 256-bit | ~0.48 cpb (fastest) |
+| **AEGIS-256** | 256-bit | 256-bit | 6×128-bit | 128-bit | ~0.70 cpb |
+| **AEGIS-128X / AEGIS-256X** | 128/256-bit | 128/256-bit | Multi-lane | 256/512-bit | Further parallelism via VAES |
+
+**Designers:** Hongjun Wu and Bart Preneel (2013). CAESAR competition finalist (high-performance use case).
+
+**Construction:** AEGIS maintains a state of 5 or 8 AES 128-bit words. Each encryption step absorbs a plaintext block and updates all state words using AES round functions with data-dependent mixing, then squeezes out a keystream block. Initialization, encryption, and finalization phases are clearly separated. The tag is a function of all state words after processing is complete.
+
+```
+// AEGIS-128L state update (one 256-bit block)
+S0, S1, ..., S7 updated via 8 AES round calls mixing M_i
+Ciphertext block = M_i ⊕ (S1 ⊕ S4 ⊕ (S2 & S3))
+```
+
+**Security:** 128-bit security (AEGIS-128L, AEGIS-128); 256-bit security (AEGIS-256). Nonce-misuse catastrophic (same nonce+key breaks confidentiality and authentication). A 2018 paper (Minaud) found linear biases in the keystream — they do not break the scheme but reduce the security margin slightly.
+
+**Standardization:** IETF draft `draft-irtf-cfrg-aegis-aead` (CFRG) [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-aegis-aead/). AEGIS-128 was a CAESAR winner in the high-performance category. The X variants (AEGIS-128X, AEGIS-256X) exploit AVX-512/VAES for even higher throughput.
+
+**State of the art:** AEGIS-128L is the fastest software AEAD on AES-NI hardware, at approximately 0.48 cycles/byte for 4 KB messages — roughly 3× faster than AES-GCM. IETF CFRG is progressing toward RFC. Being adopted in high-throughput TLS implementations and storage encryption where raw speed on modern CPUs is the primary constraint.
+
+---
+
+## SNOW-V and SNOW-V-GCM
+
+**Goal:** Ultra-high-throughput stream cipher and AEAD for 5G virtualized network functions. Reach 100+ Gbps in software on commodity server CPUs by redesigning the SNOW 3G (4G standard) architecture to exploit SIMD/AES-NI instructions, providing 256-bit security for next-generation cellular encryption.
+
+| Scheme | Year | Type | Performance | Note |
+|--------|------|------|-------------|------|
+| **SNOW 3G** | 2006 | Stream cipher | ~10 Gbps | 4G/LTE standard (3GPP UEA2/UIA2); 128-bit security [[1]](https://www.gsma.com/security/wp-content/uploads/2019/05/3gpp-snow-v10r2.pdf) |
+| **SNOW-V** | 2019 | Stream cipher | ~64 Gbps | 5G candidate; 256-bit security; LFSR over GF(2¹²⁸) [[1]](https://eprint.iacr.org/2018/1143) |
+| **SNOW-V-GCM** | 2019 | AEAD | ~42 Gbps | SNOW-V keystream + GCM-style GHASH authentication [[1]](https://eprint.iacr.org/2018/1143) |
+
+**Designers:** Patrik Ekdahl, Thomas Johansson, Alexander Maximov, Jing Yang (Ericsson Research / Lund University), 2018–2019.
+
+**Design:** SNOW-V retains the LFSR + FSM (Finite State Machine) structure of SNOW 3G but makes the following key changes to enable vectorization:
+- LFSR operates over GF(2¹²⁸) instead of GF(2³²), producing 128-bit output per clock
+- FSM uses AES round functions (exploiting AES-NI) instead of 32-bit operations
+- The LFSR runs 8× faster than the FSM, enabling pipelining and producing 128 bits of keystream per step
+
+**SNOW-V-GCM** uses SNOW-V as the keystream generator and GCM's GHASH (via CLMUL) for authentication. A key advantage over AES-GCM: in SNOW-V-GCM the authentication subkey H is derived fresh from the keystream per (Key, IV) pair, eliminating the fixed-H weakness of AES-GCM under nonce reuse.
+
+**Context:** 5G networks process hundreds of Gbps of user-plane traffic per base station. Software-defined networking (SDN) and network function virtualization (NFV) require high-speed encryption on standard server hardware rather than dedicated ASICs. SNOW-V was presented at IETF SAAG (2019) as a candidate for 5G encryption standardization.
+
+**State of the art:** SNOW-V remains a research proposal; no formal IETF or 3GPP standardization has occurred as of 2026. Hardware implementations exceed 100 Gbps. 3GPP for 5G standardized 128-EEA3/128-EIA3 (based on ZUC, not SNOW-V) for radio-layer encryption, but SNOW-V targets the transport/virtualization layer.
+
+---
+
+## Rocca-S (Beyond-5G / 6G AEAD)
+
+**Goal:** Exceed 100 Gbps encryption throughput in software for 6G network infrastructure, with 256-bit security and a 256-bit authentication tag, by designing a dedicated AES-NI-based permutation that maximally exploits SIMD parallelism and Intel VAES extensions.
+
+| Version | Year | Key | Tag | Software speed | Hardware speed | Note |
+|---------|------|-----|-----|---------------|----------------|------|
+| **Rocca** | 2021 | 256-bit | 128-bit | >100 Gbps | — | Original KDDI/NTT design; IACR ToSC [[1]](https://tosc.iacr.org/index.php/ToSC/article/view/8904) |
+| **Rocca-S** | 2023 | 256-bit | 256-bit | >200 Gbps | >2 Tbps | Strengthened successor; IETF draft [[1]](https://datatracker.ietf.org/doc/draft-nakano-rocca-s/) |
+
+**Designers:** Kosei Sakamoto, Fukang Liu, Yuto Nakano, Shinsaku Kiyomoto, Takanori Isobe (KDDI Research / University of Hyogo), 2021–2023.
+
+**Construction:** Rocca-S maintains a state of seven 128-bit AES words (S0–S6) plus a 256-bit counter block. Each encryption step processes a 256-bit plaintext block through a round function built from AES round calls with SIMD-friendly data flow:
+
+```
+// Rocca-S round function (simplified)
+(S0,...,S6) ← Update(S0,...,S6, M_i, Z_i)   // 6 AES calls per step
+Ciphertext ← M_i ⊕ (S1 ⊕ S4)
+Tag ← finalization over full state (256-bit output)
+```
+
+The design targets VAES (vectorized AES-NI on AVX-512) for 4-lane parallel AES execution, achieving throughput far beyond what GCM or OCB can reach.
+
+**Security:** 256-bit security level; 256-bit authentication tag. **Warning:** practical key-committing attacks against Rocca-S have been demonstrated (2025) [[1]](https://www.sciencedirect.com/science/article/pii/S0020019025000547) — Rocca-S is not key-committing. A fault attack analysis was published in 2024. The scheme is not yet peer-reviewed to the depth of AES-GCM.
+
+**Standardization:** IETF Internet-Draft `draft-nakano-rocca-s` (informational) [[1]](https://datatracker.ietf.org/doc/draft-nakano-rocca-s/). No 3GPP or NIST standardization as of 2026.
+
+**State of the art:** Rocca-S is the highest-throughput AEAD in software (>200 Gbps on AVX-512 VAES) and hardware (>2 Tbps). It is a research candidate for 6G infrastructure encryption. Deployment is premature pending deeper cryptanalysis and resolution of the key-commitment vulnerability. For comparison: AES-256-GCM reaches ~4–10 Gbps in software; AEGIS-128L reaches ~30–50 Gbps; Rocca-S targets a different performance tier entirely.
+
+---

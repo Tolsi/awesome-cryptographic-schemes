@@ -479,3 +479,92 @@ The core challenge of threshold ECDSA is that the signing equation requires a pr
 **State of the art:** CGGMP21 (production MPC wallets, e.g. Fireblocks, ZenGo); DKLs23 (leading academic construction; adoption growing, e.g. Vultisig). Extends [Threshold Signature Schemes](#threshold-signature-schemes-tss). For Schnorr threshold signing see [FROST](#threshold-signature-schemes-tss).
 
 ---
+
+## Schnorr Signatures (Original Scheme)
+
+**Goal:** Efficient, provably secure discrete-log signatures. Sign a message using a short commitment-response protocol; security is provable in the random oracle model under the discrete logarithm assumption — the simplest signature scheme to achieve this.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Schnorr (original)** | 1991 | DLP in prime-order group | Commitment R = g^k, challenge e = H(R ‖ m), response s = k − xe; sig is (R, s) [[1]](https://doi.org/10.1007/0-387-34805-0_22) |
+| **Schnorr (patent-free, standardized)** | 2008 | DLP | ISO/IEC 14888-3 standardization after U.S. patent 4,995,082 expired Feb 2010 [[1]](https://www.iso.org/standard/43269.html) |
+| **BIP 340 Schnorr (Bitcoin)** | 2020 | secp256k1 | x-only public keys; 64-byte signatures; batch-verifiable; Taproot [[1]](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki) |
+| **EdDSA (Schnorr on Edwards curves)** | 2011 | Twisted Edwards / Schnorr | Deterministic Schnorr variant; see [EdDSA](#eddsa-ed25519--ed448) below [[1]](https://eprint.iacr.org/2011/368) |
+
+Schnorr signatures are strictly simpler than ECDSA: signing requires one scalar multiplication and one hash; verification requires two scalar multiplications. They are linearly homomorphic in the response value, which enables [MuSig2](#musig--musig2-schnorr-multi-signatures) key aggregation, [FROST](#threshold-signature-schemes-tss) threshold signing, and [adaptor signatures](#adaptor-signatures--scriptless-scripts) with no modification to verifiers. The original scheme was encumbered by a U.S. patent until 2010, which partly explains why DSA (and later ECDSA) became the dominant standard despite Schnorr's simpler security proof.
+
+**State of the art:** BIP 340 Schnorr (Bitcoin Taproot); EdDSA (TLS 1.3, SSH, Signal). Foundation of [MuSig2](#musig--musig2-schnorr-multi-signatures), [FROST](#threshold-signature-schemes-tss), [Adaptor Signatures](#adaptor-signatures--scriptless-scripts), and [Ring VRF](#ring-vrf).
+
+---
+
+## EdDSA (Ed25519 & Ed448)
+
+**Goal:** High-speed, misuse-resistant signatures. A deterministic Schnorr variant over twisted Edwards curves; the nonce is derived from the private key and message via a hash, eliminating the need for a secure random number generator during signing and preventing the catastrophic nonce-reuse vulnerability of ECDSA.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ed25519** | 2011 | edwards25519 (≅ Curve25519) + SHA-512 | 128-bit security; 32-byte public key; 64-byte signature; ~100k signs/sec [[1]](https://eprint.iacr.org/2011/368) |
+| **Ed448 (Goldilocks)** | 2015 | edwards448 + SHAKE256 | 224-bit security; 57-byte public key; 114-byte signature; conservative curve [[1]](https://eprint.iacr.org/2015/625) |
+| **RFC 8032** | 2017 | IETF standard | Standardizes Ed25519 and Ed448; specifies PureEdDSA and HashEdDSA variants [[1]](https://www.rfc-editor.org/rfc/rfc8032) |
+| **FIPS 186-5** | 2023 | NIST standard | Approves Ed25519 and Ed448 for federal use alongside ECDSA and RSA [[1]](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf) |
+| **FROST-Ed25519 / FROST-Ed448** | 2024 | RFC 9591 | Threshold EdDSA-compatible signing via FROST; 2-round protocol [[1]](https://www.rfc-editor.org/rfc/rfc9591) |
+
+EdDSA improves on ECDSA in three concrete ways: (1) the nonce k is deterministic (derived as H(private\_key\_prefix ‖ message)), so no per-sign entropy is needed; (2) the curve arithmetic is complete (no special-case for the point at infinity), eliminating an entire class of implementation bugs; (3) signatures are not malleable. The determinism also means EdDSA is collision-resilient for PureEdDSA: a hash collision does not break unforgeability. Ed25519 is widely deployed in TLS 1.3, SSH, Signal, WireGuard, OpenPGP, and age. FROST (RFC 9591) provides threshold EdDSA-compatible signing.
+
+**State of the art:** Ed25519 (de-facto standard for modern protocols); FROST-Ed25519 (RFC 9591, threshold). See [Schnorr Signatures](#schnorr-signatures-original-scheme) for the underlying primitive and [FROST](#threshold-signature-schemes-tss) for threshold context.
+
+---
+
+## ECDSA — Details, Vulnerabilities, and RFC 6979
+
+**Goal:** Elliptic-curve digital signatures with standardized security. ECDSA is the dominant deployed signature scheme (Bitcoin, TLS certificates, code signing), but its security is highly sensitive to nonce quality — a single reused or biased nonce leaks the private key.
+
+| Aspect | Year | Detail | Note |
+|--------|------|--------|------|
+| **ECDSA (original)** | 1992 | FIPS 186 / ANSI X9.62 | r = (k·G).x mod n; s = k⁻¹(H(m) + r·d) mod n; random nonce k per signature [[1]](https://doi.org/10.6028/NIST.FIPS.186-5) |
+| **Nonce reuse attack** | 2010 | Algebraic | Two signatures with same k → private key recovery; Sony PS3 (2010) used constant k; key extracted publicly [[1]](https://www.schneier.com/blog/archives/2011/01/sony_ps3_securi.html) |
+| **Biased-nonce attack (Minerva)** | 2020 | Lattice-based HNP | Even a few bits of nonce bias → private key via Hidden Number Problem; affects smart cards [[1]](https://eprint.iacr.org/2020/728) |
+| **RFC 6979 (deterministic ECDSA)** | 2013 | HMAC-DRBG | Derives k deterministically from (private key ‖ message) via HMAC-DRBG; no RNG needed; standard-compatible [[1]](https://www.rfc-editor.org/rfc/rfc6979) |
+| **ECDSA malleability** | — | Algebraic | (r, s) and (r, −s mod n) are both valid for same message; Bitcoin's BIP 62/146 address low-s restriction [[1]](https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki) |
+| **Fault/DPA side-channel** | 2017 | Physical | Deterministic nonces (RFC 6979) are vulnerable to fault + power analysis (→ key extraction); countermeasure: add per-sign randomness (hedged signing) [[1]](https://eprint.iacr.org/2017/1014) |
+
+ECDSA's malleability and nonce sensitivity stand in contrast to [Schnorr](#schnorr-signatures-original-scheme)/[EdDSA](#eddsa-ed25519--ed448), which are structurally non-malleable and deterministic by design. Threshold ECDSA is hard precisely because of the nonce inversion (k⁻¹) which creates a multiplicative dependency — see [DKLs23](#dkls23--next-generation-threshold-ecdsa). FIPS 186-5 (2023) continues to approve ECDSA and adds Ed25519/Ed448.
+
+**State of the art:** RFC 6979 deterministic ECDSA widely deployed (libsecp256k1, BoringSSL); ECDSA being superseded by Ed25519 in new protocols. For threshold ECDSA see [DKLs23](#dkls23--next-generation-threshold-ecdsa).
+
+---
+
+## RSA-PSS vs. PKCS#1 v1.5 Signatures
+
+**Goal:** Provably secure RSA-based signatures. RSA-PSS (Probabilistic Signature Scheme) was designed by Bellare and Rogaway (1996) to achieve tight security reductions to the RSA problem, replacing the ad-hoc PKCS#1 v1.5 padding whose security cannot be formally proved.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **RSASSA-PKCS1-v1_5** | 1993 | RSA + deterministic padding | DER-encode hash OID + digest; prepend 0x00 0x01 0xFF… 0x00; deterministic; widely deployed but no tight security proof [[1]](https://www.rfc-editor.org/rfc/rfc8017) |
+| **Bleichenbacher's attack (PKCS#1 v1.5)** | 1998 | Padding oracle | Signature forgery via specially crafted padding; affects weak implementations; motivated PKCS#1 v2.0 [[1]](https://link.springer.com/chapter/10.1007/BFb0055716) |
+| **RSA-PSS (RSASSA-PSS)** | 1996 | RSA + randomized MGF1 padding | Probabilistic; random salt r; tight ROM security proof under RSA assumption; PKCS#1 v2.1 [[1]](https://eprint.iacr.org/2023/274) |
+| **FIPS 186-5 (2023)** | 2023 | NIST standard | Recommends RSA-PSS for new applications; retains PKCS#1 v1.5 for legacy; mandates approved hash functions [[1]](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf) |
+| **PKCS#1 v1.5 security (Jager et al.)** | 2018 | Theoretical | Proves PKCS#1 v1.5 signatures are UF-CMA secure under "partial one-more RSA" assumption, but proof is non-tight [[1]](https://eprint.iacr.org/2018/855) |
+
+RSA-PSS signing appends a random salt (typically 32–64 bytes) before applying the MGF1 mask-generation function; this randomization makes two signatures on the same message unlinkable and enables a clean security reduction. PKCS#1 v1.5 is deterministic (same key + message → same signature) and its security relies on the structural complexity of the padding being hard to invert — a property that has no clean formal proof and has historically produced exploitable implementation gaps (e.g., the 2006 Daniel Bleichenbacher RSA signature forgery against flawed PKCS#1 v1.5 verifiers). FIPS 186-5 and TLS 1.3 (RFC 8446) mandate RSA-PSS for new key usage.
+
+**State of the art:** RSA-PSS mandated by TLS 1.3, FIPS 186-5, and X.509 code-signing CAs. PKCS#1 v1.5 retained for legacy TLS 1.2 server certificates. Both superseded by ECDSA/Ed25519 in new protocol designs.
+
+---
+
+## Falcon / FN-DSA (NTRU-Based Lattice Signatures)
+
+**Goal:** Compact post-quantum signatures. Falcon uses NTRU lattices and Fast Fourier sampling to produce signatures significantly smaller than ML-DSA (Dilithium) while achieving the same security level — at the cost of a more complex implementation requiring careful handling of floating-point arithmetic.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Falcon-512** | 2017 | NTRU lattice + GPV hash-then-sign | Security level 1 (~128-bit); pk = 897 B; sig = 666 B average; fast FFT signing [[1]](https://falcon-sign.info/) |
+| **Falcon-1024** | 2017 | NTRU lattice | Security level 5 (~256-bit); pk = 1793 B; sig = 1280 B average; most conservative choice [[1]](https://falcon-sign.info/) |
+| **FN-DSA (FIPS 206)** | 2024 | NTRU lattice (standardized) | NIST standardization of Falcon as FN-DSA; FIPS 206 finalized August 2024; two parameter sets: FN-DSA-512 and FN-DSA-1024 [[1]](https://csrc.nist.gov/pubs/fips/206/final) |
+| **Fast Fourier Sampling (GPV)** | 2008 | NTRU trapdoor | Gentry-Peikert-Vaikuntanathan framework; Falcon instantiates GPV over NTRU ring ℤ_q[X]/(Xⁿ+1) for compact trapdoor [[1]](https://eprint.iacr.org/2007/432) |
+
+Falcon's signing algorithm samples a short lattice vector close to a target point derived from H(message). This requires sampling from a discrete Gaussian distribution over an NTRU lattice, which Falcon implements using the LDL-tree decomposition and FFT-based arithmetic. The main implementation challenge is that this FFT must be executed in constant time to prevent timing side-channels — non-trivial because floating-point units lack constant-time guarantees on most CPUs, requiring either careful fixed-point emulation or specialized hardware support. Falcon-512 signatures are roughly 3× smaller than ML-DSA-44 signatures (666 B vs 2420 B) at equivalent security, making Falcon attractive for bandwidth-constrained settings such as IoT certificate chains and TLS handshakes. FIPS 206 defines two instantiations (FN-DSA-512 and FN-DSA-1024) and mandates constant-time implementations.
+
+**State of the art:** FIPS 206 (FN-DSA) finalized August 2024; implementations in liboqs, PQClean, and BouncyCastle. Preferred over ML-DSA where signature size dominates (e.g., embedded TLS). See [NIST PQC Signature Standards](#nist-pqc-signature-standards-ml-dsa--slh-dsa) for the broader NIST PQC context.
+
+---

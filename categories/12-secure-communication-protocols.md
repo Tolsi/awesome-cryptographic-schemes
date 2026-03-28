@@ -583,3 +583,133 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 **State of the art:** RFC 6376 (2011), updated by RFC 8301, 8463 (Ed25519). DMARC enforcement by major providers 2024 makes DKIM effectively mandatory for deliverability.
 
 ---
+
+## ZRTP / VoIP Media-Path Key Agreement
+
+**Goal:** In-band, server-free key agreement for encrypted VoIP calls. ZRTP negotiates SRTP session keys directly in the RTP media stream — with no reliance on SIP signalling, PKI, or pre-shared secrets — and protects against man-in-the-middle attacks via a voice-read Short Authentication String (SAS).
+
+**Protocol design (RFC 6189, Phil Zimmermann, 2011):**
+
+| Phase | Mechanism |
+|-------|-----------|
+| Discovery | Hello / HelloACK messages exchanged over RTP port; both sides advertise supported algorithms |
+| Key exchange | Ephemeral DH (FFDH-3072 or ECDH P-256/P-384) generates shared secret `s0` |
+| Commit / Confirm | Two-message commitment scheme prevents hash-commitment attacks |
+| SRTP key derivation | `s0` → `srtpKeySalt` via HMAC-SHA256; both sides derive same SRTP master keys |
+| SAS anti-MitM | Both endpoints display a 4-character string (base32 of hash of DH transcript); users read aloud to verify |
+| Key continuity | `rs1` and `rs2` cached shared secrets mixed into next session's `s0`; provides SSH-style continuity |
+
+**SAS mechanism — why it works:** If a MITM intercepts the DH exchange, both parties' SAS values will differ; users who verbally compare them detect the attack. Key continuity additionally means a MitM must sustain the attack across every call — it cannot silently insert itself after the first authenticated session.
+
+**Supported cipher suites (RFC 6189 §5.1):**
+
+| Component | Options |
+|-----------|---------|
+| Key exchange | DH-3072, DH-4096, ECDH P-256, ECDH P-384 |
+| Cipher | AES-128-CFB, AES-256-CFB |
+| Hash | SHA-256, SHA-384 |
+| SRTP auth | HMAC-SHA1-32, HMAC-SHA1-80 |
+| SAS encoding | B32 (4 chars), B256 (2 words) |
+
+**Deployments:** Signal/RedPhone (Android, until 2017; replaced by Signal Protocol channel for auth), Jitsi Desktop (GNU ZRTP4J), Linphone (bZRTP, actively maintained through 2025), Twinkle, Zfone (Zimmermann's reference implementation).
+
+**State of the art:** RFC 6189 (2011). Signal deprecated ZRTP in 2017 in favour of using its own Signal Protocol session for call authentication; DTLS-SRTP is now the WebRTC standard for browser calls. ZRTP remains relevant for SIP/softphone deployments (Linphone, Jitsi). A post-quantum ZRTP extension (replacing DH with a hybrid KEM) is in early draft. See [SRTP](#srtp--secure-real-time-transport-protocol), [DTLS](#dtls--datagram-tls).
+
+---
+
+## DNSCurve / Link-Level DNS Encryption
+
+**Goal:** Encrypt and authenticate every DNS query and response between a recursive resolver and an authoritative nameserver — using fast elliptic-curve authenticated encryption — so that DNS traffic is confidential and unforgeable at each hop, without requiring DNSSEC's complex chain-of-trust signature validation.
+
+**Design (D. J. Bernstein, 2008; IETF draft-dempsky-dnscurve-01):**
+
+| Property | Detail |
+|----------|--------|
+| Key exchange | X25519 (Curve25519 ECDH); server's 255-bit public key encoded in its NS hostname |
+| Authenticated encryption | `crypto_box` = XSalsa20-Poly1305 (NaCl); 256-bit key, 192-bit nonce |
+| Key encoding | NS record hostname prefixed with `uz5` + 51-byte Base32 of server public key |
+| Nonce | 96 bits random per query + 96-bit extension field; prevents replay |
+| Overhead | ~68 bytes per query (key + nonce + Poly1305 tag); fits within UDP with EDNS0 |
+| Server discovery | Standard DNS NS lookup; backwards-compatible (non-DNSCurve resolvers ignore `uz5` prefix) |
+
+**DNSCurve vs. DNSSEC:**
+
+| Property | DNSCurve | DNSSEC |
+|----------|----------|--------|
+| Confidentiality | Yes — queries and responses encrypted | No — signatures visible; queries plaintext |
+| Authentication | Per-hop (resolver ↔ server) | End-to-end chain of trust from root |
+| Performance | Fast (Curve25519 ~10× faster than RSA-1024) | Slow (RSA/ECDSA per zone; large UDP responses) |
+| Deployment complexity | Simple — key in NS hostname | High — zone signing, key rollovers, DS records |
+| Standardization | IETF draft only; not an RFC | RFC 4033–4035; widely mandated |
+
+**Implementations:** djbdns/dnscache (Bernstein's reference resolver), CurveDNS (authoritative proxy by Jan Mojžíš), dqcache.
+
+**State of the art:** DNSCurve was never standardized as an IETF RFC. DNS-over-TLS (RFC 7858) and DNS-over-HTTPS (RFC 8484) have since addressed the confidentiality gap on the stub-resolver-to-recursive-resolver leg, while DNSSEC covers end-to-end integrity. DNSCurve's Curve25519 + NaCl design was influential — it popularized `crypto_box` for link-layer encryption and prefigured WireGuard's approach. See [Secure Channels](#secure-channels--protocol-constructions), [Applied Infrastructure PKI](categories/14-applied-infrastructure-pki.md#dnssec).
+
+---
+
+## Briar / Bramble P2P Encrypted Messaging
+
+**Goal:** Censorship-resistant, infrastructure-independent secure messaging. Briar synchronizes encrypted messages directly between devices via Tor hidden services, local Wi-Fi, or Bluetooth — with no central server — so that communication survives internet shutdowns, network surveillance, or server seizure.
+
+**Protocol stack (Bramble suite, open specification):**
+
+| Layer | Protocol | Purpose |
+|-------|----------|---------|
+| Contact pairing | BHP (Bramble Handshake Protocol) | Curve25519 ECDH over QR code or link; derives shared secret |
+| Transport | BTP (Bramble Transport Protocol v4) | Encrypted, authenticated byte streams; BLAKE2b-based PRF; forward-secret session key rotation |
+| Synchronization | BSP (Bramble Synchronisation Protocol) | Delay-tolerant message sync; works over any ordered byte stream |
+| Rendezvous | BRP (Bramble Rendezvous Protocol) | Finds peers over Tor rendezvous points without revealing contact graph |
+| Application | Briar messaging / blogs / forums | High-level objects carried as BSP messages |
+
+**Transport security (BTP v4):**
+
+- Session keys derived from BHP-established master key via BLAKE2b PRF
+- Keys rotated periodically to provide forward secrecy within a session
+- Each transport stream is independent; compromise of one session key does not expose past or future sessions
+
+**Threat model and transport options:**
+
+| Transport | When used | Privacy |
+|-----------|-----------|---------|
+| Tor hidden services | Internet available | Full metadata privacy (IP hidden) |
+| Local Wi-Fi / LAN | Internet unavailable | Peer-to-peer; IP visible on local net |
+| Bluetooth | No network | Direct; short range |
+
+**Security note:** CVE-2023-33982 (fixed in Briar 1.5.3) — BHP was not fully forward-secure in the contact-pairing step; compromise of both long-term keys post-handshake could expose the pairing secret. Fixed by adding ephemeral keys to BHP.
+
+**State of the art:** Briar 1.5+ (2023+); open specification at `code.briarproject.org/briar/briar-spec`. Designed for journalists and activists. The Bramble suite is the most complete open specification for delay-tolerant, infrastructure-free E2E encrypted messaging. See [Anonymity / Onion Routing](categories/11-anonymity-credentials.md), [Double Ratchet](#double-ratchet--symmetric-ratchet).
+
+---
+
+## Tox Protocol / Serverless P2P E2E Encrypted Chat
+
+**Goal:** Fully decentralized, server-free instant messaging, voice, video, and file transfer — with end-to-end encryption and no account registration — using a DHT for peer discovery and NaCl `crypto_box` for all communications.
+
+**Cryptographic architecture (Tox spec, TokTok project):**
+
+| Component | Mechanism |
+|-----------|-----------|
+| Identity | Curve25519 key pair; 64-hex public key is the user's permanent ToxID |
+| Peer discovery | Kademlia-style DHT over UDP; bootstrap nodes seed initial connections |
+| Authenticated encryption | `crypto_box` = X25519 key agreement + XSalsa20-Poly1305 (via libsodium) |
+| Message encryption | Ephemeral DH per session; session keys never transmitted |
+| Packet nonce | 24-byte random nonce per packet; prevents replay |
+| Friend requests | Encrypted with recipient's long-term public key + sender's ephemeral key |
+| Group chats | Symmetric session key; distributed via `crypto_box` to each member |
+| Audio/video | Encoded with Opus/VP8; encrypted with session `crypto_box` |
+
+**Forward secrecy:** Each call / session generates fresh ephemeral X25519 keys. Long-term ToxID key is used only for initial `crypto_box` of the session key exchange — ongoing messages use per-session ephemeral keys.
+
+**Security posture:** Tox uses well-audited NaCl primitives (Bernstein et al.) but the Tox protocol itself has not received a formal third-party cryptographic audit. The DHT design leaks metadata about who is online and reachable — a structural limitation of open P2P networks.
+
+| Client | Platform | Note |
+|--------|----------|------|
+| **qTox** | Desktop (C++) | Reference client |
+| **µTox** | Desktop | Lightweight |
+| **Antox** | Android | Maintained fork |
+| **Toxic** | CLI | Terminal client |
+
+**State of the art:** Tox protocol specification maintained by the TokTok project (`toktok.ltd/spec`). No formal audit; not recommended for high-threat-model use without independent review. The NaCl/libsodium cryptographic primitives (Curve25519 + XSalsa20-Poly1305) are state-of-the-art; the protocol layering and metadata exposure are the open research questions. Compare [Briar](#briar--bramble-p2p-encrypted-messaging) for a more threat-modelled P2P alternative. See [[1]](https://toktok.ltd/spec.html).
+
+---

@@ -454,3 +454,105 @@
 **State of the art:** RedShift (Kattis-Panarin-Vlasov, CCS 2022); the LPC framework is the theoretical foundation of the PLONK-over-FRI approach used in Plonky2 and Polygon's prover stack. See [[1]](https://eprint.iacr.org/2019/1400).
 
 ---
+
+## Groth16
+
+**Goal:** Smallest possible pairing-based zk-SNARK proofs. Achieve a proof of arithmetic circuit satisfiability consisting of exactly 3 group elements — the theoretical minimum for a pairing-based SNARK — with fast verification requiring only 3 pairing computations. Circuit-specific trusted setup required.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Groth16** | 2016 | Pairing-based (BN254/BLS12-381) + QAP | 3-element proofs; 3-pairing verification; circuit-specific SRS; ~192 bytes on BN254; EUROCRYPT 2016 [[1]](https://eprint.iacr.org/2016/260) |
+| **Simulation-extractable Groth16** | 2020 | Groth16 + non-malleability | Extends Groth16 with simulation-extractability for composability; modest overhead [[1]](https://eprint.iacr.org/2020/1306) |
+| **Extending Groth16 for disjunctions** | 2025 | Groth16 + OR composition | Compose Groth16 proofs under OR relations without re-proving from scratch [[1]](https://eprint.iacr.org/2025/028) |
+
+**Key contribution:** Groth's construction reduces SNARK proof generation to two multi-scalar multiplications (MSMs) and proof verification to three pairing product equations. The circuit-specific structured reference string (SRS) encodes all constraint-system polynomials evaluated at a secret toxic waste point; this enables the minimal 3-element proof but means each new circuit requires a fresh ceremony.
+
+**Arithmetic:** The constraint system is R1CS (Rank-1 Constraint System), compiled to a Quadratic Arithmetic Program (QAP) via the transformation of Gennaro-Gentry-Parno-Raykova (2013). Groth16 is the canonical endpoint of the Linear Interactive Proof → pairing-SNARK pipeline.
+
+**Deployed in:** Zcash Sapling, Tornado Cash, Filecoin's Proof-of-Replication, Ethereum's zkSNARK precompile (EIP-197), and most early ZK applications. Still the gold standard where smallest proof size is paramount.
+
+**State of the art:** Groth16 (EUROCRYPT 2016) remains the smallest and fastest-to-verify pairing-based SNARK. Superseded for new applications by universal-setup systems (PLONK, Marlin) that eliminate per-circuit ceremonies. See [[1]](https://eprint.iacr.org/2016/260).
+
+---
+
+## Halo and Halo2
+
+**Goal:** Recursive proof composition without a trusted setup. Halo (2019) achieves the first practical recursive SNARK using only the discrete logarithm assumption over ordinary (non-pairing-friendly) elliptic curves. Halo2 (2020–2021) extends this into a production-grade proving system combining a PLONK-style polynomial IOP with an inner product argument (IPA) commitment scheme and an efficient accumulation-based recursion mechanism.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Halo** | 2019 | IPA over Pasta cycle + accumulation | First recursive SNARK without trusted setup or pairing-friendly curves; deferred verification [[1]](https://eprint.iacr.org/2019/1021) |
+| **Recursive Proof Composition from Accumulation Schemes** | 2020 | Halo + formal framework | Formalises "accumulation scheme" abstraction; generalises Halo's technique; TCC 2020 [[1]](https://eprint.iacr.org/2020/499) |
+| **Halo2** | 2021 | PLONK + IPA + Pasta curves | Production system by ECC/Zcash; used in Zcash Orchard; custom gates, lookup tables (Plookup), recursive accumulation [[1]](https://zcash.github.io/halo2/) |
+
+**Key insight:** Standard recursive SNARKs embed a pairing-based verifier inside another circuit, requiring expensive pairing-friendly curve arithmetic. Halo avoids pairings entirely by using an inner product argument (IPA) over a cycle of ordinary curves (Pallas/Vesta). The IPA verification is "deferred" — accumulated across many recursive steps — so that only the final accumulated check needs to be computed. This makes each recursive step extremely cheap.
+
+**Halo2 in practice:** Halo2 adds PLONK-style custom gates, lookup arguments (Plookup), and permutation arguments on top of Halo's IPA commitment scheme. It removes the need for any structured reference string or trusted setup ceremony. The PSE fork of Halo2 is the backend for many zkEVM projects (Scroll, Polygon Hermez, Privacy and Scaling Explorations).
+
+**State of the art:** Halo2 (ECC, 2021) is deployed in Zcash Orchard and numerous ZK rollups. The accumulation-scheme framework (BCMS 2020) is the theoretical foundation for [Nova](#folding-schemes), [ProtoStar](#folding-schemes), and related folding schemes. See [[1]](https://eprint.iacr.org/2019/1021).
+
+---
+
+## Plonky2
+
+**Goal:** Fast recursive SNARK with no trusted setup by combining PLONK's polynomial IOP with FRI over a small 64-bit field. Plonky2 (Polygon Zero / Mir Protocol, 2022) achieves recursive proof composition in under 170 ms on a laptop — roughly 100× faster than prior approaches — by operating over the Goldilocks field (p = 2⁶⁴ − 2³² + 1) rather than a large 254-bit prime field.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Plonky2** | 2022 | PLONK + FRI + Goldilocks field | No trusted setup; recursive in ~170 ms; 43 KB constant-size proofs after recursion; Polygon Zero [[1]](https://github.com/0xPolygonZero/plonky2/blob/main/plonky2/plonky2.pdf) |
+| **Plonky3** | 2023 | Plonky2 successor; modular framework | Replaces Plonky2 internals; supports BabyBear, Goldilocks, Mersenne31; backend for SP1, Polygon CDK [[1]](https://github.com/Plonky3/Plonky3) |
+
+**Key contributions:**
+- **Goldilocks field:** The modulus p = 2⁶⁴ − 2³² + 1 has a special form enabling fast Montgomery reduction using only 64-bit hardware arithmetic, giving ~10× faster field operations than BN254.
+- **PLONK over FRI:** Replaces KZG polynomial commitments with FRI, eliminating the trusted setup. FRI works natively over Goldilocks because the field has a large 2-adic subgroup (2³² elements), enabling efficient FFTs.
+- **Custom gates:** Plonky2 supports arbitrary-degree custom gates without extra FFT overhead, inheriting PLONK's custom gate mechanism.
+- **Recursion:** A Plonky2 proof can verify another Plonky2 proof inside itself; recursing ~10 layers shrinks an arbitrarily large computation to a constant ~43 KB proof.
+
+**Relation to other systems:** Plonky2 is conceptually a PLONK polynomial IOP compiled with FRI (as formalised by [RedShift](#redshift)), running over a small prime field rather than a pairing-friendly field. Plonky3 is its modular successor (2023), used as the IOP backend in SP1 and Polygon's CDK prover stack.
+
+**State of the art:** Plonky2 (Polygon Zero, 2022) was the fastest recursive SNARK at release; Plonky3 (2023) supersedes it with a cleaner architecture and broader field support. See [[1]](https://github.com/0xPolygonZero/plonky2/blob/main/plonky2/plonky2.pdf).
+
+---
+
+## DEEP-FRI
+
+**Goal:** Improve the soundness of the FRI low-degree test by querying the prover at points outside the evaluation domain. DEEP (Domain Extending for Eliminating Pretenders) extends the standard FRI protocol with an out-of-domain sampling step that boosts soundness from roughly 1/|field| to nearly 1 per query, enabling the same security level with far fewer query repetitions and thus smaller STARK proofs.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DEEP-FRI** | 2019/2020 | FRI + out-of-domain sampling | Soundness ≈ 1 per round vs. ρ⁻¹ for plain FRI; reduces repetitions; ITCS 2020 [[1]](https://eprint.iacr.org/2019/336) |
+| **DEEP-ALI** | 2019 | DEEP + Algebraic Linking IOP | Applies DEEP technique to the ALI (Algebraic Linking IOP) inside ZK-STARKs; soundness close to 1 [[1]](https://eprint.iacr.org/2019/336) |
+
+**Key insight:** In standard FRI, the prover commits to a polynomial f and the verifier checks consistency at random in-domain positions x drawn from the evaluation domain D. A malicious prover can pass with probability proportional to the rate ρ = |D|/N per query. DEEP asks the prover to also reveal f(z) for a random z chosen *outside* D ("out-of-domain" or DEEP query). The polynomial g(x) = (f(x) − f(z)) / (x − z) must be low-degree; the verifier checks this via a subsequent FRI invocation. Because z is outside D, forging a consistent answer is computationally equivalent to finding f exactly, boosting soundness to nearly 1 per round. The same technique applied to the ALI intermediate polynomial (which links execution trace columns to boundary constraints) gives DEEP-ALI.
+
+**Impact:** DEEP-FRI is the soundness backbone of StarkWare's production STARK prover (Cairo, StarkNet). It is used in RISC Zero's STARK backend and most FRI-based proof systems. The improved soundness directly translates to shorter proofs: with DEEP-FRI, fewer FRI query rounds are needed to achieve 128-bit security, reducing proof size by 2–4×.
+
+**State of the art:** DEEP-FRI (Ben-Sasson, Goldberg, Kopparty, Saraf; ITCS 2020) is the standard soundness enhancement for all production FRI-based STARKs. See [[1]](https://eprint.iacr.org/2019/336).
+
+---
+
+## zkEVM Taxonomy and Ecosystem
+
+**Goal:** Prove EVM execution in zero knowledge at various levels of Ethereum compatibility. The zkEVM design space is characterised by a fundamental tradeoff: closer equivalence to Ethereum's bytecode semantics means higher ZK proving overhead, while looser compatibility enables faster proofs but breaks tooling compatibility. Vitalik Buterin's 2022 classification defines four types spanning this tradeoff.
+
+| Type | Compatibility | Proof time | Representative systems |
+|------|---------------|------------|------------------------|
+| **Type 1** (fully Ethereum-equivalent) | Identical to Ethereum at bytecode and state-trie level | Slowest (weeks→hours) | Taiko, PSE zkEVM [[1]](https://vitalik.ca/general/2022/08/04/zkevm.html) |
+| **Type 2** (EVM-equivalent) | Same bytecode semantics; may swap hash functions (Keccak→Poseidon in tries) | Hours→minutes | Scroll [[1]](https://scroll.mirror.xyz/N7cAie4ul0PdSxNdv2FTqgMV2JEkhOJocsxfeqe4SFE) |
+| **Type 2.5** | Type 2 but with different gas costs for ZK-unfriendly opcodes | Minutes | Polygon zkEVM [[1]](https://polygon.technology/blog/polygon-zkevm-within-vitaliks-framework-gaining-clarity-and-looking-ahead) |
+| **Type 3** (mostly EVM-equivalent) | Minor EVM differences; transitional stage | Minutes | Most teams in transit to Type 2 |
+| **Type 4** (high-level language equivalent) | Compiles Solidity/Vyper to a custom ZK-friendly VM | Fastest | zkSync Era (LLVM), StarkNet (Cairo) [[1]](https://vitalik.ca/general/2022/08/04/zkevm.html) |
+
+**Key projects:**
+
+- **Polygon zkEVM** — Type 2.5; PLONKish arithmetization with custom gates; uses Plonky2/Plonky3 as recursive aggregation layer; proves EVM execution via a PIL (Polynomial Identity Language) specification of each opcode [[1]](https://eprint.iacr.org/2022/1692).
+- **Scroll** — Type 2; bytecode-equivalent; developed with PSE; uses Halo2 circuits per EVM opcode; tight integration of lookup arguments for EVM state and memory [[1]](https://scroll.mirror.xyz/N7cAie4ul0PdSxNdv2FTqgMV2JEkhOJocsxfeqe4SFE).
+- **Taiko** — Type 1; aims for full Ethereum equivalence including the Keccak-based Merkle Patricia Tree; uses a based rollup design for decentralized sequencing [[1]](https://taiko.mirror.xyz/w7NSKDeKfJoEy0p89I9feixKfdK-20JgWF9HZzxfeBo).
+- **zkSync Era** — Type 4; compiles via LLVM to a custom VM (zkEVM bytecode); fastest proving but lowest tooling compatibility.
+- **Linea** — Type 2; developed by ConsenSys; Gnark-based prover; PLONKish circuits.
+
+**Arithmetization choices:** All deployed zkEVMs use PLONKish arithmetization (custom gates, lookup arguments, permutation arguments). The key differentiator is which EVM operations are proved natively vs. approximated. ZK-unfriendly operations (Keccak-256, ECDSA, modular exponentiation) require dedicated precompile circuits and account for the majority of proving cost.
+
+**State of the art:** Scroll (Type 2, mainnet 2023), Polygon zkEVM (Type 2.5, mainnet 2023), Taiko (Type 1, mainnet 2024). Proving times have dropped from weeks to seconds (2022–2026) via hardware acceleration and recursive aggregation. See [General-Purpose zkVMs](#general-purpose-zkvms) for ISA-level (non-EVM) approaches.
+
+---

@@ -179,3 +179,93 @@
 **State of the art:** Intel TDX and AMD SEV-SNP offer VM-level isolation deployable on major cloud providers (Azure, GCP, AWS); GPU TEEs (NVIDIA H100 CC) extend coverage to accelerator workloads. Interacts with [TEE Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation), [zkLLM](#zkllm--verifiable-ai-inference), and [FHE-based encrypted inference](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-he).
 
 ---
+
+## Electromagnetic Side-Channel Analysis (EMCA)
+
+**Goal:** Extract secret keys by capturing and analysing the electromagnetic radiation emitted by a cryptographic device during computation. EM emanations carry the same (and sometimes richer) data-dependent signal as power consumption but can be measured non-invasively at a distance, making them a potent physical attack vector.
+
+EM side-channel attacks were first formalised by Gandolfi, Mourtel, and Olivier (CHES 2001), who demonstrated full key recovery against DES, COMP128, and RSA on smart-card chips by correlating near-field EM traces with hypothetical intermediate values — the same principle as Differential Power Analysis (DPA) but applied to EM probes. The technique was later generalised into Differential EM Analysis (DEMA) and Correlation EM Analysis (CEMA). Because EM probes can be placed over a specific functional block of an IC, EMCA is often more selective than power analysis and can bypass many power-rail countermeasures. The STELLAR countermeasure (TCHES 2018) routes sensitive computations through lower metal layers to suppress near-field radiation. Modern EM attacks have been demonstrated on microcontrollers, FPGAs, and complex System-on-Chip devices executing AES, RSA, and ECC.
+
+| Scheme / Tool | Year | Basis | Note |
+|--------------|------|-------|------|
+| **Gandolfi-Mourtel-Olivier DEMA** | 2001 | Near-field EM probing | First concrete EM key extraction on DES/RSA smart cards; introduced SEMA and DEMA [[1]](https://link.springer.com/chapter/10.1007/3-540-44709-1_21) |
+| **CEMA on AES (Agrawal et al.)** | 2002 | Correlation EM | Extended CPA methodology to EM; shows EM leaks from distinct chip regions independently [[1]](https://link.springer.com/chapter/10.1007/3-540-36400-5_11) |
+| **SoC EM Analysis (Longo et al.)** | 2015 | CEMA on ARM SoC | Key recovery from a full ARM Cortex-A system-on-chip via EM; highlights difficulty of SoC-level countermeasures [[1]](https://link.springer.com/chapter/10.1007/978-3-662-48324-4_31) |
+| **STELLAR Countermeasure** | 2018 | Metal-layer routing | Suppresses EM leakage by routing cryptographic logic through lower (shielded) metal layers; evaluated on AES [[1]](https://eprint.iacr.org/2018/620) |
+
+**State of the art:** CEMA is a standard evaluation methodology in Common Criteria and FIPS 140-3 lab testing; shielded packaging and balanced logic styles (from [Masking / TI](#power-analysis-attacks--masking-countermeasures)) also reduce EM leakage. Closely related to [Power Analysis Attacks & Masking Countermeasures](#power-analysis-attacks--masking-countermeasures) and [Fault Injection Attacks](#fault-injection-attacks--countermeasures).
+
+---
+
+## Acoustic Cryptanalysis
+
+**Goal:** Recover cryptographic secret keys by analysing the high-frequency sound emitted by a computer's electronic components (capacitors, coils) during cryptographic computation — a completely passive, software-free side channel exploitable with commodity microphones.
+
+Genkin, Shamir, and Tromer (CRYPTO 2014) demonstrated that a laptop performing RSA decryption with GnuPG emits distinct acoustic signatures for different key bits, caused by CPU power-draw fluctuations that excite mechanical vibration in the voltage-regulator circuitry. By recording ~1 hour of acoustic signal from a plain mobile phone placed next to the machine — or a sensitive microphone 10 m away — they recovered full 4096-bit RSA keys via adaptive chosen-ciphertext queries. The attack was extended to low-bandwidth electrical (chassis-ground) and EM variants. Countermeasures include RSA blinding (already standard in GnuPG after CVE-2013-4576), constant-power scheduling, and acoustic isolation. A follow-up (Journal of Cryptology, 2016) widened the attack to additional algorithms and platforms.
+
+| Scheme / Attack | Year | Basis | Note |
+|----------------|------|-------|------|
+| **Acoustic RSA Key Extraction (Genkin-Shamir-Tromer)** | 2014 | Acoustic + chosen-ciphertext | Full 4096-bit RSA key from GnuPG via ~1 h of acoustic recording; mobile phone microphone sufficient; CRYPTO 2014 [[1]](https://link.springer.com/chapter/10.1007/978-3-662-44371-2_25) |
+| **Acoustic Cryptanalysis (extended, J. Cryptology)** | 2016 | Acoustic + electrical + EM | Generalised to additional platforms; electrical (chassis) and low-frequency EM variants also demonstrated [[1]](https://link.springer.com/article/10.1007/s00145-015-9224-2) |
+| **RSA Blinding Countermeasure (GnuPG CVE-2013-4576)** | 2014 | Algorithmic blinding | Randomise intermediate values so power (and hence acoustic) signal is key-independent; now mandatory in constant-time RSA [[1]](https://eprint.iacr.org/2013/857) |
+
+**State of the art:** Acoustic cryptanalysis motivated the hardening of GnuPG and libgcrypt; constant-time, blinded implementations now dominate. Acoustic attacks remain relevant against legacy or embedded systems where blinding is absent. Related to [Power Analysis Attacks & Masking Countermeasures](#power-analysis-attacks--masking-countermeasures) and [Electromagnetic Side-Channel Analysis](#electromagnetic-side-channel-analysis-emca).
+
+---
+
+## Cold Boot Attacks on DRAM
+
+**Goal:** Recover cryptographic keys from a powered-off (or rebooted) computer by exploiting the data remanence of DRAM — memory cells retain their contents for seconds to minutes after power loss, long enough for an attacker to cold-boot into a forensic environment and image the entire RAM.
+
+Halderman et al. (USENIX Security 2008) showed that DRAM chips retain data with high fidelity for several seconds at room temperature, and for minutes when cooled with canned air (to ~−50 °C). They recovered AES and RSA keys from running instances of BitLocker, FileVault, dm-crypt, and TrueCrypt by imaging RAM after a cold reboot. Key-reconstruction algorithms correct for the bit-decay noise using algebraic structure in standard key schedules (e.g., AES expanded key redundancy, RSA CRT parameters). Follow-on work extended attacks to elliptic-curve keys (eprint 2015) and post-quantum lattice-based keys (eprint 2018). Countermeasures include full-memory encryption (Intel TME, AMD SME), key erasure on suspend, and scrubbing key material from RAM before power-down.
+
+| Attack / Defense | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Halderman et al. Cold Boot** | 2008 | DRAM remanence | First systematic study; recover AES/RSA keys from BitLocker, FileVault, TrueCrypt after cold reboot; USENIX Sec 2008 [[1]](https://www.usenix.org/conference/17th-usenix-security-symposium/lest-we-remember-cold-boot-attacks-encryption-keys) |
+| **Cold Boot on ECC Keys** | 2015 | DL / ECC key structure | Adapts attack to elliptic-curve discrete-log keys; solves noisy polynomial systems [[1]](https://eprint.iacr.org/2015/057) |
+| **Cold Boot on Lattice / NTT Keys** | 2018 | LWE / Ring-LWE | Demonstrates key recovery from Ring-LWE (NTRU, NewHope) private keys under bit-flip noise model [[1]](https://eprint.iacr.org/2018/672) |
+| **Intel Total Memory Encryption (TME)** | 2019+ | AES-XTS memory bus | Encrypts all DRAM traffic on-the-fly at the memory controller; renders cold-boot images ciphertext [[1]](https://www.intel.com/content/www/us/en/developer/articles/news/runtime-encryption-of-memory-with-intel-tme-mktme.html) |
+
+**State of the art:** Intel TME/MKTME and AMD SME/SEV encrypt DRAM contents, substantially mitigating cold-boot threats; full adoption in cloud and mobile platforms is ongoing. Interaction with [Confidential ML / TEE](#confidential-ml--tee-based-inference) and [Fault Injection Attacks](#fault-injection-attacks--countermeasures).
+
+---
+
+## Rowhammer Attacks on DRAM
+
+**Goal:** Induce targeted bit flips in DRAM rows adjacent to repeatedly accessed rows — without direct memory access — to corrupt data, escalate privileges, or extract cryptographic keys; and design architectural and software countermeasures to prevent the disturbance.
+
+Kim et al. (ISCA 2014) discovered that hammering a DRAM row (accessing it tens of thousands of times per refresh interval) causes capacitive coupling that flips bits in physically adjacent rows. Google Project Zero (2015) turned this into a privilege-escalation exploit on Linux; subsequent work showed cross-VM attacks in cloud settings, bypass of ECC DRAM, and bit flips in cryptographic keys. "Curious Case of Rowhammer" (CHES 2016) targeted an RSA private exponent stored in memory, combining Prime+Probe cache timing to locate the key and rowhammer to flip specific bits, yielding full key recovery. Later work (Fault+Probe, 2024) recovered 256-bit ECDSA keys from wolfSSL with 100% success. Defenses include Target Row Refresh (TRR), doubled DRAM refresh rates, PARA probabilistic adjacent-row activation, and memory isolation in hypervisors.
+
+| Attack / Defense | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Kim et al. DRAM Disturbance Errors** | 2014 | DRAM capacitive coupling | First systematic characterisation of rowhammer bit flips; 110/129 DRAM modules vulnerable; ISCA 2014 [[1]](https://users.ece.cmu.edu/~yoonguk/papers/kim-isca14.pdf) |
+| **Rowhammer Privilege Escalation (Seaborn-Dullien)** | 2015 | Bit flip + page table | First exploit achieving kernel privilege escalation via page-table bit flip; demonstrated on Linux x86 [[1]](https://blackhat.com/docs/us-15/materials/us-15-Seaborn-Exploiting-The-DRAM-Rowhammer-Bug-To-Gain-Kernel-Privileges.pdf) |
+| **Curious Case of Rowhammer (RSA key flip)** | 2016 | Prime+Probe + rowhammer | Combines cache-timing to locate RSA exponent in memory then flips a secret-exponent bit; CHES 2016 [[1]](https://eprint.iacr.org/2016/618) |
+| **Fault+Probe (ECDSA recovery)** | 2024 | Rowhammer + lattice reduction | Recovers 256-bit ECDSA private key from wolfSSL via controlled bit flips; 100% success rate [[1]](https://arxiv.org/abs/2406.06943) |
+| **Target Row Refresh (TRR) / PARA** | 2014+ | DRAM controller | Proactively refresh neighbours of frequently-accessed rows; PARA adds probabilistic refresh; standard in DDR4/5 [[1]](https://arxiv.org/abs/1904.09724) |
+
+**State of the art:** DDR4/5 mandates TRR; ECC DRAM reduces but does not eliminate risk (multi-bit flips bypass single-bit ECC). Rowhammer on PQC keys (lattice schemes) is an open research frontier. Related to [Cold Boot Attacks](#cold-boot-attacks-on-dram) and [Fault Injection Attacks](#fault-injection-attacks--countermeasures).
+
+---
+
+## ML Modeling Attacks on Strong PUFs & ML-Based Privacy Attacks
+
+**Goal:** (a) Break Strong PUF authentication by training a machine-learning model on a polynomial number of challenge-response pairs (CRPs) to clone the PUF's input-output behaviour without physical access to the device; and (b) attack ML models themselves through model extraction (IP theft via query APIs) and membership inference (determine whether a record was in the training set).
+
+**Strong PUF modeling attacks.** Rührmair et al. (CCS 2010) showed that Arbiter PUFs, XOR Arbiter PUFs, and Lightweight Secure PUFs can be broken with logistic regression and evolution strategies using as few as 10 000 CRPs — rendering them unsuitable for unprotected authentication. Deep-learning attacks (eprint 2019) further reduced the CRP budget for complex XOR Arbiter PUF compositions by orders of magnitude. This has driven a shift from Strong PUFs toward Weak PUFs (limited CRP space, e.g., SRAM PUF) for key storage, or PUF constructions specifically designed to resist ML (e.g., IPUF, XORPUF with obfuscated responses).
+
+**Model extraction.** Tramèr et al. (USENIX Security 2016) formalised model extraction attacks, where an adversary with black-box prediction-API access reconstructs a functionally equivalent copy of a proprietary ML model using structured queries. Near-perfect extraction of logistic regression, neural network, and decision tree models was demonstrated against Amazon and BigML services with modest query budgets. Cryptographic defences include model watermarking (see [AI Watermarking](#cryptographic-watermarking-for-ai--pseudorandom-codes)), output perturbation, and rate limiting.
+
+**Membership inference.** Shokri et al. (IEEE S&P 2017) showed that shadow-model training allows an adversary to determine, given black-box access to a trained model, whether a specific data record was in its training set — leaking private information about individuals. Differential privacy during training is the principal cryptographic mitigation.
+
+| Attack / Defense | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Rührmair et al. PUF Modeling (CCS 2010)** | 2010 | Logistic regression / ES | First systematic ML attack on Arbiter, XOR-Arbiter, and FF-Arbiter PUFs; CCS 2010 [[1]](https://dl.acm.org/doi/10.1145/1866307.1866335) |
+| **Deep Learning PUF Attacks (eprint 2019)** | 2019 | Deep neural networks | DNN attacks on XOR-Arbiter and Interpose PUF compositions; order-of-magnitude fewer CRPs needed [[1]](https://eprint.iacr.org/2019/566) |
+| **Tramèr et al. Model Extraction** | 2016 | Query-based model inversion | Steal logistic-regression / NN / DT models via prediction API; near-perfect fidelity; USENIX Sec 2016 [[1]](https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/tramer) |
+| **Shokri et al. Membership Inference** | 2017 | Shadow-model training | Determine training-set membership from black-box model predictions; IEEE S&P 2017 [[1]](https://ieeexplore.ieee.org/document/7958568/) |
+| **Differential Privacy (Abadi et al. DP-SGD)** | 2016 | DP training | Adds calibrated noise during SGD to bound per-record gradient influence; principal mitigation for membership inference; CCS 2016 [[1]](https://dl.acm.org/doi/10.1145/2976749.2978318) |
+
+**State of the art:** ML modeling attacks have rendered classic Strong PUFs cryptographically broken for most authentication use cases; SRAM PUF with fuzzy extractors and helper-data schemes (see [PUF](#physical-unclonable-functions-puf)) are the current standard. For ML model privacy, DP-SGD is the de-facto training-time defence; model watermarking addresses post-theft attribution. Intersects [PUF](#physical-unclonable-functions-puf), [AI Watermarking](#cryptographic-watermarking-for-ai--pseudorandom-codes), and [Speculative Execution Side-Channel Attacks](#speculative-execution--cache-timing-side-channel-attacks).
+
+---

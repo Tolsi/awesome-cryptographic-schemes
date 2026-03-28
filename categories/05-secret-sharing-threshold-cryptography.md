@@ -351,3 +351,61 @@
 **State of the art:** Shamir sharing remains the standard multiplicative SS; degree-reduction (via Beaver triples or BGW resharing) is the bottleneck of information-theoretically secure MPC. Packed multiplicative SS (2022) amortizes costs. Central to [MPC](#multi-party-computation-mpc), [Packed SS](#packed-secret-sharing), and [Robust SS](#robust-secret-sharing).
 
 ---
+
+## FROST: Flexible Round-Optimized Schnorr Threshold Signatures
+
+**Goal:** Two-round threshold Schnorr signing. Any t-of-n signers collaboratively produce a single valid Schnorr signature in two communication rounds, with the signing key never reconstructed — removing the single point of failure from traditional multisig and threshold schemes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **FROST (Komlo-Goldberg)** | 2020 | Schnorr + Shamir VSS | Original protocol; 2-round signing or 1-round with preprocessing; concurrent sessions secure under DL; SAC 2020 [[1]](https://eprint.iacr.org/2020/852) |
+| **FROST3 (Security proof)** | 2023 | Schnorr, no AGM | First proof without the Algebraic Group Model; tighter reduction; CRYPTO 2023 [[1]](https://eprint.iacr.org/2023/899) |
+| **FROST RFC 9591** | 2024 | Schnorr | IETF/CFRG standardization (June 2024); specifies multiple ciphersuites (secp256k1, Ed25519, Ed448, P-256, Ristretto255) [[1]](https://www.rfc-editor.org/rfc/rfc9591.html) |
+| **Re-Randomized FROST** | 2024 | Schnorr + rerandomization | Preserves unlinkability of RedDSA spend-auth signatures in Zcash; production deployment via ZIP 312 [[1]](https://eprint.iacr.org/2024/436) |
+| **Dynamic-FROST** | 2024 | FROST + committee changes | Supports adding/removing signers and resharing without a full key ceremony [[1]](https://eprint.iacr.org/2024/896) |
+
+**State of the art:** FROST RFC 9591 (2024) is the IETF standard; deployed in production by the Zcash Foundation (ZIP 312, NU6 2024) and integrated into Safe smart accounts on Ethereum. The FROST DKG companion protocol lives in [DKG](#distributed-key-generation-dkg). Related to [Threshold Signature Schemes](categories/08-signatures-advanced.md#threshold-signature-schemes-tss) in the signatures category.
+
+---
+
+## XOR-Based / Binary-Field Secret Sharing
+
+**Goal:** Hardware-efficient threshold sharing. Replace Shamir's polynomial arithmetic over large prime fields with XOR (exclusive-OR) operations over GF(2) or byte-oriented GF(2^8) — achieving an ideal (t,n)-threshold scheme hundreds of times faster in software and trivially implementable in hardware, at the same information-theoretic security level.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Shamir over GF(2^8) (byte-wise)** | 1979 | GF(2^8) | Standard Shamir applied byte-by-byte; all arithmetic is bitwise; used in practically every modern implementation (libgfshare, SSSS, HashiCorp Vault) [[1]](https://dl.acm.org/doi/10.1145/359168.359176) |
+| **Kurihara et al. XOR-SS** | 2008 | XOR only, GF(2^n) | First ideal (t,n)-XOR-only scheme; 900× faster than GF(2^64) Shamir for large secrets; perfect secrecy proven; ISC 2008 / ISITA 2010 [[1]](https://eprint.iacr.org/2008/409) |
+| **Efficient XOR-Based (t,n) (Pasalic et al.)** | 2016 | Bent functions + XOR | Reduces share generation cost further; suitable for constrained devices [[1]](https://link.springer.com/chapter/10.1007/978-3-319-48965-0_28) |
+| **Secret Sharing with Binary Shares** | 2018 | Linear codes over GF(2) | Information-theoretic bounds for binary-share SS; characterizes achievable rates [[1]](https://eprint.iacr.org/2018/746) |
+
+**State of the art:** GF(2^8) Shamir is the industry default (used in HashiCorp Vault, age-plugin-threshold, SLIP-39). Kurihara's pure-XOR scheme is preferred for high-throughput or hardware contexts. All variants are information-theoretically perfect. Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## DKLS23: Threshold ECDSA in Three Rounds
+
+**Goal:** Practical t-of-n threshold ECDSA. Any t signers from a group of n jointly produce a standard ECDSA signature in three communication rounds, with security against malicious adversaries — without homomorphic encryption, achieving the lowest round complexity known for threshold ECDSA.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DKLs18 (2-party ECDSA)** | 2018 | OT + MtA | First OT-based 2-of-2 ECDSA; avoids Paillier HE; CCS 2018 [[1]](https://eprint.iacr.org/2018/499) |
+| **DKLS23 (t-of-n, 3 rounds)** | 2023 | OT + ZK proofs | Generalizes to arbitrary (t,n); 3-round signing; full malicious security proof; CRYPTO 2023; closed-form cost analysis [[1]](https://eprint.iacr.org/2023/765) |
+
+**State of the art:** DKLS23 (2023) is the state-of-the-art threshold ECDSA protocol: 3 rounds, OT-based (no HE), malicious security, supports key resharing and dynamic sets. Deployed in Vultisig, Silence Laboratories (audited by Trail of Bits 2025), and other MPC wallet stacks. Complements [FROST](#frost-flexible-round-optimized-schnorr-threshold-signatures) (Schnorr) and relates to [Threshold Signature Schemes](categories/08-signatures-advanced.md#threshold-signature-schemes-tss).
+
+---
+
+## Threshold Raccoon: Post-Quantum Lattice Threshold Signatures
+
+**Goal:** Post-quantum threshold signing. Any t-of-n parties collaboratively produce a lattice-based Schnorr-like signature secure under MLWE/MSIS — the first efficient lattice threshold signature that does not require threshold FHE or homomorphic trapdoor commitments, and is compatible with NIST-standardized ML-DSA (Dilithium).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Threshold Raccoon** | 2024 | MLWE + MSIS + OTM | Pairwise one-time additive masks (OTM) hide partial responses; 13 KiB signatures; up to 1024 signers; EUROCRYPT 2024 [[1]](https://eprint.iacr.org/2024/184) |
+| **ML-DSA Threshold (del Pino et al.)** | 2025 | ML-DSA (FIPS 204) | Directly adapts Raccoon technique to standardized ML-DSA; supports up to 6 signers; CRYPTO 2025 [[1]](https://eprint.iacr.org/2025/1166) |
+| **Olingo** | 2025 | Lattice + DKG + IA | Adds integrated DKG and identifiable abort to lattice threshold signing; first full-stack PQ threshold signature [[1]](https://eprint.iacr.org/2025/1789) |
+
+**State of the art:** Threshold Raccoon (EUROCRYPT 2024) is the first practical post-quantum threshold signature; its ML-DSA variant (2025) enables drop-in PQ threshold signing against FIPS 204. Open problem: reduce communication cost and achieve one-round signing. Complements [FROST](#frost-flexible-round-optimized-schnorr-threshold-signatures) (classical) and relates to [Post-Quantum Cryptography](categories/15-quantum-cryptography.md#post-quantum-cryptography-pqc).
+
+---

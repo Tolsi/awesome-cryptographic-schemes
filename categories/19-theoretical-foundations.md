@@ -206,3 +206,97 @@
 | **BB-uselessness composability** | 2021 | Couteau–Hartmann | Black-box uselessness composes: two BB-useless primitives cannot be combined to yield a useful one [[1]](https://eprint.iacr.org/2021/016) |
 
 **State of the art:** The Impagliazzo-Rudich oracle argument and the RTV taxonomy (2004) remain the standard tools. Non-black-box constructions (Barak, Bitansky-Paneth) partially circumvent these barriers for specific tasks (ZK, SNARGs) but not for key exchange or OT. Active area: non-black-box separations for PKE from OWF.
+
+---
+
+## Hardcore Predicates and the Goldreich-Levin Theorem
+
+**Goal:** Extract hard-to-predict bits from one-way functions. A hardcore predicate of a function f is a single bit b(x) that is computationally unpredictable given f(x), even though f itself is easy to compute. Goldreich and Levin (1989) proved that the inner product ⟨x, r⟩ mod 2 is a universal hardcore predicate for any one-way function — padded with a random string r, it is hard to predict given (f(x), r). This result is the key step in constructing pseudorandom generators from arbitrary OWFs.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Goldreich-Levin hardcore predicate** | 1989 | Goldreich–Levin | Inner product ⟨x,r⟩ is a hardcore bit for any OWF f padded as g(x,r)=(f(x),r); enables PRG from any OWF [[1]](https://dl.acm.org/doi/10.1145/73007.73010) |
+| **OWF → PRG via GL** | 1993 | Håstad–Impagliazzo–Levin–Luby | Full HILL theorem: PRG from any OWF by iterating Goldreich-Levin bit extraction; polynomial stretch [[1]](https://doi.org/10.1137/S0097539793244708) |
+| **List-decoding interpretation** | 1999 | Goldreich–Levin (Bellare exposition) | GL theorem recast as list-decoding of Hadamard codes; simplifies proof and generalises to other error-correcting codes [[1]](https://cseweb.ucsd.edu/~mihir/papers/gl.pdf) |
+| **Quantum GL** | 2001 | Adcock–Cleve | Quantum analogue of the GL theorem; hardcore bits remain hard against quantum adversaries with oracle access [[1]](https://link.springer.com/chapter/10.1007/3-540-45841-7_26) |
+
+**State of the art:** The Goldreich-Levin theorem is a cornerstone of theoretical cryptography — every treatment of OWF-to-PRG builds on it. The HILL theorem (Håstad–Impagliazzo–Levin–Luby 1993) extends it to full PRG construction. See [One-Way Functions and Impagliazzo's Five Worlds](#one-way-functions-and-impagliazzos-five-worlds) and [Pseudoentropy and Computational Entropy](#pseudoentropy-and-computational-entropy).
+
+---
+
+## Pseudoentropy and Computational Entropy
+
+**Goal:** Formalise what it means for a distribution to "look like" it has more randomness than it really does. A distribution X has pseudoentropy at least k if it is computationally indistinguishable from some distribution Y with Shannon entropy ≥ k. This generalises pseudorandomness (a special case where k = |X|) and is the key bridge between one-way functions and pseudorandom generators via the HILL theorem. Yao's next-bit predictor characterisation (1982) gives an equivalent operational definition: a distribution is pseudorandom if and only if no efficient algorithm can predict the next bit better than chance given all previous bits.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Next-bit predictor / Yao's theorem** | 1982 | Yao | A distribution is pseudorandom iff no efficient next-bit predictor has non-negligible advantage; equivalence between statistical tests and next-bit tests [[1]](https://doi.org/10.1109/SFCS.1982.45) |
+| **HILL pseudoentropy** | 1993/1999 | Håstad–Impagliazzo–Levin–Luby | Computational entropy definition: X has HILL pseudoentropy k if indistinguishable from a distribution of Shannon entropy k; used to prove OWF → PRG [[1]](https://doi.org/10.1137/S0097539793244708) |
+| **Metric pseudoentropy** | 2003 | Barak–Shaltiel–Wigderson | Computational analogues of entropy; metric entropy is weaker than HILL and easier to work with in hybrid arguments [[1]](https://www.boazbarak.org/Papers/compent.pdf) |
+| **Conditional computational entropy** | 2007 | Reyzin | Separates HILL pseudoentropy from compressibility; conditional variants needed for leakage-resilience and extraction [[1]](https://link.springer.com/chapter/10.1007/978-3-540-72540-4_10) |
+
+**State of the art:** HILL pseudoentropy remains the standard definition; the metric entropy variant is used in leakage-resilient cryptography and randomness extraction. See [One-Way Functions and Impagliazzo's Five Worlds](#one-way-functions-and-impagliazzos-five-worlds) and [Hardcore Predicates and the Goldreich-Levin Theorem](#hardcore-predicates-and-the-goldreich-levin-theorem).
+
+---
+
+## NIZK: Definitions, Simulation Soundness, and Extractability
+
+**Goal:** Formalise non-interactive zero-knowledge proofs and their security variants. A NIZK proof system in the common reference string (CRS) model allows a prover to convince a verifier of an NP statement without interaction and without revealing any witness, using a shared CRS. Beyond basic zero-knowledge and soundness, the literature has developed stronger variants: *simulation soundness* (an adversary cannot prove false statements even after seeing simulated proofs) and *extractability* (a knowledge extractor can recover the witness from any valid proof given trapdoor information about the CRS). These properties are essential for CCA-secure encryption, signature schemes, and UC-secure protocols.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **NIZK in the CRS model** | 1990/1999 | Feige–Lapidot–Shamir | First NIZK for all NP from any trapdoor permutation; adaptive soundness and ZK with shared random string [[1]](https://doi.org/10.1137/S0097539798334998) |
+| **Non-malleable / simulation-sound NIZK** | 1999 | Sahai | Non-malleable NIZK: adversary cannot derive related proofs; introduced simulation soundness — prover cannot prove false statements after seeing simulated proofs [[1]](https://doi.org/10.1109/SFFCS.1999.814584) |
+| **Unbounded simulation soundness** | 2006 | Groth–Ostrovsky–Sahai | First pairing-based NIZK achieving unbounded simulation soundness (after polynomially many simulated proofs); used to construct CCA2-secure PKE in the standard model [[1]](https://eprint.iacr.org/2006/107) |
+| **Groth-Sahai NIZK** | 2008 | Groth–Sahai | Efficient pairing-based NIZK for algebraic statements; witness-indistinguishable and simulation-sound; canonical standard-model NIZK [[1]](https://eprint.iacr.org/2007/155) |
+| **NIZK of knowledge / extractability** | 2012 | Groth | Extractable NIZK: knowledge extractor recovers witness from any valid proof; foundational for SNARKs and UC-secure protocols [[1]](https://dl.acm.org/doi/10.1145/2220357.2220358) |
+
+**State of the art:** Groth-Sahai proofs (2008) are the canonical standard-model NIZK for pairing-based languages. Simulation soundness and extractability are required by virtually every UC-secure construction. See [Universal Composability](#universal-composability-uc-framework), [Random Oracle Model](#random-oracle-model-rom-vs-standard-model), and [Knowledge-of-Exponent Assumption](#knowledge-of-exponent-assumption-kea-and-falsifiability).
+
+---
+
+## Knowledge-of-Exponent Assumption (KEA) and Falsifiability
+
+**Goal:** Enable extraction of witnesses from adversarial group elements. The Knowledge-of-Exponent Assumption (KEA), introduced by Damgård (1991), asserts that if an adversary outputs a pair (C, Y) with Y = C^a given (g, g^a), it must "know" an exponent c such that C = g^c — formalised by requiring an efficient extractor that outputs c. KEA and its generalisations (KEA2, KEA3, Power KEA) underlie many SNARK constructions. However, KEA is *non-falsifiable*: no polynomial-time algorithm can verify that the extractor fails, distinguishing it from standard computational assumptions. This tension between proof power and falsifiability is a central theme in foundations.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **KEA1 (original)** | 1991 | Damgård | Given (g, g^a), any adversary outputting (C, Y=C^a) must know c s.t. C=g^c; introduced to build CCA-secure PKE [[1]](https://link.springer.com/chapter/10.1007/3-540-46877-3_8) |
+| **KEA and 3-round ZK** | 2004 | Bellare–Palacio | Formalised KEA1/KEA2/KEA3 hierarchy; linked KEA to 3-round ZK arguments and to extractable commitments [[1]](https://eprint.iacr.org/2004/008) |
+| **Non-falsifiability of KEA** | 2011 | Naor | Classified KEA as non-falsifiable ("knowledge assumption"); distinguished from falsifiable assumptions (DDH, CDH); meta-theorem on which assumptions are "testable" [[1]](https://link.springer.com/chapter/10.1007/978-3-642-22792-9_16) |
+| **KEA inherent to SNARKs** | 2012 | Gentry–Wichs | Non-falsifiable assumptions are *necessary* for succinct non-interactive arguments (SNARGs) in the standard model; KEA-type assumptions cannot be avoided [[1]](https://eprint.iacr.org/2011/095) |
+| **Power KEA / q-PKE** | 2013 | Groth | q-Power Knowledge of Exponent used in Groth16 SNARK; adversary knowing (g, g^α, …, g^{α^q}) must extract a polynomial representation [[1]](https://eprint.iacr.org/2016/260) |
+
+**State of the art:** KEA and its variants are the standard assumptions behind Groth16 and other pairing-based SNARKs deployed in blockchains (Zcash, Ethereum). Their non-falsifiability remains a theoretical concern; the Algebraic Group Model (see [Generic Group Model and Algebraic Group Model](#generic-group-model-ggm-and-algebraic-group-model-agm)) provides a partial substitute with better-understood security properties.
+
+---
+
+## Generic Group Model (GGM) and Algebraic Group Model (AGM)
+
+**Goal:** Prove security of discrete-log-based schemes by restricting how adversaries interact with group elements. In the Generic Group Model (Shoup 1997), the adversary receives only opaque handles to group elements and can only combine them via the group operation — it cannot exploit the bit-representation of elements. This allows information-theoretic lower bounds (e.g., Ω(p^{1/2}) queries to solve DLog in a group of prime order p). The Algebraic Group Model (Fuchsbauer-Kiltz-Loss 2018) is a weaker idealization: the adversary may use the group encoding, but must always output explicit linear combinations of its input group elements alongside each output, enabling tight reductions from DLog-style assumptions while avoiding the GGM's full idealization.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Generic Group Model (GGM)** | 1997 | Shoup | Lower bound Ω(p^{1/2}) for DLog/CDH in a generic group of order p; formalised the "generic algorithm" as one that only uses the group operation oracle [[1]](https://www.shoup.net/papers/dlbounds1.pdf) |
+| **Baby-step giant-step as GGM optimal** | 1997 | Shoup | Pohlig-Hellman and BSGS meet the GGM lower bound; DLog is provably hard in the GGM [[1]](https://www.shoup.net/papers/dlbounds1.pdf) |
+| **Algebraic Group Model (AGM)** | 2018 | Fuchsbauer–Kiltz–Loss | AGM sits between GGM and standard model; adversary must supply linear representation of output elements; CDH, SDH, LRSW all reduce tightly to DLog in AGM; tight reductions for BLS and Groth16 [[1]](https://eprint.iacr.org/2017/620) |
+| **AGM analysis and limitations** | 2022 | Auerbach–Hoffmann–Pascual-Perez | Formal analysis of AGM's assumptions; identifies classes of schemes where AGM proofs do and do not transfer to standard model [[1]](https://link.springer.com/chapter/10.1007/978-3-031-22972-5_11) |
+| **AGM proofs transfer to GGM** | 2024 | Bauer–Fischlin–Konrath | Generic and algebraic computation models: conditions under which AGM security proofs imply GGM security [[1]](https://link.springer.com/chapter/10.1007/978-3-031-68388-6_2) |
+
+**State of the art:** The GGM lower bounds (Shoup 1997) are the canonical justification for DLog-based security parameters. The AGM (Fuchsbauer-Kiltz-Loss 2018) is now widely used for tight security proofs of pairing-based schemes; it underlies proofs of Groth16, BLS, and numerous other constructions. See [Knowledge-of-Exponent Assumption](#knowledge-of-exponent-assumption-kea-and-falsifiability) and [Black-Box Separations](#black-box-separations).
+
+---
+
+## Concrete Security and Reduction Tightness
+
+**Goal:** Quantify exactly how much security a construction provides at a specific parameter size. Asymptotic security theory says a scheme is "secure" if no polynomial-time adversary wins with non-negligible probability — but this hides constants and polynomial factors critical to practice. Concrete security (Bellare-Rogaway 1993/1997) replaces asymptotic language with explicit bounds: a scheme is (t, ε)-secure if no adversary running in time t wins with probability greater than ε. A reduction is *tight* if an adversary breaking the scheme yields another adversary breaking the underlying hardness problem with essentially the same (t, ε); a loose reduction with loss factor L means parameters must be inflated to compensate, sometimes by hundreds of bits.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Concrete security framework** | 1993 | Bellare–Rogaway | Introduced (t,ε)-security for protocol analysis; argued that asymptotic security theory obscures practical parameter choices [[1]](https://cseweb.ucsd.edu/~mihir/papers/ro.pdf) |
+| **Exact security of digital signatures** | 1996 | Bellare–Rogaway | Tight security proof for Full Domain Hash (FDH) signatures in ROM; showed Schnorr/RSA-FDH have different tightness profiles [[1]](https://www.cs.ucdavis.edu/~rogaway/papers/exact.pdf) |
+| **Concrete security of symmetric enc** | 1997 | Bellare–Desai–Jokipii–Rogaway | Tight concrete-security hierarchy for IND-CPA, IND-CCA1, IND-CCA2 for symmetric encryption; upper and lower bounds on reduction loss [[1]](https://cseweb.ucsd.edu/~mihir/papers/sym-enc.pdf) |
+| **Impossibility of tight reductions** | 2015 | Bader–Jager–Li–Schäge | For certain signature schemes with tight security, proved tight black-box reductions from standard assumptions are impossible; separation between tight and loose security [[1]](https://eprint.iacr.org/2015/374) |
+| **Almost-tight security** | 2014 | Chen–Wee | "Almost-tight" reductions (loss at most linear in security parameter) for IBE and PKE; achieves near-optimal concrete security in the standard model [[1]](https://eprint.iacr.org/2013/134) |
+
+**State of the art:** Concrete security analysis is mandatory for standards work — NIST PQC submissions were evaluated in part on tightness of their security reductions. Almost-tight reductions are the practical goal when perfectly tight ones are impossible. See [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa--ind-cca-security) and [Random Oracle Model](#random-oracle-model-rom-vs-standard-model).

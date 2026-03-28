@@ -146,3 +146,72 @@
 **State of the art:** DH-based deniable auth (in Signal, OTR); ring-signature-based for formal guarantees. Related to [Designated Verifier Signatures](#designated-verifier-signatures--proofs).
 
 ---
+
+## Audio Steganography (Echo Hiding & MP3Stego)
+
+**Goal:** Conceal a secret bitstream inside an audio signal — either by exploiting psychoacoustic masking effects (echo hiding) or by embedding data during the lossy compression process (MP3Stego) — so that the resulting audio is perceptually indistinguishable from the original.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Echo Hiding (Gruhl-Lu-Bender)** | 1996 | Psychoacoustic echo | Embed bits by adding a delayed, attenuated echo kernel to the audio; kernel parameters (delay, amplitude, decay) encode 0/1; cepstrum analysis recovers the hidden signal [[1]](https://link.springer.com/content/pdf/10.1007/3-540-61996-8_48.pdf) |
+| **MP3Stego (Petitcolas)** | 1998 | MPEG-III bit reservoir | Hides data during the MP3 encoding loop by exploiting the unused bits of the inner loop's bit reservoir; payload is 3DES-encrypted before embedding; capacity ~-1 bit/frame at 128 kbps [[1]](https://www.petitcolas.net/steganography/mp3stego/) |
+| **Phase Coding** | 1996 | Phase manipulation | Encodes message bits in phase differences between audio segments; exploits the ear's relative phase insensitivity; more robust to re-encoding than LSB substitution [[1]](https://link.springer.com/article/10.1186/1687-4722-2012-25) |
+
+**State of the art:** Echo hiding is the canonical psychoacoustic audio steganography scheme; MP3Stego remains the reference implementation for compressed-domain audio stego. Audio steganalysis relies on cepstral analysis (echo detection) and statistical modeling of MP3 bit-reservoir distributions. Related to [Content-Adaptive Image Steganography](#content-adaptive-image-steganography) (same adaptive-distortion philosophy, different medium).
+
+---
+
+## Text / Linguistic Steganography
+
+**Goal:** Hide a secret message inside ordinary-looking natural-language text or formatted documents by exploiting invisible formatting (trailing whitespace, zero-width characters) or semantic transformations (synonym substitution, paraphrase generation) that leave the surface meaning unchanged to a human reader.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SNOW (Whitespace Steganography)** | 1998 | Trailing whitespace encoding | Appends sequences of spaces and tabs at line endings; invisible in all common text viewers; ICE encryption of payload; capacity ~1 bit per line [[1]](https://darkside.com.au/snow/) |
+| **Synonym Substitution (Chang-Clark)** | 2014 | Contextual lexical graph | Assigns bits to synonym sets via vertex colouring on a WordNet graph; uses Google n-grams to verify contextual fluency; state-of-the-art capacity/undetectability tradeoff for linguistic stego [[1]](https://direct.mit.edu/coli/article/40/2/403/1470/Practical-Linguistic-Steganography-using) |
+| **Zero-Width Character Stego** | 2010s | Unicode invisible codepoints | Encodes bits in sequences of zero-width non-joiner (U+200C) and zero-width joiner (U+200D) inserted between characters; survives copy-paste; resists visual inspection [[1]](https://www.sciencedirect.com/science/article/abs/pii/S002002552200809X) |
+
+**State of the art:** Whitespace and zero-width character methods are trivially stripped by normalisation; synonym substitution (Chang-Clark 2014) and LLM-based paraphrase methods (see [Meteor](#steganography)) provide higher security. Text steganalysis relies on perplexity-based and n-gram distributional tests. Related to [Steganography](#steganography) and [Meteor (LLM Stego)](#steganography).
+
+---
+
+## DNA Steganography
+
+**Goal:** Hide a secret message physically inside a DNA molecule so that the very existence of the message is concealed — the DNA appears to be ordinary biological material. Provides long-term, high-density, and chemically durable covert storage inaccessible to electronic eavesdroppers.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DNA Microdot (Clelland-Risca-Bancroft)** | 1999 | Nucleotide-to-ASCII encoding | Encodes each ASCII character as a DNA triplet using a key-dependent codon table; synthesises the DNA oligomer; conceals it in a microdot disguised as a printed full stop; first experimental demonstration [[1]](https://www.nature.com/articles/21092) |
+| **SNP-Based Genomic Stego** | 2020 | Single nucleotide polymorphisms | Encodes message bits into predefined SNP loci of a host genome sequence; the stego-genome passes as a normal sequencing result; includes block-sum error detection for mutation-induced bit-flips [[1]](https://microbialcellfactories.biomedcentral.com/articles/10.1186/s12934-020-01387-0) |
+
+**State of the art:** Clelland-Risca-Bancroft (1999, Nature) is the seminal physical demonstration; SNP-based methods (2020) scale to whole-genome carriers. DNA steganography offers extraordinary density (~1 exabyte/gram) but requires wet-lab synthesis and sequencing for encode/decode. Largely orthogonal to digital steganography; no established steganalysis countermeasure exists beyond targeted sequence-pattern search. Related to [Information-Theoretic Steganography](#information-theoretic-steganography-cachin-model).
+
+---
+
+## Adversarial / GAN Steganography
+
+**Goal:** Use deep learning — specifically generative adversarial networks (GANs) — to jointly learn a steganographic encoder and a steganographic decoder end-to-end, with the GAN discriminator acting as an automatic steganalyser during training, so that the resulting hidden-message images minimise detectability without hand-crafted distortion metrics.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ste-GAN-ography (Hayes-Danezis)** | 2017 | Three-party GAN (Alice / Bob / Eve) | First adversarially trained steganography; Alice (encoder) and Bob (decoder) play against Eve (steganalyser); all three are CNNs; matches hand-crafted adaptive schemes in detectability while learning in an unsupervised manner [[1]](https://arxiv.org/abs/1703.00371) |
+| **SSGAN (Shi et al.)** | 2017 | Wasserstein GAN + GNCNN discriminator | Replaces DCGAN with WGAN for training stability; adds a noise-guessing CNN discriminator; improves visual quality over SGAN [[1]](https://link.springer.com/article/10.1007/s11042-018-6951-z) |
+| **SteganoGAN** | 2019 | Dense encoder-decoder + GAN | Achieves 4.4 bpp capacity in natural images; GAN discriminator enforces perceptual indistinguishability; evades standard steganalysers (SRM, Xu-Net) at moderate payloads [[1]](https://arxiv.org/abs/1901.03892) |
+
+**State of the art:** Hayes-Danezis (NeurIPS 2017) established adversarial training as a viable steganography design methodology; SteganoGAN (2019) achieves highest reported bpp. CNN-based steganalysers (SRNet, Yedroudj-Net) remain competitive detectors. Arms race mirrors [Content-Adaptive Image Steganography](#content-adaptive-image-steganography) vs. [Steganalysis](#steganalysis). SteganoGAN is already listed under [Content-Adaptive Image Steganography](#content-adaptive-image-steganography); this section focuses on the adversarial training paradigm distinct from hand-crafted distortion functions.
+
+---
+
+## Histogram-Preserving Steganography
+
+**Goal:** Embed a hidden payload in an image while leaving the global pixel or DCT-coefficient histogram statistically identical to that of the unmodified cover image, thereby defeating histogram-based steganalysis attacks (chi-square test, RS analysis) that detect steganography by measuring first-order statistical deviations.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **OutGuess (Provos)** | 2001 | JPEG DCT LSB + histogram correction | After embedding, selects a secondary set of DCT coefficients and flips them to restore the pre-embedding DCT histogram; first practical histogram-preserving JPEG scheme [[1]](https://dde.binghamton.edu/kodovsky/pdf/Fri07-ACM.pdf) |
+| **LSB++ / LSB++ Generalisation** | 2003–2015 | Paired-pixel compensation | Extends OutGuess idea to spatial domain: every embedding change is paired with a compensating change elsewhere so the global histogram is exactly preserved; generalises to arbitrary embedding rates [[1]](https://www.researchgate.net/publication/277583196_A_new_steganography_method_which_preserves_histogram_Generalization_of_LSB) |
+| **HPS (Histogram Preserving Steganography)** | 2014 | Pixel-pair mapping | Computes a bijective pixel-pair mapping that preserves the marginal histogram while minimising distortion; IEEE conference result for spatial-domain images [[1]](https://ieeexplore.ieee.org/document/6914260/) |
+
+**State of the art:** Histogram preservation defeats first-order steganalysis but is ineffective against higher-order features (SPAM, SRM co-occurrences); modern content-adaptive schemes (S-UNIWARD, HILL) implicitly avoid histogram anomalies while minimising richer statistical signatures. Related to [Content-Adaptive Image Steganography](#content-adaptive-image-steganography) and [Steganalysis](#steganalysis).
+
+---

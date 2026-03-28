@@ -18,6 +18,89 @@
 
 ---
 
+## Microsoft SEAL
+
+**Goal:** Production-grade homomorphic encryption library for integer and approximate-real arithmetic, enabling developers to build encrypted-data services without deep cryptographic expertise.
+
+Microsoft SEAL is an open-source (MIT-licensed) C++ library developed by the Cryptography and Privacy Research Group at Microsoft. It implements three schemes: **BFV** and **BGV** for exact integer arithmetic modulo a plaintext prime, and **CKKS** for approximate fixed-point arithmetic over real and complex numbers. All three schemes operate over polynomial rings ℤ_q[X]/(X^n + 1) using RLWE security.
+
+Key engineering contributions: an RNS (Residue Number System) decomposition allowing 64-bit native arithmetic without big integers; a clean C++ API with automatic parameter validation; and a **SEAL-Embedded** variant targeting IoT / Azure Sphere microcontrollers. Version 4.x (2022–) added support for the BGV scheme and streamlined the API. SEAL is also accessible through Python (TenSEAL), .NET (Microsoft.SEAL NuGet), and Java wrappers.
+
+| Component | Detail |
+|-----------|--------|
+| **Schemes** | BFV, BGV (integer arithmetic), CKKS (approx. real) |
+| **Bootstrapping** | None natively — leveled use; depth determined by parameter choice |
+| **SIMD batching** | BFV/BGV: up to n integer slots; CKKS: n/2 complex slots |
+| **Hardware** | Pure C++17; optional Intel HEXL for AVX-512 acceleration |
+| **License** | MIT open source |
+
+**State of the art:** SEAL v4.x [[1]](https://github.com/microsoft/SEAL); original SEAL v2.1 paper [[2]](https://eprint.iacr.org/2017/224). Benchmark studies (2025) consistently rank SEAL as the fastest library for CKKS and BFV on single-node deployments. Compare with [OpenFHE](#homomorphic-encryption-he) (broader scheme support) and [HElib](#helib) (Smart-Vercauteren packing optimizations).
+
+---
+
+## HElib
+
+**Goal:** Open-source BGV and CKKS homomorphic encryption library with state-of-the-art ciphertext packing and bootstrapping, designed for high-throughput encrypted computation.
+
+HElib is a C++ library initiated by Shai Halevi and Victor Shoup (originally at IBM Research) that implements the **BGV** scheme with bootstrapping and the **CKKS** approximate-number scheme. It was the first publicly available FHE implementation (2011 prototype; production-grade 2.0 release in 2020) and remains a primary reference for the Smart-Vercauteren (SV) ciphertext packing technique and the Gentry-Halevi-Smart (GHS) bootstrapping optimizations.
+
+Two central technical contributions: (1) **Thin bootstrapping** for BGV, which uses the Frobenius map and a carefully chosen thin recryption circuit to reduce the bootstrapping overhead; (2) **SV SIMD slots** — encoding N/2 plaintext elements into a single BGV or CKKS ciphertext and rotating/permuting them via automorphisms of the cyclotomic ring, enabling amortized cost per-slot that approaches that of unencrypted computation. HElib also implements **multi-threading** via OpenMP and **NTL/GMP** for large-integer arithmetic.
+
+| Feature | Detail |
+|---------|--------|
+| **Schemes** | BGV (with full bootstrapping), CKKS (approx. arithmetic) |
+| **Packing** | Smart-Vercauteren (SV) SIMD via cyclotomic-ring automorphisms |
+| **Bootstrapping** | Thin bootstrapping (BGV); GHS optimizations |
+| **Noise management** | Automatic modulus switching; noise budget tracking |
+| **License** | Apache 2.0 |
+
+**State of the art:** HElib v2.x [[1]](https://github.com/homenc/HElib); design paper by Halevi and Shoup [[2]](https://eprint.iacr.org/2020/1481). Widely used in academic research; the packing and bootstrapping techniques it pioneered are now standard across all modern FHE libraries.
+
+---
+
+## HEIR (Homomorphic Encryption Intermediate Representation)
+
+**Goal:** Unified MLIR-based compiler infrastructure for fully homomorphic encryption, lowering high-level programs to optimized FHE circuits targeting multiple back-end libraries and hardware accelerators.
+
+HEIR is an open-source compiler toolchain developed by Google, built on the **MLIR** (Multi-Level Intermediate Representation) framework. Where scheme-specific libraries (SEAL, OpenFHE, TFHE-rs) expose low-level APIs, HEIR provides *compiler abstractions* at multiple IR levels — from high-level program descriptions down to scheme-specific polynomial operations — enabling automated noise analysis, scheme selection, batching layout, and code generation targeting SEAL, OpenFHE, TFHE-rs, or custom hardware accelerators.
+
+HEIR introduces a family of MLIR *dialects* for HE: a high-level `secret` dialect expressing computation over encrypted values, intermediate `bgv`/`ckks`/`lwe` dialects, and low-level polynomial dialects. This multi-level design lets researchers implement new optimization passes (rotation scheduling, ciphertext layout transformations, level assignment) without touching back-end code, and lets hardware designers plug in accelerator targets without changing the front-end. Zama's **Concrete** compiler also uses MLIR internally, and both projects are co-ordinating on standardizing shared HE dialects.
+
+| Layer | Purpose |
+|-------|---------|
+| `secret` dialect | Front-end: mark values as encrypted; scheme-agnostic |
+| `bgv` / `ckks` / `lwe` dialects | Mid-level: scheme-specific operations, noise tracking |
+| Polynomial dialect | Low-level: NTT, basis conversion, key-switch ops |
+| Back-ends | SEAL, OpenFHE, TFHE-rs, Verilog (HW) |
+
+**State of the art:** HEIR project [[1]](https://github.com/google/heir); WAHC 2024 workshop paper [[2]](https://homomorphicencryption.org/wp-content/uploads/2024/10/WAHC-HEIR_-A-Unified-Compiler-for-Fully-Homomorphic-Encryption.pdf). Recognized as the emerging standard compiler infrastructure for FHE research, analogous to LLVM for conventional compilers.
+
+---
+
+## Concrete & Concrete ML (Zama)
+
+**Goal:** End-to-end FHE compiler and privacy-preserving ML framework that automatically translates Python programs and scikit-learn / PyTorch models into TFHE-based encrypted equivalents, hiding all cryptographic complexity from developers.
+
+Zama's **Concrete** compiler is an MLIR-based toolchain that takes an annotated Python function, performs integer quantization, table-lookup decomposition, and parameter selection, then emits TFHE circuits executed by **TFHE-rs** (Zama's production Rust library). The key challenge solved is *programmable bootstrapping*: any univariate function on small integers can be evaluated during a single TFHE bootstrap, so Concrete decomposes arbitrary Python functions into a DAG of table lookups executable on encrypted integers.
+
+**Concrete ML** sits on top of Concrete and provides drop-in replacements for scikit-learn classifiers (logistic regression, decision trees, random forests, gradient boosted trees) and a PyTorch conversion path. Models are *quantization-aware trained* (QAT) or post-training quantized to 3–8 bits, then compiled to FHE circuits. Inference runs on encrypted data with no plaintext touching the server.
+
+| Layer | Tool | Role |
+|-------|------|------|
+| Crypto back-end | **TFHE-rs** (Rust) | Fast programmable bootstrapping |
+| Compiler | **Concrete** (MLIR/Python) | Python → TFHE circuit |
+| ML framework | **Concrete ML** (Python) | scikit-learn / PyTorch → FHE model |
+
+| Application | Capability |
+|-------------|-----------|
+| Classification (tree models) | Decision trees, random forests, XGBoost on encrypted data |
+| Neural networks | Quantized PyTorch models with encrypted inference |
+| Smart contracts | fhEVM — encrypted EVM state via TFHE-rs |
+
+**State of the art:** Concrete compiler [[1]](https://github.com/zama-ai/concrete); Concrete ML [[2]](https://github.com/zama-ai/concrete-ml); tree-based FHE inference paper [[3]](https://eprint.iacr.org/2023/258). Part of Zama's open-source FHE stack alongside [TFHE-rs](#homomorphic-encryption-he).
+
+---
+
 ## Gentry's Original FHE (Ideal Lattices)
 
 **Goal:** Compute arbitrary functions on ciphertext without decrypting. Craig Gentry's 2009 construction was the first scheme ever proven to support unbounded homomorphic computation, resolving a 30-year open problem.
@@ -111,6 +194,43 @@ Degree-2 FE captures a rich class of statistics: Euclidean norms, dot products, 
 | **Multi-Client IPFE** | 2019 | Selective, DDH | Multiple encryptors; joint inner product; no interaction [[1]](https://eprint.iacr.org/2017/972) |
 
 **State of the art:** Quadratic FE from pairings (Baltico et al.) is the most practical for single-input second-order functions. Adaptive security from k-Lin (Gay 2020) provides stronger guarantees. These schemes bridge [Inner-Product FE](#attribute-based--functional-encryption) and [Multi-Input FE](#attribute-based--functional-encryption) in the functional encryption hierarchy.
+
+---
+
+## Function-Hiding Inner-Product Functional Encryption (FH-IPFE)
+
+**Goal:** Compute the inner product ⟨**x**, **y**⟩ between an encrypted vector **x** and a key vector **y** while hiding *both* vectors — the decryptor learns only the inner product, nothing about either input individually.
+
+Standard [Inner-Product FE (IPFE)](#quadratic--degree-2-functional-encryption) hides the plaintext vector **x** but reveals the key vector **y** (which is in the functional decryption key). Bishop, Jain, and Kowalczyk (ASIACRYPT 2015) introduced **function-hiding** IPFE: the decryption key for **y** is itself a *ciphertext* under a secret-key IPFE scheme, so **y** is computationally hidden from any party that cannot decrypt. The construction uses bilinear groups under the Symmetric External Diffie-Hellman (SXDH) assumption.
+
+Applications are numerous wherever the *query vector* is also sensitive: biometric authentication (template vector must stay private), nearest-neighbour search (query embedding must stay private), private neural-network inference (weight vectors are the model owner's intellectual property). The practical follow-up by Bishop, Jain, and Kowalczyk (SCN 2018, ePrint 2016/440) halved parameter sizes and demonstrated real-world performance.
+
+| Scheme | Year | Security | Note |
+|--------|------|----------|------|
+| **Bishop-Jain-Kowalczyk FH-IPFE** | 2015 | Selective, SXDH | First function-hiding IPFE; secret-key scheme; bilinear groups [[1]](https://eprint.iacr.org/2015/672) |
+| **FH-IPFE is Practical (Bishop et al.)** | 2018 | Selective, SXDH | Halved parameters; biometric auth and NN inference demo [[1]](https://eprint.iacr.org/2016/440) |
+| **Tightly Secure Multi-Input FH-IPFE (Tomida)** | 2019 | Tight, k-Lin | Tight security reduction; multi-input extension [[1]](https://link.springer.com/chapter/10.1007/978-3-030-34618-8_16) |
+
+**State of the art:** Bishop et al. (2018) for practical single-key FH-IPFE; Tomida (2019) for tight multi-input security. Extends [IPFE](#quadratic--degree-2-functional-encryption) to protect the function key as well as the data, enabling private ML model inference on encrypted inputs.
+
+---
+
+## Decentralized Multi-Client Functional Encryption (DMCFE)
+
+**Goal:** Compute a joint function (e.g., an inner product) over data contributed by multiple independent parties without any central trusted authority — neither a master-key holder nor a single encryptor.
+
+Standard [Multi-Input FE](#attribute-based--functional-encryption) requires a central authority to issue all functional keys. Multi-Client FE (MCFE) allows multiple senders but still requires a central key authority. **Decentralized MCFE (DMCFE)**, introduced by Chotard, Dufour-Sans, Gay, Phan, and Pointcheval (ASIACRYPT 2018), removes the central authority entirely: each client independently holds a share of the master secret, and functional decryption keys are generated *non-interactively* (only setup requires interaction) by the clients themselves using a distributed key-generation protocol.
+
+The practical DMCFE construction for inner products operates as follows. Each client *i* holds a local secret key `sk_i`. To encrypt input `x_i`, client *i* produces a ciphertext `ct_i`. To generate a functional decryption key for weight vector **y** = (y₁, …, yₙ), each client *i* independently computes a key share `dk_i^y` from `sk_i` and `y_i` (no interaction). The aggregator combines `{dk_i^y}` and `{ct_i}` to recover ⟨**x**, **y**⟩ = Σ xᵢ · yᵢ without learning any individual `x_i`. Security relies on the DDH assumption over prime-order groups (the 2018/1021 improvement) or pairings (the original 2017/989 version).
+
+| Scheme | Year | Assumption | Note |
+|--------|------|------------|------|
+| **DMCFE-IP (Chotard et al.)** | 2018 | MDDH / pairings | First DMCFE; inner product; setup interaction only [[1]](https://eprint.iacr.org/2017/989) |
+| **DMCFE-IP from DDH (Chotard et al.)** | 2018 | DDH | Pairing-free variant; practical over standard groups [[1]](https://eprint.iacr.org/2018/1021) |
+| **Decentralizing IPFE (Chotard-Dufour-Sans-Gay-Pointcheval)** | 2019 | DDH / MDDH | Framework with stronger security notions; PKC 2019 [[1]](https://link.springer.com/chapter/10.1007/978-3-030-17259-6_5) |
+| **Verifiable DMCFE (ASIACRYPT 2023)** | 2023 | MDDH | Adds output verifiability; malicious-client resilience [[1]](https://eprint.iacr.org/2023/268) |
+
+**State of the art:** DDH-based DMCFE (Chotard et al. 2018) for practical deployments; verifiable DMCFE (2023) for settings with potentially malicious clients. Combines [Multi-Input FE](#attribute-based--functional-encryption) and [Multi-Authority ABE](#multi-authority-abe) ideas to achieve fully decentralized fine-grained computation on encrypted data.
 
 ---
 

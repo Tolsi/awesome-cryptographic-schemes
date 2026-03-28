@@ -547,3 +547,167 @@ Both PoSt variants are also Groth16 SNARKs, compressing large Merkle proofs to ~
 **State of the art:** SDR PoRep and PoSt are deployed on Filecoin mainnet (launched 2020). Original PoRep paper (Fisch et al.) [[1]](https://eprint.iacr.org/2018/678); Filecoin Proof of Useful Space technical report [[2]](https://research.protocol.ai/publications/filecoin-proof-of-useful-space/giacomelli2023.pdf). See [Groth16 / Zcash Sapling zk-SNARK](#groth16--zcash-sapling-zk-snark), [Proof of Work / Proof of Space](#proof-of-work-pow--proof-of-space).
 
 ---
+
+## EIP-4844 Proto-Danksharding (Blob Transactions + KZG Ceremony)
+
+**Goal:** Introduce a new transaction type carrying temporary "blobs" of data to Ethereum — committed via KZG polynomial commitments over BLS12-381 — so that rollups can post data cheaply without paying calldata gas, reducing L2 fees by ~10× as the first step toward full Danksharding.
+
+**Motivation:** Before EIP-4844, rollups (Optimism, Arbitrum, zkSync, Starknet) posted compressed transaction data as Ethereum calldata, paying full execution-gas prices. EIP-4844 adds a separate, cheaper data "blob" lane whose contents are deleted by consensus nodes after ~18 days — long enough for fraud-proof windows — while the KZG commitment persists on-chain forever.
+
+**Cryptographic design:**
+
+Each blob is a polynomial `f(x)` of degree 4095 over the BLS12-381 scalar field F_r:
+
+| Component | Mechanism |
+|-----------|-----------|
+| Blob data | 4096 field elements × 32 bytes = 131,072 bytes (~125 KB) of raw data |
+| KZG commitment | 48-byte compressed G1 point: `C = f(τ)·G₁` (evaluated at secret τ from trusted setup) |
+| KZG proof | 48-byte G1 point proving evaluation `f(z) = y` at any challenge point z |
+| Versioned hash | `SHA256(commitment)[1:]` prefixed with version byte `0x01`; stored on-chain permanently |
+| Point evaluation precompile | EIP-4844 adds `0x0a`: given `(commitment, z, y, proof)`, verifies `f(z) = y` using a KZG pairing check on BLS12-381 |
+
+**KZG pairing check:** `e(proof, [τ - z]₂) == e(commitment - [y]₁, G₂)` — one pairing equation verifiable in ~3 ms.
+
+**Trusted setup ceremony (Powers of Tau):**
+
+The KZG setup requires a structured reference string `(τ⁰G₁, τ¹G₁, …, τ⁴⁰⁹⁵G₁, τ⁰G₂, τ¹G₂)` where τ is never known to anyone. The EIP-4844 ceremony ran from January–March 2023:
+
+| Metric | Value |
+|--------|-------|
+| Total contributions | 141,416 participants |
+| Setup security | Sound if ≥ 1 participant destroyed their τ shard |
+| Curve | BLS12-381 (same as Ethereum BLS signatures, Zcash) |
+| Output SRS | 4096 G1 points + 2 G2 points (65 KB) |
+
+This is the largest cryptographic trusted setup ceremony ever conducted.
+
+**Blob lifecycle:**
+
+```
+Rollup submits blob transaction
+  │
+  ├─ Execution layer: stores versioned_hash (32 bytes) permanently
+  │
+  ├─ Consensus layer (Beacon chain): propagates full blob (~125 KB) via p2p
+  │   └─ Verifies KZG commitment matches blob contents
+  │
+  └─ After ~4096 epochs (~18 days): blob data pruned by consensus nodes
+      (execution-layer commitment + versioned hash remain forever)
+```
+
+**Per-block blob capacity:** EIP-4844 targets 3 blobs/block (max 6), each ~125 KB → ~375 KB/block of rollup data at ~5–10× lower cost than equivalent calldata.
+
+**Deployed:** Ethereum Cancun-Deneb upgrade, March 13 2024. Immediately reduced rollup fees 5–10×. Full Danksharding (64 blobs/block + DAS) is planned as the next step and reuses this same KZG commitment infrastructure.
+
+**State of the art:** EIP-4844 live on Ethereum mainnet (March 2024). Specification [[1]](https://eips.ethereum.org/EIPS/eip-4844); KZG ceremony [[2]](https://ceremony.ethereum.org/). See [Data Availability Sampling](#data-availability-sampling-das), [ZK Rollups](#zk-rollups-and-optimistic-rollups), [Commitment Schemes](categories/09-commitments-verifiability.md#commitment-schemes).
+
+---
+
+## Mina Protocol — Pickles Recursive SNARK (22 KB Blockchain)
+
+**Goal:** Maintain a succinct blockchain of constant size (~22 KB) by using recursive zk-SNARKs to compress the entire chain history into a single proof — so any light client can verify the whole chain state from genesis with a single proof check, regardless of chain length.
+
+**Core insight:** Instead of replaying all transactions, Mina keeps a single proof `π_n` that attests: "there exists a valid chain of n blocks starting from genesis." When block n+1 arrives, the prover generates `π_{n+1}` that proves "π_n was valid AND block n+1 transitions the state correctly." Verification cost is O(1) regardless of chain length.
+
+**Proof system — Pickles over Pasta curves:**
+
+Recursive SNARKs require verifying one proof inside the circuit of another. This demands that the circuit arithmetic match the proof system's native field. Mina uses a 2-cycle of elliptic curves (the **Pasta** cycle) so that each curve's scalar field is the other's base field — eliminating expensive field-mismatch operations:
+
+| Curve | Role | Field size |
+|-------|------|-----------|
+| **Pallas** | "Wrap" circuit (Tock); verifies Vesta proofs | 255-bit scalar |
+| **Vesta** | "Step" circuit (Tick); verifies Pallas proofs | 255-bit scalar |
+
+**Kimchi proof system:** Mina's underlying SNARK is Kimchi — a modified PLONK variant using an Inner Product Argument (IPA) commitment scheme (no pairing, no trusted setup). IPA provides ~O(log n) proof size with no structured reference string.
+
+| Component | Mechanism |
+|-----------|-----------|
+| Polynomial commitments | IPA over Pasta curves (no trusted setup) |
+| Constraint system | Kimchi (PLONK variant with custom gates) |
+| Recursion | Pickles — alternating Tick/Tock proofs over Pallas/Vesta |
+| Block proof size | ~22 KB (fixed, independent of chain length) |
+| Verification | Single recursive proof check; ~200 ms on commodity hardware |
+
+**zkApps (programmable privacy):** Since every Mina account can carry a SNARK proof of its state, smart contracts ("zkApps") are zero-knowledge by default. A zkApp circuit runs client-side; the on-chain state update is accompanied by a Pickles proof of correct execution — users never reveal private inputs to the network.
+
+**State of the art:** Mina mainnet launched March 2021; Kimchi replaced the earlier Groth16-based system in 2022. Pickles specification [[1]](https://o1-labs.github.io/proof-systems/pickles/overview.html); Pasta curves [[2]](https://o1-labs.github.io/proof-systems/specs/pasta.html); technical overview [[3]](https://minaprotocol.com/blog/22kb-sized-blockchain-a-technical-reference). See [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems-overview), [Groth16 / Zcash Sapling zk-SNARK](#groth16--zcash-sapling-zk-snark).
+
+---
+
+## Solana Proof of History (PoH)
+
+**Goal:** Provide a cryptographic clock — a globally verifiable, append-only record of the passage of real time — so that Solana validators can timestamp events without communicating with each other, enabling sub-second block times and parallelized transaction processing.
+
+**Construction:** PoH is a sequential Verifiable Delay Function (VDF) using SHA-256. The leader validator runs a tight loop:
+
+```
+state₀ = initial_hash
+stateₙ₊₁ = SHA256(stateₙ)
+```
+
+Every ~400,000 iterations (~400 ms), the current `(count, stateₙ)` is checkpointed and broadcast. Transactions are mixed into the hash stream by appending their hash as additional input: `stateₙ₊₁ = SHA256(stateₙ || tx_hash)`. This "embeds" each transaction at a specific counter position, providing a cryptographic timestamp.
+
+**Why it is a VDF:** SHA-256 is a sequential pre-image resistant function — each output depends on the previous output, so computing state_n requires n sequential hash evaluations. Parallelism does not help (no brute-force shortcut exists short of 2^128 cores). Any other validator can verify the sequence in parallel (each step is independent to check) at a fraction of the generation time.
+
+**Role in consensus:**
+
+| Component | Mechanism |
+|-----------|-----------|
+| PoH leader | Single designated validator generates the hash stream; acts as the network clock |
+| Tower BFT | Solana's PoS consensus uses PoH timestamps to order votes; validators lock stake behind PoH slots |
+| Gulf Stream | Transaction forwarding to the upcoming leader before their slot begins, enabled by the predictable PoH schedule |
+| Turbine | Block propagation uses PoH slot timing to pipeline data across the validator tree |
+
+**Security model:** PoH does not by itself prevent the leader from censoring or reordering transactions — Tower BFT (a BFT variant of PBFT) provides safety and liveness. PoH provides a verifiable ordering substrate, not consensus. A malicious leader's PoH stream is detectable because honest validators also run their own local PoH clocks; large deviations are slashable.
+
+**Performance:** At ~400 ms slots with ~50,000 transactions per second, Solana's PoH enables one of the highest throughputs of any L1 (2025). The SHA-256 loop runs at ~500 MHz on modern CPUs, producing ~400,000 hashes/second.
+
+**State of the art:** PoH deployed on Solana mainnet since March 2020. Whitepaper (Yakovenko, 2017) [[1]](https://solana.com/solana-whitepaper.pdf); blog post [[2]](https://medium.com/solana-labs/proof-of-history-a-clock-for-blockchain-cf47a61a9274). See [Verifiable Delay Functions](categories/09-commitments-verifiability.md#verifiable-delay-functions-vdf), [Linear BFT Consensus](#linear-bft-consensus-hotstuff--tendermint).
+
+---
+
+## Polkadot BABE/GRANDPA Hybrid Consensus
+
+**Goal:** Combine fast probabilistic block production (BABE) with a provably final BFT finality gadget (GRANDPA) to give Polkadot both high throughput and economic finality — finalizing entire chain prefixes (not individual blocks) in one round, enabling fast cross-chain messaging via IBC/XCM.
+
+**Two-layer design:**
+
+| Layer | Protocol | Purpose | Cryptography |
+|-------|----------|---------|-------------|
+| Block production | **BABE** (Blind Assignment for Blockchain Extension) | Probabilistic leader election; slot-based | VRF (Sr25519 / Ristretto255) |
+| Finality | **GRANDPA** (GHOST-based Recursive Ancestor Deriving Prefix Agreement) | BFT finality gadget; votes on chains not blocks | Ed25519 individual votes |
+
+**BABE — VRF-based slot assignment:**
+
+Each validator evaluates a VRF with their secret key over the current epoch randomness and slot number. If `VRF_output < threshold`, they are the primary slot leader. Secondary (round-robin) assignments prevent empty slots. The VRF proof is included in the block header, allowing any observer to verify the leader was legitimately elected without revealing the validator's advantage in future slots.
+
+**GRANDPA — chain-voting finality:**
+
+GRANDPA voters cast votes on the *highest block* they believe is valid, rather than on individual blocks. The algorithm derives the block with a supermajority (> 2/3 stake) among all ancestor chains:
+
+```
+Round r:
+  1. Prevote: each validator signs (round, block_hash) with Ed25519
+  2. Precommit: after seeing ≥ 2/3 prevotes for a chain prefix
+  3. Commit: block B is finalized when ≥ 2/3 precommits exist
+     for B and all ancestors of B are transitively finalized
+```
+
+Key property: GRANDPA finalizes entire chain prefixes in one message round — if validators have converged on a long chain, thousands of blocks finalize simultaneously. This is much faster than finalizing block-by-block.
+
+**Cryptographic primitives:**
+
+| Primitive | Usage |
+|-----------|-------|
+| Sr25519 (Schnorr / Ristretto255) | BABE VRF proofs; account signatures |
+| Ed25519 | GRANDPA vote signatures |
+| BLS (planned/BEEFY) | BEEFY gadget — BLS aggregate finality proofs for light clients and bridges |
+| BEEFY | BLS-based finality commitment scheme enabling compact Merkle Mountain Range proofs for bridges |
+
+**BEEFY (Bridge Efficiency Enabling Finality Yielding):** An additional gadget on top of GRANDPA that produces BLS aggregate signatures over Merkle Mountain Range (MMR) commitments of the finalized chain. These compact proofs (one BLS signature per epoch) enable Polkadot's parachains to bridge to Ethereum and other chains with minimal on-chain verification cost.
+
+**Fault tolerance:** Safe under ≤ 1/3 Byzantine stake for both BABE and GRANDPA. GRANDPA tolerates ≤ 1/5 Byzantine nodes even in asynchronous conditions (partial sync fallback).
+
+**State of the art:** BABE/GRANDPA deployed on Polkadot mainnet (launched May 2020); BEEFY deployed for Polkadot–Ethereum bridge (2023). GRANDPA paper (Stewart & Kokoris-Kogia, 2020) [[1]](https://arxiv.org/abs/2007.01560); Web3 Foundation overview [[2]](https://wiki.polkadot.com/learn/learn-consensus/). See [Linear BFT Consensus](#linear-bft-consensus-hotstuff--tendermint), [Casper FFG](#casper-ffg--ethereum-proof-of-stake-finality), [Aggregate Signatures (BLS)](categories/08-signatures-advanced.md#aggregate-signatures-bls-aggregate).
+
+---

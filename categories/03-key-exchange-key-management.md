@@ -464,3 +464,185 @@ The "tls13 " prefix domain-separates TLS 1.3 outputs from any other HKDF use of 
 **State of the art:** RFC 8446 (2018) [[1]](https://www.rfc-editor.org/rfc/rfc8446); full security proof by Dowling, Fischlin, Günther, and Stebila (Journal of Cryptology 2021) [[2]](https://eprint.iacr.org/2020/1044.pdf). Key-schedule-only security analysis: [[3]](https://eprint.iacr.org/2021/467.pdf). Related to [Password-Based Key Derivation (KDF)](#password-based-key-derivation-kdf--pake) and [SIGMA Protocol](#sigma-protocol-sign-and-mac).
 
 ---
+
+## FFDHE — Named Finite-Field DH Groups (RFC 7919)
+
+**Goal:** Standardize a fixed set of auditable, safe-prime Diffie-Hellman groups for TLS, eliminating the Logjam vulnerability caused by weak or server-chosen custom groups — replacing ad-hoc DHE parameter negotiation with IANA-registered named groups analogous to named elliptic curves.
+
+The Logjam attack (2015) demonstrated that 512-bit and 768-bit DH groups used in TLS were broken by state-level precomputation, and that even 1024-bit groups were within reach. The root cause was that TLS allowed the server to supply arbitrary DH parameters with no proof of provenance or minimum strength. RFC 7919 (2016) resolves this by defining five named FFDHE groups with "nothing-up-my-sleeve" moduli derived from the leading digits of e, and registering them as TLS `NamedGroup` codepoints alongside ECDH curves.
+
+**Named groups defined by RFC 7919:**
+
+| Group | Modulus size | Security (bits) | TLS codepoint |
+|-------|-------------|-----------------|---------------|
+| **ffdhe2048** | 2048 bits | ~112 | 256 |
+| **ffdhe3072** | 3072 bits | ~128 | 257 |
+| **ffdhe4096** | 4096 bits | ~140 | 258 |
+| **ffdhe6144** | 6144 bits | ~150 | 259 |
+| **ffdhe8192** | 8192 bits | ~160 | 260 |
+
+**Group construction:** All moduli are safe primes p = 2q+1 (order-q subgroup). The middle bits of p are determined by the decimal expansion of e (base of natural logarithm), providing a verifiable "random" structure that rules out trapdoored primes. The high and low 64 bits are all 1s for efficient Montgomery/Barrett reduction.
+
+**Key exchange flow (TLS 1.2 DHE with ffdhe):**
+1. Client advertises `ffdhe2048` (or higher) in `supported_groups` extension
+2. Server selects a group from the intersection; sends `ServerKeyExchange` with DH public value g^y mod p
+3. Client sends g^x mod p; both compute shared secret g^(xy) mod p
+4. Shared secret is passed to the PRF to derive session keys
+
+**Why not ECDH instead?** ECDH (X25519) is preferred for new deployments due to smaller keys and faster computation. FFDHE serves legacy stacks and regulatory requirements (e.g., some government profiles mandate finite-field DH), and remains the only DHE option for TLS 1.2 code paths that do not support ECDH.
+
+**TLS 1.3 note:** RFC 8446 extends the `NamedGroup` registry to include ffdhe groups alongside secp* and x25519/x448. TLS 1.3 mandates ephemeral key exchange, so FFDHE in TLS 1.3 is always forward-secret.
+
+**State of the art:** RFC 7919 (2016) [[1]](https://www.rfc-editor.org/rfc/rfc7919). NIST SP 800-77 Rev 1 recommends 2048-bit minimum. Logjam paper [[2]](https://weakdh.org/imperfect-forward-secrecy-ccs15.pdf). Related to [Key Exchange / Key Agreement](#key-exchange--key-agreement) and [TLS 1.3 Key Schedule](#tls-13-key-schedule).
+
+---
+
+## WireGuard Cryptographic Protocol
+
+**Goal:** A modern, minimal VPN tunnel with a fixed, non-negotiable cryptographic suite and a 1-RTT handshake — achieving mutual authentication, forward secrecy, and post-compromise security in roughly 4,000 lines of auditable kernel code, orders of magnitude smaller than IPsec or OpenVPN.
+
+WireGuard (Donenfeld, NDSS 2017) instantiates Trevor Perrin's Noise Protocol Framework with the `Noise_IKpsk2_25519_ChaChaPoly_BLAKE2s` construction. Unlike TLS or IKEv2, there is no cipher-suite negotiation — the entire cryptographic stack is fixed, eliminating downgrade attacks entirely.
+
+**Fixed cryptographic suite:**
+
+| Function | Algorithm | Role |
+|----------|-----------|------|
+| DH | X25519 (Curve25519) | Ephemeral and static key exchange |
+| AEAD | ChaCha20-Poly1305 | Authenticated encryption of handshake and data |
+| Hash | BLAKE2s | Chaining and key derivation |
+| KDF | HKDF (via BLAKE2s HMAC) | Deriving session keys from DH outputs |
+| PSK | Optional 256-bit pre-shared key | Post-quantum layer (psk2 modifier) |
+
+**Noise_IKpsk2 handshake (simplified):**
+
+```
+Static keys:    (s_I, S_I) for initiator; (s_R, S_R) for responder (known to initiator)
+Ephemeral keys: (e_I, E_I) per-handshake for initiator; (e_R, E_R) for responder
+
+Message 1 (Initiation):
+  E_I, AEAD(h, DH(e_I, S_R), S_I), AEAD(h, DH(s_I, S_R), timestamp)
+
+Message 2 (Response):
+  E_R, AEAD(h, DH(e_R, E_I) || DH(e_R, S_I) || psk, "")
+
+→ Both derive symmetric session keys: (send_key, recv_key) from the chaining state
+```
+
+The handshake chaining state h absorbs every message field; the final HKDF output is bound to the full transcript, providing identity protection for the initiator and mutual authentication.
+
+**Security properties (formally verified):**
+- Mutual authentication — impersonation requires breaking X25519
+- Forward secrecy — ephemeral E_I, E_R discarded after handshake
+- Post-compromise security — new ephemeral keys per session limit exposure
+- Initiator identity hidden from passive observers (S_I encrypted under S_R)
+- Optional PSK provides a post-quantum hedge against future CRQC
+
+**Cookie mechanism:** WireGuard's DoS resistance relies on a MAC1/MAC2 cookie system — unauthenticated clients receive a cookie derived from their IP address that must be echoed back, preventing amplification attacks without a full handshake.
+
+**Transport data:** After handshake, each IP packet is wrapped in: `{receiver_index (4B) | counter (8B) | AEAD(session_key, counter, packet)}`. The 8-byte counter provides replay protection; nonces are never reused.
+
+**State of the art:** Original paper [[1]](https://www.wireguard.com/papers/wireguard.pdf) (Donenfeld, NDSS 2017); formal mechanized proof in ProVerif/Tamarin [[2]](https://www.wireguard.com/papers/wireguard-formal-verification.pdf); merged into Linux kernel 5.6 (2020). PQ-WireGuard extension (Hülsing et al.) adds Kyber for hybrid PQ key exchange [[3]](https://eprint.iacr.org/2020/379). Related to [Noise Framework](#key-exchange--key-agreement) and [Key Exchange / Key Agreement](#key-exchange--key-agreement).
+
+---
+
+## PKIX / X.509 v3 Certificate Profile (RFC 5280)
+
+**Goal:** Define the precise wire format, extension semantics, and validation algorithm for X.509 v3 certificates and v2 Certificate Revocation Lists (CRLs) used in Internet PKI — the structural specification that every TLS connection, S/MIME message, and code-signing system relies upon.
+
+The ITU-T X.509 standard defines the abstract ASN.1 structure of certificates. RFC 5280 (PKIX WG, 2008) profiles X.509 for Internet use: it mandates a subset of extensions, specifies Internet name forms (SAN, subjectAltName), and defines the path validation algorithm that browsers and TLS stacks implement.
+
+**X.509 v3 certificate structure (DER-encoded ASN.1):**
+
+```
+Certificate ::= SEQUENCE {
+  tbsCertificate   TBSCertificate,    -- to-be-signed portion
+  signatureAlgorithm AlgorithmIdentifier,
+  signatureValue   BIT STRING         -- CA's signature over tbsCertificate
+}
+
+TBSCertificate ::= SEQUENCE {
+  version         [0] INTEGER (v3 = 2),
+  serialNumber    INTEGER,
+  signature       AlgorithmIdentifier,
+  issuer          Name,               -- CA's distinguished name
+  validity        Validity,           -- notBefore, notAfter
+  subject         Name,               -- cert subject DN
+  subjectPublicKeyInfo SubjectPublicKeyInfo,
+  extensions      [3] SEQUENCE OF Extension   -- v3 only
+}
+```
+
+**Mandatory extensions (PKIX profile):**
+
+| Extension | OID | Purpose |
+|-----------|-----|---------|
+| **Subject Alternative Name (SAN)** | 2.5.29.17 | DNS names, IPs, email; replaces CN for hostname binding |
+| **Basic Constraints** | 2.5.29.19 | `cA: TRUE/FALSE`; `pathLenConstraint` caps chain depth |
+| **Key Usage** | 2.5.29.15 | `digitalSignature`, `keyEncipherment`, `keyCertSign`, etc. |
+| **Extended Key Usage** | 2.5.29.37 | `serverAuth`, `clientAuth`, `codeSigning`, `emailProtection` |
+| **Authority Key Identifier** | 2.5.29.35 | Links cert to issuer's public key |
+| **CRL Distribution Points** | 2.5.29.31 | URL(s) to fetch CRL for revocation |
+| **Authority Info Access** | 1.3.6.1.5.5.7.1.1 | OCSP responder URL + CA issuer URL |
+
+**Path validation algorithm (RFC 5280 §6):**
+
+1. Build a chain from leaf → intermediates → trust anchor (root CA in trust store)
+2. For each certificate in chain: verify signature, check validity period, check `basicConstraints.cA`, enforce `pathLenConstraint`
+3. Check name constraints — issuer can restrict subtrees of names subordinate CAs may certify
+4. Check key usage and extended key usage for the leaf cert
+5. Check revocation (CRL or OCSP) for each non-root cert
+
+**Name forms (SAN, RFC 5280 §4.2.1.6):**
+
+| Type | Example | Use |
+|------|---------|-----|
+| `dNSName` | `example.com` | TLS server authentication |
+| `iPAddress` | `192.0.2.1` | IP SAN for server certs |
+| `rfc822Name` | `user@example.com` | S/MIME email certs |
+| `uniformResourceIdentifier` | `https://…` | Code signing, LDAP |
+
+**Wildcard certificates:** A single `*.example.com` SAN matches one label deep — `foo.example.com` but not `foo.bar.example.com`. Multi-SAN certs list explicit names.
+
+**State of the art:** RFC 5280 (2008) [[1]](https://www.rfc-editor.org/rfc/rfc5280); updated by RFC 8398 (internationalized email in SANs) and RFC 9549 (algorithm agility). Baseline Requirements (CA/Browser Forum) [[2]](https://cabforum.org/baseline-requirements/) constrain what WebPKI CAs may issue. Related to [ACME Protocol](#acme-protocol--automated-certificate-management), [Certificate Transparency](#certificate-transparency-ct), and [DANE](categories/14-applied-infrastructure-pki.md#dane--dns-based-authentication-of-named-entities).
+
+---
+
+## Station-to-Station (STS) Protocol
+
+**Goal:** The first practical authenticated Diffie-Hellman key exchange — augment the original 1976 DH protocol with digital signatures to provide mutual authentication and forward secrecy, blocking both passive eavesdroppers and active man-in-the-middle attackers.
+
+STS was proposed by Diffie, van Oorschot, and Wiener (1992) as a response to the man-in-the-middle vulnerability of unauthenticated DH. Each party signs the concatenation of the two DH public values under their long-term key, and encrypts the signature under the derived session key to hide identities from passive observers. STS is the direct precursor to SIGMA; it was widely deployed in early SSH and influenced IKEv1.
+
+**Three-message protocol:**
+
+```
+Shared params: prime p, generator g
+
+Alice → Bob:  g^x mod p
+Bob → Alice:  g^y mod p,  E_K(SIG_B(g^y, g^x),  CERT_B)
+Alice → Bob:              E_K(SIG_A(g^x, g^y),  CERT_A)
+
+where K = KDF(g^(xy))
+```
+
+Each signature covers both DH values in order, binding the key exchange to the authenticated identities.
+
+**Security properties:**
+- Mutual authentication — both parties prove knowledge of their private signing key
+- Forward secrecy — compromise of long-term signing keys does not expose past session keys (ephemeral x, y discarded)
+- Identity protection — signatures and certificates encrypted under K; passive observers see only DH values
+
+**Known flaw (identity misbinding):** STS does not MAC the *peer's* identity under K — only signs DH values. A subtle attack by Krawczyk (2003) shows a misbinding attack where a legitimate participant can be made to share a key with an unintended peer. This is exactly the flaw that [SIGMA](#sigma-protocol-sign-and-mac) was designed to fix by adding MAC_K(own_identity).
+
+**Deployments and influence:**
+
+| System | Relationship to STS |
+|--------|---------------------|
+| SSH-1 | Direct STS descendant (signature over DH values) |
+| IKEv1 (Main Mode) | STS-inspired with certificates |
+| IKEv2 | Replaced by SIGMA-I construction |
+| TLS 1.2 (DHE_RSA) | Signature over ServerKeyExchange (partial STS) |
+
+**State of the art:** Original paper [[1]](https://link.springer.com/article/10.1007/BF00124891) (Diffie, van Oorschot, Wiener, 1992). Superseded by [SIGMA](#sigma-protocol-sign-and-mac) in all modern designs. Still historically important as the root of authenticated key exchange. Related to [Key Exchange / Key Agreement](#key-exchange--key-agreement) and [SIGMA Protocol](#sigma-protocol-sign-and-mac).
+
+---

@@ -174,3 +174,64 @@
 **State of the art:** Planted clique is a clean average-case assumption with growing cryptographic applications; hardness is supported by failure of spectral, SDP, and statistical-query algorithms up to clique size O(√n). Complements [theoretical foundations](categories/19-theoretical-foundations.md) on leakage-resilient and circular-security assumptions.
 
 ---
+
+## Bootstrapping iO: Functional Encryption → iO
+
+**Goal:** Establish the foundational equivalence between indistinguishability obfuscation and functional encryption. A single-key, compact functional encryption (FE) scheme — one where the encryption circuit runs in time polynomial in the input length, independent of the function's description size — is sufficient to generically bootstrap full iO for all circuits. This 2015 equivalence (proved independently by two groups) revealed FE as the minimal assumption needed for iO and anchored subsequent "from well-founded assumptions" constructions.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Bitansky-Vaikuntanathan FE → iO** | 2015 | Sub-exp single-key compact FE | Independently show sub-exp secure compact FE implies iO; establishes equivalence up to sub-exponential security loss [[1]](https://eprint.iacr.org/2015/163) |
+| **Ananth-Jain FE → iO (CRYPTO 2015)** | 2015 | Single-key compact FE for NC¹ | Construct iO for all circuits from any single-key FE for NC¹ that is selectively secure against sub-exp adversaries and has compact encryption [[1]](https://eprint.iacr.org/2015/173) |
+| **FE → iO via garbling (Ananth et al.)** | 2016 | Single-key FE + garbled circuits | Simplify the reduction by combining FE with Yao garbling; FE for NC¹ suffices rather than FE for all circuits [[1]](https://eprint.iacr.org/2015/730) |
+| **When does FE imply iO? (Agrikola et al.)** | 2017 | FE compactness characterizations | Characterize exactly which compactness conditions on FE are necessary and sufficient to bootstrap iO [[1]](https://eprint.iacr.org/2017/943) |
+
+**State of the art:** The FE ↔ iO equivalence is now a cornerstone result: building FE from well-studied assumptions (e.g., LWE, bilinear maps) is the main route to iO, exploited by Jain-Lin-Sahai (2021). Relates to [iO](#indistinguishability-obfuscation-io), [multilinear maps](#multilinear-maps), and [functional encryption](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption-abe--fe).
+
+---
+
+## Hyperplane Membership Obfuscation
+
+**Goal:** VBB obfuscation for algebraic membership tests. Obfuscate a program that, given an input vector **v**, tests whether **v** lies on a fixed secret hyperplane (or affine subspace) over a finite field — and outputs only a single bit. Unlike point functions (single secret input), hyperplane membership is a richer algebraic predicate, and achieving VBB security requires stronger assumptions. This is one of the few families of non-trivial programs for which virtual black-box obfuscation is achievable.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Canetti-Rothblum-Varia hyperplane obfuscation** | 2010 | Strong DDH variant | First VBB obfuscation for hyperplane membership of constant dimension over a finite field; application to signatures [[1]](https://link.springer.com/chapter/10.1007/978-3-642-11799-2_5) |
+| **Barak et al. hypersurface obfuscation** | 2014 | Multilinear maps | Extends VBB obfuscation from hyperplanes to bounded-degree algebraic hypersurfaces using graded encoding schemes [[1]](https://eprint.iacr.org/2013/451) |
+| **Obfuscation of evasive algebraic set membership** | 2024 | Pairing-based / DDH | Further generalizes to obfuscating membership in evasive algebraic sets; provides updated constructions and security analysis [[1]](https://www.aimsciences.org//article/doi/10.3934/amc.2024014) |
+
+**State of the art:** Canetti-Rothblum-Varia (2010) remains the canonical VBB construction for hyperplane membership; security relies on a strong DDH variant rather than multilinear maps. Complements [point function obfuscation](#point-function-obfuscation--digital-locker) as the next step in the hierarchy of achievable VBB obfuscation.
+
+---
+
+## Null iO (Obfuscation for Always-Zero Circuits)
+
+**Goal:** A weakening of iO applicable to circuits that always output 0. Null iO guarantees that any two circuits computing the constant-zero function have computationally indistinguishable obfuscations — even if the circuits have very different structure. Null iO is weaker than full iO but already implies non-trivial witness encryption and compute-and-compare obfuscation, and it can be constructed from LWE without multilinear maps.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Non-trivial WE and null-iO from standard assumptions** | 2017 | LWE + evasive assumptions | Show that compute-and-compare obfuscation (Wichs-Zirdelis) implies non-trivial WE and null-iO; first null-iO candidate from standard-like lattice assumptions [[1]](https://eprint.iacr.org/2017/874) |
+| **Null-iO from LWE via compute-and-compare (Wichs-Zirdelis)** | 2017 | LWE | Obfuscate compute-and-compare programs under LWE using a restricted use of GGH15 graph-induced maps provably secure under LWE; implies null-iO [[1]](https://eprint.iacr.org/2017/276) |
+| **Null-iO from evasive LWE (Vaikuntanathan et al.)** | 2022 | Evasive LWE | Show that evasive LWE directly implies null-iO and non-trivial witness encryption; cleaner construction than GGH15-based approaches [[1]](https://eprint.iacr.org/2022/1140) |
+| **Quantum null-iO** | 2021 | Quantum iO assumptions | Extends null-iO to quantum circuits; implies WE for QMA, NIZK for QMA, and ABE for BQP [[1]](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ITCS.2022.15) |
+
+**State of the art:** Null-iO is achievable from LWE-based assumptions (evasive LWE, 2022) and from compute-and-compare obfuscation (2017). It serves as a stepping stone between [witness encryption](#witness-encryption) and full [iO](#indistinguishability-obfuscation-io), and is closely linked to [evasive LWE](#evasive-lwe--tensor-lwe) and [point function obfuscation](#point-function-obfuscation--digital-locker).
+
+---
+
+## Zeroizing Attacks on Multilinear Maps
+
+**Goal:** Document the systematic cryptanalysis of all known multilinear map candidates. Zeroizing attacks exploit the ability to obtain encodings of zero at the target level: from such zero-encodings, attackers can perform algebraic manipulations that recover secret parameters or break semantic security. All three major candidates — GGH13, CLT13, and GGH15 — have been broken in various settings by zeroizing and annihilation attacks, motivating the move to assumption-based iO (Jain-Lin-Sahai 2021) that avoids multilinear maps entirely.
+
+| Attack / Result | Year | Target | Note |
+|-----------------|------|--------|------|
+| **Hu-Jia zeroizing attack on GGH13** | 2016 | GGH13 | Break the natural one-round k-partite key agreement built on GGH13; exploits low-level encodings of zero [[1]](https://eprint.iacr.org/2015/546) |
+| **Cheon et al. attack on CLT13** | 2015 | CLT13 | Total break of CLT13: all secret parameters are efficiently recoverable via zeroizing; the integer-based construction provides no resistance [[1]](https://link.springer.com/chapter/10.1007/978-3-662-46800-5_1) |
+| **Miles-Sahai-Zhandry annihilation attacks** | 2016 | GGH13 iO | Extend beyond zeroizing to non-linear annihilation attacks; break iO candidates built on GGH13 even without encodings of zero [[1]](https://eprint.iacr.org/2016/147) |
+| **Cryptanalysis of GGH15** | 2016 | GGH15 | Zeroizing attacks on GGH15-based iO and multilinear maps; graph-induced structure does not prevent leakage [[1]](https://link.springer.com/chapter/10.1007/978-3-662-53008-5_21) |
+| **Return of GGH15 (provable security)** | 2018 | GGH15 | Restricted re-use of GGH15 with provable security against zeroizing attacks under LWE; enables compute-and-compare obfuscation [[1]](https://eprint.iacr.org/2018/511) |
+| **New CLT multilinear map (CLT15)** | 2015 | CLT follow-up | Coron-Lepoint-Tibouchi propose a revised integer-based construction at CRYPTO 2015; also broken by subsequent zeroizing attacks [[1]](https://eprint.iacr.org/2015/975) |
+
+**State of the art:** No multilinear map candidate is considered secure for general use as of 2024; restricted usage (e.g., GGH15 for compute-and-compare under LWE) remains viable. The failure of all candidates directly motivated the [Jain-Lin-Sahai iO](#indistinguishability-obfuscation-io) construction, which avoids graded encodings entirely. See also [multilinear maps](#multilinear-maps) and [evasive LWE](#evasive-lwe--tensor-lwe).
+
+---

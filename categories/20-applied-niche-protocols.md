@@ -200,3 +200,72 @@ The core challenge is the "last-revealer problem": in a commit-reveal protocol t
 **State of the art:** VRF-based lotteries (used in Cardano, Algorand, Ethereum RANDAO) for blockchain leader election; Bitcoin-collateral protocols for fully trustless settings. See [VRF](#verifiable-random-function-vrf) and [Randomness Beacons](#randomness-beacons).
 
 ---
+
+## MarkPledge: Cast-as-Intended Verifiable Voting
+
+**Goal:** Give a voter immediate, human-verifiable assurance that the voting terminal encrypted the intended candidate — without requiring the voter to trust any software or hardware and without leaving a usable receipt.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **MarkPledge (Neff)** | 2004 | ZK proof + voter challenge | Voter issues a random challenge; terminal produces a short "pledge string" (4–5 chars) proving correct encryption; voter compares strings [[1]](https://www.usenix.org/legacy/events/evt06/tech/full_papers/adida/adida.pdf) |
+| **MarkPledge2 / Ballot Casting Assurance (Adida-Neff)** | 2006 | ZK + simulated proofs | All candidates get a proof transcript — one real, rest simulated; coercer cannot tell which was genuine; first covert-channel-resistant, receipt-free cast-as-intended scheme usable without trusted hardware [[1]](https://eprint.iacr.org/2008/207) |
+| **MarkPledge3 (MP3)** | 2009 | Optimized ZK | Most efficient MarkPledge variant; shorter ballot; statistical soundness of 1 − 2⁻²⁰ to 1 − 2⁻³⁰ [[1]](https://www.usenix.org/legacy/events/evtwote09/tech/full_papers/adida-casting.pdf) |
+
+The key insight is that the terminal can prove correct encryption by running a ZK proof where the voter supplies the challenge (so the terminal cannot pre-compute a cheating response). Because all candidates receive a proof transcript — one genuinely verified, the rest simulated — a coercer holding the voter's receipt cannot determine which candidate was actually chosen, eliminating the covert channel problem that plagued earlier cast-as-intended schemes. The voter performs only short-string comparison; no cryptographic computation is needed on the voter's side.
+
+**State of the art:** MarkPledge2/MP3 remain the reference design for cast-as-intended verifiability in polling-place systems. The technique is orthogonal to the counted-as-cast layer provided by mixnets or homomorphic tallying; both layers must be combined for full E2E verifiability. Compare [Scantegrity II](#scantegrity-ii) (invisible-ink confirmation codes) and [STAR-Vote](#star-vote) (Benaloh challenge for the same cast-as-intended property).
+
+---
+
+## Wombat Voting System
+
+**Goal:** End-to-end verifiable voting that retains a physical paper trail. Voters mark a paper ballot that is scanned and encrypted on-site; a verifiable mixnet proves that the published encrypted ballots correctly decrypt to the announced tally, while the paper originals allow a conventional hand-recount as an independent check.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Wombat v1** | 2011 | Verificatum re-encryption mixnet | First deployment; student council election at IDC Herzliya (~2 000 voters); dual paper + cryptographic audit [[1]](https://wombat.factcenter.org/) |
+| **Wombat v2 / Ben-Nun et al.** | 2012 | Verificatum (Wikström TW mixnet) + paper ballot | Full academic description; Israeli Meretz party primary; paper ballots scanned, encrypted, shuffled via Verificatum; shuffle proven with Wikström's universally verifiable mixnet [[1]](https://dl.gi.de/items/2a8596f9-3105-487b-8336-67fab31d6f53) |
+
+The system's design principle is "dual-mode auditability": the paper ballots allow a traditional recount, while the cryptographic layer independently proves the electronic tally is correct. The underlying mixnet is Verificatum, which produces a zero-knowledge proof of correct shuffle verifiable by any third party. A voter who suspects their ballot was mis-scanned can demand a manual check of the paper original without undermining the cryptographic audit of all other ballots.
+
+**State of the art:** Wombat is one of the few E2E verifiable systems actually deployed in binding political elections (Meretz primary, Israel, 2012). Its "paper + cryptographic" dual-channel design influenced subsequent hybrid systems. The Verificatum mixnet it relies on is also used in the Swiss Post system. Compare [Prêt à Voter](#prêt-à-voter) (randomized candidate order on paper) and [Scantegrity II](#scantegrity-ii) (invisible-ink codes on optical scan).
+
+---
+
+## Cryptographic Sealed-Bid Auctions
+
+**Goal:** Conduct a sealed-bid auction — including Vickrey (second-price) and VCG (Vickrey-Clarke-Groves) multi-item auctions — so that no party learns any bid other than the minimum information implied by the outcome, while the winning price and allocation are publicly verifiable.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Franklin-Reiter Secure Auction Service** | 1996 | Threshold secret sharing + distributed servers | First cryptographic sealed-bid auction; bids secret-shared across servers; winner determined by threshold decryption only after bidding closes [[1]](https://ieeexplore.ieee.org/document/502223/) |
+| **Naor-Pinkas-Sumner Privacy-Preserving Auctions** | 1999 | Oblivious transfer + Yao's GC | First general MPC auction; any auction type computable as a circuit; auctioneer + issuer model; no bid revealed even to auctioneer if servers do not collude [[1]](https://doi.org/10.1145/336992.337028) |
+| **Kikuchi (M+1)-st Price Auction** | 2001 | Polynomial secret sharing | Bidding prices encoded as polynomials shared among auctioneers; winner found without revealing any losing bid [[1]](https://link.springer.com/chapter/10.1007/3-540-45664-3_8) |
+| **Abe-Suzuki M+1-st Price with HE** | 2002 | Homomorphic encryption | Comparison circuit replaced by additive HE; more efficient than OT-based approaches for multi-unit auctions [[1]](https://link.springer.com/chapter/10.1007/3-540-45664-3_8) |
+| **Brandt Fully Private Auctions** | 2006 | MPC with no TTP | First protocol with no auctioneer at all; all bidders jointly run MPC; unconditional privacy against minority coalitions [[1]](https://link.springer.com/article/10.1007/s10207-005-0078-5) |
+| **Secure Generalized VCG (Suzuki-Yokoo)** | 2003 | HE + combinatorial optimization | Extends HE-based Vickrey to multi-item VCG; bidders compute Clarke payments without revealing valuations [[1]](https://link.springer.com/chapter/10.1007/978-3-540-45126-6_17) |
+
+The core challenge is that the winner determination and payment rules in Vickrey/VCG auctions require comparing all bids — but revealing bids to a central auctioneer allows bid manipulation. MPC-based solutions remove the trusted auctioneer entirely. HE-based solutions let an auctioneer compute the winner and price on encrypted bids without learning individual values. In the VCG case the Clarke payment for each winner equals the externality they impose on others — computing this requires evaluating the social welfare optimization on all bids, which maps naturally to an MPC circuit or an FHE evaluation.
+
+**State of the art:** HE-based sealed-bid auctions (deployed in procurement and spectrum auctions); MPC-based VCG for settings requiring no trusted auctioneer. Related to [Sealed-Bid Auctions (ORAM/PIR based)](categories/10-privacy-preserving-computation.md#sealed-bid-auctions) and [MPC](#multi-party-computation).
+
+---
+
+## Blockchain-Based Voting: Deployments and Controversies
+
+**Goal:** Use a public blockchain as an immutable, publicly auditable ballot ledger — combining the transparency and tamper-resistance of distributed consensus with cryptographic vote privacy. In practice, deployed systems have exposed fundamental tensions between auditability, coercion-resistance, and software security.
+
+| System | Year | Basis | Note |
+|--------|------|-------|------|
+| **Agora** | 2018 | Permissioned blockchain + secret sharing | Deployed as parallel count in Sierra Leone presidential election; claimed tamper-proof audit trail; election commission did not officially recognize the parallel tally [[1]](https://cryptopapers.info/assets/pdf/agora.pdf) |
+| **Voatz** | 2018 | Permissioned blockchain + biometrics + mixnet | First blockchain voting app used in U.S. federal elections (West Virginia 2018 midterms, overseas military voters); reverse-engineered by MIT researchers in 2020 [[1]](https://www.usenix.org/conference/usenixsecurity20/presentation/specter) |
+| **MIT/Specter-Koppel-Weitzner Analysis of Voatz** | 2020 | Reverse engineering + threat model | Found passive network adversaries could recover secret ballots via side-channel; server could alter or drop votes; 79 findings (one-third high-severity); West Virginia dropped Voatz for 2020 primaries [[1]](https://www.usenix.org/system/files/sec20-specter.pdf) |
+| **Trail of Bits Voatz Audit** | 2020 | Code audit | Confirmed MIT findings; identified improper use of cryptographic algorithms and ad hoc cryptographic protocols; high-severity cryptographic flaws [[1]](https://blog.trailofbits.com/2020/03/13/our-full-report-on-the-voatz-mobile-voting-platform/) |
+
+The Voatz case is the most thoroughly analyzed failure in blockchain voting. Despite claiming security via blockchain immutability, biometric authentication, and a mixnet, the system's actual cryptographic implementation was ad hoc: a passive network observer could recover a voter's ballot via traffic analysis before the ballot reached any blockchain. The blockchain layer provided auditability of what the server recorded — not of what the voter intended. This illustrates a general problem: a blockchain guarantees that recorded votes are not altered after the fact, but provides no protection against a malicious app that records the wrong vote in the first place.
+
+Agora's Sierra Leone deployment was later clarified to be an independent parallel tally, not integrated into the official count — raising questions about what "blockchain-secured election" claims actually mean in practice.
+
+**State of the art:** Academic consensus (USENIX Security 2020, multiple National Academies reports) holds that internet voting — blockchain-based or otherwise — cannot currently meet the security requirements of public elections. The correct application of cryptographic techniques in voting is the approach of systems like [Helios](#end-to-end-verifiable-e-voting), [Belenios](#end-to-end-verifiable-e-voting), [STAR-Vote](#star-vote), and [Prêt à Voter](#prêt-à-voter), which use ZK proofs and verifiable mixnets rather than blockchain immutability as their security foundation.
+
+---
