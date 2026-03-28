@@ -439,3 +439,97 @@ The practical DMCFE construction for inner products operates as follows. Each cl
 **State of the art:** Lattice HVE for PQ; prime-order pairing HVE for efficiency. Generalizes [Searchable Encryption](#searchable-encryption-sse--peks) and specializes [Predicate Encryption](#attribute-based--functional-encryption).
 
 ---
+
+## FHE over the Integers (DGHV)
+
+**Goal:** Fully homomorphic encryption whose security reduces to arithmetic over the integers — conceptually simpler than lattice-based schemes — using the approximate GCD problem as the hardness assumption.
+
+Van Dijk, Gentry, Halevi, and Vaikuntanathan (EUROCRYPT 2010) proposed an FHE scheme entirely over the integers: the secret key is a large odd integer *p*; a ciphertext encrypting bit µ is an integer *c* = *p*·*q* + 2*r* + µ, where *q* is a large random integer and *r* is a small random noise term. Decryption is (*c* mod *p*) mod 2 = µ, provided |2*r*| < *p*/2. Homomorphic addition and multiplication are just integer addition and multiplication modulo a public bound; multiplication doubles the noise and roughly doubles the ciphertext bit-length. The key insight is that the computational problem of recovering *p* given many approximate multiples of *p* (approximate GCD) is believed to be hard.
+
+The public-key variant (Coron, Mandal, Naccache, Tibouchi — CRYPTO 2011) eliminates the need to transmit *p* by publishing a set of near-multiples. The scheme was made fully homomorphic via Gentry's squashing/bootstrapping paradigm (the decryption circuit is low-degree over the integers). While asymptotically less efficient than RLWE-based schemes, DGHV provided a concrete arithmetic interpretation of FHE that inspired subsequent analysis and the SIDH/isogeny-like design intuition.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DGHV** | 2010 | Approximate GCD | FHE over integers; conceptually simple; SHE + bootstrapping [[1]](https://eprint.iacr.org/2009/616) |
+| **DGHV public-key variant (CMNT)** | 2011 | Approximate GCD | Public-key; near-multiples as public parameters; practical for small λ [[1]](https://eprint.iacr.org/2011/159) |
+| **Batch DGHV (Coron et al.)** | 2013 | Approx. GCD + CRT | CRT packing to encrypt multiple bits per ciphertext; amortized cost improvement [[1]](https://eprint.iacr.org/2013/036) |
+
+**State of the art:** DGHV is superseded in performance by BFV/CKKS/TFHE but remains theoretically important as the first FHE construction without lattices. Its hardness reduction to approximate GCD is well-studied. Compare with [Gentry's Original FHE](#gentrys-original-fhe-ideal-lattices) (ideal lattices) and [GSW FHE](#gsw-gentry-sahai-waters-fhe) (LWE).
+
+---
+
+## NTRU-Based Encryption
+
+**Goal:** Lattice-based public-key encryption with practical performance, predating modern LWE/RLWE schemes. NTRU operates over polynomial rings and achieves small key sizes and fast arithmetic, motivating much of modern lattice cryptography.
+
+Proposed by Hoffstein, Pipher, and Silverman (NTRU Cryptosystems Inc., 1996; published ANTS 1998), NTRU is a polynomial-ring encryption scheme. The public key is **h** = *p* · **g** · **f**⁻¹ mod *q* in the ring ℤ[X]/(Xⁿ − 1); the secret key is the short polynomial **f** (with **f**⁻¹ mod *p* and **f**⁻¹ mod *q* precomputed). Encryption pads the message **m** with a random blinding polynomial **r** as **e** = **r** · **h** + **m** mod *q*; decryption multiplies by **f** and reduces mod *p*. Security relies on the *NTRU problem* — recovering short (**f**, **g**) from **h** — which is related to the shortest vector problem on NTRU lattices.
+
+NTRU influenced the design of RLWE-based schemes (BFV, CKKS) and multi-key FHE (López-Alt et al. 2012 used NTRU as the underlying ring problem). NTRUEncrypt was submitted to the NIST PQC standardization process (NIST Round 3 finalist, not selected for standardization in 2022 due to conservative security analysis concerns). NTRU Prime variants (Bernstein et al.) use the ring ℤ[X]/(Xⁿ − X − 1) to avoid the algebraic structure exploits that affect power-of-two cyclotomics.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **NTRU (HPS)** | 1998 | Polynomial ring, short vectors | Original NTRU encryption; small keys (700 B at λ=128) [[1]](https://link.springer.com/chapter/10.1007/BFb0054868) |
+| **NTRUSign** | 2001 | NTRU lattice | Signature scheme (later broken; full transcript attack) [[1]](https://eprint.iacr.org/2001/014) |
+| **NTRU Prime (Bernstein et al.)** | 2017 | Non-cyclotomic ring | Resists subfield and algebraic attacks; NIST PQC finalist [[1]](https://ntruprime.cr.yp.to/) |
+| **Multi-Key FHE from NTRU (López-Alt et al.)** | 2012 | NTRU lattice | First multi-key FHE; joint decryption by N parties [[1]](https://eprint.iacr.org/2011/613) |
+
+**State of the art:** NTRU Prime (Bernstein et al.) is actively maintained; NTRUEncrypt was a NIST PQC Round 3 finalist (not standardized). Modern lattice PQC (ML-KEM/Kyber) favors module-LWE, but NTRU's short-key design and ring structure remain influential. Related to [Multi-Key / Threshold FHE](#multi-key--threshold-fhe) and lattice schemes in [Post-Quantum Cryptography](categories/15-quantum-cryptography.md#post-quantum-cryptography-pqc).
+
+---
+
+## FHE Amortization & Batching (SIMD Packing)
+
+**Goal:** Reduce the per-element cost of homomorphic computation by encoding many independent plaintexts into a single ciphertext and operating on all of them in parallel — analogous to SIMD vectorization for conventional arithmetic.
+
+Modern FHE schemes operate over polynomial rings ℤ_q[X]/(Φ_n(X)) of degree *n* (typically 2¹⁰–2¹⁶). The Chinese Remainder Theorem (CRT) decomposition of the quotient ring identifies *n* (or *n*/2) independent "slots", each holding a separate plaintext value. A single ciphertext then encrypts a *vector* of plaintexts; a homomorphic operation on the ciphertext applies to all slots simultaneously. This SIMD batching technique, introduced by Smart and Vercauteren (2011) for BGV and adapted to BFV (Fan-Vercauteren 2012) and CKKS (Cheon et al. 2017), is the primary mechanism making FHE practical for machine learning and database workloads.
+
+Slot rotations — cyclic shifts of the plaintext vector within a ciphertext — are performed via Galois/Frobenius automorphisms of the ring; each rotation consumes one key-switching operation. Optimal rotation scheduling and linear-transformation decomposition (the "baby-step giant-step" (BSGS) technique, Halevi-Shoup 2014) minimizes rotation cost for matrix-vector products and is critical for neural-network inference layers.
+
+| Technique | Year | Scheme | Note |
+|-----------|------|--------|------|
+| **Smart-Vercauteren SIMD batching** | 2011 | BGV | CRT slots in cyclotomic ring; n plaintext values per ciphertext [[1]](https://eprint.iacr.org/2011/133) |
+| **CKKS SIMD (Cheon et al.)** | 2017 | CKKS | n/2 complex slots; canonical embedding of ℝⁿ/² [[1]](https://eprint.iacr.org/2016/421) |
+| **BSGS rotation scheduling (Halevi-Shoup)** | 2014 | BGV/BFV | Baby-step giant-step for low-rotation matrix-vector products [[1]](https://eprint.iacr.org/2014/106) |
+| **Diagonal matrix encoding (Halevi-Shoup)** | 2018 | CKKS/BGV | Diagonally encoded matmul for neural network layers [[1]](https://eprint.iacr.org/2018/244) |
+| **Efficient Bootstrapping via Amortization (Liu-Wang)** | 2023 | CKKS | Amortized CKKS bootstrapping: bootstrap n/2 slots at bulk cost [[1]](https://eprint.iacr.org/2023/014) |
+
+**State of the art:** SIMD batching is standard in all practical FHE deployments. BSGS rotation and diagonal matrix encoding (Halevi-Shoup) are implemented in OpenFHE, SEAL, and HElib. Amortized bootstrapping (2023) further reduces per-slot bootstrapping cost for CKKS. Closely related to [CKKS Approximate Arithmetic & Rescaling](#ckks-approximate-arithmetic--rescaling) and [HElib](#helib).
+
+---
+
+## Homomorphic Signatures
+
+**Goal:** Authenticate data while allowing untrusted parties to compute on it. A homomorphic signature scheme lets anyone aggregate or transform signed data — producing a valid signature on the function output — without access to the signing key. Enables verifiable delegation of computation on signed datasets.
+
+In a homomorphic signature scheme, a signer produces signatures σᵢ on dataset elements {mᵢ}. Given the signatures, any party can compute a signature σ_f on *f*(m₁, …, mₙ) for a supported function class *f* — without interacting with the signer. The verifier, given the public key and a description of *f*, accepts σ_f as authentic. Security requires that an adversary cannot produce a valid σ on any output outside the range of honest computations.
+
+Key constructions: Boneh and Freeman (2011) gave the first lattice-based homomorphic signature for linear functions (inner products over ℤ_p), built on the SIS problem. Catalano and Fiore (2013) extended to multilinear maps and arithmetic circuits. Gorbunov, Vaikuntanathan, and Wichs (2015) constructed fully homomorphic signatures for arbitrary polynomial-size circuits from standard lattice assumptions. Homomorphic signatures are related to [Homomorphic MACs](categories/09-commitments-verifiability.md#verifiable-computation-vc) (which require a secret verification key) and are used in verifiable computation and authenticated data structures.
+
+| Scheme | Year | Class | Note |
+|--------|------|-------|------|
+| **Boneh-Freeman Lattice HS** | 2011 | Linear functions | SIS-based; first lattice homomorphic signature [[1]](https://eprint.iacr.org/2010/543) |
+| **Catalano-Fiore HS** | 2013 | Arithmetic circuits (pairings) | Multilinear-map HS; extended to degree-d polynomials [[1]](https://eprint.iacr.org/2012/527) |
+| **Gorbunov-Vaikuntanathan-Wichs Leveled HS** | 2015 | Polynomial-size circuits | Fully homomorphic sig from lattices; circuit privacy; standard LWE [[1]](https://eprint.iacr.org/2014/463) |
+| **Context-Hiding HS (Fleischhacker et al.)** | 2016 | Linear / circuits | Hides intermediate computation path; output σ_f reveals nothing about σᵢ [[1]](https://eprint.iacr.org/2016/457) |
+
+**State of the art:** Lattice-based leveled homomorphic signatures (Gorbunov et al. 2015) support arbitrary circuits and achieve context-hiding. Applications include verifiable outsourced ML (model training on signed data), authenticated stream processing, and [Verifiable FHE](#verifiable-fhe). See also [Sanitizable Signatures](categories/08-signatures-advanced.md#sanitizable-signatures) for a related but weaker primitive.
+
+---
+
+## Single-Key vs. Multi-Key FHE
+
+**Goal:** Understand the design space between standard FHE (one key pair, one data owner) and multi-key FHE (data encrypted under independent keys can be jointly computed on). The choice determines deployment model, decryption trust assumptions, and performance.
+
+In *single-key FHE*, all ciphertexts are encrypted under a single public key controlled by one party (or a single key authority). This covers the standard BFV/BGV/CKKS/TFHE setting and is the deployment model for cloud analytics and ML-as-a-service where a single data owner outsources computation. In *multi-key FHE (MKFHE)*, ciphertexts encrypted under *different, independently generated* public keys can be combined into a joint ciphertext supporting homomorphic evaluation; decryption requires all key holders to participate (typically via a threshold or joint decryption protocol).
+
+The key trade-off: single-key FHE is more efficient (no key-extension overhead) but requires a shared key — impractical when data comes from mutually distrusting parties. MKFHE allows truly independent key generation but introduces *key extension* (converting a single-key ciphertext to a multi-key ciphertext online, after seeing all participating parties) and *noise growth* proportional to the number of parties N. Threshold FHE is a middle ground: keys are generated via a distributed key generation (DKG) protocol upfront, sharing a joint public key while distributing the secret; joint decryption requires a threshold of parties.
+
+| Model | Decryption | Key setup | Cost overhead | Reference construction |
+|-------|-----------|-----------|---------------|----------------------|
+| **Single-key FHE** | One party | None | Baseline | BFV/BGV/CKKS/TFHE [[1]](https://eprint.iacr.org/2011/277) |
+| **Multi-Key FHE** | All N parties (interactive) | Independent | O(N) noise growth; online key extension | López-Alt et al. 2012 NTRU-MKFHE [[1]](https://eprint.iacr.org/2011/613) |
+| **Multi-Key CKKS** | All N parties | Independent | Online expansion; practical for small N | Chen-Chillotti-Song 2019 [[1]](https://eprint.iacr.org/2019/524) |
+| **Threshold FHE (t-of-N)** | t parties | DKG upfront | Shamir share decryption; no online expansion | Boneh et al. 2018 [[1]](https://eprint.iacr.org/2017/257) |
+| **Universal Thresholdizer** | t-of-N | CRS-based | Convert any FHE to threshold post-hoc | Boneh-Garg-Gentry et al. 2018 [[1]](https://eprint.iacr.org/2017/257) |
+
+**State of the art:** Single-key CKKS/BFV/TFHE for cloud use cases; multi-key CKKS (Chen-Chillotti-Song) for federated settings; threshold BFV/CKKS via the Universal Thresholdizer (Boneh et al. 2018) for blockchain and MPC-in-the-head applications. See also [Multi-Key / Threshold FHE](#multi-key--threshold-fhe) and [Multi-Party Computation](categories/06-multi-party-computation.md#multi-party-computation-mpc).

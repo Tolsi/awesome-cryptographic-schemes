@@ -462,3 +462,79 @@
 **State of the art:** CDS from standard assumptions (DDH/LWE); building block for [PSI](#private-set-intersection-psi), [OT extension](#oblivious-transfer-ot), and [Garbled Circuits](#garbled-circuits-expanded).
 
 ---
+
+## Privacy-Preserving Contact Tracing (GAEN / DP-3T)
+
+**Goal:** Notify users of COVID-19 (or similar) exposure without revealing identities or location histories. Devices broadcast rotating pseudonymous Bluetooth beacons; a user who tests positive uploads their beacon keys to a server; all devices independently check for matches locally — the server never sees who met whom.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DP-3T (Decentralized Privacy-Preserving Proximity Tracing)** | 2020 | Ephemeral Bluetooth IDs + daily key rotation | Decentralized design: positive keys uploaded; each device downloads and checks locally; no central contact graph; EPFL/ETH Zurich [[1]](https://eprint.iacr.org/2020/399) |
+| **GAEN (Google/Apple Exposure Notifications)** | 2020 | DP-3T-inspired; TEP keys + RPI derivation | Rolling Proximity Identifiers derived from Temporary Exposure Keys via HKDF; deployed on 3B+ devices in 60+ countries; OS-level BLE integration [[1]](https://covid19.apple.com/contacttracing) |
+| **DESIRE (Dual-mode Exposure Notification)** | 2020 | GAEN + server-side PSI | Hybrid: supports both decentralized (GAEN) and server-side PSI matching; protects against false-positive injection attacks [[1]](https://eprint.iacr.org/2020/1072) |
+| **Private Automated Contact Tracing (PACT)** | 2020 | Chirp-based identifiers + local matching | MIT/CMU variant; uses audible chirps in addition to BLE; same local-check model as DP-3T [[1]](https://pact.mit.edu/wp-content/uploads/2020/04/The-PACT-protocol-specification-working-paper-2020-04-10-1.pdf) |
+
+**State of the art:** GAEN (Apple/Google production deployment) is the dominant system; DP-3T is the academic blueprint. Both avoid centralized contact graphs, unlike server-side tracing. Related to [Private Proximity Testing](#private-proximity-testing) and [Differential Privacy](#differential-privacy).
+
+---
+
+## Laconic OT and Laconic Cryptography
+
+**Goal:** Sublinear-communication oblivious transfer and related protocols. In standard OT, communication scales with the sender's database size. Laconic OT compresses the receiver's input (a large set or database) into a short digest; the sender then sends a single short message per OT instance, achieving communication independent of the receiver's input size. Enables private database queries with server-optimal communication.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Laconic OT (Cho-Döttling-Garg-Gupta-Miao-Mukherjee)** | 2017 | CDH + hash-and-garble | First laconic OT; receiver compresses n-bit string into O(λ) digest; sender sends O(1) per bit; bootstraps from 2-round PIR [[1]](https://eprint.iacr.org/2017/1155) |
+| **Laconic OT from CDH (Döttling-Garg)** | 2017 | CDH | Simpler construction; O(1) rounds; enables 2-round MPC with CDH [[1]](https://eprint.iacr.org/2017/585) |
+| **Laconic Private Set Intersection (Döttling et al.)** | 2020 | Laconic OT + OKVS | PSI where sender's message size is independent of receiver's set; enables cloud-optimal PSI [[1]](https://eprint.iacr.org/2019/1256) |
+| **Laconic Function Evaluation (LFE)** | 2022 | Laconic OT + garbling | Generalization: evaluate any circuit C on sender's input x where the digest encodes C; communication O(|x|) independent of |C| [[1]](https://eprint.iacr.org/2022/1614) |
+
+**State of the art:** Laconic OT (2017) is the foundational primitive; LFE (2022) is the most general form. Laconic cryptography is related to [Oblivious Transfer](#oblivious-transfer-ot) (in `06-multi-party-computation.md`) and complements [PIR](#private-information-retrieval-pir) by reversing which party has the large input. See also [Laconic Cryptography](categories/16-obfuscation-advanced-hardness.md#laconic-cryptography) in the obfuscation category.
+
+---
+
+## Keyword PIR
+
+**Goal:** Retrieve a database record by keyword (arbitrary string key) rather than by numeric index. Standard PIR hides which row index is fetched; Keyword PIR hides which key is queried from a key-value database. Removes the requirement for the client to know the database layout or item positions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Keyword PIR from OKVS (Chou-Lepoint)** | 2022 | OKVS + SealPIR | Encode key-value map with OKVS; run standard PIR on the encoded structure; first efficient keyword PIR [[1]](https://eprint.iacr.org/2022/875) |
+| **Labeled PSI as Keyword PIR (Chen et al.)** | 2021 | BFV FHE + OPRF | Unbalanced labeled PSI doubles as keyword PIR for small-client-set against large server; CCS 2021 [[1]](https://eprint.iacr.org/2021/1116) |
+| **Piano (Liu-Yanai)** | 2024 | LWE + offline hints | Sublinear-time keyword PIR; client downloads O(√n) hints offline; O(√n) online server work; practical for DNS/PKI lookups; IEEE S&P 2024 [[1]](https://eprint.iacr.org/2023/452) |
+| **MulPIR / Batch Keyword PIR** | 2021 | BFV vectorization | Amortize multiple keyword queries in a single FHE ciphertext; throughput-optimized [[1]](https://eprint.iacr.org/2019/1503) |
+
+**State of the art:** Piano (2024) for sublinear-time keyword PIR; OKVS-based keyword PIR for single queries. Directly extends [PIR](#private-information-retrieval-pir) and relies on [OKVS](#oblivious-key-value-store-okvs); used for private DNS resolution and private certificate transparency lookups.
+
+---
+
+## Unbalanced PSI (Client-Server PSI at Scale)
+
+**Goal:** Private set intersection when one set (the server's) is orders of magnitude larger than the other (the client's). Standard PSI communication scales with both set sizes; unbalanced PSI achieves communication proportional only to the smaller client set, making it practical for contact discovery against billion-item databases.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Unbalanced PSI via Cuckoo Hashing + OT (Pinkas et al.)** | 2019 | OT + cuckoo hashing | Client set drives cuckoo table; server set encoded in simple hash table; linear in client set size; CCS 2019 [[1]](https://eprint.iacr.org/2019/723) |
+| **Unbalanced PSI from FHE (Chen et al.)** | 2021 | BFV + OPRF batching | Server encodes its set with OPRF; client sends encrypted queries; server homomorphically matches; O(|client|·√|server|) communication; CCS 2021 [[1]](https://eprint.iacr.org/2021/1116) |
+| **SpOT-Light (Pinkas-Rosulek-Trieu-Yanai)** | 2019 | OT + polynomial hashing | Compact PSI; O(|client| log |server|) communication; suited for mobile clients [[1]](https://eprint.iacr.org/2019/548) |
+| **Private Contact Discovery (Signal)** | 2023 | Unbalanced PSI + SGX | Production system; client checks ~1024 contacts against billion-user database in ~2 sec using hardware-assisted unbalanced PSI [[1]](https://eprint.iacr.org/2023/758) |
+
+**State of the art:** Signal's contact discovery (SGX-assisted, 2023) is the deployed benchmark; FHE-based unbalanced PSI (Chen et al.) is the leading software-only approach. Builds on [PSI](#private-set-intersection-psi) and [OKVS](#oblivious-key-value-store-okvs); see also [Labeled PSI and Private Intersection-Sum](#labeled-psi-and-private-intersection-sum-psi-sum) for payload-bearing variants.
+
+---
+
+## Homomorphic Encryption for ML Inference (CryptoNets)
+
+**Goal:** Run neural network inference on encrypted client data. The server holds a trained model; the client encrypts their input and sends it; the server evaluates the network homomorphically and returns an encrypted prediction. The server never sees the raw input; the client never sees the model weights (optionally). Used for private medical diagnostics, biometric matching, and financial scoring.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CryptoNets (Gilad-Bachrach et al.)** | 2016 | YASHE (RLWE) | First deep neural network inference on RLWE-encrypted data; MNIST 99% accuracy; ~250 s/query; ICML 2016 [[1]](https://www.microsoft.com/en-us/research/publication/cryptonets-applying-neural-networks-to-encrypted-data-with-high-throughput-and-accuracy/) |
+| **LoLa (Brutzkus et al.)** | 2019 | CKKS + packing | Low-latency CryptoNets variant; ~2.2 s/image on CIFAR-10; exploits SIMD packing; ICML 2019 [[1]](https://arxiv.org/abs/1812.10659) |
+| **GAZELLE (Juvekar et al.)** | 2018 | HE + garbled circuits hybrid | HE for linear layers, garbled circuits for non-linear (ReLU) layers; 1000× speedup over pure HE for ReLU [[1]](https://eprint.iacr.org/2018/073) |
+| **PEGASUS (Lu et al.)** | 2021 | CKKS ↔ FHEW switching | Fast ReLU evaluation via scheme-switching between CKKS and FHEW; 50–100× faster non-linear evaluation vs. prior work; CCS 2021 [[1]](https://eprint.iacr.org/2020/1606) |
+| **HELiKs / Iron (Hao et al.)** | 2022 | CKKS + optimized packing | Transformer inference on encrypted data; enables private LLM queries; CCS 2022 [[1]](https://eprint.iacr.org/2022/1396) |
+
+**State of the art:** PEGASUS (2021) for fast ReLU via scheme switching; GAZELLE hybrid approach for practical CNNs; Iron/HELiKs for transformer models. Complements [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd--pate) (privacy during training) by providing privacy during inference. Relies on [Homomorphic Encryption](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-he) and [zkML](categories/04-zero-knowledge-proof-systems.md#zkml--verifiable-ml-inference) (for verifiable inference).
+
+---

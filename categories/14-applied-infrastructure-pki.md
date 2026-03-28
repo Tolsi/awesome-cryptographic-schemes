@@ -890,3 +890,5 @@ The GSMA operates a GSMA Certificate Issuer (CI) and issues Sub-CI certificates 
 **Deployment:** All modern flagship smartphones (2022+) support eSIM. Over 2.5 billion eSIM-capable devices shipped by 2024 (GSMA). Apple removed physical SIM entirely in US iPhone 14 (2022). SGP.32 (IoT) deployed in connected cars, smart meters, industrial M2M.
 
 **State of the art:** GSMA SGP.22 v3.1 (2023) [[1]](https://www.gsma.com/solutions-and-impact/technologies/esim/gsma_resources/sgp-22-v3-1/); SGP.32 v1.0 (2023) for IoT [[2]](https://www.gsma.com/solutions-and-impact/technologies/esim/esim-specification/). Post-quantum secure channel research active [[3]](https://eprint.iacr.org/2024/2005.pdf). See [EMV Cryptographic Authentication](#emv-cryptographic-authentication) and [TEE Remote Attestation](#tee-remote-attestation).
+
+---

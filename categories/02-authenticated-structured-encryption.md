@@ -479,3 +479,106 @@ The design targets VAES (vectorized AES-NI on AVX-512) for 4-lane parallel AES e
 **State of the art:** Rocca-S is the highest-throughput AEAD in software (>200 Gbps on AVX-512 VAES) and hardware (>2 Tbps). It is a research candidate for 6G infrastructure encryption. Deployment is premature pending deeper cryptanalysis and resolution of the key-commitment vulnerability. For comparison: AES-256-GCM reaches ~4–10 Gbps in software; AEGIS-128L reaches ~30–50 Gbps; Rocca-S targets a different performance tier entirely.
 
 ---
+
+## ECIES (Elliptic Curve Integrated Encryption Scheme)
+
+**Goal:** Public-key encryption of arbitrary-length messages using elliptic-curve Diffie-Hellman for key agreement. ECIES combines ECDH key agreement, a key-derivation function, a symmetric cipher, and a MAC into a single encryption primitive — the practical EC equivalent of DHIES and the predecessor to the cleaner HPKE standard.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DHIES (Abdalla-Bellare-Rogaway)** | 2001 | DH | Formal security foundation; IND-CCA2 under CDH; template for ECIES [[1]](https://eprint.iacr.org/1999/007) |
+| **ECIES (ANSI X9.63)** | 2001 | ECDH | ANSI standard; KDF = X9.63-KDF (ECDH output ‖ counter ‖ SharedInfo hashed with SHA-2) [[1]](https://www.secg.org/sec1-v2.pdf) |
+| **ECIES (IEEE 1363a)** | 2004 | ECDH | IEEE variant; flexible KDF and MAC choices [[1]](https://standards.ieee.org/ieee/1363a/1282/) |
+| **ECIES (ISO/IEC 18033-2)** | 2006 | ECDH | ISO variant used in smart-card and PKI toolkits [[1]](https://www.iso.org/standard/37971.html) |
+| **HPKE (RFC 9180)** | 2022 | DHKEM | Clean successor to ECIES; see [Hybrid Public Key Encryption](#hybrid-public-key-encryption-hpke) [[1]](https://www.rfc-editor.org/rfc/rfc9180) |
+
+**Construction:** The sender generates an ephemeral ECDH key pair, derives a shared secret via ECDH with the recipient's static public key, feeds the shared secret through a KDF (typically ANSI X9.63-KDF or HKDF) to obtain an encryption key and a MAC key, encrypts the message with a symmetric cipher (AES-CBC or AES-CTR), and appends a MAC tag. The ephemeral public key is sent alongside the ciphertext. The recipient reverses the process using their static private key.
+
+**ANSI X9.63-KDF:** `KDF(Z, keydatalen, SharedInfo) = H(Z ‖ Counter ‖ SharedInfo)` where Z is the ECDH shared secret, Counter starts at 0x00000001, and H is SHA-256 or SHA-512. Multiple hash iterations are concatenated if more key material is needed.
+
+**Interoperability issues:** ECIES has no single canonical form — ANSI X9.63, IEEE 1363a, and ISO 18033-2 differ in KDF, MAC placement, and point encoding, causing library incompatibilities. HPKE (RFC 9180) was designed partly to eliminate this fragmentation.
+
+**State of the art:** ECIES remains widely deployed in TLS 1.2 handshakes, S/MIME, OpenPGP, and hardware security modules. New protocols should prefer HPKE (RFC 9180), which has a cleaner security proof, explicit mode separation, and IETF standardization. ECIES is still the default in many HSM and PKI vendor APIs as of 2026.
+
+---
+
+## XSalsa20 and XChaCha20 (Extended-Nonce Stream Ciphers)
+
+**Goal:** Extend the nonce of Salsa20 and ChaCha20 from 64 bits to 192 bits so that nonces can be safely chosen uniformly at random without birthday-bound collision risk — enabling long-lived symmetric keys to encrypt large numbers of messages without nonce management infrastructure.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Salsa20** | 2005 | ARX stream cipher | 64-bit nonce; birthday collision expected after ~2³² messages [[1]](https://cr.yp.to/snuffle/spec.pdf) |
+| **HSalsa20** | 2008 | Salsa20 core | Key derivation subroutine: `(key, 128-bit input) → 256-bit subkey`; no nonce output [[1]](https://cr.yp.to/snuffle/xsalsa20-20110204.pdf) |
+| **XSalsa20** | 2011 | HSalsa20 + Salsa20 | 192-bit nonce; `subkey = HSalsa20(key, nonce[0:16])`; stream from `Salsa20(subkey, nonce[16:24])` [[1]](https://cr.yp.to/snuffle/xsalsa20-20110204.pdf) |
+| **HChaCha20** | 2015 | ChaCha20 core | ChaCha20 analogue of HSalsa20; maps `(key, 128-bit input) → 256-bit subkey` [[1]](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha) |
+| **XChaCha20** | 2015 | HChaCha20 + ChaCha20 | 192-bit nonce; same two-level construction applied to ChaCha20 [[1]](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha) |
+| **XChaCha20-Poly1305** | 2015 | XChaCha20 + Poly1305 | Full AEAD; 192-bit nonce; default in libsodium `crypto_secretbox` [[1]](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha) |
+
+**Construction:** XSalsa20 uses a two-level derivation. The first 16 bytes of the 24-byte nonce are fed into HSalsa20 together with the 256-bit key to produce a 256-bit subkey. The remaining 8 bytes serve as the nonce for a standard Salsa20 call with the subkey. Because the subkey is pseudorandom over a 256-bit space for each distinct 16-byte nonce prefix, the effective key is freshly derived per message and the nonce collision problem is eliminated.
+
+**Why it matters:** Standard Salsa20/ChaCha20 have 64-bit nonces. A birthday collision is expected after 2³² ≈ 4 billion messages with random nonce selection — feasible in large-scale messaging or bulk file encryption. XSalsa20/XChaCha20 push this boundary to 2⁹⁶ random nonces before a collision is expected, making random nonce selection safe for any realistic deployment lifetime.
+
+**State of the art:** XSalsa20 is the stream cipher underlying libsodium's `crypto_secretbox_xsalsa20poly1305`. XChaCha20-Poly1305 is the preferred modern variant, supported in libsodium, OpenSSL 3.x, and Tink. An IRTF CFRG Internet-Draft for XChaCha20 exists but has not been published as an RFC as of 2026.
+
+---
+
+## AES-CCM* (IEEE 802.15.4 / ZigBee)
+
+**Goal:** A parameterized variant of AES-CCM for IEEE 802.15.4 low-power wireless networks (ZigBee, Thread, Matter) that supports encryption-only, authentication-only, and combined enc+auth modes via a single security-level field — using only AES-128 and targeting 8-bit microcontrollers and sub-GHz radio chips.
+
+| Scheme | Year | Standard | Note |
+|--------|------|----------|------|
+| **AES-CCM** | 2004 | NIST SP 800-38C | Base CCM: always provides both confidentiality and authentication [[1]](https://nvlpubs.nist.gov/nistpubs/legacy/sp/nistspecialpublication800-38c.pdf) |
+| **AES-CCM*** | 2006 | IEEE 802.15.4-2006 Annex B | Extends CCM to support three security modes via a 3-bit security level field in the MAC header [[1]](https://standards.ieee.org/ieee/802.15.4/5226/) |
+| **ZigBee Security** | 2012 | ZigBee specification §4 | ZigBee network and application layers use CCM* with AES-128 and 64-bit nonces [[1]](https://zigbeealliance.org/) |
+| **Thread / Matter** | 2015/2022 | Thread 1.x, Matter 1.x | Thread link-layer security uses 802.15.4 CCM*; Matter applies AES-CCM at the network layer [[1]](https://www.threadgroup.org/) |
+
+**CCM* vs CCM:** CCM* generalizes standard CCM by allowing the authentication tag length `M` to be set to 0 (encryption only, no authentication). A 3-bit security level field in the 802.15.4 MAC frame header selects among eight modes combining AES-CTR encryption and a 0-, 4-, 8-, or 16-byte MIC. Security level 4 (encryption without authentication) exists but must never be used in practice — it provides no integrity protection and is vulnerable to chosen-ciphertext attacks.
+
+**Nonce construction:** The 13-byte CCM* nonce is constructed from the source IEEE 802.15.4 address (8 bytes) concatenated with the frame counter (4 bytes) and the security level (1 byte), preventing nonce reuse across devices and security modes.
+
+**State of the art:** AES-CCM* remains the mandatory link-layer cipher in IEEE 802.15.4 and all its derived stacks (ZigBee, Thread, Matter, 6LoWPAN). Hardware AES-128 accelerators in 802.15.4 radio chips (TI CC26xx, Nordic nRF52/nRF53, Silicon Labs EFR32) implement CCM* natively in the radio MAC hardware. Not suitable for general-purpose use — prefer [AES-CCM](#aes-ccm-counter-with-cbc-mac) (NIST) or AES-GCM for non-constrained environments.
+
+---
+
+## CAESAR Lightweight Winners (ACORN, GIFT-COFB)
+
+**Goal:** Authenticated encryption for extremely constrained hardware — RFID tags, sensor nodes, 8-bit microcontrollers — where gate count, power, and per-bit latency dominate over throughput. The CAESAR competition (2014–2019) lightweight-use-case category produced co-winners ACORN and GIFT-COFB, each demonstrating a distinct minimal-area design strategy.
+
+| Scheme | Year | Design strategy | State | Area | Note |
+|--------|------|----------------|-------|------|------|
+| **ACORN-128** | 2019 | 6-LFSR stream cipher | 293 bits | ~1 600 GE | CAESAR lightweight winner; 1 bit/cycle; 128-bit security [[1]](https://competitions.cr.yp.to/caesar-submissions.html) |
+| **GIFT-COFB** | 2019 | GIFT-128 block cipher + COFB mode | 128 bits | ~1 733 GE | CAESAR lightweight co-winner; NIST LWC finalist [[1]](https://giftcipher.github.io/gift/) |
+| **Grain-128AEAD** | 2019 | NFSR+LFSR stream cipher | 256 bits | ~2 000 GE | CAESAR lightweight candidate; hardware-oriented [[1]](https://grain-128aead.github.io/) |
+| **Ascon-128** | 2023 | Duplex sponge | 320 bits | ~2 006 GE | NIST LWC winner; supersedes CAESAR lightweight winners for new designs [[1]](https://ascon.iaik.tugraz.at/) |
+
+**ACORN-128:** Uses six feedback shift registers totalling 293 bits with non-linear mixing and conditional feedback. Processes one bit per clock cycle; fits in approximately 1 600 gate equivalents — among the smallest AEAD implementations ever standardized. Nonce-respecting; nonce reuse reveals the keystream. Selected as a CAESAR co-winner in the lightweight category.
+
+**GIFT-COFB:** Built on GIFT-128, a 128-bit block cipher derived from PRESENT with a simplified key schedule optimized for hardware. COFB (Combined Feedback) is a single-pass AEAD mode that processes one 128-bit block per cipher call using a half-block feedback mechanism for authentication, requiring no second pass. GIFT-128 achieves approximately 1 733 GE in ASIC. GIFT-COFB was a CAESAR lightweight co-winner and also a NIST LWC finalist (2023), ultimately losing to Ascon.
+
+**CAESAR competition context:** The CAESAR competition (Competition for Authenticated Encryption: Security, Applicability, and Robustness) ran from 2014 to 2019, receiving 57 first-round submissions. The final portfolio named winners in three use cases: high-performance (AEGIS-128, OCB), lightweight (ACORN-128, GIFT-COFB), and defense-in-depth (Deoxys-II). The lightweight results directly seeded the NIST Lightweight Cryptography competition (2019–2023).
+
+**State of the art:** ACORN and GIFT-COFB are deployed in academic hardware prototypes and some IoT security chips. For new constrained-device designs, Ascon-128 (NIST SP 800-232, 2025) is now the preferred target — it has broader tooling, more implementation variants, and active standardization. GIFT-128 (the underlying block cipher) continues as a building block in other lightweight constructions.
+
+---
+
+## Camellia-GCM and ARIA-GCM
+
+**Goal:** GCM-mode AEAD using non-AES 128-bit block ciphers — Camellia (Japanese national standard) and ARIA (Korean national standard) — providing cryptographic diversity, regulatory compliance in Japan and South Korea, and an alternative cipher path in environments where reliance on a single cipher is undesirable.
+
+| Scheme | Year | Basis | Standard | Note |
+|--------|------|-------|----------|------|
+| **Camellia** | 2000 | 128-bit Feistel, 128/192/256-bit keys | ISO/IEC 18033-3, RFC 3713 | Joint NTT/Mitsubishi design; equivalent security margin to AES [[1]](https://info.isl.ntt.co.jp/crypt/camellia/) |
+| **Camellia-GCM (TLS)** | 2012 | Camellia + GHASH | RFC 6367 | TLS 1.2 cipher suites for Camellia-128-GCM and Camellia-256-GCM [[1]](https://www.rfc-editor.org/rfc/rfc6367) |
+| **ARIA** | 2003 | 128-bit SPN, 128/192/256-bit keys | Korean KCMVP, RFC 5794 | Korean national block cipher; AES-like SPN structure [[1]](https://www.rfc-editor.org/rfc/rfc5794) |
+| **ARIA-GCM (TLS)** | 2013 | ARIA + GHASH | RFC 6209 | TLS 1.2 cipher suites for ARIA-128-GCM and ARIA-256-GCM [[1]](https://www.rfc-editor.org/rfc/rfc6209) |
+| **ARIA-CCM (TLS)** | 2013 | ARIA + CBC-MAC | RFC 6209 | ARIA-CCM TLS suites for constrained Korean embedded stacks [[1]](https://www.rfc-editor.org/rfc/rfc6209) |
+
+**Why cipher diversity matters:** A single-cipher ecosystem concentrates cryptanalytic risk: a practical break in AES would compromise virtually all encrypted internet traffic. Camellia and ARIA provide drop-in alternatives with equivalent security margins and independent design lineages, allowing diverse deployment in critical infrastructure. Both are government-approved for national security use in Japan and South Korea respectively.
+
+**GCM compatibility:** GCM's authentication component (GHASH) is cipher-agnostic — it requires only a 128-bit block cipher to derive the authentication subkey H. Camellia-GCM and ARIA-GCM therefore inherit all of GCM's properties (parallelisable CTR encryption, single-pass, associated data support) with an identical API to AES-GCM. All nonce-misuse vulnerabilities of GCM apply equally.
+
+**State of the art:** Camellia-GCM and ARIA-GCM are deployed in TLS 1.2 stacks within Japanese and Korean government, financial, and defense networks. TLS 1.3 did not include Camellia or ARIA cipher suites in its mandatory set (only AES-GCM and ChaCha20-Poly1305), limiting these ciphers to TLS 1.2 and proprietary protocol stacks. OpenSSL ships Camellia support; ARIA is available in NSS and Korean-market TLS libraries.
+
+---

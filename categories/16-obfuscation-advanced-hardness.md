@@ -235,3 +235,87 @@
 **State of the art:** No multilinear map candidate is considered secure for general use as of 2024; restricted usage (e.g., GGH15 for compute-and-compare under LWE) remains viable. The failure of all candidates directly motivated the [Jain-Lin-Sahai iO](#indistinguishability-obfuscation-io) construction, which avoids graded encodings entirely. See also [multilinear maps](#multilinear-maps) and [evasive LWE](#evasive-lwe--tensor-lwe).
 
 ---
+
+## Constrained Pseudorandom Functions (CPRF)
+
+**Goal:** Delegation of PRF evaluation on a subset of inputs. A constrained PRF allows a master key holder to derive a *constrained key* that evaluates the PRF only on inputs satisfying a predicate C (e.g., a prefix, a range, or an arbitrary circuit), while revealing nothing about PRF values on other inputs. CPRFs generalise punctured PRFs (single-point constraint) and are the key tool for building attribute-based encryption, non-interactive key exchange, and verifiable random functions for structured input spaces.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BW13 CPRF (prefix constraints)** | 2013 | PRF + GGH multilinear maps | Boneh-Waters introduce CPRFs and construct them for bit-fixing, prefix, and NC¹ predicates; first general CPRF definition [[1]](https://eprint.iacr.org/2013/352) |
+| **KPTZ13 CPRF (punctured PRFs)** | 2013 | GGM tree + OWF | Kiayias-Papadopoulos-Triandopoulos-Zacharias independently define and build punctured PRFs (single-point CPRFs) for use in e-cash [[1]](https://eprint.iacr.org/2013/379) |
+| **SW14 puncturable PRF** | 2014 | GGM + PRG | Sahai-Waters give a clean puncturable PRF construction used to prove security of iO-based PKE; single-point constraint from OWF only [[1]](https://eprint.iacr.org/2014/539) |
+| **CPRF for circuits from iO (BW13)** | 2013 | iO + injective OWF | Constrain on arbitrary circuit predicates using iO; implies ABE, NIKE for bounded parties [[1]](https://eprint.iacr.org/2013/352) |
+| **Lattice CPRF for inner-product (BTVW17)** | 2017 | LWE | Banerjee-Fuchsbauer-Peikert-Pietrzak-Wolf construct CPRFs for inner-product predicates from LWE without iO; first post-quantum CPRF for non-trivial class [[1]](https://eprint.iacr.org/2017/004) |
+| **Constrained VRF (BCKL2023)** | 2023 | Bilinear maps | Constrained verifiable random functions: delegatable PRF with public verifiability of constrained outputs [[1]](https://eprint.iacr.org/2023/119) |
+
+**State of the art:** Punctured PRFs (single-point CPRFs) are constructible from any OWF via GGM; general-circuit CPRFs require iO or are built from LWE for specific function classes (inner product, NC¹). CPRFs underpin [iO](#indistinguishability-obfuscation-io)-based PKE constructions (Sahai-Waters 2014) and puncturable PRF-based proofs throughout [functional encryption](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption-abe--fe).
+
+---
+
+## Functional Encryption from iO
+
+**Goal:** Derive the full power of functional encryption from indistinguishability obfuscation. A functional encryption scheme for a function class F allows, given a ciphertext of x and a function key sk_f, to compute f(x) — but nothing more about x. Using iO, one can construct FE for all polynomial-time computable functions from minimal primitives (iO + OWF), establishing iO as a "crypto-complete" primitive. The converse — bootstrapping iO from compact FE — completes the equivalence.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **FE for all circuits from iO (Garg et al.)** | 2013 | iO + OWF | First construction of FE for all polynomial-time functions from iO and injective OWF; multi-input variant also shown [[1]](https://eprint.iacr.org/2013/763) |
+| **Sahai-Waters PKE/FE from iO** | 2014 | iO + puncturable PRF | Show iO + punctured PRFs (OWF) → public-key encryption and bounded-collusion FE; the "5-line PKE from iO" proof [[1]](https://eprint.iacr.org/2014/539) |
+| **Multi-input FE from iO (Goldwasser et al.)** | 2014 | iO + OWF | Functional encryption where a single key covers multiple ciphertexts encrypted by different parties; constructed from iO [[1]](https://eprint.iacr.org/2013/727) |
+| **FE → iO equivalence (Bitansky-Vaikuntanathan / Ananth-Jain)** | 2015 | Single-key compact FE | Sub-exp secure single-key compact FE ↔ iO; see [Bootstrapping iO](#bootstrapping-io-functional-encryption--io) [[1]](https://eprint.iacr.org/2015/163) |
+| **Unbounded FE from iO (Ananth-Sahai)** | 2016 | iO + LWE | Functional encryption for unbounded-length inputs from iO and LWE; extends prior constructions beyond fixed-size inputs [[1]](https://eprint.iacr.org/2015/163) |
+
+**State of the art:** iO is sufficient for FE for all circuits (2013); the equivalence with compact FE (2015) is now a cornerstone. Practical FE remains limited to specific function classes (inner product, quadratic) from bilinear maps or LWE without iO. See [bootstrapping iO](#bootstrapping-io-functional-encryption--io) and [ABE/FE](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption-abe--fe).
+
+---
+
+## Learning Parity with Noise (LPN) Assumption
+
+**Goal:** Hardness of decoding random linear codes over GF(2). Given a matrix A and a vector b = As + e where s is a secret and e is a sparse noise vector, recover s. LPN is believed hard even for quantum computers and lies at the foundation of symmetric-key primitives (HB authentication, LPN-based MACs), efficient MPC, and the Jain-Lin-Sahai iO construction. It is the binary analogue of LWE and admits extremely fast implementations.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **HB protocol (Hopper-Blum)** | 2001 | LPN | First authentication protocol from LPN; O(n) computation, provably secure against passive adversaries [[1]](https://link.springer.com/chapter/10.1007/3-540-44647-8_18) |
+| **HB+ (Juels-Weis)** | 2005 | LPN | Extends HB to active security; vulnerable to man-in-the-middle; launched line of LPN-based lightweight auth [[1]](https://eprint.iacr.org/2005/093) |
+| **Cryptography from Learning Parity with Noise (Lyubashevsky)** | 2005 | LPN | Formal study of LPN over GF(2) and GF(q); relationship to random linear codes; quantum hardness evidence [[1]](https://link.springer.com/chapter/10.1007/11538462_6) |
+| **LPN-based PRG / PRF** | 2012 | LPN | Pseudorandom generators and PRFs based on LPN; more efficient than lattice-based alternatives for constrained hardware [[1]](https://eprint.iacr.org/2011/494) |
+| **Alekhnovich encryption** | 2003 | LPN | Public-key encryption whose security reduces to LPN; first LPN-based PKE; ciphertexts are linear-size but message expansion is large [[1]](https://ieeexplore.ieee.org/document/1238197) |
+| **LPN in Jain-Lin-Sahai iO** | 2021 | LPN + LWE + PRG | LPN is one of the three well-studied assumptions underlying the first iO construction from standard-like assumptions [[1]](https://eprint.iacr.org/2020/1003) |
+
+**State of the art:** LPN is a widely trusted assumption with no known sub-exponential classical or quantum algorithms beyond the decoding bound; best attacks (BKW, Blum-Kalai-Wasserman) run in time 2^(n/log n). It is a core building block of lightweight cryptography and iO. Related to [LWE](categories/01-foundational-primitives.md) and [symmetric primitives](categories/01-foundational-primitives.md).
+
+---
+
+## Decisional Composite Residuosity (DCR) Assumption
+
+**Goal:** Hardness of distinguishing n-th power residues from random elements in Z*_{n²}. The DCR assumption, introduced by Paillier (1999), asserts that, given a composite n = pq, it is computationally hard to decide whether a random element of Z*_{n²} is an n-th power residue. DCR is the hardness foundation of the Paillier cryptosystem — the canonical additively homomorphic encryption scheme — and underlies efficient threshold decryption, range proofs, and voting protocols.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Paillier cryptosystem** | 1999 | DCR | First additively homomorphic PKE from DCR; ciphertext is an element of Z*_{n²}; decryption via Carmichael function [[1]](https://link.springer.com/chapter/10.1007/3-540-48910-X_16) |
+| **Damgård-Jurik generalization** | 2001 | DCR | Extends Paillier to plaintext space Z_{n^s} for arbitrary s; enables larger message spaces and batch encryption [[1]](https://link.springer.com/chapter/10.1007/3-540-44647-8_28) |
+| **Threshold Paillier (Fouque-Poupard-Stern)** | 2000 | DCR + secret sharing | Threshold variant: decryption requires t-of-n shares; no trusted dealer; used in e-voting and threshold ECDSA [[1]](https://link.springer.com/chapter/10.1007/10722028_9) |
+| **Subgroup Decision Problem (Boneh-Shacham)** | 2002 | Composite-order groups | Generalises DCR to subgroup indistinguishability in composite-order bilinear groups; used in early ABE and broadcast encryption [[1]](https://eprint.iacr.org/2002/139) |
+| **DCR-based range proofs (Boudot)** | 2000 | DCR + Paillier | Efficient range proofs using Paillier commitments; widely used in financial privacy protocols [[1]](https://link.springer.com/chapter/10.1007/3-540-45539-6_31) |
+| **TFHE bootstrapping acceleration via DCR** | 2022 | DCR + CKKS | Use Paillier-style arithmetic to speed up certain FHE bootstrapping operations in levelled schemes [[1]](https://eprint.iacr.org/2022/704) |
+
+**State of the art:** DCR is a well-established assumption with security reducing to factoring (under strong forms); Paillier remains the practical standard for additive HE in e-voting (Helios), threshold ECDSA (GG18/20), and privacy-preserving statistics. Related to [PHE / FHE](categories/07-homomorphic-functional-encryption.md) and [threshold cryptography](categories/05-secret-sharing-threshold-cryptography.md).
+
+---
+
+## Pseudorandom Generators from One-Way Functions
+
+**Goal:** Establish PRGs on minimal cryptographic assumptions. One-way functions (OWFs) — functions easy to compute but hard to invert — are the minimal assumption for symmetric-key cryptography. The Håstad-Impagliazzo-Levin-Luby (HILL) theorem (1999) shows that OWFs imply pseudorandom generators, and hence pseudorandom functions, MACs, and secret-key encryption. This tight equivalence (OWF ↔ PRG ↔ symmetric crypto) is a cornerstone of theoretical cryptography.
+
+| Result / Scheme | Year | Note |
+|-----------------|------|------|
+| **Blum-Micali PRG** | 1984 | First provably secure PRG from the discrete logarithm assumption; expands seed by one bit per step [[1]](https://epubs.siam.org/doi/10.1137/0213053) |
+| **Yao PRG (BBS)** | 1982 | Blum-Blum-Shub generator from quadratic residuosity; each step outputs one hard-core bit; proves PRG from factoring [[1]](https://dl.acm.org/doi/10.1145/800070.802212) |
+| **Goldreich-Levin hard-core bit** | 1989 | Any OWF has a hard-core predicate (the inner product bit); foundational for converting OWFs to PRGs [[1]](https://dl.acm.org/doi/10.1145/73007.73010) |
+| **HILL theorem (Håstad-Impagliazzo-Levin-Luby)** | 1999 | OWF → PRG via iterative construction; establishes equivalence of OWFs and PRGs; computationally secure PRG from any OWF [[1]](https://epubs.siam.org/doi/10.1137/S0097539793244708) |
+| **GGM PRF from PRG** | 1986 | Goldreich-Goldwasser-Micali show any length-doubling PRG yields a PRF via a binary tree construction; PRF from OWF by composition with HILL [[1]](https://dl.acm.org/doi/10.1145/6490.6503) |
+| **Inaccessible entropy framework (Haitner et al.)** | 2009 | Simplified and modular reproofs of HILL using the inaccessible entropy technique; tighter parameters [[1]](https://eprint.iacr.org/2009/052) |
+
+**State of the art:** OWF → PRG (HILL 1999) is the central result of complexity-based cryptography; the construction is not practical (many rounds of the GL hard-core bit extractor) but the equivalence is foundational. Practical PRGs (AES-CTR, ChaCha20) are built directly from block ciphers. Related to [PRF/PRP and PRG](categories/01-foundational-primitives.md) and [theoretical foundations](categories/19-theoretical-foundations.md).
+
+---

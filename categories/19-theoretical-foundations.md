@@ -300,3 +300,83 @@
 | **Almost-tight security** | 2014 | Chen–Wee | "Almost-tight" reductions (loss at most linear in security parameter) for IBE and PKE; achieves near-optimal concrete security in the standard model [[1]](https://eprint.iacr.org/2013/134) |
 
 **State of the art:** Concrete security analysis is mandatory for standards work — NIST PQC submissions were evaluated in part on tightness of their security reductions. Almost-tight reductions are the practical goal when perfectly tight ones are impossible. See [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa--ind-cca-security) and [Random Oracle Model](#random-oracle-model-rom-vs-standard-model).
+
+---
+
+## Perfect Forward Secrecy (PFS)
+
+**Goal:** Bound the damage of long-term key compromise. A protocol achieves perfect (more precisely, *forward*) secrecy if compromise of a party's long-term secret key does not retroactively expose session keys established in prior sessions. Each session key is derived from fresh ephemeral randomness and is deleted immediately after use, so a future adversary who steals the long-term key obtains no information about past communications. PFS is now a hard requirement for modern TLS, Signal, and other secure-channel protocols.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Diffie-Hellman ephemeral key exchange (DHE)** | 1976 | CDH | Use fresh DH exponents per session; first construction providing forward secrecy; session key derivable from ephemeral secrets only [[1]](https://doi.org/10.1109/TIT.1976.1055638) |
+| **Formal PFS definition (Günther)** | 1990 | Protocol analysis | First formal definition: past session keys remain secret after long-term key disclosure; distinguishes PFS from key freshness [[1]](https://link.springer.com/chapter/10.1007/3-540-46885-4_35) |
+| **TLS 1.3 with mandatory DHE/ECDHE** | 2018 | ECDH / X25519 | TLS 1.3 removes all static RSA key exchange modes; ephemeral (EC)DHE is the only handshake mode; PFS mandatory for all connections [[1]](https://www.rfc-editor.org/rfc/rfc8446) |
+| **Signal / Double Ratchet PFS** | 2016 | Diffie-Hellman ratchet | Per-message ephemeral DH updates provide forward secrecy and break-in recovery; strongest deployed PFS [[1]](https://signal.org/docs/specifications/doubleratchet/) |
+| **Puncturable encryption / fine-grained PFS** | 2015 | Green–Miers | Receiver can "puncture" a secret key so it no longer decrypts a specific ciphertext; enables message-level PFS without re-keying the full session [[1]](https://eprint.iacr.org/2015/1189) |
+
+**State of the art:** ECDHE in TLS 1.3 (X25519 / P-256) is the universal deployment standard. The Double Ratchet's per-message PFS goes further — see [Secure Channels](categories/12-secure-communication-protocols.md#double-ratchet-algorithm) and [Key Exchange](categories/03-key-exchange-key-management.md#diffie-hellman--ecdh--x25519). Puncturable encryption generalises PFS to the ciphertext level.
+
+---
+
+## Leftover Hash Lemma and Randomness Extraction
+
+**Goal:** Convert weak, biased randomness into uniform bits. The Leftover Hash Lemma (LHL), due to Impagliazzo, Levin, and Luby (1989), states that applying a pairwise-independent hash function to a source with min-entropy k produces output that is statistically close to uniform in length up to k − 2 log(1/ε). This is the foundational tool in *randomness extraction* — producing near-uniform bits from any high-entropy source — and underlies key derivation, privacy amplification in QKD, leakage-resilient cryptography, and the security of randomness beacons.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Leftover Hash Lemma** | 1989 | Impagliazzo–Levin–Luby | Universal hashing extracts near-uniform bits from any source with sufficient min-entropy; tight statistical bound ε = 2^{−(k−m)/2} where m is output length [[1]](https://doi.org/10.1145/73007.73009) |
+| **Strong extractors and seeded extraction** | 1999 | Nisan–Zuckerman | Seeded extractors produce near-uniform output using a short public seed; explicit constructions from expander graphs and hashing [[1]](https://doi.org/10.1016/S0022-0000(96)90009-X) |
+| **Privacy amplification via hashing** | 1995 | Bennett–Brassard–Crépeau–Maurer | LHL applied to QKD: two parties sharing a weakly secret string extract a shorter, fully secret key in the presence of an eavesdropper [[1]](https://doi.org/10.1109/18.382009) |
+| **Rényi entropy and LHL** | 2009 | Renner | Smooth min-entropy replaces min-entropy for one-shot settings; smooth min-entropy determines the optimal extraction rate; central to QKD security proofs [[1]](https://link.springer.com/article/10.1007/s00145-012-9140-5) |
+| **LHL in leakage-resilient crypto** | 2009 | Dodis–Reyzin–Smith | Strong extractors + LHL underlie all leakage-resilient schemes: remaining entropy after leakage is extracted into a pseudorandom key [[1]](https://eprint.iacr.org/2003/198) |
+
+**State of the art:** The LHL and strong extractors are indispensable in QKD (privacy amplification), key derivation functions (HKDF uses a hash-based extractor step), and leakage-resilient cryptography. Smooth min-entropy (Renner) is the canonical entropy measure for one-shot and quantum settings. See [Leakage-Resilient Cryptography](#leakage-resilient-cryptography) and [Pseudoentropy and Computational Entropy](#pseudoentropy-and-computational-entropy).
+
+---
+
+## Hybrid Argument Technique
+
+**Goal:** Prove indistinguishability of complex distributions by chaining small steps. The hybrid argument decomposes a security proof into a sequence of intermediate distributions — hybrids — that differ in only one position from their neighbors. If each adjacent pair is computationally indistinguishable, then by a triangle-inequality argument the endpoints are also indistinguishable, with a security loss of at most a factor equal to the number of hybrids. This is the single most widely used proof technique in computational cryptography.
+
+| Result / Application | Year | Authors | Note |
+|----------------------|------|---------|------|
+| **Hybrid argument for PRG security** | 1982 | Yao | First systematic use: show that a length-doubling PRG is pseudorandom by a hybrid over output bits; reduction loses a factor of n (output length) [[1]](https://doi.org/10.1109/SFCS.1982.45) |
+| **Hybrid argument for semantic security** | 1984 | Goldwasser–Micali | Semantic security of probabilistic encryption proven via a one-step hybrid (real vs. random ciphertext); foundational example [[1]](https://mit6875.github.io/PAPERS/probabilistic_encryption.pdf) |
+| **Sequence-of-games proof methodology** | 2004 | Shoup | Systematic "game-hopping" formalization of hybrid arguments; each hop is a clearly justified syntactic or semantic change; now the standard style for provable security write-ups [[1]](https://eprint.iacr.org/2004/332) |
+| **Hybrid argument for encryption of many messages** | 1997 | Bellare–Desai–Jokipii–Rogaway | Security under multiple encryptions via a hybrid over q challenge ciphertexts; shows IND-CPA implies IND-CPA-q with loss factor q [[1]](https://cseweb.ucsd.edu/~mihir/papers/sym-enc.pdf) |
+| **Tight hybrids via reprogramming** | 2012 | Fischlin–Lehmann–Ristenpart–Shrimpton–Stam–Tessaro | Reprogramming random oracles in a single hybrid step; used to avoid a loss factor in ROM-based signatures [[1]](https://eprint.iacr.org/2010/540) |
+
+**State of the art:** The hybrid argument is ubiquitous and appears in virtually every security proof in this repository. Shoup's game-hopping formalism (2004) is the standard proof style. Minimising the number of hybrid steps, or eliminating the resulting tightness loss, is an active goal — see [Concrete Security and Reduction Tightness](#concrete-security-and-reduction-tightness).
+
+---
+
+## Random Self-Reducibility
+
+**Goal:** Show that solving the average-case problem is as hard as the worst case. A problem is *random self-reducible* if any instance can be reduced, in polynomial time, to a *uniformly random* instance of the same problem. Consequently, if an adversary can solve the problem on a noticeable fraction of inputs, one can solve *every* instance by random self-reduction, collapsing average-case and worst-case hardness. This property is crucial to cryptographic hardness: it justifies using a fixed public key (a specific problem instance) rather than a fresh random instance per use, and it underpins the security of Rabin's OWF, DDH-based schemes, and LWE.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Random self-reducibility of quadratic residuosity** | 1985 | Blum–Micali | Deciding QR is random self-reducible: any instance is uniformly random up to the Legendre symbol; security of Blum-Micali PRG relies on this [[1]](https://doi.org/10.1137/0214033) |
+| **Discrete log is random self-reducible** | 1985 | Blum–Micali | DLog on a group of prime order is random self-reducible: reduce DLog(g^x) to DLog(g^{x+r}) for random r; justifies reuse of group parameters [[1]](https://doi.org/10.1137/0214033) |
+| **LWE worst-case to average-case** | 2005 | Regev | LWE is random self-reducible via quantum reduction from worst-case lattice problems (SIVP, GapSVP); hardness of a specific LWE instance implies hardness on average [[1]](https://doi.org/10.1145/1060590.1060603) |
+| **RSA is NOT random self-reducible** | 1998 | Paillier | Standard RSA (fixed modulus N) lacks random self-reducibility; partial information attacks do not immediately generalize; motivated design of OAEP and RSA-KEM [[1]](https://link.springer.com/chapter/10.1007/3-540-48910-X_16) |
+| **Worst-case/average-case for lattices (classical)** | 2007 | Peikert–Rosen | Classical worst-case to average-case reductions for Ring-LWE and SIS; removes the quantum requirement in restricted settings [[1]](https://eprint.iacr.org/2006/468) |
+
+**State of the art:** Random self-reducibility is one of the key reasons lattice-based cryptography (LWE, SIS, NTRU) has strong theoretical foundations: hardness of average-case instances follows from worst-case lattice complexity. It also explains why Schnorr and other DLog-based schemes are secure against adaptive attacks using a fixed group. See [One-Way Functions and Impagliazzo's Five Worlds](#one-way-functions-and-impagliazzos-five-worlds).
+
+---
+
+## Security Amplification
+
+**Goal:** Boost a scheme that is weakly secure (succeeds with constant probability) into one that is overwhelmingly secure (success probability exponentially small). Many natural constructions achieve only a weak form of security — for example, a one-way function that is hard to invert on only a 1/poly(n) fraction of inputs, or a commitment scheme that hides with probability 3/4. Security amplification via repetition turns weak OWFs into strong OWFs, weak PRGs into strong PRGs, and weak cryptographic protocols into fully secure ones, at the cost of polynomial blowup in computation or communication.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Weak OWF → strong OWF (Yao)** | 1982 | Yao | n-fold parallel repetition of a weak OWF (hard to invert on ≥ 1/poly fraction) yields a function hard to invert on all but negligible fraction; first amplification for OWFs [[1]](https://doi.org/10.1109/SFCS.1982.45) |
+| **Hardness amplification via XOR lemma** | 1994 | Yao; Levin | XOR of n independent copies of a hard predicate boosts hardness: if f is 1/2 + ε hard, f⊕n is 1/2 + ε^n hard; foundational for list-decodable codes and PRGs [[1]](https://doi.org/10.1109/SFCS.1994.365738) |
+| **Parallel repetition theorem** | 1998 | Raz | For two-prover interactive proofs and coin-tossing protocols, n-fold parallel repetition decreases the soundness error exponentially; resolves longstanding open question [[1]](https://doi.org/10.1137/S0097539795280895) |
+| **Direct product theorems for cryptography** | 2008 | Bellare–Impagliazzo | Direct product theorems: if breaking one instance has success p, breaking k independent instances simultaneously has success ≤ p^k; used for amplifying OT, commitment, and MAC security [[1]](https://link.springer.com/chapter/10.1007/978-3-540-78524-8_17) |
+| **Weak to strong OWF (Goldreich-Levin based)** | 1993 | Goldreich–Levin (HILL amplification) | Amplification via Goldreich-Levin extraction: a function that is weak-OWF for any noticeable fraction can be amplified to strong OWF by chaining GL bits; integral to HILL PRG construction [[1]](https://doi.org/10.1137/S0097539793244708) |
+
+**State of the art:** Security amplification is a fundamental meta-theorem of cryptography. Raz's parallel repetition theorem is the canonical tool for amplifying interactive proofs and MPC protocols. Direct product theorems underlie multi-instance security arguments used in batching and aggregate signatures. See [Hardcore Predicates and the Goldreich-Levin Theorem](#hardcore-predicates-and-the-goldreich-levin-theorem) and [Concrete Security and Reduction Tightness](#concrete-security-and-reduction-tightness).

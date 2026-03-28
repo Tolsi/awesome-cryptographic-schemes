@@ -215,3 +215,78 @@
 **State of the art:** Histogram preservation defeats first-order steganalysis but is ineffective against higher-order features (SPAM, SRM co-occurrences); modern content-adaptive schemes (S-UNIWARD, HILL) implicitly avoid histogram anomalies while minimising richer statistical signatures. Related to [Content-Adaptive Image Steganography](#content-adaptive-image-steganography) and [Steganalysis](#steganalysis).
 
 ---
+
+## Video Steganography
+
+**Goal:** Embed a hidden payload inside a compressed video stream (H.264/H.265, MPEG-4) by manipulating motion vectors, inter-frame DCT coefficients, or intra-prediction modes — exploiting the spatial redundancy and temporal correlation of video to achieve high-capacity covert communication that survives real-time streaming and re-encoding.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Motion Vector Steganography (Xu-Ping-Zhao)** | 2006 | MPEG motion vectors | Encodes bits in the phase angle of motion vectors while preserving magnitude; phase deviation is imperceptible to human vision; capacity ~1 bpp of motion-vector stream [[1]](https://link.springer.com/chapter/10.1007/11767752_21) |
+| **MoVSteg** | 2013 | H.264 motion vector magnitude | Selects motion vectors with magnitudes above a threshold (minimises blocking artefacts); ±1 modification of horizontal/vertical components; capacity ~1 Mb/min at 30 fps; PSNR degradation < 0.1 dB [[1]](https://ieeexplore.ieee.org/document/6467700) |
+| **Inter-Frame DCT Coefficient Stego** | 2010 | H.264 residual DCT | Hides bits in non-zero AC DCT coefficients of inter-coded blocks; applies ±1 quantised-coefficient modification analogous to F5; calibration attack adapted for video blocks [[1]](https://www.sciencedirect.com/science/article/abs/pii/S1047320309000583) |
+| **Intra-Prediction Mode Stego (Zhang et al.)** | 2012 | H.264 intra-prediction modes | Encodes payload by switching between perceptually equivalent intra-prediction mode pairs in I-frames; robust to re-encoding within the same quantisation parameter [[1]](https://ieeexplore.ieee.org/document/6166374) |
+
+**State of the art:** Motion-vector schemes (MoVSteg) dominate practical video steganography due to high capacity and low visual distortion; intra-prediction mode methods are more robust to re-compression. Video steganalysis leverages inter-frame correlation anomalies and motion-vector statistical models. Related to [Content-Adaptive Image Steganography](#content-adaptive-image-steganography) (same DCT-domain techniques applied per-frame).
+
+---
+
+## Steganographic File Systems
+
+**Goal:** Provide plausible deniability at the storage layer. A steganographic file system allows the existence of hidden files to be denied under coercion: an adversary who obtains the storage medium and a low-sensitivity decryption key cannot determine whether a second, hidden file system exists.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Rubberhose (Assange)** | 1997 | Multiple extent maps | Partitions a disk into independent extents each with its own key; no extent can be proved absent; each key unlocks only its own map; first working implementation of deniable disk encryption [[1]](https://web.archive.org/web/19990224063931/http://www.rubberhose.org/) |
+| **StegFS (McDonald-Kuhn)** | 1999 | LSB embedding in free blocks | Hides a secondary file system in the unused blocks of an ext2 partition by treating them as a steganographic cover; shares inode pool with the overt file system; capacity equals free space [[1]](https://link.springer.com/chapter/10.1007/3-540-48519-8_9) |
+| **TrueCrypt Hidden Volume** | 2004 | Dual-AES encrypted volume | Stores a hidden encrypted volume inside the free space of an outer volume; outer-volume password reveals innocuous data; inner-volume password reveals real data; widely deployed before TC discontinuation [[1]](https://www.veracrypt.fr/en/Hidden%20Volume.html) |
+| **VeraCrypt Hidden Volume** | 2013 | TrueCrypt fork + Streebog | Audited successor to TrueCrypt; same dual-volume deniability; adds SHA-512/Whirlpool/Streebog KDFs and supports hidden OS partition [[1]](https://www.veracrypt.fr/en/Documentation.html) |
+| **Plausibly Deniable Flash FS (Skillen-Mannan)** | 2013 | NAND wear-levelling cover | Exploits NAND block-erase log as a natural cover; embeds hidden file system data in the write-history entropy of unused flash blocks; resists forensic flash imaging [[1]](https://www.ndss-symposium.org/ndss2013/ndss-2013-programme/practical-plausibly-deniable-file-system-nand-flash/) |
+
+**State of the art:** VeraCrypt hidden volumes are the deployed standard for deniable disk encryption; research focus has shifted to flash storage (Skillen-Mannan) due to NAND wear-levelling complicating traditional block-level deniability. Forensic adversaries may attempt to disprove deniability by comparing allocated vs. used block entropy. Related to [Deniable Encryption](#deniable-encryption) (cryptographic layer) and [Histogram-Preserving Steganography](#histogram-preserving-steganography) (statistical indistinguishability requirement).
+
+---
+
+## Spread-Spectrum Steganography
+
+**Goal:** Distribute a low-amplitude covert signal across many cover-medium samples (frequency bins, spatial locations, time slots) so that the energy per sample is below the noise floor and no single sample reveals the payload. Borrows directly from spread-spectrum communications; provides robustness to cropping, compression, and additive noise.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Cox-Kilian-Leighton-Shamoon SS Watermark** | 1997 | Pseudo-random PN sequence | Adds a Gaussian PN sequence scaled by image-feature amplitude to DCT coefficients; detection by correlation; seminal frequency-domain spread-spectrum embedding [[1]](https://doi.org/10.1109/83.650120) |
+| **Spread-Spectrum Audio Stego (Bender et al.)** | 1996 | Direct-sequence SS | Encodes each bit as a PN-spread pseudo-noise sequence added to the audio signal at amplitude below audibility threshold; chip sequence length determines capacity/robustness tradeoff [[1]](https://dl.acm.org/doi/10.1145/227726.227738) |
+| **QIM-SS (Quantisation Index Modulation)** | 2001 | Dither modulation | Each cover sample is quantised to one of two shifted lattices depending on the message bit; more robust than additive SS against gain attacks; theoretical capacity equals the dirty-paper coding bound [[1]](https://doi.org/10.1109/18.910567) |
+| **Informed Spread-Spectrum (Eggers-Bauml-Tzschoppe)** | 2003 | Costa dirty-paper coding | Jointly optimises embedding sequence and quantiser using knowledge of the host signal; approaches the Gel'fand-Pinsker capacity bound for watermarking channels [[1]](https://ieeexplore.ieee.org/document/1192077) |
+
+**State of the art:** QIM and informed spread-spectrum achieve near-capacity embedding with provable robustness to amplitude scaling and additive noise; these dominate robust watermarking. For pure steganography (where robustness is less critical), adaptive content-based schemes (S-UNIWARD) outperform SS in undetectability. Related to [Digital Watermarking / Fingerprinting](#digital-watermarking--fingerprinting) (SS is the dominant watermarking paradigm) and [Audio Steganography](#audio-steganography-echo-hiding--mp3stego).
+
+---
+
+## Printer Steganography (Machine Identification Codes)
+
+**Goal:** Covertly identify the source printer of a document. Colour laser printers and photocopiers embed a nearly invisible pattern of microscopic yellow dots — a Machine Identification Code (MIC) — on every printed page, encoding the printer serial number and timestamp without the user's knowledge or consent.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Xerox DocuColor Yellow Dots (MIC)** | ~1990s | Cyan/yellow micro-dot grid | Encodes printer serial number and print date as a 15×8 dot matrix repeated across the page; dots are ~0.1 mm diameter in yellow ink, visible only under blue LED; confirmed on all major colour laser brands [[1]](https://w2.eff.org/Privacy/printers/docucolor/) |
+| **EFF Dot Decoder** | 2005 | Reverse-engineered protocol | Electronic Frontier Foundation decoded the Xerox scheme by scanning prints at 2400 dpi under blue light; published an open decoder; established the presence of MICs on printers from Xerox, HP, Canon, and others [[1]](https://www.eff.org/pages/list-printers-which-do-or-do-not-print-tracking-dots) |
+| **Randomised Tracking Dots (TU Dresden)** | 2018 | Reversed-engineered + anonymising patch | TU Dresden researchers fully decoded the tracking dot protocol and released an open anonymisation tool that overlays randomised noise to obscure printer fingerprint while leaving printout appearance unchanged [[1]](https://dud.inf.tu-dresden.de/en/forschung/aktuell/2018/tracking-dots/) |
+
+**State of the art:** MICs are a mandatory (covert, non-consensual) steganographic channel in virtually all colour laser printers sold since the 1990s; the EFF/TU Dresden work makes the encoding public. No standards-track countermeasure exists; the TU Dresden anonymisation patch provides partial protection. Closely related to [Digital Watermarking / Fingerprinting](#digital-watermarking--fingerprinting) (origin identification) and [Kleptography / ASA](#kleptography--algorithm-substitution-attacks-asa) (covert channel embedded by the device manufacturer).
+
+---
+
+## Robustness, Capacity, and Imperceptibility Trade-offs
+
+**Goal:** Formalise the fundamental limits governing steganographic and watermarking system design: given a fixed cover medium and channel, no scheme can simultaneously maximise payload capacity, perceptual imperceptibility (fidelity), and robustness to post-processing without incurring costs in at least one dimension.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Information-Hiding Capacity (Moulin-O'Sullivan)** | 2003 | Game-theoretic channel model | Models steganography and watermarking as a two-player game (embedder vs. attacker) on a Gaussian cover; derives capacity-fidelity-robustness region; establishes that capacity scales as C = ½ log(1 + D_w / σ²_n) [[1]](https://doi.org/10.1109/TIT.2002.807285) |
+| **Dirty-Paper Coding Bound (Costa)** | 1983 | Gel'fand-Pinsker channel | Shows that knowing the interference (host signal) non-causally at the encoder does not reduce capacity; proves watermarking can achieve clean-channel capacity regardless of host signal power — the theoretical upper bound for informed embedding [[1]](https://doi.org/10.1109/TIT.1983.1056659) |
+| **Steganographic Capacity (Ker)** | 2007 | Square-root law | In natural covers, the steganographic capacity grows as O(√n) with cover size n (not linearly); embedding more than O(√n) bits leads to statistically detectable modifications regardless of embedding method [[1]](https://doi.org/10.1117/12.696774) |
+| **Distortion-Limited Stego (Filler-Judas-Fridrich)** | 2011 | STCs + syndrome coding | Syndrome-Trellis Codes achieve capacity of the additive distortion-limited steganographic channel; first practical scheme reaching the theoretical embedding efficiency bound [[1]](https://doi.org/10.1109/TIFS.2011.2134094) |
+
+**State of the art:** Ker's square-root law governs undetectability limits; STCs (Filler-Judas-Fridrich 2011) achieve the practical capacity bound for additive distortion. Dirty-paper coding (Costa 1983) governs the robustness-capacity trade-off for watermarking. These results underpin all modern scheme design in [Content-Adaptive Image Steganography](#content-adaptive-image-steganography), [Spread-Spectrum Steganography](#spread-spectrum-steganography), and [Digital Watermarking / Fingerprinting](#digital-watermarking--fingerprinting).
+
+---

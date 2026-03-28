@@ -409,3 +409,80 @@
 **State of the art:** Threshold Raccoon (EUROCRYPT 2024) is the first practical post-quantum threshold signature; its ML-DSA variant (2025) enables drop-in PQ threshold signing against FIPS 204. Open problem: reduce communication cost and achieve one-round signing. Complements [FROST](#frost-flexible-round-optimized-schnorr-threshold-signatures) (classical) and relates to [Post-Quantum Cryptography](categories/15-quantum-cryptography.md#post-quantum-cryptography-pqc).
 
 ---
+
+## Hierarchical Secret Sharing
+
+**Goal:** Multi-level access control via sharing. Participants are organized into ordered levels (e.g., executives > managers > employees); a qualified coalition must include enough participants from each level to reconstruct the secret. Generalizes (t,n)-threshold while preserving information-theoretic secrecy.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Compartmented SS (Simmons)** | 1990 | Affine geometry | Antecedent to hierarchical SS; separate compartment secrets that must all contribute before reconstruction; models need-all-divisions approval [[1]](https://doi.org/10.1007/0-387-34805-0_28) |
+| **Tassa Hierarchical SS** | 2004 | Birkhoff interpolation | First ideal hierarchical SS; shares sized equal to secret; qualified sets defined by a vector of thresholds per level; shares computed via generalized Lagrange interpolation; J. Cryptology 2007 [[1]](https://doi.org/10.1007/s00145-006-0417-1) |
+| **Ideal Hierarchical SS (Farràs-Padró)** | 2010 | Matroid theory | Characterizes exactly which hierarchical access structures admit ideal SS (optimal share size) using matroid ports; TCC 2010 [[1]](https://doi.org/10.1007/978-3-642-11799-2_25) |
+| **Weighted Hierarchical SS (Beimel-Tassa)** | 2011 | Polynomial + combinatorics | Combines weighted shares with hierarchical levels; models organizational authority with varied voting weights [[1]](https://link.springer.com/article/10.1007/s10623-010-9420-1) |
+
+**State of the art:** Tassa's scheme (2004) is the canonical ideal hierarchical SS; Farràs-Padró (2010) gives the definitive characterization of ideal hierarchical schemes via matroids. Widely used in key management, credential delegation, and corporate governance models. Extends [Secret Sharing](#secret-sharing-schemes-sss) and [General Access Structure SS](#general-access-structure-secret-sharing).
+
+---
+
+## Linear Secret Sharing Schemes (LSSS)
+
+**Goal:** Abstract algebraic formulation of secret sharing. An LSSS is defined by a matrix M and a labeling of rows to participants; each share is a linear function of (secret ∥ randomness); reconstruction is a linear combination. Any access structure realizable by a monotone span program has an LSSS, and LSSS is the foundation of Attribute-Based Encryption, arithmetic MPC, and [General Access Structure SS](#general-access-structure-secret-sharing).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Brickell Linear SS** | 1989 | Linear algebra | First explicit linear SS; shares are inner products of secret-seed with rows of a generator matrix; characterizes when ideal SS exists [[1]](https://link.springer.com/chapter/10.1007/0-387-34805-0_25) |
+| **Karchmer-Wigderson Span Programs** | 1993 | Monotone span programs | Connects span program size to SS share size; any monotone Boolean function has an LSSS with shares equal to span program width [[1]](https://doi.org/10.1145/103418.103474) |
+| **Monotone Span Programs (Cramer-Damgård-Maurer)** | 1996 | Span programs + field | LSSS for any monotone access structure over any field; basis for CP-ABE and KP-ABE access policies; standard formulation in the literature [[1]](https://doi.org/10.1007/3-540-68339-9_22) |
+| **Arithmetic SS (Cramer-Damgård-de Haan)** | 2000 | Linear algebra + MPC | LSSS equivalence: any LSSS yields additively homomorphic sharing; enables BDOZ/SPDZ/BGW-style MPC over arithmetic circuits [[1]](https://link.springer.com/chapter/10.1007/3-540-44750-4_28) |
+| **Compact LSSS (Applebaum-Arkis)** | 2019 | Random linear codes | Randomized construction achieves near-optimal share size for all monotone access structures; exponential deterministic lower bound circumvented; CRYPTO 2019 [[1]](https://eprint.iacr.org/2019/1308) |
+
+**State of the art:** Monotone span programs (1996) are the standard LSSS formulation; backbone of [ABE](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption) and [MPC](categories/06-multi-party-computation.md#multi-party-computation-mpc). Compact LSSS (2019) achieves near-optimal share sizes. Subsumes [General Access Structure SS](#general-access-structure-secret-sharing) and underlies [Multiplicative Secret Sharing](#multiplicative-secret-sharing).
+
+---
+
+## SCRAPE: Scalable Publicly Verifiable Secret Sharing
+
+**Goal:** O(n) verification PVSS. Standard PVSS (Schoenmakers 1999) requires each verifier to check n independent ZK proofs — O(n) exponentiations per participant, O(n²) total across all verifiers. SCRAPE achieves O(n) total verification by replacing per-share proofs with a single aggregated check based on the dual code of a Reed-Solomon code, while preserving public verifiability and information-theoretic secrecy.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Schoenmakers PVSS** | 1999 | DLP + DLEQ ZK | Baseline: n individual DLEQ proofs; O(n) exponentiations per verifier, O(n²) total; widely deployed [[1]](https://www.win.tue.nl/~berry/papers/crypto99.pdf) |
+| **SCRAPE (Cascudo-David)** | 2017 | Reed-Solomon dual codes | Single aggregated check via dual RS code; O(n) total exponentiations across all verifiers; information-theoretic security under DL; PKC 2017 [[1]](https://eprint.iacr.org/2017/216) |
+| **HydRand** | 2020 | SCRAPE + BFT | Deploys SCRAPE in a publicly verifiable randomness beacon; O(n) on-chain verification cost; Ethereum beacon inspiration [[1]](https://eprint.iacr.org/2020/378) |
+| **Batchable SCRAPE** | 2022 | SCRAPE + batch ZK | Amortizes multiple SCRAPE instances (multiple epochs) to constant overhead per additional instance; suited for periodic beacon protocols [[1]](https://eprint.iacr.org/2022/1585) |
+
+**State of the art:** SCRAPE (2017) is the standard choice for on-chain or bandwidth-constrained PVSS; deployed in randomness beacons (HydRand, Albatross) and [DKG](#distributed-key-generation-dkg) protocols. Extends [Publicly Verifiable SS](#publicly-verifiable-secret-sharing-pvss).
+
+---
+
+## Shared RSA Key Generation
+
+**Goal:** Distributed RSA modulus generation. Generate an RSA modulus N = p·q and a corresponding threshold key pair among n parties so that no single party — nor any coalition below threshold t — ever knows the full factorization of N or the private key. Eliminates the need for a trusted key-generation authority in RSA-based threshold systems.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boneh-Franklin Distributed RSA** | 1997 | Biprimality test + MPC | First practical shared RSA keygen; parties jointly generate p, q via distributed primality testing; private key never assembled; ACM CCS 1997 [[1]](https://eprint.iacr.org/1997/005) |
+| **Two-Party RSA Keygen (Gilboa)** | 1999 | OT-based multiplication | 2-party RSA modulus generation using OT for distributed multiplication; CRYPTO 1999 [[1]](https://link.springer.com/chapter/10.1007/3-540-48405-1_26) |
+| **Threshold RSA Keygen (Hazay et al.)** | 2019 | Paillier HE + ZK | n-party shared RSA keygen against dishonest majority; practical for 2-of-n settings; IEEE S&P 2019 [[1]](https://eprint.iacr.org/2019/017) |
+| **SPRINT** | 2022 | Shamir + distributed sieving | Scalable shared RSA generation via faster distributed sieving; near-linear communication; USENIX Security 2022 [[1]](https://eprint.iacr.org/2022/1035) |
+
+**State of the art:** Boneh-Franklin (1997) is the foundational result; SPRINT (2022) is the most communication-efficient n-party construction. Shared RSA keygen is a prerequisite for deploying [Threshold RSA Decryption](#threshold-decryption) and [Threshold Signatures](categories/08-signatures-advanced.md#threshold-signature-schemes-tss) without a trusted dealer. Builds on [DKG](#distributed-key-generation-dkg) principles adapted to composite-order groups.
+
+---
+
+## Threshold BLS Key Generation
+
+**Goal:** Distributed BLS keypair setup. Generate a BLS private key sk and corresponding public key pk = g^sk among n parties via a joint DKG so that any t-of-n parties can subsequently co-sign (producing a single valid BLS signature) without any party ever holding sk in full. Combines [DKG](#distributed-key-generation-dkg) with the algebraic structure of BLS signatures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Joint-Feldman DKG for BLS** | 1991 | Feldman VSS | Each party runs Feldman VSS and contributes an additive share; standard in practice; not secure against a rushing adversary biasing the public key [[1]](https://link.springer.com/chapter/10.1007/3-540-46766-1_9) |
+| **GJKR Threshold BLS DKG** | 1999 | VSS + ZK disqualification | Provably secure DKG suitable for BLS; malicious parties are disqualified via complaint rounds; CRYPTO 1999 [[1]](https://link.springer.com/chapter/10.1007/3-540-48405-1_10) |
+| **Aggregatable PVSS DKG for BLS** | 2021 | KZG + pairings | Single-round DKG producing a threshold BLS keypair; O(n log n) communication; deployed in Ethereum DVT and drand randomness beacon [[1]](https://eprint.iacr.org/2021/339) |
+| **drand Threshold BLS** | 2020 | GJKR + BLS12-381 | Production deployment: threshold BLS randomness beacon; 20+ nodes operated by Cloudflare, EPFL, Protocol Labs; beacon output used in Filecoin and Ethereum [[1]](https://eprint.iacr.org/2020/1645) |
+| **Ethereum DVT (EIP-7441)** | 2024 | Aggregatable DKG + BLS | Distributed validator technology; threshold BLS keygen for Ethereum validators eliminates single-point-of-failure in staking [[1]](https://eips.ethereum.org/EIPS/eip-7441) |
+
+**State of the art:** Aggregatable PVSS DKG (2021) is the most communication-efficient threshold BLS keygen; deployed in drand and Ethereum DVT. Builds on [DKG](#distributed-key-generation-dkg) and [PVSS](#publicly-verifiable-secret-sharing-pvss); produces keys for [BLS Aggregate Signatures](categories/08-signatures-advanced.md#bls-aggregate-signatures).
+
+---

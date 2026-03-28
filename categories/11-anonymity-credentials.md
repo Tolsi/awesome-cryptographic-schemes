@@ -337,3 +337,68 @@
 **State of the art:** Lattice-based group encryption for PQ; complements [Ring & Group Signatures](#ring--group-signatures) as the encryption counterpart.
 
 ---
+
+## Direct Anonymous Attestation (DAA)
+
+**Goal:** Anonymous hardware attestation. A Trusted Platform Module (TPM) or other secure enclave proves it is a genuine, unrevoked device without revealing which device it is. The verifier gains confidence in platform integrity; the platform remains unlinkable across attestation sessions. Enables private remote attestation for TEEs and mobile secure elements.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DAA (Brickell-Camenisch-Chen)** | 2004 | CL Signatures + RSA | First DAA; TPM 1.2 standard; blind CL signature from issuer; ZK proof of possession at attestation [[1]](https://eprint.iacr.org/2004/205) |
+| **DAA from Pairings (Chen-Morrissey-Smart)** | 2008 | Pairings + q-SDH | Shorter signatures; pairing-based DAA; more efficient verifier [[1]](https://link.springer.com/chapter/10.1007/978-3-540-88733-1_2) |
+| **Intel EPID (Enhanced Privacy ID)** | 2011 | Pairings + revocation | DAA variant deployed in Intel SGX; supports member revocation without group re-keying; used for SGX remote attestation [[1]](https://eprint.iacr.org/2009/095) |
+| **TPM 2.0 DAA (ECC-based)** | 2016 | ECDAA (BN-256) | TPM 2.0 standard; ECC DAA replacing RSA variant; ECDAA command set [[1]](https://trustedcomputinggroup.org/resource/tpm-library-specification/) |
+| **PQ DAA (Jia et al.)** | 2023 | Lattices / hash-based | Post-quantum DAA from lattice assumptions; compatible with TPM-like constraints [[1]](https://eprint.iacr.org/2023/1337) |
+
+**State of the art:** Intel EPID (deployed in all SGX CPUs until 2023; being phased to Intel TDX DCAP); TPM 2.0 ECDAA (ISO/IEC 20008-2). PQ DAA remains an active research area. Builds on [Anonymous Credentials](#anonymous-credentials) and [CL Signatures](#anonymous-credentials); related to [TEE Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation).
+
+---
+
+## Accumulators for Credential Revocation
+
+**Goal:** Efficient anonymous revocation. An issuer maintains a compact accumulator (a single group element) that commits to the set of valid credential holders. To prove non-revocation, a holder presents a zero-knowledge witness that their credential is in the accumulator — without revealing which credential they hold. Revocation updates the accumulator without invalidating all other witnesses.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **RSA Accumulator (Baric-Pfitzmann)** | 1997 | RSA / strong RSA | First accumulator; membership witness = product exponentiation; witness update requires trusted party with factorization [[1]](https://link.springer.com/chapter/10.1007/3-540-68339-9_29) |
+| **Dynamic Accumulator (Camenisch-Lysyanskaya)** | 2002 | RSA | Adds/deletes members; witnesses updatable without full recompute; combined with CL signatures for anonymous credential revocation [[1]](https://eprint.iacr.org/2008/539) |
+| **Pairing-based Accumulator (Nguyen)** | 2005 | Bilinear maps / q-SDH | Constant-size witnesses; O(1) verify; ZK non-membership proofs; no trusted setup for RSA modulus [[1]](https://link.springer.com/chapter/10.1007/11593447_9) |
+| **Universal Accumulator (Li-Li-Xue)** | 2007 | Bilinear maps | Supports both membership and non-membership proofs; useful for revocation list proofs [[1]](https://link.springer.com/chapter/10.1007/978-3-540-76900-2_18) |
+| **VB Accumulator (Boneh-Bünz-Fisch)** | 2019 | Groups of unknown order | Batched additions/deletions; aggregatable proofs; used in Hyperledger Anoncreds v2 [[1]](https://eprint.iacr.org/2018/1188) |
+| **Hyperledger AnonCreds v2** | 2023 | BBS+ + VB Accumulator | W3C VC-compatible anonymous credentials with efficient ZK revocation; replaces CL+RSA accumulator from AnonCreds v1 [[1]](https://hyperledger.github.io/anoncreds-spec/) |
+
+**State of the art:** Pairing-based accumulators (constant-size witnesses) and VB accumulators (batched updates) are state of the art for anonymous credential revocation. Hyperledger AnonCreds v2 (2023) combines BBS+ with VB-accumulator non-revocation proofs. Related to [Anonymous Credentials](#anonymous-credentials), [BBS+ Anonymous Credentials](#bbs-anonymous-credentials), and [Vector Commitments](categories/09-commitments-verifiability.md#vector-commitments).
+
+---
+
+## IRMA / Yivi Credential System
+
+**Goal:** Practical privacy-preserving attribute-based authentication. Users store Idemix-based credentials on a smartphone; apps request selective disclosure of specific attributes (age ≥ 18, name, email) via a QR-code flow. The phone generates a ZK proof revealing only requested attributes; presentations are unlinkable across sessions. Deployed as a national-scale system in the Netherlands.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **IRMA ("I Reveal My Attributes")** | 2013 | Idemix / CL Signatures | Privacy by Design Foundation; Idemix credentials on Android; selective disclosure + unlinkability [[1]](https://privacybydesign.foundation/irma/) |
+| **IRMA Go (irma-server)** | 2019 | CL Signatures + Idemix | Open-source Go implementation; attribute issuers, verifiers, revocation; REST API [[1]](https://github.com/privacybydesign/irmago) |
+| **Yivi (rebranded IRMA)** | 2022 | Idemix / CL Signatures | Rebranded by Privacy by Design Foundation; 250 000+ users; Dutch government, banks, healthcare issuers; eIDAS low-assurance LoA [[1]](https://www.yivi.app/) |
+| **IRMA with Revocation** | 2020 | CL Sigs + accumulator | Non-revocation proofs using RSA/pairing accumulators integrated into Idemix flow [[1]](https://eprint.iacr.org/2021/389) |
+
+**State of the art:** Yivi (formerly IRMA) is the largest deployed Idemix-based anonymous credential system (~250 000 users, 2024). Multiple Dutch government ministries, municipalities, and healthcare providers issue attributes. Represents the production deployment of [Anonymous Credentials (idemix)](#anonymous-credentials) and [Accumulators for Credential Revocation](#accumulators-for-credential-revocation).
+
+---
+
+## ZKP-Based Attribute Predicates (Range Proofs for Credentials)
+
+**Goal:** Prove attribute predicates in zero knowledge. A credential holder proves a statement about an attribute — "age ≥ 18", "salary ∈ [50 000, 200 000]", "balance > 0" — without disclosing the exact value. Range proofs are the most common predicate; combined with anonymous credentials they enable privacy-preserving age verification, income checks, and compliance attestations.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Square Decomposition Range Proofs (Camenisch et al.)** | 2008 | Sigma protocols + CL | Prove value in range via sum-of-three-squares decomposition; combined with Idemix attributes [[1]](https://link.springer.com/chapter/10.1007/978-3-540-88313-5_9) |
+| **Bulletproofs Range Proof** | 2018 | Inner-product argument | O(log n)-size proof, no trusted setup; used in Monero, Grin, Zcash Sapling (R1CS) [[1]](https://eprint.iacr.org/2017/1066) |
+| **Bulletproofs+ (Chung et al.)** | 2021 | Improved IPA | ~15% shorter proofs than Bulletproofs; weighted inner-product argument; deployed in Monero (2022) [[1]](https://eprint.iacr.org/2020/735) |
+| **LegoSNARK Commit-and-Prove** | 2019 | zkSNARK + commitments | Modular: attach range proof to any zkSNARK-committed attribute; composable with BBS+/PS credentials [[1]](https://eprint.iacr.org/2019/142) |
+| **BBS+ Predicate Proofs (Kurtosis)** | 2023 | BBS + Bulletproofs | ZK range proofs over BBS+ committed attributes; selective disclosure + numeric predicate in one presentation [[1]](https://eprint.iacr.org/2023/275) |
+| **Age Verification via SD-JWT + ZKP** | 2024 | SD-JWT + ZK circuit | ETSI/W3C proposals for ZK predicate on SD-JWT age claim; used in EU EUDI Wallet age-verification flow [[1]](https://www.ietf.org/archive/id/draft-terbu-sd-jwt-vc-02.txt) |
+
+**State of the art:** Bulletproofs (no trusted setup, O(log n) size) are widely deployed for range proofs on blockchain; LegoSNARK and BBS+ predicate proofs bring composable range proofs to anonymous credential presentations. The EU EUDI Wallet (eIDAS 2.0) is evaluating ZKP-based age verification over SD-JWT VCs. Depends on [Anonymous Credentials](#anonymous-credentials), [BBS+ Anonymous Credentials](#bbs-anonymous-credentials), and [Bulletproofs / Range Proofs](categories/13-blockchain-distributed-ledger.md#range-proofs).
+
+---

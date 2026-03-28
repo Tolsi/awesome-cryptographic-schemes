@@ -417,6 +417,118 @@
 
 ---
 
+## Brakedown Polynomial Commitments
+
+**Goal:** Linear-time, transparent polynomial commitment with no trusted setup and minimal cryptographic assumptions. Brakedown commits to a polynomial (represented as a matrix of coefficients) using only a collision-resistant hash function and a linear code, achieving O(n) prover time — a significant improvement over FFT-based schemes — at the cost of larger proof sizes. Designed for settings where proof generation speed dominates.
+
+| Property | Value |
+|----------|-------|
+| **Commitment size** | O(√n) field elements |
+| **Proof size** | O(√n) field elements |
+| **Prover time** | O(n) — linear in the number of coefficients |
+| **Verifier time** | O(n) (linear; no sub-linear verifier without additional techniques) |
+| **Setup** | Transparent: public random linear code, no toxic waste |
+| **Security assumption** | Collision-resistant hash functions (random oracle); proximity gap for linear codes |
+
+| Variant | Year | Note |
+|---------|------|------|
+| **Brakedown (Golovnev et al.)** | 2023 | First linear-time polynomial commitment; hash-based; O(√n) proof; CRYPTO 2023 [[1]](https://eprint.iacr.org/2021/1043) |
+| **Orion** | 2022 | Independent linear-time PCS construction; similar asymptotic profile; CCS 2022 [[1]](https://eprint.iacr.org/2022/1010) |
+| **Binius** | 2024 | Extends Brakedown-style techniques to binary tower fields; native boolean arithmetic; dramatically faster for binary circuits; used in SP1 zkVM [[1]](https://eprint.iacr.org/2023/1784) |
+
+**State of the art:** Brakedown and Orion (2022–2023) established linear-time polynomial commitments as a practical category. Binius (2024) extends this to binary tower fields, achieving the fastest known prover times for boolean circuits. The main trade-off is O(√n) proof size (larger than KZG's O(1) or FRI's O(log² n)). Linear-time PCS schemes are increasingly favoured in zkVM backends where prover throughput is the bottleneck. See also [KZG Polynomial Commitments](#kzg-polynomial-commitments), [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment), and [Multilinear Polynomial Commitments](#multilinear-polynomial-commitments).
+
+---
+
+## Bandersnatch and In-Circuit VRF
+
+**Goal:** Efficient VRF evaluation inside a SNARK circuit. Standard VRF constructions (ECVRF, BLS-VRF) operate over curves whose field arithmetic is expensive to prove inside ZK circuits. Bandersnatch is a twisted Edwards curve defined over the BLS12-381 scalar field, enabling efficient in-circuit VRF computation — the core operation of ring VRFs and anonymous leader election schemes where the VRF proof itself must be verified inside a SNARK.
+
+| Scheme / Curve | Year | Basis | Note |
+|----------------|------|-------|------|
+| **Bandersnatch curve** | 2021 | Twisted Edwards over BLS12-381 scalar field | Designed by Ethereum Foundation; GLV endomorphism for fast scalar multiplication; 2-isogenous to Bandersnatch-Jubjub [[1]](https://eprint.iacr.org/2021/1152) |
+| **Ring VRF (Sassafras)** | 2023 | Bandersnatch + SNARK | Proposed Ethereum validator shuffle; anonymous VRF: prove membership in validator ring and produce VRF output without revealing identity [[1]](https://eprint.iacr.org/2023/002) |
+| **Jubjub curve** | 2017 | Twisted Edwards over BLS12-381 scalar field | Predecessor; used in Zcash Sapling; slower than Bandersnatch [[1]](https://zips.z.cash/protocol/protocol.pdf) |
+| **Grumpkin curve** | 2022 | Short Weierstrass over BN254 scalar field | Analogous trick for BN254 ecosystem; 2-cycle with BN254 [[1]](https://hackmd.io/@aztec-network/ByzgNxBfd) |
+
+**State of the art:** Bandersnatch is the recommended curve for in-circuit VRF operations over BLS12-381 (Ethereum, Polkadot). The Ring VRF / Sassafras protocol (2023) uses Bandersnatch to achieve anonymous, publicly verifiable leader election — a critical primitive for privacy-preserving consensus. See also [Verifiable Random Functions (VRF)](#verifiable-random-functions-vrf) and [Ring VRF](categories/08-signatures-advanced.md#ring-vrf).
+
+---
+
+## GKR Protocol (Doubly-Efficient Interactive Proofs)
+
+**Goal:** Efficient interactive proof for layered arithmetic circuits. The Goldwasser-Kalai-Rothblum (GKR) protocol lets a prover convince a verifier that a layered circuit C was evaluated correctly on a given input, with verifier cost O(n + d log n) and prover cost O(|C|) — strictly sub-linear in the circuit size for the verifier. GKR is the theoretical backbone of Libra, Virgo, and other sumcheck-based transparent proof systems.
+
+The protocol proceeds layer by layer, reducing a claim about one circuit layer to a claim about the layer below via the sumcheck protocol. Each layer produces a multilinear extension (MLE) of its wiring predicate, and the prover sends O(d) field elements where d is the circuit depth.
+
+| Property | Value |
+|----------|-------|
+| **Verifier cost** | O(d · log |C|) field operations — sub-linear for log-depth circuits |
+| **Prover cost** | O(|C| log |C|) |
+| **Round complexity** | O(d · log n) rounds of sumcheck |
+| **Setup** | Transparent (no trusted setup); based on sumcheck + MLE |
+| **Security** | Information-theoretic soundness (IP = PSPACE) |
+
+| Variant | Year | Note |
+|---------|------|------|
+| **GKR (original)** | 2008 | Doubly-efficient IP for log-space uniform circuits; STOC 2008 [[1]](https://dl.acm.org/doi/10.1145/1374376.1374396) |
+| **Thaler's linear-time prover** | 2013 | O(|C|) prover via bookkeeping table; STOC 2013 [[1]](https://eprint.iacr.org/2013/351) |
+| **Libra** | 2019 | Combines GKR with polynomial commitments (KZG/IPA) for a non-interactive zkSNARK; O(|C|) prover; CCS 2019 [[1]](https://eprint.iacr.org/2019/317) |
+| **Virgo** | 2020 | Transparent GKR-based zkSNARK using FRI polynomial commitment; IEEE S&P 2020 [[1]](https://eprint.iacr.org/2019/1482) |
+| **Spartan + GKR** | 2021 | Combines GKR-style sumcheck with multilinear PCS to yield zkSNARK with no trusted setup [[1]](https://eprint.iacr.org/2019/550) |
+
+**State of the art:** GKR underpins the sumcheck-based zkSNARK family (Libra, Virgo, Spartan, HyperPlonk). Thaler's 2013 linear-time prover made the approach practical. Modern deployments combine GKR's efficient sumcheck reduction with multilinear polynomial commitments ([Dory](#multilinear-polynomial-commitments), [Zeromorph](#multilinear-polynomial-commitments)) to obtain fully non-interactive proofs. See also [Sumcheck Protocol](categories/04-zero-knowledge-proof-systems.md#sumcheck-protocol) and [Verifiable Computation (VC)](#verifiable-computation-vc).
+
+---
+
+## Ligero / Ligero++ (MPC-in-the-Head Commitments)
+
+**Goal:** Transparent, hash-based polynomial commitment and zero-knowledge proof system with no trusted setup and minimal assumptions — only collision-resistant hash functions. Ligero encodes the witness as a Reed-Solomon codeword and commits using a Merkle tree; the verifier checks random positions. Ligero++ extends this with improved soundness and smaller proofs via stronger code-based techniques. Both serve as the commitment layer for MPC-in-the-head proof systems.
+
+| Property | Value |
+|----------|-------|
+| **Commitment basis** | Reed-Solomon / linear codes + Merkle tree |
+| **Setup** | Transparent — hash functions only |
+| **Proof size** | O(√|C| · λ) — sub-linear in circuit size; larger than KZG/FRI |
+| **Prover time** | O(|C| log |C|) |
+| **Verifier time** | O(√|C| · λ) |
+| **Security assumption** | Collision-resistant hash functions (ROM) |
+| **Post-quantum** | Yes — hash-based |
+
+| Variant | Year | Note |
+|---------|------|------|
+| **Ligero (Ames et al.)** | 2017 | First sublinear zkSNARK from symmetric primitives only; encodes witness as RS codeword; proof ≈ O(√|C|) field elements; CCS 2017 [[1]](https://eprint.iacr.org/2022/1608) |
+| **Ligero++** | 2020 | Improves soundness via proximity testing; 4–10× smaller proofs than Ligero; CCS 2020 [[1]](https://eprint.iacr.org/2020/1439) |
+| **Aurora** | 2019 | Extends Ligero's ideas to R1CS circuits with univariate encodings; more general; EUROCRYPT 2019 [[1]](https://eprint.iacr.org/2018/828) |
+| **Shockwave** | 2022 | Linear-time Ligero-style prover; builds on Brakedown codes; CRYPTO 2022 [[1]](https://eprint.iacr.org/2022/445) |
+
+**State of the art:** Ligero and Ligero++ are important proof systems for settings requiring post-quantum security with no trusted setup and minimal assumptions. While proof sizes are larger than FRI-based STARKs, they require only hash functions and are simpler to analyse. Aurora generalises Ligero to arbitrary R1CS. See also [MPC-in-the-Head (MPCitH)](categories/04-zero-knowledge-proof-systems.md#mpc-in-the-head-mpcith--vole-in-the-head-voleith) and [Brakedown Polynomial Commitments](#brakedown-polynomial-commitments).
+
+---
+
+## Trapdoor Commitments (Equivocable Commitments)
+
+**Goal:** Controlled equivocability. A commitment scheme that is perfectly binding for everyone, but the holder of a secret trapdoor key can open any commitment to an arbitrary message — "equivocating" after the fact. Trapdoor commitments are a fundamental building block in simulation-based proofs of security: the simulator equivocates commitments to extract witnesses or rewind adversaries without statistical difference.
+
+| Property | Trapdoor Commitment | Standard Commitment |
+|----------|--------------------|--------------------|
+| **Hiding** | Perfectly hiding (statistical) | Computationally hiding |
+| **Binding** | Computationally binding (without trapdoor) | Computationally binding |
+| **Equivocability** | Trapdoor holder can open to any value | No party can open to two values |
+| **Use in proofs** | Enables simulation: simulator equivocates | Not directly usable in simulation |
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Pedersen Trapdoor Commitment** | 1991 | DLP | Trapdoor = discrete log of h w.r.t. g; perfectly hiding, computationally binding; equivocable by trapdoor holder [[1]](https://link.springer.com/chapter/10.1007/3-540-46766-1_9) |
+| **Brassard-Chaum-Crépeau** | 1988 | One-way functions | First construction explicitly used for simulation in interactive proofs [[1]](https://dl.acm.org/doi/10.1145/62212.62222) |
+| **Trapdoor Hash from Pairings** | 2006 | Bilinear maps | Trapdoor hash enabling homomorphic properties; used in structure-preserving commitments [[1]](https://eprint.iacr.org/2008/453) |
+| **Lattice-based Trapdoor Commitment** | 2017 | LWE / SIS | Post-quantum equivocable commitments; trapdoor = short lattice basis [[1]](https://eprint.iacr.org/2017/550) |
+| **Structure-Preserving Commitments (SPC)** | 2015 | Pairings | Commitments to group elements verifiable by pairing equations; equivocable; used in anonymous credentials [[1]](https://eprint.iacr.org/2015/684) |
+
+**State of the art:** Pedersen commitments remain the canonical equivocable commitment in the DLP setting — deployed in virtually all simulation-based security proofs for ZK protocols, MPC, and threshold cryptography. Lattice-based trapdoor commitments (2017+) provide post-quantum alternatives. Structure-preserving variants (Abe et al. 2015) enable trapdoor commitments that compose cleanly with pairing-based proof systems. See also [Commitment Schemes](#commitment-schemes) and [Chameleon Hash (Trapdoor Hash)](#chameleon-hash-trapdoor-hash).
+
+---
+
 ## Feige-Fiat-Shamir Identification Scheme
 
 **Goal:** Zero-knowledge proof of identity. A prover convinces a verifier that they know a secret (square roots modulo a composite N) without revealing the secret itself or any useful information. Seminal construction bridging commitment-based protocols and practical authentication.

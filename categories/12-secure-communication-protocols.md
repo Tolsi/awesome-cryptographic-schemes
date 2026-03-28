@@ -713,3 +713,228 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 **State of the art:** Tox protocol specification maintained by the TokTok project (`toktok.ltd/spec`). No formal audit; not recommended for high-threat-model use without independent review. The NaCl/libsodium cryptographic primitives (Curve25519 + XSalsa20-Poly1305) are state-of-the-art; the protocol layering and metadata exposure are the open research questions. Compare [Briar](#briar--bramble-p2p-encrypted-messaging) for a more threat-modelled P2P alternative. See [[1]](https://toktok.ltd/spec.html).
 
 ---
+
+## Olm / Matrix Pairwise Ratchet
+
+**Goal:** Provide Signal-like pairwise end-to-end encryption for Matrix (Element) direct messages using Double Ratchet and X3DH, adapted for Matrix's decentralized, server-federated homeserver model where keys are published via the Matrix key API rather than Signal's centralized key server.
+
+**Protocol design (Matrix.org spec, `olm` C library):**
+
+Olm is a pairwise Double Ratchet protocol. Each pair of Matrix devices establishes an independent Olm session; there is one session per (sender device, recipient device) pair.
+
+| Component | Mechanism |
+|-----------|-----------|
+| Initial key agreement | Curve25519 X3DH with identity key, signed pre-key, one-time pre-keys |
+| Session encryption | Double Ratchet (AES-256-CBC + HMAC-SHA-256, Curve25519 DH ratchet) |
+| Key distribution | `/keys/upload` and `/keys/query` Matrix client-server API endpoints |
+| One-time pre-keys | Uploaded to homeserver; consumed per new session initiation |
+| Device verification | Short Authentication String (emoji / decimal) or QR-code cross-signing |
+
+**Olm vs. Signal Double Ratchet differences:**
+
+| Property | Signal Double Ratchet | Olm |
+|----------|-----------------------|-----|
+| Transport | Signal server (centralized) | Matrix homeserver (federated) |
+| Key store | Signal key server | User's homeserver (untrusted for key content) |
+| Multi-device | Sesame session manager | One Olm session per device pair |
+| Group chat | Multi-recipient Double Ratchet | Megolm (separate group ratchet) |
+| Message ordering | Strict | Out-of-order tolerant (ratchet key caching) |
+
+**Cross-signing (Matrix E2E device verification):**
+- Each user has a master signing key, self-signing key, and user-signing key
+- Device keys cross-signed by the user's own master key → verified identity across all devices
+- Verification ceremony (SAS emoji) compares a 7-emoji sequence derived from both devices' keys
+
+**Deployments:** Element (Web, Desktop, iOS, Android), FluffyChat, Nheko, Cinny — all major Matrix clients. Used by German government (Bundeswehr), French government (Tchap), NATO-aligned agencies.
+
+**State of the art:** vodozemac (2023) — a formally verified Rust reimplementation via the Hax framework — replaces libolm as the reference implementation in Element Web/X. See [Double Ratchet](#double-ratchet--symmetric-ratchet), [X3DH](#x3dh--extended-triple-dh-key-agreement).
+
+---
+
+## WireGuard Noise_IKpsk2 Handshake
+
+**Goal:** Provide a cryptographically minimal, formally verified VPN tunnel using a single fixed Noise protocol handshake pattern — eliminating cipher negotiation, version fields, and algorithm agility entirely. WireGuard's entire cryptographic design fits in ~4 000 lines of code.
+
+**Noise protocol pattern: `IKpsk2`**
+
+```
+Initiator knows: static key pair (s_i), responder's static public key (s_r)
+Responder knows: static key pair (s_r)
+
+→ e                      (initiator sends ephemeral public key e_i)
+← e, ee, se             (responder sends ephemeral e_r; mixes DH(e_i,e_r) and DH(e_r,s_i))
+→ s, se, psk            (initiator sends encrypted static key; mixes DH(s_i,e_r) and PSK)
+```
+
+| Primitive | Choice | Rationale |
+|-----------|--------|-----------|
+| DH | X25519 (Curve25519) | Fast, constant-time, no cofactor issues |
+| AEAD | ChaCha20-Poly1305 | Software-speed; avoids AES-NI hardware dependence |
+| Hash / KDF | BLAKE2s + HKDF | Fast on 32-bit/embedded; collision-resistant |
+| Handshake state | `h`, `ck`, `k`, `n` — 4 scalars | Minimal mutable state |
+
+**Key derivation in detail (WireGuard paper §5):**
+
+1. Both sides maintain a chaining key `ck` and hash `h` updated via `HKDF-Extract(ck, input)`
+2. Each DH output is mixed into `ck` via `(ck, k) = HKDF(ck, DH_output, 2 outputs)`
+3. After the 3-way handshake, `(T_send, T_recv) = HKDF(ck, ε, 2 outputs)` — transport keys
+4. Pre-shared key (PSK) adds post-quantum resistance: `(ck, τ, k) = HKDF(ck, psk, 3 outputs)`
+
+**Cookie mechanism (DoS mitigation):**
+- Under load, the responder issues a MAC-protected cookie (24-byte random nonce encrypted under the requester's IP)
+- The initiator must echo the cookie in the first message before the responder allocates state
+- Prevents resource exhaustion from spoofed-IP handshake floods
+
+**Formal verification:** Donenfeld & Milner (2017), Lipp–Blanchet–Bhargavan (2019) verified with ProVerif and Tamarin; full secrecy and authentication properties proven under the symbolic model. [[1]](https://eprint.iacr.org/2019/1347)
+
+**State of the art:** WireGuard in Linux kernel 5.6+ (2020). Static codebase; no version negotiation. PSK layer provides optional symmetric post-quantum resistance (256-bit pre-shared key must be exchanged out-of-band). A full PQ WireGuard (`mlkem768x25519` replacing X25519 DH) is under active development. See [Secure Channels](#secure-channels--protocol-constructions), [IKEv2 / IPsec](#ikev2--ipsec-esp).
+
+---
+
+## STARTTLS / Opportunistic vs. Mandatory TLS
+
+**Goal:** Upgrade a plaintext protocol connection to TLS in-band — without requiring a separate port — enabling backward-compatible encryption for email (SMTP, IMAP, POP3), LDAP, and other protocols. The key security distinction is between *opportunistic* TLS (encrypt if possible, fall back to plaintext) and *mandatory* TLS (fail hard if TLS is unavailable).
+
+**How STARTTLS works (SMTP example, RFC 3207):**
+
+```
+Client → Server: EHLO mail.example.com
+Server → Client: 250-STARTTLS                    ← advertises capability
+Client → Server: STARTTLS                         ← requests upgrade
+Server → Client: 220 Ready to start TLS
+--- TLS ClientHello begins on the same TCP connection ---
+Client → Server: MAIL FROM:<alice@example.com>   ← now inside TLS
+```
+
+**Opportunistic vs. mandatory TLS:**
+
+| Mode | Behavior | Threat model |
+|------|----------|-------------|
+| **Opportunistic TLS** (unauthenticated) | Encrypt if server offers STARTTLS; accept any certificate; fall back to plaintext | Passive eavesdroppers only; MITM or downgrade not prevented |
+| **Opportunistic TLS + DANE** | Encrypt and verify cert against TLSA DNS record | Adds MITM resistance; requires DNSSEC |
+| **MTA-STS** (RFC 8461) | Policy published at HTTPS well-known URL; recipient domain declares mandatory TLS | Prevents downgrade; no DNSSEC required |
+| **SMTP DANE** (RFC 7672) | TLSA record specifies cert or SPKI hash; DNSSEC-validated | Strongest: MITM requires DNS compromise |
+| **Mandatory TLS** (STARTTLS + cert verification) | TLS required; cert must validate against trust store | Prevents both passive and active MITM |
+
+**STARTTLS stripping attack:**
+An active MITM can delete the `250-STARTTLS` capability line before the client sees it, causing the client to proceed in plaintext. Countermeasures:
+- **MTA-STS**: client caches policy; will not fall back even if the capability is stripped
+- **DANE TLSA**: client checks the DNSSEC-signed record; strip attempts are detectable
+
+**Implicit TLS (port 465 / SMTPS):**
+A simpler alternative: TLS wraps the entire connection from the first byte (no STARTTLS negotiation). RFC 8314 (2018) recommends implicit TLS on port 465 for mail submission and discourages STARTTLS on port 587 for new deployments.
+
+| Protocol | Plaintext port | STARTTLS port | Implicit TLS port |
+|----------|---------------|---------------|------------------|
+| SMTP relay | 25 | 25 (RFC 3207) | — |
+| SMTP submission | 587 | 587 | 465 (preferred, RFC 8314) |
+| IMAP | 143 | 143 (RFC 2595) | 993 |
+| POP3 | 110 | 110 (RFC 2595) | 995 |
+| LDAP | 389 | 389 (RFC 2830) | 636 |
+
+**State of the art:** Google and Microsoft enforce MTA-STS for outbound mail to major domains. DANE + DNSSEC is more secure but requires DNSSEC deployment at both ends. RFC 8314 (2018) recommends implicit TLS for mail clients. STARTTLS remains necessary for inter-server SMTP relay (port 25). See [Secure Channels](#secure-channels--protocol-constructions), [Applied Infrastructure PKI](categories/14-applied-infrastructure-pki.md#dane).
+
+---
+
+## Oblivious HTTP (OHTTP)
+
+**Goal:** Separate the identity of an HTTP client from the content of its requests by routing them through a relay — so that the target server never learns the client's IP address, and the relay never learns the request content. Provides metadata privacy for DNS queries, telemetry, and privacy-sensitive API calls.
+
+**Architecture (RFC 9458, 2023):**
+
+```
+Client ──(HPKE-encrypted request)──► Relay ──(unwrapped request)──► Gateway ──► Target
+
+Client knows:  Gateway's HPKE public key (fetched out-of-band)
+Relay knows:   Client IP + opaque ciphertext blob (learns nothing about content)
+Gateway knows: Request content + Relay IP (never learns Client IP)
+```
+
+**Encapsulation (HPKE, RFC 9180):**
+
+| Step | Operation |
+|------|-----------|
+| Client | Encapsulate HTTP request under Gateway's HPKE public key; send to Relay |
+| Relay | Forward to Gateway (strips client IP; substitutes its own) |
+| Gateway | HPKE decapsulate; forward inner HTTP request to target resource |
+| Gateway response | HPKE-encrypt response; send back via Relay |
+| Relay | Forward opaque response to Client |
+
+**Cryptographic instantiation (RFC 9458 §3):**
+
+| Primitive | Value |
+|-----------|-------|
+| KEM | DHKEM(X25519, HKDF-SHA256) |
+| KDF | HKDF-SHA256 |
+| AEAD | AES-128-GCM or ChaCha20-Poly1305 |
+| Encapsulated request | `HPKE-Seal(gateway_pk, request_bytes, aad="")` |
+| Key ID | 1-byte selector; allows gateway key rotation |
+
+**Privacy properties:**
+
+| Property | Guarantee |
+|----------|-----------|
+| Request unlinkability | Relay cannot link two requests from the same client (stateless relay) |
+| Content confidentiality | Relay sees only HPKE ciphertext |
+| IP unlinkability | Gateway never sees client IP address |
+| Forward secrecy | HPKE uses a fresh ephemeral encapsulation key per request |
+| Limitation | Client and Relay must not collude; Relay observes timing metadata |
+
+**Deployments:** Apple iCloud Private Relay (OHTTP variant), Cloudflare DNS-over-OHTTP, Google SafeBrowsing v5 (OHTTP for URL lookups), Meta (Threads telemetry), Fastly OHTTP relay service.
+
+**State of the art:** RFC 9458 (2023). Deployed at scale for DNS and telemetry. Complements [Oblivious DoH (ODoH)](categories/10-privacy-preserving-computation.md#oblivious-dns-odoh) — ODoH is an earlier DNS-specific predecessor; OHTTP generalizes to arbitrary HTTP. See [Secure Channels](#secure-channels--protocol-constructions), [ECH](#encrypted-client-hello-ech).
+
+---
+
+## ACME Protocol / Automated Certificate Management
+
+**Goal:** Automate the issuance, renewal, and revocation of TLS certificates by formalizing the challenge-response domain validation workflow as a machine-readable protocol — eliminating the manual steps that caused certificate expiry outages and enabling zero-touch 90-day certificate rotation at scale.
+
+**Protocol design (RFC 8555, 2019):**
+
+ACME is a REST/JSON protocol between an ACME client (e.g., Certbot, acme.sh) and a CA's ACME server (e.g., Let's Encrypt).
+
+```
+Client                               CA (ACME Server)
+  │                                       │
+  ├─ POST /new-account (JWK, ToS agree) ─►│  ← create account (Ed25519 or RSA key)
+  ├─ POST /new-order (domain list) ──────►│  ← request certificate
+  │◄── order URL + authorization URLs ────┤
+  ├─ GET  authorization URL ─────────────►│  ← fetch challenge options
+  │◄── challenges: HTTP-01 / DNS-01 / TLS-ALPN-01 ──┤
+  ├─ complete challenge ─────────────────►│  ← provision token
+  ├─ POST /challenge (ready) ────────────►│
+  │◄── CA validates challenge ────────────┤
+  ├─ POST /finalize (CSR) ───────────────►│  ← submit CSR
+  │◄── certificate URL ───────────────────┤
+  ├─ GET  certificate URL ───────────────►│
+  │◄── signed X.509 certificate ──────────┤
+```
+
+**Challenge types:**
+
+| Challenge | Mechanism | Use case |
+|-----------|-----------|---------|
+| **HTTP-01** | CA fetches `http://domain/.well-known/acme-challenge/{token}` | Web servers with port 80 access |
+| **DNS-01** | CA queries `_acme-challenge.domain` TXT = `Base64(SHA-256(keyAuthorization))` | Wildcard certs; no HTTP port access needed |
+| **TLS-ALPN-01** | CA connects TLS with ALPN `acme-tls/1`; cert must contain challenge token in SAN | TLS-only environments |
+
+**Cryptographic components:**
+
+| Component | Detail |
+|-----------|--------|
+| Account key | Ed25519 or RSA-2048 key pair; identifies the ACME account |
+| JWS | All ACME requests are signed with the account key; replay-protected via `nonce` |
+| CSR | Standard PKCS#10 certificate signing request |
+| keyAuthorization | `token || "." || Base64url(SHA-256(accountKey))` — binds challenge to account |
+
+**ARI — ACME Renewal Information (RFC 9730, 2024):**
+Allows the CA to signal the optimal renewal window to clients, enabling mass-renewal coordination and graceful handling of CA-side key compromise events without client-side polling.
+
+**Deployments:** Let's Encrypt (~380 million active certificates, 2024), ZeroSSL, Google Trust Services, Cloudflare, Buypass. Clients: Certbot, acme.sh, Caddy (built-in), Traefik, nginx `ngx_http_acme_module`.
+
+**State of the art:** RFC 8555 (2019) is universally adopted; Let's Encrypt issues ~6 million certificates per day (2024). Short-lived certificates (6-day) under `draft-ietf-acme-shortlived` would replace revocation with expiry. ARI (RFC 9730) is the latest extension. See [Applied Infrastructure PKI](categories/14-applied-infrastructure-pki.md), [Secure Channels](#secure-channels--protocol-constructions).
+
+---
+
+---

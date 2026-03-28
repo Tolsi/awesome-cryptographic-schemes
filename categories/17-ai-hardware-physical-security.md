@@ -248,6 +248,22 @@ Kim et al. (ISCA 2014) discovered that hammering a DRAM row (accessing it tens o
 
 ---
 
+## Hardware Security Modules (HSM) & FIPS 140-3
+
+**Goal:** Provide a tamper-resistant, auditable boundary for all cryptographic key operations. An HSM performs key generation, storage, signing, decryption, and key wrapping entirely inside a physically and logically protected module — secret key material never leaves the hardware boundary in plaintext. FIPS 140-3 (ISO/IEC 19790) defines four security levels for validation by NIST's Cryptographic Module Validation Program (CMVP).
+
+| Scheme / Standard | Year | Basis | Note |
+|------------------|------|-------|------|
+| **FIPS 140-1** | 1994 | NIST standard | Original US federal standard for cryptographic modules; four levels (physical, logical, role-based access, key management) [[1]](https://csrc.nist.gov/pubs/fips/140-1/final) |
+| **FIPS 140-2** | 2001 | NIST + ISO/IEC 19790:2006 | Revised standard; dominant HSM certification baseline until 2026 transition deadline; Level 3/4 require tamper-evidence and response [[1]](https://csrc.nist.gov/pubs/fips/140-2/final) |
+| **FIPS 140-3 / ISO 19790:2012** | 2019 | ISO/IEC 19790 + 24759 | Third edition aligned with international standard; adds software/firmware testing (ISO 10007); CMVP accepts new submissions from 2022 [[1]](https://csrc.nist.gov/pubs/fips/140-3/final) |
+| **Thales Luna Network HSM** | 2020+ | FIPS 140-2 Level 3 | Widely deployed network HSM; hardware-enforced key custody, M-of-N quorum activation, and key ceremony support [[1]](https://cpl.thalesgroup.com/encryption/hardware-security-modules/network-hsms) |
+| **AWS CloudHSM / Azure Dedicated HSM** | 2018+ | FIPS 140-2 Level 3 | Cloud-hosted, customer-owned HSM partitions; no cloud-provider key access; supports PKCS#11, JCE, CNG APIs [[1]](https://aws.amazon.com/cloudhsm/) |
+
+**State of the art:** FIPS 140-3 is the current validation target; all new CMVP certificates are issued under it. Cloud HSM-as-a-service (AWS, Azure, GCP) makes FIPS 140-3 Level 3 hardware accessible without on-premises deployment. Post-quantum algorithm support in HSMs (ML-KEM, ML-DSA) is an active 2024–2025 integration effort. Complements [Anti-Tamper & Zeroization](#anti-tamper--zeroization-mechanisms) and [Hardware TRNGs](#hardware-true-random-number-generators-trngs).
+
+---
+
 ## ML Modeling Attacks on Strong PUFs & ML-Based Privacy Attacks
 
 **Goal:** (a) Break Strong PUF authentication by training a machine-learning model on a polynomial number of challenge-response pairs (CRPs) to clone the PUF's input-output behaviour without physical access to the device; and (b) attack ML models themselves through model extraction (IP theft via query APIs) and membership inference (determine whether a record was in the training set).
@@ -267,5 +283,71 @@ Kim et al. (ISCA 2014) discovered that hammering a DRAM row (accessing it tens o
 | **Differential Privacy (Abadi et al. DP-SGD)** | 2016 | DP training | Adds calibrated noise during SGD to bound per-record gradient influence; principal mitigation for membership inference; CCS 2016 [[1]](https://dl.acm.org/doi/10.1145/2976749.2978318) |
 
 **State of the art:** ML modeling attacks have rendered classic Strong PUFs cryptographically broken for most authentication use cases; SRAM PUF with fuzzy extractors and helper-data schemes (see [PUF](#physical-unclonable-functions-puf)) are the current standard. For ML model privacy, DP-SGD is the de-facto training-time defence; model watermarking addresses post-theft attribution. Intersects [PUF](#physical-unclonable-functions-puf), [AI Watermarking](#cryptographic-watermarking-for-ai--pseudorandom-codes), and [Speculative Execution Side-Channel Attacks](#speculative-execution--cache-timing-side-channel-attacks).
+
+---
+
+## White-Box Cryptography (WBC)
+
+**Goal:** Implement a cryptographic algorithm such that the secret key cannot be extracted even when the attacker has full control of the execution environment — arbitrary code inspection, memory dumps, and dynamic tracing. Used to protect keys embedded in software running on untrusted host platforms (DRM, mobile payments).
+
+White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot (SAC 2002), who proposed "white-box AES": a network of precomputed, key-dependent lookup tables that evaluates AES correctly but obscures the key within the composition. The construction was broken by Billet, Gilbert, and Ech-Chatbi (SAC 2004) using an algebraic attack requiring ~2^30 work. A sequence of ever-stronger proposals and breaks continued over two decades; the BGE-style affine-equivalence attack framework and the CHES 2016 differential computation analysis (DCA) attack showed that all table-based white-box AES constructions are vulnerable to side-channel-style statistical analysis of intermediate lookup values. Rigorous theoretical WBC based on program obfuscation (iO) is possible but practically unusable. Practical deployments (e.g., Apple FairPlay, Widevine L3) rely on security-by-obscurity combined with diversity and renewability rather than provable security.
+
+| Scheme / Attack | Year | Basis | Note |
+|----------------|------|-------|------|
+| **Chow et al. White-Box AES** | 2002 | Key-dependent lookup tables | First WBC construction; encodes AES key into T-boxes and mixing bijections; SAC 2002 [[1]](https://link.springer.com/chapter/10.1007/3-540-36492-7_17) |
+| **BGE Attack (Billet-Gilbert-Ech-Chatbi)** | 2004 | Affine equivalence | Breaks Chow WB-AES in ~2^30 operations via algebraic analysis of table structure; SAC 2004 [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30564-4_16) |
+| **Differential Computation Analysis (DCA)** | 2016 | Statistical analysis | Applies DPA methodology to computation traces (memory accesses, intermediate values) of white-box implementations; breaks all published WB-AES variants; CHES 2016 [[1]](https://eprint.iacr.org/2015/753) |
+| **SPACE / Incompressible WBC** | 2017 | Provable hardness | WBC scheme provably hard under random oracle and one-wayness assumptions; first scheme with formal security reduction [[1]](https://eprint.iacr.org/2017/876) |
+| **iO-Based White-Box Crypto** | 2021 | Indistinguishability obfuscation | WBC with provable security from iO and PRF; theoretically optimal but iO is not practically efficient [[1]](https://eprint.iacr.org/2021/1332) |
+
+**State of the art:** No practically efficient WBC construction with a concrete security proof against all known attacks exists; the CHES 2016 DCA attack broke the entire table-based paradigm. Industry deployments rely on renewability (frequent key updates), code diversity, and LLVM-level obfuscation passes. Provably secure WBC from iO remains a theoretical landmark. Related to [Obfuscation / iO](categories/16-obfuscation-advanced-hardness.md#indistinguishability-obfuscation-io) and [Power Analysis Attacks & Masking Countermeasures](#power-analysis-attacks--masking-countermeasures).
+
+---
+
+## Smart Card & Secure Element Cryptography
+
+**Goal:** Execute cryptographic operations and store secret keys within a tamper-resistant microcontroller whose physical and logical defenses prevent key extraction even under invasive attack. Smart cards and secure elements (SE) are the ubiquitous form factor for EMV payment, SIM/eSIM, passports, PIV/CAC identity cards, and mobile NFC payments.
+
+| Scheme / Standard | Year | Basis | Note |
+|------------------|------|-------|------|
+| **ISO/IEC 7816 Smart Card Standard** | 1987+ | Contact interface + APDU | Defines electrical interface, file system, and APDU command set; foundation for all contact smart cards [[1]](https://www.iso.org/standard/54550.html) |
+| **EMV (Europay-Mastercard-Visa)** | 1994+ | RSA / ECC + symmetric | Chip-and-PIN payment standard; card generates a dynamic authentication cryptogram using a DES/AES session key; see also [EMV](categories/14-applied-infrastructure-pki.md#emv-chip-payment-cryptography) [[1]](https://www.emvco.com/emv-technologies/contact/) |
+| **GlobalPlatform Secure Element API** | 2003+ | Java Card + SCP02/03 | Industry standard for SE OS, applet lifecycle management, and secure channel protocol (AES-based SCP03) [[1]](https://globalplatform.org/specs-library/) |
+| **ARM TrustZone-M for IoT SE** | 2016+ | Hardware isolation | Cortex-M33 TrustZone separates Normal and Secure world on microcontrollers; used as lightweight SE in IoT devices; PSA Certified Level 2 [[1]](https://developer.arm.com/ip-products/security-ip/trustzone) |
+| **Apple Secure Enclave Processor (SEP)** | 2013+ | Dedicated security core | On-SoC AES engine + UID key fused at manufacture; Face/Touch ID templates and payment keys isolated from application processor; never exposed via software API [[1]](https://support.apple.com/guide/security/secure-enclave-sec59b0b31ff/web) |
+
+**State of the art:** Common Criteria EAL 5+ (with AVA_VAN.5 attack potential) is the standard certification target for payment and passport SEs; the NXP P71 and Infineon SLx 9xxx families are representative. eSIM (GSMA SGP.02/22) extends SE concepts to remotely provisioned SIM profiles. Complements [HSM & FIPS 140-3](#hardware-security-modules-hsm--fips-140-3), [PUF](#physical-unclonable-functions-puf), and [Anti-Tamper & Zeroization](#anti-tamper--zeroization-mechanisms).
+
+---
+
+## Cryptographic Hardware Accelerators (AES-NI, SHA-NI, AVX-512 VAES)
+
+**Goal:** Offload symmetric cryptographic primitives from general-purpose integer units to dedicated silicon, achieving throughput many times faster than software implementations while also closing timing side channels by executing in data-independent, constant-time hardware.
+
+| Instruction Set / Accelerator | Year | Basis | Note |
+|------------------------------|------|-------|------|
+| **Intel AES-NI (Westmere)** | 2010 | x86 ISA extension | Six instructions (AESENC, AESENCLAST, AESDEC, AESDECLAST, AESKEYGENASSIST, AESIMC); single AES round in one clock; ~0.8 cycles/byte in AES-GCM; eliminates cache-timing vulnerability [[1]](https://www.intel.com/content/www/us/en/developer/articles/technical/advanced-encryption-standard-instructions-aes-ni.html) |
+| **Intel SHA Extensions (Goldmont)** | 2016 | x86 ISA extension | SHA-1 and SHA-256 message schedule + compression round instructions; 3–4× speedup over software; AMD Ryzen support from 2017 [[1]](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sha-extensions.html) |
+| **AVX-512 VAES / VPCLMULQDQ** | 2019 | AVX-512 width | Vectorised AES-NI operating on 512-bit (four AES blocks simultaneously); enables >100 Gbps AES-GCM on a single core; Icelake+ and Zen 4 [[1]](https://eprint.iacr.org/2020/1333) |
+| **ARM Cryptography Extensions (ARMv8-A)** | 2011+ | AArch64 ISA | AES and SHA-1/256/512 instructions; present in all Cortex-A53/A72+; enables constant-time crypto on mobile and server ARM [[1]](https://developer.arm.com/documentation/ddi0596/2021-12/SIMD-FP-Instructions) |
+| **NIST PQC Accelerators (NTT / Keccak)** | 2023+ | FPGA / ASIC | Dedicated NTT and Keccak-f hardware for ML-KEM/ML-DSA acceleration; academic and commercial designs achieving microsecond-latency PQC operations [[1]](https://eprint.iacr.org/2023/062) |
+
+**State of the art:** AES-NI is universal in x86 and ARM server/mobile CPUs; AVX-512 VAES achieves line-rate encryption on 100 GbE NICs. OpenSSL, BoringSSL, and libsodium automatically dispatch to hardware paths. NTT accelerators for ML-KEM are entering commercial silicon (2024–2025). Closely related to [Speculative Execution & Cache-Timing Side-Channel Attacks](#speculative-execution--cache-timing-side-channel-attacks) (hardware acceleration eliminates the table-lookup timing channel) and [Hardware TRNGs](#hardware-true-random-number-generators-trngs).
+
+---
+
+## Anti-Tamper Mechanisms & Cryptographic Zeroization
+
+**Goal:** Detect physical intrusion into a cryptographic module and immediately destroy all secret key material before an attacker can extract it — eliminating the threat of key recovery from a captured device. Zeroization must be faster than the fastest plausible attack and operate even under power removal, extreme temperature, or partial circuit damage.
+
+| Mechanism / Standard | Year | Basis | Note |
+|--------------------|------|-------|------|
+| **FIPS 140-2 Level 4 Zeroization Requirements** | 2001 | NIST standard | Mandates complete destruction of all plaintext key material upon detection of any environmental attack; defines envelope monitoring and zeroization circuits [[1]](https://csrc.nist.gov/pubs/fips/140-2/final) |
+| **Mesh-and-Detect Security Enclosures** | 1990s+ | Conductive mesh | A fine conductive mesh woven around the PCB; any drill or probe attempt breaks a trace and triggers immediate zeroization of battery-backed key RAM [[1]](https://ieeexplore.ieee.org/document/8474192) |
+| **Battery-Backed SRAM Key Storage (Zeroization)** | 2000s+ | Volatile SRAM + supercap | Keys held in battery-backed SRAM; tamper detection kills power and the volatile RAM self-destructs; used in HSMs (e.g., IBM 4758) [[1]](https://ieeexplore.ieee.org/document/910325) |
+| **Voltage / Temperature Glitch Zeroization** | 2010s+ | Environmental monitors | On-die sensors detect supply voltage and temperature excursions indicative of fault injection; triggers instant zeroization before fault takes effect [[1]](https://link.springer.com/chapter/10.1007/978-3-319-66787-4_14) |
+| **NSA Type 1 Fill Device Zeroization (KYK-13 / DTD)** | 1980s+ | Classified hardware | U.S. classified key-fill devices implement multi-layer zeroization; button-triggered and automatic on tamper; destroys keying material in < 1 ms [[1]](https://www.cryptomuseum.com/crypto/usa/kyk13/) |
+
+**State of the art:** Modern FIPS 140-3 Level 3/4 HSMs combine mesh sensing, voltage/temperature monitoring, and cryptographic erasure of key RAM in under 1 ms. The IBM 4765 and Thales payShield 10K are representative certified platforms. Zeroization is complementary to [Fault Injection Countermeasures](#fault-injection-attacks--countermeasures) and [HSM & FIPS 140-3](#hardware-security-modules-hsm--fips-140-3); both address the physical attack surface of deployed cryptographic hardware.
 
 ---

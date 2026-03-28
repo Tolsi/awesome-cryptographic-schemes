@@ -317,6 +317,203 @@ where K = KDF(g^xy). Bob's certificate and signature arrive encrypted; Alice's i
 
 ---
 
+## Triple Diffie-Hellman (3DH) / X3DH
+
+**Goal:** Combine three Diffie-Hellman exchanges to achieve both mutual authentication and forward secrecy in an asynchronous setting — allowing one party to establish a shared secret even when the other is offline. The cryptographic core of the Signal Protocol's session-initiation handshake.
+
+The Extended Triple Diffie-Hellman (X3DH) protocol, specified by Marlinspike and Perrin (2016), generalises 3DH by adding a one-time prekey, yielding four DH operations. It solves the "offline key agreement" problem that plain ephemeral DH cannot handle.
+
+**Key material per user (Signal server stores):**
+
+| Key | Type | Purpose |
+|-----|------|---------|
+| IK — Identity Key | Static EC key pair | Long-term identity; used in DH1, DH2 |
+| SPK — Signed Prekey | Rotating EC key pair | Medium-term; signed by IK |
+| OPK — One-Time Prekey | Ephemeral EC key (pool) | Used once; prevents replay |
+
+**X3DH sender computation (Alice → Bob offline):**
+
+```
+EK  = Alice's ephemeral key pair
+DH1 = DH(IK_A, SPK_B)
+DH2 = DH(EK_A, IK_B)
+DH3 = DH(EK_A, SPK_B)
+DH4 = DH(EK_A, OPK_B)   (if OPK available)
+SK  = KDF(DH1 || DH2 || DH3 || DH4)
+```
+
+DH1 + DH2 give mutual authentication; DH3 gives forward secrecy on the SPK rotation; DH4 gives one-time forward secrecy.
+
+**Security properties:**
+
+| Property | Mechanism |
+|----------|-----------|
+| Mutual authentication | IK appears in DH1 (Alice) and DH2 (Bob) |
+| Forward secrecy | EK and OPK are ephemeral; SPK rotates |
+| Deniability | DH outputs are symmetric — no unforgeable signature on transcript |
+| Asynchronous operation | Bob need not be online; prekeys fetched from server |
+
+| Deployment | Usage |
+|------------|-------|
+| **Signal** | Original X3DH specification [[1]](https://signal.org/docs/specifications/x3dh/) |
+| **WhatsApp** | Uses X3DH for session initiation [[1]](https://scontent.whatsapp.net/v/t39.8562-34/271921190_1410954292692988_8222789712547536776_n.pdf) |
+| **MLS (RFC 9420)** | Inspired by X3DH; uses HPKE-based key packages [[1]](https://www.rfc-editor.org/rfc/rfc9420) |
+
+**State of the art:** X3DH (Signal 2016). Feeds directly into the [Double Ratchet](categories/12-secure-communication-protocols.md#double-ratchet--signal-protocol). 3DH without the one-time prekey is the core also used in SIGMA-family proofs. See [Key Exchange / Key Agreement](#key-exchange--key-agreement) and [X3DH](categories/12-secure-communication-protocols.md#x3dh--extended-triple-diffie-hellman).
+
+---
+
+## Noise Protocol Framework
+
+**Goal:** A composable framework of DH-based handshake patterns that produce a shared secret and two cipher states for subsequent encrypted transport — covering every combination of static/ephemeral keys, zero-RTT, mutual/one-sided authentication, and identity hiding, all with a single unified security proof.
+
+Noise, designed by Trevor Perrin (2016), defines a small algebra of handshake *patterns*. Each pattern is a sequence of tokens (`e`, `s`, `ee`, `es`, `se`, `ss`) describing which DH operations are mixed into a running hash and key-derivation chain. Any two parties that agree on a pattern name, DH function, cipher, and hash function share a fully specified protocol.
+
+**Pattern token semantics:**
+
+| Token | Meaning |
+|-------|---------|
+| `e` | Send ephemeral public key; mix into handshake hash |
+| `s` | Send static public key (possibly encrypted) |
+| `ee` | DH(eA, eB) — mix into chaining key |
+| `es` | DH(eA, sB) or DH(sA, eB) |
+| `se` | Symmetric counterpart of es |
+| `ss` | DH(sA, sB) — static-static |
+
+**Common named patterns:**
+
+| Pattern | Messages | Authentication | Use case |
+|---------|----------|----------------|----------|
+| **NN** | `→e / ←e,ee` | None | Anonymous channel (like ephemeral DH) |
+| **NK** | `→e,es / ←e,ee` | Responder only | Client knows server's static key; e.g., anonymous client to known server |
+| **XX** | `→e / ←e,ee,s,es / →s,se` | Mutual | General mutual-auth; WireGuard-like bootstrap [[1]](https://noiseprotocol.org/noise.html) |
+| **IK** | `→e,es,s,ss / ←e,ee,se` | Mutual | 0-RTT; initiator knows responder's static key [[1]](https://noiseprotocol.org/noise.html) |
+| **IX** | `→e,s / ←e,ee,se,s,es` | Mutual | Both send static keys immediately |
+
+**Handshake state machine:** Three symmetric-state objects — `CipherState`, `SymmetricState`, `HandshakeState` — with a single `MixKey`/`MixHash`/`EncryptAndHash` API. After the final handshake message, `Split()` produces two `CipherState` objects for transport.
+
+**Noise extensions:**
+
+| Extension | Purpose |
+|-----------|---------|
+| **Noise Pipes** | Retry fallback from IK to XX if static key unknown |
+| **Noise_XK + PSK** | Add pre-shared key layer (psk0…psk3 modifiers) |
+| **NoiseSocket** | Length-prefixed framing for TCP streams |
+| **NoiseLinux** | Kernel-space WireGuard variant |
+
+| Deployment | Pattern used |
+|------------|-------------|
+| **WireGuard VPN** | Noise_IKpsk2 [[1]](https://www.wireguard.com/papers/wireguard.pdf) |
+| **Lightning Network** | Noise_XK (BOLT #8) [[1]](https://github.com/lightning/bolts/blob/master/08-transport.md) |
+| **WhatsApp media** | Noise_XX |
+
+**State of the art:** Noise revision 34 (2018); formally verified in ProVerif and Tamarin. The framework unifies dozens of bespoke protocols into a single analysable family. See [Key Exchange / Key Agreement](#key-exchange--key-agreement) and [Secure Channels](categories/12-secure-communication-protocols.md#secure-channels--transport-layer-security).
+
+---
+
+## Dragonfly Handshake / SAE (Simultaneous Authentication of Equals)
+
+**Goal:** A zero-knowledge password-authenticated key exchange for peer-to-peer settings where neither party holds a password verifier — both parties hold the password directly — providing mutual authentication and forward secrecy with resistance to offline dictionary attacks and active impersonation.
+
+The Dragonfly handshake, designed by Dan Harkins, is the cryptographic protocol underlying IEEE 802.11-2016 SAE (Simultaneous Authentication of Equals), which replaced the vulnerable WPA2-PSK 4-way handshake in WPA3. SAE eliminates the KRACK and PMKID offline dictionary attack vulnerabilities of WPA2.
+
+**Protocol sketch (over a prime-order group or elliptic curve):**
+
+```
+Both parties: PE = map_password_to_element(password, MAC_A, MAC_B)
+  — deterministic but requires knowing password; resists offline attack
+
+Commit phase:
+  Alice: r, mask ←$ Zq,  scalar = (r+mask) mod q,  element = PE^(-mask)
+         sends (scalar_A, element_A)
+  Bob:   same computation with r_B, mask_B
+         sends (scalar_B, element_B)
+
+Confirm phase:
+  Both compute: K = KDF(PE^(r_A·scalar_B + r_B·scalar_A), ...)
+  Alice sends:  token_A = MAC_K(scalar_A, element_A, scalar_B, element_B)
+  Bob verifies token_A; sends token_B; Alice verifies
+```
+
+**Security properties:**
+
+| Property | Mechanism |
+|----------|-----------|
+| Offline dictionary attack resistance | PE derivation is slow (hash-to-curve); no offline test |
+| Forward secrecy | Ephemeral r values; session key not derivable from password alone |
+| Mutual authentication | Both parties verify MAC tokens under K |
+| Denial-of-service resistance | Anti-clogging token (ACT) for stateless cookie |
+
+| Deployment | Specification |
+|------------|--------------|
+| **WPA3-Personal** | IEEE 802.11-2016 SAE; mandatory in Wi-Fi 6 [[1]](https://standards.ieee.org/ieee/802.11/7028/) |
+| **EAP-pwd (RFC 5931)** | Dragonfly over EAP for enterprise Wi-Fi [[1]](https://www.rfc-editor.org/rfc/rfc5931) |
+| **RFC 7664** | IETF informational specification of Dragonfly [[1]](https://www.rfc-editor.org/rfc/rfc7664) |
+
+**WPA2 vs WPA3 comparison:**
+
+| | WPA2-PSK | WPA3-SAE |
+|-|----------|----------|
+| Handshake | 4-way (EAPOL) | SAE commit/confirm |
+| Offline dictionary attack | Vulnerable (PMKID) | Resistant |
+| Forward secrecy | No | Yes |
+| KRACK vulnerable | Yes | No |
+
+**State of the art:** WPA3 certification mandatory for Wi-Fi 6/6E devices (Wi-Fi Alliance 2020). Dragonfly is also used in EAP-pwd (RFC 5931) for RADIUS-based enterprise authentication. See [Password-Based Key Derivation (KDF / PAKE)](#password-based-key-derivation-kdf--pake) and [SPEKE](#speke-simple-password-exponential-key-exchange).
+
+---
+
+## OCSP / Certificate Revocation
+
+**Goal:** Determine in real time whether a certificate has been revoked before it expires — preventing use of compromised or mis-issued certificates in live TLS sessions.
+
+Certificate revocation is a fundamental but operationally difficult problem in PKI. Two classical mechanisms exist — Certificate Revocation Lists (CRLs) and the Online Certificate Status Protocol (OCSP) — along with newer stapling and short-lived-certificate approaches.
+
+### Certificate Revocation Lists (CRL)
+
+A CRL is a signed, time-stamped list of serial numbers of revoked certificates, published by the issuing CA at a fixed URL (CDP — CRL Distribution Point).
+
+| Property | Detail |
+|----------|--------|
+| Format | DER-encoded X.509 CRL (RFC 5280) [[1]](https://www.rfc-editor.org/rfc/rfc5280) |
+| Signed by | CA's private key (same key that signed the leaf cert) |
+| Update frequency | Typically 24 h – 7 days; `nextUpdate` field |
+| Size | Can reach MB for large CAs; Delta CRLs reduce bandwidth |
+| Latency | Revocation effective only at next CRL fetch |
+
+### Online Certificate Status Protocol (OCSP)
+
+OCSP (RFC 6960) provides per-certificate real-time status queries. A client sends the certificate's serial number to an OCSP responder; the responder replies `good`, `revoked`, or `unknown`.
+
+**OCSP request/response structure:**
+
+```
+Request: issuerNameHash, issuerKeyHash, serialNumber
+         (all SHA-1 or SHA-256 hashes per RFC 6960)
+Response: certStatus, thisUpdate, nextUpdate, signature
+```
+
+| Scheme | Year | Note |
+|--------|------|------|
+| **OCSP (RFC 6960)** | 2013 | Real-time per-cert status; privacy issue: CA learns which certs client checks [[1]](https://www.rfc-editor.org/rfc/rfc6960) |
+| **OCSP Stapling (RFC 6066/TLS)** | 2012 | Server fetches and caches OCSP response; staples to TLS handshake; eliminates privacy leak [[1]](https://www.rfc-editor.org/rfc/rfc6066) |
+| **OCSP Must-Staple (RFC 7633)** | 2015 | Certificate extension requiring stapled OCSP; soft/hard-fail semantics [[1]](https://www.rfc-editor.org/rfc/rfc7633) |
+| **CRLite / CRLSets** | 2017 | Bloom-filter cascade (Mozilla) or curated CRL subset (Chrome) pushed to browser; eliminates live OCSP queries [[1]](https://blog.mozilla.org/security/2020/01/09/crlite-part-1-all-certificate-revocation-is-broken/) |
+| **Short-lived certificates** | 2023 | Let's Encrypt proposes 6-day certs; expiry replaces revocation entirely [[1]](https://letsencrypt.org/2023/06/01/short-lived-certificates.html) |
+
+**Revocation checking in practice:**
+
+| Mechanism | Chrome | Firefox | Safari |
+|-----------|--------|---------|--------|
+| CRL | No (too large) | Delta CRL | Partial |
+| OCSP live | Soft-fail | Hard-fail (EV only) | Soft-fail |
+| OCSP Stapling | Yes (required for EV) | Yes | Yes |
+| CRLSets/CRLite | CRLSets (curated) | CRLite (all certs) | — |
+
+**State of the art:** OCSP stapling + CRLite/CRLSets is the current industry direction. Google Chrome no longer does live OCSP for DV certs. Short-lived certificates (6–90 day) are the emerging solution — revocation becomes unnecessary when certs expire before the attacker can exploit them. See [Certificate Transparency](#certificate-transparency-ct) and [ACME Protocol](#acme-protocol--automated-certificate-management).
+
+---
+
 ## J-PAKE (Password-Authenticated Key Exchange by Juggling)
 
 **Goal:** Enable two parties to establish an authenticated session key using only a shared low-entropy password, with no PKI and with provable resistance to both on-line and off-line dictionary attacks, using only standard discrete-log primitives.

@@ -269,3 +269,95 @@ Agora's Sierra Leone deployment was later clarified to be an independent paralle
 **State of the art:** Academic consensus (USENIX Security 2020, multiple National Academies reports) holds that internet voting — blockchain-based or otherwise — cannot currently meet the security requirements of public elections. The correct application of cryptographic techniques in voting is the approach of systems like [Helios](#end-to-end-verifiable-e-voting), [Belenios](#end-to-end-verifiable-e-voting), [STAR-Vote](#star-vote), and [Prêt à Voter](#prêt-à-voter), which use ZK proofs and verifiable mixnets rather than blockchain immutability as their security foundation.
 
 ---
+
+## Distance-Bounding Protocols
+
+**Goal:** Prove physical proximity. A verifier challenges a prover with rapid-fire nonces and measures the round-trip time of each response — the speed of light bounds the maximum distance at which a prover could be located. Prevents relay attacks (mafia fraud) and terrorist fraud, where an attacker convinces a verifier that a remote credential is physically present.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Brands-Chaum Distance Bounding** | 1993 | Challenge-response + timing | First formal distance-bounding protocol; n-bit rapid challenge phase; prover must answer each bit within one round-trip time [[1]](https://doi.org/10.1007/3-540-48285-7_30) |
+| **Hancke-Kuhn DB Protocol** | 2005 | PRNG + XOR | First practical DB protocol for RFID/NFC; prover pre-commits two pseudorandom strings; answers each challenge bit by selecting one string bit [[1]](https://doi.org/10.1109/PERCOM.2005.52) |
+| **Bussard-Bagga DBPK** | 2004 | Public-key + timing | Distance bounding with public-key authentication; prevents both mafia and terrorist fraud [[1]](https://link.springer.com/chapter/10.1007/11836810_5) |
+| **Kim-Avoine (KA) Protocol** | 2009 | Randomized response + commitment | Adds noise tolerance; prover may send wrong bits with controlled probability; first to formally treat noisy channels [[1]](https://eprint.iacr.org/2009/219) |
+| **Swiss-Knife Protocol** | 2010 | Pre-commitment + masking | Provably secure against mafia and terrorist fraud simultaneously; efficient for resource-constrained devices [[1]](https://link.springer.com/chapter/10.1007/978-3-642-14081-5_11) |
+| **ISO/IEC 23741:2023 DB standard** | 2023 | Standardized framework | First international standard for distance-bounding protocols; formalizes security definitions and protocol structure [[1]](https://www.iso.org/standard/77193.html) |
+
+The two core threat models are: (1) **mafia fraud** — an active relay attack where an adversary in the middle relays messages between a distant prover and verifier without either party's awareness (defeated by timing); (2) **terrorist fraud** — where a colluding prover helps an attacker pass distance checks from a distance (requires the prover cannot give the attacker a reusable token). Applications include contactless payment terminals (Visa/Mastercard relay-attack resistance), building access control, and secure ranging in Ultra-Wideband (UWB) as deployed in iPhone U1/Apple CarKey.
+
+**State of the art:** UWB-based distance bounding (Apple CarKey, IEEE 802.15.4z) for automotive and access control; ISO/IEC 23741 for standardization. See [FIDO2/WebAuthn](categories/12-secure-communication-protocols.md#totpfido2webauthn) for proximity authentication and [TEE Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation) for hardware-backed presence claims.
+
+---
+
+## Tor Hidden Services (.onion v3 Cryptography)
+
+**Goal:** Host a server whose IP address is permanently concealed from clients, the network, and even Tor relays — while clients can still authenticate that they are reaching the intended service. A .onion address is not a name assigned by any authority: it is a cryptographic commitment to the service's long-term public key.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Hidden Services v1/v2** | 2004 | RSA-1024 + DH | Original design; .onion address = first 10 bytes of SHA-1(RSA pubkey); 16-char Base32 hostname; deprecated 2021 due to RSA-1024 weakness and enumeration attacks [[1]](https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf) |
+| **Hidden Services v3 (Prop 224)** | 2017 | Ed25519 + X25519 + SHA3 | Full 256-bit security; 56-char .onion address = Base32(Ed25519 pubkey ∥ checksum ∥ version); introduction and rendezvous circuit negotiated over X25519 DH; descriptor encrypted with client authorization keys [[1]](https://spec.torproject.org/rend-spec-v3) |
+| **Client Authorization (v3)** | 2020 | X25519 per-client keys | Service encrypts its descriptor (location on HSDir) with per-client X25519 keys; only authorized clients can even discover the introduction points [[1]](https://community.torproject.org/onion-services/advanced/client-auth/) |
+| **Onion Balance (load balancing)** | 2021 | Blinded key derivation | Single .onion address backed by multiple instances; each backend derives a blinded signing key from the master key; clients cannot distinguish instances [[1]](https://onionbalance.readthedocs.io/en/latest/design.html) |
+
+A v3 .onion address encodes the Ed25519 public key directly — there is no certificate authority, no DNS, and no registrar. The 56-character hostname is the public key. To reach a service, a client asks an HSDir (hash ring of Tor relays) for the encrypted descriptor; the descriptor reveals the service's introduction points; the client builds a circuit to a rendezvous point and passes it to the service via an introduction point; the service completes the circuit, and an end-to-end authenticated Tor circuit is established. The entire scheme relies on Ed25519 signatures, X25519 key agreement, SHA3-256 hashing, and the Tor onion routing layer — no centralized component ever learns both the client and server identity simultaneously.
+
+**State of the art:** v3 hidden services (mandatory since 2021); SecureDrop, Facebook's facebookwkhpilnemxj.onion, and numerous whistleblowing platforms use v3 .onion addresses. See [Onion Routing / Tor](categories/11-anonymity-credentials.md#mixnets--onion-routing) for the underlying anonymity layer.
+
+---
+
+## Signal Sealed Sender & PIR-Based Metadata Privacy
+
+**Goal:** Prevent the messaging server from learning who is sending a message to whom — metadata privacy beyond end-to-end encryption. Even if the server is honest-but-curious or subpoenaed, it cannot determine the sender of a received message without the recipient's cooperation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Signal Sealed Sender** | 2018 | HKDF + AES-GCM + sender certificate | Sender encrypts their own identity (certificate) inside the ciphertext; server sees only recipient and ciphertext size; recipient decrypts sender cert as part of message decryption [[1]](https://signal.org/blog/sealed-sender/) |
+| **Sealed Sender v2 (SealedSenderMultiRecipientMessage)** | 2022 | Sender key + sealed cert | Extension for group sends; single server round-trip delivers to all recipients without revealing sender to server even for group messages [[1]](https://github.com/signalapp/libsignal/blob/main/rust/protocol/src/sealed_sender.rs) |
+| **Herd (PIR-based metadata hiding)** | 2016 | Express / computational PIR | Full PIR for message retrieval; server cannot determine which message a client is fetching; O(√n) bandwidth [[1]](https://doi.org/10.1145/2976749.2978351) |
+| **Express (XPIR / batch codes)** | 2021 | Batch codes + lightweight crypto | Practical PIR for private message retrieval; deployed in research prototype; 1–2× bandwidth of unprotected fetch [[1]](https://www.usenix.org/conference/usenixsecurity21/presentation/eskandarian) |
+| **Oblivious Message Retrieval (OMR)** | 2022 | FHE + pertinence detection | Server obliviously scans all messages and returns only those for the recipient; server learns neither sender nor which messages matched [[1]](https://eprint.iacr.org/2021/1256) |
+
+Sealed Sender addresses the "to" metadata but not the "from" metadata: Signal's server always knows which device to deliver to (the recipient), but with Sealed Sender it does not know who sent it. The scheme uses a sender certificate (signed by Signal's server, proving the sender is a registered user without revealing their ID to the server at send time) that is encrypted inside the Double Ratchet ciphertext. The limitation is that the recipient's server still learns message timing and size. Full metadata hiding requires PIR-based approaches like Herd or OMR, which remain expensive but are the active research frontier.
+
+**State of the art:** Signal Sealed Sender v2 (production, ~2022); OMR (research, 2022–present). Related to [PIR](categories/10-privacy-preserving-computation.md#private-information-retrieval-pir), [Double Ratchet](categories/12-secure-communication-protocols.md#double-ratchet--signal-protocol), and [Oblivious Message Retrieval](categories/10-privacy-preserving-computation.md#oblivious-message-retrieval-omr).
+
+---
+
+## Memory-Hard Proof of Work (Argon2, scrypt, Equihash)
+
+**Goal:** Make brute-force attacks proportionally expensive in memory, not just computation — so that an attacker with a GPU farm or ASIC enjoys little advantage over a legitimate user on a commodity machine. The primary applications are password hashing (PoW against crackers) and ASIC-resistant cryptocurrency mining.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **scrypt (Colin Percival)** | 2009 | Sequential memory-hard function | Fill a large buffer with pseudorandom data then read it in a pseudorandom order; memory and time are coupled parameters (N, r, p); used in Litecoin PoW and passphrase KDFs [[1]](https://www.tarsnap.com/scrypt/scrypt.pdf) |
+| **Argon2 (PHC winner)** | 2015 | Data-independent (Argon2i) / data-dependent (Argon2d) / hybrid (Argon2id) | Password Hashing Competition winner; three modes trade off side-channel resistance vs. GPU resistance; Argon2id recommended for password hashing; configurable memory, time, and parallelism [[1]](https://www.rfc-editor.org/rfc/rfc9106) |
+| **Equihash** | 2016 | Generalized birthday problem in large memory | Memory-hard PoW via k-XOR on n-bit strings over a large random table; used in Zcash mining; provably requires Ω(2^{n/(k+1)}) memory [[1]](https://eprint.iacr.org/2015/946) |
+| **Balloon Hashing** | 2016 | Space-hard with simple analysis | Three-pass memory-hard construction with a simple security proof; provably space-hard in the random-oracle model [[1]](https://eprint.iacr.org/2016/027) |
+| **Egalitarian Mining / MTP** | 2017 | Merkle Tree Proof of Work | Memory-hard PoW with short proofs; verifier checks a small Merkle path rather than re-running the full computation; reduces blockchain storage [[1]](https://eprint.iacr.org/2017/203) |
+| **yescrypt** | 2014 | Extended scrypt + password scrambling | Extends scrypt with additional hardening; adopted by Fedora, Debian, and Ubuntu as default password hash (replacing bcrypt/SHA-512) [[1]](https://www.openwall.com/yescrypt/) |
+
+The key distinction between memory-hard functions and conventional hash-based PoW (SHA-256) is **memory hardness**: the computation requires accessing a large, essentially random memory region, which cannot be easily parallelized without proportional memory per parallel unit. This collapses the advantage of custom hardware. Argon2id (RFC 9106) is the current IETF recommendation for password hashing; scrypt is used in PKCS#8 encrypted private keys and in Litecoin; Equihash is the cryptographic core of Zcash's proof-of-work consensus.
+
+**State of the art:** Argon2id (RFC 9106, recommended by OWASP); yescrypt (Linux default); Equihash (Zcash). Extends [Client Puzzles / Proof of Effort](#client-puzzles--proof-of-effort) and [PoW/PoSpace](categories/13-blockchain-distributed-ledger.md#proof-of-work-pow--proof-of-space).
+
+---
+
+## Supply Chain Cryptography: in-toto, SLSA, and TUF
+
+**Goal:** Cryptographically bind every step of a software build pipeline — from source commit to final artifact — so that a consumer can verify not just that an artifact was signed, but that it was produced by the expected sequence of trusted steps, using the expected tools, from the expected source.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **The Update Framework (TUF)** | 2010 | Threshold signatures + Merkle-style delegation + role separation | Compromising any single key (including the package maintainer) does not allow arbitrary malicious updates; four-role trust hierarchy (Root, Timestamp, Snapshot, Targets); adopted by PyPI, Rust crates, Docker Content Trust [[1]](https://theupdateframework.io/papers/protecting-community-repositories-jssop2016.pdf) |
+| **in-toto** | 2019 | Link metadata + supply chain layout | Maintainer defines a signed layout of all pipeline steps; each step produces a signed link attestation; final product is verified against the layout; first formal supply chain integrity framework [[1]](https://in-toto.io/in-toto-dissertation.pdf) |
+| **SLSA (Supply-chain Levels for Software Artifacts)** | 2021 | Build provenance attestations + hermetic builds | Google-originated four-level framework; SLSA 3 requires hermetic, reproducible builds with signed provenance; SLSA 4 adds two-person review and build isolation [[1]](https://slsa.dev/spec/v1.0/) |
+| **Sigstore (Rekor + Fulcio + cosign)** | 2021 | Ephemeral OIDC-bound keys + transparency log | Fulcio issues a short-lived certificate binding a signing key to an OIDC identity (GitHub Actions, Google, etc.); Rekor is an append-only Merkle log of all signatures; cosign signs and verifies container images and blobs [[1]](https://www.usenix.org/system/files/usenixsecurity22-newman.pdf) |
+| **npm Provenance (2023)** | 2023 | SLSA + Sigstore + GitHub Actions OIDC | npm packages can carry signed SLSA provenance linking the published package to its exact source commit and CI workflow; verified by `npm audit signatures` [[1]](https://github.blog/security/supply-chain-security/introducing-npm-package-provenance/) |
+| **DSSE / in-toto Attestation Framework** | 2022 | Dead Simple Signing Envelope | Standard envelope format for supply chain attestations; replaces ad-hoc JSON; used by SLSA, in-toto, and cosign [[1]](https://github.com/secure-systems-lab/dsse) |
+
+The central insight unifying these systems is that **a signature on a final artifact is insufficient** — a malicious build system could produce a correctly-signed artifact from tampered source or with a backdoored compiler (a Thompson-attack variant). in-toto closes this gap by requiring signed attestations at each pipeline step and a maintainer-signed layout that defines what steps are required and in what order. SLSA operationalizes this into audit levels that organizations can target incrementally. Sigstore solves the key distribution problem (how does a consumer verify a developer's signing key?) by anchoring signing keys to OIDC identities and recording every signing event in a public transparency log.
+
+**State of the art:** Sigstore/cosign (default for Kubernetes/CNCF ecosystem); npm provenance (default for new npm publishes); TUF (PyPI, Rust crates). See [Sigstore / Certificate Transparency](categories/14-applied-infrastructure-pki.md#sigstore-rekor--software-signing-transparency) and [C2PA/SLSA](categories/14-applied-infrastructure-pki.md#c2pacai-content-provenance--slsa) for related entries in category 14.
+
+---

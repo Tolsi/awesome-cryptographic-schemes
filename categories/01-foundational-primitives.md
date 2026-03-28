@@ -595,3 +595,92 @@ HKDF-Expand(PRK, info, L)  →  OKM  (output keying material, L bytes)
 **State of the art:** SipHash-2-4 (Aumasson-Bernstein 2012) [[1]](https://eprint.iacr.org/2012/351) is the de-facto standard for keyed hash tables and short-input MACs. It is not a replacement for HMAC on long messages, but is the correct primitive for network packet authentication, hash-table salting, and any context requiring a fast PRF over short inputs.
 
 ---
+
+## Merkle-Damgård Construction
+
+**Goal:** Build a collision-resistant hash function for arbitrary-length messages from a fixed-input-length compression function. The construction iterates the compression function over message blocks, threading a chaining value between rounds. A proper length-padding scheme (MD-strengthening) ensures that collision resistance of the compression function implies collision resistance of the full hash.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **Merkle-Damgård (MD)** | 1989 | Iterated compression | Pad message with length; h_i = f(h_{i-1}, m_i); foundational [[1]](https://link.springer.com/chapter/10.1007/0-387-34805-0_39) |
+| **MD-strengthening** | 1989 | Length encoding | Append message bit-length as final padded block; prevents fixed-point / extension attacks [[1]](https://link.springer.com/chapter/10.1007/0-387-34805-0_39) |
+| **Length extension vulnerability** | — | Attack class | H(k ∥ m) forgeable without k if H is plain MD; counters: HMAC, prefix-MAC with HAIFA or sponge [[1]](https://eprint.iacr.org/2004/304) |
+| **HAIFA (wide-pipe / strengthened MD)** | 2006 | Counter-augmented MD | Adds bit-counter and salt to each compression call; thwarts multi-collision and length-extension attacks [[1]](https://eprint.iacr.org/2006/069) |
+| **Wide-pipe** | 2004 | Double-width chaining | Internal state twice the output size; prevents Joux multi-collision attacks; used in SHA-512/256 [[1]](https://eprint.iacr.org/2004/304) |
+
+**Deployed instances:** SHA-1, SHA-256, SHA-512, MD5 — all use basic Merkle-Damgård with Davies-Meyer compression (see [Block-Cipher-Based Hash Compression Functions](#block-cipher-based-hash-compression-functions)). SHA-512/256 uses a wide-pipe variant.
+
+**State of the art:** Merkle-Damgård is the structural backbone of SHA-2, but modern designs prefer the [Sponge Construction](#sponge-construction--duplex) (SHA-3, BLAKE3) which avoids length-extension and supports variable output natively.
+
+---
+
+## RC4 Stream Cipher (Historical)
+
+**Goal:** Fast software stream cipher. RC4 (Rivest Cipher 4) was the dominant stream cipher for two decades: used in SSL/TLS, WEP, WPA-TKIP, PDF, and SSH. Its byte-at-a-time output and minimal code size made it ubiquitous in embedded and software environments. It is now fully broken and prohibited in all new protocols.
+
+| Variant | Year | Key size | Note |
+|---------|------|----------|------|
+| **RC4 (ARC4)** | 1987 | 40–2048 bit | Alleged RC4; 256-byte S-box state; Fluhrer-Mantin-Shamir (2001) attack cracks WEP [[1]](https://link.springer.com/chapter/10.1007/3-540-45537-X_1) |
+| **RC4-drop[n]** | 2006 | — | Drop first n bytes (typically 256 or 3072) of keystream to mitigate bias; insufficient [[1]](https://eprint.iacr.org/2005/007) |
+| **WEP** | 1999 | 40/104 bit | 802.11 protocol using RC4; IV reuse + FMS attack → key recovery in minutes; **deprecated** [[1]](https://link.springer.com/chapter/10.1007/3-540-45537-X_1) |
+| **BEAST / POODLE / RC4 in TLS** | 2011–2015 | — | Series of attacks on RC4 in TLS; RFC 7465 (2015) **prohibits RC4 in TLS** [[1]](https://www.rfc-editor.org/rfc/rfc7465) |
+
+**Why it failed:** RC4's key-scheduling algorithm (KSA) produces biased initial keystream bytes and short-cycle weaknesses. The keystream byte at position 2 is biased toward 0 with probability 2/256 instead of 1/256. Statistical attacks accumulate bias across many sessions to recover plaintexts. Additionally, if two messages share an IV (as in WEP), XOR of ciphertexts reveals XOR of plaintexts.
+
+**State of the art:** RC4 is fully prohibited — RFC 7465 bans it in TLS; NIST and IETF documentation mark it deprecated. For stream encryption use ChaCha20 (see [Symmetric Encryption](#symmetric-encryption)) or AES-CTR (see [Block Cipher Modes of Operation](#block-cipher-modes-of-operation)).
+
+---
+
+## Software-Oriented eSTREAM Stream Ciphers (Rabbit / HC-128)
+
+**Goal:** High-throughput software stream encryption with small state and simple implementation. The eSTREAM competition (2004–2008) Profile 1 selected stream ciphers optimized for general-purpose CPUs, filling the gap between AES-CTR (slower on non-AES-NI hardware) and ChaCha20 (which did not yet exist). These designs achieve 2–4 cycles/byte on 32-bit platforms.
+
+| Cipher | Year | State | Note |
+|--------|------|-------|------|
+| **Rabbit** | 2003 | 128-bit state + 64-bit IV | eSTREAM Profile 1 finalist; 8 counters + 8 state words; ~3.7 cycles/byte on x86; RFC 4503 [[1]](https://www.rfc-editor.org/rfc/rfc4503) |
+| **HC-128** | 2004 | 4 KB (two 512-entry tables) | eSTREAM Profile 1 winner; ~3.05 cycles/byte (x86); 128-bit key, 128-bit IV [[1]](https://link.springer.com/chapter/10.1007/978-3-540-68351-3_9) |
+| **HC-256** | 2004 | 8 KB (two 1024-entry tables) | Higher-security variant; 256-bit key, 256-bit IV; slower but large-table ensures no algebraic shortcuts [[1]](https://eprint.iacr.org/2004/092) |
+| **SOSEMANUK** | 2005 | 160-bit LFSR + 32-bit FSM | eSTREAM Profile 1 winner; Serpent-derived S-box; fast in software [[1]](https://eprint.iacr.org/2005/028) |
+
+**eSTREAM Profile 1 portfolio (2008):** HC-128, Rabbit, Salsa20/12, SOSEMANUK — all selected for software environments. Salsa20 and ChaCha20 ultimately displaced all others due to constant-time, cache-timing-resistant ARX design and wider adoption.
+
+**State of the art:** HC-128 and Rabbit remain unbroken but are rarely used in new systems. ChaCha20 (see [Symmetric Encryption](#symmetric-encryption)) has superseded all eSTREAM Profile 1 ciphers for software use, owing to its simpler implementation, vectorization, and TLS 1.3 adoption.
+
+---
+
+## Wegman-Carter MAC (One-Time and Multi-Use)
+
+**Goal:** Unconditionally and computationally secure message authentication via universal hashing. The Wegman-Carter paradigm combines a universal hash function (fast, information-theoretically secure over short keys) with a pseudorandom value (one-time pad or PRF output) to produce a MAC that is either perfectly secure (one-time key) or computationally secure (PRF-based nonce). Poly1305, GMAC, and UMAC are all Wegman-Carter MACs.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **Wegman-Carter MAC (original)** | 1981 | UHF + OTP | MAC(m) = H_a(m) ⊕ pad_i; perfect security if pad is one-time and truly random [[1]](https://dl.acm.org/doi/10.1145/800076.802600) |
+| **Poly1305** | 2005 | Polynomial UHF + AES/ChaCha20 | H over GF(2¹³⁰−5); pad = AES(key, nonce) or ChaCha20 block; used in TLS 1.3 [[1]](https://cr.yp.to/mac/poly1305-20050329.pdf) |
+| **GHASH + CTR (GMAC)** | 2004 | GF(2¹²⁸) UHF + AES-CTR | MAC component of AES-GCM; NIST SP 800-38D; hardware-accelerated [[1]](https://csrc.nist.gov/publications/detail/sp/800/38/d/final) |
+| **UMAC** | 1999 | NH + polynomial + PRF | Multi-layer UHF; very fast (< 1 cycle/byte with AES-NI); RFC 4418 [[1]](https://www.rfc-editor.org/rfc/rfc4418) |
+| **VMAC** | 2007 | 64-bit NH + polynomial | 64-bit variant optimized for 64-bit CPUs; ~0.5 cycles/byte [[1]](https://fastcrypto.org/vmac/vmac.pdf) |
+
+**Security model:** In the one-time setting, if H is ε-almost-universal (collision probability ≤ ε) and the pad is uniform, then the MAC has forgery probability exactly ε. In the multi-use setting (PRF-generated pad), forgery probability is ε + Adv_PRF, typically negligible.
+
+**State of the art:** Poly1305 (paired with ChaCha20, RFC 8439) and GMAC (inside AES-GCM) are the two dominant deployed Wegman-Carter MACs. UMAC (RFC 4418) and VMAC achieve sub-cycle throughput for bulk data. See [Universal Hash Functions (Carter-Wegman)](#universal-hash-functions-carter-wegman) and [Message Authentication Codes (MAC)](#message-authentication-codes-mac).
+
+---
+
+## TupleHash / ParallelHash (NIST SP 800-185)
+
+**Goal:** Structured and parallel hashing from the SHA-3 family. NIST SP 800-185 (2016) defines four Keccak-based functions that extend SHA-3/SHAKE with domain separation, structured input encoding, and tree-parallel hashing — filling gaps left by the base FIPS 202 standard for production cryptographic applications.
+
+| Function | Year | Type/Basis | Note |
+|----------|------|------------|------|
+| **cSHAKE128 / cSHAKE256** | 2016 | SHAKE + domain separation | Customizable SHAKE: adds function-name and customization strings; prevents cross-protocol collisions [[1]](https://csrc.nist.gov/publications/detail/sp/800/185/final) |
+| **KMAC128 / KMAC256** | 2016 | Keccak-based MAC | Keyed hash from cSHAKE; variable output length; also usable as KDF; see [MAC](#message-authentication-codes-mac) [[1]](https://csrc.nist.gov/publications/detail/sp/800/185/final) |
+| **TupleHash128 / TupleHash256** | 2016 | cSHAKE + length encoding | Hash tuples of byte strings with unambiguous encoding; prevents length-extension on structured inputs [[1]](https://csrc.nist.gov/publications/detail/sp/800/185/final) |
+| **ParallelHash128 / ParallelHash256** | 2016 | Tree hash over cSHAKE | Divide message into B-byte blocks, hash in parallel with cSHAKE, combine; vectorizable [[1]](https://csrc.nist.gov/publications/detail/sp/800/185/final) |
+
+**TupleHash detail:** Encodes each element of a tuple as `left_encode(len(s)) ∥ s`, then hashes the concatenation with cSHAKE. This means `TupleHash("ab", "c") ≠ TupleHash("a", "bc")` — critical for authenticated data structures, protocol transcripts, and commitment schemes where naive concatenation is ambiguous.
+
+**ParallelHash detail:** Partitions the message into B-byte blocks (B is a parameter), applies cSHAKE independently to each block (parallelizable across cores), then applies a final cSHAKE to the outputs. Enables throughput scaling on multi-core CPUs and streaming hardware.
+
+**State of the art:** NIST SP 800-185 (2016); all four functions are unbroken and safe for production use. TupleHash is increasingly used in ZK protocol transcripts and commitment schemes where domain separation is critical. See [Sponge Construction](#sponge-construction--duplex) for the underlying Keccak permutation.
+
+---

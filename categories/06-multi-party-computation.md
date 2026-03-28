@@ -392,3 +392,81 @@
 **State of the art:** SuperPack is the state of the art for communication-efficient dishonest-majority MPC as of 2023; closes the long-standing gap between honest- and dishonest-majority communication complexity. Complements [SPDZ / SPDZ2k](#multi-party-computation-mpc) (which have linear online communication per gate). Related to [Beaver Triples](#beaver-triples-multiplication-triples) and [Silent OT / PCG](#silent-ot--pseudorandom-correlation-generators-pcg) for preprocessing.
 
 ---
+
+## EMP Toolkit (Efficient Multi-Party Computation Library)
+
+**Goal:** Provide a high-performance, research-grade library for implementing a wide range of MPC protocols. EMP (Wang-Ranellucci-Katz, CCS 2017) is a modular C++ toolkit covering oblivious transfer, garbled circuits, authenticated garbling, and VOLE-based protocols — designed so that protocol researchers can compose primitives and benchmark new constructions without building infrastructure from scratch.
+
+| Component | Year | Basis | Note |
+|-----------|------|-------|------|
+| **EMP-OT** | 2017 | OT extension (IKNP / SoftSpokenOT) | Highly optimized base OT and OT extension; hardware AES acceleration; CCS 2017 [[1]](https://github.com/emp-toolkit/emp-ot) |
+| **EMP-AG2PC (Authenticated Garbling)** | 2017 | Authenticated garbling (WRK) | Maliciously secure 2PC with single garbled circuit; implements Wang-Ranellucci-Katz; CCS 2017 [[1]](https://eprint.iacr.org/2017/030) |
+| **EMP-AGMPC** | 2018 | Authenticated garbling, n-party | Multi-party extension of EMP-AG2PC; constant-round malicious n-party SFE [[1]](https://eprint.iacr.org/2017/1104) |
+| **EMP-VOLE / EMP-ZK** | 2021 | VOLE + IT-MACs | VOLE-based zero-knowledge proofs; Wolverine and QuickSilver implemented [[1]](https://eprint.iacr.org/2020/925) |
+
+**State of the art:** EMP Toolkit is one of the most widely benchmarked MPC libraries in academic research — used as a reference implementation for garbled circuits, authenticated garbling, and VOLE-ZK. GitHub: [emp-toolkit](https://github.com/emp-toolkit). Complements [MP-SPDZ](#multi-party-computation-mpc) (broader protocol coverage) and [MOTION](#bmr-protocol-constant-round-mpc) (GMW/BMR focus). See [Garbled Circuits](#garbled-circuits-expanded), [OLE / VOLE](#oblivious-linear-evaluation-ole--vole).
+
+---
+
+## Efficient Two-Party ECDSA (DKLS18 / Doerner et al.)
+
+**Goal:** Compute a standard ECDSA signature between two parties where neither party holds the full signing key — the key is additively split, and both must cooperate to sign. Produces a signature verifiable under the ordinary (single-party) ECDSA algorithm. Practical for threshold custody of Bitcoin/Ethereum keys without changing the on-chain verification logic.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Lindell 2PC-ECDSA** | 2017 | Paillier + ZK | First concretely efficient 2PC ECDSA; uses Paillier encryption; CCS 2017 [[1]](https://eprint.iacr.org/2017/552) |
+| **DKLS18 (Doerner-Kondi-Lee-Shelat)** | 2018 | OT extension + multiplicative-to-additive | Replace Paillier with OT extension; 2× faster, smaller proofs; CCS 2018 [[1]](https://eprint.iacr.org/2018/499) |
+| **DKLS19 (2-of-2 + threshold extension)** | 2019 | OT + ECDSA nonce sharing | Generalize to t-of-n threshold; used as basis of many production HSMs [[1]](https://eprint.iacr.org/2019/523) |
+| **Canetti et al. UC 2PC-ECDSA** | 2020 | Paillier + UC framework | UC-secure 2PC ECDSA; tight security proofs; CCS 2020 [[1]](https://eprint.iacr.org/2019/503) |
+| **GG20 (Gennaro-Goldfeder)** | 2020 | Feldman VSS + OT | t-of-n threshold ECDSA used in production MPC wallets (e.g., Fireblocks, ZenGo) [[1]](https://eprint.iacr.org/2020/540) |
+
+**State of the art:** DKLS19 and GG20 are the dominant production protocols for threshold ECDSA; both are deployed in cryptocurrency custody, hardware security modules, and MPC wallets. Related to [Threshold Signature Schemes](categories/08-signatures-advanced.md#threshold-signature-schemes-tss) and [Key Management](categories/03-key-exchange-key-management.md).
+
+---
+
+## Fair MPC (Fairness via Gradual Release)
+
+**Goal:** Ensure that either all parties learn the output or none do — no party can abort after seeing the output while others remain in the dark. Standard MPC (GMW, SPDZ) achieves security-with-abort but not fairness. Fairness requires either an honest majority, a trusted third party, or cryptographic "gradual release" techniques that tie output delivery to an economic or time-based commitment.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Cleve's Impossibility** | 1986 | Coin-flipping lower bound | Fair coin tossing is impossible between two parties without a trusted party [[1]](https://dl.acm.org/doi/10.1145/12130.12168) |
+| **Gradual Release (Boneh-Naor)** | 2000 | Time-lock puzzles | Encode the output in a time-lock puzzle; release key bits gradually so abort advantage diminishes with time [[1]](https://link.springer.com/chapter/10.1007/3-540-44598-6_31) |
+| **Cryptographic Fairness via Bitcoin** | 2014 | Blockchain + MPC | Use smart contracts as escrow to penalize early-aborting parties; first practical fair 2PC [[1]](https://eprint.iacr.org/2014/129) |
+| **Fairness with Penalties (Bentov-Kumaresan)** | 2014 | Bitcoin scripts | Extend blockchain-based fairness to multi-party setting with financial penalties [[1]](https://eprint.iacr.org/2014/687) |
+| **Optimistic Fair Exchange in MPC** | 2019 | Adaptor signatures + MPC | Use adaptor signatures for near-fair exchange without penalties in the happy path [[1]](https://eprint.iacr.org/2019/1184) |
+
+**State of the art:** Blockchain-enforced fairness (Bentov-Kumaresan style) is the practical gold standard — used in atomic swaps and fair exchange protocols. Purely cryptographic fairness without penalties requires an honest majority. Related to [Fair Exchange / Atomic Swaps](categories/13-blockchain-distributed-ledger.md#fair-exchange--atomic-swaps) and [Time-Lock Puzzles](categories/09-commitments-verifiability.md#time-lock-puzzles--verifiable-delay-encryption).
+
+---
+
+## Robust MPC with Cheater Identification
+
+**Goal:** MPC that does not merely abort when a cheater is detected — it identifies and expels the misbehaving party, then continues the computation with the remaining honest parties. Standard malicious-secure MPC achieves security-with-abort (computation stops when cheating is detected); robust MPC guarantees output delivery even under active attacks, provided cheaters can be identified and removed.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BGW with Cheater Identification** | 1988 | Verifiable SS + error correction | BGW information-theoretic MPC with explicit cheater detection via Reed-Solomon error correction; requires t < n/3 [[1]](https://dl.acm.org/doi/10.1145/62212.62213) |
+| **Beerliová-Trubíniová–Hirt Robust MPC** | 2006 | Packed SS + dispute control | Efficient robust MPC for t < n/3; parties maintain dispute sets; dishonest minority [[1]](https://eprint.iacr.org/2006/397) |
+| **Identify-Then-Recover (Ishai-Ostrovsky-Zikas)** | 2012 | Secret sharing + broadcast | Generic compiler: lift any SS-based MPC to robust MPC by adding a broadcast-based identification round [[1]](https://eprint.iacr.org/2012/562) |
+| **Full-Threshold Robust MPC** | 2019 | HE + dispute handling | Robust MPC tolerating up to t < n/2 corruptions in dishonest-majority setting; uses HE for reconstruction [[1]](https://eprint.iacr.org/2019/942) |
+
+**State of the art:** Robust MPC with cheater identification is essential for long-running distributed computations (e.g., DKG ceremonies, threshold decryption services) where restarting is expensive. Beerliová-Trubíniová–Hirt and the Identify-Then-Recover compiler are standard references. Extends [BGW / Honest-Majority MPC](#multi-party-computation-mpc); related to [AVSS](categories/05-secret-sharing-threshold-cryptography.md#asynchronous-verifiable-secret-sharing-avss) and [Asynchronous BFT](#asynchronous-bft--asynchronous-mpc).
+
+---
+
+## Lattice-Based MPC
+
+**Goal:** Post-quantum secure multiparty computation whose hardness rests on lattice problems (LWE, RLWE) rather than Diffie-Hellman or factoring assumptions. Lattice-based MPC enables preprocessing-free or silent-OT-based protocols resilient to quantum adversaries, and connects naturally to FHE-based offline phases.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bendlin-Damgård-Orlandi-Zakarias (BDOZ)** | 2011 | LWE + IT-MACs | First LWE-based preprocessing for information-theoretically secure online phase; predecessor of SPDZ [[1]](https://eprint.iacr.org/2010/514) |
+| **SPDZ from FHE (Damgård et al.)** | 2012 | BGV/BFV FHE | Generate SPDZ triples using FHE; post-quantum if instantiated with RLWE-based HE [[1]](https://eprint.iacr.org/2011/535) |
+| **Overdrive (LWE preprocessing)** | 2018 | BFV/CKKS + ZK-proofs | Efficient triple generation for SPDZ using somewhat-HE; large-batch performance competitive with OT-based approaches [[1]](https://eprint.iacr.org/2017/1230) |
+| **Lattice-Based Silent OT / PCG** | 2022 | RLWE + PCG | Post-quantum silent OT using ring-LWE; sublinear communication for OT correlations and Beaver triples [[1]](https://eprint.iacr.org/2022/1016) |
+| **Degree-2 MPC from TFHE** | 2023 | TFHE + bootstrapping | Evaluate arbitrary Boolean/integer MPC using TFHE; removes preprocessing at the cost of FHE evaluation noise management [[1]](https://eprint.iacr.org/2023/815) |
+
+**State of the art:** Overdrive (BFV-based) is the practical choice for large-batch lattice-based preprocessing in dishonest-majority MPC; post-quantum PCG (RLWE silent OT) is the research frontier for sublinear-communication PQ MPC. Related to [Homomorphic Encryption](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-fhe--she--phe), [MASCOT / Overdrive](#mascot-malicious-arithmetic-mpc-via-ot), and [Silent OT / PCG](#silent-ot--pseudorandom-correlation-generators-pcg).
+
+---

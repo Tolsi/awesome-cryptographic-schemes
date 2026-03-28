@@ -355,3 +355,119 @@ The Picnic signature scheme (2017, predecessor) used MPC-in-the-Head to prove kn
 **State of the art:** FAEST v2 is a NIST Additional Signatures Round 2 candidate (2024–2025). No standardization decision yet; final selection expected ~2026–2027. The NIST PQC seminar (June 2024) highlighted VOLEitH as a technically distinct and promising paradigm [[1]](https://csrc.nist.gov/csrc/media/Projects/post-quantum-cryptography/documents/pqc-seminars/presentations/15-vole-in-the-head-06182024.pdf). Complements [Post-Quantum Cryptography](#post-quantum-cryptography) with a purely symmetric-key security foundation alongside [Equivalence-Based PQ Signatures](#equivalence-based-pq-signatures) and [Multivariate PQ Signatures](#multivariate-pq-signatures-uov--mayo).
 
 ---
+
+## Shor's Algorithm and Quantum Threats to Public-Key Cryptography
+
+**Goal:** Understand which classical public-key schemes are broken by quantum computers, and why. Shor's algorithm (1994) runs in polynomial time on a quantum computer and solves two problems that underlie essentially all deployed asymmetric cryptography: integer factorization (breaking RSA) and the discrete logarithm problem (breaking DH, DSA, and ECDH/ECDSA). A cryptographically relevant quantum computer (CRQC) running Shor's algorithm would retroactively compromise any ciphertext or signature produced with these schemes.
+
+| Problem Broken | Classical Scheme(s) | Quantum Attack | Cost (qubits) | Note |
+|----------------|--------------------|--------------|--------------|----|
+| **Integer factorization** | RSA (all key sizes) | Shor's factoring | ~2n logical qubits for n-bit modulus | RSA-2048 needs ~4,000 logical / ~20M physical qubits [[1]](https://arxiv.org/abs/2203.08823) |
+| **Discrete log mod p** | DH, DSA, ElGamal | Shor's DLP | ~2n qubits | Same circuit structure as factoring [[1]](https://arxiv.org/abs/quant-ph/9508027) |
+| **Elliptic curve DLP** | ECDH, ECDSA, Ed25519 | Shor's ECDLP variant | ~3n qubits for n-bit curve | Roetteler et al. 2017; P-256 needs ~2,330 logical qubits [[1]](https://eprint.iacr.org/2017/598) |
+| **Pairing-based DLP** | BLS, IBE, pairings | Shor's DLP in extension fields | Similar to DLP mod p | Targets the GT group in the pairing target field [[1]](https://eprint.iacr.org/2017/598) |
+
+**Why ECDLP differs from factoring for Shor's:** RSA moduli are composites in Z/nZ; ECC curves are cyclic groups of prime order. The Shor ECDLP circuit requires arithmetic over the curve's field and group law in superposition, consuming roughly 3n logical qubits for an n-bit curve — but because n = 256 for P-256 vs. n = 2048 for RSA, the absolute qubit count is lower even though the per-bit coefficient is higher.
+
+**Physical qubit overhead:** Logical qubits require quantum error correction. Realistic estimates (surface code, 10⁻³ physical error rate) place RSA-2048 at approximately 20 million physical qubits and ~8 hours of runtime. As of 2025, the largest processors have ~1,000–2,000 physical qubits; a CRQC capable of running Shor's at useful scale is estimated 10–20 years away. NIST standardized ML-KEM, ML-DSA, and SLH-DSA in 2024 precisely because they are immune to Shor's algorithm.
+
+**What Shor's does NOT break:** Symmetric ciphers (AES, ChaCha20), hash functions (SHA-3), and lattice/code/multivariate/hash-based PQC schemes. Those are addressed by [Grover's algorithm](#grovers-algorithm-and-symmetric-key-security).
+
+**State of the art:** No CRQC exists as of 2025. NIST FIPS 203/204/205 are the recommended replacements for RSA/ECDH/ECDSA. "Harvest-now, decrypt-later" attacks make [Hybrid PQ/Classical Key Exchange](#hybrid-pqclassical-key-exchange) urgent for long-lived secrets. See also [Post-Quantum Cryptography](#post-quantum-cryptography).
+
+---
+
+## Grover's Algorithm and Symmetric-Key Security
+
+**Goal:** Quantify how quantum computing affects symmetric cryptography and hash functions. Grover's algorithm (1996) provides a quadratic speedup for unstructured search on a quantum computer — searching N items in O(√N) quantum queries vs. O(N) classical queries. This effectively halves the security of symmetric keys and hash outputs against exhaustive search, but does not break them: a 256-bit key remains computationally infeasible under Grover's attack.
+
+| Primitive | Classical Security | Quantum Security (Grover) | Recommended Mitigation |
+|-----------|------------------|--------------------------|----------------------|
+| **AES-128** | 128-bit | ~64-bit (insecure for PQ) | Upgrade to AES-256 [[1]](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final) |
+| **AES-256** | 256-bit | ~128-bit (NIST Level 1) | No change needed [[1]](https://csrc.nist.gov/pubs/fips/197/final) |
+| **ChaCha20-256** | 256-bit | ~128-bit | No change needed |
+| **SHA-256 (collision)** | 128-bit | ~85-bit (BHT algorithm) | Use SHA-3-384+ for collision resistance [[1]](https://eprint.iacr.org/2004/264) |
+| **SHA-3-256 (preimage)** | 256-bit | ~128-bit | Acceptable for preimage; SHA-3-384+ for collision [[1]](https://csrc.nist.gov/pubs/fips/202/final) |
+| **SHA-3-512** | 512-bit | ~256-bit (preimage) / ~170-bit (collision) | Highest PQ security margin |
+
+**Grover's algorithm mechanics:** Grover uses amplitude amplification on a quantum oracle that marks valid solutions. For a keyspace of size 2ⁿ, it requires O(2^{n/2}) oracle calls and O(n) qubits. Each oracle call involves evaluating the full cipher (e.g., AES) in superposition, which incurs a substantial constant-factor overhead in gate count. A 2020 NIST analysis estimated that quantum search on AES-128 costs ~2^86 gates after accounting for this overhead — still far fewer than classical 2^128, making AES-128 inadequate for long-term PQ security.
+
+**Collision search (BHT algorithm):** The Brassard-Høyer-Tapp algorithm finds hash collisions in O(2^{n/3}) quantum queries using quantum random walks — stronger than Grover's O(2^{n/2}) preimage search. SHA-256 drops from 128-bit classical collision resistance to ~85-bit quantum. This is why NIST recommends SHA-384 (192-bit collision resistance classically, ~128-bit quantum) for PQ-critical applications requiring strong collision security.
+
+**Impact on PQ schemes:** All NIST PQC standards are designed with Grover's in mind. ML-KEM-768 targets NIST Level 3 (~192-bit security), defined so that a Grover-based attack costs more than exhaustive AES-192 key search. SLH-DSA hash-chain parameters are sized to ensure that even Grover's application to the hash chains does not drop security below the required threshold.
+
+**State of the art:** NIST SP 800-131A Rev. 2 recommends AES-256 and SHA-384/512 for quantum-safe symmetric primitives. No quantum computer today can meaningfully accelerate Grover's search against 128-bit keys. See [Post-Quantum Cryptography](#post-quantum-cryptography) and [Shor's Algorithm](#shors-algorithm-and-quantum-threats-to-public-key-cryptography) for the full quantum threat landscape.
+
+---
+
+## ML-KEM (Kyber) Internals — Module LWE, NTT, and Noise Parameters
+
+**Goal:** Expose the mathematical core of the primary NIST PQC KEM standard. ML-KEM (FIPS 203, standardized from CRYSTALS-Kyber) is built on the Module Learning With Errors (MLWE) problem: distinguishing noisy linear equations over polynomial rings from random. This problem is believed to be hard against both classical and quantum adversaries, including Shor's algorithm.
+
+**Ring and module structure:** ML-KEM operates in the ring R_q = Z_q[x]/(x^256+1) where q = 3329. A module of rank k (k = 2, 3, or 4 for ML-KEM-512/768/1024) yields vectors of polynomials in R_q^k. The MLWE assumption: given a random matrix A ∈ R_q^{k×k}, secret s ∈ R_q^k with small coefficients, and error e ∈ R_q^k with small coefficients, distinguish (A, As + e) from (A, uniform).
+
+| Parameter Set | k | q | η₁ | η₂ | Security Level | PK size | CT size |
+|--------------|---|---|----|----|---------------|---------|---------|
+| **ML-KEM-512** | 2 | 3329 | 3 | 2 | NIST Level 1 (~128-bit) | 800 B | 768 B |
+| **ML-KEM-768** | 3 | 3329 | 2 | 2 | NIST Level 3 (~192-bit) | 1184 B | 1088 B |
+| **ML-KEM-1024** | 4 | 3329 | 2 | 2 | NIST Level 5 (~256-bit) | 1568 B | 1568 B |
+
+Noise parameters η₁ and η₂ define the centered binomial distribution for secret and error polynomials: each coefficient is the difference of two sums of η independent Bernoulli(1/2) variables, giving values in {−η, ..., +η}.
+
+**Number Theoretic Transform (NTT):** Polynomial multiplication in R_q dominates the computational cost. Because q = 3329 ≡ 1 (mod 512), a 256-point NTT exists over Z_q, converting polynomials to evaluation form in 7 butterfly layers (128 butterflies per layer). In NTT domain, multiplication reduces from O(n²) to O(n) pointwise multiplications. All of matrix-vector multiplication in key generation, encapsulation, and decapsulation executes in NTT domain.
+
+**Key generation, encapsulation, decapsulation:** Key generation samples A ∈ R_q^{k×k} from a seed (expand with SHAKE-128), draws s, e from the binomial distribution, and outputs public key (A, t = As + e). Encapsulation draws r, e₁, e₂ from the same distribution and outputs ciphertext (u = A^T·r + e₁, v = t^T·r + e₂ + encode(m)). Decapsulation recovers m ≈ v − s^T·u and applies the Fujisaki-Okamoto (FO) transform: re-derive randomness from m, re-encrypt, and compare to detect tampering — achieving IND-CCA2 security.
+
+**State of the art:** ML-KEM is the primary NIST PQC KEM (FIPS 203, August 2024). Deployed as X25519MLKEM768 in Chrome, Firefox, Cloudflare, and Signal. Hardware NTT accelerators have been integrated into RISC-V and ARM Cortex-M cores. See [Post-Quantum Cryptography](#post-quantum-cryptography), [Hybrid PQ/Classical Key Exchange](#hybrid-pqclassical-key-exchange), and [Lattice Sieving and BKZ Complexity](#lattice-sieving-and-bkz-complexity) for the security analysis underpinning parameter selection.
+
+---
+
+## Lattice Sieving and BKZ Complexity
+
+**Goal:** Establish the concrete security foundations for lattice-based PQC standards. The security of ML-KEM, ML-DSA, FrodoKEM, and related schemes is bounded by the cost of solving the Shortest Vector Problem (SVP) in high-dimensional lattices. The dominant attack framework is the Block Korkine-Zolotarev (BKZ) algorithm, which iteratively solves SVP in β-dimensional projected sublattices using sieving algorithms as a subroutine. Understanding BKZ complexity is essential for reading NIST PQC parameter rationales.
+
+| Algorithm | Year | Time Complexity | Space | Note |
+|-----------|------|----------------|-------|------|
+| **LLL** | 1982 | Polynomial | Polynomial | 2^{O(n)} approximation; too weak for PQC attacks [[1]](https://doi.org/10.1007/BF01457454) |
+| **BKZ 1.0** | 1987 | 2^{O(β log β)} per call | Polynomial | Blockwise reduction; quality controlled by block size β [[1]](https://eprint.iacr.org/2019/1398) |
+| **BKZ 2.0** | 2011 | Substantially faster in practice | Polynomial | Extreme pruning + preprocessing; dominant practical tool [[1]](https://eprint.iacr.org/2011/537) |
+| **GaussSieve** | 2010 | 2^{0.415n + o(n)} | 2^{0.208n} | First practical lattice sieve; used inside BKZ-β to solve SVP in dim β [[1]](https://arxiv.org/abs/1001.3489) |
+| **BDGL Sieve** | 2016 | 2^{0.292n + o(n)} | 2^{0.208n} | Locality-sensitive hashing; best known classical SVP algorithm [[1]](https://eprint.iacr.org/2015/1113) |
+| **Quantum QWALK Sieve** | 2015 | 2^{0.265n + o(n)} | 2^{0.208n} | Quantum walk on near-neighbor graph; best known quantum SVP algorithm [[1]](https://arxiv.org/abs/1312.4027) |
+
+**BKZ and security estimates:** BKZ-β outputs a reduced basis whose shortest vector approximation improves with β. The root-Hermite factor δ_β governs output quality; for ML-KEM-768 (module rank 3, polynomial degree 256, dimension n ≈ 768), recovering the secret key requires BKZ with β ≈ 400–450. Each BKZ-β step calls a sieve in dimension β, costing ~2^{0.292β} ≈ 2^{130} classical operations under the BDGL estimate — establishing the claimed security level.
+
+**Primal and dual attacks:** The two main attack strategies are the primal attack (find the secret vector directly via BKZ) and the dual attack (find a short dual vector and use it to distinguish). Recent work (Ducas-Pulles 2023) showed that dual attacks have limited advantage over primal attacks for ML-KEM parameters, but the analysis refined NIST security estimates by ~5–10 bits in some cases [[1]](https://eprint.iacr.org/2023/1454).
+
+**Lattice Estimator:** The Albrecht et al. Lattice Estimator is the community-standard tool for computing concrete security levels, combining BKZ simulation with the best attack models. All NIST PQC lattice submissions used it for security arguments [[1]](https://github.com/malb/lattice-estimator).
+
+**Quantum speedup for sieving:** QWALK reduces the sieving exponent from 0.292n to 0.265n — a modest speedup of ~2^{0.027n}. For n = 450 (BKZ block size for ML-KEM-768), this is a factor of ~2^{12}, reducing effective security from ~130 to ~118 bits — still well above the NIST Level 3 threshold of ~128 bits quantum security. Unlike Grover's quadratic speedup for symmetric keys, the quantum speedup for lattice sieving is sub-quadratic.
+
+**State of the art:** BDGL sieve (classical) and QWALK sieve (quantum) set the benchmarks. The Lattice Estimator is the standard parameter selection tool. Space requirements for sieving (~2^{0.2n}) are often a practical bottleneck. See [Post-Quantum Cryptography](#post-quantum-cryptography) and [ML-KEM Internals](#ml-kem-kyber-internals--module-lwe-ntt-and-noise-parameters).
+
+---
+
+## Quantum Secret Sharing
+
+**Goal:** Distribute an unknown quantum state (a qubit) among n parties such that any authorized subset can reconstruct it, but unauthorized subsets learn nothing — even quantumly. Classical secret sharing (Shamir, 1979) distributes classical bits; quantum secret sharing (QSS) extends this to quantum states. Security is guaranteed by the laws of quantum mechanics (no-cloning theorem, entanglement monogamy) rather than computational hardness, and applies even against computationally unbounded adversaries.
+
+| Scheme | Year | Basis | Threshold | Note |
+|--------|------|-------|-----------|------|
+| **Hillery-Bužek-Berthiaume (HBB)** | 1999 | GHZ entanglement | (n, n) | First QSS scheme; uses n-party GHZ states; any strict subset is maximally mixed [[1]](https://arxiv.org/abs/quant-ph/9806063) |
+| **Cleve-Gottesman-Lo (CGL)** | 1999 | Quantum error-correcting codes | (k, n) | (k, n)-threshold QSS from quantum codes that correct n-k erasures; fully general [[1]](https://arxiv.org/abs/quant-ph/9901025) |
+| **Karlsson-Koashi-Imoto** | 1999 | Bell pairs + classical shares | (2, 3) | Players hold classical shares plus shared entanglement; reconstruction via LOCC [[1]](https://link.aps.org/doi/10.1103/PhysRevA.59.162) |
+| **Graph-State QSS** | 2006 | Graph states / stabilizer codes | Arbitrary access structure | Access structure determined by graph connectivity; efficient multiparty implementation [[1]](https://arxiv.org/abs/quant-ph/0602226) |
+| **Continuous-Variable QSS** | 2001 | Squeezed / coherent optical modes | (k, n) | QSS using optical quadratures; compatible with CV-QKD infrastructure [[1]](https://arxiv.org/abs/quant-ph/0009026) |
+| **Verifiable QSS** | 2019 | Quantum authentication codes | (k, n) | Handles dishonest dealer; quantum analog of classical VSS [[1]](https://arxiv.org/abs/1907.06564) |
+
+**HBB protocol:** The dealer prepares an n-party GHZ state |ψ⟩ = (|0⟩^⊗n + |1⟩^⊗n)/√2, encodes the secret qubit into the joint state, and distributes one qubit per party. Reconstruction requires all n players to measure and broadcast classical results; the last player applies a Pauli correction to recover the secret. Any strict subset of n-1 parties holds a maximally mixed state — completely uninformative about the secret state, even with unlimited computation.
+
+**CGL threshold construction:** Cleve-Gottesman-Lo proved that (k, n)-threshold QSS is equivalent to quantum error-correcting codes that correct n-k erasures. A [[n, 1, d]] quantum code with d = n−k+1 encodes 1 logical qubit into n physical qubits such that any k shares suffice for reconstruction while any k-1 shares are quantum-mechanically uninformative. For example, the [[5, 1, 3]] perfect code gives (3, 5)-threshold QSS.
+
+**Relation to classical secret sharing:** Classical (k, n)-threshold schemes achieve information-theoretic security against all adversaries holding fewer than k shares. QSS provides the same guarantee for quantum secrets, with the additional property that quantum shares cannot be classically copied — the no-cloning theorem prevents any share-amplification attack that has no classical analog.
+
+**State of the art:** Laboratory demonstrations exist with 3–5 photons or trapped ions. Graph-state and CV-QSS are the most hardware-feasible variants for current technology. Verifiable QSS (2019) handles active adversaries including a dishonest dealer, analogous to [PVSS](categories/05-secret-sharing-threshold-cryptography.md#publicly-verifiable-secret-sharing-pvss) in the classical setting. See [Secret Sharing and Threshold Cryptography](categories/05-secret-sharing-threshold-cryptography.md) for classical counterparts and [Quantum Key Distribution (QKD)](#quantum-key-distribution-qkd) for related quantum multiparty primitives.
+
+---
+
+---

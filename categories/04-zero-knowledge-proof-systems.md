@@ -556,3 +556,95 @@
 **State of the art:** Scroll (Type 2, mainnet 2023), Polygon zkEVM (Type 2.5, mainnet 2023), Taiko (Type 1, mainnet 2024). Proving times have dropped from weeks to seconds (2022–2026) via hardware acceleration and recursive aggregation. See [General-Purpose zkVMs](#general-purpose-zkvms) for ISA-level (non-EVM) approaches.
 
 ---
+
+## Ligerito (Small-Field Polynomial Commitments and SNARKs)
+
+**Goal:** Practical SNARKs over small fields with linear prover time and concrete efficiency. Ligerito (2024) is a polynomial commitment scheme and SNARK designed for small finite fields (e.g., GF(2^8), GF(2^16)), combining the Reed-Solomon-based IOP structure of Ligero with binary-tower-field arithmetic to achieve fast committed inner-product proofs with no trusted setup.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ligerito** | 2024 | Small-field Reed-Solomon IOP | Linear prover time over small fields; polylogarithmic proof size; no trusted setup; transparent; CCS 2024 [[1]](https://eprint.iacr.org/2024/1762) |
+| **Ligerito PCS** | 2024 | Committed inner-product argument | Polynomial commitment derived from Ligerito's inner-product argument; pluggable into any polynomial IOP [[1]](https://eprint.iacr.org/2024/1762) |
+
+**Key contribution:** Classical SNARKs over small fields suffer because standard polynomial commitment schemes (KZG, FRI) require fields with large smooth multiplicative subgroups. Ligerito circumvents this by encoding the witness as a codeword of a small-field Reed-Solomon code and applying an interactive proximity test. The result is an O(N) prover (in field operations) that works natively over GF(2^k) for small k, making it highly compatible with [Binius](#binary-field-proof-systems)-style binary-tower arithmetic.
+
+**Relation to other schemes:** Ligerito extends [Ligero and Aurora](#ligero-and-aurora) to the small-field regime; it is complementary to [Binius](#binary-field-proof-systems) (which uses binary fields but different commitment machinery) and can be used as the PCS inside [HyperPlonk](#hyperplonk)-style systems over small fields.
+
+**State of the art:** Ligerito (Ngoc Khanh Nguyen, Pratyush Ranjan Tiwari; CCS 2024); the first practically efficient SNARK natively operating over GF(2^k) with sub-quadratic prover. See [[1]](https://eprint.iacr.org/2024/1762).
+
+---
+
+## LogUp-GKR (Logarithmic Derivative Lookups via GKR)
+
+**Goal:** Efficiently verify large lookup tables inside ZK proofs using the GKR sumcheck protocol. LogUp-GKR (2023) applies the GKR interactive proof protocol to evaluate the logarithmic-derivative sum underlying the [LogUp](#lookup-arguments) argument, reducing the prover's cost for large-multiplicity lookups from O(N log N) to O(N) and enabling lookups across multiple interconnected tables in a single sumcheck invocation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **LogUp** | 2022 | Logarithmic derivatives | Reduces lookup argument to sum of 1/(X − tᵢ) terms; efficient for large tables [[1]](https://eprint.iacr.org/2022/1530) |
+| **LogUp-GKR** | 2023 | LogUp + GKR sumcheck | Applies GKR to evaluate the LogUp fractional sum over a layered circuit; O(N) prover for table sizes up to 2²⁶; IACR 2023 [[1]](https://eprint.iacr.org/2023/1284) |
+| **LogUp-GKR in Plonky3** | 2024 | Plonky3 backend | LogUp-GKR is the lookup mechanism in the Plonky3 framework (SP1, Polygon CDK v2); replaces Plookup in small-field settings [[1]](https://github.com/Plonky3/Plonky3) |
+
+**Key insight:** [LogUp](#lookup-arguments) expresses a lookup argument as a rational sum ∑ mᵢ / (X − tᵢ), where mᵢ are multiplicities and tᵢ are table entries. Evaluating this sum requires the prover to compute N fractional field inversions. LogUp-GKR instead embeds this rational sum into a layered arithmetic circuit and applies the GKR protocol: the verifier issues a single challenge, and the prover responds with a sumcheck proof over the circuit's layers. This reframes the bottleneck from N inversions to a single O(N) sumcheck, with a verifier cost of O(log N).
+
+**Applications:** Multi-table lookups in zkVMs (e.g., range tables, XOR tables, opcode dispatch tables). LogUp-GKR is used in Plonky3 and is the recommended lookup mechanism for [Circle STARKs](#binary-field-proof-systems).
+
+**State of the art:** LogUp-GKR (Papini-Haböck; 2023); deployed in Plonky3 and StarkWare's Stwo prover. Supersedes Plookup/LogUp for multi-table lookup scenarios. See [Lookup Arguments](#lookup-arguments), [Sumcheck Protocol](#sumcheck-protocol).
+
+---
+
+## Circom and SnarkJS
+
+**Goal:** Accessible toolchain for writing and deploying ZK circuits. Circom (2020) is a domain-specific language that compiles high-level circuit descriptions into R1CS constraint systems. SnarkJS (2020) is a JavaScript/WebAssembly library that generates and verifies proofs (Groth16, PLONK, Fflonk) from Circom-compiled circuits entirely in the browser or Node.js — enabling ZK in web applications with no native dependencies.
+
+| Component | Year | Role | Note |
+|-----------|------|------|------|
+| **Circom** | 2020 | Circuit DSL + compiler | Compiles `.circom` source to R1CS + witness generation code (WASM/C++); templates + components; iden3/0xPolygon [[1]](https://docs.circom.io/) |
+| **SnarkJS** | 2020 | JS/WASM prover + verifier | Groth16, PLONK, Fflonk prover/verifier in pure JS; powers the majority of in-browser ZK applications [[1]](https://github.com/iden3/snarkjs) |
+| **Circomlib** | 2020 | Standard circuit library | Reusable Circom templates: Poseidon hash, ECDSA, Pedersen, MiMC, Merkle proofs [[1]](https://github.com/iden3/circomlib) |
+| **Noir → R1CS** | 2023 | Cross-compilation | Noir programs can target Circom-compatible R1CS backends; interoperability layer [[1]](https://noir-lang.org/) |
+
+**Workflow:** Circom source → `circom compile` → `R1CS + WASM witness generator` → SnarkJS powers-of-tau setup → Groth16/PLONK proving key → proof generation → Solidity verifier export for on-chain verification.
+
+**Ecosystem impact:** Circom + SnarkJS is the most widely deployed ZK toolchain in practice (Tornado Cash, Semaphore, Dark Forest, zk-Email). Its main limitation is that Circom circuits are written at a low level of abstraction: developers must manually express computation as arithmetic constraints, making complex programs error-prone.
+
+**State of the art:** Circom 2 (2022) with improved type system; SnarkJS supporting Groth16, PLONK, and Fflonk backends. Higher-level alternatives (Noir, Leo, Cairo) are gradually displacing Circom for new projects, but its ecosystem remains dominant. See [ZK Circuit DSLs](#zk-circuit-dsls-noir-leo-cairo).
+
+---
+
+## ZK Circuit DSLs: Noir, Leo, Cairo
+
+**Goal:** High-level domain-specific languages for writing ZK programs. While [Circom](#circom-and-snarkjs) requires manual R1CS constraint writing, Noir, Leo, and Cairo provide Rust/C-like syntax with automatic arithmetization — the compiler generates the ZK constraint system from familiar imperative or functional programs. Each targets a different backend and ecosystem.
+
+| Language | Year | Target Backend | Note |
+|----------|------|----------------|------|
+| **Noir** | 2022 | Barretenberg (UltraPlonk) / ACIR | Aztec Network; Rust-like syntax; ACIR IR targets multiple backends (Groth16, Halo2, UltraPlonk); standard library for ZK idioms [[1]](https://noir-lang.org/) |
+| **Leo** | 2021 | Aleo (Marlin / AleoBFT) | Aleo Network; statically typed functional language; first-class ZK types; compiles to Aleo bytecode + R1CS; designed for private smart contracts [[1]](https://leo-lang.org/) |
+| **Cairo** | 2020 | STARK / Cairo VM | StarkWare; Rust-like syntax; compiles to Cairo assembly for the Cairo VM (an algebraic RISC); powers StarkNet smart contracts; Cairo 1.0 (2023) adds a Sierra IR layer [[1]](https://eprint.iacr.org/2021/1063) |
+| **Cairo 1.0 / Sierra** | 2023 | Cairo VM + Sierra IR | Adds memory safety and provable panics via a Safe Intermediate Representation (Sierra); standard language for StarkNet contracts [[1]](https://github.com/starkware-libs/cairo) |
+
+**Design philosophy:**
+- **Noir** uses an ACIR (Abstract Circuit Intermediate Representation) that decouples the language from any specific proof system, enabling multi-backend support. Programs look like Rust but all values are field elements or arrays thereof.
+- **Leo** takes a functional approach: programs are deterministic functions from inputs to outputs, with the compiler synthesising the constraint system. The Aleo blockchain uses Leo for private application development.
+- **Cairo** is the most production-deployed: all StarkNet contracts are written in Cairo 1.0. Sierra ensures that every Cairo program is provable — no stuck states, no unprovable panics.
+
+**State of the art:** Cairo 1.0 (production, StarkNet 2023); Noir v0.x (rapid development, Aztec, 2024); Leo 1.x (Aleo mainnet). These DSLs represent the convergence of ZK proof systems and smart contract languages. See [Circom and SnarkJS](#circom-and-snarkjs), [General-Purpose zkVMs](#general-purpose-zkvms), [zkEVM Taxonomy](#zkevm-taxonomy-and-ecosystem).
+
+---
+
+## CirC (Compiler Infrastructure for ZK and MPC)
+
+**Goal:** A unified compiler framework for cryptographic verification languages. CirC (2021) is a research compiler that takes programs written in high-level languages (C, ZoKrates, Circom) and compiles them into cryptographic constraint systems (R1CS for ZK-SNARKs, boolean/arithmetic circuits for MPC, SMT formulas for verification). It provides a common intermediate representation (IR) — a term-level constraint system — shared across all backends.
+
+| Component | Year | Role | Note |
+|-----------|------|------|------|
+| **CirC compiler** | 2021 | Multi-backend circuit compiler | Compiles C / ZoKrates / Circom → R1CS (ZK) + arithmetic circuits (MPC) + SMT (verification); USENIX Security 2022 [[1]](https://eprint.iacr.org/2020/1586) |
+| **CirC IR** | 2021 | Shared term-level IR | Intermediate representation: typed terms over field/boolean/array sorts; backend-agnostic constraint generation [[1]](https://eprint.iacr.org/2020/1586) |
+| **ZoKrates** | 2018 | High-level ZK language | Python-inspired DSL compiling to R1CS + Groth16/PLONK; predates CirC but shares goals; BIU 2018 [[1]](https://eprint.iacr.org/2018/IBM_Research-ZoKrates.pdf) |
+
+**Key contribution:** Prior ZK toolchains (Circom, ZoKrates) are single-backend: each language targets one proof system. CirC introduces a *term-level IR* that represents computations as typed constraint terms independent of any specific cryptographic system. Backend code generators then lower this IR to R1CS (for SNARKs), arithmetic/Boolean circuits (for MPC via ABY/SCALE-MAMBA), or SMT constraints (for formal verification). This enables a single program to be simultaneously compiled for ZK proving AND MPC evaluation.
+
+**Research impact:** CirC (Ozdemir, Brown, Pearce, Ezueh, Sturton; USENIX Security 2022) demonstrated that ZK and MPC can share a compiler infrastructure, enabling cross-protocol optimisations. It also surfaced a class of *underconstrained circuit bugs* — R1CS constraints that are satisfiable by unintended witnesses — now studied as a security problem in ZK compilers.
+
+**State of the art:** CirC (USENIX Security 2022) remains the primary academic reference for multi-backend ZK/MPC compilation. Production compilers (Noir, Leo) adopt similar IR strategies. See [Circom and SnarkJS](#circom-and-snarkjs), [ZK Circuit DSLs](#zk-circuit-dsls-noir-leo-cairo), [MPC](#multi-party-computation-mpc).
+
+---

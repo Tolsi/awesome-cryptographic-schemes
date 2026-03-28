@@ -568,3 +568,93 @@ Falcon's signing algorithm samples a short lattice vector close to a target poin
 **State of the art:** FIPS 206 (FN-DSA) finalized August 2024; implementations in liboqs, PQClean, and BouncyCastle. Preferred over ML-DSA where signature size dominates (e.g., embedded TLS). See [NIST PQC Signature Standards](#nist-pqc-signature-standards-ml-dsa--slh-dsa) for the broader NIST PQC context.
 
 ---
+
+## SPHINCS & SPHINCS+ (Stateless Hash-Based Signatures)
+
+**Goal:** Stateless post-quantum signatures from hash functions alone. Unlike XMSS/LMS, no per-signer state counter is needed — each signing operation selects a random leaf from a hypertree, making the scheme safe to deploy in any context where state management is impractical. The successor SPHINCS+ was standardized as SLH-DSA (FIPS 205).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SPHINCS (original)** | 2015 | Hash tree + WOTS + HORST | First practical stateless hash-based signature; hypertree over few-time HORST leaves; EUROCRYPT 2015 [[1]](https://eprint.iacr.org/2014/795) |
+| **SPHINCS+ (submission)** | 2019 | Hash tree + WOTS+ + FORS | Redesign replacing HORST with FORS; tighter security; smaller signatures; NIST PQC Round 2/3 [[1]](https://sphincs.org/data/sphincs+-paper.pdf) |
+| **SLH-DSA (FIPS 205)** | 2024 | SPHINCS+ | NIST standardization of SPHINCS+; three security levels; two variants per level: small (s) and fast (f) [[1]](https://csrc.nist.gov/pubs/fips/205/final) |
+| **SPHINCS+-SHA2 / SPHINCS+-SHAKE** | 2022 | SHA-256 or SHAKE256 | Two instantiations; SHA2 variant faster on hardware with AES-NI; SHAKE variant for alignment with SHA-3 [[1]](https://sphincs.org/) |
+
+SPHINCS achieves statelessness by using a two-level hypertree: the top levels are an XMSS-like Merkle tree authenticating subtree roots; the leaves use a few-time signature scheme (HORST in SPHINCS, FORS in SPHINCS+). Because the leaf index is derived from randomness included in the signing operation, two different signings of the same message produce different leaf paths — yielding unlinkable signatures with no state required. The price is large signatures (7–50 KB depending on variant and security-vs-speed trade-off). FORS (Forest Of Random Subsets) replaced HORST in SPHINCS+ after cryptanalysis showed improved forgery attacks against HORST's few-time property; FORS achieves a tighter security bound. SLH-DSA (FIPS 205) is the NIST-standardized instantiation with parameter sets SLHDSA-SHA2-128s/f through SLHDSA-SHA2-256s/f.
+
+**State of the art:** SLH-DSA (FIPS 205, August 2024) is the production standard; SPHINCS+ reference code forms the basis of most library implementations (liboqs, PQClean). Preferred as a conservative backup to ML-DSA when algebraic assumptions are a concern. See [Stateful Hash-Based Signatures](#stateful-hash-based-signatures-xmss--lms) for the stateful XMSS/LMS family and [NIST PQC Signature Standards](#nist-pqc-signature-standards-ml-dsa--slh-dsa) for comparison.
+
+---
+
+## Picnic (Signatures from ZK Proofs of Symmetric Primitives)
+
+**Goal:** Post-quantum signatures with a minimal-assumption foundation. Prove in zero knowledge that you know a secret key sk such that a public symmetric function F(sk, nonce) = output, then use the ZK proof as a signature. Security reduces entirely to properties of the symmetric primitive (collision resistance + pseudorandomness) — no lattice, factoring, or discrete-log assumption needed.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ZKBoo** | 2016 | MPC-in-the-head + SHA-256 | First practical ZKPoK-based signature; MPC-in-the-head (Ishai et al.) paradigm [[1]](https://eprint.iacr.org/2016/163) |
+| **ZKB++ / Picnic1** | 2017 | MPC-in-the-head + LowMC | Optimized MPC-in-the-head; uses LowMC for efficient circuit; NIST PQC Round 1 [[1]](https://eprint.iacr.org/2017/279) |
+| **Picnic2** | 2019 | KKW proof + LowMC | KKW (Katz-Kolesnikov-Wang) protocol; batched proofs; smaller signatures [[1]](https://eprint.iacr.org/2019/475) |
+| **Picnic3** | 2020 | BBQ+/Limbo + LowMC | Further signature reduction via improved MPC protocol; NIST Round 3 alternate [[1]](https://eprint.iacr.org/2020/846) |
+| **Banquet** | 2021 | MPC-in-the-head + AES | Replaces LowMC with AES for better understood security; competitive sizes [[1]](https://eprint.iacr.org/2021/068) |
+
+The Picnic construction applies the Fiat-Shamir transform to a sigma protocol. The prover simulates a 3-party MPC computation of F(sk, nonce) using secret-sharing, then the Fiat-Shamir challenge selects which party's view to open. The soundness error per round is 1/3, so many rounds are needed (typically 219 for 128-bit security), resulting in large signatures (13–38 KB). LowMC was specifically designed as an MPC-friendly symmetric cipher with very few AND gates, minimizing the number of multiplication triples needed in the proof. The Picnic scheme was an alternate candidate in NIST PQC Round 3 (not selected for standardization) but remains the most concrete instantiation of the MPCitH paradigm for signatures. See also [MPCitH in ZK proof systems](categories/04-zero-knowledge-proof-systems.md#mpcith--voleith-proof-systems).
+
+**State of the art:** Picnic3 (NIST Round 3 alternate, not standardized); Banquet for improved concrete security. Primarily of theoretical and benchmarking interest; signature sizes remain large compared to ML-DSA/Falcon. Foundation of the broader [MPCitH paradigm](categories/04-zero-knowledge-proof-systems.md#mpcith--voleith-proof-systems).
+
+---
+
+## Rainbow & Multivariate Quadratic Signatures
+
+**Goal:** Post-quantum signatures from the hardness of solving systems of multivariate quadratic (MQ) equations over finite fields. The MQ problem is NP-hard in general; multivariate schemes exploit structured trapdoors to make signing efficient while keeping the public map hard to invert.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **UOV (Unbalanced Oil and Vinegar)** | 1999 | MQ over GF(q) | Patarin's UOV trapdoor: oil-vinegar variable split; basis of most practical MQ sigs [[1]](https://www.minrank.org/uov.pdf) |
+| **Rainbow (Ding-Schmidt)** | 2005 | Layered UOV | Multi-layer UOV; compact signatures; NIST PQC Round 1–3 finalist [[1]](https://eprint.iacr.org/2005/018) |
+| **Rainbow break (Beullens)** | 2022 | Classical cryptanalysis | Ward Beullens' rectangular MinRank attack; broke all NIST Round 3 Rainbow parameters in a weekend on a laptop [[1]](https://eprint.iacr.org/2022/214) |
+| **GeMSS** | 2017 | HFEv- (Hidden Field Equations) | Large public keys; small signatures (33 bytes); NIST Round 3 alternate; not selected [[1]](https://gemss.fr/) |
+| **MAYO** | 2021 | Whipped UOV + oil-space embedding | New UOV variant; compact keys; NIST PQC on-ramp Round 1 candidate [[1]](https://eprint.iacr.org/2021/1144) |
+| **UOV (NIST on-ramp)** | 2023 | UOV (revisited) | Plain UOV resubmitted for NIST additional signatures call; large public keys but very simple structure [[1]](https://csrc.nist.gov/projects/pqc-dig-sig/round-1-additional-signatures) |
+| **SNOVA** | 2022 | Structured UOV over matrix algebra | Small keys and sigs via algebraic structure over non-commutative rings; NIST on-ramp candidate [[1]](https://eprint.iacr.org/2022/1679) |
+
+Multivariate signatures work by publishing a map P: GF(q)^n → GF(q)^m composed of m degree-2 polynomials in n variables. The signer knows a trapdoor decomposition (a secret linear change of variables) that allows efficient inversion of P. Rainbow arranged variables in two layers (oil and vinegar at each layer) to achieve small signatures (~66 bytes at NIST Level 1) and fast signing. The 2022 break exploited the fact that the rectangular MinRank problem — finding a low-rank matrix in the Jacobian of Rainbow's central map — is much easier than previously estimated. Beullens solved it classically in ~53 bits of work for Rainbow-Ia (targeting 128-bit security), eliminating Rainbow as a viable scheme. GeMSS (Hidden Field Equations minus-variant) survived but was not selected due to enormous public keys (~352 KB). Post-break, MAYO and SNOVA represent the current generation of MQ signature research with improved structural choices.
+
+**State of the art:** Rainbow broken (2022); GeMSS not selected. MAYO and UOV are current NIST additional signatures on-ramp candidates (as of 2024). MQ signatures offer the shortest signatures of any PQ family but have historically suffered from structural attacks.
+
+---
+
+## Hedged Signatures
+
+**Goal:** Side-channel-resistant deterministic signing. Pure deterministic schemes (EdDSA, RFC 6979) are vulnerable to fault attacks — an adversary who can induce a fault during signing can recover the private key even without knowing the internal state. Hedged signatures mix fresh per-sign randomness into the nonce derivation, preserving determinism's RNG-failure resilience while defeating fault attacks that exploit the deterministic structure.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Hedged ECDSA (Aranha et al.)** | 2020 | ECDSA + HMAC-DRBG + fresh randomness | Adds a random blinding value r to RFC 6979 nonce derivation: k = HMAC-DRBG(sk ‖ m ‖ r); hardware fault-resistant [[1]](https://eprint.iacr.org/2019/956) |
+| **Hedged EdDSA** | 2017 | EdDSA + extra randomness | Variant of Ed25519 mixing per-sign entropy into nonce hash; defeats rowhammer-style fault attacks [[1]](https://eprint.iacr.org/2017/985) |
+| **Composite Schnorr / "draft-irtf-cfrg-det-sigs-with-noise"** | 2022 | Schnorr + deterministic + random | IRTF CFRG draft; k = H(sk ‖ m ‖ r) where r is small (32 bytes); degrades to RFC 6979 if RNG fails, degrades to random signing if determinism is probed [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-det-sigs-with-noise/) |
+| **Libsodium / ristretto255 hedged** | 2022 | Ed25519 variant | libsodium's crypto_sign_ed25519 adds random noise internally in recent versions; transparent to applications [[1]](https://doc.libsodium.org/public-key_cryptography/public-key_signatures) |
+
+The core tension is between two threat models: (a) RNG failure — the per-sign random source is weak or predictable, as occurred in several Android Bitcoin wallet incidents; and (b) fault/DPA attacks — the signing device is physically probed and the deterministic computation is perturbed (e.g., via voltage glitching or electromagnetic fault injection), allowing an attacker to solve for the private key from two faulty signatures with the same deterministic nonce. Hedged signing defeats both threats simultaneously: the nonce depends on both the private key+message (as in RFC 6979) and fresh randomness (as in randomized signing). A faulty-RNG attacker still cannot predict k because of the deterministic component; a fault attacker cannot exploit a known k because the randomness prevents nonce repetition. The IRTF CFRG draft formalizes this as the preferred approach for new Schnorr-based schemes.
+
+**State of the art:** Hedged signing recommended by IRTF CFRG for all new Schnorr/ECDSA deployments; already default in several TLS stacks and hardware security modules. Extends [ECDSA — Details, Vulnerabilities, and RFC 6979](#ecdsa--details-vulnerabilities-and-rfc-6979) and [EdDSA](#eddsa-ed25519--ed448).
+
+---
+
+## BLISS & qTESLA (Early Lattice Signature Schemes)
+
+**Goal:** Efficient lattice-based signatures preceding the NIST PQC process. BLISS (Bimodal Lattice Signature Scheme) achieved very compact signatures using a bimodal Gaussian distribution to cancel the error term; qTESLA was a Ring-LWE–based NIST PQC Round 1 candidate. Both illuminate the design space that led to ML-DSA (Dilithium) and Falcon.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BLISS (Ducas-Durmus-Lepoint-Lyubashevsky)** | 2013 | Ring-SIS + bimodal Gaussian | Bimodal distribution enables rejection-free signing; ~5600-bit sig at 128-bit security; CRYPTO 2013 [[1]](https://eprint.iacr.org/2013/383) |
+| **BLISS-B** | 2015 | BLISS + Bernoulli rejection sampling | Improved constant-time variant; reference implementation for timing-side-channel studies [[1]](https://tches.iacr.org/index.php/TCHES/article/view/836) |
+| **qTESLA (Round 1)** | 2017 | Ring-LWE (provably secure) | Conservative provable-security variant; NIST PQC Round 1; withdrawn before Round 2 due to parameter issues [[1]](https://eprint.iacr.org/2019/085) |
+| **qTESLA-p (provably secure)** | 2019 | Ring-LWE + NTRU-free | Revised parameter sets with concrete security reductions; still larger signatures than BLISS [[1]](https://eprint.iacr.org/2019/085) |
+| **Lyubashevsky's Fiat-Shamir with Aborts** | 2009 | Ring-SIS | Core signing technique behind BLISS, Dilithium, and Falcon: sign with a large key, reject if signature leaks too much information about the key [[1]](https://eprint.iacr.org/2011/537) |
+
+BLISS introduced the bimodal trick: instead of sampling a standard Gaussian nonce, the signer samples from a distribution that is the mixture of two Gaussians centered at +σ and −σ. This cancels the error term algebraically during signing, enabling smaller rejection rates and more compact signatures. BLISS signatures (~5600 bits at Level 1) were the most compact lattice signatures of their era and influenced all subsequent Fiat-Shamir-with-aborts constructions. However, BLISS implementations were repeatedly shown to leak the private key through timing and cache side-channels (the Gaussian sampler is notoriously hard to implement in constant time), which contributed to NIST preferring Dilithium's simpler uniform-rejection-sampling design for ML-DSA. qTESLA was based on the provably secure Ring-LWE assumption (Regev-style reduction) rather than the heuristic Ring-SIS assumption used in BLISS; it was withdrawn from Round 2 after parameter analysis revealed insufficient security margins in the submitted parameter sets.
+
+**State of the art:** Neither BLISS nor qTESLA was standardized; superseded by ML-DSA (FIPS 204) and Falcon/FN-DSA (FIPS 206). Historically important as the proof-of-concept lattice signature schemes that established the viability of the Fiat-Shamir-with-aborts paradigm. See [NIST PQC Signature Standards](#nist-pqc-signature-standards-ml-dsa--slh-dsa) and [Falcon / FN-DSA](#falcon--fn-dsa-ntru-based-lattice-signatures).
+
+---

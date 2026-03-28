@@ -711,3 +711,231 @@ Key property: GRANDPA finalizes entire chain prefixes in one message round — i
 **State of the art:** BABE/GRANDPA deployed on Polkadot mainnet (launched May 2020); BEEFY deployed for Polkadot–Ethereum bridge (2023). GRANDPA paper (Stewart & Kokoris-Kogia, 2020) [[1]](https://arxiv.org/abs/2007.01560); Web3 Foundation overview [[2]](https://wiki.polkadot.com/learn/learn-consensus/). See [Linear BFT Consensus](#linear-bft-consensus-hotstuff--tendermint), [Casper FFG](#casper-ffg--ethereum-proof-of-stake-finality), [Aggregate Signatures (BLS)](categories/08-signatures-advanced.md#aggregate-signatures-bls-aggregate).
 
 ---
+
+## Ethereum BLS Aggregate Signatures (BDN / BLS12-381)
+
+**Goal:** Allow ~500,000 Ethereum validators to each sign every attestation slot, yet have the network process all those signatures with only a few hundred bytes of on-chain data and a constant number of pairing operations. Boneh-Drijvers-Neven (BDN) aggregation makes this practical by defending against rogue-key attacks without expensive proofs-of-possession for every signature.
+
+**Rogue-key attack on naive BLS aggregation:** If Alice publishes pubkey `A` and Bob maliciously registers `B' = B - A`, the aggregate public key `A + B' = B` lets Bob forge aggregate signatures. BDN prevents this by hashing each signer's key into a weighting coefficient before aggregating, so the attacker cannot cancel out honest keys.
+
+**BDN scheme (Boneh-Drijvers-Neven, CRYPTO 2018):**
+
+```
+Individual signature: σᵢ = H(m)^{skᵢ}
+Aggregation weight:   tᵢ = H(pkᵢ, {pk₁, …, pkₙ})
+Aggregate signature:  σ  = Π σᵢ^{tᵢ}
+Aggregate pubkey:     PK = Σ tᵢ · pkᵢ
+Verification:         e(σ, G₂) == e(H(m), PK)   [one pairing product check]
+```
+
+**Ethereum's deployment choices:**
+
+| Component | Mechanism |
+|-----------|-----------|
+| Curve | BLS12-381 — 128-bit security; 381-bit base field; G₁ over F_p, G₂ over F_{p²} |
+| Signing key | G₁ (48-byte compressed point); verification key in G₂ (96 bytes) |
+| Signature | G₁ point — 48 bytes |
+| Hash-to-curve | BLS12-381 G₁ hash (IETF RFC 9380 / `draft-irtf-cfrg-hash-to-curve`) |
+| Rogue-key defense | Proof of possession (PoP) registered at validator deposit time; simpler than BDN weighting in the PoS setting |
+| Aggregation | Bitfield tracks which validators signed; aggregate = sum of all individual G₁ sigs with same message |
+
+**Why G₁ for sigs, G₂ for keys (not vice versa):** Signatures are aggregated (many → one 48-byte value); verification keys sit in G₂ (96 bytes) but are cached. This minimises the per-attestation wire cost, at the expense of larger per-validator pubkey storage.
+
+**Sync committee (Altair, 2021):** A rotating committee of 512 validators produces an aggregate BLS signature on each beacon block header. Light clients (Helios, mobile wallets) need only the 512-key committee pubkey and one 48-byte aggregate sig to trustlessly verify any block — no downloading of the full validator set.
+
+**Performance:**
+
+| Operation | Time (BLS12-381, software) |
+|-----------|---------------------------|
+| Single sign | ~1 ms |
+| Single verify | ~3 ms (2 pairings) |
+| Aggregate N signatures | O(N) G₁ additions |
+| Verify aggregate (N signers, 1 msg) | ~3 ms (same 2 pairings) |
+| Batch verify M aggregates | ~3 + 0.5M ms (Miller-loop batching) |
+
+**State of the art:** BLS12-381 aggregate signatures are live on Ethereum mainnet (since Altair, October 2021); ~500,000 validators produce ~450,000 attestations per epoch. BDN paper [[1]](https://eprint.iacr.org/2018/483); BLS12-381 spec [[2]](https://hackmd.io/@benjaminion/bls12-381). See [Aggregate Signatures (BLS)](categories/08-signatures-advanced.md#aggregate-signatures-bls-aggregate), [Casper FFG](#casper-ffg--ethereum-proof-of-stake-finality).
+
+---
+
+## Helios — SNARK-Based Ethereum Light Client
+
+**Goal:** Allow any browser, mobile device, or off-chain application to verify the current Ethereum state with full cryptographic soundness — trusting only the Ethereum genesis hash — by verifying just the Beacon chain sync-committee BLS aggregate signature, and optionally wrapping that verification in a SNARK for even cheaper on-chain use.
+
+**Problem with naive light clients:** Downloading and verifying all ~500,000 validator attestations per epoch (~64 MB) is impractical for a phone or browser. Ethereum's Altair sync committee provides a shortcut: 512 validators rotate every ~27 hours; light clients track only this committee.
+
+**Helios protocol (a16z, 2022):**
+
+```
+1. Bootstrap: fetch a trusted checkpoint (finalized block hash from an RPC or a trusted source)
+2. Sync committee update: fetch the 512-member committee pubkeys (signed by the previous committee → chain of trust)
+3. Per-block verification:
+   a. Fetch beacon block header
+   b. Fetch sync committee aggregate BLS signature (48 bytes) + participation bitfield
+   c. Verify: e(σ_agg, G₂) == e(H(header), PK_agg)   [BLS12-381 pairing check]
+   d. Check ≥ 2/3 of committee signed (participation threshold)
+4. Execution payload: verify Merkle proof of execution block root against beacon state root
+5. State proofs: verify account/storage Merkle-Patricia proof against execution state root
+```
+
+**SNARK wrapper — SP1-Helios / Telepathy:**
+
+Wrapping the sync-committee BLS verification in a SNARK converts Helios's output into an on-chain-verifiable proof. This enables Ethereum state proofs on other chains without running a full BLS verifier on-chain:
+
+| System | Proof backend | Use case |
+|--------|--------------|---------|
+| **Telepathy** (Succinct, 2022) | Gnark PLONK | On-chain Ethereum state proofs on other L1s |
+| **SP1-Helios** (Succinct, 2024) | SP1 (RISC-V zkVM) | SNARK-proven Ethereum headers; bridging |
+| **Noir-Helios** (Aztec ecosystem) | UltraPlonk | Ethereum proofs inside Noir circuits |
+
+**Security model:** Trust reduces to (a) Ethereum genesis, (b) the sync committee assumption (≥ 2/3 of the 512-member committee is honest). This is weaker than full consensus but sufficient for many cross-chain applications.
+
+**State of the art:** Helios (Rust, open source) is in production use for Ethereum RPC verification. Telepathy deployed on several EVM chains (2023). SP1-Helios (2024) wraps Helios in a RISC-V zkVM proof. Helios repo [[1]](https://github.com/a16z/helios); Telepathy paper [[2]](https://telepathy.gitbook.io/telepathy/). See [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems-overview), [zkBridge](#zkbridge--cross-chain-state-proofs), [Ethereum BLS Aggregate Signatures](#ethereum-bls-aggregate-signatures-bdn--bls12-381).
+
+---
+
+## zkBridge — Cross-Chain State Proofs
+
+**Goal:** Enable trust-minimized bridging between blockchains by proving the consensus state of a source chain inside a succinct proof (SNARK/STARK) that can be verified cheaply on the destination chain — eliminating the multisig/oracle trust assumptions of existing bridges (Ronin, Wormhole, etc., which collectively lost >$2B to exploits).
+
+**Architecture:**
+
+```
+Source chain (e.g. Ethereum)
+  │ Block header + BLS aggregate signature
+  ▼
+Prover network
+  │ Generates SNARK proof: "the sync-committee signed this header"
+  ▼
+Destination chain (e.g. BNB Chain, Gnosis, Solana)
+  │ On-chain SNARK verifier checks proof (~200K gas)
+  │ Updates stored Ethereum state root
+  ▼
+Application layer
+  │ Verifies Merkle/Verkle proof of specific state item against stored root
+  ▼
+Cross-chain action (token transfer, message delivery, state read)
+```
+
+**Representative zkBridge systems:**
+
+| System | Proof backend | Source → Dest | Note |
+|--------|--------------|--------------|------|
+| **zkBridge (Berkeley, 2022)** | Gnark (PLONK) | Ethereum → BNB | First formal zkBridge paper; recursive SNARK for BLS [[1]](https://arxiv.org/abs/2210.00264) |
+| **Succinct Telepathy** | Gnark PLONK | Ethereum → EVM chains | Deployed on mainnet (2023); syncs Ethereum headers [[2]](https://github.com/succinctlabs/telepathy-contracts) |
+| **Polymer** | IBC + ZK proofs | Ethereum ↔ Cosmos | IBC transport over Ethereum using ZK light clients |
+| **Electron** | SP1 (RISC-V zkVM) | Ethereum → multi-chain | RISC-V execution proof of Ethereum light client logic |
+| **Union** | CometBLS + Gnark | Cosmos → Ethereum | BLS-based Tendermint light client in a SNARK |
+
+**Key cryptographic challenge — BLS12-381 in a SNARK circuit:**
+
+BLS12-381 pairing arithmetic is expensive inside most SNARK arithmetizations because field elements are 381 bits while SNARK-native fields are ~254 bits. Solutions include:
+
+| Technique | Idea |
+|-----------|------|
+| Non-native field arithmetic | Simulate BLS12-381 field ops using limb decomposition inside the SNARK field |
+| Gnark/Halo2 BLS gadgets | Optimized in-circuit BLS12-381 pairing: ~2M constraints |
+| Recursion over BLS12-377 | BLS12-377 embeds inside BW6-761 field; enables native pairing in outer circuit |
+| STARK wrapper | Prove BLS verification inside a STARK (no field-mismatch issue); larger proof size |
+
+**Security model:** Trust is reduced to (a) the source chain's consensus assumption and (b) the soundness of the SNARK proof system. No multisig, no oracle, no committee with a treasury to bribe.
+
+**State of the art:** Succinct Telepathy (2023) is the first production zkBridge on Ethereum mainnet. zkBridge paper (Xie et al., 2022) [[1]](https://arxiv.org/abs/2210.00264). See [Helios Light Client](#helios--snark-based-ethereum-light-client), [IBC](#ibc--inter-blockchain-communication-protocol), [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems-overview).
+
+---
+
+## Monero RingCT — Ring Signatures + Confidential Transactions
+
+**Goal:** Provide sender anonymity (via linkable ring signatures), recipient anonymity (via stealth addresses), and amount confidentiality (via Pedersen commitments + range proofs) — simultaneously — so that Monero transactions reveal no identifying information by default.
+
+**Three privacy layers combined:**
+
+```
+Sender anonymity:     MLSAG / CLSAG ring signature hides true signer among n decoys
+Recipient anonymity:  One-time stealth address derived from recipient's public key
+Amount hiding:        Pedersen commitment to amount + Bulletproofs range proof
+```
+
+**Layer 1 — Stealth addresses:**
+
+Recipient publishes spend key `(A, B)`. For each output, the sender:
+1. Samples random `r`
+2. Computes one-time address `P = H(r·A) · G + B`
+3. Includes `r·G` in the transaction
+
+The recipient scans all transactions, computing `H(a · r·G) · G + B` for their spend key `a`; if this matches `P`, the output is theirs. No address reuse; outputs are unlinkable across transactions.
+
+**Layer 2 — MLSAG / CLSAG ring signatures:**
+
+The sender signs the transaction using a ring of n public keys (the true input + n-1 decoys drawn from the blockchain). The linkability tag (key image) `I = x · H_p(P)` is unique per private key — if the same key signs twice, the image repeats, enabling double-spend detection without identifying the signer.
+
+| Scheme | Year | Ring size | Proof size | Note |
+|--------|------|-----------|-----------|------|
+| **MLSAG** (Multilayered Linkable Spontaneous Anonymous Group) | 2016 | 11 | O(n) per input | Original RingCT scheme |
+| **CLSAG** (Compact Linkable Spontaneous Anonymous Group) | 2019 | 11 | ~26% smaller | Single-layer ring; deployed in Monero 2020 [[1]](https://eprint.iacr.org/2019/654) |
+
+**Layer 3 — Pedersen commitments + Bulletproofs:**
+
+Each output amount `v` is committed as `C = v·H + r·G` (Pedersen, homomorphic). Transaction validity requires `Σ C_in = Σ C_out + fee·H`. Bulletproofs range proofs prove each output is in `[0, 2^64)` without revealing `v`. Bulletproofs (2018) replaced the earlier Borromean ring range proofs, reducing transaction size by ~80%.
+
+**Cryptographic primitives:**
+
+| Primitive | Role |
+|-----------|------|
+| Ed25519 / Curve25519 | Key generation, ECDH for stealth addresses |
+| CLSAG ring signature | Sender anonymity; double-spend prevention via key images |
+| Pedersen commitments (Curve25519) | Amount hiding with homomorphic validity check |
+| Bulletproofs (no trusted setup) | Range proofs for committed amounts |
+| `H_p` (hash-to-curve) | Maps output pubkey to curve point for key image computation |
+
+**RingCT since 2017:** All Monero transactions use RingCT by default. Default ring size increased: 4 (2017) → 7 (2018) → 11 (2019) → 16 (2022). Seraphis/Jamtis (proposed upgrade, 2023) will replace CLSAG with a more flexible membership proof scheme.
+
+**State of the art:** CLSAG + Bulletproofs deployed on Monero mainnet (October 2020). CLSAG paper (Goodell et al.) [[1]](https://eprint.iacr.org/2019/654); original RingCT (Shen Noether, 2015) [[2]](https://eprint.iacr.org/2015/1098). See [Confidential Transactions](#confidential-transactions-ct), [Range Proofs](#range-proofs), [Ring Signatures](categories/08-signatures-advanced.md#ring-signatures).
+
+---
+
+## Halo2 — Recursive SNARKs Without Trusted Setup (Zcash Orchard)
+
+**Goal:** Provide a practical recursive SNARK system that eliminates the need for a per-circuit trusted setup while maintaining small proof sizes, using a polynomial IOP (PLONK-based) with an inner product argument over a cycle of curves — deployed in Zcash's Orchard protocol as a replacement for the trusted Groth16 setup of Sapling.
+
+**Why a new system after Groth16?** Groth16 (Sapling, 2018) required a circuit-specific trusted setup MPC for each circuit change. Adding new features to Zcash required new ceremonies. Halo2 replaces the structured reference string with a transparent, trustless commitment scheme based on inner product arguments (IPA), and supports efficient recursion natively.
+
+**Halo2 components:**
+
+| Component | Mechanism |
+|-----------|-----------|
+| Polynomial commitment | IPA (Inner Product Argument) over the Pallas curve — no trusted setup, no pairings |
+| Constraint system | PLONK with custom gates ("UltraPlonk" / PLONKish arithmetization) |
+| Lookup arguments | Plookup / halo2 lookup — efficient table lookups inside circuits |
+| Recursion | Accumulation scheme: proofs are "accumulated" rather than verified in-circuit; deferred verification |
+
+**Accumulation-based recursion (Bowe-Grigg-Hopwood, 2019 / Halo):**
+
+Classical recursive SNARKs verify one proof inside another circuit. Halo instead uses an *accumulator*: each proof step produces an "accumulator" that lazily defers all IPA verification checks. The final accumulated value is verified once at the end of the chain. This avoids the expensive in-circuit IPA verification.
+
+```
+Step 1: generate proof π₁, accumulator acc₁
+Step 2: generate proof π₂ proving "acc₁ is well-formed", output acc₂
+  ⋮
+Step n: generate πₙ, output accₙ
+Verifier: check accₙ directly (one IPA check) → all prior steps verified transitively
+```
+
+**Zcash Orchard (2022):**
+
+Orchard replaces Sapling's Spend/Output circuits (Groth16 over BLS12-381) with Halo2 circuits over the Pallas curve:
+
+| Property | Sapling (Groth16) | Orchard (Halo2) |
+|----------|-------------------|-----------------|
+| Trusted setup | Circuit-specific MPC ceremony | None |
+| Proof size | ~192 bytes (3 G₁ points) | ~4 KB |
+| Verify time | ~3 ms (3 pairings) | ~10 ms |
+| Recursion | Not native | Native (accumulation) |
+| Curve | BLS12-381 | Pallas (Pasta cycle) |
+
+**PLONKish arithmetization in halo2:** Halo2's constraint system uses a rectangular table of columns (advice, fixed, instance) and gates defined as multivariate polynomials over adjacent rows. Custom gates (e.g., a Poseidon gate) can constrain many operations in a single row, dramatically reducing circuit size compared to R1CS.
+
+**Ecosystem adoption:** Halo2 is used not only in Zcash Orchard but also in the Ethereum ecosystem: Scroll, Polygon zkEVM, and Axiom all use halo2 (with KZG commitments instead of IPA) for their zkEVM circuits; PSE (Privacy & Scaling Explorations) maintains `halo2` as an open library.
+
+**State of the art:** Halo2 deployed in Zcash Orchard (NU5 upgrade, May 2022). Original Halo paper (Bowe-Grigg-Hopwood, 2019) [[1]](https://eprint.iacr.org/2019/1021); halo2 book [[2]](https://zcash.github.io/halo2/). See [Groth16 / Zcash Sapling zk-SNARK](#groth16--zcash-sapling-zk-snark), [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems-overview), [Mina Protocol](#mina-protocol--pickles-recursive-snark-22-kb-blockchain).
+
+---
