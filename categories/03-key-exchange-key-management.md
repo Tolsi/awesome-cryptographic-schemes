@@ -1465,3 +1465,405 @@ CT (see [Certificate Transparency (CT)](#certificate-transparency-ct)) is an app
 **State of the art:** AKD specification (Kaptchuk et al., 2021) [[1]](https://eprint.iacr.org/2020/1488); open-source Rust implementation by Meta [[2]](https://github.com/facebook/akd). Apple and Signal deployments (2024) mark the first mass-scale key transparency for end-to-end encrypted messaging. Related to [Key Transparency / CONIKS](#key-transparency--coniks), [Certificate Transparency (CT)](#certificate-transparency-ct), and [VRF](categories/09-commitments-verifiability.md#verifiable-random-function-vrf).
 
 ---
+
+## One-Pass Diffie-Hellman (NIST SP 800-56A)
+
+**Goal:** Reduce a key-establishment round-trip to a single message — the initiator sends one ephemeral public key; the responder uses their static key to compute the shared secret without sending anything — enabling asynchronous key agreement where the responder is offline or bandwidth is constrained.
+
+One-pass DH is one of the key-establishment schemes approved in NIST SP 800-56A Rev 3 (2018). In its elliptic-curve form (One-Pass ECMQV or One-Pass ECDH), the initiator generates an ephemeral key pair and encrypts or authenticates a message that the responder can later open using only their static private key. The scheme sacrifices forward secrecy for the initiator's contribution but retains it from the responder's side.
+
+**One-Pass ECDH (from SP 800-56A, Section 6.2.2):**
+
+```
+Initiator (Alice):  ephemeral key pair (d_e, Q_e)
+Responder (Bob):    static key pair   (d_s, Q_s)   [public key known to Alice]
+
+Alice computes: Z = ECDH(d_e, Q_s)   — one scalar multiplication
+                 (sends Q_e and ciphertext bound to Z)
+
+Bob computes:   Z = ECDH(d_s, Q_e)   — one scalar multiplication, no reply needed
+```
+
+The shared secret `Z` is passed through a key-derivation function together with `Q_e`, `Q_s`, and a shared info string; the result is the keying material.
+
+**One-Pass ECMQV (SP 800-56A, Section 6.3):**
+
+Replaces the single ECDH with the two-key implicit-authentication structure of MQV, allowing Bob's static key to provide authentication of his end — Alice learns she is talking to the owner of `Q_s` — while still requiring only one message from Alice.
+
+```
+Alice ephemeral: (d_e, Q_e)
+Shared secret:   Z = h · cofactor · d_e · (Q_s + ē(Q_s) · d_s)
+                   = Bob's equivalent MQV contribution
+```
+
+**NIST SP 800-56A scheme catalogue:**
+
+| Scheme | Passes | Auth | Forward secrecy |
+|--------|--------|------|-----------------|
+| **Ephemeral Unified Model** | 2 | None | Full (both sides ephemeral) |
+| **Static Unified Model** | 2 | Both sides | None (no ephemeral) |
+| **One-Pass DH** | 1 | Responder only | Responder side only |
+| **One-Pass MQV** | 1 | Responder only | Partial |
+| **Full MQV / HMQV** | 2 | Both (implicit) | Full |
+
+**Deployments:** CMS (RFC 5652) EnvelopedData with ECDH key agreement; S/MIME key agreement (RFC 5753); IKEv2 optional one-pass mode; email encryption scenarios where the sender encrypts to a recipient's static public key from a certificate.
+
+**State of the art:** NIST SP 800-56A Rev 3 (2018) [[1]](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-56Ar3.pdf); SP 800-56A is the foundational NIST reference for all approved DH-based key establishment. One-pass DH underlies CMS ECDH key agreement (RFC 5753) [[2]](https://www.rfc-editor.org/rfc/rfc5753). Related to [Key Exchange / Key Agreement](#key-exchange--key-agreement) and [ECMQV](#ecmqv-elliptic-curve-menezes-qu-vanstone).
+
+---
+
+## MTI Protocols (Matsumoto-Takashima-Imai)
+
+**Goal:** A family of two-pass unauthenticated and implicitly authenticated key-agreement protocols that generalize Diffie-Hellman by mixing ephemeral and static keys in structured algebraic combinations — allowing a tradeoff between message count, authentication level, and resistance to known-key and key-compromise attacks.
+
+MTI protocols were introduced by Matsumoto, Takashima, and Imai (1986) as a systematic analysis of key agreement protocols built over finite fields. The family is parameterized by an integer pair (a, b) controlling how each party's static and ephemeral keys contribute to the shared secret, revealing that DH is just one member of a broader design space.
+
+**General MTI construction (over a prime-order group, generator g):**
+
+Each party holds a long-term key pair `(x, g^x)` and generates an ephemeral `(r, g^r)`. The shared secret is:
+
+```
+Alice → Bob:  g^r_A
+Bob → Alice:  g^r_B
+
+Z_A = (g^(x_B))^r_A · (g^r_B)^(x_A)    — Alice's computation
+Z_B = (g^(x_A))^r_B · (g^r_A)^(x_B)    — Bob's computation
+```
+
+Both sides compute `Z_A = Z_B = g^(x_A·r_B + x_B·r_A)` — a cross-term combining both parties' static and ephemeral contributions symmetrically.
+
+**MTI family instances (varying exponent structure):**
+
+| Protocol | Shared secret exponent | Notes |
+|----------|----------------------|-------|
+| **MTI/A0** | `g^(x_A·r_B + x_B·r_A)` | Original; two-pass; static keys needed at both ends |
+| **MTI/B0** | `g^(x_A·r_B) · g^(x_B·r_A)` | Equivalent to A0 in prime-order groups |
+| **MTI/C0** | `g^(r_A·r_B + x_A·x_B)` | Cross-term on ephemeral and static separately |
+| **Classic DH** | `g^(r_A·r_B)` | Special case: static keys unused |
+| **Static DH** | `g^(x_A·x_B)` | Special case: ephemeral keys unused; no forward secrecy |
+
+**Security properties:**
+
+The MTI family separates known-key security (past sessions remain secret after long-term key compromise) from key-compromise impersonation (KCI) resistance. MTI/A0 provides known-key security but is vulnerable to KCI: if Alice's long-term key `x_A` is compromised, an attacker can impersonate Bob to Alice. This weakness motivated the HMQV design (which uses implicit signatures to close the KCI gap).
+
+**Historical significance:** MTI protocols were the first systematic taxonomy of authenticated key exchange protocols; they directly motivated the subsequent analysis of STS, MQV, and SIGMA. Blake-Wilson, Johnson, and Menezes (1997) formalized their security model, influencing the Bellare-Rogaway (BR) model used for TLS analysis today.
+
+**State of the art:** Original paper [[1]](https://doi.org/10.1109/18.21253) (Matsumoto, Takashima, Imai, 1986/IEEE Trans. Inf. Theory 1988); security analysis [[2]](https://link.springer.com/chapter/10.1007/3-540-68339-9_36) (Blake-Wilson et al., 1997). MTI protocols are primarily of historical and theoretical interest; HMQV and SIGMA are preferred for new designs. Related to [Key Exchange / Key Agreement](#key-exchange--key-agreement), [ECMQV](#ecmqv-elliptic-curve-menezes-qu-vanstone), and [SIGMA Protocol](#sigma-protocol-sign-and-mac).
+
+---
+
+## Encrypted Key Exchange (EKE) — Bellovin-Merritt
+
+**Goal:** Enable two parties to establish a cryptographically strong session key using only a shared low-entropy password — by encrypting a public key or key-exchange message under the password, so that dictionary attacks against the public-key transcript are computationally infeasible without a live interaction.
+
+EKE (Encrypted Key Exchange) was introduced by Bellovin and Merritt (1992) and is the original PAKE protocol. The core insight is deceptively simple: if DH public values or RSA public keys are encrypted under the password, an eavesdropper cannot run an offline dictionary attack because they cannot distinguish valid encrypted keys from random noise without decrypting each candidate — and decryption succeeds only for the correct password.
+
+**Basic EKE protocol (DH variant):**
+
+```
+Shared:  password P, prime p, generator g
+
+Alice → Bob:  E_P(g^x mod p)          — DH value encrypted under P
+Bob → Alice:  E_P(g^y mod p),  E_K(R_B)   — K = g^(xy), R_B = random challenge
+Alice → Bob:  E_K(R_B, R_A)           — confirms K; sends own challenge
+Bob → Alice:  E_K(R_A)                — confirms K to Alice
+```
+
+The password encryption `E_P` is a symmetric cipher (original paper uses DES); the session key `K = g^(xy)` is derived from the DH shared secret. The final two confirmation messages are mutual key confirmation.
+
+**RSA-EKE variant:**
+
+Alice generates a random RSA public key `(e, n)` and sends `E_P(e, n)` to Bob. Bob replies with `E_P(E_e(R))` — an RSA encryption of a random secret under Alice's ephemeral public key, itself encrypted under the password. Both sides derive `K` from `R`. This variant requires care: `n` must be generated as a proper RSA modulus to avoid leaking password bits through modular arithmetic structure.
+
+**Augmented EKE (A-EKE):** Bob stores a password *verifier* (not the password itself), preventing server compromise from revealing the password for offline use. This idea prefigures OPAQUE.
+
+**Known limitations:**
+- Original DES-EKE uses block ciphers in a non-standard way; Boyko et al. (1999) identified subtle issues requiring a random oracle
+- RSA-EKE leaks whether the modulus is composite via Jacobi symbol; patched in subsequent work
+- Motivated cleaner designs: SPEKE (1996), SRP (2000), SPAKE2 (2005), OPAQUE (2018)
+
+| Scheme | Year | Notes |
+|--------|------|-------|
+| **EKE (DH variant)** | 1992 | Original PAKE; DH value encrypted under password [[1]](https://dl.acm.org/doi/10.1145/168588.168618) |
+| **EKE (RSA variant)** | 1992 | Ephemeral RSA key encrypted under password; subtle issues with modulus structure [[1]](https://dl.acm.org/doi/10.1145/168588.168618) |
+| **Augmented EKE** | 1993 | Server stores verifier; precursor to SRP and OPAQUE [[1]](https://www.cs.columbia.edu/~smb/papers/neke.pdf) |
+
+**State of the art:** EKE is the conceptual root of the entire PAKE family. Modern replacements are SPAKE2 (RFC 9382), CPace, and OPAQUE (all in [Password-Based Key Derivation](#password-based-key-derivation-kdf--pake)). EKE itself is no longer recommended for new designs due to subtleties in the password-encryption step, but it remains essential reading for understanding PAKE evolution. Related to [Password-Based Key Derivation (KDF / PAKE)](#password-based-key-derivation-kdf--pake) and [J-PAKE](#j-pake-password-authenticated-key-exchange-by-juggling).
+
+---
+
+## Group Key Agreement (Burmester-Desmedt)
+
+**Goal:** Establish a single shared secret key among n ≥ 2 parties in a single broadcast round, so that any subset of colluding non-members learns nothing about the key — extending two-party Diffie-Hellman to conference and group settings without a trusted key distribution center.
+
+Two-party DH does not generalize naively to n parties: a naive chain of pairwise DH operations leaks the intermediate values and requires n−1 sequential rounds. The Burmester-Desmedt (BD) protocol (1994) achieves a one-round broadcast group key agreement for n parties using only n−1 modular exponentiations per party.
+
+**Burmester-Desmedt protocol (1-round, n parties in a ring):**
+
+Parties are numbered 1 … n (cyclically). Each party i holds a random ephemeral `r_i`.
+
+```
+Round 1 (broadcast):
+  Each party i broadcasts:  X_i = g^(r_i) mod p
+
+Round 2 (broadcast):
+  Each party i broadcasts:  Y_i = (X_{i+1} / X_{i-1})^(r_i) mod p
+                                 = g^(r_i · (r_{i+1} - r_{i-1}))
+
+Key derivation (each party i):
+  K = X_{i-1}^(n·r_i) · Y_{i-1}^((n-1)·r_i) · ... · Y_{i+n-2}^(r_i)
+    = g^(r_1·r_2 + r_2·r_3 + ... + r_n·r_1)     [sum of adjacent pairs, cyclically]
+```
+
+All parties compute the same key K, which is the product of all adjacent DH pairs around the ring. An eavesdropper who sees all `X_i` and `Y_i` values must solve a DDH problem to recover K.
+
+**Properties:**
+
+| Property | BD Protocol |
+|----------|-------------|
+| Rounds | 2 broadcast rounds |
+| Messages per party | 2 broadcasts |
+| Computation per party | O(n) multiplications, O(1) exponentiations |
+| Security | Passive security under DDH |
+| Authenticated variant | Requires signatures on each broadcast (BD + signatures) |
+| Forward secrecy | Yes (ephemeral r_i values) |
+
+**Extensions and limitations:**
+
+- **Authenticated BD:** Adding signatures over the broadcast values provides active security against man-in-the-middle but requires a PKI; this is how BD is used in practice.
+- **Joux's tripartite DH (2000):** Uses bilinear pairings to achieve one-round, one-message group key agreement for exactly 3 parties — constant complexity but pairing-dependent [[1]](https://link.springer.com/chapter/10.1007/10722028_28).
+- **Tree-based group DH (TGDH):** Organizes parties in a binary tree; rekeying after join/leave requires O(log n) operations rather than O(n), making it suitable for dynamic groups [[1]](https://dl.acm.org/doi/10.1145/586110.586114).
+- **MLS / CGKA (RFC 9420):** The modern answer to dynamic group key agreement; uses HPKE-based ratchet trees achieving O(log n) join/leave complexity (see [CGKA/MLS](categories/12-secure-communication-protocols.md#cgka--mls-messaging-layer-security)).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Burmester-Desmedt (BD)** | 1994 | DDH | One-round broadcast; O(n) computation per party [[1]](https://link.springer.com/chapter/10.1007/3-540-48658-5_33) |
+| **Joux Tripartite DH** | 2000 | Bilinear pairings | One-round for n=3; pioneered pairing-based crypto [[1]](https://link.springer.com/chapter/10.1007/10722028_28) |
+| **Tree-based Group DH (TGDH)** | 2004 | Binary tree + DH | O(log n) rekeying for dynamic groups [[1]](https://dl.acm.org/doi/10.1145/586110.586114) |
+| **MLS (RFC 9420)** | 2023 | HPKE + ratchet tree | Production group key agreement for messaging [[1]](https://www.rfc-editor.org/rfc/rfc9420) |
+
+**State of the art:** BD (1994) is the foundational reference for static group key agreement. Dynamic groups are solved by CGKA/MLS (RFC 9420, 2023), which achieves O(log n) rekeying with forward secrecy and post-compromise security. Related to [Key Exchange / Key Agreement](#key-exchange--key-agreement) and [CGKA / MLS](categories/12-secure-communication-protocols.md#cgka--mls-messaging-layer-security).
+
+---
+
+## ISO/IEC 11770 Key Establishment Mechanisms
+
+**Goal:** A normative international standard family that catalogues and defines a complete set of key establishment mechanisms — symmetric and asymmetric, authenticated and unauthenticated, key transport and key agreement — providing a common reference taxonomy used by national standards bodies, regulatory frameworks, and product certifications worldwide.
+
+ISO/IEC 11770 is the international counterpart to NIST SP 800-56A/B. It is maintained by ISO/IEC JTC 1/SC 27 and is the normative reference in Common Criteria evaluations, BSI (Germany), ANSSI (France), and many procurement standards. The standard is divided into multiple parts, each covering a specific class of mechanism.
+
+**Standard parts:**
+
+| Part | Title | Content |
+|------|-------|---------|
+| **ISO/IEC 11770-1** | Framework | Definitions, requirements, security goals for key establishment |
+| **ISO/IEC 11770-2** | Symmetric techniques | Key transport and key agreement using symmetric ciphers and MACs; 6 mechanisms |
+| **ISO/IEC 11770-3** | Asymmetric techniques | DH, RSA, and EC-based key agreement; includes EC-GDHE, EC-MQV, ECIES-KEM |
+| **ISO/IEC 11770-4** | Mechanisms based on weak secrets | PAKE and password-based mechanisms; SPEKE, SRP, EC-SRP variants |
+| **ISO/IEC 11770-5** | Group key establishment | Burmester-Desmedt and related group key agreement protocols |
+| **ISO/IEC 11770-6** | Key derivation | Formal specification of KDFs used within other parts |
+
+**Part 2 — Symmetric key transport mechanisms (selected):**
+
+| Mechanism | Rounds | Description |
+|-----------|--------|-------------|
+| **Mechanism 1** | 1 | Key transport: sender encrypts key under shared symmetric key |
+| **Mechanism 5** | 2 | Mutual authentication + key transport using a KDC (Key Distribution Center) |
+| **Mechanism 6** | 3 | Three-party KDC-based key establishment (Kerberos-style) |
+
+**Part 3 — Asymmetric mechanisms (selected):**
+
+| Mechanism | Basis | Notes |
+|-----------|-------|-------|
+| **EC-GDHE** | ECDH | Ephemeral unified model; two-pass |
+| **EC-MQV** | ECMQV | Two-pass with implicit authentication |
+| **ECIES-KEM** | ECDH + KEM/DEM | Encrypt-then-MAC; basis for HPKE |
+
+**Relationship to other standards:**
+
+ISO/IEC 11770-3 mechanisms overlap with NIST SP 800-56A schemes, but use slightly different key-derivation and encoding conventions. FIPS-validated implementations typically address both. IEEE P1363 (key agreement) and ANS X9.63 (key derivation for EC) are normative references within 11770-3.
+
+**State of the art:** ISO/IEC 11770-3:2021 [[1]](https://www.iso.org/standard/80186.html); ISO/IEC 11770-4:2017 [[2]](https://www.iso.org/standard/67933.html). The standard family is actively maintained; a post-quantum amendment is under development by SC 27/WG 2. Related to [Key Exchange / Key Agreement](#key-exchange--key-agreement), [One-Pass Diffie-Hellman](#one-pass-diffie-hellman-nist-sp-800-56a), and [ECMQV](#ecmqv-elliptic-curve-menezes-qu-vanstone).
+
+---
+
+## KEM Combiner Constructions
+
+**Goal:** Formally combine two or more Key Encapsulation Mechanisms (KEMs) into a single hybrid KEM that is secure as long as at least one component KEM is secure — with a cryptographically rigorous combiner that does not weaken either component and achieves IND-CCA2 security of the combination from the IND-CCA2 security of either part.
+
+As post-quantum KEMs (ML-KEM, Classic McEliece, BIKE, HQC) are deployed alongside classical KEMs (X25519, P-256), the question of *how* to combine them becomes security-critical. A naive XOR of shared secrets is insecure if one KEM is broken; a simple concatenation combiner is stronger but requires additional care to achieve CCA2 security.
+
+**Formal definition:**
+
+A KEM combiner `C = Combine(KEM_1, KEM_2)` takes two KEMs and produces a hybrid KEM:
+
+```
+KeyGen:    (pk_1, sk_1) ← KEM_1.KeyGen();  (pk_2, sk_2) ← KEM_2.KeyGen()
+           pk = (pk_1, pk_2);  sk = (sk_1, sk_2)
+
+Encaps(pk): (ss_1, ct_1) ← KEM_1.Encaps(pk_1)
+            (ss_2, ct_2) ← KEM_2.Encaps(pk_2)
+            ss = Combiner(ss_1, ct_1, ss_2, ct_2)
+            return (ss, ct_1 || ct_2)
+
+Decaps(sk, ct_1 || ct_2):
+            ss_1 = KEM_1.Decaps(sk_1, ct_1)
+            ss_2 = KEM_2.Decaps(sk_2, ct_2)
+            return Combiner(ss_1, ct_1, ss_2, ct_2)
+```
+
+**Key combiner functions:**
+
+| Combiner | Formula | Security requirement |
+|----------|---------|---------------------|
+| **XOR** | `ss_1 XOR ss_2` | Insecure if either KEM is breakable [[1]](https://eprint.iacr.org/2018/024) |
+| **Concatenation KEM (naive)** | `H(ss_1 \|\| ss_2)` | Secure if either ss is uniformly random (PRF assumption) |
+| **Dual-PRF combiner** | `H(ss_1 \|\| ct_1 \|\| ss_2 \|\| ct_2)` | IND-CCA2 if either KEM is IND-CCA2; ciphertexts bound to their shared secrets [[1]](https://eprint.iacr.org/2018/024) |
+| **X-Wing combiner** | `SHA3-256(label \|\| ss_m \|\| ct_m \|\| ss_x \|\| ct_x \|\| pk_x)` | Tight IND-CCA2 for ML-KEM + X25519 specifically [[1]](https://eprint.iacr.org/2024/039) |
+
+**Why ciphertext binding matters:**
+
+The dual-PRF combiner `H(ss_1 || ct_1 || ss_2 || ct_2)` — which includes the ciphertexts in the hash input — is strictly stronger than `H(ss_1 || ss_2)`. If an adversary can reuse a ciphertext `ct_1` from one session in a different context, the ciphertext-binding prevents key reuse across sessions. This is the construction recommended by the IETF CFRG for all new hybrid KEM deployments.
+
+**NIST guidance:**
+
+NIST SP 800-227 (Initial Public Draft, 2024) endorses the dual-PRF approach: the combined shared secret must be derived as `KDF(Z_1 || Z_2 || ct_1 || ct_2 || context)` using an approved KDF (HKDF-SHA-256 or KMAC256), ensuring domain separation between components.
+
+**Deployed combiners:**
+
+| Scheme | Combiner used | Reference |
+|--------|---------------|-----------|
+| **X-Wing** | Single SHA3-256 with label, both ss and ct | IETF draft-connolly-cfrg-xwing-kem [[1]](https://datatracker.ietf.org/doc/draft-connolly-cfrg-xwing-kem/) |
+| **TLS hybrid (IETF draft)** | HKDF over concatenated secrets | draft-ietf-tls-hybrid-design [[1]](https://datatracker.ietf.org/doc/draft-ietf-tls-hybrid-design/) |
+| **HPKE hybrid (RFC 9180)** | Suite-level combiner; no ciphertext binding needed (HPKE provides it) | [[1]](https://www.rfc-editor.org/rfc/rfc9180) |
+
+**State of the art:** Giacon-Heuer-Poettering (2018) [[1]](https://eprint.iacr.org/2018/024) formally proved that the dual-PRF (ciphertext-binding) combiner achieves IND-CCA2 from either component. X-Wing (2024) [[2]](https://eprint.iacr.org/2024/039) provides a tighter, single-primitive combiner for the ML-KEM + X25519 case. NIST SP 800-227 draft [[3]](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-227.ipd.pdf) standardizes combiner requirements. Related to [Post-Quantum Key Exchange (Hybrid KEM)](#post-quantum-key-exchange-in-practice-hybrid-kem) and [Key Exchange / Key Agreement](#key-exchange--key-agreement).
+
+---
+
+## Double Ratchet and KDF Chain Key Management
+
+**Goal:** Maintain continuous forward secrecy and break-in recovery (post-compromise security) in long-running messaging sessions — by advancing a KDF chain with every message so that the compromise of any single message key does not expose past or future messages, and by periodically injecting new Diffie-Hellman entropy to "heal" from state compromise.
+
+The Double Ratchet algorithm (Marlinspike and Perrin, 2016) is the key-management heart of the Signal Protocol and, through Signal's influence, of WhatsApp, Facebook Messenger (secret conversations), and Google Messages (RCS E2E). It manages keys through two interlocked ratchets: a symmetric-key KDF ratchet (fast, per-message) and a Diffie-Hellman ratchet (slower, triggered by each new message from the remote party).
+
+**KDF chain ratchet (symmetric):**
+
+```
+State:  Chain Key CK_i,  Message Key MK_i
+
+Advance:
+  MK_i   = HMAC-SHA256(CK_i,  0x01)   — used to encrypt message i
+  CK_{i+1} = HMAC-SHA256(CK_i, 0x02)   — new chain key for next message
+```
+
+Each `MK_i` is derived once and then discarded after use. An adversary who captures `CK_i` (or any later state) cannot recover `CK_{i-1}` (forward secrecy). An adversary who captures `MK_i` learns only that one message.
+
+**DH ratchet (asymmetric):**
+
+Each message carries the sender's current ephemeral DH public key. When the recipient receives a new DH public key from the remote party, they compute a new root key using DH output mixed into the root chain:
+
+```
+On receipt of remote DH public key rk_remote:
+  DH_out = DH(dh_private_local, rk_remote)
+  (RK_new, CK_recv) = KDF_RK(RK_old, DH_out)
+  Discard dh_private_local; generate new dh_private_local
+  (RK_new2, CK_send) = KDF_RK(RK_new, DH(dh_private_local_new, rk_remote))
+```
+
+This "healing" step means that after a state compromise, once both parties exchange new DH keys, the session is cryptographically recovered — break-in recovery or post-compromise security.
+
+**Security properties:**
+
+| Property | Mechanism |
+|----------|-----------|
+| Forward secrecy (per message) | KDF chain: deleted MK_i cannot be recovered |
+| Forward secrecy (per session epoch) | DH ratchet: deleted DH private keys cannot be recovered |
+| Break-in recovery (post-compromise security) | DH ratchet: new DH step heals from state exposure |
+| Out-of-order messages | Message keys can be skipped and stored; bounded look-ahead |
+| Deniability | DH outputs are symmetric; no signatures on messages |
+
+**Beyond Signal — ratchet variants:**
+
+| Protocol | Ratchet mechanism | Notes |
+|----------|------------------|-------|
+| **Signal Double Ratchet** | KDF chain + DH ratchet | Original; per-message DH key advertisement [[1]](https://signal.org/docs/specifications/doubleratchet/) |
+| **PQXDH + Double Ratchet** | Kyber-1024 at session init, then classical DH ratchet | PQ session establishment; ratchet remains classical [[1]](https://signal.org/docs/specifications/pqxdh/) |
+| **MLS (RFC 9420) TreeKEM** | HPKE-based tree ratchet for n-party groups | O(log n) rekeying; different ratchet design for groups [[1]](https://www.rfc-editor.org/rfc/rfc9420) |
+| **IETF Messaging Layer Security** | Continuous group key agreement (CGKA) | Formally separates key management from messaging |
+
+**Key deletion discipline:** The Double Ratchet's security depends on securely deleting message keys and old DH private keys immediately after use. Implementations must zero memory and — on systems with swap or hibernation — use locked memory pages.
+
+**State of the art:** Signal Double Ratchet specification [[1]](https://signal.org/docs/specifications/doubleratchet/); formal analysis by Alwen, Coretti, and Dodis (2019) [[2]](https://eprint.iacr.org/2018/1037); Cohn-Gordon et al. (2016) security proof [[3]](https://eprint.iacr.org/2016/221). Related to [X3DH / Extended Triple Diffie-Hellman](#triple-diffie-hellman-3dh--x3dh), [CGKA / MLS](categories/12-secure-communication-protocols.md#cgka--mls-messaging-layer-security), and [Password-Based Key Derivation (KDF)](#password-based-key-derivation-kdf--pake).
+
+---
+
+## ML-KEM (CRYSTALS-Kyber) Internals
+
+**Goal:** A post-quantum key encapsulation mechanism based on the hardness of the Module Learning With Errors (MLWE) problem — providing IND-CCA2 security against quantum adversaries, standardized by NIST as FIPS 203 (2024) for use in key exchange and hybrid key establishment.
+
+ML-KEM (formerly CRYSTALS-Kyber) is NIST's primary post-quantum KEM standard. Unlike the Hybrid KEM section (which covers how ML-KEM is *combined* with X25519), this section describes ML-KEM's internal structure: how it generates keys, encapsulates, and decapsulates, and what makes its security rely on MLWE.
+
+**Module Learning With Errors (MLWE):**
+
+MLWE is a structured variant of LWE. Work over the polynomial ring `R_q = Z_q[X]/(X^n + 1)` where `n = 256` and `q = 3329` (for Kyber-768). A module of rank `k` means working with `k×k` matrices of ring elements:
+
+```
+MLWE problem: Given A ∈ R_q^(k×k) and b = A·s + e (mod q),
+              find s,  where s, e ← small distribution (centered binomial η)
+```
+
+Solving MLWE is believed to require quantum time `2^Ω(n)` even for a quantum computer — unlike the ECDLP which Shor's algorithm solves in polynomial time.
+
+**Key generation (ML-KEM-768, k=3):**
+
+```
+ρ, σ ← random seeds (32 bytes each)
+A ← Sam(ρ)           — deterministic k×k matrix from ρ via SHAKE-128
+s ← CBD(σ, 0..k-1)  — secret vector: k small polynomials from centered binomial
+e ← CBD(σ, k..2k-1) — error vector
+t = A·s + e          — public key component (mod q, NTT domain)
+
+Public key:  pk = (t, ρ)      [800 bytes for k=3]
+Secret key:  sk = (s, pk, H(pk), z)   [2400 bytes for k=3]
+```
+
+The public key encodes the "noisy" linear relation; `H(pk)` and `z` are used in the CCA2 transform.
+
+**Encapsulation:**
+
+```
+m ← random 32-byte message
+(K̄, r) = G(m || H(pk))     — G = SHA3-512; r is the encapsulation randomness
+(u, v) = Kyber.CPA.Enc(pk, m; r)   — ciphertext components
+K = KDF(K̄ || H(u || v))   — final shared secret
+return (K, ct = u || v)
+```
+
+Encapsulation is deterministic given `m` and `pk`; the random `m` is generated by the encapsulator and bound to the ciphertext via `H(pk)`.
+
+**Decapsulation (CCA2-secure via implicit rejection):**
+
+```
+m' = Kyber.CPA.Dec(sk, ct)
+(K̄', r') = G(m' || H(pk))
+ct' = Kyber.CPA.Enc(pk, m'; r')
+if ct' == ct:  K = KDF(K̄' || H(ct))
+else:          K = KDF(z || H(ct))   — implicit rejection: random-looking key
+```
+
+The implicit rejection (`z` is a random value in the secret key) ensures that a wrong ciphertext produces a pseudorandom output indistinguishable from a real shared secret — preventing chosen-ciphertext attacks that test decapsulation outcomes.
+
+**Security levels and parameters (FIPS 203):**
+
+| Parameter set | k | Security level | pk size | ct size | ss size |
+|---------------|---|----------------|---------|---------|---------|
+| **ML-KEM-512** | 2 | Category 1 (AES-128 equivalent) | 800 B | 768 B | 32 B |
+| **ML-KEM-768** | 3 | Category 3 (AES-192 equivalent) | 1184 B | 1088 B | 32 B |
+| **ML-KEM-1024** | 4 | Category 5 (AES-256 equivalent) | 1568 B | 1568 B | 32 B |
+
+**NTT optimization:** All polynomial multiplications use the Number Theoretic Transform (NTT) over `Z_3329`, reducing convolution from `O(n²)` to `O(n log n)`. The choice of `q = 3329` and `n = 256` is carefully selected so that the NTT factors exist in `Z_q`.
+
+**State of the art:** FIPS 203 (NIST, August 2024) [[1]](https://doi.org/10.6028/NIST.FIPS.203); Kyber specification paper [[2]](https://pq-crystals.org/kyber/data/kyber-specification-round3-20210804.pdf); security analysis [[3]](https://eprint.iacr.org/2017/634). Deployed in: OpenSSL 3.x (via OQS), BoringSSL, AWS-LC, libsodium (planned), Go 1.23+ (`crypto/mlkem`). Related to [Post-Quantum Key Exchange (Hybrid KEM)](#post-quantum-key-exchange-in-practice-hybrid-kem), [KEM Combiner Constructions](#kem-combiner-constructions), and [Post-Quantum Cryptography](categories/15-quantum-cryptography.md#post-quantum-cryptography-pqc--nist-standardization).
+
+---

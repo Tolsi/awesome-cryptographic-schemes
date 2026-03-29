@@ -884,3 +884,181 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 **State of the art:** EtM is the correct composition if a legacy MAC + cipher must be combined, but all new protocols should use an integrated AEAD primitive. TLS 1.3 (deployed universally), SSH with EtM cipher suites (RFC 6668), and IPsec ESP (RFC 4303) with AES-GCM represent the current state. MtE and E&M are considered deprecated.
 
 ---
+
+## STREAM: Online Authenticated Encryption with Segmented Ciphertexts
+
+**Goal:** Authenticated encryption of arbitrarily long byte streams that must begin output before the complete message is known, while maintaining strong per-segment security guarantees. The STREAM construction by Hoang, Reyhanitabar, Rogaway, and Vizár (2015) formalizes how to compose a standard AEAD into a secure online/streaming scheme using ciphertext segmentation, header commitment, and last-block signaling.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **STREAM[AEAD]** | 2015 | Any AEAD | Generic online AE from any nonce-based AEAD; segments carry sequence numbers and a "last" flag [[1]](https://eprint.iacr.org/2015/189) |
+| **STREAM[AES-GCM]** | 2015 | AES-GCM | Concrete instantiation with sequential per-segment nonces; streaming TLS-like record protocol [[1]](https://eprint.iacr.org/2015/189) |
+| **OAE2 (Hoang et al.)** | 2015 | Block cipher | Security model for online AE; STREAM achieves OAE2 when base AEAD is nonce-based secure [[1]](https://eprint.iacr.org/2015/189) |
+
+**Construction:** A long message M is split into fixed-size segments M₁, M₂, …, Mₙ. Each segment Mᵢ is encrypted with the underlying AEAD using a derived nonce `N_i = (nonce_base || i)` and associated data that encodes the segment index and a boolean "last-segment" flag. The "last" flag on segment Mₙ prevents truncation attacks — an adversary cannot drop trailing segments and present a shorter ciphertext as valid. The per-segment nonces prevent cross-segment swapping or reordering attacks.
+
+**Security properties:**
+- **Online:** Decryption of segment i can begin as soon as segment i is received, without buffering the entire ciphertext.
+- **No truncation:** Dropping the final segment causes decryption to fail at the missing "last" marker.
+- **No reordering:** Per-segment nonces and indices prevent splicing or reordering of segments across distinct sessions.
+- **Compositional:** Inherits confidentiality and integrity of the underlying AEAD.
+
+**Practical relevance:** STREAM formalizes the record-layer design pattern used in TLS (where each TLS record is independently AEAD-encrypted with an incrementing sequence number). The formal treatment distinguishes STREAM from earlier ad-hoc segmented-encryption approaches and was influential in the design of the QUIC and MLS record layers.
+
+**State of the art:** The STREAM framework (2015) [[1]](https://eprint.iacr.org/2015/189) is the academic reference for online AEAD composition. Its pattern is deployed in TLS 1.3, QUIC (RFC 9001), and MLS (RFC 9420) record-layer constructions. See also [MRAE and Online Authenticated Encryption (OAE)](#mrae-and-online-authenticated-encryption-oae).
+
+---
+
+## Forkcipher (ForkAES, ForkSkinny)
+
+**Goal:** A tweakable block cipher that produces two independent output blocks from one input block and one key in approximately 1.5× the cost of a single encryption — enabling parallelism-friendly authenticated encryption and hash construction where two separate outputs (e.g., ciphertext block and authentication block) are needed per message block without doubling cipher calls.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ForkAES** | 2018 | AES-128 | First forkcipher; splits AES at round 4 → two 128-bit outputs from one 128-bit input [[1]](https://eprint.iacr.org/2018/1088) |
+| **ForkSkinny** | 2019 | SKINNY-128-256 | Lightweight forkcipher; tweakable; used in Forkskinny-based AEAD (NIST LWC candidate) [[1]](https://eprint.iacr.org/2019/427) |
+| **ForkFish** | 2019 | Twofish structure | Alternative forkcipher construction for software-oriented platforms [[1]](https://eprint.iacr.org/2019/427) |
+
+**Construction:** A forkcipher `FC_K(p, t) → (c₀, c₁)` applies a shared prefix of cipher rounds to the plaintext `p` (with tweak `t`), then forks into two independent suffixes producing outputs `c₀` and `c₁`. In ForkAES, the first 4 rounds of AES are shared; rounds 5–10 produce `c₀` and a parallel path produces `c₁`. The cost savings come from amortizing the shared prefix: two outputs for ~1.3–1.5× the cost of one AES encryption rather than 2×.
+
+**Use in AEAD:** Forkciphers enable single-pass AEAD constructions that simultaneously produce a ciphertext block and an authentication contribution without a separate MAC pass. The ForkSkinny-based AEAD family (Peyrin, Song, 2019) was submitted to the NIST Lightweight Cryptography competition and achieves competitive performance on hardware with strong side-channel resistance properties from the SKINNY structure.
+
+**Security model:** Forkciphers are analyzed as tweakable block ciphers with two outputs; the standard security notion requires that `c₀` and `c₁` are pseudorandom and independent given the key, with the tweak providing domain separation. Attacks on reduced-round ForkAES (differential/linear) have been published but do not threaten the full-round construction [[1]](https://eprint.iacr.org/2019/1099).
+
+**State of the art:** Forkciphers remain a research primitive; no forkcipher-based AEAD has been standardized as of 2026. ForkSkinny-based submissions were NIST LWC candidates but did not reach the finalist round. The forkcipher concept continues to influence lightweight AEAD design by showing that dedicated two-output primitives can outperform generic AEAD composition in hardware throughput.
+
+---
+
+## Deterministic AEAD with Any Nonce (DAEAD / ANYDAE)
+
+**Goal:** A deterministic authenticated encryption scheme that accepts a nonce of any length (including zero-length) and guarantees misuse-resistance: security degrades only to plaintext equality leakage when the same (key, nonce, associated-data, plaintext) tuple is reused, regardless of how the nonce is chosen. Removes the requirement for unique nonces entirely in exchange for deterministic (non-randomized) ciphertext.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ANYDAE (Peyrin-Seurin)** | 2016 | Tweakable block cipher | Nonce of any length including 0; deterministic; SIV-like security [[1]](https://eprint.iacr.org/2016/174) |
+| **AES-SIV (RFC 5297)** | 2006 | AES + CMAC | Fixed-length nonce (optional); foundational DAEAD; misuse-resistant [[1]](https://www.rfc-editor.org/rfc/rfc5297) |
+| **HS1-SIV / HS1-Hash** | 2015 | Poly1305 + ChaCha | Software-fast SIV variant; faster than AES-SIV on non-AES-NI platforms [[1]](https://competitions.cr.yp.to/caesar-submissions.html) |
+| **Deoxys-II** | 2019 | SKINNY-style TBC | CAESAR defense-in-depth winner; provides authenticated encryption with or without nonce [[1]](https://sites.google.com/view/deoxyscipher) |
+
+**Security model (ANYDAE):** Peyrin and Seurin formalize the notion of a Deterministic Authenticated Encryption scheme with Any nonce. The key insight is that nonce uniqueness is *not required*: the scheme's security is parameterized by the maximum number of messages encrypted with the same (key, nonce) pair. When this count is 1, full semantic security holds; for repeated (key, nonce, AD, plaintext) tuples, only ciphertext equality is leaked. This is strictly stronger than standard DAEAD, which requires a unique nonce input.
+
+**Comparison to SIV:** AES-SIV achieves the same leakage profile but assumes the nonce is provided (possibly empty); ANYDAE generalizes this to variable-length nonces and provides a unified theoretical treatment. Both are two-pass (offline) — the full message must be processed before any ciphertext output, precluding streaming use.
+
+**Applications:** Backup encryption (where nonce management is impractical), encrypted key-value stores, deterministic database encryption, and any context where the sender cannot guarantee nonce freshness but must limit ciphertext expansion.
+
+**State of the art:** AES-SIV (RFC 5297) is the deployed DAEAD standard. Deoxys-II (CAESAR defense-in-depth winner, 2019) [[1]](https://sites.google.com/view/deoxyscipher) provides a tweakable-block-cipher-based alternative with strong security margins. ANYDAE remains a theoretical framework; no ANYDAE-specific IETF standard exists as of 2026. See [MRAE and Online Authenticated Encryption (OAE)](#mrae-and-online-authenticated-encryption-oae).
+
+---
+
+## Encode-then-Encipher and Feistel-Based Wide-Block Ciphers (EME, XCB, HCH, TET)
+
+**Goal:** Encrypt a block of data (a disk sector, a database record, a network packet) of arbitrary length as a single unit — so that any change to even one bit of plaintext randomizes the entire ciphertext — using only a block cipher and no authentication tag, providing length-preserving, all-or-nothing encryption. Used where ciphertext expansion is structurally prohibited and authentication is handled at a higher layer.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **EME (Halevi-Rogaway)** | 2004 | AES + ECB | Tweakable wide-block cipher; 2n AES calls for an n-block input; EME* fixes a security flaw in EME [[1]](https://eprint.iacr.org/2004/125) |
+| **XCB (McGrew-Fluhrer)** | 2004 | AES + universal hash (GF(2¹²⁸)) | XEX-based construction; near-linear cost [[1]](https://eprint.iacr.org/2004/278) |
+| **HCH (Sarkar)** | 2007 | AES + Carter-Wegman hash | Hash-Counter-Hash; provably secure; software-fast [[1]](https://eprint.iacr.org/2007/013) |
+| **TET (Halevi)** | 2007 | AES + universal hash | Tweakable EME variant; hash-XEX-hash structure; efficient for variable-length sectors [[1]](https://eprint.iacr.org/2007/014) |
+| **HEH (Sarkar)** | 2009 | Universal hash + block cipher | Hash-Encrypt-Hash; simpler than TET; full security proof [[1]](https://eprint.iacr.org/2009/314) |
+
+**Encode-then-Encipher (Bellare-Rogaway, 2000):** The general paradigm for building length-preserving encryption: encode the plaintext (e.g., append a redundancy string), then encipher the encoded value with a wide-block cipher. The decryptor deciphers and checks the redundancy — if absent, decryption fails. This converts a (weaker) pseudorandom permutation into an authenticated encryption scheme without ciphertext expansion [[1]](https://eprint.iacr.org/2000/049).
+
+**Wide-block cipher vs. AEAD:** Wide-block ciphers are *not* authenticated encryption — they provide no authentication tag. They are pseudorandom permutations over a large domain (a sector, a record). Their security guarantee is that they behave like a random permutation on the entire input block, meaning single-bit plaintext changes affect the entire ciphertext. Combined with encode-then-encipher (redundancy checking), they can provide implicit authentication.
+
+**Relation to disk encryption:** XTS-AES (the NIST standard for disk encryption, see [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers)) is *not* a wide-block cipher — it processes each 16-byte AES block independently within a sector. EME/XCB/HCH/TET treat the entire sector as a single block, providing stronger diffusion across sector boundaries. The tradeoff is complexity and cost.
+
+**State of the art:** No wide-block cipher has been standardized by NIST or IETF; all remain research proposals. AES-HCTR2 (deployed in Android for file-based encryption) is the closest to a practical wide-block-inspired mode in production, though it is based on a hash-counter structure rather than a full Feistel or EME construction. See [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers).
+
+---
+
+## Robust KEM + DEM (REACT, OAEP+)
+
+**Goal:** Public-key encryption that is provably secure against adaptive chosen-ciphertext attacks (IND-CCA2) in the standard model or with tight reductions, beyond what naive KEM/DEM composition achieves. REACT and OAEP+ are transforms that convert IND-CPA public-key encryption into full IND-CCA2 encryption using minimal additional structure, with formal security proofs tighter than OAEP.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **OAEP+ (Shoup)** | 2001 | RSA + hash | Strengthened OAEP; tight IND-CCA2 proof from RSA in ROM; fixes OAEP gap [[1]](https://shoup.net/papers/oaep.pdf) |
+| **REACT (Okamoto-Pointcheval)** | 2001 | Any IND-CPA PKE + MAC | Generic transform; IND-CCA2 from IND-CPA with a one-time MAC; tight reduction in ROM [[1]](https://eprint.iacr.org/2000/013) |
+| **OAEP (Bellare-Rogaway)** | 1994 | RSA + hash | Original optimal asymmetric encryption padding; ROM proof with a gap later identified [[1]](https://link.springer.com/chapter/10.1007/3-540-68339-9_14) |
+| **SAEP+ (Boneh)** | 2001 | RSA + single hash | Simplified OAEP+; one hash call; tight IND-CCA2 from RSA in ROM [[1]](https://crypto.stanford.edu/~dabo/papers/saep.pdf) |
+| **Fujisaki-Okamoto (FO) transform** | 1999 | Any IND-CPA + hash | Generic ROM transform; canonical path to KEM IND-CCA2; used in PQ KEMs (Kyber, NTRU) [[1]](https://eprint.iacr.org/1999/033) |
+
+**Why "robust KEM+DEM":** The Shoup KEM/DEM paradigm (see [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem--dem-paradigm)) achieves IND-CCA2 if the KEM is IND-CCA2. REACT provides a clean path from any IND-CPA PKE to an IND-CCA2 hybrid encryption scheme using a message authentication code: the session key is authenticated along with the ciphertext so that any ciphertext modification fails MAC verification before decryption. The security reduction is tight — no quadratic loss — unlike OAEP's original proof.
+
+**OAEP vs. OAEP+:** Bellare and Rogaway's original OAEP proof had a gap identified by Shoup (2001): the reduction was not tight for partial-domain one-wayness of RSA. OAEP+ repairs this with an additional hash application, achieving a tight reduction from the RSA assumption. In practice, RSA-OAEP (PKCS#1 v2.1, RFC 8017) remains the deployed standard; OAEP+ is the theoretically preferred variant.
+
+**Fujisaki-Okamoto:** The FO transform is the canonical generic method and underpins all NIST PQC KEM standards (ML-KEM/Kyber, HQC, BIKE) — it converts a CPA-secure lattice KEM into a CCA2-secure one by hashing both the random coins and the message together and re-encrypting to verify. REACT and OAEP+ address the same problem for classical (RSA/ElGamal) PKE.
+
+**State of the art:** RSA-OAEP (RFC 8017) is the deployed standard for RSA-based hybrid encryption. ML-KEM (FIPS 203) applies a variant of the FO transform to Kyber. REACT remains a research reference for clean IND-CCA2 construction proofs. For new systems, HPKE (RFC 9180) provides a standardized, modular public-key encryption framework on top of modern KEMs. See [Hybrid Public Key Encryption (HPKE)](#hybrid-public-key-encryption-hpke).
+
+---
+
+## Leakage-Resilient AEAD (LRAE)
+
+**Goal:** Authenticated encryption that remains secure even when an adversary observes bounded amounts of physical side-channel information (power traces, EM emissions, timing) from the encryption and decryption operations — without requiring masking or hardware countermeasures at every step. Formalizes which algorithmic designs tolerate implementation leakage and which do not.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **LRAE (Fischlin-Günther)** | 2014 | PRF + leakage-resilient PRG | First formal LRAE construction with standard model security; separates key refresh from bulk encryption [[1]](https://eprint.iacr.org/2014/953) |
+| **Leveled LRAE (Dziembowski-Faust)** | 2012 | Leakage-resilient stream cipher | "Leveled" model: low-leakage key operations + high-leakage bulk data; formal bounds [[1]](https://eprint.iacr.org/2012/160) |
+| **Romulus-T** | 2021 | SKINNY-128 TBC | Practical leakage-resilient lightweight AEAD; NIST LWC finalist; leveled implementation model [[1]](https://romulusae.github.io/romulus/) |
+| **TEDT (Berti et al.)** | 2019 | Tweakable block cipher | Leakage-resilient AEAD with unbounded leakage on bulk encryption; bounded leakage only on tag generation [[1]](https://eprint.iacr.org/2019/137) |
+| **TEDT2** | 2022 | TBC | Improved TEDT; tighter bounds; NIST LWC influence [[1]](https://eprint.iacr.org/2022/272) |
+
+**Leakage model:** Standard AEAD security proofs assume a black-box adversary who sees only inputs and outputs. LRAE relaxes this: the adversary additionally receives `leak(state)` — a bounded-length function of the internal state during each operation. Two primary models are used:
+- **Bounded leakage:** total bits leaked across all operations is bounded by a parameter `λ`.
+- **Leveled leakage:** bulk operations (stream generation) may leak arbitrarily; only key derivation/tag operations require leakage resistance (achievable with a small hardware-protected module).
+
+**Fischlin-Günther LRAE construction:** The scheme separates long-term key storage from per-message key derivation. A leakage-resilient PRG refreshes the session key after each message. Encryption uses a standard symmetric cipher on the session key. The critical invariant is that the long-term key is involved in at most one operation per message, limiting leakage exposure. Security is proven under the assumption that the adversary obtains at most `λ` bits of leakage per cryptographic operation.
+
+**Relation to ISAP:** The ISAP AEAD (see [ISAP (NIST LWC Finalist, Side-Channel Resistant)](#isap-nist-lwc-finalist-side-channel-resistant)) achieves a similar separation in the lightweight hardware context using the rekeying construction. ISAP is the practical engineering realization of principles from the LRAE / leveled leakage literature.
+
+**State of the art:** LRAE is an active research area; no dedicated LRAE scheme has been standardized. TEDT/TEDT2 and Romulus-T are the most concrete recent constructions. For deployed leakage-resistant AEAD in constrained hardware, ISAP-A-128 remains the reference. In high-security environments (HSMs, smartcards), masking is still the primary countermeasure, but LRAE theory informs which algorithm structures are inherently more leakage-tolerant. See [Romulus AEAD (NIST LWC Finalist)](#romulus-aead-nist-lwc-finalist).
+
+---
+
+## GCM-SST (Galois/Counter Mode with Secure Short Tags)
+
+**Goal:** Authenticated encryption with short authentication tags (e.g., 32-bit or 64-bit) that achieves security guarantees equivalent to full-length GCM tags — unlike standard GCM where truncating the tag degrades forgery resistance proportionally. Designed for constrained-bandwidth protocols (sensor networks, industrial control, automotive CAN bus) where a 128-bit GCM tag is too expensive to transmit.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **GCM-SST** | 2022 | AES-GCM + extra mask block | Adds one AES call to generate a per-message mask applied to the truncated tag; IEEE P1619.1 input [[1]](https://eprint.iacr.org/2022/1441) |
+| **AES-GCM (truncated tag)** | 2007 | GCM | NIST SP 800-38D permits tags as short as 32 bits; forgery probability = 2^(−tag_len); **insecure for short tags** [[1]](https://csrc.nist.gov/publications/detail/sp/800/38/d/final) |
+| **SIV with short tag** | 2006 | AES-SIV | Truncation of a 256-bit SIV output gives a short-tag MRAE; misuse-resistant [[1]](https://www.rfc-editor.org/rfc/rfc5297) |
+
+**The short-tag problem in GCM:** In standard AES-GCM, the authentication tag is a polynomial hash (GHASH) over the ciphertext, evaluated at an AES-encrypted nonce point `H = AES_K(0^128)`. If the tag is truncated to `t` bits, the forgery probability per query is `2^(−t)` — a 32-bit tag gives a 1-in-4-billion forgery chance per message. For protocols that accept millions of messages per day, this is exploitable within hours. Moreover, because GHASH is a polynomial over GF(2¹²⁸), multiple queries can allow an attacker to recover `H` and forge tags at will.
+
+**GCM-SST construction:** GCM-SST (Peyrin, Sasaki, Wang, 2022) adds one extra AES block encryption to generate a per-message random-looking mask `T_mask = AES_K(nonce || counter)`, which is XOR'd into the final GHASH output before truncation. The mask binds the tag to the specific (key, nonce, message) triple, preventing GHASH key recovery from multiple tag observations and achieving short-tag security comparable to an ideal MAC with the same tag length.
+
+**Deployment context:** IEEE P1619.1 (the standard for authenticated encryption of storage media) includes GCM-SST as an option for block storage devices with bandwidth constraints. Industrial protocols (IEC 62351 for power systems, ISO 21434 for automotive) have considered short-tag AE for CAN bus and low-power sensor networks where 16-byte tags are a significant overhead on 8–64 byte payloads.
+
+**State of the art:** GCM-SST is specified in IEEE P1619.1 (draft, 2022–2024) [[1]](https://eprint.iacr.org/2022/1441). It is the recommended approach when short authentication tags are operationally required. For applications where full 128-bit tags are feasible, standard AES-GCM or AES-GCM-SIV remains preferable. NIST has not issued a separate standard for GCM-SST as of 2026.
+
+---
+
+## Robust Authenticated Encryption (RAE / Beyond INT-CTXT)
+
+**Goal:** Authenticated encryption that remains secure even when the adversary can observe whether decryption attempts succeed or fail — closing the gap between INT-CTXT (ciphertext unforgeability) and robustness (no information leakage from invalid ciphertexts). Robust AE prevents chosen-ciphertext attacks that exploit decryption error oracles, partial-decryption leakage, and tag-verification side channels beyond what standard INT-CTXT guarantees.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Robust AE (Abdalla-Bellare-Neven)** | 2010 | Generic AEAD + commitment | Formalization of robustness beyond INT-CTXT; committed AEAD achieves RAE [[1]](https://eprint.iacr.org/2010/295) |
+| **Key-Committing AEAD** | 2022 | HtE / AEAD-CMT-4 | Strongest notion: robust against multi-key and multi-ciphertext attacks; see [Key-Committing AEAD](#key-committing-aead) [[1]](https://eprint.iacr.org/2022/1260) |
+| **Nonce-Hiding AEAD** | 2019 | Any AEAD | Hides the nonce from the ciphertext; prevents nonce-based timing attacks; used in TLS 1.3 record nonce masking [[1]](https://eprint.iacr.org/2019/624) |
+| **sAEAD (Structured AEAD)** | 2021 | AEAD + structure | Robustness against adversaries who observe structure (tag length, timing) of invalid ciphertexts [[1]](https://eprint.iacr.org/2021/1441) |
+
+**What INT-CTXT does not cover:** Standard INT-CTXT security says the adversary cannot produce a *valid* ciphertext. But it does not prevent:
+- **Multi-key attacks:** A single ciphertext that decrypts validly under two different keys (invisible salamander; see [Key-Committing AEAD](#key-committing-aead)).
+- **Partial decryption leakage:** Systems that begin processing a plaintext before finishing tag verification (TLS 1.0 record layer).
+- **Tag-length oracles:** Adversaries who learn the valid tag length by timing decryption failures.
+- **Decryption error distinguishing:** Adversaries who observe different error codes for "bad tag" vs. "bad ciphertext structure".
+
+**Robust AE definition (Abdalla et al.):** A RAE scheme is one where even an adversary who can submit arbitrary ciphertexts to a decryption oracle and observe the *output* (including failed decryption output) cannot distinguish the scheme from an ideal cipher. This strictly implies INT-CTXT and is equivalent to requiring that invalid ciphertexts produce *identical* decryption failure behavior — no oracle information is available.
+
+**Practical impact:** Most real-world decryption APIs violate robustness by returning different error codes or partial output for different failure modes. Robust AE is achieved in practice by: (1) using constant-time tag verification, (2) using key-committing AEAD to prevent multi-key attacks, (3) never releasing partial plaintext before full tag verification, and (4) masking TLS 1.3 record layer sequence numbers (nonce-hiding).
+
+**State of the art:** Robust AE is a design principle rather than a single standardized scheme. Key-committing AEAD (AEAD-CMT-4, 2022) addresses the multi-key dimension. TLS 1.3 (RFC 8446) addresses partial decryption leakage by mandating that no plaintext is released until the tag is verified. The nonce-masking in TLS 1.3 record layer addresses nonce-hiding. See [Key-Committing AEAD](#key-committing-aead) and [MRAE and Online Authenticated Encryption (OAE)](#mrae-and-online-authenticated-encryption-oae).
+
+---

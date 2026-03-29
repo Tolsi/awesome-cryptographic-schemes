@@ -779,3 +779,148 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 **State of the art:** Ristretto255 is the recommended prime-order group for new Curve25519-based protocols — adopted in IETF drafts, Tor's onion service v3 cryptography, and Signal research. The `curve25519-dalek` crate (audited, constant-time) is the reference implementation for Pedersen commitments and Bulletproofs in the Rust ecosystem. Grin (MimbleWimble) and several academic prototypes use the dalek Bulletproofs crate directly for confidential transaction range proofs. See also [Commitment Schemes](#commitment-schemes), [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment), and [Range Proofs](#range-proofs).
 
 ---
+
+## FRI-Based Polynomial Commitments
+
+**Goal:** Transparent, post-quantum polynomial commitment from Reed-Solomon proximity testing. FRI (Fast Reed-Solomon IOP of Proximity) is the commitment engine inside STARKs: a prover encodes a polynomial as a Reed-Solomon codeword, then proves it is close to a low-degree polynomial via a logarithmic folding protocol — with no trusted setup, only collision-resistant hash functions.
+
+| Variant | Year | Note |
+|---------|------|------|
+| **FRI (Ben-Sasson, Bentov, Horesh, Riabzev)** | 2018 | Original FRI protocol; O(log N) prover/verifier; basis of STARKs; ICALP 2018 [[1]](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ICALP.2018.14) |
+| **STARK polynomial commitment** | 2018 | Applies FRI as PCS inside a transparent SNARK; eprint 2018/046 [[1]](https://eprint.iacr.org/2018/046) |
+| **DEEP-FRI** | 2020 | Improves soundness via domain extension and purification; used in production STARK provers [[1]](https://eprint.iacr.org/2019/336) |
+| **Proximity Gaps (Ben-Sasson et al.)** | 2020 | Tight soundness analysis for FRI via proximity gaps for RS codes [[1]](https://eccc.weizmann.ac.il/report/2020/083/) |
+| **Plonky2 / FRI over Goldilocks** | 2022 | FRI over 64-bit Goldilocks field for fast recursive proofs; Polygon Zero [[1]](https://github.com/0xPolygonZero/plonky2) |
+
+**State of the art:** FRI underlies all STARK-based proof systems (StarkWare, Polygon zkEVM, RISC Zero, Plonky2). Transparent (no trusted setup) and post-quantum (hash-only). Proof size is O(log² d) — larger than KZG's O(1) but with no toxic waste. DEEP-FRI is the standard in production. See [KZG Polynomial Commitments](#kzg-polynomial-commitments) and [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment).
+
+---
+
+## Verkle Trees
+
+**Goal:** Stateless-client-friendly authenticated data structure replacing Merkle trees with vector commitments (IPA/Pedersen), enabling a wide 256-ary branching factor with constant-size proofs per level — reducing Ethereum state witnesses from ~1 KB to ~150 bytes.
+
+| Variant | Year | Note |
+|---------|------|------|
+| **Verkle Trees (Kuszmaul)** | 2018 | First proposal using polynomial commitments as tree nodes; MIT PRIMES 2018 [[1]](https://math.mit.edu/research/highschool/primes/materials/2018/Kuszmaul.pdf) |
+| **Ethereum Verkle Tree** | 2021 | Vitalik Buterin design; IPA over Bandersnatch curve; 256-ary branching; "The Verge" roadmap [[1]](https://vitalik.eth.limo/general/2021/06/18/verkle.html) |
+| **Ethereum Verkle trie structure** | 2021 | EF Blog formalisation of the trie structure [[1]](https://blog.ethereum.org/2021/12/02/verkle-tree-structure) |
+
+**State of the art:** Verkle trees are the centrepiece of Ethereum's "The Verge" upgrade. Production design uses IPA over Bandersnatch curve (transparent, no trusted setup). Cross-path proof aggregation yields a single compact proof for an entire block's state witness. Related to [Vector Commitments](#vector-commitments), [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment), and [Accumulators](#accumulators).
+
+---
+
+## Perfectly Binding vs Perfectly Hiding Commitments
+
+**Goal:** Characterise the fundamental security trade-off in commitment schemes. No scheme can be simultaneously perfectly binding and perfectly hiding — a computationally unbounded adversary can always break one property — which drives the design of every practical commitment scheme.
+
+| Scheme | Year | Type | Basis | Note |
+|--------|------|------|-------|------|
+| **Hash Commitment** | — | Perfectly binding (ROM), comp. hiding | Hash / OWF | C = H(m ‖ r); simple; perfectly binding in ROM [[1]](https://csrc.nist.gov/publications/detail/fips/180/4/final) |
+| **Pedersen Commitment** | 1991 | Comp. binding, perfectly hiding | DLP | Perfectly hiding; equivocable; additively homomorphic [[1]](https://link.springer.com/chapter/10.1007/3-540-46766-1_9) |
+| **Naor Bit Commitment** | 1991 | Perfectly binding, comp. hiding | PRG (OWF) | Bit commitment from any one-way function [[1]](https://link.springer.com/article/10.1007/BF00196774) |
+| **Dual-mode commitments** | 2008 | Both modes under one key | DDH / LWE | Key can be set to either mode; enables simulation proofs [[1]](https://eprint.iacr.org/2008/028) |
+
+**State of the art:** Perfectly hiding commitments (Pedersen) are standard in ZK protocols where the simulator must equivocate. Perfectly binding (hash-based) are used when receiver-side integrity is paramount. Dual-mode commitments (Peikert-Waters 2008) allow the same scheme to realise either mode under a CRS. See [Commitment Schemes](#commitment-schemes).
+
+---
+
+## UC-Secure Commitments
+
+**Goal:** Composition-safe commitment behaving as an ideal "sealed envelope" even when running concurrently with arbitrary protocols. UC security implies non-malleability, selective-decommitment security, and resilience to concurrent composition — far stronger than standalone security. Impossible in the plain model; requires a CRS.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Canetti-Fischlin UC Commitment** | 2001 | DDH + CRS | First UC commitment; non-interactive; CRYPTO 2001 [[1]](https://eprint.iacr.org/2001/055) |
+| **Camenisch-Shoup UC Commitment** | 2002 | Strong RSA / Paillier | Efficient UC commitment supporting ZK proofs of opening [[1]](https://eprint.iacr.org/2002/161) |
+| **Lindell UC Commitment** | 2011 | DDH | Efficient UC commitment with compact CRS [[1]](https://eprint.iacr.org/2011/228) |
+| **UC Commitment from LWE** | 2020 | LWE + CRS | Post-quantum UC commitment [[1]](https://eprint.iacr.org/2020/1398) |
+
+**State of the art:** UC commitment is the gold standard for multi-session concurrent protocols — MPC, anonymous credentials, e-cash. Two-party UC commitments are impossible in the plain model (Canetti-Fischlin impossibility); a CRS is required. LWE-based variant (2020) provides post-quantum UC security. See [Non-Malleable Encryption / Commitments](#non-malleable-encryption--commitments).
+
+---
+
+## Concurrent Non-Malleable Commitments
+
+**Goal:** Non-malleability under concurrent execution — an adversary cannot produce a commitment to a related value even while participating in polynomially many simultaneous commitment sessions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Pass-Rosen CNM** | 2005 | OWF | First formal CNM commitment; O(log n) rounds [[1]](https://www.cs.cornell.edu/~rafael/papers/concnmc-journal.pdf) |
+| **Lin-Pass-Venkitasubramaniam CNM** | 2008 | OWF (black-box) | CNM from any OWF via black-box techniques; TCC 2008 [[1]](https://eprint.iacr.org/2008/235) |
+| **Constant-Round CNM (Goyal)** | 2011 | OWF | Constant-round CNM; STOC 2011 [[1]](https://web.cs.ucla.edu/~rafail/PUBLIC/124.pdf) |
+| **Non-Interactive CNM** | 2017 | Non-standard assumptions | Non-interactive CNM in the CRS model [[1]](https://eprint.iacr.org/2017/273) |
+
+**State of the art:** Concurrent NM commitments are needed in any multi-session protocol (MPC, ZK). OWFs suffice with O(log n) rounds using black-box techniques (lower bound: Ω(log n) in the black-box setting). Practical systems often use UC commitments in the CRS model. Related to [Non-Malleable Encryption / Commitments](#non-malleable-encryption--commitments) and [UC-Secure Commitments](#uc-secure-commitments).
+
+---
+
+## Fischlin Transform
+
+**Goal:** Online-extractable non-interactive zero-knowledge proofs with a straight-line (non-rewinding) extractor — an alternative to the Fiat-Shamir transform enabling UC-secure NIZKs and concurrent composition without rewinding.
+
+| Scheme | Year | Note |
+|--------|------|------|
+| **Fischlin Transform** | 2005 | Original construction; straight-line extractor; larger proofs than Fiat-Shamir (multiple hash evaluations); CRYPTO 2005 [[1]](https://crypto.ethz.ch/publications/files/Fischl05b.pdf) |
+| **Efficient Fischlin for UC-ZK** | 2024 | Optimised implementation for UC-secure ZK from sigma protocols; eprint 2024/526 [[1]](https://eprint.iacr.org/2024/526) |
+
+**State of the art:** The Fischlin transform is the standard technique for UC-secure NIZKs from sigma protocols when straight-line extraction is required. Less efficient than Fiat-Shamir (larger proofs) but provides online extractability — critical for concurrent protocols and quantum-secure proofs. Related to [Sigma Protocols](categories/04-zero-knowledge-proof-systems.md#sigma-protocols) and [UC-Secure Commitments](#uc-secure-commitments).
+
+---
+
+## Witness-Extended Emulation
+
+**Goal:** Strong knowledge soundness requiring an emulator to produce both an accepting transcript and a valid witness simultaneously — without rewinding. Strictly stronger than special soundness and cleaner to compose, this is the preferred knowledge-soundness definition for Bulletproofs, IPA-based SNARKs, and modern interactive argument systems.
+
+| Reference | Year | Note |
+|-----------|------|------|
+| **Lindell — Parallel Composition of Sigma Protocols** | 2003 | Introduces WEE as a cleaner extraction notion for sigma protocols; proves DLOG sigma has WEE [[1]](https://link.springer.com/chapter/10.1007/978-3-540-45146-4_32) |
+| **Bootle et al. IPA** | 2016 | Uses WEE argument for knowledge soundness of inner-product arguments; EUROCRYPT 2016 [[1]](https://eprint.iacr.org/2016/263) |
+| **Bulletproofs** | 2018 | Extends WEE to range proofs and R1CS; USENIX S&P 2018 [[1]](https://eprint.iacr.org/2017/1066) |
+
+**State of the art:** Witness-extended emulation is the preferred knowledge-soundness definition in modern ZK literature — used in security proofs for Bulletproofs and IPA-based SNARKs. Cleaner than special soundness for composed protocols. Related to [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment) and [Extractable Commitments](#extractable-commitments).
+
+---
+
+## Extractable Commitments
+
+**Goal:** Knowledge-binding commitment from which an efficient extractor can recover the committed plaintext from any successful committer — upgrading binding from "hard to equivocate" to "must know the opening." Essential for UC-secure commitments, simulation-extractable SNARKs, and commit-and-prove systems.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Equivocable and Extractable Commitments** | 2002 | OWF | First formal definition; simultaneously equivocable and extractable under different keys [[1]](https://dl.acm.org/doi/abs/10.5555/1766811.1766820) |
+| **Simulation-Extractable SNARKs (Groth-Maller)** | 2017 | Pairings | SNARK proofs are extractable commitments to the witness; CRYPTO 2017 [[1]](https://eprint.iacr.org/2017/540) |
+| **LegoSNARK CP framework** | 2019 | Extractable commitments | Extractability is "link soundness" enabling commit-and-prove composition; CCS 2019 [[1]](https://eprint.iacr.org/2019/142) |
+
+**State of the art:** Extractable commitments underpin UC-secure MPC, simulation-extractable SNARKs, and commit-and-prove systems (LegoSNARK). In the SNARK context, simulation extractability makes a proof a binding commitment to the witness — critical for non-malleability of proof systems. See [UC-Secure Commitments](#uc-secure-commitments) and [Fischlin Transform](#fischlin-transform).
+
+---
+
+## Cross-Commitment Equality Proofs
+
+**Goal:** Prove that two commitments under different keys or in different groups commit to the same secret value — without revealing it. Necessary for cross-system interoperability (e.g., proving the same amount appears in a Pedersen commitment over BN254 and an ElGamal ciphertext over secp256k1).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DLEQ (Chaum-Pedersen)** | 1992 | DLP | Prove discrete log equality in the same group; O(1) proof; deployed in ECVRF, verifiable ElGamal [[1]](https://link.springer.com/chapter/10.1007/3-540-48071-4_7) |
+| **Cross-Group DL Equality (Chase et al.)** | 2022 | Sigma + aborts | First practical sigma protocol for proving equal committed values across different groups; eprint 2022/1593 [[1]](https://eprint.iacr.org/2022/1593) |
+| **AND-composition of sigma protocols** | 1994 | Sigma | Prove equality of openings in same group via AND-composition; Cramer-Damgård-Schoenmakers [[1]](https://link.springer.com/chapter/10.1007/3-540-48658-5_19) |
+
+**State of the art:** Within the same group, DLEQ (Chaum-Pedersen 1992) is a textbook tool deployed in VRFs and Privacy Pass. Across different groups, Chase et al. (2022) provide the first practical cross-group sigma protocol via Lyubashevsky's "Fiat-Shamir with aborts." Related to [Verifiable Random Functions (VRF)](#verifiable-random-functions-vrf) and [Sigma Protocols](categories/04-zero-knowledge-proof-systems.md#sigma-protocols).
+
+---
+
+## Algebraic Vector Commitments
+
+**Goal:** Compact, algebraically structured vector commitments with constant-size subvector openings that support incremental aggregation and efficient updates — enabling verifiable decentralised storage and stateless blockchain validation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Catalano-Fiore VC** | 2013 | RSA / CDH | First formal construction with constant-size openings; position-binding and hiding [[1]](https://eprint.iacr.org/2011/495) |
+| **Lai-Malavolta VC** | 2019 | Groups of unknown order | Subvector openings; aggregatable multi-position proofs; batch updates [[1]](https://eprint.iacr.org/2018/1188) |
+| **Incrementally Aggregatable VC (Campanelli et al.)** | 2020 | Pairings + RSA | Verifiable decentralised storage (VDS); unbounded proof merging; ASIACRYPT 2020 [[1]](https://eprint.iacr.org/2020/149) |
+| **Impossibility in pairing-free groups** | 2022 | Meta-reduction | Algebraic VC with constant-size proofs impossible without pairings; TCC 2022 [[1]](https://eprint.iacr.org/2022/696) |
+
+**State of the art:** Algebraic VCs (Campanelli et al. 2020) are the foundation of verifiable decentralised storage — any subvector of chunks can be verified against one commitment, with proofs merged across nodes. The 2022 impossibility result confirms pairings are necessary for constant-size algebraic VCs. Related to [Vector Commitments](#vector-commitments), [Functional Commitments](#functional-commitments), and [Verkle Trees](#verkle-trees).
+
+---

@@ -887,3 +887,168 @@ G(a, b, c, d, x, y):
 **State of the art:** RFC 7693 (2015) standardizes BLAKE2b and BLAKE2s. BLAKE3 (2020) further improves with a tree structure enabling near-linear parallel scaling, but BLAKE2b/2s remain widely deployed and are the correct choice when RFC compliance is required or BLAKE3 is unavailable. See [Hash Functions](#hash-functions).
 
 ---
+
+## ElGamal Encryption over Groups
+
+**Goal:** Public-key encryption based on the hardness of the discrete logarithm problem. A sender uses the recipient's public key (a group element) together with a fresh random scalar to produce a ciphertext pair; decryption uses the private exponent to undo the Diffie-Hellman blinding. Semantically secure under DDH in the random-oracle model; naturally extends to elliptic curves (EC-ElGamal) and pairing groups.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **ElGamal (original)** | 1985 | DLP in Z*p | Probabilistic PKE; ciphertext (g^r, m·y^r); IND-CPA under DDH [[1]](https://link.springer.com/chapter/10.1007/3-540-39568-7_2) |
+| **EC-ElGamal** | ~1987 | ECDLP | Same construction over an elliptic curve group; shorter keys (256-bit ≈ 3072-bit RSA) [[1]](https://link.springer.com/chapter/10.1007/3-540-39568-7_2) |
+| **ElGamal with Schnorr proof** | 1990 | DDH + Σ-protocol | Add a zero-knowledge proof of well-formedness; used in e-voting [[1]](https://eprint.iacr.org/2005/385) |
+| **Twisted ElGamal** | 2019 | EC-ElGamal variant | Swap plaintext and blinding factor placement; enables efficient ZK range proofs for confidential transactions [[1]](https://eprint.iacr.org/2019/319) |
+
+**Homomorphic property:** EC-ElGamal is additively homomorphic over the message exponent: Enc(m₁) + Enc(m₂) = Enc(m₁ + m₂) (pointwise group operation on ciphertext pairs). This enables tallying encrypted votes without decryption — a core primitive in e-voting and secure aggregation. Decryption requires solving a discrete log on the result, limiting plaintext space to small integers.
+
+**State of the art:** EC-ElGamal over Ristretto255 or BN254 is the canonical additively homomorphic primitive in ZK and e-voting systems (see [Paillier Cryptosystem](#paillier-cryptosystem-additive-homomorphic-encryption) for integer-based additive HE). Twisted ElGamal is used in Bulletproofs-based confidential transactions (see [Confidential Transactions](categories/13-blockchain-distributed-ledger.md)).
+
+---
+
+## Paillier Cryptosystem (Additive Homomorphic Encryption)
+
+**Goal:** Public-key encryption with native integer addition homomorphism. Paillier encryption allows anyone to compute Enc(m₁ + m₂) = Enc(m₁) · Enc(m₂) mod n² — addition of plaintexts corresponds to multiplication of ciphertexts — without knowing the plaintexts. A scalar multiple Enc(k·m) is also computable from Enc(m) via exponentiation. Foundation of privacy-preserving statistics, secure aggregation, and threshold decryption.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **Paillier (original)** | 1999 | Decisional Composite Residuosity (DCR) | Enc(m, r) = g^m · r^n mod n²; 1024–3072-bit modulus [[1]](https://link.springer.com/chapter/10.1007/3-540-48910-X_16) |
+| **Damgård-Jurik generalization** | 2001 | DCR | Extends Paillier to Z_{n^(s+1)}; larger plaintext space; simpler key generation [[1]](https://link.springer.com/chapter/10.1007/3-540-44987-6_9) |
+| **Threshold Paillier** | 2001 | DCR + Shamir sharing | Distributed decryption: t-of-n parties required; no single point of key exposure [[1]](https://eprint.iacr.org/2001/010) |
+| **Paillier with ZK proofs** | 2003 | DCR + Σ-protocols | Efficient proofs of plaintext range, equality, and well-formedness; essential in practice [[1]](https://eprint.iacr.org/2002/161) |
+
+**Homomorphic operations:**
+- Addition: `Enc(m₁) · Enc(m₂) mod n² = Enc(m₁ + m₂ mod n)`
+- Scalar multiply: `Enc(m)^k mod n² = Enc(k·m mod n)`
+- Subtraction: multiply by `Enc(-m₂) = Enc(n − m₂)`
+
+**Used in:** Private set intersection cardinality, federated learning secure aggregation (Google's secure aggregation protocol), e-voting tallying (Helios, Belenios), CKKS bootstrapping comparisons, MPC protocols (e.g., SPDZ uses Paillier for offline preprocessing).
+
+**State of the art:** Paillier with 2048-bit modulus (112-bit security) is the standard deployment. Threshold Paillier (Damgård-Jurik-Nielsen 2010) is used in production threshold ECDSA (e.g., GG20, CGGMP21). For post-quantum additive HE, see [Homomorphic Encryption](categories/07-homomorphic-functional-encryption.md) (BFV/BGV/CKKS).
+
+---
+
+## Lai-Massey Structure and IDEA Cipher
+
+**Goal:** Alternative block cipher structure providing full diffusion with provable algebraic properties. The Lai-Massey scheme (1990) uses a mix of operations from incompatible algebraic groups — XOR (addition in Z₂ⁿ), addition mod 2^16, and multiplication mod 2^16+1 — to achieve complete diffusion with no component being a linear operation over any other's field. IDEA (International Data Encryption Algorithm) instantiates this structure and was the dominant cipher in PGP 2.x and OpenPGP legacy implementations.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **IDEA (International Data Encryption Algorithm)** | 1991 | Lai-Massey, mixed-algebraic | 64-bit block, 128-bit key, 8.5 rounds; PGP 2.x default; ISO/IEC 18033-3 [[1]](https://link.springer.com/chapter/10.1007/3-540-54508-8_24) |
+| **IDEA NXT (FOX)** | 2004 | Lai-Massey + SPN | 64 or 128-bit block; improved design by Junod-Vaudenay [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30564-4_8) |
+| **SAFER / SAFER+** | 1993 | Lai-Massey variant | Used in Bluetooth (E0 cipher stack); byte-level operations [[1]](https://link.springer.com/chapter/10.1007/3-540-58108-1_26) |
+
+**Lai-Massey structure:** Unlike Feistel (which splits the block into halves and XORs) or SPN (which applies a global nonlinear layer), Lai-Massey applies a half-round function H and XOR-then-adds between left and right halves: `L' = L ⊕ H(L ⊕ R)`, `R' = R ⊕ H(L ⊕ R)`. The three incompatible operations (⊕, +, ×) prevent simple algebraic attacks that work against uniform-field structures. The multiplication mod (2^16 + 1) in IDEA has been particularly resistant to differential and linear attacks.
+
+**Security status:** IDEA (64-bit block) is legacy — 64-bit block ciphers are vulnerable to birthday-bound attacks at ~32 GB data (SWEET32, 2016). No practical key-recovery attack on full 8.5-round IDEA is known, but block size limits modern use.
+
+**State of the art:** IDEA is standardized in ISO/IEC 18033-3 and supported in OpenPGP (RFC 4880) as a legacy cipher; prohibited in TLS since RFC 7525. New designs should use AES or ChaCha20. The Lai-Massey construction remains theoretically significant and appears in IDEA NXT/FOX. See [Feistel Networks](#feistel-networks-luby-rackoff-construction) for the analogous Feistel theory.
+
+---
+
+## Multi-Prime RSA and RSA-CRT
+
+**Goal:** Speed up RSA private-key operations (decryption and signing) using the Chinese Remainder Theorem, and extend RSA to more than two prime factors to reduce key generation time and private-key computation cost. RSA-CRT reduces the cost of decryption by a factor of ~4; multi-prime RSA (MPRIME) reduces it further for larger key sizes.
+
+| Technique | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **RSA-CRT (2-prime)** | 1982 | CRT over Z_p × Z_q | Compute d_p = d mod (p−1), d_q = d mod (q−1), then combine via CRT; ~4× speedup [[1]](https://link.springer.com/chapter/10.1007/978-1-4615-3386-3_17) |
+| **Multi-prime RSA (MPRIME)** | 1998 | CRT over k primes | n = p₁·p₂·…·p_k; k-prime CRT gives k²/4 speedup; PKCS#1 v2.2 supports up to 10 primes [[1]](https://www.rfc-editor.org/rfc/rfc8017) |
+| **Bellcore fault attack on RSA-CRT** | 1996 | Differential fault analysis | A single computation fault during CRT signing leaks the prime factorization; mitigated by verification [[1]](https://eprint.iacr.org/1996/004) |
+| **RSA-CRT with blinding** | 1999 | Randomized CRT | Multiply by random r before CRT, divide after; defeats timing and simple power analysis [[1]](https://eprint.iacr.org/2003/020) |
+
+**CRT speedup mechanics:** For 2048-bit RSA, instead of one 2048-bit modular exponentiation, perform two 1024-bit exponentiations (mod p and mod q separately) and combine. Exponentiation cost scales as O(k³) in key size, so two 1024-bit ops cost ≈ 2 × (1024/2048)³ = 1/4 the full-size cost. Multi-prime with k primes achieves O(k²/4) relative speedup.
+
+**Security note:** Multi-prime RSA with 3+ factors requires larger total modulus for equivalent security — NIST SP 800-131A recommends at least 2048-bit n regardless of prime count. The Bellcore attack (Boneh-DeMillo-Lipton 1996) is a seminal result: a single bit flip during CRT computation enables full private key recovery via GCD with the valid signature. All implementations must verify signatures before returning them.
+
+**State of the art:** RSA-CRT is universally implemented in OpenSSL, NSS, and hardware security modules. PKCS#1 v2.2 (RFC 8017) specifies the multi-prime variant. For new deployments, ECDSA/Ed25519 or ML-DSA offer better performance with smaller keys. See [Asymmetric Encryption](#asymmetric-public-key-encryption) and [Trapdoor Functions](#trapdoor-functions--trapdoor-permutations).
+
+---
+
+## Extendable Output Functions (XOF)
+
+**Goal:** Variable-length pseudorandom output from a hash-like primitive. An XOF absorbs input of any length and then squeezes out an arbitrary number of output bytes, behaving like a keyed (or unkeyed) stream cipher seeded by the input. XOFs replace the need for separate PRG, KDF, and challenge-generation primitives in ZK proof systems, key derivation, and stream encryption.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **SHAKE128** | 2015 | Keccak sponge, 128-bit security | FIPS 202; capacity 256 bits; squeeze unlimited bytes; used in ML-KEM, NTRU [[1]](https://csrc.nist.gov/pubs/fips/202/final) |
+| **SHAKE256** | 2015 | Keccak sponge, 256-bit security | FIPS 202; capacity 512 bits; squeeze unlimited bytes; used in ML-DSA, SLH-DSA [[1]](https://csrc.nist.gov/pubs/fips/202/final) |
+| **TurboSHAKE128 / TurboSHAKE256** | 2023 | Keccak-p[1600, 12] | Reduced-round (12 vs 24) Keccak; ~2× faster; IETF draft [[1]](https://eprint.iacr.org/2023/342) |
+| **KangarooTwelve (K12)** | 2016 | TurboSHAKE128 + tree | Parallel tree over 8 KB chunks; ~4× faster than SHA-3; IETF RFC 9560 [[1]](https://www.rfc-editor.org/rfc/rfc9560) |
+| **BLAKE2X** | 2016 | BLAKE2b/s + XOF mode | Variable output from BLAKE2; parameter block encodes desired output length [[1]](https://www.blake2.net/blake2x.pdf) |
+| **BLAKE3 (unlimited output)** | 2020 | Merkle tree + XOF | Counter-based tree extension; squeeze any length after initial 32-byte output [[1]](https://github.com/BLAKE3-team/BLAKE3-specs/blob/master/blake3.pdf) |
+
+**Squeeze mechanics (SHAKE):** After absorbing all input, the sponge is in a "squeezing" phase. Each invocation of Keccak-f extracts `rate` bits from the state and continues. The caller can request any number of output bytes — there is no inherent length limit. Output bytes beyond the capacity are as hard to distinguish from random as a fixed-length hash.
+
+**Distinguishing XOF from fixed-length hash:** A 256-bit SHA-3 output is a truncated SHAKE256 output. Using SHAKE256 directly avoids the truncation, enables domain separation via `cSHAKE256`, and allows the output length to be a protocol parameter rather than a constant.
+
+**Used in:** ML-KEM (SHAKE128/256 for key generation and encapsulation), ML-DSA (SHAKE256 throughout), Kyber/Dilithium (SHAKE), ZK proof transcript generation (Fiat-Shamir via SHAKE), KDF in HPKE (LabeledExpand via SHAKE), libsodium `crypto_stream_xchacha20` analog via BLAKE3.
+
+**State of the art:** SHAKE128/256 (FIPS 202) are the standardized XOFs; KangarooTwelve (RFC 9560) is the performance champion. BLAKE3's unlimited output is the fastest XOF on modern CPUs with SIMD. All NIST PQC standards (ML-KEM, ML-DSA, SLH-DSA) rely on SHAKE as their core XOF. See [Sponge Construction / Duplex](#sponge-construction--duplex) and [Hash Functions](#hash-functions).
+
+---
+
+## Montgomery Arithmetic and Barrett Reduction
+
+**Goal:** Efficient modular multiplication without expensive division. Division is the bottleneck in modular exponentiation (RSA, DH, ECC scalar multiplication). Montgomery form and Barrett reduction each replace division by the modulus with cheaper multiplications and shifts, enabling practical public-key cryptography on general-purpose hardware and microcontrollers.
+
+| Technique | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Montgomery multiplication** | 1985 | Residue representation | Convert operands to Montgomery form; replace mod-n division with a shift; O(n²) multiplications [[1]](https://dl.acm.org/doi/10.1090/S0025-5718-1985-0777282-X) |
+| **Montgomery ladder** | 1987 | Uniform-time scalar mult | Double-and-add with uniform access pattern; constant-time ECC; used in X25519 [[1]](https://cr.yp.to/ecdh/curve25519-20060209.pdf) |
+| **Barrett reduction** | 1986 | Pre-computed reciprocal | Approximate modular reduction using integer multiply instead of division; faster setup, no form conversion [[1]](https://link.springer.com/chapter/10.1007/3-540-47721-7_14) |
+| **Karatsuba multiplication** | 1962 | Divide-and-conquer | O(n^1.585) multi-precision multiplication; used inside Montgomery for large integers [[1]](https://www.sciencedirect.com/science/article/pii/S0012365X10004656) |
+| **CIOS / FIOS (Montgomery variants)** | 1996 | Coarsely/Finely Integrated | Interleave multiplication and reduction; reduce memory bandwidth; used in hardware RSA/ECC accelerators [[1]](https://ieeexplore.ieee.org/document/502403) |
+
+**Montgomery form:** Given modulus n, convert integer a → ã = a·R mod n where R = 2^k for some k ≥ log₂n. Multiplication ã·b̃ = (a·b)·R mod n stays in Montgomery form. "Montgomery reduction" computes ã·b̃·R⁻¹ mod n using only a shift (by k bits) and a multiply by a pre-computed constant n' = −n⁻¹ mod R — no division. Exiting Montgomery form (final reduction) is one extra step.
+
+**Why constant-time matters:** Naive modular reduction (remainder after division) leaks the modulus through data-dependent branching. Montgomery reduction with constant-time conditional subtraction avoids this. The Montgomery ladder for ECC performs the same sequence of operations regardless of the scalar bit, preventing simple power analysis (SPA) and timing attacks.
+
+**State of the art:** Montgomery multiplication is the universal implementation technique for RSA, DH, and classical ECC. Barrett reduction is preferred for software polynomial arithmetic (NTT in ML-KEM/ML-DSA uses Barrett). The Montgomery ladder is mandatory for X25519/X448 (RFC 7748). See [Constant-Time Implementations](#constant-time-implementations-and-timing-attack-mitigations) for the security context.
+
+---
+
+## Constant-Time Implementations and Timing Attack Mitigations
+
+**Goal:** Prevent secret information from leaking through execution time, cache access patterns, or power consumption. Even a mathematically secure scheme is broken in practice if the implementation branches on secret values or accesses memory in secret-dependent patterns. Timing attacks (Kocher 1996) and cache-timing attacks (Bernstein 2005) have broken RSA, AES, ECDSA, and AES-GCM in deployed software.
+
+| Technique | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Kocher timing attack** | 1996 | Timing side-channel | RSA decryption time reveals private exponent bits via branch prediction and multiplication latency [[1]](https://link.springer.com/chapter/10.1007/3-540-68697-5_9) |
+| **Cache-timing attack (Bernstein AES)** | 2005 | Cache side-channel | AES table-lookup timing reveals key; `AES_encrypt` in OpenSSL was vulnerable [[1]](https://cr.yp.to/antiforgery/cachetiming-20050414.pdf) |
+| **Constant-time comparison** | — | cmov / branchless | Use bitwise operations to compare without data-dependent branches; `crypto_verify_32` pattern [[1]](https://bearssl.org/constanttime.html) |
+| **Bitsliced AES** | 2009 | Boolean circuit | Represent AES S-box as bitwise ops; no table lookups; constant time on all CPUs; Käsper-Schwabe [[1]](https://eprint.iacr.org/2009/129) |
+| **AES-NI hardware acceleration** | 2010 | Hardware instruction | Intel/AMD AESENC/AESD/AESKEYGENASSIST; single-cycle S-box; inherently constant-time; CLMULQDQ for GHASH [[1]](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-advanced-encryption-standard-instructions-aes-ni.html) |
+| **Leakage-resilient crypto (CHES)** | 2008 | Masking / shuffling | Mask intermediate values with random shares; provably limits leakage per operation [[1]](https://eprint.iacr.org/2008/482) |
+| **CTGRIND / ct-verif** | 2010s | Static analysis | Tools (ct-verif, dudect, ctgrind) check constant-time properties at binary or IR level [[1]](https://eprint.iacr.org/2016/1123) |
+
+**Key rules for constant-time code:**
+- No secret-dependent branches (`if (secret)`) — use `cmov` or branchless bitwise selection
+- No secret-dependent memory indices (array[secret_bit]) — use linear scans or bitslicing
+- No variable-latency instructions on secret operands (integer divide on secret values on some CPUs)
+- Compiler optimizations can reintroduce branches — use `volatile`, compiler barriers, or assembly
+
+**AES-NI:** The `AESENC` instruction (Intel Sandy Bridge, 2010; AMD Bulldozer, 2011) executes one AES round in a single CPU cycle, eliminating table lookups entirely and providing constant-time execution at ~0.6 cycles/byte for AES-128-GCM with pipelining. `CLMULQDQ` provides constant-time GF(2¹²⁸) multiplication for GHASH. Together they make AES-GCM the fastest AEAD on modern x86.
+
+**State of the art:** AES-NI + CLMULQDQ is the gold standard for constant-time, high-performance AES-GCM. On non-AES-NI platforms, bitsliced AES (Käsper-Schwabe) or ChaCha20 (inherently constant-time ARX) are preferred. The CHES masking literature provides provable leakage bounds. See [Symmetric Encryption](#symmetric-encryption) and [Montgomery Arithmetic](#montgomery-arithmetic-and-barrett-reduction).
+
+---
+
+## Double PRF and Related-Key Attack Resistance
+
+**Goal:** Strengthen a PRF or block cipher against related-key attacks — adversarial queries where the adversary can obtain outputs under keys that are related to the target key by known offsets or transforms. Double PRF applies two independent PRF calls (with independent keys) to increase effective key entropy and eliminate algebraic key structure that RKA exploits. Relevant to key wrapping, multi-user security, and AES usage in protocols.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **Double PRF (2PRF)** | 2003 | Cascaded PRF | F_{K1}(F_{K2}(x)); adds a full PRF layer; secure even if one key is related-key-attacked [[1]](https://eprint.iacr.org/2003/174) |
+| **Related-Key Attack on AES-192/256** | 2009 | Differential RKA | Biryukov-Khovratovich: AES-256 broken in RKA model in 2^99.5; AES-128 remains secure [[1]](https://eprint.iacr.org/2009/317) |
+| **RKA-secure PRF (Bellare-Cash)** | 2010 | Algebraic hardness | Formal model; security under polynomial RKA functions; construction from DDH [[1]](https://eprint.iacr.org/2010/471) |
+| **3DES (Triple DES)** | 1998 | EDE with 2 or 3 keys | Enc_{K1}(Dec_{K2}(Enc_{K1}(x))) — a Double-Encrypt pattern; NIST SP 800-67 (deprecated 2023) [[1]](https://csrc.nist.gov/publications/detail/sp/800/67/r2/final) |
+| **HMAC double-wrap** | — | HMAC outer/inner keys | HMAC's ipad/opad construction is a two-key derivation protecting against length-extension and related-key variants on the underlying hash [[1]](https://csrc.nist.gov/publications/detail/fips/198/1/final) |
+
+**Related-key attacks (RKA):** In the standard model, an adversary queries F(K, ·); in the RKA model they also query F(K ⊕ Δ, ·) for chosen Δ values. AES-256's key schedule was found to have algebraic structure enabling differential RKA with 2^99.5 complexity (Biryukov-Khovratovich 2009), dramatically below brute force. AES-128 has no known RKA distinguisher. The attack matters for protocols that derive related subkeys from a master key without domain separation.
+
+**Double PRF protection:** If F₁ and F₂ are independently keyed PRFs, then G(K₁∥K₂, x) = F₁(K₁, F₂(K₂, x)) is secure in the RKA model even if one of the PRFs leaks under RKA — the independent key prevents correlated attacks. Key wrapping (NIST SP 800-38F, AES-KW) uses a similar two-key philosophy.
+
+**State of the art:** AES-128 is preferred over AES-256 in RKA-sensitive contexts (AES-128 has no known RKA weakness). HMAC's two-key derivation remains standard. Double PRF (independent keys) is the practical mitigation for protocols needing RKA resistance; see [Puncturable / Constrained PRF](#puncturable--constrained-prf) for key delegation, and [Key Exchange & KDFs](categories/03-key-exchange-key-management.md) for key derivation patterns.
+
+---

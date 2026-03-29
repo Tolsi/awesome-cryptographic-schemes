@@ -572,3 +572,120 @@
 **State of the art:** Tor Browser with Letterboxing + RFP (Firefox `privacy.resistFingerprinting`) is the most comprehensive deployed defense, aiming for a uniform fingerprint across all Tor Browser users. Brave Browser independently applies canvas noise and aggressive API normalization. Chrome's Privacy Budget remains experimental. Related to [Onion Routing](#onion-routing), [Tor v3 Onion Services](#tor-v3-onion-services), and [Differential Privacy](categories/10-privacy-preserving-computation.md#differential-privacy).
 
 ---
+
+## Nym Network
+
+**Goal:** Deployed incentivized mixnet with anonymous access credentials, providing network-level privacy by routing packets through a Loopix-inspired continuous-time mixnet with token-incentivized mix nodes and zk-nym threshold-issued anonymous credentials.
+
+| Component | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Nym Mixnet (mainnet)** | 2022 | Loopix + Sphinx + Poisson mixing | Deployed network with token-incentivized mix nodes; Sphinx packet format; cover loop traffic; stratified topology [[1]](https://nymtech.net/nym-whitepaper.pdf) |
+| **zk-nym credentials** | 2022 | Coconut (PS signatures) + threshold blind issuance | Validators collectively blind-sign credential requests; re-randomizable credentials prevent linkage between payment and network usage [[1]](https://nymtech.net/) |
+| **NymVPN** | 2024 | Nym mixnet + WireGuard exit | End-user VPN product; two modes: 5-hop mixnet (highest privacy) or 2-hop decentralized VPN [[1]](https://nymtech.net/) |
+
+**State of the art:** Nym mainnet (launched 2022) is the largest deployed incentivized mixnet, extending [Loopix](#mix-networks-mixnets) with token economics and anonymous credentials. Complements [Mix Networks](#mix-networks-mixnets) and [Coconut Credentials](#coconut-credentials--threshold-issuance-anonymous-credentials).
+
+---
+
+## Katzenpost
+
+**Goal:** Open-source production Sphinx mixnet framework providing a complete, audited implementation of a layered mix network for anonymous messaging services, including mix PKI with directory authorities and per-hop cover traffic.
+
+| Component | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Katzenpost Mix Network Specification** | 2017 | Sphinx + Loopix topology | Authored by Angel, Danezis, Diaz, Piotrowska, Stainton; layered topology; mix PKI via directory authorities; Poisson delay [[1]](https://katzenpost.network/) |
+| **Katzenpost Wire Protocol** | 2017 | Noise (X pattern) + Sphinx | Authenticated transport between clients and mixes; forward-secret session establishment [[1]](https://github.com/katzenpost/katzenpost) |
+| **Katzenpost PQ Mixnet** | 2023 | CTIDH / ML-KEM + Sphinx | First post-quantum mixnet in production; hybrid classical+PQ key encapsulation in Sphinx headers [[1]](https://katzenpost.network/) |
+
+**State of the art:** Katzenpost (2023) is the world's first post-quantum production mixnet and the primary open-source framework for Loopix-style anonymous messaging. Builds on [Mix Networks](#mix-networks-mixnets); complements [Nym Network](#nym-network).
+
+---
+
+## Riffle
+
+**Goal:** Efficient anonymous communication with strong anonymity against active adversaries, combining a verifiable shuffle-based mixnet with private information retrieval so anonymity holds as long as at least one server is honest.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Riffle** | 2016 | Verifiable shuffle + cPIR | Servers permute ciphertexts with ZK shuffle proofs; clients retrieve via PIR; one-honest-server guarantee; 100 KB/s per user at 200-user anonymity set [[1]](https://people.csail.mit.edu/devadas/pubs/riffle.pdf) |
+
+**State of the art:** Riffle (PETS 2016, Kwon-Lazar-Devadas-Ford) provides stronger active-adversary guarantees than pure mixnets by coupling verifiable shuffles with PIR retrieval. Related to [Mix Networks](#mix-networks-mixnets) and [DC-Nets](#dc-nets-dining-cryptographers-networks).
+
+---
+
+## Riposte
+
+**Goal:** Anonymous broadcast messaging at million-user scale for whistleblowing, extending the DC-net model with private information retrieval so servers learn nothing about who published what while preventing anonymous denial-of-service by malicious clients.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Riposte** | 2015 | DC-net + cPIR + write-private data structure | Three-server architecture; clients secret-share writes across servers; PIR technique prevents server collusion identifying senders; resists active client DoS; 2.9M-user anonymity set in 32 hours [[1]](https://arxiv.org/abs/1503.06115) |
+
+**State of the art:** Riposte (IEEE S&P 2015, Corrigan-Gibbs-Boneh-Mazières) was the first system providing traffic-analysis resistance, DoS prevention, and million-user anonymity sets for anonymous broadcast. Superseded in throughput by [Express](#express) but remains the reference design. Extends [DC-Nets](#dc-nets-dining-cryptographers-networks).
+
+---
+
+## Pung
+
+**Goal:** Unobservable private two-party messaging over untrusted infrastructure, hiding both message content and communication metadata using computational PIR so no trusted relays are needed.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Pung** | 2016 | cPIR + bucketed key-value store + batch coding | Untrusted key-value store; users agree on shared labels out-of-band; retrieval via cPIR with bucketing; handles 103× more users than prior PIR-messaging systems [[1]](https://www.usenix.org/conference/osdi16/technical-sessions/presentation/angel) |
+
+**State of the art:** Pung (OSDI 2016, Angel-Setty) established the PIR-based metadata-hiding messaging paradigm later extended by [Express](#express) and [Talek](#talek). Related to [PIR](categories/10-privacy-preserving-computation.md#private-information-retrieval-pir).
+
+---
+
+## Express
+
+**Goal:** Efficient metadata-hiding communication using only symmetric cryptography, achieving constant per-user overhead regardless of user count through XOR-based PIR in a two-server model.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Express** | 2021 | XOR-based PIR (symmetric key) + two-server model | Constant per-user overhead vs. O(√N) for prior systems; fully symmetric-key primitives; 10–100× faster than Riposte; tolerates one malicious server [[1]](https://www.usenix.org/conference/usenixsecurity21/presentation/eskandarian) |
+
+**State of the art:** Express (USENIX Security 2021, Eskandarian-Corrigan-Gibbs-Zaharia-Boneh) is the current practical frontier for metadata-hiding messaging, superseding [Pung](#pung) and [Riposte](#riposte) in efficiency. Related to [PIR](categories/10-privacy-preserving-computation.md#private-information-retrieval-pir).
+
+---
+
+## Talek
+
+**Goal:** Private group messaging with hidden access patterns, concealing which users read/write to which channels from servers using information-theoretic PIR with an anytrust multi-server model.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Talek** | 2020 | IT-PIR + blocked cuckoo hashing + private notifications | Multi-server anytrust model; blocked cuckoo hashing amortizes PIR cost; private notifications avoid polling; 9,433 msg/s for 32,000 users at 1.7 s latency [[1]](https://eprint.iacr.org/2020/066.pdf) |
+
+**State of the art:** Talek (ACSAC 2020) achieves the strongest access-pattern privacy among deployed-scale anonymous group messaging systems. Complements [Pung](#pung) and [Express](#express). Related to [PIR](categories/10-privacy-preserving-computation.md#private-information-retrieval-pir).
+
+---
+
+## Karaoke
+
+**Goal:** Distributed private messaging with formal differential-privacy guarantees against a global passive adversary, improving on Vuvuzela with optimistic indistinguishability to achieve 5–10× better latency.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Karaoke** | 2018 | Dead-drop mailboxes + differential-privacy noise + optimistic indistinguishability | Distributed servers; two messages per round (one real, one cover); formal DP bound on metadata leakage; 6.8 s latency for 2M users; 5–10× faster than Vuvuzela [[1]](https://www.usenix.org/conference/osdi18/presentation/lazar) |
+
+**State of the art:** Karaoke (OSDI 2018, Lazar-Gilad-Zeldovich) is the most efficient system providing formal differential-privacy metadata guarantees at million-user scale. Relates to [Differential Privacy](categories/10-privacy-preserving-computation.md#differential-privacy) and [Mix Networks](#mix-networks-mixnets).
+
+---
+
+## Traffic Analysis Attacks and Cover Traffic Defenses
+
+**Goal:** Formalize how adversaries infer communication relationships from traffic metadata and analyze countermeasures (cover traffic, timing obfuscation, adaptive padding) that protect anonymity even when encryption is assumed to be unbroken.
+
+| Attack / Defense | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Statistical Disclosure Attack (SDA)** | 2003 | Long-term intersection | Danezis: adversary accumulates round observations to statistically identify recipients; primary countermeasure is cover traffic [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30114-1_21) |
+| **Timing correlation attack** | 2004 | End-to-end timing on Tor | Global passive adversary correlates entry/exit traffic; fundamental limitation of low-latency onion routing [[1]](https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf) |
+| **Website fingerprinting (WF)** | 2014 | Traffic pattern ML | Wang-Goldberg: random-forest classifier identifies Tor-visited websites with >90% accuracy; motivates traffic-shaping defenses [[1]](https://dl.acm.org/doi/10.1145/2660267.2660368) |
+| **WTF-PAD** | 2016 | Histogram-based adaptive padding | Juarez et al.: lightweight adaptive padding in Tor; significantly reduces WF classifier accuracy with ~30% bandwidth overhead; deployed in Tor Browser [[1]](https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/juarez) |
+| **Tamaraw** | 2014 | Constant-rate padding | Wang-Goldberg: pads to fixed packet-count schedule; resists fingerprinting at ~3× bandwidth cost [[1]](https://dl.acm.org/doi/10.1145/2660267.2660368) |
+| **Loopix cover traffic model** | 2017 | Poisson-distributed cover loops | Continuous loop cover messages provide formal DP bound on traffic analysis; standard in modern mixnets [[1]](https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/piotrowska) |
+
+**State of the art:** Loopix-style Poisson cover traffic (deployed in [Nym Network](#nym-network) and [Katzenpost](#katzenpost)) provides the strongest formal differential-privacy bound for high-latency mixnets. WTF-PAD (deployed in Tor Browser) and Tamaraw reduce website fingerprinting for low-latency systems. Foundational context for [Mix Networks](#mix-networks-mixnets), [Onion Routing](#onion-routing), and [Karaoke](#karaoke).
+
+---

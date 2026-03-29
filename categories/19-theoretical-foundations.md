@@ -528,3 +528,135 @@
 | **Reactive simulatability (BRSIM)** | 2004 | Backes–Pfitzmann–Waidner | Concurrent composition framework for reactive systems; closer to process algebra; equivalent to UC for a broad class of protocols; used for symbolic soundness proofs [[1]](https://link.springer.com/chapter/10.1007/978-3-540-24638-1_3) |
 
 **State of the art:** UC (including GUC) remains dominant in applied cryptography. The IITM model is the most mathematically rigorous alternative and is preferred in foundational work where UC's definitional subtleties matter. GNUC has been used in formal analysis of multi-party protocols. All models agree on the same set of "reasonable" protocols; differences appear in edge cases involving global state and concurrent joint sessions. See [Universal Composability (UC) Framework](#universal-composability-uc-framework), [Simulation-Based Security (SIM) vs. Indistinguishability-Based Security (IND)](#simulation-based-security-sim-vs-indistinguishability-based-security-ind), and [Adaptive vs. Static Corruptions in Multi-Party Protocols](#adaptive-vs-static-corruptions-in-multi-party-protocols).
+
+## Abstract Cryptography (Constructive Cryptography)
+
+**Goal:** Provide a top-down, composable framework for defining and proving cryptographic security. Maurer and Renner's Abstract Cryptography (2011) defines resources and constructions abstractly; security is the distance between a real construction and an ideal resource. The framework subsumes UC, information-theoretic security, and Shannon secrecy as special cases, giving a clean categorical treatment of composition.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Abstract Cryptography** | 2011 | Maurer–Renner | Top-down framework; resources as objects, constructions as converters; security = distance between real and ideal resource; subsumes UC and Shannon secrecy [[1]](https://crypto.ethz.ch/publications/files/MauRen11.pdf) |
+| **Constructive Cryptography** | 2012 | Maurer | Companion paper; composable proofs by resource construction; security statements are resource equivalences [[1]](https://link.springer.com/chapter/10.1007/978-3-642-27375-9_3) |
+| **Indifferentiability as AC instance** | 2016 | Maurer–Renner | The indifferentiability framework (2004) is a special case of abstract cryptography; unifies ROM hash justification with composable security [[1]](https://eprint.iacr.org/2016/903) |
+
+**State of the art:** Abstract Cryptography is the most general composability framework, especially influential in the information-theoretic and quantum communities. For most applied protocol design, UC remains dominant. See [Universal Composability (UC) Framework](#universal-composability-uc-framework).
+
+---
+
+## Programmable vs. Non-Programmable Random Oracles
+
+**Goal:** Identify which security proofs genuinely require the ability to "program" the random oracle — adaptively setting its outputs during the reduction. In the standard ROM, the reduction can program the oracle; in the non-programmable ROM (NPROM), the hash function is fixed before the reduction runs. Fischlin et al. (2010) showed that FDH signatures and many Fiat-Shamir transforms cannot be proven secure in the NPROM, clarifying which proofs rely on this artificial feature.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Random oracles with(out) programmability** | 2010 | Fischlin–Lehmann–Ristenpart–Shrimpton–Stam–Tessaro | FDH signatures cannot be proven secure in the NPROM via black-box reduction; programmability is essential; ASIACRYPT 2010 [[1]](https://link.springer.com/chapter/10.1007/978-3-642-17373-8_18) |
+| **Impossibility for Fiat-Shamir in NPROM** | 2016 | Fukumitsu–Hasegawa | Fiat-Shamir signatures cannot be proven secure in the NPROM under any standard hardness assumption [[1]](https://link.springer.com/chapter/10.1007/978-3-319-45871-7_23) |
+
+**State of the art:** NPROM separation results show that many ROM proofs rely on the artificial programmability feature. Constructions with NPROM proofs provide stronger real-world security evidence. See [Random Oracle Model (ROM) vs. Standard Model](#random-oracle-model-rom-vs-standard-model).
+
+---
+
+## Wegman-Carter-Shoup Authentication and Information-Theoretic MACs
+
+**Goal:** Achieve provably secure message authentication from information-theoretic assumptions using universal hash families. Wegman-Carter (1981) showed that combining a universal hash with a one-time pad on the tag produces an unconditionally secure MAC. Shoup (1996) extended this to the computational setting via a PRF (WCS construction), achieving security beyond the birthday bound for nonce-based MACs.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Wegman-Carter MAC** | 1981 | Universal hashing + OTP | Information-theoretically secure MAC; tag = H_k(m) ⊕ pad; forgery probability ≤ ε for ε-AU hash [[1]](https://www.sciencedirect.com/science/article/pii/0022000081900337) |
+| **Wegman-Carter-Shoup (WCS)** | 1996 | Universal hash + PRF | Replaces OTP with PRF on a nonce; computationally secure for fresh nonces; information-theoretically MAC-secure per nonce [[1]](https://doi.org/10.1007/3-540-68697-5_24) |
+| **Poly1305-AES** | 2005 | Polynomial universal hash + AES | Bernstein's WCS instantiation with strong concrete security; used in ChaCha20-Poly1305 [[1]](https://cr.yp.to/mac/poly1305-20050329.pdf) |
+| **GHASH / GCM** | 2005 | GF(2^128) polynomial hash + AES-CTR | GCM instantiates WCS with GHASH; dominant in TLS 1.3; birthday-bound limited [[1]](https://csrc.nist.gov/publications/detail/sp/800-38d/final) |
+
+**State of the art:** Poly1305-AES / ChaCha20-Poly1305 is the dominant high-performance MAC in modern protocols (TLS 1.3, WireGuard). Both Poly1305 and GHASH/GCM are WCS instantiations. See [Foundational Primitives](categories/01-foundational-primitives.md).
+
+---
+
+## Related-Key Security
+
+**Goal:** Maintain security when the adversary can observe cipher behavior under keys related to the target key. In a related-key attack (RKA), the adversary queries a cipher under keys φ(K) for adversarially chosen derivation functions φ from some class Φ. Critical for block ciphers used in hash-function modes and for key schedules: AES-256 has RKA vulnerabilities, and several historical attacks on DES were related-key attacks.
+
+| Result | Year | Basis | Note |
+|--------|------|-------|------|
+| **RKA-PRF / RKA-PRP definitions** | 2003 | Bellare–Kohno | First formal model for RKA security; defines the relevant class Φ (XOR, affine); EUROCRYPT 2003 [[1]](https://link.springer.com/chapter/10.1007/3-540-39200-9_31) |
+| **AES-256 RKA analysis** | 2010 | Biryukov–Khovratovich | RKA distinguishers on AES-256 (9 rounds) with 2^39 related keys; ASIACRYPT 2010 [[1]](https://link.springer.com/chapter/10.1007/978-3-642-10366-7_1) |
+| **RKA-secure PRFs beyond linear** | 2014 | Bellare–Cash–Miller | PRFs secure against polynomial-degree related-key derivation from DDH; CRYPTO 2014 [[1]](https://link.springer.com/chapter/10.1007/978-3-662-44371-2_5) |
+
+**State of the art:** Formal RKA definitions (Bellare-Kohno 2003) are standard when analyzing block ciphers and AEAD modes. RKA-secure PRFs from DDH give theoretical constructions; practical AEAD designs address RKA via key schedule diversification. See [Leakage-Resilient Cryptography](#leakage-resilient-cryptography) and [Non-Malleable Codes](#non-malleable-codes).
+
+---
+
+## Multi-User and Multi-Instance Security
+
+**Goal:** Accurately quantify security when many independent instances share the same design but use independent keys. Multi-user security bounds how much the adversary gains by attacking any of n independently keyed instances simultaneously — degrading by at most log n bits compared to single-user security. This matters at scale: attacking 2^30 TLS sessions costs only 30 fewer bits of security than attacking one.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Multi-user PKE security** | 2000 | Bellare–Boldyreva–Micali | First formal multi-user PKE model; single-user IND-CPA implies multi-user IND-CPA with n-factor loss [[1]](https://cseweb.ucsd.edu/~mihir/papers/musu.pdf) |
+| **Multi-instance security for password hashing** | 2012 | Bellare–Ristenpart–Tessaro–Shrimpton | Multi-instance model for password hashing: adversary cracks any one of n hashes; evaluates bcrypt vs Argon2 [[1]](https://eprint.iacr.org/2012/196) |
+| **Multi-user AES-GCM / TLS** | 2019 | Bellare–Tessaro | 2^30 degradation in 128-bit security at TLS scale; motivates 192-bit AES for high-volume deployments [[1]](https://eprint.iacr.org/2019/145) |
+| **Tight multi-user ML-KEM** | 2023 | Hövelmanns–Hülsing–Majenz | Tight multi-user/multi-challenge reduction for ML-KEM in QROM; confirms 128-bit security holds at deployment scale [[1]](https://eprint.iacr.org/2022/1089) |
+
+**State of the art:** Multi-user security analysis is now standard in NIST PQC evaluations and TLS cipher suite analysis. See [Concrete Security and Reduction Tightness](#concrete-security-and-reduction-tightness) and [Bit Security](#bit-security-and-its-definition).
+
+---
+
+## Selective vs. Full Security in IBE and ABE
+
+**Goal:** Distinguish two levels of IBE/ABE security based on when the adversary commits to the challenge identity. In the selective model, the adversary declares the challenge identity before seeing public parameters — an artificial restriction enabling the first standard-model IBE constructions. Full (adaptive) security, where the adversary chooses the challenge after seeing public parameters, is the correct real-world notion. Achieving full security in the standard model required dual-system encryption (Waters 2009).
+
+| Result | Year | Basis | Note |
+|--------|------|-------|------|
+| **Selective-ID IBE (Boneh-Boyen)** | 2004 | Bilinear maps | First standard-model IBE; only selective-ID security; tight DBDH reduction; CRYPTO 2004 [[1]](https://eprint.iacr.org/2004/172) |
+| **Full IBE in standard model (Waters)** | 2005 | Bilinear maps | First fully secure (adaptive-ID) IBE without random oracles; artificial abort technique in proof [[1]](https://eprint.iacr.org/2004/180) |
+| **Dual-system encryption** | 2009 | Waters | Proof technique: ciphertexts/keys exist in normal or semi-functional forms; enables fully secure IBE, HIBE, ABE; standard tool for all modern ABE constructions [[1]](https://eprint.iacr.org/2009/385) |
+| **Selective-to-full via complexity leveraging** | 2007 | Boneh–Waters | Generic compiler from selective to full security at sub-exponential loss [[1]](https://eprint.iacr.org/2007/033) |
+| **Fully secure ABE (Lewko-Waters)** | 2011 | Bilinear maps | First fully secure large-universe ABE using dual-system techniques [[1]](https://eprint.iacr.org/2010/351) |
+
+**State of the art:** Dual-system encryption (Waters 2009) is the canonical technique for full IBE/ABE security in the standard model. See [Homomorphic and Functional Encryption](categories/07-homomorphic-functional-encryption.md) and [Concrete Security and Reduction Tightness](#concrete-security-and-reduction-tightness).
+
+---
+
+## Meta-Reduction Technique
+
+**Goal:** Prove that tight security reductions cannot exist for certain schemes. A meta-reduction is a second-level reduction: given any assumed reduction R from breaking scheme S to solving hard problem P, construct a meta-reducer that uses R as a black box to solve P directly — contradicting P's hardness if R is too efficient. Coron (2002) introduced the approach for RSA-FDH signatures.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Meta-reduction for RSA-FDH** | 2002 | Coron | Any black-box reduction from RSA-FDH to RSA inversion must lose factor ≥ q_s; tight reductions are impossible; first meta-reduction in cryptography; EUROCRYPT 2002 [[1]](https://link.springer.com/chapter/10.1007/3-540-46035-7_22) |
+| **Corrected meta-reduction (Kakvi-Kiltz)** | 2012 | Kakvi–Kiltz | Fixed flaw in Coron's argument; proved tight impossibility for unique signature schemes; optimal FDH bound is q_s/e; Journal of Cryptology 2020 [[1]](https://link.springer.com/article/10.1007/s00145-019-09311-5) |
+| **Impossibility of tight reductions (Bader et al.)** | 2015 | Bader–Jager–Li–Schäge | Meta-reduction framework for PKE and signatures; quantifies unavoidable security loss for a broad class of schemes; EUROCRYPT 2015 [[1]](https://eprint.iacr.org/2015/374) |
+| **Meta-reduction for Schnorr** | 2016 | Fischlin–Fleischhacker | Any black-box reduction from Schnorr to DLog must lose factor q_h; Schnorr's reduction is essentially optimal [[1]](https://eprint.iacr.org/2013/418) |
+
+**State of the art:** Kakvi-Kiltz (2012) and Bader-Jager-Li-Schäge (2015) are the canonical references. Meta-reductions guide parameter choices for deployed signature schemes. See [Concrete Security and Reduction Tightness](#concrete-security-and-reduction-tightness) and [Black-Box Separations](#black-box-separations).
+
+---
+
+## Beyond-Birthday-Bound (BBB) Security
+
+**Goal:** Achieve symmetric-key security beyond the 2^{n/2} birthday bound inherent to n-bit primitives. A standard n-bit block cipher is only guaranteed secure up to 2^{n/2} queries. BBB constructions achieve security up to nearly 2^n queries by using algebraic structure that prevents birthday collisions from being exploitable. Critical for AES-128 at cloud scale where 2^64 blocks are reachable.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **XOR of two PRPs (XORP / Patarin H-coeff)** | 1995/2008 | Two independent PRP evaluations | XOR achieves 2^n tight security via H-coefficient/mirror-theory; Lucks (1995) proposed; Patarin proved tightness (2008) [[1]](https://eprint.iacr.org/2008/356) |
+| **Sum of PRPs (SoP)** | 2001 | Bellare–Impagliazzo | Sum of two PRP outputs achieves BBB MAC security; O(2^{2n/3}) security [[1]](https://eprint.iacr.org/1999/024) |
+| **EWCDM BBB MAC** | 2017 | Cogliati–Seurin | Encrypted Wegman-Carter with Davies-Meyer; nonce-based MAC with BBB security from AES [[1]](https://eprint.iacr.org/2015/975) |
+| **AES-GCM-SIV** | 2017 | Gueron–Langley–Lindell | Nonce-misuse resistant AEAD with BBB-like multi-key security; deployed in BoringSSL / TLS [[1]](https://eprint.iacr.org/2017/168) |
+
+**State of the art:** BBB security is a design criterion for AEAD modes at cloud scale. Patarin's H-coefficient / mirror-theory technique is the dominant proof method. AES-GCM-SIV is the primary deployed BBB-aware AEAD. See [Wegman-Carter-Shoup Authentication](#wegman-carter-shoup-authentication-and-information-theoretic-macs).
+
+---
+
+## ORAM Complexity and Lower Bounds
+
+**Goal:** Characterise the fundamental communication overhead required to hide memory access patterns in oblivious RAM. Goldreich-Ostrovsky (1996) proved an Ω(log n) bandwidth lower bound for hiding access patterns on n-word memories. This bound was tight but only proven in restricted models; Larsen-Nielsen (2021) extended it to all ORAM schemes. The matching O(log n) construction (OptORAMa, 2021) resolved a 25-year open problem.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **ORAM definition + Ω(log n) lower bound** | 1996 | Goldreich–Ostrovsky | Introduced ORAM; balls-and-bins Ω(log n) lower bound; O(log^3 n) construction via hierarchical hashing [[1]](https://doi.org/10.1145/233551.233553) |
+| **PathORAM** | 2013 | Stefanov–van Dijk–Shi et al. | Practical O(log n) amortized ORAM using a binary tree; dominant in implementations; CCS 2013 [[1]](https://eprint.iacr.org/2013/280) |
+| **Ω(log n) lower bound (all models)** | 2021 | Larsen–Nielsen | Tight Ω(log n) lower bound for all ORAM schemes (not only balls-and-bins); closes the model gap [[1]](https://eprint.iacr.org/2020/1132) |
+| **OptORAMa (optimal ORAM)** | 2021 | Asharov–Komargodski–Lin et al. | First O(log n) worst-case ORAM; matches the lower bound; uses AKS sorting network [[1]](https://dl.acm.org/doi/10.1145/3566049) |
+
+**State of the art:** PathORAM (O(log n) amortized) is the standard practical ORAM used in SGX-based systems and MPC frameworks. OptORAMa (2021) is theoretically optimal but has large constants. See [Oblivious RAM](categories/10-privacy-preserving-computation.md#oblivious-ram-oram).
+
+---
