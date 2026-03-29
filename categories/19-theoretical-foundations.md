@@ -462,3 +462,69 @@
 | **DY* (Dolev-Yao star)** | 2021 | Bhargavan–Bichhawat–Do–Höfner–Kohlweiss–Sasse–Veronese | F*-based verified protocol implementation: symbolic security proof and executable code in the same language; applied to TLS 1.3 record layer [[1]](https://eprint.iacr.org/2021/097) |
 
 **State of the art:** ProVerif and Tamarin are the dominant symbolic tools and are routinely used to analyse IETF protocol drafts (TLS 1.3, MLS, WireGuard). EasyCrypt is the leading computational proof assistant; it has been used to verify ML-KEM components. DY* and CryptHOL push toward verified implementations. See [Symbolic Model (Dolev-Yao) vs. Computational Model](#symbolic-model-dolev-yao-vs-computational-model) and [Universal Composability (UC) Framework](#universal-composability-uc-framework).
+
+---
+
+## Knowledge-Soundness, Extractability, and Simulation-Extractability
+
+**Goal:** Distinguish three increasingly strong notions of what it means for a proof system to "guarantee the prover knows a witness." *Proof of knowledge (PoK)* / *knowledge-soundness*: an efficient knowledge extractor can recover a witness from any prover that produces a valid proof with non-negligible probability, via rewinding or black-box extraction. *Extractability* (or *straight-line extraction*): the extractor recovers the witness from a single proof transcript, without rewinding — essential in the random oracle model and for composing with UC. *Simulation-extractability* (SE): the extractor succeeds even when the adversary has seen an arbitrary number of simulated proofs; the adversary cannot produce a new valid proof without knowing a witness, even after observing a polynomial number of proofs for other statements. SE is strictly stronger than both and is required whenever proofs are used in a setting where signatures or commitments can be forged using proof malleability.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Proof of knowledge / knowledge-soundness** | 1988 | Feige–Fiat–Shamir | Introduced the notion that a protocol is a "proof of knowledge" if a black-box extractor recovers the witness by rewinding the prover; formalised in Schnorr identification [[1]](https://doi.org/10.1007/3-540-47721-7_11) |
+| **Simulation-sound NIZK** | 1999 | Sahai | NIZK that remains sound even after an adversary sees simulated proofs; prevents a malicious prover from using simulated proofs as templates for forging new ones [[1]](https://doi.org/10.1109/SFFCS.1999.814584) |
+| **Simulation-extractability definition** | 2004 | Groth–Ostrovsky–Sahai | Formal definition of simulation-extractability for NIZK: after seeing simulated proofs, an adversary cannot produce a new valid proof without the extractor recovering a witness [[1]](https://eprint.iacr.org/2006/107) |
+| **SE-SNARKs** | 2012 | Groth | Groth16 SNARK achieves simulation-extractability under q-PKE; extractability is straight-line in the AGM/GGM; no rewinding needed in the algebraic setting [[1]](https://eprint.iacr.org/2016/260) |
+| **UC-extractability vs. SE** | 2017 | Abdolmaleki–Baghery–Lipmaa–Zając | Clarified hierarchy: UC-extractable NIZKs (straight-line, simulation-sound) are strictly stronger than SE; construction from pairing assumptions [[1]](https://eprint.iacr.org/2017/121) |
+| **Fiat-Shamir and simulation-extractability in ROM** | 2019 | Fischlin–Günther | Fiat-Shamir transforms produce simulation-extractable NIZKs in the ROM without rewinding; tight proof using straight-line extraction from the hash transcript [[1]](https://eprint.iacr.org/2020/1184) |
+
+**State of the art:** Simulation-extractability is the standard target for NIZKs used as building blocks in signature schemes, CCA-secure PKE, and UC-secure protocols. Groth16 achieves SE under algebraic assumptions; transparent SNARKs (STARK, Plonk) achieve knowledge-soundness in the ROM. See [NIZK: Definitions, Simulation Soundness, and Extractability](#nizk-definitions-simulation-soundness-and-extractability), [Knowledge-of-Exponent Assumption (KEA) and Falsifiability](#knowledge-of-exponent-assumption-kea-and-falsifiability), and [Universal Composability (UC) Framework](#universal-composability-uc-framework).
+
+---
+
+## Entropy Source Models
+
+**Goal:** Formalise the structure of imperfect randomness sources. Real-world entropy sources — hardware RNGs, user keystrokes, network jitter — are not uniformly random. The cryptographic treatment distinguishes several models of partial randomness: *min-entropy* (worst-case unpredictability over all outcomes), *Santha-Vazirani sources* (each bit is slightly biased but individually partially unpredictable), *block sources* (each successive block has min-entropy k conditioned on all prior blocks), and *non-oblivious / computational sources* (sources whose distributions are computationally indistinguishable from high-entropy ones). Understanding which source model applies determines whether and how much randomness can be extracted, and whether extraction requires a public seed.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Santha-Vazirani (SV) sources** | 1986 | Santha–Vazirani | Each bit i satisfies 1/2 − δ ≤ Pr[b_i = 1 | b_{<i}] ≤ 1/2 + δ; proved no deterministic extractor exists for SV sources; two independent SV sources suffice [[1]](https://doi.org/10.1109/SFCS.1986.51) |
+| **Block sources** | 1991 | Chor–Goldreich | Block source model: each block has min-entropy k conditioned on previous blocks; deterministic two-source extractors exist for block sources [[1]](https://doi.org/10.1137/0220009) |
+| **Min-entropy and the leftover hash lemma** | 1989 | Impagliazzo–Levin–Luby | Min-entropy H∞(X) = −log max_x Pr[X=x] is the correct entropy measure for extraction; LHL extracts near-uniform bits from any source with H∞(X) ≥ k using a short seed [[1]](https://doi.org/10.1145/73007.73009) |
+| **Computational entropy / HILL entropy** | 1999 | Håstad–Impagliazzo–Levin–Luby | Computational sources: a distribution has computational entropy k if it is indistinguishable from a distribution of Shannon entropy k; the relevant notion for PRG constructions [[1]](https://doi.org/10.1137/S0097539793244708) |
+| **Non-malleable extractors** | 2009 | Dodis–Wichs | Extractor secure against an adversary who can adaptively tamper with the seed; used to build privacy amplification protocols against active adversaries [[1]](https://eprint.iacr.org/2009/430) |
+| **Condensers and lossless extractors** | 2011 | Guruswami–Umans–Vadhan | Condensers map a source to a shorter distribution with higher min-entropy per bit; enable extraction from sources with sub-logarithmic entropy per bit [[1]](https://doi.org/10.1145/2077216.2077220) |
+
+**State of the art:** Min-entropy is the standard entropy measure for applied cryptography (NIST SP 800-90B uses it for entropy assessment). The LHL and seeded strong extractors cover most practical key derivation scenarios (HKDF). Non-malleable extractors underlie information-theoretic two-party protocols against tampering adversaries. See [Leftover Hash Lemma and Randomness Extraction](#leftover-hash-lemma-and-randomness-extraction) and [Pseudoentropy and Computational Entropy](#pseudoentropy-and-computational-entropy).
+
+---
+
+## Bit Security and Its Definition
+
+**Goal:** Give a clean, meaningful measure of a cryptographic scheme's security level in bits. Informally, a scheme has "k-bit security" if breaking it requires about 2^k work. But formalising this precisely is subtle: different games, different success probability thresholds, and different resource measures (time, queries, distinguishing advantage) all affect the count. Micciancio and Walter (2018) identified and corrected a systematic error in the classical definition — schemes were often credited with more bits of security than they actually provide — by re-centering the advantage around 1/2 rather than 0, and requiring the attacker to do genuine prediction rather than mere distinguishing.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Classical bit-security definition** | 1993 | Bellare–Rogaway | Informal notion: scheme is (t, ε)-secure if no adversary with runtime t succeeds with probability > ε; "k bits" means t/ε ≈ 2^k [[1]](https://cseweb.ucsd.edu/~mihir/papers/ro.pdf) |
+| **Goldreich-Levin bit security** | 1989 | Goldreich–Levin | Hardcore bit achieves 1-bit security in the sense that predicting it is as hard as inverting the OWF; formalism anticipates later clean definitions [[1]](https://dl.acm.org/doi/10.1145/73007.73010) |
+| **Micciancio-Walter bit security** | 2018 | Micciancio–Walter | Corrected definition: security level is −log₂(AdvantageNorm / Cost) where advantage is normalised to the [0,1] range relative to a trivial strategy; shows many lattice parameters are overclaimed by ≥8 bits [[1]](https://eprint.iacr.org/2018/077) |
+| **Multi-user bit security** | 2019 | Bellare–Tessaro | Extended Micciancio-Walter framework to multi-user settings (many keys); bit-security degrades logarithmically in the number of users, consistent with known multi-user attacks [[1]](https://eprint.iacr.org/2019/145) |
+| **Bit security in the AGM** | 2022 | Kiltz–Loss–Pan | Tight bit-security analysis of Schnorr, BLS, and Groth16 in the Algebraic Group Model; shows tighter concrete bounds than prior estimates using Micciancio-Walter normalisation [[1]](https://eprint.iacr.org/2022/438) |
+
+**State of the art:** The Micciancio-Walter (2018) definition is the current standard for rigorous bit-security analysis; it has influenced NIST PQC parameter selection. Multi-user security (Bellare-Tessaro) is now routinely considered in protocol specifications. See [Concrete Security and Reduction Tightness](#concrete-security-and-reduction-tightness) and [Generic Group Model (GGM) and Algebraic Group Model (AGM)](#generic-group-model-ggm-and-algebraic-group-model-agm).
+
+---
+
+## Composability Beyond UC: GNUC, SPS, and IITM
+
+**Goal:** Address limitations of the UC framework with alternative or complementary composition models. While UC is the dominant composability framework, it has known limitations: the UC composition theorem requires the environment to be a single interactive Turing machine; it handles subroutine composition but not, e.g., joint-state composition or global ciphersuites without careful extensions. Several alternatives have been proposed: *GNUC* (Hofheinz-Shoup, 2011) restructures the execution model to avoid subtle issues with UC's environment/protocol interfaces; *Symbolic Protocol System (SPS)* applies to formal-model composability; and the *Inexhaustible Interactive Turing Machine (IITM)* model (Küsters-Tuengerthal-Rausch, 2013) gives the most general and rigorously founded execution model, resolving well-formedness issues in UC while supporting global state, joint sessions, and arbitrary protocol structures.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **UC framework** | 2001/2020 | Canetti | Foundational real/ideal composability; composition theorem; basis for all subsequent models; see [Universal Composability (UC) Framework](#universal-composability-uc-framework) [[1]](https://eprint.iacr.org/2000/067) |
+| **GNUC (General Non-malleable UC)** | 2011 | Hofheinz–Shoup | Revised execution model resolving interface and well-formedness issues in UC; cleaner polynomial-time execution semantics; proves equivalence to UC for most protocols [[1]](https://eprint.iacr.org/2011/471) |
+| **IITM model** | 2013 | Küsters–Tuengerthal–Rausch | Inexhaustible Interactive Turing Machine: fully rigorous general model; handles global state, joint sessions, unbounded sessions without assumptions on environment structure; subsumes UC and GNUC [[1]](https://eprint.iacr.org/2013/025) |
+| **Global UC (GUC)** | 2007 | Canetti–Dodis–Pass–Walfish | Extends UC to global functionalities shared across all sessions (e.g., a global CRS or global random oracle); allows modular composition even when sub-protocols share global state [[1]](https://eprint.iacr.org/2006/432) |
+| **Reactive simulatability (BRSIM)** | 2004 | Backes–Pfitzmann–Waidner | Concurrent composition framework for reactive systems; closer to process algebra; equivalent to UC for a broad class of protocols; used for symbolic soundness proofs [[1]](https://link.springer.com/chapter/10.1007/978-3-540-24638-1_3) |
+
+**State of the art:** UC (including GUC) remains dominant in applied cryptography. The IITM model is the most mathematically rigorous alternative and is preferred in foundational work where UC's definitional subtleties matter. GNUC has been used in formal analysis of multi-party protocols. All models agree on the same set of "reasonable" protocols; differences appear in edge cases involving global state and concurrent joint sessions. See [Universal Composability (UC) Framework](#universal-composability-uc-framework), [Simulation-Based Security (SIM) vs. Indistinguishability-Based Security (IND)](#simulation-based-security-sim-vs-indistinguishability-based-security-ind), and [Adaptive vs. Static Corruptions in Multi-Party Protocols](#adaptive-vs-static-corruptions-in-multi-party-protocols).

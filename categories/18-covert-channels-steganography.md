@@ -366,3 +366,80 @@
 **State of the art:** Pipeline-calibrated image embedding (StegoSocial) achieves the highest capacity (~0.1 bpp after re-encoding); timing and ordering channels are lower capacity but trivially evade image steganalysis. Platform defences include image transcoding, timestamp randomisation, and Unicode normalisation. Related to [Coverless Steganography](#coverless-steganography) (ordering-based methods) and [Content-Adaptive Image Steganography](#content-adaptive-image-steganography) (pipeline-calibrated methods).
 
 ---
+
+## Subliminal Channels in Zero-Knowledge Proofs
+
+**Goal:** Exploit the verifier-chosen or prover-chosen randomness in interactive zero-knowledge proof protocols as a covert channel, allowing the prover (or a subverted verifier) to embed a hidden message in the proof transcript that is invisible to observers who only check the proof's validity. Distinct from [Kleptography / ASA](#kleptography--algorithm-substitution-attacks-asa) (which targets signature randomness); here the cover is the ZK proof itself.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Simmons ZK Subliminal Channel** | 1994 | Fiat-Shamir / Schnorr nonce | First analysis of subliminal channels in ZK identification schemes; prover embeds covert bits in the commitment randomness while the proof remains valid; capacity equals the entropy of the nonce [[1]](https://link.springer.com/chapter/10.1007/3-540-68339-9_6) |
+| **Subliminal-Free ZK (Burmester-Desmedt-Piper)** | 1994 | Verifier-chosen challenges | Prevents prover subliminal channel by requiring the verifier to supply all randomness via coin-flipping; eliminates prover's ability to embed hidden messages but requires interaction [[1]](https://link.springer.com/chapter/10.1007/3-540-48658-5_7) |
+| **Groth16 Subliminal Channel (Bellare-Hoang)** | 2021 | Groth16 proof randomness | Identifies subliminal bandwidth in the δ and γ randomness of Groth16 proofs; a subverted prover can leak ~256 bits of witness per proof while producing a perfectly valid SNARK; demonstrates ASA threat for non-interactive ZK systems [[1]](https://eprint.iacr.org/2021/1352) |
+| **Subliminal-Free SNARKs (Faonio-Fiore-Russo)** | 2023 | Updatable CRS + randomness extraction | Constructs SNARKs where the prover's output is randomness-extractable; any subliminal channel is computationally closed by a public extractor; requires an updatable CRS (structured reference string) [[1]](https://eprint.iacr.org/2023/1029) |
+
+**State of the art:** Non-interactive ZK systems (Groth16, PLONK) are susceptible to subliminal channels in proof randomness; mitigation requires deterministic randomness derivation (RFC 6979-style) or subliminal-free SNARK constructions. Related to [Kleptography / ASA](#kleptography--algorithm-substitution-attacks-asa) (same adversarial model applied to signatures) and [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems).
+
+---
+
+## LLM-Based Linguistic Steganography
+
+**Goal:** Use large language models (LLMs) as a cover-text generator in which each sampling step is repurposed to encode message bits, so that the generated text is statistically indistinguishable from natural LLM output while covertly carrying a hidden payload. Advances beyond classical synonym-substitution methods by leveraging the full probability distribution of the model at every token.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **METEOR (Kaptchuk-Jois-Green-Ruef)** | 2021 | Arithmetic coding over LM distribution | Treats the LLM token distribution as an entropy source; uses arithmetic coding to encode message bits losslessly into a sequence of token samples; provably undetectable under the hypothesis-testing model [[1]](https://eprint.iacr.org/2021/1162) |
+| **ADG (Adaptive Dynamic Grouping)** | 2019 | Huffman-coded token grouping | Groups tokens by probability rank and assigns fixed-length codewords; sender samples from the group corresponding to the next message bits; simpler than arithmetic coding but slightly suboptimal capacity [[1]](https://aclanthology.org/P19-1422/) |
+| **DISCOP** | 2023 | Distribution-copying sampling | Reformulates embedding as distribution matching: constructs a per-step mapping from message bits to tokens that preserves the marginal distribution exactly; zero KL divergence with unmodified LLM output under i.i.d. token assumption [[1]](https://arxiv.org/abs/2307.04451) |
+| **Perfectly Secure Linguistic Stego (Ding et al.)** | 2023 | Min-entropy coupling + LLM | Applies minimum-entropy coupling (Cicalese-Gargano-Vaccaro) to the LLM token distribution to achieve ε = 0 KL divergence; optimal capacity equals the per-token min-entropy of the model [[1]](https://arxiv.org/abs/2310.09502) |
+
+**State of the art:** METEOR and DISCOP are the leading provably-secure schemes; DISCOP achieves zero distributional divergence per token under i.i.d. assumptions. Practical detectability risks arise from multi-token dependencies not captured by marginal KL; n-gram and perplexity-ratio tests can distinguish some constructions. Builds on [Text / Linguistic Steganography](#text--linguistic-steganography) and [Information-Theoretic Steganography](#information-theoretic-steganography-cachin-model); related to [Steganography](#steganography) (where Meteor first appeared).
+
+---
+
+## Quantum Steganography
+
+**Goal:** Exploit quantum communication channels — particularly those carrying quantum key distribution (QKD) traffic — to embed a hidden classical or quantum message so that an eavesdropper monitoring the channel cannot distinguish the covert communication from legitimate quantum noise or QKD error correction traffic. Provides information-theoretic covert communication when the cover channel is itself quantum.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Quantum Steganography via Entanglement (Shaw-Brun)** | 2010 | Shared entanglement + superdense coding | Alice and Bob pre-share EPR pairs; Alice encodes covert bits by choosing which Bell-state measurement to perform; the overt channel sees only apparently random QKD-like traffic; capacity = 2 covert bits per qubit transmitted [[1]](https://arxiv.org/abs/1006.1412) |
+| **Quantum Error-Correcting Covert Channel (Bergou et al.)** | 2003 | Decoherence-free subspace | Hides classical bits in the decoherence-free subspace of a noisy quantum channel; the covert message is protected from decoherence by the same mechanism that protects legitimate QKD traffic; eavesdropper cannot distinguish from channel noise [[1]](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.68.022337) |
+| **QKD Traffic Steganography (Natori)** | 2006 | Polarisation basis exploitation | Embeds covert bits in the choice of polarisation basis during QKD sifting; the sifted-key rate is indistinguishable from normal QKD operation; capacity is limited to the sifting error rate [[1]](https://journals.jps.jp/doi/10.1143/JPSJ.75.014001) |
+| **Quantum Covert Channel Capacity (Ahn-Winter)** | 2022 | Quantum channel capacity theory | Derives the quantum analogue of the Shannon covert-channel capacity; shows that the covert capacity of a quantum channel Q is O(√n) bits per n uses — the quantum square-root law — mirroring Ker's classical result [[1]](https://arxiv.org/abs/2110.12457) |
+
+**State of the art:** Shaw-Brun (2010) is the foundational entanglement-based construction; the quantum square-root law (Ahn-Winter 2022) establishes information-theoretic limits analogous to the classical setting. Quantum steganography is largely theoretical; no deployed system exists. Related to [Information-Theoretic Steganography](#information-theoretic-steganography-cachin-model) (Cachin KL model), [Robustness, Capacity, and Imperceptibility Trade-offs](#robustness-capacity-and-imperceptibility-trade-offs) (square-root law), and [Quantum Cryptography](categories/15-quantum-cryptography.md#quantum-key-distribution-qkd).
+
+---
+
+## Optical and Thermal Covert Channels
+
+**Goal:** Exfiltrate data from air-gapped or network-isolated systems by modulating physical emissions — visible light (screen brightness, LED blinking, laser reflections), near-infrared, or heat from CPU/GPU components — that can be observed by a nearby sensor outside the security perimeter. These channels bypass all network and electromagnetic shielding that does not address optical or thermal emissions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SPEAKE(a)R / aIR-Jumper (Guri et al.)** | 2017 | Infrared LED on security cameras | Attacker malware modulates IR LEDs on IP security cameras to blink covert data; a nearby attacker reads the IR signal with a smartphone camera or dedicated sensor; demonstrated at ~20 b/s through physical walls [[1]](https://arxiv.org/abs/1709.05742) |
+| **LED-it-GO (Guri et al.)** | 2017 | HDD activity LED | Malware on an air-gapped PC blinks the HDD activity LED at up to 6000 blinks/s; line-of-sight optical receiver at 10–100 m; demonstrated 4000 b/s exfiltration rate [[1]](https://arxiv.org/abs/1706.01140) |
+| **Laser-Based Exfiltration (VAMPIRE / Lamphone)** | 2020 | Retroreflective surface vibration | Illuminates a nearby reflective object (e.g., a hanging bulb or plant) with a laser; a photo-diode captures microvibrations induced by acoustic signals (speech) in the room; passive, non-contact audio eavesdropping [[1]](https://www.usenix.org/conference/usenixsecurity20/presentation/nassi) |
+| **HEAT (Thermal Covert Channel, Bartolini et al.)** | 2016 | CPU heat sink thermal gradient | CPU on one die encodes bits by toggling computational load; a co-located die's on-chip thermal sensor reads temperature fluctuations; demonstrated cross-core channel at ~1–10 b/s inside a single package [[1]](https://dl.acm.org/doi/10.1145/2934583.2934601) |
+| **BitWhisper (Guri et al.)** | 2015 | Thermal emission between adjacent computers | Two physically adjacent computers (no shared network); sender CPU generates heat patterns by varying workload; receiver's thermal sensor decodes; 8 bits/hour over ~15 cm air gap [[1]](https://arxiv.org/abs/1503.07919) |
+
+**State of the art:** Guri et al. (Ben-Gurion University) have systematically catalogued optical and thermal air-gap covert channels (2015–2021); LED-based channels achieve the highest rates (~4 kb/s). Countermeasures include LED covers, physical shielding, camera restrictions near sensitive hardware, and software LED-rate limiters. Related to [Cloud Cache Covert Channels](#cloud-cache-covert-channels) (microarchitectural exfiltration analogue) and [Hardware Side-Channels](categories/17-ai-hardware-physical-security.md#hardware-side-channels--physical-attacks).
+
+---
+
+## Steganographic Protocols (StegProtocol / HYDAN)
+
+**Goal:** Embed hidden communication directly inside the bytestream of standard application-layer protocols or executable files so that the covert channel is indistinguishable from normal protocol traffic or benign software. Unlike network-header methods ([Network / Protocol Steganography](#network--protocol-steganography)), these schemes exploit semantic or syntactic redundancy at the application or binary level.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HYDAN (El-Khalil-Keromytis)** | 2004 | x86 instruction redundancy | Hides data in the choice of functionally equivalent x86 instruction encodings (e.g., `add eax,1` vs. `sub eax,-1`); capacity ~1/110 of executable size; binary remains executable and passes all runtime tests [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30191-2_8) |
+| **StegProtocol (von Ahn-Hopper)** | 2004 | Computationally secure interactive stego | Defines a formal two-party steganographic protocol secure against active wardens; uses rejection sampling on the protocol message space; first protocol-level steganographic security proof [[1]](https://eprint.iacr.org/2004/033) |
+| **HTTP Steganography (StegHTTP)** | 2010 | HTTP header field ordering | Encodes bits in the ordering and capitalisation of optional HTTP request headers (Accept-Encoding, User-Agent variants); ordering choices are semantically equivalent; covert channel survives proxies that do not reorder headers [[1]](https://www.semanticscholar.org/paper/HTTP-Protocol-Steganography-Bauer/b4b07ecbc1d7b78b2038ed6ce7f8c86f66a81ea8) |
+| **TLS Record-Size Covert Channel** | 2018 | TLS fragmentation choices | Sender fragments application data into TLS records of sizes encoding message bits; record size is a free parameter within the TLS spec; receiver observes record boundaries; survives across TLS 1.3 implementations [[1]](https://ieeexplore.ieee.org/document/8622529) |
+| **SkypeMorph / FTE (Format-Transforming Encryption)** | 2012–2013 | Protocol format mimicry | Transforms Tor traffic to mimic Skype or arbitrary protocol formats using a format grammar; the ciphertext byte distribution matches the target protocol's statistical profile; defeats DPI-based censorship [[1]](https://cacm.acm.org/research/format-transforming-encryption/) |
+
+**State of the art:** HYDAN remains the reference binary-level steganographic scheme; FTE / SkypeMorph are deployed in censorship circumvention tools (Tor pluggable transports). StegProtocol (von Ahn-Hopper 2004) provides the foundational security definition for protocol-level steganography. Related to [Network / Protocol Steganography](#network--protocol-steganography) (transport-layer complement), [Kleptography / ASA](#kleptography--algorithm-substitution-attacks-asa) (protocol subversion), and [Deniable Encryption](#deniable-encryption) (coercion-resistant communication).
+
+---

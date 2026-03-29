@@ -653,3 +653,140 @@ A parallel line of work builds FE for *bounded-depth circuits* (NC¹ or polynomi
 | **Brakerski et al. compact FE** | 2021 | Bounded-width BPs | LWE + ORAM | Compact FE for NC¹-equivalent branching programs [[1]](https://eprint.iacr.org/2020/1304) |
 
 **State of the art:** General-circuit FE remains a theoretical frontier, with concrete instantiations depending on iO candidates (see [Obfuscation & iO](categories/16-obfuscation-advanced-hardness.md#indistinguishability-obfuscation-io)). FE for bounded function classes (inner products, quadratics, regular languages, NC¹) from standard assumptions is an active research area. Practical deployments use [IPFE](#inner-product-functional-encryption-ipfe) or [ABE](#attribute-based--functional-encryption); general-circuit FE is not yet deployed. See also [Quadratic FE](#quadratic--degree-2-functional-encryption) and [FH-IPFE](#function-hiding-inner-product-functional-encryption-fh-ipfe).
+
+---
+
+## Number Theoretic Transform (NTT) in FHE
+
+**Goal:** Accelerate polynomial multiplication — the bottleneck operation in all RLWE-based FHE schemes — from O(n²) naive multiplication to O(n log n) using the Number Theoretic Transform, the finite-field analogue of the Fast Fourier Transform.
+
+All modern FHE schemes (BFV, BGV, CKKS, TFHE) perform arithmetic over quotient rings ℤ_q[X]/(Xⁿ + 1) where n is a power of two. The dominant cost is polynomial multiplication: computing the product of two degree-(n−1) polynomials mod (Xⁿ + 1) mod q. Naively this is O(n²) coefficient multiplications. The NTT replaces this with three steps: NTT-forward on both inputs (O(n log n)), pointwise multiplication (O(n)), and NTT-inverse (O(n log n)). This requires choosing q such that q ≡ 1 (mod 2n) — guaranteeing a primitive 2n-th root of unity ω in ℤ_q — and precomputing twiddle factors ωᵢ. The negacyclic NTT (for the ring ℤ_q[X]/(Xⁿ + 1) rather than ℤ_q[X]/(Xⁿ − 1)) uses a twisted variant where inputs are pre-multiplied by powers of √ω before the transform.
+
+In practice, FHE parameters use the Residue Number System (RNS): the modulus Q is a product of small 60-bit primes q₁ · q₂ · … · qₗ, each satisfying qᵢ ≡ 1 (mod 2n). Each coefficient of the ciphertext polynomial is represented modulo each qᵢ independently, so all NTT operations use 64-bit arithmetic without big integers. Hardware accelerators (GPUs, FPGAs, ASICs) exploit the data-parallelism of the butterfly network and the RNS decomposition to achieve 10–100× speedups over CPU implementations.
+
+| Component | Detail |
+|-----------|--------|
+| **Transform size** | n = 2¹⁰ to 2¹⁶ (ring degree); NTT of length 2n (negacyclic) |
+| **Modulus constraint** | Each RNS prime q ≡ 1 (mod 2n); enables primitive 2n-th root of unity |
+| **Butterfly network** | Cooley-Tukey (DIT) or Gentleman-Sande (DIF); log₂(n) stages, n/2 butterflies each |
+| **RNS decomposition** | Q = q₁ · … · qₗ; independent NTT per prime; no big-integer arithmetic |
+| **Key-switching NTT** | Relinearization and rotation each require additional NTT calls; dominant latency contributor |
+
+| Implementation | Platform | Note |
+|----------------|----------|------|
+| **Intel HEXL** | CPU (AVX-512) | Vectorized NTT/RNS for SEAL and OpenFHE; 2–4× speedup over scalar C++ [[1]](https://eprint.iacr.org/2021/420) |
+| **cuFHE / nuFHE** | GPU (CUDA) | GPU-accelerated TFHE; batched NTT over LWE ciphertexts [[1]](https://github.com/vernamlab/cuFHE) |
+| **F1 FPGA accelerator** | FPGA | MIT/Draper F1; dedicated NTT datapath for BFV/BGV [[1]](https://dl.acm.org/doi/10.1145/3470496.3527404) |
+| **BASALISC** | ASIC | Google FHE ASIC; on-chip NTT engines; 1000× CPU throughput [[1]](https://eprint.iacr.org/2022/657) |
+
+**State of the art:** Intel HEXL provides production-grade AVX-512 NTT integrated into SEAL and OpenFHE. GPU NTT (TFHE-rs GPU backend) enables batched bootstrapping. ASIC accelerators (F1, BASALISC) achieve orders-of-magnitude speedups but require custom hardware. NTT is also the core primitive inside [FHEW Bootstrapping](#fhew-bootstrapping) (blind rotation over a ring) and [CKKS Approximate Arithmetic & Rescaling](#ckks-approximate-arithmetic--rescaling).
+
+---
+
+## Parameter Selection for BFV / BGV / CKKS
+
+**Goal:** Choose cryptographic parameters (ring degree n, ciphertext modulus Q, plaintext modulus t, scaling factor Δ) that simultaneously achieve a target security level, a sufficient noise budget or arithmetic precision, and acceptable performance — without overprovisioning resources.
+
+Parameter selection is a multi-objective optimization problem. Security is measured by the hardness of the underlying RLWE problem: for a given (n, Q), the root Hermite factor δ or the required BKZ blocksize determines the bit-security against lattice attacks. The Homomorphic Encryption Standard (HES, 2021) tabulates (n, log Q) pairs achieving λ = 128, 192, and 256 bits of classical security, derived from the LWE estimator. Noise management is scheme-specific:
+
+**BFV/BGV (exact integer arithmetic):** The noise budget decreases by roughly log(t) bits per multiplication (BGV) or grows multiplicatively (BFV). Setting L multiplication levels requires log Q ≈ L · log(q_i) + log(q_0), where q_0 holds the final decryption noise floor. The plaintext modulus t must be chosen so that noise stays strictly below t/2 throughout the computation.
+
+**CKKS (approximate arithmetic):** A scaling factor Δ (typically 2⁴⁰–2⁶⁰) maps real numbers to integers; each multiplication consumes one level via rescaling. The ring dimension n must satisfy n ≥ 2 × (number of SIMD slots needed). Bootstrapping for CKKS consumes 10–20 additional levels and requires careful tuning of the cosine-approximation polynomial degree against precision requirements.
+
+The HES parameter standard, OpenFHE's parameter generator, and the `lattice-estimator` tool (Albrecht et al.) automate selection. Parameter choices directly affect ciphertext size: a ring of degree n = 2¹⁶ with log Q = 1740 bits (supporting ~29 levels at λ = 128) yields ciphertexts of approximately 430 KB — critical for network-constrained deployments.
+
+| Parameter | BFV/BGV | CKKS | Impact |
+|-----------|---------|------|--------|
+| Ring degree n | 2¹²–2¹⁶ | 2¹²–2¹⁶ | Security, slot count, NTT cost |
+| log Q (total modulus) | 60–1800 bits | 60–1800 bits | Circuit depth, security level |
+| Plaintext modulus t | prime, t < q | — (scaling Δ used) | Message space, noise budget (BGV) |
+| Scaling factor Δ | — | 2⁴⁰–2⁶⁰ | Fixed-point precision, noise growth |
+| Multiplicative levels L | ≈ log Q / log q_i | ≈ log Q / log Δ | Supported circuit depth |
+
+| Resource / Tool | Description |
+|-----------------|-------------|
+| **HES Parameter Standard (2021)** | Tabulates (n, log Q) pairs for λ = 128, 192, 256 bits [[1]](https://homomorphicencryption.org/wp-content/uploads/2018/11/HomomorphicEncryptionStandardv1.1.pdf) |
+| **lattice-estimator (Albrecht et al.)** | Python tool estimating LWE hardness from (n, q, σ, secret distribution) [[1]](https://github.com/malb/lattice-estimator) |
+| **OpenFHE parameter generator** | Automated CKKS/BFV parameter generation given depth and security target [[1]](https://github.com/openfheorg/openfhe-development) |
+| **CKKS parameter selection guide (Cheon et al.)** | Systematic analysis of precision-depth-security tradeoffs in CKKS [[1]](https://eprint.iacr.org/2020/1118) |
+
+**State of the art:** The HES standard and `lattice-estimator` are the authoritative references. OpenFHE and SEAL validate parameters against these tables at key-generation time. CKKS parameter selection remains the most nuanced (precision vs. depth vs. bootstrapping overhead tradeoff) and is an active area of tooling development. Related to [NTT in FHE](#number-theoretic-transform-ntt-in-fhe) (performance impact) and [FHEW Bootstrapping](#fhew-bootstrapping) (level consumption during refresh).
+
+---
+
+## HE for Healthcare & Genomics
+
+**Goal:** Enable computation on sensitive biomedical data — patient records, genomic sequences, clinical statistics — while the data remains encrypted, so research institutions and cloud services never see individual plaintext health information.
+
+Healthcare and genomics are high-value FHE application domains because the data is both highly sensitive (HIPAA/GDPR-regulated) and statistically rich. Key workflows include:
+
+**Genome-Wide Association Studies (GWAS):** Statistical tests (chi-squared, logistic regression) over millions of SNP markers against a phenotype. Kim, Song, Kim, Lee, and Cheon (iDASH 2018 winner) showed that CKKS can evaluate regularized logistic regression on an encrypted genomic dataset in minutes by encoding cohort-level statistics as CKKS vectors and evaluating the score test homomorphically. The iDASH competition (annual) benchmarks encrypted GWAS, secure genotype imputation, and encrypted DNA string matching.
+
+**Encrypted genotype imputation:** Predicting missing SNP values from a reference panel. Blatt, Gusev, Polyak, and Goldwasser (2020) demonstrated CKKS-based imputation using a linear regression model evaluated homomorphically on encrypted target genotypes, matching plaintext accuracy.
+
+**Privacy-preserving patient record matching:** Identifying records belonging to the same patient across independent hospital databases without revealing patient identity. FHE-based approaches encode patient identifiers (name tokens, date of birth) as polynomial representations and find encrypted intersections without exposing the underlying data.
+
+**Encrypted EHR analytics:** Running aggregate statistics (means, covariances, logistic regression) on encrypted electronic health records for multi-site federated research. The HELR scheme (Kim et al. 2018) demonstrated practical CKKS-based logistic regression over encrypted datasets with thousands of patients.
+
+| Work / System | Year | Scheme | Task | Note |
+|---------------|------|--------|------|------|
+| **iDASH GWAS (Kim et al.)** | 2018 | CKKS | Encrypted logistic regression on SNP data | iDASH competition winner; practical runtime [[1]](https://eprint.iacr.org/2018/254) |
+| **HELR (Kim et al.)** | 2018 | CKKS | Logistic regression on encrypted EHR | Mini-batch gradient descent on CKKS-encrypted cohort data [[1]](https://eprint.iacr.org/2018/657) |
+| **Encrypted genotype imputation (Blatt et al.)** | 2020 | CKKS | Impute missing SNPs from reference panel | Homomorphic linear model; matches plaintext accuracy [[1]](https://www.pnas.org/doi/10.1073/pnas.1918257117) |
+| **THEMIS (patient record linkage)** | 2022 | BFV + PSI | Privacy-preserving record linkage across hospitals | Combines FHE with PSI for cross-institution patient matching [[1]](https://eprint.iacr.org/2022/1464) |
+| **CryptoNets** | 2016 | BFV | Neural network inference on encrypted clinical data | First demonstration of FHE-based clinical ML inference [[1]](https://proceedings.mlr.press/v48/gilad-bachrach16.html) |
+| **POSEIDON (federated genomics)** | 2021 | CKKS | Federated GWAS across institutions | Multi-party CKKS; privacy-preserving federated genome analysis [[1]](https://www.nature.com/articles/s41467-021-25972-y) |
+
+**State of the art:** CKKS-based logistic regression (Kim et al.) is the benchmark for encrypted GWAS. The iDASH competition annually tracks performance improvements. Patient record linkage combines [PSI](categories/10-privacy-preserving-computation.md#private-set-intersection-psi) and FHE. [Concrete ML](#concrete--concrete-ml-zama) and OpenFHE provide accessible libraries for healthcare researchers.
+
+---
+
+## FHE Applications in Cloud Computing
+
+**Goal:** Allow cloud providers to perform useful computation — database queries, search, analytics, and ML serving — on customer data that remains encrypted end-to-end, so even a compromised or untrusted cloud sees only ciphertexts throughout.
+
+Cloud FHE is the original motivation for fully homomorphic encryption. Practical deployments span several categories:
+
+**Encrypted search / searchable FHE:** A client uploads an encrypted database; queries arrive as encrypted keywords; the server evaluates a search predicate homomorphically and returns encrypted matching records. Unlike [Searchable Symmetric Encryption (SSE)](categories/10-privacy-preserving-computation.md#searchable-encryption-sse--peks) (which leaks access patterns), FHE-based search reveals only the encrypted result. CKKS or BFV can encode inverted indexes as packed ciphertext vectors and evaluate inner products (keyword match scores) homomorphically.
+
+**Encrypted SQL and oblivious databases:** Evaluating SQL-like queries (SELECT, GROUP BY, SUM, AVG) over encrypted relational tables. Systems like CryptDB (Popa et al. 2011) used layered partially homomorphic encryption with onion decryption at the server; more recent works push toward full FHE with CKKS aggregates and BFV exact predicates combined with ORAM for oblivious access patterns.
+
+**Private information retrieval (PIR) via FHE:** A client retrieves a database record by index without revealing which record it accessed. SealPIR (Angel et al. 2018) uses BFV to encode the database as a polynomial and evaluate the selection predicate homomorphically, achieving sub-second single-server PIR for databases of millions of records.
+
+**FHE for encrypted cloud ML serving:** A cloud ML provider runs model inference on client-encrypted inputs. The client submits an FHE ciphertext; the server evaluates the neural network homomorphically and returns an encrypted prediction. Zama's fhEVM extends this concept to Ethereum smart contracts: contract state is encrypted under TFHE, and transactions trigger FHE evaluation on-chain.
+
+| System / Work | Year | Scheme | Application | Note |
+|---------------|------|--------|-------------|------|
+| **CryptDB** | 2011 | OPE / Paillier (partial) | Encrypted SQL with layered encryption | Practical but not FHE; leaks order/equality via onion decryption [[1]](https://dl.acm.org/doi/10.1145/2043556.2043566) |
+| **SealPIR** | 2018 | BFV | Sub-second single-server PIR | FHE-based PIR; O(√n) communication; practical for large DBs [[1]](https://eprint.iacr.org/2017/1142) |
+| **SimplePIR (Henzinger et al.)** | 2023 | LWE | Fast PIR with amortized offline phase | Near-bandwidth-optimal single-server PIR; 10 GB/s throughput [[1]](https://eprint.iacr.org/2022/949) |
+| **Pegasus (encrypted ML serving)** | 2021 | CKKS + TFHE | Hybrid FHE inference (CNN) | Switches between CKKS (linear layers) and TFHE (non-linear activations) [[1]](https://eprint.iacr.org/2020/1219) |
+| **fhEVM (Zama)** | 2023 | TFHE-rs | Encrypted Ethereum smart contracts | EVM state encrypted; FHE evaluation triggered on-chain [[1]](https://github.com/zama-ai/fhevm) |
+| **HEAR (encrypted SQL aggregates)** | 2022 | BFV + CKKS | Homomorphic SUM/AVG/COUNT on encrypted tables | SQL aggregates on encrypted relational data with formal query privacy [[1]](https://eprint.iacr.org/2022/1410) |
+
+**State of the art:** FHE-based PIR (SealPIR, SimplePIR) is practically deployable today. Hybrid CKKS+TFHE inference (Pegasus) is the leading approach for encrypted cloud ML serving. fhEVM (Zama) is deployed on the Fhenix testnet. Full encrypted SQL at scale remains an open challenge due to FHE's overhead on comparison and sorting; [ORAM](categories/10-privacy-preserving-computation.md#oblivious-ram-oram) and [PIR](categories/10-privacy-preserving-computation.md#private-information-retrieval-pir) are complementary building blocks.
+
+---
+
+## FHE for Private Neural Network Training
+
+**Goal:** Train a machine learning model on private data without the training server ever seeing plaintext inputs, labels, or intermediate gradients — enabling cross-institution model training where data cannot be legally or contractually shared.
+
+Private neural network training is harder than inference: training requires many rounds of gradient computation via backpropagation, which involves non-polynomial activations (ReLU, softmax), high-precision floating-point arithmetic, and iterative parameter updates — all of which are expensive under FHE. Three main approaches have emerged:
+
+**Pure FHE training:** Evaluate the full forward and backward pass homomorphically. Activation functions are approximated by low-degree polynomials (e.g., ReLU ≈ x²/4 + x/2; sigmoid ≈ a degree-3 or degree-5 Chebyshev approximation). CKKS supports the approximate arithmetic required for gradient descent. Kim and colleagues (2018, 2020) demonstrated CKKS-based training of logistic regression and shallow networks on encrypted datasets; deep networks remain computationally prohibitive without bootstrapping support.
+
+**Hybrid FHE and MPC training:** Use FHE for the data-owner-to-server interface (encrypted input upload) and secure MPC among computation nodes for gradient aggregation. Systems like CrypTen (Meta's PyTorch extension for MPC-based ML) use this architecture without full FHE, providing a complementary privacy-preserving training path.
+
+**Federated learning with FHE gradient aggregation:** Each data-holding client trains locally and sends encrypted gradient updates; the server aggregates gradients homomorphically under FHE (typically Paillier or CKKS) without seeing individual gradients. The FATE platform, PySyft, and OpenMined support Paillier/CKKS-encrypted federated aggregation, making this the most widely deployed approach.
+
+| System / Work | Year | Scheme | Task | Note |
+|---------------|------|--------|------|------|
+| **HELR training (Kim et al.)** | 2018 | CKKS | Encrypted logistic regression training | Mini-batch gradient descent on CKKS-encrypted data; matches plaintext convergence [[1]](https://eprint.iacr.org/2018/657) |
+| **HEAR deep training (Han-Ki)** | 2020 | CKKS + bootstrapping | CNN training on encrypted data | Uses CKKS bootstrapping to sustain multi-layer backpropagation [[1]](https://eprint.iacr.org/2020/050) |
+| **FATE (Federated AI Technology Enabler)** | 2019 | Paillier | Federated learning with encrypted gradient aggregation | Production FL platform; Paillier aggregation; deployed at WeBank [[1]](https://arxiv.org/abs/1902.04885) |
+| **CrypTen (Meta)** | 2021 | SPDZ-based MPC | Privacy-preserving PyTorch training | MPC rather than FHE; complementary approach; open-source [[1]](https://arxiv.org/abs/2109.00548) |
+| **Pegasus hybrid (CNN with non-linear layers)** | 2021 | CKKS + TFHE | Inference and lightweight fine-tuning | Hybrid scheme handles ReLU via TFHE programmable bootstrap during training [[1]](https://eprint.iacr.org/2020/1219) |
+| **AutoFHE (NAS for FHE-friendly models)** | 2023 | CKKS | Architecture search for FHE-trainable networks | Neural architecture search targeting low-degree polynomial activations [[1]](https://eprint.iacr.org/2023/1016) |
+
+**State of the art:** Encrypted federated learning with Paillier/CKKS aggregation (FATE, PySyft) is production-deployed at scale. Pure FHE training (Kim, Han-Ki) is feasible for logistic regression and shallow networks but not yet for large models. The dominant bottleneck is non-polynomial activations: [TFHE programmable bootstrapping](#fhew-bootstrapping) handles ReLU exactly via LUT but is slower than CKKS polynomial approximation for deep networks. [Concrete ML](#concrete--concrete-ml-zama) provides user-friendly access to FHE-trained quantized models. Related to [HE for Healthcare & Genomics](#he-for-healthcare--genomics) and [FHE Applications in Cloud Computing](#fhe-applications-in-cloud-computing).

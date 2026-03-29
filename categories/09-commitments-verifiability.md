@@ -661,3 +661,121 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 **State of the art:** LegoSNARK (CCS 2019) is the canonical framework for modular CP-SNARK design. The core abstraction — commit once, prove many statements — is now standard practice in privacy-preserving credential and payment systems. Practical deployments combine Pedersen commitments (for homomorphic range checks) with Groth16 or Plonk sub-proofs for application logic. The Darlin system (2022) demonstrates recursive proof composition via CP-SNARKs without pairings. See also [Commitment Schemes](#commitment-schemes), [Verifiable Computation (VC)](#verifiable-computation-vc), and [Trapdoor Commitments](#trapdoor-commitments-equivocable-commitments).
 
 ---
+
+## Greyhound / Labrador (Lattice-Based Polynomial Commitments)
+
+**Goal:** Efficient, post-quantum polynomial commitments from standard lattice assumptions. Labrador (2023) and its successor Greyhound (2024) provide the first practical lattice-based polynomial commitment schemes competitive with pairing- and hash-based alternatives — enabling ZK proofs for large arithmetic circuits without pairings, with security reducible to Module-SIS and Module-LWE.
+
+| Property | Value |
+|----------|-------|
+| **Security basis** | Module-SIS / Module-LWE (structured lattices, ring variants) |
+| **Setup** | Transparent — no trusted setup, no toxic waste |
+| **Post-quantum** | Yes — based on worst-case lattice hardness |
+| **Homomorphism** | Additively homomorphic commitments to polynomial vectors |
+| **Proof size** | Labrador: O(√n) — Greyhound: logarithmic (amortized) |
+| **Applications** | Lattice-based SNARKs, ZK proofs for NTRU/Dilithium statements |
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Labrador (Beullens et al.)** | 2023 | Module-SIS | First practical lattice-based polynomial commitment; O(√n) proofs; amortised over many openings; CRYPTO 2023 [[1]](https://eprint.iacr.org/2022/1341) |
+| **Greyhound (Fenzi et al.)** | 2024 | Module-SIS + folding | Extends Labrador with a folding-style reduction; logarithmic-size proofs; CRYPTO 2024 [[1]](https://eprint.iacr.org/2024/1396) |
+| **SLAP (Esgin et al.)** | 2024 | Module-LWE + ajtai | Scales to large witness sets; suitable for lattice-based credential systems [[1]](https://eprint.iacr.org/2024/1287) |
+
+**State of the art:** Greyhound (CRYPTO 2024) is the state-of-the-art lattice polynomial commitment, achieving logarithmic proof sizes from standard Module-SIS — a milestone for post-quantum verifiable computation. Labrador underpins real-world lattice ZK proofs for statements about NTRU and Dilithium keys. Both are transparent and require no structured reference string, distinguishing them from pairing-based KZG. See also [BDLOP Lattice Commitments](#bdlop-lattice-commitments), [Multilinear Polynomial Commitments](#multilinear-polynomial-commitments), and [Functional Commitments](#functional-commitments).
+
+---
+
+## Updatable Trusted Setup Ceremonies (Sonic / Marlin)
+
+**Goal:** Reduce trust in universal SNARK setups. A universal structured reference string (SRS) can be used across many circuits, but still requires at least one honest participant during generation. Updatable setups (Sonic, Marlin, PLONK) allow anyone to contribute randomness and update the SRS at any time — so the setup is secure as long as any single contributor was honest, even if all others collude. This turns a one-time trusted setup into an ongoing public ceremony.
+
+| Property | Standard SRS | Updatable SRS |
+|----------|-------------|---------------|
+| **Security requirement** | One honest participant among original set | One honest participant among *all* contributors, past or future |
+| **Transparency** | Fixed set of participants | Anyone can contribute at any time |
+| **Trust model** | Trust the MPC ceremony | Trust any single historical contributor |
+| **Example** | Groth16 per-circuit setup | Sonic, Marlin, PLONK universal SRS |
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Sonic (Maller et al.)** | 2019 | Pairings + updatable SRS | First universal, updatable SNARK; polylogarithmic proofs; CRYPTO 2019 [[1]](https://eprint.iacr.org/2019/099) |
+| **Marlin (Chiesa et al.)** | 2020 | Algebraic holographic proofs + KZG | Universal and updatable; linear-time prover; basis of many production systems; EUROCRYPT 2020 [[1]](https://eprint.iacr.org/2019/1047) |
+| **PLONK (Gabizon et al.)** | 2019 | KZG + permutation argument | Universal and updatable SRS; one setup for all circuits of bounded size; widely adopted [[1]](https://eprint.iacr.org/2019/953) |
+| **Powers of Tau (Bowe et al.)** | 2017 | Multi-party computation | Practical MPC ceremony producing a KZG SRS; used in Zcash, Ethereum EIP-4844 [[1]](https://eprint.iacr.org/2017/1050) |
+| **Perpetual Powers of Tau** | 2019 | Ongoing Powers of Tau | Open ceremony; 100+ contributors; reusable across many projects [[1]](https://github.com/weijiekoh/perpetualpowersoftau) |
+
+**State of the art:** PLONK and Marlin are the dominant universal, updatable SNARKs in production — deployed in Aztec, Scroll, Polygon zkEVM, and Aleo. The Ethereum community's Powers of Tau ceremony (thousands of contributors) provides the most widely trusted KZG SRS available. Updatability eliminates the "single ceremony" trust bottleneck of Groth16, at the cost of larger proof sizes. See also [KZG Polynomial Commitments](#kzg-polynomial-commitments) and [Verifiable Computation (VC)](#verifiable-computation-vc).
+
+---
+
+## MiMC and GMiMC (Minimal Multiplicative Complexity Hashes)
+
+**Goal:** Arithmetic-friendly hash functions with the fewest possible multiplicative operations. Standard hash functions (SHA-256, Keccak) require thousands of multiplications when verified inside an arithmetic circuit — making ZK proofs expensive. MiMC (Albrecht et al., 2016) minimises the number of field multiplications by using a simple cube map x³ as the round function, resulting in a hash that is dramatically cheaper to prove in SNARKs and STARKs. GMiMC generalises this to larger Feistel networks for improved throughput.
+
+| Property | Value |
+|----------|-------|
+| **Round function** | x³ (or xᵉ for gcd(e, p−1) = 1) over a prime field |
+| **Multiplicative complexity** | O(log p) multiplications (vs. O(p) for SHA-256 in circuits) |
+| **Field** | Prime fields Fₚ; also binary fields for MiMC-2n/n |
+| **Security** | Algebraic attacks; requires ≥ ⌈log₃ p⌉ rounds for security |
+| **Applications** | Commitment hashing inside SNARKs, ZK-friendly Merkle trees |
+
+| Variant | Year | Note |
+|---------|------|------|
+| **MiMC (Albrecht et al.)** | 2016 | First minimal-multiplicative-complexity block cipher / hash; cube map rounds; ASIACRYPT 2016 [[1]](https://eprint.iacr.org/2016/492) |
+| **GMiMC (Albrecht et al.)** | 2019 | Generalised MiMC using Feistel structure; higher throughput; more efficient for large input sizes [[1]](https://eprint.iacr.org/2019/397) |
+| **MiMC-Feistel / MiMCHash** | 2016 | Sponge construction using MiMC as the permutation; direct hash function [[1]](https://eprint.iacr.org/2016/492) |
+| **HadesMiMC / Poseidon (successor)** | 2019 | Replaces uniform cube-map rounds with partial-full round structure; see [Poseidon](#snark-friendly-hash-functions-poseidon--rescue) [[1]](https://eprint.iacr.org/2019/458) |
+
+**State of the art:** MiMC and GMiMC are foundational ZK-friendly hash functions — widely used in 2018–2021 for SNARK Merkle trees. They have been largely superseded by Poseidon (which offers better performance and security margins) and Rescue (which offers stronger security proofs). MiMC remains relevant as the simplest possible algebraic hash and as a reference design for algebraic cryptanalysis. Related to [SNARK-Friendly Hash Functions](#snark-friendly-hash-functions-poseidon--rescue) and [Commitment Schemes](#commitment-schemes).
+
+---
+
+## SNARK-Friendly Hash Functions (Poseidon / Rescue)
+
+**Goal:** Hash functions optimised for evaluation inside arithmetic circuits. When hashing is performed inside a SNARK or STARK, the number of field multiplications dominates proving cost. Poseidon and Rescue replace conventional bitwise operations (XOR, AND) with algebraic operations over prime fields, achieving 50–100× fewer constraints than SHA-256 inside a circuit — while maintaining 128-bit security. They are the standard commitment hashes in modern zkVM and zk-rollup systems.
+
+| Property | Poseidon | Rescue |
+|----------|----------|--------|
+| **Round function** | S-box: xᵅ (partial-full round structure, HadesMiMC) | S-box: xᵅ and x^(1/α) alternating |
+| **Security proof** | Statistical (wide-pipe) + algebraic bounds | Provable security in the ideal permutation model |
+| **Constraint count** | ~200–300 R1CS constraints for 254-bit field | ~250–400 constraints |
+| **Field** | Prime fields (Fₚ); binary-field variant Poseidon2 | Prime fields Fₚ |
+| **Main use** | zkSNARK Merkle trees, ZK-friendly commitments | Provable-security ZK hashing |
+
+| Scheme | Year | Note |
+|--------|------|------|
+| **Poseidon (Grassi et al.)** | 2021 | Partial-full round S-box; fewest constraints per output bit of any secure hash; adopted by Zcash Orchard, StarkNet, Filecoin, Miden [[1]](https://eprint.iacr.org/2019/458) |
+| **Poseidon2 (Grassi et al.)** | 2023 | Optimised for binary/hybrid field circuits; ~2× faster than Poseidon in Plonky3 / SP1 [[1]](https://eprint.iacr.org/2023/323) |
+| **Rescue (Aly et al.)** | 2020 | Alternating forward/inverse S-box; provable security in the random permutation model; used in Polygon Miden, AirScript [[1]](https://eprint.iacr.org/2020/1143) |
+| **Rescue-Prime (Starkad variant)** | 2020 | Simplified Rescue with security proofs; used in Winterfell / STARK systems [[1]](https://eprint.iacr.org/2020/1143) |
+| **Tip5 / Griffin** | 2022 | Newer algebraic hashes exploring lookup-friendly round functions; used in Plonky2 research [[1]](https://eprint.iacr.org/2022/1155) |
+
+**State of the art:** Poseidon is the dominant ZK-friendly hash function in production — used in Zcash Orchard, StarkNet Pedersen/Poseidon Merkle trees, Filecoin, Miden VM, and many rollups. Poseidon2 (2023) improves throughput for binary-field circuit backends (SP1, Plonky3). Rescue provides stronger provable-security guarantees and is preferred in formal-verification contexts. Both families are orders of magnitude more circuit-efficient than SHA-256 or Keccak for ZK applications. Related to [MiMC and GMiMC](#mimc-and-gmimc-minimal-multiplicative-complexity-hashes) and [Commitment Schemes](#commitment-schemes).
+
+---
+
+## Pedersen Commitments in Ristretto255 and the Dalek Library
+
+**Goal:** Constant-time, cofactor-free elliptic curve commitments for production cryptographic libraries. Pedersen commitments require a prime-order group to maintain binding security — but Curve25519 (used in X25519 and Ed25519) has cofactor 8, complicating group operations. Ristretto255 is a prime-order group constructed from Curve25519 by quotienting out the cofactor, exposing a clean prime-order interface. The `curve25519-dalek` Rust library implements Ristretto255, Pedersen commitments, and Bulletproofs in constant time, providing the canonical production implementation for privacy-preserving protocols.
+
+| Property | Value |
+|----------|-------|
+| **Curve** | Ristretto255 — prime-order quotient of Curve25519 |
+| **Group order** | ℓ ≈ 2²⁵² + 27742317777372353535851937790883648493 |
+| **Cofactor** | 1 (prime-order: no cofactor issues) |
+| **Constant-time** | Yes — all scalar multiplications use fixed-time algorithms |
+| **Commitment** | C = m·G + r·H where G, H are independent generators |
+| **Binding assumption** | Discrete logarithm (DLOG) in Ristretto255 |
+| **Hiding** | Perfectly hiding (uniform blinding factor r) |
+
+| Component | Year | Note |
+|-----------|------|-------|
+| **Ristretto255 (Hamburg)** | 2015 | Prime-order abstraction over Curve25519 / Ed448-Goldilocks; eliminates cofactor attack surface; IETF draft [[1]](https://ristretto.group/) |
+| **curve25519-dalek (Lovecruft / de Valence)** | 2017 | Rust library; constant-time Ed25519 / Ristretto255 / Pedersen / Bulletproofs; used in Signal, Zcash, Grin [[1]](https://github.com/dalek-cryptography/curve25519-dalek) |
+| **bulletproofs crate (dalek)** | 2018 | Bulletproofs range proofs and R1CS proofs over Ristretto255; used in Grin, Interledger, and research [[1]](https://github.com/dalek-cryptography/bulletproofs) |
+| **Merlin transcript** | 2018 | Fiat-Shamir transcript abstraction used by dalek Bulletproofs; domain-separated, sponge-based; composable [[1]](https://merlin.cool/) |
+
+**State of the art:** Ristretto255 is the recommended prime-order group for new Curve25519-based protocols — adopted in IETF drafts, Tor's onion service v3 cryptography, and Signal research. The `curve25519-dalek` crate (audited, constant-time) is the reference implementation for Pedersen commitments and Bulletproofs in the Rust ecosystem. Grin (MimbleWimble) and several academic prototypes use the dalek Bulletproofs crate directly for confidential transaction range proofs. See also [Commitment Schemes](#commitment-schemes), [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment), and [Range Proofs](#range-proofs).
+
+---

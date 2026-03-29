@@ -549,3 +549,83 @@
 **State of the art:** Cheetah and BOLT represent the current performance frontier for 2-party private inference. The key challenge remains non-linear layers (ReLU, softmax, GeLU) — linear layers are well-handled by CKKS, but activations require expensive garbled circuits or FSS-based techniques. Distinct from [SecureML / MPC-based ML training](#secureml-and-mpc-based-machine-learning-inference) (covers training); related to [FSS / DPF](#function-secret-sharing-fss--distributed-point-functions-dpf), [Garbled Circuits](#garbled-circuits-expanded), and [HE](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-fhe--she--phe).
 
 ---
+
+## Two-Party PSI from Garbled Circuits (Pinkas et al.)
+
+**Goal:** Private set intersection (PSI) via garbled circuits. Rather than number-theoretic PSI (DH-based or OPRf-based), garble a circuit that computes the intersection directly — achieving malicious security and circuit-PSI (where the output is secret-shared rather than revealed), with competitive performance even for unbalanced set sizes. Pinkas-Schneider-Zohner and follow-ons showed that GC-based PSI can be faster than cryptographic alternatives for certain parameter regimes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Pinkas-Schneider-Zohner (PSZ) PSI** | 2014 | OT extension + garbled Bloom filter | Fastest practical PSI at the time; OT extension reduces communication; USENIX Security 2014 [[1]](https://eprint.iacr.org/2014/774) |
+| **Pinkas-Schneider-Segev-Zohner (PSSZ)** | 2015 | OT + oblivious PRF | Semi-honest PSI using OPRF; 3-7× faster than PSZ; USENIX Security 2015 [[1]](https://eprint.iacr.org/2015/634) |
+| **Circuit-PSI (Pinkas et al.)** | 2018 | GC + oblivious PRF | Output is secret-shared intersection — neither party sees the intersection in the clear; enables downstream MPC; CCS 2018 [[1]](https://eprint.iacr.org/2018/120) |
+| **KKRT PSI** | 2016 | OT extension + Cuckoo hashing | Batched OPRF via OT extension + Cuckoo hashing; practical for millions of elements; CCS 2016 [[1]](https://eprint.iacr.org/2016/799) |
+| **VOLE-PSI (RS21)** | 2021 | VOLE + OKVS | PSI from VOLE-based OPRF; near-linear communication; EUROCRYPT 2021 [[1]](https://eprint.iacr.org/2021/262) |
+
+**State of the art:** VOLE-PSI (2021) and KKRT dominate for semi-honest PSI; circuit-PSI is the standard for composable intersection inside larger MPC pipelines. GC-based PSI remains relevant for unbalanced sizes (one set much smaller). Related to [PSI](categories/10-privacy-preserving-computation.md#private-set-intersection-psi), [OPRF](categories/10-privacy-preserving-computation.md#oblivious-prf-oprf), [OLE / VOLE](#oblivious-linear-evaluation-ole--vole), and [Garbled Circuits](#garbled-circuits-expanded).
+
+---
+
+## Private Decision Trees and Random Forests (Bost et al., ABY3)
+
+**Goal:** Evaluate a decision tree or random forest on a private input without revealing the model structure or the input values. The client holds a sensitive query (e.g., a medical record); the model owner holds a trained classifier. Only the classification label is revealed — not the branching conditions, thresholds, or individual tree predictions. Applications include private medical diagnosis, private credit scoring, and private fraud classification.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bost-Popa-Tu-Goldwasser** | 2015 | HE (Paillier) + GC | First practical private classification: decision trees, naive Bayes, and hyperplane classifiers; IEEE S&P 2015 [[1]](https://eprint.iacr.org/2014/331) |
+| **Kissner-Song private classifiers** | 2005 | Secret sharing | Early MPC-based private decision tree evaluation; information-theoretic in honest-majority model [[1]](https://dl.acm.org/doi/10.1145/1102120.1102169) |
+| **Efficient Private Decision Tree (Joye-Salehi)** | 2018 | HE + oblivious RAM | Decision tree evaluation using FHE for tree traversal; avoids circuit blowup from branch unrolling [[1]](https://eprint.iacr.org/2018/1099) |
+| **ABY3 Random Forest** | 2018 | 3PC secret sharing (honest majority) | Secret-shared random forest evaluation over replicated shares; fast LAN performance; CCS 2018 [[1]](https://eprint.iacr.org/2018/403) |
+| **Wen-Dong-Li (Crypten private forest)** | 2022 | 2PC + FSS | Private random forest using FSS for comparison gates; sublinear communication per tree node [[1]](https://arxiv.org/abs/2201.12218) |
+
+**State of the art:** ABY3-based approaches are fastest for semi-honest 3-party settings; FSS-based comparison (ARIANN-style) is best for 2-party. The central challenge is the data-dependent branching of tree traversal — standard solutions either unroll all paths (circuit blowup) or use ORAM (large overhead). Related to [FSS / DPF](#function-secret-sharing-fss--distributed-point-functions-dpf), [SecureML / MPC-based ML](#secureml-and-mpc-based-machine-learning-inference), and [ARIANN / SecureNN](#ariann-and-securenn-private-neural-network-inference).
+
+---
+
+## MPC for E-Voting (Helios, Belenios, Civitas)
+
+**Goal:** Run a verifiable, privacy-preserving election without a single trusted tallier. MPC-based e-voting splits the tallying authority among multiple servers (trustees) using threshold encryption or secret sharing — no single server can decrypt individual ballots, and even a minority of corrupt servers cannot bias the result. Voters and observers can publicly verify that their vote was counted correctly without learning how others voted.
+
+| System | Year | Basis | Note |
+|--------|------|-------|------|
+| **Helios** | 2008 | ElGamal threshold + ZK shuffles | First widely deployed web-based verifiable voting; voters encrypt ballots; trustees jointly decrypt tally via threshold decryption; USENIX Security 2008 [[1]](https://www.usenix.org/legacy/events/sec08/tech/full_papers/adida/adida.pdf) |
+| **Civitas** | 2008 | Mix-nets + threshold decryption | Coercion-resistant e-voting; MPC-based registration and tallying; anonymous credential issuance via MPC; IEEE S&P 2008 [[1]](https://eprint.iacr.org/2008/136) |
+| **Belenios** | 2013 | ElGamal threshold + homomorphic tally | Successor to Helios; trustees hold shares of the decryption key via Pedersen DKG; used in real French university elections [[1]](https://eprint.iacr.org/2013/177) |
+| **DEMOS-2** | 2015 | Secret sharing + MPC tally | Fully coercion-resistant; distributes credential issuance and tallying using MPC with honest majority [[1]](https://eprint.iacr.org/2015/1069) |
+| **Norwegian e-voting (Scytl/MPC)** | 2014 | Threshold decryption + mix-net | National-scale use of threshold MPC for tallying in Norwegian parliamentary elections; post-election audit [[1]](https://dl.acm.org/doi/10.1145/2660267.2660315) |
+
+**State of the art:** Belenios is the most actively maintained and deployed academic system (France, Switzerland); Civitas pioneered coercion resistance via MPC. The dominant approach is homomorphic tally (fast but limited to simple tally functions) or MPC-based mix-net (supports ranked/approval voting). Related to [Threshold Decryption](categories/05-secret-sharing-threshold-cryptography.md#threshold-decryption), [Mix-networks](categories/11-anonymity-credentials.md#mix-networks-mixnets), [E-voting](categories/20-applied-niche-protocols.md#e-voting--coercion-resistant-voting), and [DKG](categories/05-secret-sharing-threshold-cryptography.md#distributed-key-generation-dkg).
+
+---
+
+## MPC for Collaborative Fraud Detection (Privacy-Preserving ML Fraud)
+
+**Goal:** Multiple financial institutions jointly train or evaluate fraud detection models on their combined transaction data without sharing raw records. Each institution's data (account histories, transaction patterns) is sensitive and legally protected — but pooling it would dramatically improve fraud detection rates. MPC enables cross-institutional analysis while each party retains data sovereignty.
+
+| System / Scheme | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Privacy-Preserving Fraud Detection (Bringer et al.)** | 2011 | HE + secret sharing | Bank-to-bank comparison of transaction fingerprints under FHE; first MPC fraud system [[1]](https://link.springer.com/chapter/10.1007/978-3-642-24209-0_12) |
+| **Cape Privacy (now Tumult Labs)** | 2019 | Differential privacy + MPC | Platform for privacy-preserving data collaboration; used by financial institutions for fraud and AML analytics; combines MPC with DP output perturbation [[1]](https://github.com/capeprivacy) |
+| **FATE (Federated AI Technology Enabler)** | 2019 | Federated learning + secret sharing + HE | WeBank's open-source FL platform; secure gradient aggregation for logistic regression and tree-based fraud models across banks [[1]](https://github.com/FederatedAI/FATE) |
+| **Crypten cross-institution fraud** | 2021 | Secret sharing (SPDZ-like) | Demonstrated training fraud classifiers across two financial institutions using CrypTen; PyTorch-native [[1]](https://arxiv.org/abs/2109.00984) |
+| **OpenMined PySyft** | 2018+ | Secret sharing + DP + FL | Open-source MPC+FL library used for privacy-preserving AML and credit scoring research across institutions [[1]](https://github.com/OpenMined/PySyft) |
+
+**State of the art:** Production cross-institution fraud detection MPC is in early deployment — FATE and Cape/Tumult have real customers, but full MPC (not just FL + DP) for fraud remains expensive. The dominant practical approach combines federated learning for local model training with MPC only for secure aggregation, plus differential privacy for output protection. Related to [SecureML / MPC-based ML](#secureml-and-mpc-based-machine-learning-inference), [Secure Aggregation](#secure-aggregation-secagg), [Differential Privacy](categories/10-privacy-preserving-computation.md#differential-privacy), and [Carbyne Stack](#carbyne-stack-cloud-native-mpc).
+
+---
+
+## Asynchronous MPC (Ben-Or-Kelmer-Rabin, Canetti-Rabin)
+
+**Goal:** Multiparty computation without synchrony assumptions. In the asynchronous model, messages can be arbitrarily delayed and the protocol cannot wait for slow parties — it must make progress whenever n − t messages arrive (where t is the corruption threshold). This is strictly harder than synchronous MPC: the adversary can selectively delay messages to control what each party "sees" first. Ben-Or-Kelmer-Rabin (1994) and Canetti-Rabin (1996) gave the first rigorous treatments.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ben-Or-Kelmer-Rabin (BKR) Async MPC** | 1994 | Information-theoretic + async BA | First async MPC with t < n/4 tolerance; uses async Byzantine agreement (ABA) as a sub-protocol; PODC 1994 [[1]](https://dl.acm.org/doi/10.1145/164051.164083) |
+| **Canetti-Rabin Async MPC** | 1996 | Verifiable SS + async BA | Improved to t < n/3; uses AVSS (asynchronous verifiable secret sharing) to handle late arrivals; STOC 1996 [[1]](https://dl.acm.org/doi/10.1145/237814.238015) |
+| **Beerliová-Trubíniová–Hirt Async MPC** | 2010 | Packed SS + async BA | Efficient async MPC with optimal t < n/3; communication O(n²) per multiplication gate [[1]](https://eprint.iacr.org/2010/236) |
+| **AMPR (Async MPC with Preprocessing)** | 2015 | Beaver triples + async online | Preprocessing model for async MPC; decouple triple generation (sync-friendly) from async online phase [[1]](https://eprint.iacr.org/2015/1064) |
+| **Astra (async 3PC)** | 2019 | 3PC + async model | Practical 3-party async MPC for ML workloads; honest majority; CCS 2019 [[1]](https://eprint.iacr.org/2019/429) |
+
+**State of the art:** Async MPC achieves t < n/3 (information-theoretic) and t < n/2 (with computational assumptions and security-with-abort). The gap between sync and async tolerance (n/3 vs n/2 for IT-MPC) is fundamental. Modern async MPC is used in distributed key generation ceremonies and DeFi threshold services that cannot rely on a synchronous clock. Distinct from [Asynchronous BFT](#asynchronous-bft--asynchronous-mpc) (consensus focus) — async MPC is about computing arbitrary functions, not just agreement. Related to [AVSS](categories/05-secret-sharing-threshold-cryptography.md#asynchronous-verifiable-secret-sharing-avss) and [Robust MPC](#robust-mpc-with-cheater-identification).
+
+---

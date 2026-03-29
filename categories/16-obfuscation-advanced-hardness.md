@@ -401,3 +401,88 @@
 **State of the art:** Classical (non-quantum) copy-protection requires iO or hardware assumptions; quantum copy-protection (see [Quantum Copy-Protection](categories/15-quantum-cryptography.md#quantum-copy-protection--uncloneable-encryption)) achieves it from the no-cloning theorem. Software watermarking from LWE (2017) is the most practical deployed-oriented construction. Relates to [iO](#indistinguishability-obfuscation-io), [Constrained PRFs](#constrained-pseudorandom-functions-cprf), [Functional Encryption from iO](#functional-encryption-from-io), and [Quantum Copy-Protection](categories/15-quantum-cryptography.md#quantum-copy-protection--uncloneable-encryption).
 
 ---
+
+## Diffie-Hellman Assumption Variants (CDH, DDH, GDH, q-DH, co-CDH)
+
+**Goal:** Establish a spectrum of hardness assumptions over cyclic groups. The Computational Diffie-Hellman (CDH) family underpins nearly all discrete-log-based cryptography: public-key encryption, key agreement, signatures, IBE, and bilinear-map protocols. Each variant captures a different hardness property — computing vs. distinguishing vs. deciding — and different structural constraints (one-more, co-CDH, q-type), giving a rich ladder of assumptions from weakest (CDH) to strongest (DDH).
+
+| Assumption | Year | Group Setting | Note |
+|-----------|------|---------------|------|
+| **CDH (Computational Diffie-Hellman)** | 1976 | Generic group / prime-order | Given (g, g^a, g^b), compute g^{ab}; hardness is equivalent to discrete log in generic groups [[1]](https://doi.org/10.1109/TIT.1976.1055638) |
+| **DDH (Decisional Diffie-Hellman)** | 1994 | Prime-order group | Distinguish (g^a, g^b, g^{ab}) from (g^a, g^b, g^c) for random c; implies CDH; fails in groups with efficient pairings [[1]](https://eprint.iacr.org/1994/100) |
+| **GDH (Gap Diffie-Hellman)** | 2001 | Pairing-friendly group | CDH is hard even given a DDH oracle; arises naturally in pairing groups; basis of BLS signatures [[1]](https://link.springer.com/chapter/10.1007/3-540-44647-8_13) |
+| **q-DH (q-Diffie-Hellman)** | 2004 | Bilinear group | Given (g, g^x, …, g^{x^q}), compute g^{x^{q+1}}; non-falsifiable q-type assumption underlying short signatures [[1]](https://eprint.iacr.org/2004/171) |
+| **co-CDH (Cross-group CDH)** | 2001 | Two groups with pairing | Given g_1^a ∈ G_1 and g_2 ∈ G_2, compute g_2^a; hardness assumption in asymmetric pairing settings; used in HMQV and pairing-based IBE [[1]](https://link.springer.com/chapter/10.1007/3-540-44647-8_13) |
+| **One-More CDH** | 2001 | Prime-order group | Given n+1 challenges and n CDH oracle calls, compute all n+1 Diffie-Hellman values; underlies blind Schnorr security [[1]](https://eprint.iacr.org/2001/002) |
+
+**State of the art:** DDH is the most versatile falsifiable assumption; q-type assumptions (q-DH, q-SDH) enable shorter proofs at the cost of falsifiability. GDH is the natural assumption in pairing groups (e.g., BN254, BLS12-381). All DH variants are broken by quantum computers (Shor). Related to [bilinear map assumptions](#bilinear-map-assumptions-dbdh-dlin-sxdh-q-sdh-q-dbdhi), [dual-mode cryptosystems](#dual-mode-cryptosystems), and [predicate encryption](#predicate-encryption-and-attribute-hiding).
+
+---
+
+## Bilinear Map Assumptions (DBDH, DLIN, SXDH, q-SDH, q-DBDHI)
+
+**Goal:** Hardness foundations for pairing-based cryptography. Bilinear maps e: G_1 × G_2 → G_T enable new algebraic relations not possible with plain groups — but they also break DDH in G_1. A separate family of assumptions governs what remains hard in the pairing setting. These range from falsifiable (DBDH, DLIN, SXDH) to non-falsifiable q-type variants (q-SDH, q-DBDHI), and underpin IBE, short signatures, anonymous credentials, and ABE.
+
+| Assumption | Year | Setting | Note |
+|-----------|------|---------|------|
+| **DBDH (Decisional Bilinear Diffie-Hellman)** | 2001 | Symmetric pairing e: G × G → G_T | Distinguish e(g,g)^{abc} from e(g,g)^r given (g^a, g^b, g^c); basis of Boneh-Franklin IBE [[1]](https://link.springer.com/chapter/10.1007/3-540-44647-8_13) |
+| **DLIN (Decisional Linear)** | 2004 | Prime-order group | Distinguish g^{a+b} from random given (g^{1/s}, g^{1/t}, g^{a/s}, g^{b/t}); falsifiable, holds even when DDH fails; used in Waters IBE [[1]](https://eprint.iacr.org/2004/172) |
+| **SXDH (Symmetric External DH)** | 2006 | Asymmetric pairing G_1 ≠ G_2 | DDH hard in both G_1 and G_2 independently; strongest natural pairing assumption; used in Groth-Sahai proofs [[1]](https://eprint.iacr.org/2005/187) |
+| **q-SDH (q-Strong Diffie-Hellman)** | 2004 | Bilinear group | Given (g, g^x, …, g^{x^q}), output (c, g^{1/(x+c)}) for chosen c; underlies Boneh-Boyen short signatures and BBS+ credentials [[1]](https://eprint.iacr.org/2004/171) |
+| **q-DBDHI (q-Decision Bilinear DH Inversion)** | 2004 | Bilinear group | Distinguish e(g,g)^{1/x} from random given (g, g^x, …, g^{x^q}); basis of Boneh-Boyen IBE and short group signatures [[1]](https://eprint.iacr.org/2004/171) |
+| **Subgroup Decision (Boneh-Shacham)** | 2002 | Composite-order bilinear group | Distinguish elements of subgroups in composite-order groups; alternative to DLIN in dual-system encryption [[1]](https://eprint.iacr.org/2002/139) |
+
+**State of the art:** SXDH and DLIN are the leading falsifiable assumptions for pairing-based crypto; q-SDH and q-DBDHI enable tight reductions and shortest known constructions. Dual-system encryption (Waters 2009) achieved fully secure IBE/ABE under DLIN/subgroup decision. All pairing assumptions are broken by quantum computers. Cross-references: [DH assumption variants](#diffie-hellman-assumption-variants-cdh-ddh-gdh-q-dh-co-cdh), [predicate encryption](#predicate-encryption-and-attribute-hiding), [functional encryption](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption-abe--fe).
+
+---
+
+## RSA Assumption Variants (RSA, Strong RSA, Flexible RSA)
+
+**Goal:** Hardness of computing with RSA moduli. The RSA problem — computing eth roots modulo N = pq without knowing the factorization — underlies the oldest public-key cryptosystem. Stronger variants (Strong RSA, Flexible RSA) assert hardness even when the adversary can choose the exponent, enabling statistically hiding commitments, accumulators, and group signatures without random oracles. These assumptions sit between standard RSA and factoring in terms of strength.
+
+| Assumption / Scheme | Year | Basis | Note |
+|--------------------|------|-------|------|
+| **RSA assumption** | 1977 | Factoring (conjectured) | Given (N, e, y), compute x with x^e ≡ y (mod N); exactly the hardness underlying RSA encryption and PKCS signatures [[1]](https://doi.org/10.1145/359340.359342) |
+| **Strong RSA assumption** | 1998 | Factoring | Given (N, y), find any (e > 1, x) with x^e ≡ y (mod N); strictly stronger than RSA; implied by factoring; used in Cramer-Shoup signatures [[1]](https://eprint.iacr.org/1998/027) |
+| **Flexible RSA (phi-hiding)** | 1999 | Factoring | Distinguishing whether a prime e divides phi(N) is hard; weaker than factoring; basis of the Cachin-Micali-Stadler PIR and some ring signature schemes [[1]](https://link.springer.com/chapter/10.1007/3-540-48910-X_9) |
+| **Cramer-Shoup signature (Strong RSA)** | 1999 | Strong RSA | First practical signature scheme with security proof under Strong RSA in the standard model (no random oracle); uses statistically hiding commitments as a building block [[1]](https://eprint.iacr.org/1998/027) |
+| **Dynamic accumulator (Camenisch-Lysyanskaya)** | 2002 | Strong RSA | Cryptographic accumulator from Strong RSA: add/delete members and produce constant-size membership witnesses; basis of many anonymous credential systems [[1]](https://eprint.iacr.org/2002/007) |
+| **RSA Full Domain Hash (RSA-FDH)** | 1993 | RSA + random oracle | Hash-then-sign in the random oracle model; tight reduction to RSA; standardized in PKCS#1 and forms the basis of RSASSA-PSS [[1]](https://eprint.iacr.org/1993/001) |
+
+**State of the art:** Strong RSA is the standard-model hardness assumption for practical RSA-based signatures (Cramer-Shoup, Gennaro-Halevi-Rabin) and accumulators; standard RSA underlies deployed PKCS#1/PSS. phi-hiding is used for advanced PIR and niche protocols. All RSA assumptions are broken by quantum computers (Shor). Related to [DCR assumption](#decisional-composite-residuosity-dcr-assumption), [accumulators](categories/09-commitments-verifiability.md#accumulators), and [VRF](categories/09-commitments-verifiability.md#verifiable-random-functions-vrf).
+
+---
+
+## Randomized Encodings for Garbling and iO
+
+**Goal:** Replace a complex computation with a simpler one that reveals only the output. A randomized encoding (RE) of a function f on input x is a randomized string f̂(x; r) from which f(x) can be decoded but nothing else about x is learned. RE is the conceptual foundation of garbled circuits (Yao 1986), where each gate is encoded so that only the correct output wire label is revealed. RE also provides a clean framework for constructing iO: if the encoding function class is rich enough and the encoding is computable in NC¹, one can bootstrap iO from it.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Garbled circuits as RE (Yao)** | 1986 | Symmetric-key PRF / AES | Yao's garbling scheme is a randomized encoding of a Boolean circuit; the garbler encodes each gate with four ciphertexts; evaluator learns only the output [[1]](https://dl.acm.org/doi/10.1145/3335741.3335756) |
+| **RE in NC¹ (Applebaum-Ishai-Kushilevitz)** | 2004 | OWF | Any poly-time function f has an RE computable in NC¹; implies parallel garbling and efficient secure computation in constant rounds [[1]](https://eprint.iacr.org/2004/141) |
+| **Efficient garbling / half-gates (Zahur-Rosulek-Evans)** | 2015 | AES / fixed-key PRF | Half-gates scheme reduces the per-AND-gate cost from 4 to 2 ciphertexts; remains the practical standard for garbled circuit garbling [[1]](https://eprint.iacr.org/2014/756) |
+| **RE-based iO bootstrapping (Ananth-Jain)** | 2015 | Single-key FE for NC¹ | Use RE in NC¹ to bootstrap iO from single-key FE for NC¹; RE is the key tool enabling compression of the encoding [[1]](https://eprint.iacr.org/2015/173) |
+| **Arithmetic garbling (Applebaum-Ishai-Kushilevitz)** | 2011 | LWE | Extend garbling to arithmetic circuits over rings; garble additions and multiplications; enables efficient MPC over integers without bit decomposition [[1]](https://eprint.iacr.org/2012/097) |
+| **Free XOR garbling (Kolesnikov-Schneider)** | 2008 | Correlation-robust hash | XOR gates require zero ciphertexts by fixing a global offset delta; reduces total garbling cost by ~40% for typical circuits [[1]](https://link.springer.com/chapter/10.1007/978-3-540-70583-3_40) |
+
+**State of the art:** Half-gates + Free XOR (2015) is the practical gold standard for garbling; AES-NI-accelerated implementations achieve gigabit/second garbling rates. Theoretically, RE in NC¹ from OWF (AIK 2004) is foundational for iO bootstrapping. Related to [iO](#indistinguishability-obfuscation-io), [bootstrapping iO](#bootstrapping-io-functional-encryption--io), [MPC from minimal assumptions](#mpc-from-minimal-assumptions-mpc-from-owf), and [garbled circuits](categories/06-multi-party-computation.md#garbled-circuits).
+
+---
+
+## Monotone Span Programs and Cryptographic Access Structures
+
+**Goal:** Represent and realize arbitrary access policies in secret sharing and ABE. A monotone span program (MSP) is a linear-algebraic model for computing monotone Boolean functions: a matrix M over a field and a labeling of rows to parties such that a set S can reconstruct a secret iff the rows labeled by S span a target vector. MSPs are strictly more powerful than Boolean formulas and capture all monotone circuits in a linear-algebraic form amenable to pairing-based cryptography. They are the representation of choice for access structures in ciphertext-policy ABE and linear secret sharing.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Monotone span programs (Karchmer-Wigderson)** | 1993 | Linear algebra / complexity | Introduce MSPs as a model for secret sharing complexity; show MSP size captures the monotone span of the access structure [[1]](https://doi.org/10.1016/0020-0190(93)90197-E) |
+| **Linear secret sharing from MSPs (Brickell)** | 1989 | Linear algebra | Any MSP gives a linear secret sharing scheme (LSSS); reconstruction is a linear combination of shares; foundation for all pairing-based ABE [[1]](https://doi.org/10.1007/BF02341132) |
+| **CP-ABE for MSP policies (Waters)** | 2011 | Bilinear pairings + DLIN | Ciphertext-policy ABE with access structures described by any MSP (equivalently, any monotone formula); first practical fully secure CP-ABE from DLIN [[1]](https://eprint.iacr.org/2008/290) |
+| **KP-ABE from MSPs (Goyal-Pandey-Sahai-Waters)** | 2006 | Bilinear pairings | Key-policy ABE where the decryption key encodes an MSP policy and the attribute set is in the ciphertext; first selectively secure construction [[1]](https://eprint.iacr.org/2006/309) |
+| **Arithmetic secret sharing from MSPs (Cramer-Damgård-Maurer)** | 2000 | Finite fields | Use MSPs over finite fields to define linear secret sharing schemes for MPC; share sizes match field elements; basis of CDM arithmetic MPC [[1]](https://link.springer.com/chapter/10.1007/3-540-45539-6_30) |
+| **Optimal broadcast encryption from MSP (Wee)** | 2022 | Evasive LWE | Use structured MSPs over lattices to achieve optimal broadcast encryption and CP-ABE parameter sizes; replaces multilinear maps [[1]](https://eprint.iacr.org/2023/906) |
+
+**State of the art:** MSPs are the standard representation of access policies in practical ABE (e.g., Charm-Crypto, OpenABE). Waters' CP-ABE (2011) from DLIN handles any MSP policy with prime-order groups. Post-quantum MSP-based ABE is an active research direction via evasive LWE (Wee 2022). Related to [predicate encryption](#predicate-encryption-and-attribute-hiding), [functional encryption from iO](#functional-encryption-from-io), [secret sharing](categories/05-secret-sharing-threshold-cryptography.md), and [ABE/FE](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption-abe--fe).
+
+---

@@ -756,3 +756,96 @@ ML-DSA is NIST's primary recommendation for general-purpose post-quantum signing
 **State of the art:** All three finalized August 2024. Migration deadline for US federal systems is 2030. NIST recommends ML-DSA as default; SLH-DSA when algebraic assumptions are unacceptable; FN-DSA when bandwidth is severely constrained. Cross-links: [NIST PQC Signature Standards (ML-DSA & SLH-DSA)](#nist-pqc-signature-standards-ml-dsa--slh-dsa), [Falcon / FN-DSA](#falcon--fn-dsa-ntru-based-lattice-signatures), [SPHINCS & SPHINCS+](#sphincs--sphincs-stateless-hash-based-signatures), [Stateful Hash-Based Signatures (XMSS & LMS)](#stateful-hash-based-signatures-xmss--lms), [Fiat-Shamir with Aborts](#fiat-shamir-with-aborts-lattice-signature-paradigm).
 
 ---
+
+## Verifiable Random Functions (ECVRF, RFC 9381)
+
+**Goal:** Deterministic pseudorandomness with a proof. Given a private key sk and an input α, the VRF outputs a pseudorandom value β = VRF(sk, α) along with a proof π that anyone holding the public key can verify — confirming that β was computed correctly without revealing sk. Combines a signature's authentication with a PRF's pseudorandomness guarantee.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Micali-Rabin-Vadhan VRF** | 1999 | RSA | First VRF construction; pseudorandomness under RSA assumption; large output proofs [[1]](https://link.springer.com/chapter/10.1007/3-540-48405-1_11) |
+| **Dodis-Yampolskiy VRF** | 2005 | Pairings / q-DBDHI | Efficient pairing-based VRF; short proofs; pseudorandomness under q-DBDHI [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30576-7_26) |
+| **ECVRF (Goldberg et al.)** | 2017 | ECDLP + hash-to-curve | Elliptic-curve VRF; proof is an EC Schnorr-like proof; hash-to-curve maps input to EC point [[1]](https://eprint.iacr.org/2017/099) |
+| **RFC 9381 (ECVRF standard)** | 2023 | ECDLP / IETF standard | IETF standard for ECVRF; two cipher suites: P-256-SHA-256 and edwards25519-SHA-512; deployed in Algorand, Cardano, Chainlink VRF [[1]](https://www.rfc-editor.org/rfc/rfc9381) |
+| **Lattice VRF (VXEDDSA / PQ)** | 2022 | Module-LWE | Post-quantum VRF from lattice assumptions; larger proofs than ECVRF [[1]](https://eprint.iacr.org/2022/1326) |
+
+The ECVRF construction works by hashing the input α to an elliptic curve point H = hash_to_curve(pk ‖ α), then computing the VRF output point Γ = sk·H. The proof π is a Schnorr-like non-interactive proof that Γ was computed consistently with the public key pk = sk·G (same scalar sk multiplied by two different base points G and H). The pseudorandom output β = H₃(Γ) is derived by hashing the output point. Crucially, the proof is publicly verifiable — anyone with the public key can check π without learning sk — and the output is unique (no two valid proofs can produce different β for the same input). RFC 9381 standardizes two cipher suites: ECVRF-P256-SHA256-TAI and ECVRF-EDWARDS25519-SHA512-ELL2. VRFs are the core primitive for provably fair randomness in leader election (Algorand, Cardano Ouroboros), verifiable lottery systems, and Chainlink VRF for smart contract randomness. See [Ring VRF](#ring-vrf) for the anonymous variant, and [Verifiable Random Functions](categories/09-commitments-verifiability.md#verifiable-random-functions-vrf) for the commitment-side treatment.
+
+**State of the art:** RFC 9381 ECVRF (2023, deployed in Algorand, Cardano, Chainlink VRF); lattice VRF for PQ settings. Cross-links: [Ring VRF](#ring-vrf), [VRF in commitments](categories/09-commitments-verifiability.md#verifiable-random-functions-vrf), [Secret Leader Election](categories/13-blockchain-distributed-ledger.md#secret-leader-election).
+
+---
+
+## Schnorr Half-Aggregation (Signature Aggregation Beyond BLS)
+
+**Goal:** Non-interactive Schnorr signature compression without pairings. Aggregate n independent Schnorr signatures — from n different signers on n different messages — into a single compact representation roughly half the size of the concatenated originals. Unlike BLS aggregation, no pairing-friendly curve is required; unlike MuSig2, the signers need not interact or coordinate.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boneh-Drijvers-Neven (BDN) Aggregation** | 2018 | Pairings / BLS | Interactive aggregate Schnorr-style sigs require pairings; non-interactive aggregation without pairings was an open problem [[1]](https://eprint.iacr.org/2018/483) |
+| **Half-Aggregation of Schnorr Signatures** | 2021 | Schnorr / DLOG | Compress n Schnorr sigs (each R, s) to (R₁,…,Rₙ, s̃) where s̃ = Σcᵢsᵢ; half the size; non-interactive [[1]](https://eprint.iacr.org/2021/350) |
+| **HALFAGG (Chalkias-Hall-Lewi-Lyubashevsky-Nikolaenko)** | 2021 | Schnorr on secp256k1 / edwards25519 | Concrete instantiation; reduces n Schnorr sigs from 2n·32 B to (n+1)·32 B; BIP proposal for Bitcoin [[1]](https://eprint.iacr.org/2021/350) |
+| **Incremental Half-Aggregation** | 2023 | Schnorr | Aggregate signatures as they arrive without re-processing earlier ones; enables streaming aggregation for gossip protocols [[1]](https://eprint.iacr.org/2023/959) |
+| **Half-Aggregation for Cross-Input Taproot** | 2023 | Schnorr / BIP 340 | Bitcoin cross-input signature aggregation (CISA) research; each transaction input could share one aggregate sig [[1]](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki) |
+
+Half-aggregation exploits the linear structure of Schnorr verification: given sigs (Rᵢ, sᵢ) for messages mᵢ under keys Pᵢ, each verification checks sᵢ·G = Rᵢ + cᵢ·Pᵢ where cᵢ = H(Rᵢ ‖ Pᵢ ‖ mᵢ). An aggregator computes a random linear combination s̃ = Σcᵢ'·sᵢ (for fresh binding coefficients cᵢ') and stores only the n commitment points Rᵢ alongside s̃. Verification recomputes the combined check in one multi-scalar multiplication. This is "half" aggregation because the n nonce points Rᵢ must still be stored individually — only the n scalar responses are compressed to a single scalar. The scheme is non-interactive: the aggregator needs no cooperation from signers and does not require a common message. Unlike BLS aggregation, it works on any Schnorr-compatible curve including secp256k1 and edwards25519. Incremental aggregation allows a node receiving signatures one by one to maintain a running aggregate without re-aggregating from scratch. Bitcoin cross-input signature aggregation (CISA) is a proposed soft fork that would use half-aggregation across inputs in a transaction, reducing transaction size by ~7.5% on average.
+
+**State of the art:** Half-aggregation (HALFAGG, 2021) theoretically sound; incremental variant (2023) enables practical deployment. Bitcoin CISA remains a proposal. Contrasts with [BLS Aggregate Signatures](#aggregate-signatures-bls-aggregate) (requires pairings, non-interactive, full aggregation) and [MuSig2](#musig--musig2-schnorr-multi-signatures) (interactive, n-of-n only).
+
+---
+
+## Code-Based Signatures (Wave, LESS, and Related)
+
+**Goal:** Post-quantum signatures from coding theory. Exploit the hardness of decoding random linear codes (Syndrome Decoding Problem) or the equivalence of linear codes (Code Equivalence Problem) to build signatures with well-studied post-quantum security. An alternative PQ family to lattice- and hash-based schemes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CFS (Courtois-Finiasz-Sendrier)** | 2001 | Syndrome decoding (Goppa codes) | First practical code-based signature; signing finds a low-weight codeword; slow due to rejection sampling [[1]](https://link.springer.com/chapter/10.1007/3-540-45682-1_36) |
+| **Wave (Debris-Alazard-Sendrier-Tillich)** | 2019 | Generalized (U,U+V) codes / SDP | First hash-and-sign code-based signature without trapdoor; provably secure under SDP and DOOM problem [[1]](https://eprint.iacr.org/2018/996) |
+| **LESS (Barelli-Couvreur)** | 2020 | Linear Code Equivalence Problem | Fiat-Shamir signature from the hardness of deciding if two linear codes are permutation equivalent; compact [[1]](https://eprint.iacr.org/2020/1455) |
+| **MEDS (Matrix Equivalence Digital Signature)** | 2022 | Matrix Code Equivalence | Extension of LESS to matrix codes; better parameter trade-offs; NIST additional signatures on-ramp candidate [[1]](https://eprint.iacr.org/2022/1528) |
+| **CROSS** | 2023 | Restricted Syndrome Decoding (RSD) | Code-based sigma protocol via Fiat-Shamir; NIST on-ramp Round 2 candidate; competitive signature sizes [[1]](https://eprint.iacr.org/2023/028) |
+| **SDitH (Syndrome Decoding in the Head)** | 2022 | MPC-in-the-head + SDP | Apply MPCitH paradigm to syndrome decoding; NIST on-ramp Round 2 candidate [[1]](https://eprint.iacr.org/2022/1512) |
+
+Code-based cryptography is one of the oldest post-quantum families (McEliece 1978), with security reductions to the Syndrome Decoding Problem (SDP) — which is NP-hard in the worst case and widely believed hard on average for random linear codes. Wave is the first code-based hash-and-sign construction without relying on a structured code trapdoor: it uses generalized (U,U+V) codes to sign by finding a codeword near the hash of the message, with security provably reducible to SDP and the DOOM (Decoding One Of Many) problem. LESS and MEDS are based on the Code Equivalence Problem — determining whether two linear codes are related by a permutation (LESS) or matrix transformation (MEDS) of coordinates — which is not known to reduce to SDP, providing a diversity of assumptions. CROSS and SDitH apply the MPC-in-the-head paradigm to coding problems, achieving competitive signature sizes without the structured-code assumption. Wave key sizes are large (public keys ~3 MB), while CROSS and LESS achieve much more compact parameters. Both CROSS and MEDS are advancing through NIST's additional signatures process (2022 on-ramp).
+
+**State of the art:** CROSS and MEDS are NIST additional signatures Round 2 candidates (as of 2024). Wave remains the strongest provably secure code-based hash-and-sign scheme but with impractical key sizes. Code-based signatures complement lattice-based schemes by relying on a completely different hardness assumption. See [Rainbow & Multivariate Quadratic Signatures](#rainbow--multivariate-quadratic-signatures) for the analogous MQ-based family and [Picnic (Signatures from ZK Proofs of Symmetric Primitives)](#picnic-signatures-from-zk-proofs-of-symmetric-primitives) for the MPCitH paradigm.
+
+---
+
+## SQIsign (Isogeny-Based Signatures)
+
+**Goal:** Ultra-compact post-quantum signatures from isogeny graphs. Construct a Fiat-Shamir signature scheme whose security rests on the hardness of finding an isogeny between two supersingular elliptic curves — a problem believed resistant to quantum computers, with no known sub-exponential quantum algorithm (unlike discrete-log or factoring).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SeaSign** | 2019 | Isogeny class group action (CSIDH) | Fiat-Shamir signature from CSIDH; compact keys but very slow signing (hours) [[1]](https://eprint.iacr.org/2018/824) |
+| **CSI-FiSh** | 2019 | CSIDH + class group computation | Precomputed class group enables faster SeaSign-style signing; still minutes per signature [[1]](https://eprint.iacr.org/2019/498) |
+| **SQIsign (De Feo-Kohel-Leroux-Petit-Wesolowski)** | 2020 | Supersingular isogeny / KLPT | Hash-then-sign from SIDH-style isogenies; tiny keys (64 B) and sigs (177 B) at NIST Level 1; slow signing (~1–10 s) [[1]](https://eprint.iacr.org/2020/1240) |
+| **SQIsign2D (Leroux-Wesolowski)** | 2023 | 2D isogenies + KLPT | Uses 2D isogenies for faster signing; 5–10× speedup over SQIsign while maintaining key/sig sizes [[1]](https://eprint.iacr.org/2023/436) |
+| **SQIsignHD (Dartois-Leroux-Robert-Wesolowski)** | 2023 | Higher-dimensional isogenies | Further speedup via dimension-4 isogenies; signing approaches practical range (~1 s on modern CPUs) [[1]](https://eprint.iacr.org/2023/436) |
+| **NIST on-ramp submission** | 2023 | SQIsign2D-West variant | SQIsign submitted to NIST additional signatures call; security under active analysis [[1]](https://csrc.nist.gov/projects/pqc-dig-sig/round-1-additional-signatures) |
+
+SQIsign achieves the smallest key and signature sizes of any known post-quantum scheme: at NIST Level 1 security, the public key is 64 bytes and the signature is 177 bytes — smaller than ECDSA and competitive with classical schemes. This compactness comes from the rich algebraic structure of supersingular elliptic curve isogeny graphs. Signing requires solving a hard problem related to the KLPT algorithm (finding an ideal of given norm in a quaternion algebra that corresponds to an isogeny), which is computationally intensive. The original SQIsign takes 1–10 seconds per signature on a modern CPU, making it impractical for most applications. SQIsign2D and SQIsignHD exploit higher-dimensional isogeny representations to dramatically accelerate signing while preserving the tiny output sizes. However, SIDH — a related isogeny scheme — was broken in 2022 by Castryck-Decru-Maino-Martindale-Petit attacks, raising concerns about the structural similarity. SQIsign's security rests on a different hard problem (the Deuring correspondence / endomorphism ring problem), which has survived these attacks, but active cryptanalysis continues.
+
+**State of the art:** SQIsignHD (2023) achieves ~1 s signing on server hardware — approaching practical range for use cases tolerating slow signing (e.g., certificate issuance). Submitted to NIST additional signatures on-ramp (2023); security and performance actively improving. Cross-links: [Isogeny-based cryptography](categories/15-quantum-cryptography.md#isogeny-based-cryptography), [Post-Quantum Signature Comparison](#post-quantum-signature-comparison-ml-dsa-vs-slh-dsa-vs-fn-dsa).
+
+---
+
+## STARK-Based Signatures
+
+**Goal:** Signatures with transparent post-quantum security and succinctly verifiable proofs. Convert a STARK (Scalable Transparent ARgument of Knowledge) proof system into a signature scheme via Fiat-Shamir: the signer proves knowledge of a secret key that maps to a public commitment, producing a signature whose verification is fast even when the witness computation is complex. No trusted setup; security reduces to collision-resistant hashes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **FRI-based Schnorr-style sigs** | 2018 | FRI polynomial commitment | Apply FRI (Fast Reed-Solomon IOP) to construct hash-based interactive proofs; Fiat-Shamir yields non-interactive sigs [[1]](https://eprint.iacr.org/2019/1020) |
+| **Plonky2 / Plonky3 Signatures** | 2022 | STARK + Plonk arithmetization | Recursive STARK proof used as a signature; fast prover over Goldilocks field; verifier is ~200 KB proof [[1]](https://github.com/0xPolygonZero/plonky2) |
+| **Whir (Signatures from Ring-Switching)** | 2024 | STARK + ring-switching IOP | Fast STARK-based universal signer; reduces proof size via correlated sumcheck; competitive with SLH-DSA for some parameter sets [[1]](https://eprint.iacr.org/2024/1586) |
+| **Ethstark / StarkWare production STARK** | 2021 | AIR + FRI | STARK proof system deployed in StarkEx, StarkNet; not a signature scheme per se but the underlying IOP system used to build ZK-sigs [[1]](https://eprint.iacr.org/2021/582) |
+| **FAEST (VOLEitH Signature)** | 2023 | VOLE-in-the-head + AES | AES-based PQ signature using VOLE-based IOP; NIST additional signatures on-ramp candidate; ~5 KB sigs [[1]](https://eprint.iacr.org/2023/101) |
+| **Ligero++ (Signature from IOP)** | 2020 | Linear IOP + hashing | MPC-in-the-head variant; hash-based, transparent; ~35 KB sigs at 128-bit security [[1]](https://eprint.iacr.org/2020/733) |
+
+STARK-based signatures instantiate the general paradigm: to sign a message m, the signer produces a STARK proof π attesting to knowledge of sk such that Commit(sk) = pk and VRF(sk, m) = β (or some equivalent relation). The proof π serves as the signature. Verification is fast — STARK verification is poly-logarithmic in the computation size — and transparent, requiring no trusted setup (unlike SNARK-based approaches). Security reduces to collision resistance of the underlying hash function, making STARK signatures post-quantum by construction. The main challenge is proof size: most STARK-based signatures produce proofs in the range 5–200 KB, far larger than lattice or hash-based schemes. Recent advances (Whir, FRI improvements) are pushing practical STARK signature sizes below 10 KB. FAEST — a VOLE-in-the-head construction — achieves ~5 KB signatures at 128-bit security and is advancing through NIST's additional signatures process. The STARK paradigm also enables amortized batch signatures: one STARK proof can attest to the validity of an entire batch of sub-signatures, enabling logarithmic aggregate verification.
+
+**State of the art:** FAEST (NIST on-ramp Round 2, ~5 KB sigs); Whir (2024, ~5–10 KB sigs, fast prover). STARK signatures remain larger than ML-DSA/FN-DSA but offer transparent setup and pure hash-based security assumptions. Cross-links: [Picnic (Signatures from ZK Proofs of Symmetric Primitives)](#picnic-signatures-from-zk-proofs-of-symmetric-primitives), [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems), [MPCitH / VOLEitH Proof Systems](categories/04-zero-knowledge-proof-systems.md#mpcith--voleith-proof-systems).
+
+---

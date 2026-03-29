@@ -597,4 +597,140 @@ Noise parameters η₁ and η₂ define the centered binomial distribution for s
 
 ---
 
+## CNSA 2.0 and PQC Migration Policy
+
+**Goal:** Provide the authoritative US government timeline and algorithm requirements for migrating national security systems to post-quantum cryptography. The NSA's Commercial National Security Algorithm Suite 2.0 (CNSA 2.0, September 2022) specifies the PQC algorithms that must replace classical public-key cryptography in National Security Systems (NSS), with hard deadlines through 2035. It is the most influential policy driver for enterprise PQC adoption globally.
+
+| Requirement | Algorithm | Timeline | Note |
+|-------------|-----------|----------|------|
+| **Key establishment** | ML-KEM (FIPS 203) | Exclusively by 2033 | Replaces RSA/ECDH in all NSS key exchange |
+| **Digital signatures** | ML-DSA (FIPS 204) | Exclusively by 2033 | Replaces RSA/ECDSA for NSS signing |
+| **Software/firmware signing** | SLH-DSA (FIPS 205) or ML-DSA | Available now; exclusively by 2033 | Hash-based or lattice-based; no classical sigs |
+| **Key exchange (transition)** | Hybrid PQ+classical (X25519+ML-KEM) | Now–2033 | Hybrid permitted during transition period |
+| **Symmetric** | AES-256 | Required now | Grover halves AES-128; AES-256 sufficient |
+| **Hashing** | SHA-384 or SHA-512 | Required now | BHT algorithm reduces SHA-256 collision resistance |
+
+**CNSA 2.0 vs. CNSA 1.0:** CNSA 1.0 (2015) specified classical algorithms (RSA-3072+, ECDH P-384, AES-256, SHA-384). CNSA 2.0 replaces all asymmetric algorithms with their NIST PQC counterparts. Notably, CNSA 2.0 does not endorse QKD as a replacement for PQC — the NSA explicitly states that QKD does not meet NSS requirements due to the need for specialized hardware, trusted relay infrastructure, and lack of authentication [[1]](https://media.defense.gov/2022/Sep/07/2003071836/-1/-1/0/CSI_CNSA_2.0_FAQ_.PDF).
+
+**Deadlines by system type:**
+- **COTS software and cloud services:** PQC-ready products required by 2025; exclusively PQC by 2030
+- **Networking equipment (VPN, TLS):** Exclusively PQC by 2030
+- **Custom applications (firmware, PKI):** Exclusively PQC by 2033
+- **Long-lead systems (satellites, HSMs):** Exclusively PQC by 2035 (extended timeline)
+
+**UK NCSC guidance:** The UK National Cyber Security Centre issued equivalent guidance recommending ML-KEM-768/1024, ML-DSA-65/87, and SLH-DSA for government systems, with hybrid PQ+classical deployment during the transition period [[1]](https://www.ncsc.gov.uk/collection/post-quantum-cryptography).
+
+**NIST NCCoE Migration Project:** NIST's National Cybersecurity Center of Excellence is developing practice guides (NIST SP 1800-38) for PQC migration, covering cryptographic discovery, hybrid deployment, and testing. The project focuses on TLS, SSH, S/MIME, and code signing as the highest-priority migration targets [[1]](https://www.nccoe.nist.gov/crypto-agility-considerations-migrating-post-quantum-cryptographic-standards).
+
+**State of the art:** CNSA 2.0 is the current US NSS requirement (effective 2022). FIPS 203/204/205/206 are the mandated algorithms. "Harvest-now, decrypt-later" threats make immediate hybrid deployment urgent even before 2030 deadlines. See [Post-Quantum Cryptography](#post-quantum-cryptography) for algorithm details and [Hybrid PQ/Classical Key Exchange](#hybrid-pqclassical-key-exchange) for transition-period deployments.
+
+---
+
+## Post-Quantum Composite Signatures and Certificates
+
+**Goal:** Represent both a classical and a post-quantum signature in a single X.509 certificate or CMS SignedData structure, enabling simultaneous verification by legacy classical verifiers and new PQ-aware verifiers. Composite cryptography (draft-ietf-lamps-pq-composite-sigs) packages two algorithm–key–signature tuples into a single ASN.1 structure, ensuring that a forger must break both the classical scheme and the PQ scheme to produce a valid forgery — providing cryptographic agility during the transition without changing PKI infrastructure.
+
+| Construction | Classical Alg | PQ Alg | Signature Size | Note |
+|-------------|--------------|--------|---------------|------|
+| **id-MLDSA44-RSA2048-PSS-SHA256** | RSA-2048 PSS | ML-DSA-44 | ~2.4 KB + RSA | Smallest composite; NIST Level 1 [[1]](https://datatracker.ietf.org/doc/draft-ietf-lamps-pq-composite-sigs/) |
+| **id-MLDSA44-Ed25519-SHA512** | Ed25519 | ML-DSA-44 | ~2.5 KB | Compact classical; IETF draft [[1]](https://datatracker.ietf.org/doc/draft-ietf-lamps-pq-composite-sigs/) |
+| **id-MLDSA65-ECDSA-P256-SHA512** | ECDSA P-256 | ML-DSA-65 | ~3.3 KB | NIST Level 3; enterprise PKI target [[1]](https://datatracker.ietf.org/doc/draft-ietf-lamps-pq-composite-sigs/) |
+| **id-MLDSA87-ECDSA-P384-SHA512** | ECDSA P-384 | ML-DSA-87 | ~4.6 KB | NIST Level 5; highest security [[1]](https://datatracker.ietf.org/doc/draft-ietf-lamps-pq-composite-sigs/) |
+| **id-SLH-DSA-ECDSA-P256** | ECDSA P-256 | SLH-DSA-SHA2-128s | ~8 KB | Hash-based PQ + classical [[1]](https://datatracker.ietf.org/doc/draft-ietf-lamps-pq-composite-sigs/) |
+
+**IETF draft-ietf-lamps-pq-composite-sigs:** The LAMPS (Limited Additional Mechanisms for PKIX and SMIME) working group is developing the composite signature standard. A composite signature value is the DER encoding of a SEQUENCE of two SignatureValue BIT STRINGs; a composite public key is a SEQUENCE of two SubjectPublicKeyInfo structures. Both must verify for the composite signature to be accepted — the security is the AND of both individual securities. The draft reached IETF Last Call in 2025 [[1]](https://datatracker.ietf.org/doc/draft-ietf-lamps-pq-composite-sigs/).
+
+**Companion drafts:**
+- **draft-ietf-lamps-pq-composite-kem** — Composite KEM (ML-KEM + ECDH) for certificate key exchange
+- **draft-ietf-lamps-cert-binding-for-multi-auth** — Binding multiple certificates for dual-algorithm PKI
+- **draft-ietf-tls-hybrid-design** — TLS 1.3 hybrid key exchange design principles (combiners, negotiation)
+
+**X.509 composite certificates:** A CA issues a certificate containing a composite public key. The TBS (To-Be-Signed) certificate is signed with a composite signature — both the CA's classical and PQ private keys sign the same TBS. A legacy verifier extracts only the classical subkey and subsignature; a PQ-aware verifier validates both. No change to the certificate chain model is required — only new OIDs.
+
+**KEMTLS and composite CAs:** Composite certificates enable a phased migration: existing CAs can issue composite certificates that work in both classical TLS 1.3 and new KEMTLS deployments. This allows hardware security modules (HSMs) and root CA infrastructure to remain operational while adding PQ attestation. See [KEMTLS](categories/12-secure-communication-protocols.md#kemtls) for the related PQ TLS handshake design.
+
+**State of the art:** draft-ietf-lamps-pq-composite-sigs is a primary IETF deliverable for the PQC PKI transition (2024–2025). Open Quantum Safe (OQS) provides composite certificate generation in liboqs; Let's Encrypt has announced plans to issue composite PQ certificates for testing. Closely related to [Post-Quantum Cryptography](#post-quantum-cryptography), [Hybrid PQ/Classical Key Exchange](#hybrid-pqclassical-key-exchange), and [CNSA 2.0 and PQC Migration Policy](#cnsa-20-and-pqc-migration-policy).
+
+---
+
+## Post-Quantum TLS Performance Benchmarks
+
+**Goal:** Quantify the latency, bandwidth, and handshake overhead of post-quantum KEMs and signatures in TLS 1.3, SSH, and HTTPS deployments — providing practitioners with the data needed to select PQ algorithms for production deployments. PQC algorithm performance differs substantially from classical counterparts in ciphertext size, signature size, and CPU time; these differences affect connection latency, server memory, certificate chain bandwidth, and CDN caching.
+
+| Algorithm Pair (KEM + Sig) | HS Latency (LAN) | HS Latency (100 ms RTT) | Server Cert Size | Note |
+|---------------------------|-----------------|------------------------|-----------------|------|
+| **X25519 + ECDSA P-256** (classical baseline) | ~0.3 ms | ~110 ms | ~1.1 KB | Baseline; TLS 1.3 classical [[1]](https://pq.cloudflare.com/) |
+| **X25519MLKEM768 + ECDSA P-256** (hybrid KEM) | ~0.4 ms | ~111 ms | ~2.2 KB | +1 KB ciphertext; minimal latency impact [[1]](https://blog.cloudflare.com/pq-2024/) |
+| **ML-KEM-768 + ML-DSA-65** (full PQ) | ~0.6 ms | ~112 ms | ~3.8 KB | Full PQ; larger cert chain [[1]](https://openquantumsafe.org/benchmarks/) |
+| **ML-KEM-768 + SLH-DSA-128s** (PQ hash sig) | ~15 ms | ~125 ms | ~8.1 KB | SLH-DSA signing is slow; not suitable for high-TPS servers [[1]](https://openquantumsafe.org/benchmarks/) |
+| **ML-KEM-768 + Falcon-512** (NTRU lattice) | ~0.5 ms | ~112 ms | ~1.8 KB | Compact; fast; floating-point signing risk [[1]](https://openquantumsafe.org/benchmarks/) |
+| **Classic McEliece + ML-DSA-65** | ~0.7 ms | ~113 ms | ~1.05 MB | Public key dominates; impractical for web TLS [[1]](https://openquantumsafe.org/benchmarks/) |
+
+**Key findings from Cloudflare and Google experiments (2023–2024):**
+- Hybrid X25519+ML-KEM-768 adds ~1.1 KB to the ClientHello/ServerHello but negligible latency on well-connected links; this was deployed to 100% of Cloudflare TLS traffic in 2024 [[1]](https://blog.cloudflare.com/pq-2024/).
+- On high-latency satellite or mobile links (RTT ≥ 200 ms), larger PQ ciphertexts that cause TCP fragmentation add one full RTT — approximately 200 ms extra. Minimizing ciphertext size is critical for mobile TLS.
+- Signature performance is dominated by signature size, not CPU time: ML-DSA-65 certificates (~3.3 KB signature) fit in one TLS record; SLH-DSA-128f (~17 KB) spans multiple records and increases TLS handshake round trips by one on standard MSS (1460 bytes).
+- Certificate chain overhead compounds: a three-certificate chain (leaf + intermediate + root) multiplies per-cert overhead. Falcon-512's 666-byte signature makes it attractive for certificate chains; SLH-DSA is unsuitable for chains requiring multiple signatures.
+
+**OQS-OpenSSL benchmarks:** The Open Quantum Safe project maintains continuous integration benchmarks of liboqs algorithms in OpenSSL and nginx, covering key generation, encapsulation/decapsulation, signing, and verification throughput on AWS c5.xlarge instances. ML-KEM-768 encapsulation runs at >1 million operations/second; ML-DSA-65 signing runs at ~20,000 ops/second — both fast enough for high-volume TLS termination [[1]](https://openquantumsafe.org/benchmarks/).
+
+**DNS and DNSSEC overhead:** PQ signatures in DNSSEC responses are a distinct problem from TLS — DNS UDP responses are limited to 512 bytes (or 4096 with EDNS0). ML-DSA-65 (3.3 KB signature) and SLH-DSA (8–49 KB) make DNSSEC responses incompatible with UDP; TCP fallback is required. Falcon-512 (666 B) and ML-DSA-44 (2.4 KB) are the most viable PQ options for DNSSEC [[1]](https://www.ietf.org/archive/id/draft-ietf-dnsop-dnssec-pqc-00.txt).
+
+**State of the art:** X25519MLKEM768 is deployed in production at Cloudflare, Google, and Fastly (2024); full PQ TLS (ML-KEM + ML-DSA) is available in OQS-nginx and wolfSSL. The main bottleneck for full PQ transition is certificate chain size with PQ signatures, not KEM performance. See [Hybrid PQ/Classical Key Exchange](#hybrid-pqclassical-key-exchange), [Post-Quantum Cryptography](#post-quantum-cryptography), and [Post-Quantum Composite Signatures and Certificates](#post-quantum-composite-signatures-and-certificates).
+
+---
+
+## Quantum Error Correction — Surface Codes and Logical Qubits
+
+**Goal:** Protect quantum information from decoherence and gate errors using redundancy, enabling the fault-tolerant quantum computers that would run Shor's algorithm at cryptographically relevant scale. Physical qubits have error rates of 10⁻³ to 10⁻² per operation — far too high for useful computation. Quantum error correction (QEC) encodes one logical qubit into many physical qubits so that errors can be detected and corrected without measuring (and collapsing) the logical state. Understanding QEC overhead is essential for estimating when a cryptographically relevant quantum computer (CRQC) might exist.
+
+| Code / Architecture | Physical Qubits per Logical | Threshold Error Rate | Note |
+|--------------------|---------------------------|---------------------|------|
+| **Surface code (distance d)** | ~2d² physical per logical | ~1% (high threshold) | Dominant approach; nearest-neighbor gates; d=7 gives ~10⁻¹⁰ logical error rate at p=10⁻³ [[1]](https://arxiv.org/abs/1208.0928) |
+| **Rotated planar code** | ~d² + (d−1)² | ~1% | Slightly fewer qubits than standard surface code; same threshold [[1]](https://arxiv.org/abs/1202.5395) |
+| **Color codes** | ~3d² | ~0.1% | Lower threshold; transversal T-gate without magic state distillation [[1]](https://arxiv.org/abs/quant-ph/0605134) |
+| **Topological qubits (Majorana)** | ~10× fewer (projected) | ~1% (projected) | Microsoft Station Q; non-Abelian anyons encode qubits topologically; 2025 hardware demonstration [[1]](https://arxiv.org/abs/2503.05679) |
+| **Concatenated codes** | ~7^k for k levels | ~10⁻⁴ | First QEC proposal; superseded by surface codes for 2D hardware [[1]](https://arxiv.org/abs/quant-ph/9602019) |
+
+**Surface code mechanics:** A surface code of distance d on a d×d qubit grid detects any Pauli error (X, Y, Z) on up to ⌊(d−1)/2⌋ physical qubits. Syndrome extraction measures 4-qubit stabilizers (XX and ZZ around each face/vertex) without measuring the encoded logical qubit. A classical decoder (minimum-weight perfect matching, MWPM, or neural network decoder) processes syndrome measurements to infer and correct errors. The logical error rate scales as p_L ≈ C·(p/p_th)^{⌈d/2⌉} where p is the physical error rate and p_th ≈ 1% is the threshold.
+
+**Physical qubit overhead for Shor's algorithm:** Running Shor's algorithm on RSA-2048 requires approximately 4,000 logical qubits with error rates ≤ 10⁻¹⁵. At physical error rate p = 10⁻³ (current superconducting qubit state of the art), achieving p_L = 10⁻¹⁵ requires surface code distance d ≈ 27, giving ~2×27² ≈ 1,500 physical qubits per logical qubit. Total: 4,000 × 1,500 ≈ **6 million physical qubits** (Litinski 2019 estimate) [[1]](https://quantum-journal.org/papers/q-2019-03-05-128/). With magic state distillation overhead included, estimates rise to 10–20 million physical qubits [[1]](https://arxiv.org/abs/2203.08823).
+
+**2025 hardware milestones:**
+- **Google Willow (2024):** 105-qubit superconducting chip; demonstrated below-threshold error correction with surface code distance d=5 and d=7, achieving logical error rates that decrease exponentially with d — the first unambiguous demonstration of scalable QEC [[1]](https://www.nature.com/articles/s41586-024-08449-y).
+- **Microsoft topological qubits (2025):** Demonstrated 8 topological qubits encoded in Majorana zero modes on InAs/Al nanowires; error rates measured at ~10⁻³; if scaling confirms lower overhead than surface codes, the physical qubit count for a CRQC could drop by ~10× [[1]](https://arxiv.org/abs/2503.05679).
+- **IBM roadmap:** IBM Heron (133 qubits, 2023) and Flamingo (1386 qubits modular, 2024) target 100,000-qubit systems by 2033, approximately matching the physical qubit count for a CRQC.
+
+**Implication for PQC timelines:** Current hardware has 1,000–2,000 physical qubits with error rates 10⁻³. A CRQC requires ~10–20 million physical qubits at 10⁻³ error rate (or fewer at lower error rates). The Google Willow demonstration validates that scaling surface codes reduces logical error rates — the key open question is whether 10⁶+ qubit systems can maintain per-gate error rates below 10⁻³. Most cryptographic risk analyses place a CRQC at 10–20 years away (2035–2045), justifying the CNSA 2.0 migration deadlines. See [Shor's Algorithm](#shors-algorithm-and-quantum-threats-to-public-key-cryptography) and [CNSA 2.0 and PQC Migration Policy](#cnsa-20-and-pqc-migration-policy).
+
+**State of the art:** Surface codes are the leading QEC architecture; Google Willow (2024) confirmed below-threshold exponential suppression. Microsoft's topological qubit approach (2025) may dramatically reduce physical overhead if it scales. No CRQC capable of attacking RSA-2048 or P-256 is expected before 2035. See [Quantum Advantage Experiments](#quantum-advantage-experiments) for quantum supremacy demonstrations on non-cryptographic tasks.
+
+---
+
+## Quantum Advantage Experiments
+
+**Goal:** Document experimental demonstrations where quantum hardware outperforms classical computers on specific tasks — establishing empirical evidence that quantum advantage is achievable, even on non-cryptographic problems. These experiments are not attacks on cryptography (they use random circuit sampling, boson sampling, or Gaussian boson sampling, not Shor's algorithm), but they define the frontier of quantum hardware capability and inform estimates of when a cryptographically relevant quantum computer (CRQC) might be built.
+
+| Experiment | Year | Hardware | Qubits / Modes | Classical Cost (claimed) | Verified? | Note |
+|------------|------|----------|---------------|--------------------------|-----------|------|
+| **Google Sycamore** | 2019 | Superconducting | 53 qubits | 10,000 years (Summit) | Disputed | Random circuit sampling; IBM showed ~2.5 days classical [[1]](https://www.nature.com/articles/s41586-019-1666-5) |
+| **USTC Jiuzhang 1.0** | 2020 | Photonic (boson sampling) | 76 modes | ~600 million years (classical) | Partially | Gaussian boson sampling; classical spoofing found 2022 [[1]](https://www.science.org/doi/10.1126/science.abe8770) |
+| **USTC Jiuzhang 2.0** | 2021 | Photonic | 113 modes | 10^24 years | Partially | Improved GBS; classical spoofing attack not yet defeated [[1]](https://arxiv.org/abs/2106.15534) |
+| **USTC Zuchongzhi 2.1** | 2021 | Superconducting | 60 qubits (56 used) | ~8 years (classical) | Partially | Random circuit sampling; better than Sycamore [[1]](https://arxiv.org/abs/2109.03494) |
+| **Quantinuum H2 Certified Randomness** | 2023 | Trapped-ion | 56 qubits | Classically infeasible (certified) | Yes | First classically verifiable quantum advantage; 71,313 certified random bits; Nature 2025 [[1]](https://www.nature.com/articles/s41586-025-08737-1) |
+| **Google Willow Surface Code** | 2024 | Superconducting | 105 qubits | Below-threshold QEC scaling | Yes (QEC) | Demonstrated exponential logical error suppression; not supremacy per se [[1]](https://www.nature.com/articles/s41586-024-08449-y) |
+| **IonQ Forte** | 2024 | Trapped-ion | 36 AQ (algorithmic qubits) | — | Application-specific | 36 algorithmic qubits; demonstrated quantum chemistry advantage for small molecules [[1]](https://ionq.com/news/ionq-forte-enterprise) |
+
+**What "quantum advantage" means:** A device demonstrates quantum advantage if it solves a specific problem faster than any classical computer. The Sycamore experiment used random circuit sampling (RCS) — sampling from the output distribution of a random 53-qubit circuit. The problem has no known practical application; it was chosen because it is easy for quantum hardware and (allegedly) hard to simulate classically.
+
+**Classical counter-challenges:** Google claimed Sycamore would take 10,000 years on Summit; IBM demonstrated it could be done in 2.5 days with better classical tensor-network contraction. USTC's Jiuzhang GBS experiments face similar classical spoofing challenges — Villalonga et al. (2022) showed that approximate classical simulation can match GBS output statistics for commercially relevant fidelities. The "quantum advantage" boundary for these sampling tasks continues to shift as classical algorithms improve.
+
+**Certified randomness — the first verifiable advantage:** The Quantinuum H2 experiment (Nature 2025) is qualitatively different from sampling experiments: it produces classical output (random bits) that can be classically verified as genuinely quantum-generated, with a formal cryptographic proof under standard computational assumptions. This is the first experiment where quantum advantage is not merely claimed but cryptographically certified and practically useful (for randomness generation). See [Certified Quantum Randomness / Proof of Quantumness](#certified-quantum-randomness--proof-of-quantumness).
+
+**Relevance to cryptographic timelines:** None of these experiments demonstrate capabilities relevant to Shor's algorithm — they use dozens of noisy physical qubits for sampling tasks, not thousands of error-corrected logical qubits for period-finding. The gap between current hardware and a CRQC (cryptographically relevant quantum computer) remains enormous. However, these experiments validate that quantum hardware is progressing and that error rates are decreasing — accelerating the case for immediate PQC migration. See [Quantum Error Correction](#quantum-error-correction--surface-codes-and-logical-qubits) and [Shor's Algorithm](#shors-algorithm-and-quantum-threats-to-public-key-cryptography).
+
+**State of the art:** Quantinuum H2 certified randomness (Nature 2025) is the most rigorous quantum advantage demonstration. Google Willow (2024) confirmed below-threshold QEC scaling — a milestone for fault-tolerant quantum computing. Classical simulation of random circuit sampling remains competitive for current depth; the quantum advantage frontier continues to evolve. No hardware yet approaches the scale needed for cryptographically relevant computation.
+
+---
+
 ---

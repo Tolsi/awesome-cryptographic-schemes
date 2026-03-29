@@ -774,3 +774,116 @@ HKDF-Expand(PRK, info, L)  →  OKM  (output keying material, L bytes)
 **State of the art:** xxHash3 / XXH128 (2019) for highest-throughput non-cryptographic hashing; SipHash-2-4 when adversarial input is possible; SHA-256 or BLAKE3 for any security-relevant use. See [Universal Hash Functions (Carter-Wegman)](#universal-hash-functions-carter-wegman) for the information-theoretically secure alternative.
 
 ---
+
+## GOST R 34.12-2015 Block Ciphers (Grasshopper / Magma)
+
+**Goal:** Russian national symmetric encryption standard. GOST R 34.12-2015 defines two block ciphers mandatory for Russian federal information systems: Kuznyechik ("Grasshopper"), a 128-bit block / 256-bit key SPN cipher, and Magma, a 64-bit block / 256-bit key Feistel update of the original 1989 GOST 28147-89. Together they replace the aging single-algorithm standard with a two-cipher portfolio covering both modern (128-bit block) and legacy (64-bit block) requirements.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **GOST 28147-89** | 1989 | 64-bit Feistel, 32 rounds | Original Soviet block cipher; 256-bit key; eight 4-bit S-boxes (classified until 1994); RFC 5830 [[1]](https://www.rfc-editor.org/rfc/rfc5830) |
+| **Magma (GOST R 34.12-2015 Part 1)** | 2015 | 64-bit Feistel, 32 rounds | Standardized update of GOST 28147-89 with fixed public S-boxes; RFC 8891 [[1]](https://www.rfc-editor.org/rfc/rfc8891) |
+| **Kuznyechik / Grasshopper (GOST R 34.12-2015 Part 2)** | 2015 | 128-bit SPN, 10 rounds | AES-like; SubBytes (π), LinearTransform (MDS over GF(2⁸)), AddRoundKey; RFC 7801 [[1]](https://www.rfc-editor.org/rfc/rfc7801) |
+
+**Kuznyechik structure:** Ten-round SPN with 128-bit block and 256-bit key. Round function applies (1) a nonlinear byte substitution S using an 8×8 S-box, (2) a linear transformation L using a 16-byte MDS matrix over GF(2⁸) with primitive polynomial x⁸ + x⁷ + x⁶ + x + 1, and (3) XOR with a round subkey. Key schedule expands 256-bit master key to ten 128-bit round keys using the cipher itself in a Feistel-like network.
+
+**Modes of operation:** GOST R 34.13-2015 defines CTR, OFB, CBC, CFB, and MAC modes for both ciphers. MGM (Multilinear Galois Mode) is the AEAD standard for both, specified in RFC 9058.
+
+**Cryptanalysis note:** The S-box of Kuznyechik attracted academic scrutiny (Biryukov-Perrin 2019 found hidden structure suggesting a non-random derivation), but no practical attack has been found. Best known attacks on reduced-round Kuznyechik reach 7/10 rounds.
+
+**State of the art:** GOST R 34.12-2015 is mandatory for Russian federal cryptography. RFC 7801 (Kuznyechik) and RFC 8891 (Magma) enable IETF interoperability; MGM (RFC 9058) provides the AEAD mode. See [GOST R 34.11-2012 (Streebog)](#gost-r-3411-2012-streebog-and-gost-r-3410-2012) for the companion hash and signature standards.
+
+---
+
+## Authenticated Encryption Security Models
+
+**Goal:** Formal framework for AEAD. Authenticated encryption with associated data (AEAD) provides both confidentiality and integrity in a single pass. Security models differ in what the adversary controls — in particular, whether reusing a nonce breaks all security guarantees or only leaks limited information. Choosing the right model determines which AEAD scheme is appropriate and whether nonce management is the responsibility of the protocol or the primitive.
+
+**Core AEAD security definition (NIST SP 800-38D / Rogaway 2002):** An AEAD scheme is secure if an adversary cannot distinguish its output from random bits (IND-CPA) and cannot forge valid ciphertexts (INT-CTXT), assuming the nonce is never repeated under the same key.
+
+| Model | Nonce reuse impact | Examples | Note |
+|-------|-------------------|----------|------|
+| **Nonce-Respecting (NR-AEAD)** | Catastrophic — full confidentiality and integrity loss | AES-GCM, ChaCha20-Poly1305, OCB, CCM | Standard model; nonce uniqueness is caller's responsibility [[1]](https://csrc.nist.gov/pubs/sp/800/38/d/final) |
+| **Nonce-Misuse-Resistant (NMR-AEAD)** | Graceful — only reveals whether two plaintexts were identical | AES-GCM-SIV (RFC 8452), AES-SIV (RFC 5297), Deoxys-II | Rogaway-Shrimpton 2006 definition; SIV construction [[1]](https://eprint.iacr.org/2006/221) |
+| **Nonce-Misuse-Resilient** | Partial — ciphertext indistinguishability lost but integrity preserved | SCT, CAEAD variants | Weaker than NMR; confidentiality leakage bounded [[1]](https://eprint.iacr.org/2015/189) |
+| **Online AEAD (OAE2)** | Catastrophic with reuse | STREAM, most streaming AEAD | Supports online processing without buffering; Hoang-Reyhanitabar-Rogaway-Vizár model [[1]](https://eprint.iacr.org/2015/189) |
+| **Committing AEAD (CMT)** | — | AES-GCM-SIV, AEGIS with binding | Ciphertext uniquely commits to the key; prevents partition oracle attacks; see [Key-Committing AEAD](categories/02-authenticated-structured-encryption.md#key-committing-aead) [[1]](https://eprint.iacr.org/2020/1153) |
+
+**The SIV (Synthetic IV) construction (Rogaway-Shrimpton 2006):** Generates the nonce/IV synthetically as a PRF of the plaintext and associated data, then encrypts under that IV. If the same plaintext is encrypted twice, the ciphertexts are identical (revealing equality), but confidentiality is otherwise maintained even under nonce reuse. AES-SIV (RFC 5297) and AES-GCM-SIV (RFC 8452) are the deployed instances.
+
+**Nonce reuse disasters:** AES-GCM nonce reuse leaks the authentication key (GHASH key H = E_K(0)), enabling universal forgery. For ChaCha20-Poly1305, nonce reuse similarly leaks the Poly1305 one-time key. A single reuse under the same (key, nonce) pair is catastrophic for all NR-AEAD schemes.
+
+**State of the art:** AES-GCM (NR-AEAD) dominates deployed systems; use AES-GCM-SIV (RFC 8452) or AES-SIV (RFC 5297) when nonce management is unreliable. AEGIS offers NR-AEAD with superior performance. See [Block Cipher Modes of Operation](#block-cipher-modes-of-operation) and [Key-Committing AEAD](categories/02-authenticated-structured-encryption.md#key-committing-aead).
+
+---
+
+## Keccak-p Permutation
+
+**Goal:** Core building block of SHA-3 and all sponge-based cryptography. Keccak-p[b, nᵣ] is a family of unkeyed, invertible permutations over a b-bit state. The full Keccak-f[1600] permutation (b = 1600, nᵣ = 24) underlies SHA-3, SHAKE128/256, KMAC, and KangarooTwelve. Reduced-round variants power lightweight designs. Understanding Keccak-p is essential for implementing, analyzing, or building protocols on top of the SHA-3 family.
+
+**State structure:** b-bit state arranged as a 5×5×w array of lanes (w = b/25 bits per lane). For the standard b = 1600: w = 64, each lane is a 64-bit word — the state is a 5×5 matrix of uint64 values.
+
+**Round structure (one round of Keccak-p):** Five sequential steps, each operating on the full state:
+
+| Step | Symbol | Operation |
+|------|--------|-----------|
+| **Theta** | θ | Column parity mixing: each bit XORed with parity of two adjacent columns |
+| **Rho** | ρ | Intra-lane bit rotation: each of 25 lanes rotated by a fixed offset |
+| **Pi** | π | Lane permutation: rearranges the 25 lanes in the 5×5 array |
+| **Chi** | χ | Row-wise nonlinear layer: `A[x] ^= (~A[x+1]) & A[x+2]` per row |
+| **Iota** | ι | Round constant addition: XOR one of 24 precomputed 64-bit constants into lane (0,0) |
+
+**χ is the only nonlinear step** — a degree-2 Boolean function applied row-wise. All other steps are GF(2)-linear. Algebraic degree doubles with each χ application, reaching near-full degree after a few rounds, making algebraic attacks infeasible.
+
+**Round counts and security:**
+
+| Variant | State (bits) | Rounds | Used in |
+|---------|-------------|--------|---------|
+| **Keccak-f[1600]** | 1600 | 24 | SHA-3, SHAKE128/256, KMAC (FIPS 202) [[1]](https://csrc.nist.gov/pubs/fips/202/final) |
+| **Keccak-p[1600, 12]** | 1600 | 12 | KangarooTwelve, MarsupilamiFourteen [[1]](https://eprint.iacr.org/2016/770) |
+| **Keccak-f[800]** | 800 | 22 | PHOTON-Beetle (NIST LWC finalist) [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/photon-beetle-spec-final.pdf) |
+| **Keccak-f[200]** | 200 | 18 | Ultra-lightweight embedded variants |
+
+**Best known attacks:** Differential and algebraic attacks on reduced-round Keccak reach 7–8 of 24 rounds for collision finding (Song-Liao-Guo 2017 MILP-based). No practical attack on full 24-round Keccak-f[1600]. Best attack on 12-round Keccak-p[1600] reaches 6 rounds.
+
+**State of the art:** Keccak-f[1600] (FIPS 202, 2015) is the definitive standard permutation; Keccak-p[1600, 12] enables KangarooTwelve's ~4× throughput advantage over SHA-3. See [Sponge Construction / Duplex](#sponge-construction--duplex) for how the permutation composes into a hash or AEAD, and [Hash Functions](#hash-functions) for the standardized SHA-3 outputs.
+
+---
+
+## BLAKE2 Hash Function Internals
+
+**Goal:** Fast, secure general-purpose hash with a simpler design than SHA-2 and higher performance than SHA-3. BLAKE2 (Aumasson, Neves, Wilcox-O'Hearn, Winnerlein, 2012) improves on the SHA-3 finalist BLAKE by removing padding rounds, simplifying the permutation schedule, and adding built-in keying, salting, personalization, and tree hashing without any external wrapper. Standardized as RFC 7693.
+
+**Two main variants:**
+
+| Variant | Word size | Max output | Optimized for |
+|---------|-----------|------------|---------------|
+| **BLAKE2b** | 64-bit | 512 bit | 64-bit CPUs; replaces SHA-512 [[1]](https://www.rfc-editor.org/rfc/rfc7693) |
+| **BLAKE2s** | 32-bit | 256 bit | 32-bit / embedded CPUs; replaces SHA-256 [[1]](https://www.rfc-editor.org/rfc/rfc7693) |
+| **BLAKE2bp** | 64-bit | 512 bit | 4-way parallel; multi-core / SIMD [[1]](https://www.blake2.net/blake2.pdf) |
+| **BLAKE2sp** | 32-bit | 256 bit | 8-way parallel; multi-core / SIMD [[1]](https://www.blake2.net/blake2.pdf) |
+| **BLAKE2X** | 64 or 32-bit | arbitrary | XOF mode; variable-length output [[1]](https://www.blake2.net/blake2x.pdf) |
+
+**Core compression function:** Inherits BLAKE's G mixing function, adapted from ChaCha20's quarter-round, applied to a 4×4 matrix of 64-bit (BLAKE2b) or 32-bit (BLAKE2s) words. Each compression call runs 12 rounds (BLAKE2b) or 10 rounds (BLAKE2s). Eight G applications per round: four column-wise then four diagonal. The G function per BLAKE2b:
+
+```
+G(a, b, c, d, x, y):
+  a = a + b + x;  d = ROTR64(d ^ a, 32)
+  c = c + d;      b = ROTR64(b ^ c, 24)
+  a = a + b + y;  d = ROTR64(d ^ a, 16)
+  c = c + d;      b = ROTR64(b ^ c, 63)
+```
+
+**Built-in parameter block features (no external wrapper needed):**
+- **Keyed mode:** Include a 0–64 byte key; produces a MAC equivalent without HMAC
+- **Salt:** 16-byte per-instance salt mixed into the initial state
+- **Personalization:** 16-byte application-specific domain separator
+- **Tree hashing:** Fan-out, leaf size, and node offset parameters enable parallel Merkle-tree hashing
+
+**Performance:** BLAKE2b runs at ~3.5 cycles/byte on modern x86 without SHA extensions (vs ~8 for SHA-256 without SHA-NI, ~17 for SHA-3 on the same hardware). With SHA-NI, SHA-256 reaches ~1.5 cycles/byte, but BLAKE2b requires no special instruction extensions.
+
+**Used in:** Argon2 (PHC winner, RFC 9106) uses BLAKE2b as its core compression function; WireGuard uses BLAKE2s for handshake hashing; libsodium's `crypto_generichash` defaults to BLAKE2b; Zcash uses BLAKE2b for its Merkle trees and note commitment scheme.
+
+**State of the art:** RFC 7693 (2015) standardizes BLAKE2b and BLAKE2s. BLAKE3 (2020) further improves with a tree structure enabling near-linear parallel scaling, but BLAKE2b/2s remain widely deployed and are the correct choice when RFC compliance is required or BLAKE3 is unavailable. See [Hash Functions](#hash-functions).
+
+---

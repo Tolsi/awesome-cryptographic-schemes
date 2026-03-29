@@ -435,3 +435,85 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 **State of the art:** Modern FIPS 140-3 Level 3/4 HSMs combine mesh sensing, voltage/temperature monitoring, and cryptographic erasure of key RAM in under 1 ms. The IBM 4765 and Thales payShield 10K are representative certified platforms. Zeroization is complementary to [Fault Injection Countermeasures](#fault-injection-attacks--countermeasures) and [HSM & FIPS 140-3](#hardware-security-modules-hsm--fips-140-3); both address the physical attack surface of deployed cryptographic hardware.
 
 ---
+
+## GPU-Based Cryptographic Acceleration (CUDA AES, GPU FHE)
+
+**Goal:** Exploit the massive parallelism of modern graphics processing units to accelerate cryptographic workloads — especially fully homomorphic encryption (FHE), large-number arithmetic, and bulk symmetric encryption — achieving throughputs and latencies impossible on CPU alone. GPUs execute thousands of threads simultaneously, mapping well onto the embarrassingly parallel structure of NTT, CKKS, and AES-CTR.
+
+| Scheme / Implementation | Year | Basis | Note |
+|------------------------|------|-------|------|
+| **GPU-AES (Manavski)** | 2007 | CUDA + AES-128 ECB | First CUDA AES implementation; 8× speedup over CPU for independent block encryption; established GPU as viable crypto accelerator [[1]](https://link.springer.com/chapter/10.1007/978-3-540-79353-2_10) |
+| **cuHE (Dai-Sunar)** | 2015 | CUDA + HE NTT | GPU-accelerated HE library; custom NTT on CUDA; first GPU library enabling practical BGV/BFV-style operations [[1]](https://eprint.iacr.org/2015/818) |
+| **TFHE-rs GPU Backend** | 2023 | CUDA + TFHE bootstrapping | GPU-accelerated bootstrapping for TFHE; ~30× speedup over CPU single-core; enables sub-100 ms gate bootstrapping on RTX 3090 [[1]](https://eprint.iacr.org/2023/522) |
+| **GPU-CKKS (100 Gbps FHE)** | 2024 | CUDA + CKKS NTT | NTT-centric CKKS implementation on NVIDIA H100; achieves 100× speedup over CPU for CKKS multiplication; enables near-practical FHE-ML inference [[1]](https://eprint.iacr.org/2024/548) |
+| **cuBLAS-Lattice / NTT on H100** | 2025 | Tensor Core repurposing | Repurposes H100 Tensor Cores for NTT-based lattice arithmetic; orders-of-magnitude speedup for ML-KEM/ML-DSA key generation in cloud settings [[1]](https://eprint.iacr.org/2025/131) |
+
+**State of the art:** NVIDIA H100 GPUs with custom CUDA NTT kernels currently deliver the fastest FHE throughputs available; TFHE-rs and OpenFHE both ship GPU backends. GPU FHE acceleration is central to making [HE-based private ML inference](#secure-mpc--he-for-private-ml-inference) practical. Complements [Cryptographic Hardware Accelerators](#cryptographic-hardware-accelerators-aes-ni-sha-ni-avx-512-vaes) (CPU-centric) and [Confidential ML / TEE-Based Inference](#confidential-ml--tee-based-inference).
+
+---
+
+## AI Hardware Trojans (Backdoor Attacks on Neural Accelerators)
+
+**Goal:** Detect and prevent malicious logic secretly inserted into AI accelerator chips during design or manufacturing. A hardware trojan is a stealthy modification — added gates, altered weights in fixed-function neural networks, or backdoored training pipelines embedded in ASIC/FPGA bitstreams — that causes the hardware to misbehave under rare, attacker-chosen conditions while appearing correct in standard testing.
+
+| Attack / Defense | Year | Basis | Note |
+|----------------|------|-------|------|
+| **Wang et al. Hardware Trojan Survey** | 2008 | Taxonomy | First systematic taxonomy of hardware trojans by location (RTL, gate, layout) and activation trigger; standard reference for the threat model [[1]](https://ieeexplore.ieee.org/document/4559489) |
+| **BadNets (Gu et al.)** | 2019 | Training-time backdoor | Supply-chain attack on the ML training pipeline; inject trigger pattern into training data so the trained DNN misclassifies trigger-present inputs [[1]](https://arxiv.org/abs/1708.06733) |
+| **TrojanNN (Liu et al.)** | 2018 | Weight modification | Insert trojan by directly modifying a subset of neural network weights after training; no training-data access required [[1]](https://arxiv.org/abs/1712.05526) |
+| **DeepInspect (Chen et al.)** | 2019 | Generative model detection | Detect trojaned models by inverting the suspected trigger using a generative model; model-agnostic; IEEE S&P 2019 [[1]](https://ieeexplore.ieee.org/document/8835365) |
+| **Hardware Trojan Detection via Side-Channel (Jin-Makris)** | 2008 | Power fingerprinting | Detect inserted trojan gates by comparing power trace fingerprints against golden reference at test time [[1]](https://ieeexplore.ieee.org/document/4561401) |
+| **AICAS Trojan-Resistant Training** | 2023 | Certified training | Adversarial certified training with formal bounds on trojan-trigger success rate; extends certified robustness to hardware supply-chain threats [[1]](https://arxiv.org/abs/2210.03386) |
+
+**State of the art:** BadNets-style training-time trojans remain a potent supply-chain threat; detection methods (STRIP, Neural Cleanse, DeepInspect) achieve good detection rates but no universal defense exists. Hardware-level trojan detection for AI accelerator ASICs (NPUs, TPUs) via side-channel fingerprinting is an active research area (2024–2025). Related to [Supply Chain Attacks on Cryptographic Hardware](#supply-chain-attacks-on-cryptographic-hardware) and [Federated Learning Security](#federated-learning-security-poisoning--byzantine-robustness).
+
+---
+
+## Supply Chain Attacks on Cryptographic Hardware
+
+**Goal:** Understand and defend against adversarial modifications or substitutions introduced at any stage of a cryptographic hardware device's life cycle — design, fabrication, packaging, distribution, or firmware update — that subvert the device's cryptographic properties without visible physical alteration.
+
+| Attack / Defense | Year | Basis | Note |
+|----------------|------|-------|------|
+| **NSA/GCHQ Cisco Router Interdiction (Snowden)** | 2014 | Physical implant in transit | Intelligence agencies intercepted Cisco routers during shipping, installed hardware implants, resealed packaging; disclosed via Snowden documents [[1]](https://www.theguardian.com/books/2014/may/12/glenn-greenwald-no-place-to-hide-edward-snowden-nsa-review) |
+| **Bloomberg Supermicro Claim** | 2018 | Alleged PCB implant | Alleged implant chips added to Supermicro server motherboards during manufacturing; disputed but galvanised supply-chain security research and policy [[1]](https://www.bloomberg.com/news/articles/2018-10-04/the-big-hack-how-china-used-a-tiny-chip-to-infiltrate-america-s-top-companies) |
+| **Kleptographic TRNG Backdoor Threat (Bernstein et al.)** | 2022 | Kleptography | Formalises the threat of a subverted HSM or TRNG deliberately weakening key generation; extends kleptography to post-quantum settings [[1]](https://eprint.iacr.org/2022/1168) |
+| **NIST SP 800-161r1 (C-SCRM)** | 2022 | Risk management framework | U.S. federal framework for cybersecurity supply chain risk management; defines controls for hardware acquisition, inspection, and provenance [[1]](https://csrc.nist.gov/pubs/sp/800/161/r1/final) |
+| **DICE / RIoT Device Identity** | 2021 | HW attestation + PKI | Devices carry manufacturer-provisioned identity certificates enabling cryptographic verification of device provenance before deployment; embedded in TPM 2.0 and Azure IoT supply chains [[1]](https://www.microsoft.com/en-us/research/project/dice-device-identifier-composition-engine/) |
+
+**State of the art:** NIST SP 800-161r1 and CISA Supply Chain Risk Management guidelines are the operative U.S. standards; DICE/RIoT attestation chains are now embedded in TPM 2.0 and Azure Sphere. Hardware-rooted identity (see [TEE Remote Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation)) is the primary cryptographic defense. Intersects [Anti-Tamper & Zeroization](#anti-tamper--zeroization-mechanisms), [HSM & FIPS 140-3](#hardware-security-modules-hsm--fips-140-3), and [AI Hardware Trojans](#ai-hardware-trojans-backdoor-attacks-on-neural-accelerators).
+
+---
+
+## Formal Verification of Cryptographic Hardware
+
+**Goal:** Mathematically prove that a hardware implementation of a cryptographic algorithm is functionally correct, timing-side-channel free, and fault-resistant — without relying solely on simulation or testing. Formal methods (model checking, theorem proving, symbolic execution) exhaustively explore all reachable states of the RTL or gate-level netlist against a formal specification.
+
+| Tool / Result | Year | Basis | Note |
+|--------------|------|-------|------|
+| **Bounded Model Checking of AES RTL (Currie et al.)** | 2004 | SAT-based BMC | First bounded model-checking verification of AES hardware; proves functional equivalence of RTL to spec within bounded computation depth [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30494-4_22) |
+| **SILVER (Barthe et al.)** | 2021 | Masking + formal probing | Automated verification framework for masked hardware under the probing model; proves d-th order side-channel security of synthesised netlists; USENIX Sec 2021 [[1]](https://eprint.iacr.org/2020/1555) |
+| **EasyCrypt / CoqCrypt** | 2009+ | Coq theorem prover | Machine-checked proofs of cryptographic protocol and implementation security; formally verified AES and ChaCha implementations in EasyCrypt [[1]](https://www.easycrypt.info/) |
+| **Jasmin + Formosa Crypto** | 2022 | Verified assembly + Coq | End-to-end verified implementations: Jasmin compiles constant-time assembly proved correct and secret-independent; covers AES, ChaCha20, Kyber [[1]](https://formosa-crypto.org/) |
+| **UPEC (Fadiheh et al.)** | 2022 | Symbolic execution + SMT | Unique-Program-Execution Checking; verifies absence of microarchitectural information-flow leakage (Spectre, Meltdown classes) in RTL using symbolic execution [[1]](https://ieeexplore.ieee.org/document/9218571) |
+| **Formal Verification of Fault-Tolerant AES (Seuschek et al.)** | 2023 | Formal property verification | Property checking proves correctness of infective computation and duplication countermeasures in AES hardware under formal fault injection models [[1]](https://tches.iacr.org/index.php/TCHES/article/view/10282) |
+
+**State of the art:** Jasmin/Formosa gives end-to-end verified, constant-time software crypto; SILVER verifies masked hardware netlists against the d-probing model. Formal verification of complete cryptographic ASICs remains computationally challenging — bounded methods cover large designs but cannot rule out bugs beyond the bounded depth. Interaction with [Power Analysis Attacks & Masking Countermeasures](#power-analysis-attacks--masking-countermeasures), [Fault Injection Attacks & Countermeasures](#fault-injection-attacks--countermeasures), and [Speculative Execution & Cache-Timing Side-Channel Attacks](#speculative-execution--cache-timing-side-channel-attacks).
+
+---
+
+## Confidential GPU Computing (NVIDIA H100 CC, Azure Confidential GPU)
+
+**Goal:** Extend hardware-enforced confidential computing from CPU enclaves to GPU accelerators, so that AI inference and training workloads on GPUs are isolated from the host OS, hypervisor, and cloud operator. The GPU firmware authenticates itself and establishes an encrypted PCIe channel to the CPU TEE, making GPU memory and model weights invisible to the host even during computation.
+
+| Scheme / Platform | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **NVIDIA H100 Confidential Computing (CC mode)** | 2023 | On-die AES + attestation | First production GPU with hardware memory encryption and remote attestation; PCIe traffic encrypted between CPU TEE and GPU; protects model weights and activations from host [[1]](https://developer.nvidia.com/blog/confidential-computing-on-h100-gpus-for-secure-and-trustworthy-ai/) |
+| **Azure NCC H100 v5 Confidential GPU VMs** | 2023 | AMD SEV-SNP + H100 CC | First cloud offering combining AMD SEV-SNP CPU isolation with H100 CC GPUs; end-to-end CPU+GPU confidential AI; generally available on Azure [[1]](https://techcommunity.microsoft.com/t5/azure-confidential-computing/introducing-azure-confidential-vms-with-nvidia-h100-gpus/ba-p/3835761) |
+| **HETEE (Hua et al.)** | 2022 | PCIe + SGX + GPU | Research enclave architecture extending SGX trust to GPU via PCIe integrity and encryption; first formal design for GPU-TEE trust chains; CCS 2022 [[1]](https://dl.acm.org/doi/10.1145/3548606.3560640) |
+| **NVIDIA OCSP GPU Attestation** | 2023 | ECDSA + OCSP chain | NVIDIA attestation infrastructure lets clients verify H100 CC mode is active before transmitting sensitive data; interoperates with RATS attestation and [TEE Remote Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation) [[1]](https://docs.nvidia.com/deploy/nvtrust/latest/attestation.html) |
+| **Google Confidential GKE + A3 GPUs** | 2024 | GCP Confidential VMs + H100 | Google Kubernetes Engine confidential node pools with H100 GPUs; hardware-attested GPU isolation for GenAI workloads [[1]](https://cloud.google.com/blog/products/identity-security/confidential-computing-with-nvidia-gpus) |
+
+**State of the art:** NVIDIA H100 in Confidential Computing mode is the current production standard; ~2–5% performance overhead from memory encryption is the cost of GPU-level isolation. Azure, Google, and AWS all offer confidential GPU VMs as of 2024. Interaction with [Confidential ML / TEE-Based Inference](#confidential-ml--tee-based-inference), [GPU-Based Cryptographic Acceleration](#gpu-based-cryptographic-acceleration-cuda-aes-gpu-fhe), and [TEE Remote Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation).
+
+---

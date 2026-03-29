@@ -616,3 +616,84 @@
 **State of the art:** Batch PET from VOLE (2021) for high-throughput equality testing; UC-secure PET (Jarecki-Liu) when malicious security is required. Closely related to [PSI](#private-set-intersection-psi) (equality at scale) and [OPRF](#oblivious-prf-oprf) (the key building block); useful in [Threshold Signatures](categories/08-signatures-advanced.md#threshold-signatures-tss) and [Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#secret-sharing-shamir-ss).
 
 ---
+
+## OT-Extension-Based PSI (KKRT16 / RR21)
+
+**Goal:** High-throughput PSI using OT extension rather than public-key OPRF. The Kolesnikov-Kumaresan-Rosulek-Trieu (KKRT16) and Rindal-Rosulek (RR21) protocols replace expensive elliptic-curve OPRF evaluations with cheap symmetric-key OT-extension operations, achieving 10–100× higher throughput on large sets. The core idea is to encode each set element as a pseudorandom correlation obtained via OT extension, then match correlations using a hash table — all with only symmetric crypto after a small base-OT phase.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **KKRT16 (Kolesnikov-Kumaresan-Rosulek-Trieu)** | 2016 | OT extension + cuckoo hashing | First OT-based PSI competitive with DH; 3-party-hash cuckoo table; ~2 million items/second semi-honest; CCS 2016 [[1]](https://eprint.iacr.org/2016/799) |
+| **Phasing PSI (Pinkas-Schneider-Tkachenko-Yanai)** | 2019 | OT extension + phased hashing | Batched OPRF via OT extension; reduces communication to 1.3 bits/item for billion-scale sets; USENIX Sec 2019 [[1]](https://eprint.iacr.org/2019/241) |
+| **RR21 (Rindal-Rosulek)** | 2021 | OT extension + OKVS | Replace hash tables with OKVS; achieves optimal linear communication; 30% fewer OTs than KKRT16; IEEE S&P 2021 [[1]](https://eprint.iacr.org/2021/034) |
+| **Blazing Fast PSI from VOLE (Rindal-Schoppmann)** | 2021 | VOLE + hashing | Reduce base OT count using VOLE correlations; sublinear setup for large N; ACM CCS 2021 [[1]](https://eprint.iacr.org/2021/262) |
+
+**State of the art:** RR21 (optimal linear communication) and Phasing PSI (billion-scale deployments); both supersede DH-based and pure public-key OPRF approaches on throughput. Relies on [OT Extension](categories/06-multi-party-computation.md#oblivious-transfer-ot) and [OKVS](#oblivious-key-value-store-okvs); semi-honest security — combine with IKNP/ALSZ for malicious setting. Complements [Unbalanced PSI](#unbalanced-psi-client-server-psi-at-scale) and [Labeled PSI](#labeled-psi-and-private-intersection-sum-psi-sum).
+
+---
+
+## Privacy-Preserving Disease Surveillance (DP Epidemiology)
+
+**Goal:** Aggregate epidemiological signals — infection counts, contact rates, symptom prevalence — from sensitive health records without exposing individual health status. Formal differential privacy guarantees allow publishing aggregate statistics for public health response while bounding re-identification risk. Complements [Privacy-Preserving Contact Tracing](#privacy-preserving-contact-tracing-gaen--dp-3t) (individual exposure notifications) by operating at the population level.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DP Surveillance (Dwork-Kohli-Mulligan)** | 2019 | Gaussian + Laplace DP | Framework for DP disease reporting: daily incidence, prevalence, mortality with (ε,δ)-DP; theoretical analysis of utility-privacy tradeoffs for CDC-style reporting [[1]](https://arxiv.org/abs/1909.01524) |
+| **RAPPOR Epidemiology (Apple / Google)** | 2020 | Local DP + shuffle model | Aggregate symptom frequencies from iOS/Android devices for COVID-19 surveillance; local DP at device, shuffle amplification in transit; deployed at scale [[1]](https://arxiv.org/abs/2005.11521) |
+| **Tumult Analytics (Tumult Labs)** | 2022 | zCDP + sensitivity analysis | Open-source DP pipeline for public health agencies; automatic sensitivity calibration for SQL-like queries; used by several US state health departments [[1]](https://arxiv.org/abs/2212.04133) |
+| **PGM + DP for Syndromic Surveillance** | 2022 | Graphical models + Laplace | Privately fit probabilistic graphical models to weekly syndromic surveillance data; enables DP release of joint symptom distributions [[1]](https://eprint.iacr.org/2022/1508) |
+| **SMCQL / Shrinkwrap** | 2017/2019 | MPC + oblivious ops | Multi-party SQL over federated clinical databases; Shrinkwrap (2019) adds DP noise in the MPC to suppress cardinality leakage; used in distributed hospital networks [[1]](https://dl.acm.org/doi/10.14778/3137628.3137715) [[2]](https://dl.acm.org/doi/10.14778/3311880.3311883) |
+
+**State of the art:** Tumult Analytics (production DP pipeline) and Shrinkwrap (MPC + DP for federated queries) are the deployed solutions; RAPPOR-based mobile aggregation at population scale. Combines [Differential Privacy](#differential-privacy), [Shuffle Model](#shuffle-model-of-differential-privacy), and [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation) for verifiable aggregation.
+
+---
+
+## Continual-Release Differential Privacy (Private Streaming Algorithms)
+
+**Goal:** Answer statistical queries over a data stream while releasing up to-date differentially private results at each time step. Unlike one-shot DP (a single query on a static dataset), the continual release model allows an adversary to observe all published outputs over time — making naive repeated application of DP mechanisms fail due to composition. Core challenge: achieve DP over T time steps with error growing as O(log² T) rather than O(T).
+
+| Mechanism | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Dwork-Naor-Pitassi-Rothblum Continual DP** | 2010 | Binary tree mechanism | Foundational: partition the stream into a binary tree of partial sums; add Laplace noise at each node; error O(log² T); STOC 2010 [[1]](https://dl.acm.org/doi/10.1145/1806689.1806787) |
+| **Chan-Shi-Song Streaming DP** | 2011 | Smooth sensitivity + binary tree | Independent concurrent work; near-identical error bounds; extended to event-level and user-level DP; ITCS 2011 [[1]](https://arxiv.org/abs/1010.3463) |
+| **Honaker Streaming Mechanism** | 2015 | Matrix factorization + DP | Optimal noise allocation for streaming counting queries via matrix mechanism; reduces error by 64% over binary tree [[1]](https://arxiv.org/abs/1405.0823) |
+| **Private Heavy Hitters over Streams (PrivKVM)** | 2019 | LDP + key-value stream | Locally differentially private heavy-hitter detection over event streams with memoization; used in Apple iOS analytics [[1]](https://www.usenix.org/conference/usenixsecurity19/presentation/ding) |
+| **DP Histograms over Sliding Windows** | 2022 | Exponential mechanism + streaming | DP frequency estimates over the most-recent w items without storing the full window; Polylog(w) error; DP-FOCS 2022 [[1]](https://arxiv.org/abs/2206.08397) |
+
+**State of the art:** Binary tree / Honaker mechanism for counting queries; PrivKVM (Apple production) for streaming heavy hitters. Distinct from [Private Stream Aggregation](#private-stream-aggregation-psa) (multi-party one-shot) and [Private Heavy Hitters](#private-heavy-hitters--frequency-estimation) (static dataset). Extends [Differential Privacy](#differential-privacy) to the streaming/continual-observation setting fundamental to telemetry and sensor data.
+
+---
+
+## Privacy-Preserving Location Services (Geo-Fencing / Trajectory Privacy)
+
+**Goal:** Enable location-based services — geo-fencing, Points-of-Interest queries, ride-matching, proximity alerts — without revealing users' precise coordinates to the service provider. Goes beyond [Private Proximity Testing](#private-proximity-testing) (two-party, single check) to server-side databases of locations, trajectories, and regions with continuous or repeated queries.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Casper (Mokbel et al.)** | 2006 | k-anonymity + spatial cloaking | Cloak user location into a k-anonymous region before querying a Location-Based Service; VLDB 2006 [[1]](https://dl.acm.org/doi/10.1145/1182635.1164153) |
+| **GeoIndistinguishability (Andres et al.)** | 2013 | Planar Laplace mechanism (DP on metric spaces) | Formal DP for location: add calibrated planar noise so nearby locations are indistinguishable; privacy radius r at cost ε; CCS 2013 [[1]](https://dl.acm.org/doi/10.1145/2508859.2516735) |
+| **Private Geo-Fence (Chow-Mokbel)** | 2011 | HE + spatial hashing | Client checks whether its location falls inside a private fence polygon without learning the fence or revealing coordinates; VLDB 2011 [[1]](https://dl.acm.org/doi/10.14778/2095686.2095693) |
+| **DP Trajectory Publishing (NGRAM)** | 2016 | Differential privacy + Markov chain | Publish synthetic GPS trajectory datasets with (ε,δ)-DP; models transition probabilities with DP-noised n-grams; SIGMOD 2016 [[1]](https://dl.acm.org/doi/10.1145/2882903.2882934) |
+| **Ride-Matching via PSI (Koi et al.)** | 2021 | Unbalanced PSI + location encoding | Match riders and drivers on encrypted grid cells using PSI; neither party reveals precise location unless match found [[1]](https://eprint.iacr.org/2021/790) |
+| **LPPM + DP for Mobility (Shokri et al.)** | 2017 | Location Privacy Protection Mechanism | Optimal location obfuscation under DP constraints using linear programming; end-to-end pipeline for mobile apps; IEEE S&P 2017 [[1]](https://ieeexplore.ieee.org/document/7958595) |
+
+**State of the art:** GeoIndistinguishability (principled DP for location, widely adopted in literature and production); DP trajectory publishing for dataset release; PSI-based ride-matching for server-side geo-fencing. Extends [Differential Privacy](#differential-privacy) and [Private Proximity Testing](#private-proximity-testing) to continuous and server-side location query settings. Relevant to [ODoH](#oblivious-dns-odoh) for DNS-based location inference.
+
+---
+
+## Differential Privacy Auditing and Verification
+
+**Goal:** Verify that a claimed differentially private mechanism actually satisfies its stated (ε, δ) guarantee — either by statistical black-box testing, formal analysis, or hybrid methods. Critical for catching implementation bugs (insufficient gradient clipping, incorrect sensitivity calculations) and for regulatory compliance. Complements DP theory by providing empirical and formal correctness assurance.
+
+| Tool / Method | Year | Basis | Note |
+|---------------|------|-------|------|
+| **DP Finder (Bichsel et al.)** | 2018 | Optimization-based testing | Black-box: search for adjacent-input pairs maximizing empirical privacy loss; PLDI 2018 [[1]](https://dl.acm.org/doi/10.1145/3192366.3192411) |
+| **StatDP (Ding-Wang-Wang)** | 2019 | Hypothesis testing | Statistical audit: run the mechanism many times on adjacent inputs; detect DP violations via Neyman-Pearson tests; IEEE S&P 2019 [[1]](https://ieeexplore.ieee.org/document/8835364) |
+| **DP Opt (Barthe et al.)** | 2020 | Program analysis + coupling | Formal: use probabilistic couplings and relational logic to prove (ε,δ)-DP for programs; extension of RelativeEpsilonDP [[1]](https://arxiv.org/abs/2001.11481) |
+| **Autodp (Wang et al.)** | 2019 | Rényi DP + moment accounting | Automated composition accounting: compute tight (ε,δ) from a sequence of mechanisms via Rényi DP moments; Python library [[1]](https://github.com/yuxiangw/autodp) |
+| **PRV Accountant (Gopi et al.)** | 2021 | Privacy Random Variables | Numeric Fourier accountant: compute tight (ε,δ) via characteristic functions of privacy-loss RVs; 1000× tighter than moments accountant for large ε; ICML 2021 [[1]](https://arxiv.org/abs/2106.08567) |
+| **DP-Sniper (Bichsel et al.)** | 2021 | Neural classifier + likelihood ratio | ML-assisted black-box DP audit: train classifier to distinguish adjacent-input outputs; reports lower bound on ε; USENIX Sec 2021 [[1]](https://www.usenix.org/conference/usenixsecurity21/presentation/bichsel) |
+
+**State of the art:** PRV Accountant (tightest composition, adopted in Opacus/TF-Privacy); DP-Sniper for black-box empirical auditing; StatDP for statistical violation detection. Underpins trust in [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd--pate), [Shuffle Model DP](#shuffle-model-of-differential-privacy), and all deployed [Differential Privacy](#differential-privacy) systems.
+
+---

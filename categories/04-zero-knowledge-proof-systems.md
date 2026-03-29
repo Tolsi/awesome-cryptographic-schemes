@@ -757,3 +757,117 @@
 **State of the art:** QuickSilver and Wolverine (2021) are the canonical interactive VOLE-ZK systems; Mac'n'Cheese for streaming/low-memory settings. Silent VOLE from PCGs (see [OLE/VOLE](categories/06-multi-party-computation.md#ole--vole)) gives practical offline setup. VOLEitH (2023) extends the paradigm to non-interactive proofs. See [[1]](https://eprint.iacr.org/2021/076).
 
 ---
+
+## ZK Proofs for Regulatory Compliance (zkKYC / zkAML)
+
+**Goal:** Satisfy regulatory obligations (Know-Your-Customer, Anti-Money-Laundering) without exposing raw personal data. A user proves to a verifier — an exchange, a regulator, or a smart contract — that they satisfy a compliance predicate (e.g., "I am not on a sanctions list", "my income is above threshold X") using a ZK proof over a credential issued by a trusted authority, without revealing the underlying personal information.
+
+| Scheme / System | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **zkKYC (Sealance / Polygon ID)** | 2022 | Groth16 + W3C VCs | Prove KYC status from a signed credential; on-chain verifier; no personal data on chain [[1]](https://polygon.technology/blog/polygon-id-privacy-first-on-chain-identity) |
+| **KILT / SocialKYC** | 2022 | KILT credentials + ZK | Selective disclosure of attested credentials; privacy-preserving identity on Polkadot [[1]](https://www.kilt.io/) |
+| **zkAML (Chainalysis / Elliptic proposals)** | 2023 | Set-membership proofs | Prove address is not in a sanctions/AML set without revealing the address; membership/non-membership via ZK accumulators [[1]](https://eprint.iacr.org/2023/1173) |
+| **Semaphore (rate-limited nullifiers)** | 2021 | Groth16 + Merkle tree | Anonymous signaling: prove group membership without linking actions; used in zkKYC pipelines [[1]](https://semaphore.pse.dev/) |
+| **Holonym** | 2023 | Groth16 / Halo2 | ZK proof of KYC attributes (country, uniqueness) from government-issued ID via MPC-TLS; on-chain verify [[1]](https://holonym.id/) |
+
+**Protocol structure:** A trusted identity provider (government registry, KYC bureau) issues a signed credential attesting to personal attributes. The user generates a ZK proof that (a) the credential was signed by the trusted issuer, and (b) their attributes satisfy the compliance predicate — without revealing the credential or any other attribute. On-chain or off-chain verifiers accept the proof without seeing any personal data.
+
+**Privacy properties:** Credential hiding (verifier learns only the predicate output), issuer unlinkability (multiple proofs from the same credential are unlinkable if nullifiers are used correctly), and regulatory auditability (issuer or regulator can optionally open a viewing key for enforcement).
+
+**Open challenges:** Multi-jurisdiction compliance (different regulatory predicates per country), credential revocation (ZK proofs of non-revocation without leaking revocation status), and sybil resistance (preventing one person from generating many ZK identities).
+
+**State of the art:** Polygon ID (2022) and Holonym (2023) are production systems; zkAML accumulator proposals are academic (2023). The field is converging on W3C Verifiable Credentials as the credential format and Groth16/PLONK as the proof backend. See [Anonymous Credentials](categories/11-anonymity-credentials.md#anonymous-credentials), [ZK Proofs for Identity](#zk-proofs-for-identity-proof-of-age--nationality).
+
+---
+
+## ZK Proofs for Identity (Proof of Age / Nationality)
+
+**Goal:** Selectively prove identity attributes — age, nationality, uniqueness — derived from government-issued documents (passports, national IDs, driver's licenses) without revealing the underlying document or any unneeded fields. Enables privacy-preserving access control: a bar proves a patron is over 18, a DeFi protocol proves a user is not a sanctioned national, a social platform proves uniqueness — all without a centralised identity database.
+
+| Scheme / System | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **zk-SNARK passport proofs (anon-aadhaar)** | 2023 | Groth16 / RSA | Prove attributes from Indian Aadhaar QR (RSA-signed); age, state, gender; on-chain verifiable; PSE project [[1]](https://github.com/privacy-scaling-explorations/anon-aadhaar) |
+| **OpenPassport / zkPassport** | 2023 | Groth16 + ECDSA/RSA | Prove e-passport ICAO 9303 attributes (nationality, age, uniqueness) using the chip's active authentication signature [[1]](https://github.com/zk-passport/openpassport) |
+| **World ID (Worldcoin)** | 2023 | Groth16 + Semaphore | Proof of personhood via iris biometric; ZK uniqueness proof; on-chain nullifiers [[1]](https://docs.world.org/world-id/concepts) |
+| **Proof of Passport (0xPARC)** | 2023 | Circom + Groth16 | ICAO passport chip data → ZK circuit; discloses only derived attributes (age bracket, nationality code) [[1]](https://github.com/0xPARC/zk-email) |
+| **zk-Email (DKIM-based identity)** | 2023 | Groth16 + DKIM RSA | Prove email domain ownership (and thus institutional affiliation) without revealing email body [[1]](https://prove.email/) |
+
+**Technical foundation:** Modern e-passports (ICAO 9303) store personal data in a chip that signs its contents under an issuing-country key (Document Signer Certificate). The prover reads the chip via NFC, obtains the signed data structure, and generates a ZK circuit that (a) verifies the RSA/ECDSA signature against the known country certificate, and (b) evaluates the disclosure predicate on the plaintext fields. The proof attests to the predicate without revealing the raw passport data. The circuit must implement RSA-2048 or ECDSA verification in-circuit — typically 1–3 million R1CS constraints.
+
+**Linkability and nullifiers:** A critical design issue is preventing the same passport from generating multiple "unique" proofs (sybil attack). Worldcoin uses iris biometrics; passport-based systems use commitment schemes keyed on the passport number (hashed under a nullifier scheme) to detect duplicates without revealing the number itself.
+
+**State of the art:** OpenPassport / zkPassport (2023) and anon-aadhaar (2023) are open-source production systems. World ID (Worldcoin) is deployed at scale. Active research on reducing circuit size (RSA in-circuit is expensive) via precompile support in zkVMs (SP1, RISC Zero). See [zkKYC / zkAML](#zk-proofs-for-regulatory-compliance-zkkyc--zkaml), [zkTLS / MPC-TLS](#zktls--mpc-tls).
+
+---
+
+## ZK Proofs for Supply Chain (Proof of Origin / Provenance)
+
+**Goal:** Prove properties of a product's supply chain — country of origin, certification compliance, ethical sourcing — without revealing commercially sensitive supplier relationships. A manufacturer proves to a retailer or regulator that its product satisfies a sourcing predicate (e.g., "all components are from GDPR-compliant jurisdictions", "no conflict minerals") without disclosing which specific suppliers were used.
+
+| Scheme / System | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **zkSC (ZK Supply Chain, MIT / BCG)** | 2022 | Groth16 + Merkle supply tree | Prove product properties from a Merkle tree of signed supplier attestations; verifier sees only the root + ZK proof [[1]](https://eprint.iacr.org/2022/1065) |
+| **Healy-Rayo-Troncoso supply chain ZK** | 2023 | Polynomial commitments + set membership | Prove aggregate properties (sum, threshold) over a hidden supplier set; UC-secure [[1]](https://eprint.iacr.org/2023/1060) |
+| **ZK for ESG / carbon footprint** | 2023 | PLONK + range proofs | Prove carbon emissions below a threshold without revealing production process details; Baseline Protocol extension [[1]](https://docs.baseline-protocol.org/) |
+| **Trade finance ZK (ING / Commerzbank)** | 2022 | Bulletproofs | ZK range proofs for letter-of-credit conditions (price, quantity bounds) without revealing exact contract terms [[1]](https://github.com/ing-bank/zkrp) |
+
+**Protocol structure:** Each supplier holds a digitally signed attestation from a certifying authority (e.g., a customs body, an auditor). Attestations are organised as a Merkle tree keyed by product serial numbers. A manufacturer holding paths through this tree generates a ZK proof that all attested attributes satisfy the required predicate — with the Merkle root as the only public information. Verifiers check the proof without seeing any supplier identity.
+
+**Key challenges:** Multi-hop provenance (proving properties of components whose suppliers are themselves composed of sub-suppliers), revocation of certifications without leaking which supplier was revoked, and cross-border regulatory interoperability (different standards per jurisdiction).
+
+**Relation to other primitives:** Proof-of-origin circuits rely on [ZK Sets](#zero-knowledge-sets) for hidden supplier membership, [Accumulators](categories/09-commitments-verifiability.md#accumulators) for revocation, and [Merkle-based ZK Proofs](#zero-knowledge-proofs-zk) for commitment to supply trees. Multi-party supply chains can use [Distributed SNARKs](#distributed--collaborative-snarks) to avoid any single party assembling all supplier data.
+
+**State of the art:** Primarily academic and pilot deployments (2022–2024); no dominant production system yet. ING's zero-knowledge range proof library (Bulletproofs) is open-source. The EU's Digital Product Passport regulation (2024) is driving commercial interest. See [ZK Proofs for Regulatory Compliance](#zk-proofs-for-regulatory-compliance-zkkyc--zkaml).
+
+---
+
+## IVC vs. PCD vs. Accumulation Schemes (Recursive Composition Taxonomy)
+
+**Goal:** Understand the landscape of recursive proof composition. Three related but distinct paradigms — Incrementally Verifiable Computation (IVC), Proof-Carrying Data (PCD), and Accumulation Schemes — capture different flavors of "a proof about proofs". Each targets a different computational model (sequential, DAG-shaped, or deferred verification) and has a different efficiency profile.
+
+| Paradigm | Model | Introduced | Key Property | Representative Systems |
+|----------|-------|------------|--------------|------------------------|
+| **IVC (Incrementally Verifiable Computation)** | Sequential chain | Valiant 2008 | Each step produces a proof that all prior steps were correct; chain of proofs | Nova, SuperNova, Nexus zkVM [[1]](https://eprint.iacr.org/2008/140) |
+| **PCD (Proof-Carrying Data)** | DAG / distributed | Chiesa-Tromer 2010 | Any node in a computation DAG can verify all ancestor nodes; generalises IVC to branching | Halo/Pickles (Mina), recursive SNARKs on cycle of curves [[1]](https://eprint.iacr.org/2010/174) |
+| **Accumulation Schemes** | Deferred batch check | Bünz-Chiesa-Mishra-Spooner 2020 | Instead of verifying a proof immediately, accumulate a sequence of proofs into one check deferred to the end; avoids nested recursion cost | Halo accumulation, ProtoStar, ProtoGalaxy [[1]](https://eprint.iacr.org/2020/499) |
+| **Folding Schemes** | Sequential (IVC-style) | Kothapalli-Setty-Tzialla 2022 | Fold two instances of the same relation into one without a proof; cheaper than SNARK-in-SNARK recursion | Nova, HyperNova, Sangria, Arecibo [[1]](https://eprint.iacr.org/2021/370) |
+
+**IVC in depth:** An IVC scheme for a function F produces, after n steps, a proof πₙ that F was applied correctly n times starting from z₀. The verifier checks only πₙ — not all intermediate proofs. IVC requires the proof system to recursively verify its own proofs. Nova achieves IVC via *folding* rather than proof-in-proof recursion: it folds two R1CS instances into one of the same size, deferring all IOP checks to the end.
+
+**PCD in depth:** PCD generalises IVC to arbitrary directed acyclic graphs: each node v in the graph receives proofs from its predecessor nodes, verifies them, performs local computation, and outputs a new proof. This captures distributed protocols, blockchain light clients, and cross-chain bridges. Practical PCD requires either cycles of elliptic curves (Mina uses Pasta + Pickles) or folding-based IVC extended to branching structures (SuperNova).
+
+**Accumulation in depth:** An accumulation scheme replaces the expensive verifier inside a recursive SNARK with an *accumulator update* step. Multiple proofs π₁, …, πₙ are accumulated into a single accumulator acc; only at the very end does the verifier "decide" the accumulator. This reduces the per-step recursion cost from O(verifier time) to O(accumulator update time), which can be sublinear. Halo's deferred IPA verification is the prototypical example.
+
+**Comparison:**
+- IVC: cheapest when computation is sequential; Nova/SuperNova dominate.
+- PCD: needed for branching/distributed computation; higher overhead.
+- Accumulation: best when many proofs must be aggregated offline before a single on-chain check.
+- Folding: a technique used to implement IVC efficiently; not a separate end-user primitive.
+
+**State of the art:** Nova (2022) for IVC; Pickles/Kimchi (Mina, 2021) for PCD; Halo/ProtoStar/ProtoGalaxy for accumulation. See [Folding Schemes](#folding-schemes), [Proof-Carrying Data](#proof-carrying-data-pcd), [Halo and Halo2](#halo-and-halo2).
+
+---
+
+## Sangria, Arecibo, and Sonobe (Folding Ecosystem)
+
+**Goal:** Extend and implement the folding paradigm beyond Nova's original R1CS setting. Sangria adapts folding to PLONK-style (relaxed PLONK) constraint systems; Arecibo is an earlier multi-circuit IVC system exploring non-uniform computation before SuperNova; Sonobe is an open-source library providing modular folding backends (Nova, HyperNova, ProtoGalaxy) for application developers.
+
+| Scheme / Library | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Sangria** | 2023 | Relaxed PLONK + folding | Adapts Nova's folding to PLONKish (custom gates) constraint systems via a "relaxed PLONK" relation; enables folding for PLONK-based circuits [[1]](https://github.com/geometryresearch/sangria/blob/main/docs/sangria_folding_plonk.pdf) |
+| **Arecibo** | 2022 | Multi-circuit Nova variant | Non-uniform IVC before SuperNova; supports a fixed finite set of circuits at each step; prototype of the SuperNova idea [[1]](https://github.com/argumentcomputer/arecibo) |
+| **Sonobe** | 2024 | Nova / HyperNova / ProtoGalaxy library | Modular Rust library for IVC; pluggable folding backends; integrates with Circom, Noir, and Halo2 frontends; open-source by 0xPARC / PSE [[1]](https://github.com/privacy-scaling-explorations/sonobe) |
+| **CycleFold** | 2023 | Curve-cycle folding optimization | Reduces the scalar-multiplication verification in Nova to a single small secondary circuit on a second curve; used in Nexus, Sonobe, and SP1 aggregation [[1]](https://eprint.iacr.org/2023/1192) |
+| **ProtoGalaxy** | 2023 | High-arity accumulation | Generalises ProtoStar to fold many instances at once (k-arity folding); logarithmic prover overhead in k; closer to Sangria in using PLONK-style relations [[1]](https://eprint.iacr.org/2023/1106) |
+
+**Sangria:** Nova's relaxed R1CS relation (where the constraint Az ∘ Bz = u · Cz + E includes an error term E and a scaling factor u) does not directly accommodate PLONK's custom gate structure. Sangria defines a *relaxed PLONK* relation by adding analogous error terms to PLONK's gate and permutation polynomials, then derives folding equations for each. This makes folding-based IVC available to the large ecosystem of PLONK circuit tooling (Halo2, UltraPlonk).
+
+**Arecibo:** Developed as a multi-circuit extension of Nova before SuperNova's publication, Arecibo demonstrated that different circuits could be executed at different IVC steps by selecting among a finite set of "augmented" circuits. The codebase later became the reference implementation for SuperNova's paper.
+
+**Sonobe:** Provides a clean API: developers write circuits in Circom or Halo2, choose a folding scheme backend (Nova, HyperNova, ProtoGalaxy), and get IVC proofs with final SNARK compression (Groth16 or PLONK). Sonobe handles CycleFold integration and the decider SNARK automatically. It is the primary practical entry point for folding-based ZK development (2024).
+
+**CycleFold:** A key optimization: in Nova, the folding verifier must compute a scalar multiplication on the primary curve. Encoding this check as a *secondary circuit* on a different curve (forming a two-curve cycle, e.g., BN254 / Grumpkin) keeps each primary circuit small. CycleFold formalizes this two-curve trick and reduces the secondary circuit to a minimal single multi-scalar multiplication, used in Nexus zkVM and Sonobe.
+
+**State of the art:** Sangria (2023, geometry research), Sonobe (2024, PSE / 0xPARC), CycleFold (2023, Aztec). These tools form the practical infrastructure for the [Folding Schemes](#folding-schemes) research programme. See [IVC vs. PCD vs. Accumulation Schemes](#ivc-vs-pcd-vs-accumulation-schemes-recursive-composition-taxonomy), [General-Purpose zkVMs](#general-purpose-zkvms).
+
+---

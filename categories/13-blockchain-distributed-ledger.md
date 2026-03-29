@@ -1131,3 +1131,206 @@ Because the VDF takes longer than the reveal window, the last revealer cannot co
 **State of the art:** Nova and HyperNova are the leading theoretical constructions (2023–2024); both are integrated into production zkVMs (SP1, RISC Zero). Mina's Pickles is the most prominent production IVC system. Survey [[4]](https://eprint.iacr.org/2023/620). See [Mina Protocol](#mina-protocol--pickles-recursive-snark-22-kb-blockchain), [Halo2](#halo2--recursive-snarks-without-trusted-setup-zcash-orchard), [ZK Rollups](#zk-rollups-and-optimistic-rollups), [Folding Schemes](categories/04-zero-knowledge-proof-systems.md#folding-schemes-and-proof-carrying-data-pcd).
 
 ---
+
+## Tornado Cash — zkSNARK Privacy Mixer
+
+**Goal:** Allow Ethereum users to deposit ETH (or ERC-20 tokens) into a smart contract and later withdraw the same amount to a fresh address, breaking the on-chain link between depositor and withdrawer — using a Groth16 zkSNARK to prove membership in the deposit set without revealing which deposit is being withdrawn.
+
+**Construction (Pertsev et al., 2019):**
+
+Tornado Cash maintains an on-chain Merkle tree of deposit commitments. Every deposit inserts a commitment `C = Pedersen(nullifier || secret)` as a leaf. Withdrawal requires a zero-knowledge proof that the withdrawer knows a `(nullifier, secret)` pair whose commitment is in the tree, without revealing which leaf.
+
+```
+Deposit:
+  1. User generates random (nullifier, secret) off-chain
+  2. Computes commitment C = Pedersen(nullifier || secret)
+  3. Sends ETH + C to smart contract; C inserted as Merkle leaf
+
+Withdraw (to fresh address):
+  1. User computes nullifierHash = Pedersen(nullifier)
+  2. Generates Groth16 proof π: "I know (nullifier, secret) s.t.
+     - C = Pedersen(nullifier || secret) is a leaf in Merkle tree with root R
+     - nullifierHash = Pedersen(nullifier)"
+  3. Submits (π, nullifierHash, recipient, relayer, fee) to contract
+  4. Contract verifies π on-chain, checks nullifierHash not spent, pays recipient
+```
+
+**Why the nullifier hash:** The smart contract stores all seen `nullifierHash` values. If the same nullifier is used twice, the hash repeats and the withdrawal is rejected — preventing double-spends. The nullifier itself is never revealed, so the deposit remains unlinkable.
+
+**Cryptographic components:**
+
+| Component | Mechanism | Note |
+|-----------|-----------|------|
+| Commitment scheme | Pedersen hash (MiMC / Poseidon in later versions) | ZK-friendly; inside Groth16 circuit |
+| Merkle tree | 20-level binary Merkle tree; leaves = commitments | On-chain root updated per deposit |
+| Proof system | Groth16 over BN254 (alt_bn128) | ~200-byte proof; ~21K gas on-chain verify |
+| Trusted setup | Ceremony (Powers of Tau + phase 2, 1,114 participants) | Circuit-specific SRS |
+| Anonymity set | All unspent deposits of the same denomination | Larger anonymity set = stronger privacy |
+
+**Denominations:** Tornado Cash deploys separate contract instances for fixed amounts (0.1, 1, 10, 100 ETH) — all deposits in one instance are identical in size, preventing amount-based deanonymisation.
+
+**Limitations:** Anonymity set size is bounded by the number of deposits between deposit and withdrawal. Timing and gas-pattern analysis can partially deanonymise users. The relayer (who submits the withdrawal transaction to avoid linking the withdrawing address to a funding source) must be trusted for liveness but not for privacy.
+
+**State of the art:** Tornado Cash v2 deployed on Ethereum mainnet; OFAC sanctioned the contracts (August 2022). Tornado Cash Nova (2021) generalised to arbitrary amounts using shielded transfers (a Zcash-style shielded pool on Ethereum). Source code [[1]](https://github.com/tornadocash/tornado-core); audit [[2]](https://tornado.cash/audits/TornadoCash_audit_ABDK.pdf). See [Groth16 / Zcash Sapling zk-SNARK](#groth16--zcash-sapling-zk-snark), [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems-overview), [Commitment Schemes](categories/09-commitments-verifiability.md#commitment-schemes).
+
+---
+
+## Zcash Sapling Transaction Structure
+
+**Goal:** Define the cryptographic anatomy of a Zcash shielded transaction — the note format, Spend and Output descriptions, binding signature, and how all components combine to prove that amounts balance and that the spender knows the spending key — without revealing senders, recipients, or amounts.
+
+**Note anatomy:** A Zcash Sapling *note* encodes a shielded payment:
+
+```
+Note = (d, pkd, value, rcm)
+  d    — diversifier (11 bytes); selects a diversified payment address
+  pkd  — recipient's diversified transmission key (32-byte Jubjub point)
+  value — 64-bit amount
+  rcm  — randomness (32 bytes); used to derive the Pedersen commitment
+```
+
+The **note commitment** is `cm = WindowedPedersen(repr(g_d), repr(pkd), value, rcm)` — a Jubjub-curve Pedersen commitment. The Sapling commitment tree is a Merkle tree (depth 32) over all note commitments ever created.
+
+**Transaction components:**
+
+| Description | What it proves | Proof system | Size |
+|-------------|---------------|-------------|------|
+| **Spend description** | Spender knows `(ask, nk, rcm, value, merkle_path)` for a committed note; note is in the tree; nullifier is derived correctly | Groth16 (Spend circuit, BLS12-381) | ~738 bytes |
+| **Output description** | A well-formed note commitment was created for a new output; recipient can decrypt the encrypted note | Groth16 (Output circuit, BLS12-381) | ~948 bytes |
+| **Binding signature** | Net value (inputs − outputs − fee) is zero; prevents value creation outside the transparent pool | RedJubjub Schnorr signature over the transaction hash | 64 bytes |
+
+**Spend circuit (high-level):**
+
+```
+Public inputs:  root (Merkle tree root), nullifier, cv (value commitment), rk (randomized spend key)
+Private inputs: note (d, pkd, value, rcm), ak (authorization key), nk (nullifier key), merkle_path
+
+Circuit proves:
+  1. cm = Commit(g_d, pkd, value, rcm) is a leaf in Merkle path to root
+  2. nf = PRF_{nk}(ρ)  — nullifier derived from nullifier key and note position ρ
+  3. cv = ValueCommit(value, rcv)  — Pedersen commitment to value with blinding rcv
+  4. rk = ak + [α]·SpendAuthG  — randomized spend authorization key (prevents key reuse linkage)
+```
+
+**Value balance — binding signature trick:**
+
+Each Spend adds `+value` to `cv_net`; each Output adds `−value`. The binding signature key is `bsk = Σ rcv_spends − Σ rcv_outputs`. The verifier checks that the binding signature verifies under the net commitment `cv_net − value_balance·H`. If amounts don't balance, the binding key does not exist — the Pedersen commitment algebra enforces balance without the circuit ever checking the global sum.
+
+**Encryption:** Each Output description includes an encrypted note ciphertext (ChaCha20-Poly1305 under an ECDH key derived from the recipient's transmission key `pkd`), allowing the recipient to scan all outputs and decrypt those addressed to them.
+
+**Key hierarchy (ZIP-32):**
+
+```
+Spending key (sk)
+  ├─ Ask (spend authorizing key) → rk (randomized in each Spend)
+  ├─ Nk  (nullifier key) → nullifiers for spent notes
+  └─ Ovk (outgoing viewing key) → decrypt sent notes
+Incoming viewing key (ivk) → scan + decrypt received notes without spending
+Full viewing key (fvk = (ak, nk, ovk)) → view all activity without spending
+```
+
+**Sapling vs. Orchard:** Zcash Orchard (NU5, 2022) replaces Sapling's Groth16/BLS12-381 circuits with Halo2/Pallas circuits and unifies each Spend+Output into a single *action*, eliminating separate proof types. See [Halo2](#halo2--recursive-snarks-without-trusted-setup-zcash-orchard).
+
+**State of the art:** Sapling activated on Zcash mainnet October 2018; remains the most widely used shielded protocol by transaction count. Sapling specification [[1]](https://zips.z.cash/protocol/sapling.pdf); ZIP 32 (HD shielded keys) [[2]](https://zips.z.cash/zip-0032). See [Groth16 / Zcash Sapling zk-SNARK](#groth16--zcash-sapling-zk-snark), [Confidential Transactions](#confidential-transactions-ct), [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems-overview).
+
+---
+
+## Confidential Transactions with Bulletproofs — Liquid Network
+
+**Goal:** Deploy confidential transactions (hidden amounts) with Bulletproofs range proofs on a Bitcoin sidechain, enabling institutional asset settlement where counterparties see transaction validity (no inflation, no negative values) but not the specific amounts — while also hiding the *asset type* in multi-asset transactions via Confidential Assets.
+
+**Liquid Network (Blockstream, 2018):** A federated Bitcoin sidechain with a 15-of-15 functionary federation. Liquid implements Confidential Transactions with two extensions over the base CT design:
+
+**1. Confidential Assets (CA):** Each output commits to both its *value* and its *asset type* (e.g., L-BTC, USDT, tokenised bond). The asset tag commitment prevents cross-asset inflation without revealing which asset is being transferred:
+
+```
+Output commitment: C = r·G + value·H_asset
+  where H_asset = Hash_to_curve(asset_id)   — asset-specific generator
+```
+
+A *surjection proof* proves that the asset generator `H_asset` used in each output matches a generator used in some input of the same asset type, without revealing which asset it is.
+
+**2. Bulletproofs range proofs:** Each output value commitment is accompanied by a Bulletproof proving `value ∈ [0, 2^64)`. Bulletproofs replaced the Borromean ring range proofs of the original CT proposal for their logarithmic size and absence of a trusted setup.
+
+**Cryptographic stack:**
+
+| Primitive | Role | Note |
+|-----------|------|------|
+| Pedersen commitments (secp256k1) | Hide amounts; homomorphic balance check | `Σ C_in = Σ C_out + fee·H` enforces no inflation |
+| Bulletproofs (Bünz et al., 2018) | Range proofs for committed values | O(log n) proof size; no trusted setup |
+| Surjection proofs | Prove asset-type balance across inputs/outputs | One-of-many proof over asset tag generators |
+| ECDH (secp256k1) | Share blinding factors with recipient | Ephemeral key included in output |
+| MuSig / 11-of-15 Schnorr | Federation signing for peg-in/peg-out | Emergency 2-of-3 backup path |
+
+**Bulletproof size comparison:**
+
+| Proof type | Borromean (original CT) | Bulletproofs |
+|------------|------------------------|-------------|
+| Single 64-bit range proof | ~2.5 KB | ~674 bytes |
+| Aggregated 8 outputs | ~20 KB | ~2.2 KB |
+| Trusted setup required | None | None |
+
+**Transaction validation:** Each Liquid full node verifies:
+- `Σ C_in = Σ C_out + fee·H` — Pedersen commitment balance
+- Each Bulletproof — committed values are non-negative 64-bit integers
+- Each surjection proof — asset types balance across inputs/outputs
+
+**Limitations:** Confidential transactions are ~3–5× larger than transparent transactions; block capacity is constrained accordingly. The 15-of-15 peg federation is a trust assumption separate from the cryptographic layer — a federation compromise could allow unbacked L-BTC issuance.
+
+**State of the art:** Liquid Network live since October 2018; Bulletproofs integrated 2019; used for institutional OTC settlement, tokenised bonds, Tether USDT on Liquid. Liquid whitepaper [[1]](https://blockstream.com/assets/downloads/pdf/liquid-whitepaper.pdf); Elements CT implementation [[2]](https://github.com/ElementsProject/elements). See [Confidential Transactions](#confidential-transactions-ct), [Range Proofs](#range-proofs), [MimbleWimble](#mimblewimble).
+
+---
+
+## Bridge Security — Trust Model Taxonomy
+
+**Goal:** Classify the trust assumptions of cross-chain bridges — systems that lock assets on one chain and issue representations on another — from weakest (small multisig) to strongest (cryptographic validity proofs), and characterise the security failures that have resulted in over $2.5B of losses.
+
+**Trust model spectrum:**
+
+| Model | Representative bridges | Trust assumption | Loss vector |
+|-------|----------------------|-----------------|------------|
+| **Multisig / MPC** | Ronin (Axie), Harmony Horizon, Multichain | k-of-n custodians; safe if ≥ k honest | Key compromise; Ronin: 5-of-9 keys stolen ($625M, 2022) |
+| **Optimistic** | Nomad, Hyperlane (default) | ≥ 1 honest online watcher challenges within window | Implementation bug; Nomad zero-init error ($190M, 2022) |
+| **Light-client** | IBC, Near Rainbow Bridge | Cryptographic Merkle proofs against counterparty headers | Source-chain consensus failure (no known exploits) |
+| **ZK / validity** | zkBridge, Succinct Telepathy, Polymer, Union | SNARK soundness + source-chain consensus; no committee | Proof system soundness (no known exploits at scale) |
+| **Liquidity network** | Connext, Hop, Across | Atomic HTLC swap; no custody of assets | Counterparty liveness; limited to available liquidity |
+
+**Wormhole exploit — February 2022, $325M:**
+
+Wormhole is a guardian multisig bridge (19 guardians, 13-of-19 threshold). The exploit did not compromise any guardian key. It exploited a Solana program validation bug:
+
+```
+Solana's sysvar account verification was not enforced:
+  Attacker passed a crafted fake "sysvar_instructions" account
+  The bridge code verified guardian signatures against this fake account
+  → Attacker minted 120,000 wETH on Ethereum with no corresponding SOL deposits
+```
+
+Root cause: missing validation that a Solana native program account address is canonical — a semantic input validation failure, not a cryptographic break.
+
+**Optimistic bridge security properties:**
+
+```
+Assertion window (7 days):
+  Sequencer posts state root S to destination chain
+  Any watcher with local source-chain data can compute correct root S'
+  If S ≠ S', watcher submits fraud proof within challenge window → sequencer slashed
+
+Security reduces to: "at least one honest, online watcher at all times"
+```
+
+The Nomad bug (August 2022) bypassed this by allowing the zero hash `0x00...00` to be accepted as a valid Merkle root due to an uninitialised state variable — any arbitrary message could be replayed against the zero root.
+
+**ZK bridge trust reduction — security comparison:**
+
+| Property | Multisig bridge | Optimistic bridge | ZK bridge |
+|----------|----------------|------------------|-----------|
+| Committee required | Yes, k-of-n | No | No |
+| Challenge period | None | 7 days | None |
+| Proving cost | Negligible | Negligible | $0.10–$1.00/proof |
+| Finality latency | Minutes | 7 days | Minutes–hours |
+| Trust assumption | k honest signers | 1 online watcher | SNARK soundness |
+
+**State of the art:** ZK bridges (Succinct Telepathy, Polymer, Union) are in production on mainnet (2024) but at lower TVL than multisig bridges due to proving cost. Wormhole post-mortem [[1]](https://extropy-io.medium.com/solanas-wormhole-hack-post-mortem-analysis-3b68b9e88e13); Nomad post-mortem [[2]](https://medium.com/nomad-xyz-blog/nomad-bridge-hack-root-cause-analysis-875ad2e5aacd); L2Beat bridge risk framework [[3]](https://l2beat.com/bridges/summary). See [zkBridge](#zkbridge--cross-chain-state-proofs), [IBC](#ibc--inter-blockchain-communication-protocol), [Helios Light Client](#helios--snark-based-ethereum-light-client).
+
+---

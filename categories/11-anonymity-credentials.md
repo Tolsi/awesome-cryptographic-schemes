@@ -465,6 +465,97 @@
 
 ---
 
+## Selective Disclosure Credential Formats Compared
+
+**Goal:** Understand the trade-offs between competing selective-disclosure formats. Four major families coexist: CL Signatures (idemix), BBS+, SD-JWT, and ISO mDL (mdoc). They differ in unlinkability, proof size, issuer infrastructure requirements, and standardization maturity. Choosing the right format depends on whether the holder needs unlinkable presentations, whether the verifier can verify offline, and what ecosystem (ISO, IETF, W3C) they target.
+
+| Format | Year | Disclosure mechanism | Unlinkable | Proof size | PQ-safe | Primary standard |
+|--------|------|----------------------|-----------|-----------|---------|-----------------|
+| **CL Signatures (idemix)** | 2001 | ZK proof-of-knowledge | Yes | Large (RSA-based) | No | IBM/Hyperledger AnonCreds v1 [[1]](https://eprint.iacr.org/2001/019) |
+| **BBS+ Signatures** | 2006 | ZK PoK (pairing-based) | Yes | Short, constant-size | No | W3C VC DI BBS, IETF CFRG draft [[1]](https://www.w3.org/TR/vc-di-bbs/) |
+| **SD-JWT (RFC 9591)** | 2025 | Hash digest reveal | No (linkable by default) | Very small (JSON) | Yes | RFC 9591, eIDAS 2.0 EUDI Wallet [[1]](https://www.rfc-editor.org/rfc/rfc9591) |
+| **ISO mDL / mdoc (ISO 18013-5)** | 2021 | Per-element CBOR digest | No (linkable by design) | Compact (CBOR/COSE) | No (P-256) | ISO 18013-5, Apple/Google Wallet [[1]](https://www.iso.org/standard/69084.html) |
+| **W3C JSON-LD VC + LD-Proofs** | 2022 | Selective JSON-LD frame | Depends on suite | Variable | Depends | W3C VC Data Model 2.0 [[1]](https://www.w3.org/TR/vc-data-model-2.0/) |
+
+**State of the art:** SD-JWT-VC is mandated by the EU EUDI Wallet ARF for PID credentials; BBS+ (W3C VC DI) is under active evaluation for unlinkable presentations. mDL dominates physical identity (airports, DMVs). CL Signatures power Hyperledger AnonCreds deployments. No single format dominates all axes. See [BBS+ Anonymous Credentials](#bbs-anonymous-credentials), [SD-JWT and JSON Web Proof](#sd-jwt-and-json-web-proof-jwp), [mDL ISO 18013-5](#mdl-mobile-drivers-license-iso-18013-5), and [Anonymous Credentials](#anonymous-credentials).
+
+---
+
+## Anonymous Credentials vs Group Signatures vs Ring Signatures
+
+**Goal:** Distinguish three overlapping notions of anonymous authentication. All three let a member prove group membership without revealing which member they are, but they differ in trust model, credential structure, revocability, and linkability properties. Understanding the differences is essential for choosing the right primitive.
+
+| Property | Anonymous Credentials | Group Signatures | Ring Signatures |
+|----------|-----------------------|-----------------|-----------------|
+| **Trust model** | Issuer + verifier | Group manager (GM) | No trusted party |
+| **Membership management** | Issuer controls | GM adds/revokes members | Signer self-selects ring from public keys |
+| **Opening / accountability** | Optional (DAA-style) | GM can de-anonymize | None (fully anonymous) |
+| **Attribute disclosure** | Selective (CL, BBS+, SD-JWT) | None (membership only) | None (membership only) |
+| **Linkability across uses** | Configurable (nullifiers / KVAC) | Configurable (traceable) | Linkable ring sigs add key images |
+| **Infrastructure** | Issuer PKI required | GM PKI required | None — uses existing pubkeys |
+| **Primary schemes** | CL, BBS+, PS, KVAC | BBS group sig, EPID | LSAG, CLSAG (Monero), BLSAG |
+| **Standard deployments** | IRMA/Yivi, Signal, EUDI Wallet | Intel EPID (SGX), TPM DAA | Monero |
+
+| Scheme family | Year | Key reference |
+|---------------|------|---------------|
+| **Anonymous Credentials (CL)** | 2001 | Selective attribute disclosure; issuer-issued [[1]](https://eprint.iacr.org/2001/019) |
+| **Group Signatures (BMW model)** | 2003 | Bellare-Micciancio-Warinschi formal model; opening by GM [[1]](https://eprint.iacr.org/2002/072) |
+| **Ring Signatures (RST)** | 2001 | Rivest-Shamir-Tauman; no group manager; spontaneous [[1]](https://link.springer.com/chapter/10.1007/3-540-45682-1_32) |
+| **Linkable Ring Signatures (LRS)** | 2004 | Liu-Wei-Wong; key image prevents double-use, preserves anonymity [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30539-2_15) |
+| **Traceable Ring Signatures** | 2007 | Fujisaki-Suzuki; signer-traceable on double-spend; used in e-cash-like protocols [[1]](https://eprint.iacr.org/2006/389) |
+
+**State of the art:** Anonymous credentials provide the richest attribute functionality; group signatures add mandatory accountability (GM can open); ring signatures require no issuer but offer only membership proofs. Modern usage: [CLSAG (Monero)](#moneros-privacy-stack) for ring sigs, [Intel EPID / DAA](#direct-anonymous-attestation-daa) for group sigs, [BBS+](#bbs-anonymous-credentials) / [KVAC](#keyed-verification-anonymous-credentials-kvac) for anonymous credentials. See [Ring & Group Signatures](categories/08-signatures-advanced.md#ring--group-signatures).
+
+---
+
+## Anonymous Whistleblowing Systems
+
+**Goal:** Source-protecting document submission. Journalists and watchdog organizations need to receive sensitive documents from anonymous sources without exposing the source's network location, device identity, or submission metadata. The cryptographic stack must provide end-to-end encryption, server-side message separation, and Tor-based transport anonymity — even if the organization's servers are compromised.
+
+| System | Year | Basis | Note |
+|--------|------|-------|------|
+| **DeadDrop (precursor)** | 2012 | Tor + GPG | Aaron Swartz / Kevin Poulsen; early prototype; GPG encryption, Tor hidden service for submissions [[1]](https://github.com/freedomofpress/securedrop) |
+| **SecureDrop** | 2013 | Tor v2/v3 + GPG + Tails | Freedom of the Press Foundation; journalist-facing decryption on air-gapped Tails machine; source uses Tor Browser to submit files; production at NYT, WaPo, Guardian, 70+ orgs [[1]](https://securedrop.org/) |
+| **SecureDrop Workstation** | 2019 | Qubes OS + Tor + GPG | Air-gapped journalist workstation using Qubes OS compartmentalization; each submission in isolated VM; metadata-stripped document handling [[1]](https://securedrop.org/news/introducing-securedrop-workstation/) |
+| **GlobaLeaks** | 2012 | Tor + end-to-end enc | HTTPS-over-Tor submission; AES-256 / PGP file encryption; journalists' public keys held server-side (trust shift vs. SecureDrop); deployed in EU anti-corruption contexts [[1]](https://www.globaleaks.org/) |
+| **OnionShare** | 2014 | Tor v3 onion + HTTPS | Single-use ephemeral onion address for file drops or chat; no server infrastructure required; sender and receiver both anonymous [[1]](https://onionshare.org/) |
+
+**State of the art:** SecureDrop (Freedom of the Press Foundation, v2.x) with Qubes OS Workstation is the gold standard for high-security anonymous document submission. GlobaLeaks is more accessible but has a weaker threat model (server holds recipient keys). OnionShare enables ad-hoc anonymous file sharing without dedicated infrastructure. All three rely on [Tor v3 Onion Services](#tor-v3-onion-services) for network anonymity and [OpenPGP](categories/12-secure-communication-protocols.md#openpgp--gpg) for end-to-end encryption.
+
+---
+
+## Private Communication with Metadata Protection
+
+**Goal:** Hide not just message content but communication metadata — who talks to whom, when, and how often. Standard E2EE messengers (Signal, WhatsApp) encrypt content but leak social graphs to the server. A stronger model hides contact graphs, message timing, and group membership from the service provider and network observers.
+
+| System | Year | Basis | Note |
+|--------|------|-------|------|
+| **Session (formerly Loki Messenger)** | 2020 | Signal protocol + onion routing | No phone number required; decentralized node network; messages routed through 3-hop onion paths (Lokinet); no central server logs contact graph [[1]](https://getsession.org/) |
+| **SimpleX Chat** | 2022 | Double Ratchet + SMP queues | No user identifiers at all (no phone, email, or username stored server-side); per-contact unidirectional message queues; server sees only encrypted queue items, not sender-receiver pairs [[1]](https://simplex.chat/docs/protocol/simplex-messaging.html) |
+| **Briar** | 2013 | Tor + Bramble transport | No central server; syncs over Tor, Wi-Fi, or Bluetooth (device-to-device); designed for activists in connectivity-restricted environments; Bramble Synchronisation Protocol (BSP) [[1]](https://briarproject.org/how-it-works/) |
+| **Cwtch** | 2018 | Tor v3 onion services + multi-party | Group conversations over Tor onion services; server-side stores nothing (server is just an onion service relay); metadata-private by design [[1]](https://cwtch.im/) |
+| **Vuvuzela / Alpenhorn** | 2015 | DC-nets + noise | Research system: adds cover traffic with differential-privacy guarantees on metadata; provable metadata privacy bounds; not yet deployed at scale [[1]](https://dl.acm.org/doi/10.1145/2815400.2815417) |
+
+**State of the art:** SimpleX Chat (2022–) provides the strongest deployed metadata privacy: zero persistent user identifiers, per-contact queue pairs, and no server-side social graph. Session provides decentralized onion routing without phone numbers. Briar is unique in peer-to-peer operation over Tor and Bluetooth — no infrastructure required. Vuvuzela (research) gives formal differential-privacy metadata bounds. Complements [Onion Routing](#onion-routing), [Mix Networks](#mix-networks-mixnets), and [Double Ratchet / Signal Protocol](categories/12-secure-communication-protocols.md#double-ratchet--signal-protocol).
+
+---
+
+## Aztec Protocol (Private Smart Contracts)
+
+**Goal:** Confidential smart contract execution on a public blockchain. Aztec extends the EVM model with a private-state model: user account state is stored as encrypted UTXO-style notes in a global append-only note hash tree; smart contracts operate over ZK-proven note transitions; public calldata reveals only the ZK proof, never the input values or which notes were consumed. Provides programmable privacy — like Zcash but for arbitrary smart contract logic.
+
+| Component | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Aztec 2.0 (PLONK-based rollup)** | 2021 | PLONK + UltraPLONK | First Aztec rollup on Ethereum mainnet; private token transfers (zkDAI); proofs generated client-side; ~45 s proof time on desktop [[1]](https://aztec.network/blog/aztec-2-0/) |
+| **Aztec Connect** | 2022 | PLONK + bridge contracts | Privacy-preserving bridge to public DeFi (Aave, Uniswap); user's identity hidden; public contract output visible but not linked to user [[1]](https://aztec.network/blog/aztec-connect/) |
+| **Aztec Network (Noir-based, Sandbox)** | 2023 | UltraHonk + Noir DSL | Programmable private smart contracts; Noir: Rust-like ZK DSL compiling to UltraHonk circuits; private/public state separation; note encryption with in-contract key derivation [[1]](https://noir-lang.org/) |
+| **Aztec Sequencer / Fernet** | 2024 | Encrypted mempool + PBS | Sequencer sees only encrypted transaction blobs; decentralized sequencer selection; block building without transaction inspection; mev-resistance via sealed-bid ordering [[1]](https://aztec.network/blog/aztec-network-decentralization/) |
+| **Noir Language** | 2023 | ACIR (Abstract Circuit IR) | Domain-specific language for ZK circuits; compiles to ACIR; backends: Barretenberg (UltraHonk/PLONK), Gnark, Halo2; used beyond Aztec for general ZK app development [[1]](https://noir-lang.org/docs/) |
+
+**State of the art:** Aztec Network (Noir + UltraHonk, 2024 testnet) is the most advanced programmable-privacy L2 — combining UTXO-style private state with arbitrary smart contract logic. The Noir language is gaining adoption as a general ZK DSL beyond Aztec. Complements [Zcash Shielded Protocols](#zcash-shielded-protocols-sapling--orchard) (fixed note semantics) and [Privacy Pools](#privacy-pools) (compliance-aware mixing). Relies on [PLONK / UltraHonk](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems-overview) proof systems and [Encrypted Mempools](categories/13-blockchain-distributed-ledger.md#encrypted-mempools--order-fair-protocols).
+
+---
+
 ## Browser Fingerprinting and Anonymity Defenses
 
 **Goal:** Prevent passive de-anonymization via device and browser attributes. A web server can identify (fingerprint) a user by combining browser version, screen resolution, fonts, WebGL renderer, canvas rendering artefacts, and dozens of other signals — without cookies. These fingerprints can re-identify users across sessions and break anonymity even when using Tor or VPNs. Defenses range from attribute normalization to active noise injection and formal notions of k-anonymity sets.

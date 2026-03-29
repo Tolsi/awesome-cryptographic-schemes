@@ -1217,3 +1217,284 @@ Capsule Type (varint) | Capsule Length (varint) | Capsule Data
 **State of the art:** RFC 9298 (CONNECT-UDP, 2022) and RFC 9484 (CONNECT-IP, 2023) are the current standards. The IETF MASQUE working group is extending to multipath, happy eyeballs, and authenticated IP proxying. Primary use cases are privacy proxies (iCloud Private Relay), CDN edge proxying, and WebRTC NAT traversal. See [QUIC Packet Protection](#quic-packet-protection), [QUIC Connection Migration](#quic-connection-migration-and-security), [Oblivious HTTP](#oblivious-http-ohttp), [IKEv2 / IPsec](#ikev2--ipsec-esp).
 
 ---
+
+## DNS over HTTPS (DoH) and DNS over TLS (DoT)
+
+**Goal:** Encrypt DNS stub-resolver queries so that ISPs, network operators, and passive observers cannot read or tamper with the domain names a client resolves. DoT (RFC 7858) wraps DNS in TLS on a dedicated port; DoH (RFC 8484) carries DNS inside HTTPS, making it indistinguishable from ordinary web traffic.
+
+**Protocol comparison:**
+
+| Property | DNS over TLS (DoT) | DNS over HTTPS (DoH) |
+|----------|--------------------|----------------------|
+| RFC | RFC 7858 (2016) | RFC 8484 (2018) |
+| Transport | TLS 1.2+ over TCP port 853 | HTTP/2 or HTTP/3 over TCP/QUIC port 443 |
+| Wire format | Standard DNS binary (RFC 1035) length-prefixed | `application/dns-message` (same binary, HTTP body) |
+| Discoverability | Port 853 detectable by network | Indistinguishable from HTTPS traffic |
+| Firewall traversal | Blocked by port-853 filters | Traverses any HTTPS-allowing firewall |
+| Authentication | TLS certificate of the resolver | HTTPS certificate of the resolver URL |
+| Padding | RFC 8467 (EDNS0 Padding option) | HTTP response body padding |
+
+**DoT handshake (RFC 7858):**
+
+1. Client opens TCP to resolver port 853; performs TLS handshake (TLS 1.3 preferred)
+2. Authenticates resolver via its certificate (PKIX) or SPKI pin (RFC 7858 §9)
+3. Sends DNS queries as 2-byte length-prefixed binary messages over the TLS stream
+4. Responses arrive on the same persistent connection; no per-query RTT after first query
+
+**DoH wire format (RFC 8484):**
+
+```
+POST /dns-query HTTP/2
+Host: dns.example.com
+Content-Type: application/dns-message
+Accept: application/dns-message
+
+<binary DNS query>
+```
+
+GET is also defined (query Base64url-encoded in URL parameter `?dns=`); POST is preferred to avoid caching by intermediaries.
+
+**Oblivious DoH (ODoH, RFC 9230):** Extends DoH with HPKE to separate the resolver that sees the query content from the relay that sees the client IP. See [Oblivious DNS](categories/10-privacy-preserving-computation.md#oblivious-dns-odoh).
+
+**Privacy limitations of DoT/DoH:**
+
+| Residual leak | Details |
+|---------------|---------|
+| Resolver IP | The resolver still learns client IP and all queries |
+| TLS SNI (DoT) | SNI of the resolver's hostname visible (mitigated by ECH) |
+| Query timing | Traffic analysis over encrypted channel can infer query rate |
+| QNAME minimisation | RFC 7816 reduces data sent to authoritative servers; orthogonal to DoT/DoH |
+
+**Deployments:** Cloudflare (1.1.1.1), Google (8.8.8.8), Quad9 (9.9.9.9) all support both DoT and DoH. Firefox defaults to DoH via Cloudflare (US) since 2020. Android 9+ supports DoT as "Private DNS". Windows 11 supports DoH natively. iOS 14+ supports DoH and DoT via configuration profiles.
+
+**State of the art:** RFC 7858 (DoT, 2016), RFC 8484 (DoH, 2018). DoH over HTTP/3 (DoH3) is in active deployment at Cloudflare and Google. RFC 9230 (ODoH, 2022) is the privacy-maximizing successor. See [DNSCurve](#dnscurve--link-level-dns-encryption), [Oblivious HTTP](#oblivious-http-ohttp), [Encrypted Client Hello](#encrypted-client-hello-ech).
+
+---
+
+## I2P — Garlic Routing and Tunnel-Based Anonymity
+
+**Goal:** Provide a network-layer anonymity overlay where participants communicate through a series of encrypted, unidirectional tunnels — hiding both sender and receiver identities and traffic patterns from any single node or outside observer. Unlike Tor's onion routing, I2P uses *garlic routing*: multiple messages are bundled together ("cloves") and encrypted in a single layered packet, improving efficiency and resisting traffic correlation.
+
+**Architecture — core concepts:**
+
+| Concept | Description |
+|---------|-------------|
+| **Router** | Each I2P participant runs a router that forwards encrypted tunnel traffic for others |
+| **Tunnel** | Unidirectional chain of routers; each router knows only its predecessor and successor |
+| **Lease Set** | Signed advertisement of a destination's current inbound tunnels, published to the NetDB |
+| **NetDB** | Distributed hash table of router infos and lease sets; stored across all I2P routers |
+| **Garlic message** | Multiple encrypted "cloves" (sub-messages) bundled and layered like an onion |
+| **Destination** | A cryptographic identifier (public key) for a service; analogous to a Tor .onion address |
+
+**Tunnel construction (I2P spec):**
+
+```
+Sender ──► Gateway ──► Hop 1 ──► Hop 2 ──► Endpoint   (outbound tunnel)
+                                                   │
+                                                   ▼
+Recipient's Gateway ◄── Hop A ◄── Hop B ◄── (recipient's inbound tunnel)
+```
+
+Each router in the tunnel holds only one layer of encryption; it decrypts its layer and passes the remainder to the next hop. A full circuit requires combining the sender's outbound tunnel with the recipient's inbound tunnel (obtained from their lease set).
+
+**Cryptographic primitives (I2P ECIES-X25519-AEAD-Ratchet, 2020):**
+
+| Layer | Primitive | Note |
+|-------|-----------|------|
+| Tunnel layer encryption | ChaCha20-Poly1305 | Per-hop AEAD; replaces older ElGamal/AES-CBC |
+| End-to-end session (ECIES Ratchet) | X25519 + HKDF + ChaCha20-Poly1305 | Forward-secret; double-ratchet-like session |
+| Router identity | Ed25519 + X25519 key pair | Signed router info; X25519 for DH |
+| Lease set signature | Ed25519 | Destination authenticates its tunnel endpoints |
+| NetDB transport | NTCP2 (Noise `XK` + ChaCha20-Poly1305) | Encrypted router-to-router transport |
+
+**ECIES-X25519-AEAD-Ratchet (2020 upgrade):**
+
+The modern I2P session layer replaces the legacy ElGamal+AES-256-CBC+SessionTag scheme with a double-ratchet-inspired protocol:
+- New Session: sender uses recipient's static X25519 public key (from lease set) + ephemeral key → HKDF-derived session keys
+- Existing Session: ratchet advances via a "next key" field in messages; provides forward secrecy without a full new handshake
+- Garlic cloves: up to ~255 sub-messages bundled in a single encrypted garlic message, reducing per-message overhead and traffic analysis correlation
+
+**I2P vs. Tor:**
+
+| Property | I2P | Tor |
+|----------|-----|-----|
+| Routing model | Garlic (bundle multiple messages) | Onion (single message per circuit) |
+| Tunnel direction | Unidirectional (separate in/out tunnels) | Bidirectional (single circuit) |
+| Hidden services | I2P eepsites (.i2p) — first-class design | Tor .onion — added later |
+| External internet | Outproxies (optional, not core design) | Exit nodes (core design) |
+| Network size | ~50 000 routers (2024) | ~7 000 relays (2024) |
+| Standardization | Community spec at geti2p.net | Tor Project specs at spec.torproject.org |
+
+**State of the art:** I2P 2.x with ECIES-X25519-AEAD-Ratchet (2020+) and NTCP2 transport. Java I2P and i2pd (C++) are the main router implementations. Deployed for privacy-sensitive file sharing (I2PSnark BitTorrent), eepsite hosting, and anonymous IRC. See [Anonymity / Onion Routing](categories/11-anonymity-credentials.md#onion-routing--tor), [Secure Channels](#secure-channels--protocol-constructions).
+
+---
+
+## Post-Quantum TLS Handshake — X25519Kyber768 Hybrid in Practice
+
+**Goal:** Protect TLS key exchange against future quantum computers by combining a classical X25519 ECDH with an ML-KEM-768 (Kyber768) KEM in a single hybrid key exchange — so that session keys remain secret even if one of the two algorithms is later broken, without waiting for a full PQ migration of certificates and signatures.
+
+**Hybrid key exchange construction (X25519Kyber768, RFC 9497 / draft-ietf-tls-hybrid-design):**
+
+The hybrid group is defined as: the concatenation of an X25519 key share and an ML-KEM-768 key share, both sent in the TLS `key_share` extension. Key material is derived by concatenating both shared secrets before HKDF:
+
+```
+TLS 1.3 key schedule input = X25519_shared_secret ∥ ML-KEM-768_shared_secret
+
+Final session key = HKDF(X25519_SS ∥ Kyber_SS, ...)
+```
+
+Breaking the session requires breaking *both* X25519 (classical hardness) and ML-KEM-768 (lattice hardness).
+
+**Wire format (TLS 1.3 ClientHello `key_share` extension):**
+
+| Field | Size | Content |
+|-------|------|---------|
+| X25519 public key | 32 bytes | Classical ECDH share |
+| ML-KEM-768 public key | 1 184 bytes | Kyber encapsulation key |
+| Named group ID | `0x11EC` (`X25519Kyber768Draft00`) or `0x6399` (IANA assigned) | Identifies the hybrid group |
+
+Server responds with:
+- X25519 share (32 bytes) + ML-KEM-768 ciphertext (1 088 bytes) in `key_share` ServerHello
+
+**IANA registration and naming history:**
+
+| Identifier | Name | Status |
+|------------|------|--------|
+| `0x11EC` | `X25519Kyber768Draft00` | Experimental; used in Chrome/Cloudflare deployment 2023 |
+| `0x6399` | `X25519MLKEM768` | IANA-assigned (2024); in OpenSSL 3.5+, BoringSSL |
+
+**Deployment timeline:**
+
+| Date | Event |
+|------|-------|
+| Aug 2023 | Chrome 116 enables `X25519Kyber768Draft00` by default |
+| Sep 2023 | Cloudflare enables hybrid KEM on all TLS termination points |
+| Oct 2023 | Firefox 119 enables by default |
+| Jul 2024 | NIST finalizes ML-KEM (FIPS 203); identifier updated to `X25519MLKEM768` |
+| Jan 2025 | OpenSSL 3.5 adds `X25519MLKEM768`; BoringSSL tracks IANA name |
+| Mar 2025 | ~20% of global TLS 1.3 handshakes use hybrid KEM (Cloudflare radar) |
+
+**What is NOT yet post-quantum:** TLS certificates still use ECDSA P-256 or RSA signatures for server authentication. A quantum adversary who can break ECDSA could forge server certificates at handshake time. The hybrid KEM protects the *session key* (forward secrecy against future quantum decryption of recorded traffic), not the authentication chain. Full PQ TLS authentication requires PQ signatures in certificates — still in progress (see [KEMTLS](#kemtls-post-quantum-tls), NIST ML-DSA/SLH-DSA).
+
+**State of the art:** `X25519MLKEM768` is the current standard name (IANA, 2024); deployed by default in Chrome, Firefox, Cloudflare, Google, AWS CloudFront. OpenSSH 10.0 defaults to the same hybrid for SSH (as `mlkem768x25519-sha256`). See [KEMTLS](#kemtls-post-quantum-tls), [X3DH / PQXDH](#x3dh--extended-triple-dh-key-agreement), [Secure Channels](#secure-channels--protocol-constructions).
+
+---
+
+## Nostr — Cryptographic Identity and Relay-Based Messaging
+
+**Goal:** A minimal, censorship-resistant social messaging protocol where identity is a secp256k1 key pair — not an account on a server — and messages are signed events broadcast to a network of relays. Any relay can be added or dropped; clients hold their own keys and are the sole identity authority.
+
+**Protocol design (NIP-01 core specification):**
+
+Every Nostr interaction is a signed JSON *event*:
+
+```json
+{
+  "id":      "<SHA-256 of canonical event content>",
+  "pubkey":  "<32-byte hex secp256k1 public key>",
+  "created_at": 1700000000,
+  "kind":    1,
+  "tags":    [["p", "<hex pubkey>"], ["e", "<event id>"]],
+  "content": "Hello Nostr",
+  "sig":     "<64-byte Schnorr signature over id>"
+}
+```
+
+**Cryptographic primitives:**
+
+| Primitive | Detail |
+|-----------|--------|
+| Identity key pair | secp256k1 (same curve as Bitcoin); private key is 32-byte random scalar |
+| Event ID | `SHA-256(canonical_JSON_of_[0, pubkey, created_at, kind, tags, content])` |
+| Signature | Schnorr (BIP-340) over the event ID; 64-byte `(R, s)` |
+| Key encoding | Public key as 32-byte x-only point (BIP-340 convention) |
+| Human-readable key | `npub1…` / `nsec1…` — bech32 encoding (NIP-19) |
+
+**Direct encrypted messages (NIP-04 and NIP-44):**
+
+| Version | Encryption | Status |
+|---------|------------|--------|
+| NIP-04 | ECDH (secp256k1) → AES-256-CBC + HMAC-SHA-256; base64 ciphertext in `content` | Deprecated; lacks padding, MAC-then-encrypt |
+| NIP-44 | ECDH → HKDF-SHA-256 → ChaCha20-Poly1305; message padding (power-of-2 length) | Current standard (2024) |
+
+**NIP-44 key derivation (detail):**
+
+```
+shared_secret = secp256k1_ECDH(sender_sk, recipient_pk)   # x-coordinate only
+conversation_key = HKDF-SHA-256(shared_secret, salt="nip44-v2", output=32)
+(chacha_key, chacha_nonce, hmac_key) = HKDF-Expand(conversation_key, ...)
+ciphertext = ChaCha20-Poly1305(chacha_key, chacha_nonce, padded_plaintext)
+```
+
+**Relay protocol:** Clients connect to relays via WebSocket; publish events with `["EVENT", event]`; subscribe with filters via `["REQ", subid, {kinds:[1], authors:[...]}]`. Relays are interchangeable — clients connect to multiple simultaneously for redundancy. No relay has exclusive control of a user's identity.
+
+**Trust model:** Events are self-authenticating — any client can verify a signature without trusting any relay. A relay cannot forge events (secp256k1 Schnorr is unforgeable). A relay can censor (refuse to store) events, but clients can bypass by publishing to additional relays.
+
+**Deployments:** Damus (iOS), Amethyst (Android), Snort (web), Primal (web/mobile). ~1 500 public relays (2024). Bitcoin Lightning payments integrated via NIP-57 (Zaps). NIP-46 (Nostr Connect) and NIP-96 (file storage) extend the base protocol.
+
+**State of the art:** NIP-44 (2024) for encrypted DMs; NIP-01 core spec stable. Nostr does not provide forward secrecy or post-compromise security in its DM model — a leaked private key exposes all past DMs. This is a known limitation; NIP-104 (group chats with MLS) is under active discussion. See [Signatures — Advanced](categories/08-signatures-advanced.md), [Double Ratchet](#double-ratchet--symmetric-ratchet).
+
+---
+
+## Cwtch and Session Protocol — Metadata-Resistant Group Messaging
+
+**Goal:** Provide group messaging where not only message content but also *who is talking to whom* is hidden from servers and network observers — using onion routing or decentralized routing so that no single party learns the social graph.
+
+### Cwtch (Tor Onion Service Group Chat)
+
+**Design (Open Privacy Research Society; spec at cwtch.im):**
+
+Cwtch uses Tor v3 onion services as the transport layer. Each user is identified by their onion address (an Ed25519 public key), which is both their network address and their cryptographic identity. Group conversations are hosted as onion services; membership is enforced by the group server holding a pre-shared group key.
+
+| Component | Mechanism |
+|-----------|-----------|
+| Identity | Ed25519 key pair; onion address = `base32(pubkey).onion` |
+| Transport | Tor v3 onion services (6-hop circuits); server and client IPs hidden from each other |
+| Group key | Pre-shared symmetric key for group; distributed out-of-band or via pairwise channels |
+| Message encryption | Group messages encrypted with group key (AES-256-GCM); also wrapped in Tor's onion encryption |
+| Metadata resistance | Group server sees only ciphertext and onion-layer traffic; cannot identify participants |
+| Profile storage | Encrypted local SQLite database; key derived from user passphrase via Argon2 |
+
+**Threat model:** A Cwtch group server learns: that some onion addresses connected at some times. It does not learn participant identities (unless onion addresses are linked elsewhere), message contents, or social graph beyond "connected to this server." Tor provides network-layer anonymity.
+
+### Session Protocol (Signal Fork with Onion Routing)
+
+**Design (Session Messenger; OXEN blockchain-backed relay network):**
+
+Session is a fork of the Signal Protocol that removes phone-number registration (identity = Ed25519 key pair) and routes messages through a decentralized onion routing network of ~2 000 volunteer nodes (the OXEN Service Node network), rather than Signal's centralized servers.
+
+| Component | Mechanism |
+|-----------|-----------|
+| Identity | Ed25519 key pair; Session ID = hex-encoded public key (no phone number) |
+| Message encryption | Signal Protocol Double Ratchet (modified; no X3DH server pre-key upload) |
+| Transport | 3-hop onion routing over OXEN Service Nodes; Sphinx-like packet format |
+| Onion encryption | Each hop: X25519 ECDH + AES-256-GCM; layered for 3 hops |
+| Group chats | Closed groups: Double Ratchet per member pair; Open groups: server-side plaintext (not E2E) |
+| Account registration | None — generate key pair locally; no phone or email required |
+| Pre-key distribution | Session nodes store sealed-sender pre-keys; no central key server |
+
+**Session onion routing packet (Sphinx-inspired):**
+
+```
+Client builds 3-layer packet:
+  Outer layer: encrypted for Node 1 (X25519 + AES-GCM)
+    Middle layer: encrypted for Node 2
+      Inner layer: encrypted for Node 3 (final delivery)
+```
+
+Each node decrypts its layer, learns only next-hop, and forwards. The destination (recipient's swarm of nodes) learns only that a packet arrived, not the sender's IP.
+
+**Comparison:**
+
+| Property | Cwtch | Session |
+|----------|-------|---------|
+| Anonymity network | Tor (mature, audited) | OXEN onion routing (smaller, newer) |
+| Message crypto | Group PSK + Tor onion | Double Ratchet + onion |
+| Identity | Ed25519 onion address | Ed25519 Session ID |
+| Registration | None | None |
+| Group forward secrecy | No (PSK) | Partial (per-member DR) |
+| Audits | Limited | Independent audits 2021, 2023 |
+
+**State of the art:** Cwtch 1.12+ (2024); Session 1.18+ (2024). Both provide metadata resistance that Signal does not (Signal's servers see sender/recipient identifiers). Session's onion routing is not as battle-tested as Tor; Cwtch's Tor dependency makes it robust but subject to Tor blocking. See [Anonymity / Onion Routing](categories/11-anonymity-credentials.md#onion-routing--tor), [Double Ratchet](#double-ratchet--symmetric-ratchet), [Briar](#briar--bramble-p2p-encrypted-messaging).
+
+---

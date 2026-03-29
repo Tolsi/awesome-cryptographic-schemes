@@ -716,3 +716,171 @@ Decryption reverses the process: the receiver reconstructs the zero-padded P_n f
 **State of the art:** PKCS#7 + CBC is strictly legacy. TLS 1.3 (deployed everywhere), modern AEAD APIs (AES-GCM, ChaCha20-Poly1305, Ascon-128), and all recommended cryptographic libraries eliminate CBC padding entirely. See [Authenticated Encryption (AEAD)](#authenticated-encryption-aead) and [Ciphertext Stealing (CTS)](#ciphertext-stealing-cts) for alternatives that avoid padding.
 
 ---
+
+## Romulus AEAD (NIST LWC Finalist)
+
+**Goal:** Lightweight authenticated encryption with a clean, modular design for constrained devices (IoT, embedded MCUs) by instantiating a tweakable block cipher (TBC) mode on top of the SKINNY-128 lightweight cipher — providing strong side-channel resistance through a minimal, regular datapath and provable security in the standard model.
+
+| Variant | Year | TBC / Mode | Tag | Key | Nonce | Note |
+|---------|------|-----------|-----|-----|-------|------|
+| **Romulus-N** | 2019 | SKINNY-128-384+ / LOCUS-AEAD | 128-bit | 128-bit | 128-bit | Nonce-based; primary submission; NIST LWC finalist [[1]](https://romulusae.github.io/romulus/) |
+| **Romulus-M** | 2019 | SKINNY-128-384+ / LOTUS-AEAD | 128-bit | 128-bit | 128-bit | Misuse-resistant (nonce-reuse → plaintext equality only) [[1]](https://romulusae.github.io/romulus/) |
+| **Romulus-H** | 2019 | SKINNY-128-384+ | 256-bit | — | — | Hash-only variant; companion to N/M [[1]](https://romulusae.github.io/romulus/) |
+| **Romulus-T** | 2021 | SKINNY-128-384+ | 128-bit | 128-bit | 128-bit | Leakage-resilient variant; provably secure in the leakage model [[1]](https://romulusae.github.io/romulus/) |
+
+**Designers:** Iwata, Khairallah, Minematsu, Peyrin (NTT / Nanyang Technological University), 2019.
+
+**Underlying cipher — SKINNY-128-384+:** SKINNY is a family of tweakable block ciphers (Beierle et al., 2016) [[1]](https://eprint.iacr.org/2016/660) designed as a lightweight, analyzable alternative to SIMON/SPECK. SKINNY-128-384+ uses a 128-bit block, a 384-bit tweakey (key + tweak combined), and 40 rounds of a simple SPN structure: a 4-bit S-box, ShiftRows, MixColumns over GF(2^4), and a linear tweakey schedule. The minimal S-box and regular structure make it naturally resistant to side-channel leakage and easy to implement in 8-bit hardware.
+
+**LOCUS-AEAD / LOTUS-AEAD modes:** Romulus-N uses LOCUS (Leveled-Optimized Chosen-ciphertext Unified Scheme), a TBC-based AEAD mode that processes associated data and plaintext in a single pass by embedding a 56-bit block counter into the tweak. Authentication is folded into the encryption datapath — no separate MAC pass is required. Romulus-M substitutes LOTUS (a two-pass variant) for misuse resistance.
+
+**Security:**
+- Romulus-N: IND-CPA + INT-CTXT under nonce-respecting conditions; nonce reuse leaks plaintext XOR.
+- Romulus-M: MRAE — nonce reuse leaks only plaintext equality for repeated (nonce, AD, message) triples; authentication remains intact.
+- Romulus-T: Extends Romulus-N with provable leakage resilience in the "leveled implementation" model — suitable for implementations where power/EM side channels are a threat.
+
+**NIST LWC competition:** Romulus was one of ten finalists in the NIST Lightweight Cryptography competition (2019–2023). It was not selected as the winner (Ascon was chosen); however, NIST noted Romulus-M's unique combination of misuse resistance and formal leakage security as a distinguishing strength. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
+
+**State of the art:** Romulus implementations are available in the NIST LWC test framework and supercop. Romulus-T remains the most formally rigorous leakage-resilient lightweight AEAD as of 2026. For new constrained-device designs without side-channel requirements, Ascon-128 (NIST SP 800-232) is the standardized choice; Romulus-T is the research reference when leakage resilience is required.
+
+---
+
+## Xoodyak (NIST LWC Finalist)
+
+**Goal:** A unified, permutation-based cryptographic primitive for lightweight authenticated encryption and hashing — built on the 384-bit Xoodoo permutation — providing Ascon-comparable security with a simpler, more hardware-efficient permutation and a single API (the "Cyclist" mode) covering AEAD, hashing, PRF, and session key exchange.
+
+| Variant | Year | Permutation | Rate | Tag | Note |
+|---------|------|------------|------|-----|------|
+| **Xoodyak AEAD** | 2019 | Xoodoo[12] | 192-bit | 128-bit | Cyclist Encrypt mode; NIST LWC finalist [[1]](https://keccak.team/xoodyak.html) |
+| **Xoodyak Hash** | 2019 | Xoodoo[12] | 128-bit | — | Cyclist Hash mode; companion to AEAD [[1]](https://keccak.team/xoodyak.html) |
+| **Xoofff** | 2018 | Xoodoo | Variable | — | Farfalle-based PRF/MAC/stream cipher using Xoodoo [[1]](https://keccak.team/xoofff.html) |
+
+**Designers:** Joan Daemen, Seth Hoffert, Gilles Van Assche, Ronny Van Keer (STMicroelectronics / Radboud University), 2019.
+
+**Xoodoo permutation:** Xoodoo operates on a 384-bit state arranged as a 3 × 4 × 32-bit array (3 planes of 4 columns of 32-bit lanes). Each of the 12 rounds applies five steps:
+1. **θ (Theta):** column parity mixing — each column's XOR propagates to all planes.
+2. **ρ_west:** row rotation applied to the west plane (shift by 1 position + bitwise rotation).
+3. **ι (Iota):** round constant added to one lane.
+4. **χ (Chi):** non-linear: 3-bit S-box applied column-wise across the 3 planes.
+5. **ρ_east:** row rotation applied to the east plane (shift by 2 positions + rotation by 8 bits).
+
+The 3-plane structure maps naturally to SIMD registers (3 × 128-bit lanes) on ARM NEON and Intel SSE/AVX, giving efficient vectorized implementations. The 32-bit word size suits 32-bit microcontrollers better than Keccak-f's 64-bit words.
+
+**Cyclist mode:** Unlike most AEAD schemes, Xoodyak exposes a single unified "Cyclist" API with primitive operations `Absorb`, `Squeeze`, `Encrypt`, and `Decrypt`. All use cases — AEAD, hashing, session key derivation — are expressed as sequences of these calls with domain-separation flags embedded in the permutation input. This simplifies implementation verification: one permutation, one mode, multiple use cases.
+
+```
+// Xoodyak AEAD encryption
+Absorb(Key)          // initialize keyed mode
+Absorb(Nonce)
+Absorb(AD)           // associated data (any length)
+Encrypt(Plaintext)   // produces Ciphertext
+Squeeze(128 bits)    // authentication tag
+```
+
+**Hardware advantage over Keccak:** Xoodoo's 384-bit state is 4× smaller than Keccak-f[1600]'s 1600-bit state, and its 32-bit lane structure fits on 32-bit MCUs without the 64-bit register overhead Keccak incurs. Gate count for Xoodyak is approximately 2 400–3 000 GE — competitive with Ascon-128.
+
+**NIST LWC context:** Xoodyak was a NIST LWC finalist (2019–2023), ultimately losing to Ascon. It is designed by overlapping authorship with Keccak/SHA-3 (Daemen, Van Assche, Van Keer), lending it strong design heritage and cryptanalytic credibility. See [SpongeWrap / Duplex-Based AEAD](#spongwrap--duplex-based-aead).
+
+**State of the art:** Xoodyak is not standardized. Reference implementations are in the NIST LWC repository and the Keccak team's GitHub. Xoofff (the Farfalle construction over Xoodoo) provides high-throughput modes for non-constrained settings. For standardized use, Ascon-128 is preferred; Xoodyak remains a clean research reference and is well-suited to hardware co-design studies.
+
+---
+
+## ISAP (NIST LWC Finalist, Side-Channel Resistant)
+
+**Goal:** Authenticated encryption with *inherent* side-channel protection — without masking or shuffling countermeasures — by structuring the algorithm so that the key-dependent and decryption-critical computations involve only a tiny, fixed number of permutation calls that are easy to protect in hardware, while bulk encryption uses a keystream that tolerates leakage.
+
+| Variant | Year | Permutation | Key | Tag | SCA strategy | Note |
+|---------|------|------------|-----|-----|-------------|------|
+| **ISAP-A-128** | 2019 | Ascon-p | 128-bit | 128-bit | Ascon permutation; 1-bit rekeying | NIST LWC finalist; primary variant [[1]](https://isap.iaik.tugraz.at/) |
+| **ISAP-A-128A** | 2019 | Ascon-p | 128-bit | 128-bit | Faster; fewer rounds in rekeying | Secondary variant [[1]](https://isap.iaik.tugraz.at/) |
+| **ISAP-K-128** | 2019 | Keccak-p[400] | 128-bit | 128-bit | Keccak-based; smaller state (400-bit) | Keccak permutation variant [[1]](https://isap.iaik.tugraz.at/) |
+
+**Designers:** Christoph Dobraunig, Maria Eichlseder, Stefan Mangard, Florian Mendel, Bart Mennink, Robert Primas, Thomas Unterluggauer (Graz University of Technology / Radboud University / Infineon), 2019.
+
+**Key insight — leakage separation:** Standard AEAD schemes (including Ascon) require the decryption key to be present during both decryption and tag verification — any power or EM leakage during these operations directly threatens key recovery. ISAP separates the computation into three layers:
+
+1. **Rekey (key-dependent, few calls):** A session encryption key `Ke` and MAC key `Km` are derived from the master key `K` and nonce by iterating the permutation one bit of the nonce at a time in a mode called `isap_rk`. This makes key-dependent computation consist of exactly 256 (or 128) permutation calls with *1 bit of nonce* input each — a quantity small enough to protect with simple threshold implementations or one share per call.
+
+2. **Encrypt (leakage-tolerant, bulk):** Bulk keystream for encrypting plaintext is generated from `Ke`. Even if `Ke` leaks completely during encryption, the master key `K` is not exposed.
+
+3. **Authenticate (key-dependent, protected):** The MAC tag is computed using `Km` via the same rekeying structure. Leakage during MAC computation is bounded by the same single-bit argument.
+
+```
+isap_rk(K, Y):
+    S ← permute_high_rounds(K || Y[0..127])    // 128 calls, 1 bit of Y each
+    return S[0..127]                             // session key
+
+Ke = isap_rk(K, Nonce)
+Km = isap_rk(K, Tag_candidate)
+```
+
+**Side-channel protection model:** ISAP achieves *leveled leakage resilience* — masking the full key is not required. Only the `isap_rk` function (a small, fixed computation) needs protection; the bulk encryption requires only leakage-tolerant (not leakage-free) implementation. This is practical for hardware where protecting a long bulk cipher is expensive.
+
+**Cost:** The rekeying process imposes significant overhead versus Ascon alone: for a 128-byte message, ISAP-A-128 requires approximately 10× more permutation calls than Ascon-128. This makes ISAP unsuitable for throughput-sensitive applications but appropriate for environments where side-channel protection is mandatory (smart cards, secure elements, automotive HSMs).
+
+**NIST LWC context:** ISAP was a NIST LWC finalist. NIST ultimately selected Ascon, which does not have ISAP's built-in side-channel resistance, recommending that implementers apply standard masking countermeasures. ISAP remains the reference design for leakage-resilient lightweight AEAD without masking.
+
+**State of the art:** ISAP is not standardized. Reference implementations (including masked hardware implementations) are published by the designers. For applications requiring side-channel resistance in constrained hardware — e.g., payment terminals, TPM-adjacent logic — ISAP-A-128 is the most rigorous published design as of 2026.
+
+---
+
+## Photon-Beetle (NIST LWC Finalist)
+
+**Goal:** Ultra-low area authenticated encryption for hardware-constrained devices — targeting sub-1000 gate equivalent implementations — by combining the PHOTON sponge hash permutation with the Beetle duplex-based AEAD mode, achieving one of the smallest silicon footprints among NIST LWC finalists.
+
+| Variant | Year | Permutation | Rate | Tag | Area | Note |
+|---------|------|------------|------|-----|------|------|
+| **Photon-Beetle-AEAD[32]** | 2019 | PHOTON-256 | 32-bit | 128-bit | ~865 GE | Ultra-compact; primary hardware variant [[1]](https://photon-beetle.github.io/) |
+| **Photon-Beetle-AEAD[128]** | 2019 | PHOTON-256 | 128-bit | 128-bit | ~1 750 GE | Higher throughput; software-preferred variant [[1]](https://photon-beetle.github.io/) |
+| **Photon-Beetle-Hash[32]** | 2019 | PHOTON-256 | 32-bit | 256-bit | ~865 GE | Companion hash function [[1]](https://photon-beetle.github.io/) |
+
+**Designers:** Zhenzhen Bao, Avik Chakraborti, Nilanjan Datta, Jian Guo, Mridul Nandi, Thomas Peyrin, Kan Yasuda (Nanyang Technological University / ISI Kolkata / NTT), 2019.
+
+**PHOTON permutation:** PHOTON (Guo-Peyrin-Poschmann, 2011) [[1]](https://eprint.iacr.org/2011/609) is a sponge-based lightweight hash family. PHOTON-256 uses a 256-bit state arranged as an 8 × 8 matrix of 4-bit nibbles, with 12 AES-inspired rounds: AddConstants, SubCells (4-bit S-box), ShiftRows, and MixColumnsSerial. MixColumnsSerial uses a serial matrix multiplication over GF(2^4) — implementable as a shift register in hardware, eliminating the need for a parallel multiplier array and dramatically reducing gate count. The 256-bit state absorbs a 32-bit rate, protecting a 224-bit capacity for 112-bit security.
+
+**Beetle mode:** The Beetle duplex mode (Chakraborti et al., 2018) [[1]](https://tosc.iacr.org/index.php/ToSC/article/view/836) is an optimized duplex AEAD construction that absorbs associated data and plaintext through the permutation with a hash-then-permute structure:
+
+```
+// Beetle absorb phase (simplified)
+For each r-bit block M_i of (AD ‖ Plaintext):
+    S ← Permutation(S ⊕ (M_i || 0...))    // absorb
+    C_i ← S[0..r] ⊕ M_i                    // squeeze keystream
+Tag ← S[0..128]                              // final tag
+```
+
+The key insight of Beetle is a *ratchet* at the AD/message boundary: the state is XOR'd with a domain-separation constant when transitioning from AD to message blocks, providing security against multi-key and related-key attacks without additional permutation calls.
+
+**Why sub-1000 GE matters:** Many IoT sensor nodes, passive RFID tags, and medical implant devices operate below 2 000 GE total logic budget — leaving fewer than 1 000 GE for cryptography after control logic and memory. Photon-Beetle-AEAD[32] at ~865 GE fits within this budget, making authenticated encryption feasible on devices where Ascon-128 (~2 006 GE) or AES-CCM (~3 500 GE) would not fit.
+
+**Throughput tradeoff:** The 32-bit rate means 8 permutation calls per 32 bytes of plaintext — significantly slower than Ascon-128a (128-bit rate, 1 call per 16 bytes). The [128] variant closes this gap at the cost of a larger area footprint. For applications where latency matters more than area, Ascon-128 is preferred.
+
+**NIST LWC context:** Photon-Beetle was a NIST LWC finalist (2019–2023). NIST noted its extremely compact hardware footprint as its primary distinguishing feature. It was not selected (Ascon won), but its hardware area record is referenced in NIST's post-competition analysis. See [SpongeWrap / Duplex-Based AEAD](#spongwrap--duplex-based-aead) and [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
+
+**State of the art:** Photon-Beetle is not standardized. It is the reference design for sub-1000 GE authenticated encryption as of 2026. For standard compliance, Ascon-128 is mandated by NIST SP 800-232; Photon-Beetle remains relevant for ultra-constrained custom silicon designs.
+
+---
+
+## Combined AEAD Constructions: Encrypt-then-MAC, MAC-then-Encrypt, Encrypt-and-MAC
+
+**Goal:** Understand the three classical ways to compose a symmetric cipher and a MAC into an authenticated encryption scheme, their relative security properties, and why only one (Encrypt-then-MAC) is provably secure — motivating the replacement of all ad-hoc combinations with purpose-built AEAD modes.
+
+| Composition | Abbreviation | Construction | Confidentiality | Integrity | CCA secure | Deployed in |
+|-------------|-------------|-------------|-----------------|-----------|------------|-------------|
+| **Encrypt-then-MAC** | EtM | `C = Enc(K_e, M); T = MAC(K_m, C)` | IND-CPA | INT-CTXT | Yes | TLS 1.2 (RFC 7366), IPsec ESP, SSH |
+| **MAC-then-Encrypt** | MtE | `T = MAC(K_m, M); C = Enc(K_e, M ‖ T)` | IND-CPA | Conditional | No (in general) | SSL 3.0 / TLS 1.0–1.2 (pre-RFC 7366), early S/MIME |
+| **Encrypt-and-MAC** | E&M | `C = Enc(K_e, M); T = MAC(K_m, M)` | IND-CPA | Conditional | No | SSH (binary packet protocol, pre-EtM) |
+
+**Formal security analysis (Bellare-Namprempre, 2000)** [[1]](https://eprint.iacr.org/2000/025):
+- **EtM is the only composition that achieves IND-CCA2 + INT-CTXT** generically, given a CPA-secure cipher and an SUF-CMA-secure MAC with independent keys. Proof: any modification to the ciphertext fails MAC verification before decryption is attempted, eliminating all chosen-ciphertext attack surfaces.
+- **MtE does not generically achieve IND-CCA2.** A ciphertext-modifying attacker can cause decryption to proceed on modified plaintext, and a padding oracle over the resulting decryption error leaks the MAC tag or plaintext bytes. This is the root cause of BEAST, Lucky Thirteen, and POODLE (see [CBC Mode Padding and Padding Oracle Attacks](#cbc-mode-padding-and-padding-oracle-attacks)).
+- **E&M does not generically achieve IND-CCA2 or even confidentiality of the MAC.** Because `T = MAC(K_m, M)` is computed over the plaintext, the tag can leak information about M. In SSH, the MAC tag was historically transmitted in plaintext alongside the ciphertext — a partial plaintext leak.
+
+**Why MtE survived in TLS 1.0–1.2:** The TLS record protocol was designed before the Bellare-Namprempre analysis (2000) and the Vaudenay padding oracle (2002). MtE was inherited from SSL and difficult to change without a major version increment. RFC 7366 (2014) added EtM as an optional TLS 1.2 extension; TLS 1.3 eliminated all CBC + MtE cipher suites entirely, mandating AEAD modes exclusively.
+
+**Key independence requirement:** Even EtM requires *independent* encryption and MAC keys. Deriving `K_e = PRF(K, 0)` and `K_m = PRF(K, 1)` from a single master key `K` is acceptable and standard (done in TLS PRF). Using the *same* key for both cipher and MAC risks key-reuse attacks and violates the security proof assumptions.
+
+**Modern replacement:** Purpose-built AEAD modes (AES-GCM, ChaCha20-Poly1305, AES-OCB3, Ascon-128) eliminate the composition question entirely — authentication is fused with encryption in a single, jointly analyzed primitive. They are universally preferred over any EtM / MtE / E&M construction. See [Authenticated Encryption (AEAD)](#authenticated-encryption-aead) and [Key-Committing AEAD](#key-committing-aead).
+
+**State of the art:** EtM is the correct composition if a legacy MAC + cipher must be combined, but all new protocols should use an integrated AEAD primitive. TLS 1.3 (deployed universally), SSH with EtM cipher suites (RFC 6668), and IPsec ESP (RFC 4303) with AES-GCM represent the current state. MtE and E&M are considered deprecated.
+
+---

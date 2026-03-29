@@ -435,6 +435,100 @@ The ecosystem divides into two design philosophies. **On-device computation** (P
 
 ---
 
+## ISO 20022 / SWIFT MX Financial Message Signing
+
+**Goal:** Authenticate and integrity-protect high-value interbank payment messages (ISO 20022 / SWIFT MX format) so that a message cannot be forged, replayed, or tampered with in transit — while preserving the structured XML payload that downstream systems parse for compliance screening and settlement.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SWIFT PKI + X.509 message signing** | 2001 | RSA-2048 + SHA-256 + X.509v3 | SWIFT-operated CA issues certificates to member institutions; MX messages signed with institution's private key; signature carried in `<AppHdr>` Business Application Header [[1]](https://www.swift.com/our-solutions/global-financial-messaging/swiftnets-infrastructure/swiftnet-pki) |
+| **ISO 20022 Business Application Header (BAH)** | 2013 | ASN.1 / XML Digital Signature | Standardized header for all MX message types (pacs, camt, pain…); digital signature field based on W3C XML-DSig; canonicalization via Exclusive XML Canonicalization (C14N) [[1]](https://www.iso20022.org/sites/default/files/documents/D7/ISO20022_BAH_v2.pdf) |
+| **W3C XML-DSig (RFC 3275)** | 2002 | Enveloped / enveloping / detached | Signing algorithm negotiated per message; RSA-SHA256 most common in SWIFT context; XPath transforms allow signing specific XML subtrees (e.g., only the payment instruction block) [[1]](https://www.w3.org/TR/xmldsig-core/) |
+| **SWIFT gpi Tracker + HMAC integrity** | 2017 | HMAC-SHA256 per leg | Global Payments Innovation tracker assigns a Unique End-to-End Transaction Reference (UETR); each correspondent bank appends an HMAC-chained status update; chain-of-custody visible to originator and beneficiary [[1]](https://www.swift.com/our-solutions/global-financial-messaging/swift-gpi) |
+| **ISO 20022 + JWS (emerging)** | 2023 | JSON Web Signature (RFC 7515) | Migration path for REST-based payment APIs; message body hashed and signed as a JWS detached payload; JSON-native alternative to XML-DSig [[1]](https://www.swift.com/standards/iso-20022/iso-20022-api-standards) |
+
+The central cryptographic challenge in interbank messaging is **non-repudiation under structured transformation**: a payment message passes through multiple correspondent banks, each of which may add, translate, or truncate fields. XML-DSig's enveloped signature over the full document would break on any modification. The BAH solves this by separating the header (signed, immutable) from the payload (which may be transformed). SWIFT's gpi HMAC chain provides a weaker but transit-compatible integrity guarantee: each processing bank extends the chain, so the originator can verify the full processing path. The Bangladesh Bank heist (2016, $81 M stolen via fraudulent SWIFT messages) drove the industry to mandate two-factor authentication for SWIFT terminals and accelerated gpi adoption.
+
+**State of the art:** SWIFT MX + BAH v2 (mandatory for all high-value cross-border payments from 2025 under SWIFT's migration timeline); gpi Tracker deployed by 4 000+ banks. Related to [DKIM](categories/12-secure-communication-protocols.md#dkim--email-authentication) (similar "sign the header, allow body transformation" pattern) and [PKI](categories/14-applied-infrastructure-pki.md#x509-pki--certificate-authorities).
+
+---
+
+## Privacy-Preserving Credit Scoring
+
+**Goal:** Allow a lender to determine whether an applicant meets a creditworthiness threshold without learning the applicant's raw financial data, and allow the applicant to prove their score exceeds the threshold without revealing the underlying records or the exact score.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ZK Range Proof for Credit Score** | 2017 | Bulletproofs / Pedersen commitments | Applicant commits to a score s; proves in ZK that s ≥ threshold T without revealing s; lender checks the range proof; O(log n) proof size with Bulletproofs [[1]](https://eprint.iacr.org/2017/1066) |
+| **MPC-based Joint Credit Scoring** | 2019 | Yao's GC + OT | Multiple data sources (bank, telco, utility) jointly evaluate a scoring function over their private records without any party seeing another's data; lender receives only the output bit [[1]](https://eprint.iacr.org/2019/518) |
+| **zkKYC (Zero-Knowledge Know-Your-Customer)** | 2021 | Groth16 / PLONK + identity commitments | Applicant proves identity attributes (residency, sanctions check, income band) to a lender using ZK proofs over signed attestations from KYC providers; no raw PII transferred [[1]](https://eprint.iacr.org/2021/907) |
+| **Federated Credit Scoring (SecureBoost)** | 2019 | Federated learning + additive HE | Each bank trains a local gradient-boosted tree; gradients encrypted with Paillier HE before sharing; aggregated model works across all parties' data without raw data leaving any party [[1]](https://arxiv.org/abs/1901.08755) |
+| **FICO Score via FHE (pilot)** | 2022 | TFHE / BFV | Proof-of-concept: credit bureau evaluates a scoring function homomorphically on lender-encrypted applicant record; bureau never sees plaintext data; score returned encrypted [[1]](https://homomorphicencryption.org/wp-content/uploads/2020/12/HAW20.pdf) |
+
+The core tension is between **credit bureau data monopoly** and **borrower privacy**. Traditional credit scoring requires the bureau to see all raw tradeline data. ZK range proofs let an applicant prove score ≥ T using a bureau-signed commitment to their score — the lender never contacts the bureau. MPC-based approaches eliminate the central bureau entirely: lenders jointly compute a score across distributed data. FHE pilots show feasibility but remain 100–1 000× slower than plaintext evaluation for realistic scoring models. The zkKYC pattern (ZK proofs over signed identity attestations) is seeing regulatory attention in the EU under eIDAS 2.0.
+
+**State of the art:** ZK range proofs (research/pilots, e.g., Sygnum Bank zkKYC); federated scoring (Ant Group, WeBank production); FHE credit scoring (IBM/FICO research 2022). Related to [Bulletproofs](categories/04-zero-knowledge-proof-systems.md#bulletproofs--inner-product-arguments), [ZK SNARKs](categories/04-zero-knowledge-proof-systems.md#zk-snarks), and [MPC](categories/06-multi-party-computation.md#multi-party-computation-mpc--general).
+
+---
+
+## Privacy-Preserving Healthcare Data Sharing
+
+**Goal:** Enable clinical research, genomic studies, and cross-institution analytics over sensitive patient data without exposing individual records — combining record linkage, genomic privacy, and aggregate query mechanisms so that researchers get statistically valid results while patients retain meaningful privacy.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Privacy-Preserving Record Linkage (PPRL)** | 2009 | Bloom filter encoding + two-party PSI | Match patient records across hospital databases without revealing records or identifiers to either party; Bloom filter of name/DOB/address encoded, hashed, and compared via PSI [[1]](https://doi.org/10.1145/1557019.1557099) |
+| **Sharemind / MPC for Medical Statistics** | 2013 | Secret sharing (3-party) | Sharemind system: patient records secret-shared across three non-colluding servers; aggregate statistics (mean, regression, chi-squared) computed without any server learning individual records; deployed for national statistics in Estonia [[1]](https://link.springer.com/chapter/10.1007/978-3-540-85174-5_14) |
+| **Beacon Protocol (GA4GH)** | 2016 | Allele presence query | Genomic data sharing API: answer yes/no queries on allele presence across a consortium without revealing which patient carries the allele; no encryption but rate-limiting + differential privacy mitigate membership inference [[1]](https://www.ga4gh.org/product/beacon-api/) |
+| **LDP Genomics (Erlingsson et al. / RAPPOR applied)** | 2017 | Local differential privacy | Each patient locally randomizes their genomic variant before contributing; aggregator learns allele frequencies with ε-DP guarantee; individual genotypes never leave the device [[1]](https://arxiv.org/abs/1407.6981) |
+| **Secure GWAS (genome-wide association studies)** | 2019 | HE (BFV/CKKS) + MPC | Participants encrypt their genotype vectors; joint linear regression or logistic regression evaluated homomorphically across institutions; no raw genotype leaves the contributing institution [[1]](https://eprint.iacr.org/2019/1422) |
+| **Federated Learning for Clinical NLP (OwkinFL)** | 2021 | Federated learning + SecAgg | Hospitals train local ML models on patient records; only model gradients (aggregated with SecAgg) shared; Owkin platform deployed across 20+ cancer research centers [[1]](https://www.owkin.com/federated-learning) |
+| **Synthetic Patient Data (CTGAN + DP)** | 2020 | GAN + DP-SGD | Train a generative model with differential privacy; release synthetic patient records that preserve statistical distributions but do not correspond to real individuals; used in MIMIC-III synthetic releases [[1]](https://arxiv.org/abs/2001.09756) |
+
+The genomic privacy problem is qualitatively harder than general data privacy: a genome is permanent, familially correlated, and re-identifiable even from aggregate statistics. Membership inference attacks on genomic beacons (Homer et al. 2008) showed that with ~1 000 SNPs an attacker can determine whether a target individual is in a GWAS cohort from only summary statistics. PPRL closes the record linkage gap without exposing identifiers; MPC and FHE allow joint computation without a trusted data custodian; DP provides formal bounds on information leakage from aggregate outputs.
+
+**State of the art:** PPRL (deployed in UK Biobank, Australian AIHW); Sharemind MPC (Estonian national health statistics); federated GWAS (UK Biobank + Finngen consortium); DP synthetic data (MIMIC-IV). Related to [Differential Privacy](categories/10-privacy-preserving-computation.md#differential-privacy), [PSI](categories/10-privacy-preserving-computation.md#private-set-intersection-psi), and [PPRL](categories/10-privacy-preserving-computation.md#privacy-preserving-record-linkage-pprl).
+
+---
+
+## Secure Time Synchronization (NTPsec, Roughtime)
+
+**Goal:** Ensure that a client's clock is set to the correct time by a trustworthy server — and that a network attacker cannot cause the client to accept a false time, which would invalidate TLS certificates, TOTP tokens, Kerberos tickets, and audit logs. Ranges from authenticated NTP to cryptographically verifiable multi-server time protocols.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **NTPv4 (RFC 5905)** | 2010 | Symmetric-key MAC | Standard network time protocol; optional MD5-HMAC authentication between trusted peers; no public-key infrastructure; widely deployed but unauthenticated by default [[1]](https://www.rfc-editor.org/rfc/rfc5905) |
+| **NTS (Network Time Security, RFC 8915)** | 2020 | TLS 1.3 key exchange + AES-SIV-CMAC per packet | NTS-KE phase establishes keys over TLS; subsequent NTP packets authenticated with AES-128-SIV-CMAC; stateless server cookies prevent replay; first cryptographically sound NTP security layer [[1]](https://www.rfc-editor.org/rfc/rfc8915) |
+| **NTPsec** | 2017 | NTPv4 + NTS + hardened implementation | Reference implementation of NTPv4 with NTS support; reduced attack surface (removed 70% of legacy NTPv4 code); NTPD replacement maintained by the NTPsec Project [[1]](https://www.ntpsec.org/) |
+| **Roughtime (RFC 9714)** | 2024 | Ed25519 + Merkle tree + multi-server chaining | Each response signed with Ed25519 over (nonce ∥ timestamp ∥ radius); client can prove the server misbehaved using a signed timestamp as evidence; multi-server chaining detects inconsistent time across providers [[1]](https://www.rfc-editor.org/rfc/rfc9714) |
+| **TrueTime (Google Spanner)** | 2012 | GPS + atomic clocks + interval arithmetic | Each datacenter has GPS receivers and atomic clocks; TrueTime API returns [earliest, latest] time interval; Spanner waits out the uncertainty interval before committing to ensure global consistency [[1]](https://research.google/pubs/pub39966/) |
+| **Ticktock (Amazon Time Sync Service)** | 2017 | NTP + GPS disciplined oscillators | AWS fleet synchronizes to GPS-derived stratum-1 servers in each region; sub-microsecond accuracy within a region; public endpoint at 169.254.169.123 [[1]](https://aws.amazon.com/blogs/aws/keeping-time-with-amazon-time-sync-service/) |
+
+The primary attack vector against NTP is the **off-path time injection**: an attacker who can send spoofed UDP packets causes a client to accept a false timestamp, backdating the client's clock into a window where an expired TLS certificate is still valid (or a not-yet-valid certificate is rejected). RFC 8915 (NTS) eliminates this by deriving per-session keys over TLS and authenticating every packet with a MAC, making replay and injection impossible without the session key. Roughtime (RFC 9714) adds a stronger property: if a server lies about the time, the client obtains a signed proof of the lie that can be published — servers are **accountable**. The multi-server chaining protocol detects inconsistency across Roughtime providers, so an attacker must compromise all servers simultaneously to deceive a client.
+
+**State of the art:** NTS/NTPsec (Cloudflare time.cloudflare.com, deployed 2020; major Linux distributions adopting); Roughtime (Google Roughtime, Cloudflare Roughtime, RFC 9714 published 2024). Related to [TOTP/FIDO2](categories/12-secure-communication-protocols.md#totpfido2webauthn) (time-sensitive authentication), [Linked Timestamping](#linked-timestamping), and [VDF](#verifiable-delay-functions-vdf).
+
+---
+
+## Oblivious DNS (ODoH) and Encrypted DNS Comparison
+
+**Goal:** Prevent DNS resolvers from learning which domain names a client is looking up — hiding browsing intent from the recursive resolver — while also preventing eavesdropping by on-path network observers. Combines DNS-over-HTTPS/TLS transport encryption with oblivious relay architectures and cryptographic query/response padding.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DNS-over-TLS (DoT, RFC 7858)** | 2016 | TLS 1.2/1.3 | Encrypts DNS traffic from client to resolver; prevents on-path eavesdropping; resolver still learns client IP [[1]](https://www.rfc-editor.org/rfc/rfc7858) |
+| **DNS-over-HTTPS (DoH, RFC 8484)** | 2018 | HTTPS / HTTP2 | DNS queries as HTTPS GET/POST; blends with HTTPS traffic on port 443; resolver learns client IP; deployed by Cloudflare 1.1.1.1, Google 8.8.8.8, Mozilla/Firefox [[1]](https://www.rfc-editor.org/rfc/rfc8484) |
+| **Oblivious DNS-over-HTTPS (ODoH, RFC 9230)** | 2021 | HPKE + double-layer encryption | Client encrypts query with target resolver's public key using HPKE; sends to an oblivious proxy; proxy forwards to resolver without seeing plaintext query; resolver sees query but not client IP; proxy sees client IP but not query [[1]](https://www.rfc-editor.org/rfc/rfc9230) |
+| **DNS-over-QUIC (DoQ, RFC 9250)** | 2022 | QUIC (TLS 1.3) | DNS over QUIC transport; 0-RTT for repeat resolvers; lower latency than DoT on lossy networks; resolver still learns client IP [[1]](https://www.rfc-editor.org/rfc/rfc9250) |
+| **Oblivious DNS (ODNS, Schmitt et al.)** | 2019 | Symmetric + RSA hybrid | Client encrypts the queried name with a session key; encrypts session key with authoritative server's public key; stub resolver sees only encrypted name; first ODoH precursor [[1]](https://petsymposium.org/2019/files/papers/issue2/popets-2019-0028.pdf) |
+| **Encrypted Client Hello (ECH) + DoH** | 2023 | HPKE + TLS 1.3 | Combines ODoH for name resolution privacy with ECH for SNI privacy in the subsequent TLS connection; end-to-end privacy for both the DNS lookup and the TLS handshake SNI [[1]](https://datatracker.ietf.org/doc/draft-ietf-tls-esni/) |
+
+The privacy hierarchy from weakest to strongest: unencrypted DNS (on-path attacker and resolver both see everything) → DoT/DoH (on-path attacker sees encrypted traffic, resolver sees client IP and query) → ODoH (resolver sees query but not client IP; proxy sees client IP but not query — neither has both) → ODNS (resolver sees only encrypted query; stub resolver acts as semi-trusted proxy). ODoH's security rests on the assumption that the proxy and resolver do not collude — Cloudflare operates the resolver while Apple, Fastly, or third parties operate the proxy, enforcing organizational separation. The HPKE encryption (RFC 9180) of the query means the proxy is cryptographically prevented from learning the queried name, not merely policy-prevented. ECH addresses the complementary problem: even with ODoH, the TLS Server Name Indication (SNI) in the subsequent connection reveals the destination. ECH + ODoH together provide name privacy at both the DNS and TLS layers.
+
+**State of the art:** DoH (default in Firefox, Chrome, Windows 11 / macOS 13+); ODoH (Cloudflare + Apple production deployment 2021); DoQ (AdGuard, Pi-hole support); ECH (Chrome 117+, Cloudflare production). Related to [Oblivious HTTP (OHTTP)](categories/10-privacy-preserving-computation.md#oblivious-dns-odoh--ohttp), [ECH](categories/12-secure-communication-protocols.md#encrypted-client-hello-ech), and [HPKE](categories/03-key-exchange-key-management.md#key-encapsulation-mechanism-kem--hpke).
+
+---
+
 ## Proof of Unique Human (Worldcoin, Proof of Personhood)
 
 **Goal:** Prove that a credential belongs to a unique biological human — without revealing the holder's identity. Prevents Sybil attacks (one person claiming many identities) in settings where per-person fairness matters: UBI distribution, one-person-one-vote, airdrop eligibility, rate-limiting AI services.

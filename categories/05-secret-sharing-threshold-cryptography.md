@@ -564,3 +564,79 @@
 **State of the art:** Offline/online separation is universal in practical threshold signing deployments — the offline phase is run in the background, amortizing expensive MPC sub-protocols so that online signing latency is sub-second. FROST (Schnorr), DKLS23 (ECDSA), and Threshold Raccoon (post-quantum) all support this pattern. Relates to [FROST](#frost-flexible-round-optimized-schnorr-threshold-signatures), [DKLS23](#dkls23-threshold-ecdsa-in-three-rounds), [Threshold Raccoon](#threshold-raccoon-post-quantum-lattice-threshold-signatures), and [MPC Preprocessing](categories/06-multi-party-computation.md#multi-party-computation-mpc).
 
 ---
+
+## Blakley's Geometric Secret Sharing
+
+**Goal:** Threshold secret sharing via hyperplane intersection. Represent the secret as a coordinate of a point in a k-dimensional space; each share is a (k−1)-dimensional hyperplane containing that point. Any k hyperplanes intersect in a unique point (the secret), while k−1 hyperplanes leave an entire affine subspace of possible secrets — achieving perfect information-theoretic secrecy.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Blakley's Scheme** | 1979 | Projective geometry over GF(p) | Each share is a hyperplane in k-dimensional space; k hyperplanes intersect at the unique secret point; published simultaneously with Shamir's polynomial scheme [[1]](https://doi.org/10.1109/AFIPS.1979.98) |
+| **Geometric SS over GF(2^n)** | 1994 | Binary field hyperplanes | Adapts Blakley's scheme to binary extension fields; shares are cosets in GF(2^n)^k; useful for hardware-oriented implementations [[1]](https://doi.org/10.1007/3-540-48658-5_25) |
+| **Blakley Ramp Variant** | 1985 | Affine subspace geometry | Uses lower-dimensional intersections to implement ramp schemes; between t and t+g shares determine a subspace rather than a point, leaking partial information — matching [Ramp SS](#ramp-secret-sharing) [[1]](https://doi.org/10.1007/3-540-39757-4_20) |
+| **Geometric Multi-Secret SS** | 1994 | Multiple coordinates | Encodes multiple secrets as distinct coordinates of the intersection point; naturally extends Blakley to the multi-secret setting without additional polynomials [[1]](https://link.springer.com/chapter/10.1007/3-540-48658-5_25) |
+
+**State of the art:** Blakley's geometric scheme is information-theoretically equivalent to Shamir's in security and share size, but shares are larger (one share = a hyperplane description, O(k · log p) bits vs. a single field element in Shamir). In practice Shamir dominates, but Blakley's approach motivates [Ramp SS](#ramp-secret-sharing), [LSSS](#linear-secret-sharing-schemes-lsss), and geometric intuitions for [General Access Structure SS](#general-access-structure-secret-sharing). Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## Quantum Secret Sharing
+
+**Goal:** Secret sharing for quantum information. Split a quantum state |ψ⟩ into n quantum shares so that any t shares suffice to reconstruct |ψ⟩, while fewer than t shares leave an adversary with zero information — not even classical information. Classical SS cannot directly encode quantum secrets due to the no-cloning theorem; quantum SS uses quantum error-correcting codes and entanglement.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Hillery-Bužek-Berthiaume (HBB) QSS** | 1999 | GHZ entangled states | First quantum secret sharing; (2,3)-threshold using GHZ triplets; both quantum and classical secrets; PRA 1999 [[1]](https://doi.org/10.1103/PhysRevA.59.1829) |
+| **Cleve-Gottesman-Lo QSS** | 1999 | Quantum error-correcting codes | Reduction: any ((t,n)) quantum threshold SS corresponds to a quantum error-correcting code; characterizes achievable parameters via quantum Singleton bound [[1]](https://doi.org/10.1103/PhysRevLett.83.648) |
+| **Approximate QSS (Ogawa et al.)** | 2005 | Decoupling lemma | Relaxes exact reconstruction to ε-approximate; enables QSS beyond the Singleton bound threshold; CMP 2005 [[1]](https://doi.org/10.1007/s00220-005-1372-8) |
+| **Graph-State QSS** | 2006 | Graph states + stabilizer codes | Efficient QSS construction from graph states; arbitrary access structures realizable; measurement-based; PRA 2006 [[1]](https://doi.org/10.1103/PhysRevA.74.032332) |
+| **Continuous-Variable QSS** | 2001 | Gaussian states + CV optics | QSS using optical modes (continuous variables); experimentally demonstrated with squeezed light; Physical Review Letters 2001 [[1]](https://doi.org/10.1103/PhysRevLett.88.127902) |
+
+**State of the art:** Cleve-Gottesman-Lo (1999) gives the definitive theory: (t,n)-quantum SS exists if and only if 2t < n (quantum Singleton bound), unlike classical SS which allows any t < n. Graph-state QSS is the leading experimental platform. Distinct from [Unclonable SS](#unclonable-secret-sharing) (which prevents share cloning for classical secrets) and [Quantum Copy-Protection](categories/15-quantum-cryptography.md#quantum-copy-protection--uncloneable-encryption). Extends [Secret Sharing](#secret-sharing-schemes-sss) to the quantum domain.
+
+---
+
+## Berlekamp-Welch Decoding for Secret Sharing
+
+**Goal:** Efficiently recover the Shamir secret polynomial in the presence of corrupted shares. Shamir's scheme is equivalent to a Reed-Solomon code evaluation; when up to e shares are adversarially corrupted (not merely erased), the Berlekamp-Welch algorithm recovers the unique degree-(t−1) polynomial passing through all uncorrupted evaluation points in O(n³) time — enabling both error correction and cheater identification.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **McEliece-Sarwate observation** | 1981 | Reed-Solomon decoding | First noted that Shamir SS is a Reed-Solomon code; standard RS decoding detects/corrects errors during reconstruction [[1]](https://doi.org/10.1145/360363.360369) |
+| **Berlekamp-Welch Algorithm** | 1986 | Linearized polynomial system | Solves for error-locator and message polynomials simultaneously via a linear system; recovers degree-(t−1) secret polynomial from n shares with up to e corruptions where 2e + t ≤ n + 1 [[1]](https://patents.google.com/patent/US4633470A) |
+| **Gao's Decoding Algorithm** | 2002 | GCD of polynomials | Simpler formulation: compute gcd of the error-locator and interpolation polynomial; same parameters as Berlekamp-Welch but easier to implement; standard in teaching [[1]](https://www.math.clemson.edu/~sgao/papers/gao_RS.pdf) |
+| **Guruswami-Sudan List Decoding** | 1999 | Bivariate factoring | Extends beyond the unique-decoding radius: corrects e > (n − t)/2 corruptions, returning a list of possible secrets; applicable when corruption exceeds half the redundancy [[1]](https://doi.org/10.1109/SFCS.1998.743426) |
+
+**State of the art:** Berlekamp-Welch (or equivalently Gao's algorithm) is the standard tool for [Robust Secret Sharing](#robust-secret-sharing) and [Cheater Detection](#secret-sharing-with-cheater-detection) — used whenever the reconstruction step must tolerate active adversaries. Unique decoding corrects up to (n − t)/2 corruptions; Guruswami-Sudan list decoding extends further. Also foundational to [Verifiable Information Dispersal](#verifiable-information-dispersal-vid). Closely tied to polynomial interpolation uniqueness: any t points on a degree-(t−1) polynomial uniquely determine it over a field, so t correct shares always suffice.
+
+---
+
+## Witness Encryption for Secret Sharing Policies
+
+**Goal:** Encrypt to an NP statement rather than a key. A witness encryption (WE) scheme allows encrypting a message so that decryption succeeds if and only if the decryptor can produce a witness for a specified NP statement x ∈ L. Applied to secret sharing: encrypt the secret so that any qualified set of participants (whose combined inputs satisfy an NP relation) can jointly decrypt — generalizing threshold decryption to arbitrary NP access policies without a dealer or key distribution.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Witness Encryption (Garg-Gentry-Halevi-Sahai-Waters)** | 2013 | Multilinear maps (GGH) | First construction; encrypt to SAT instance; decryptors with a satisfying assignment recover plaintext; security conjectured from multilinear maps [[1]](https://eprint.iacr.org/2013/258) |
+| **WE from Pairings (Benhamouda-Lin)** | 2020 | Pairings + DLIN | Efficient WE for specific NP languages (pairing-product equations); practical for threshold and attribute-based policies without general multilinear maps [[1]](https://eprint.iacr.org/2020/1510) |
+| **WE for Secret Sharing Policies** | 2023 | Lattice-based WE | Encrypts under a monotone access structure expressed as an NP statement; lattice-based construction; parties with qualifying shares provide witnesses; CRYPTO 2023 [[1]](https://eprint.iacr.org/2023/1264) |
+| **WE from eVRF** | 2024 | Extractable VRF | Constructs WE from extractable VRFs; practical for threshold decryption policies tied to randomness beacon outputs [[1]](https://eprint.iacr.org/2024/1204) |
+
+**State of the art:** Witness encryption remains theoretically powerful but practically limited — general constructions rely on multilinear maps or iO (see [Obfuscation](categories/16-obfuscation-advanced-hardness.md#indistinguishability-obfuscation-io)). Pairing-based WE (2020) is the most practical for structured policies. For threshold access specifically, [Threshold Decryption](#threshold-decryption) and [ABE](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption) are preferred today. WE subsumes both and connects to [Witness Encryption](categories/16-obfuscation-advanced-hardness.md#witness-encryption) in the obfuscation category.
+
+---
+
+## SLIP-39: Shamir's Secret Sharing for BIP-39 Mnemonics
+
+**Goal:** Human-friendly threshold backup for cryptocurrency wallet seeds. SLIP-39 (SatoshiLabs Improvement Proposal 39) applies Shamir's Secret Sharing over GF(2^{10}) to split a 128- or 256-bit master secret into mnemonic word shares, enabling (t,n)-threshold recovery from ordinary paper backups — without trusting any single custodian with the full seed.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SLIP-39 v1** | 2017 | GF(2^{10}) + Shamir | Splits BIP-39 seed into n mnemonic shares (each 20 or 33 words); any t shares reconstruct the master secret; includes RS checksum per share for error detection; hierarchical groups supported [[1]](https://github.com/satoshilabs/slips/blob/master/slip-0039.md) |
+| **SLIP-39 Group Threshold** | 2019 | Two-level Shamir | Extends to group-of-groups: define m groups each with their own (t_i, n_i) threshold; require any k groups to qualify; supports organizational key custody with heterogeneous trust zones [[1]](https://github.com/satoshilabs/slips/blob/master/slip-0039.md) |
+| **Trezor Model T Implementation** | 2019 | GF(2^{10}) + PBKDF2 | First hardware wallet with native SLIP-39 support; passphrase mixed via PBKDF2 before Shamir splitting to prevent offline brute force; open-source reference implementation [[1]](https://trezor.io/learn/a/what-is-shamir-backup) |
+| **SSKR (Sharded Secret Key Reconstruction)** | 2020 | GF(256) + bytewords | Blockchain Commons variant of SLIP-39 using GF(2^8) and byteword encoding; compatible with CBOR/UR type system; adopted by Gordian ecosystem [[1]](https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-011-sskr.md) |
+
+**State of the art:** SLIP-39 is the dominant standard for mnemonic-based threshold seed backup; implemented in Trezor firmware, Ian Coleman's tool, and the `shamir-mnemonic` Python library. SSKR offers an alternative encoding for the Gordian/UR ecosystem. Both use Shamir over small-characteristic fields (GF(2^8) or GF(2^{10})) for byte-oriented efficiency — contrasting with the prime-field GF(p) arithmetic in Shamir's original paper. Distinct from [XOR-Based SS](#xor-based--binary-field-secret-sharing) (no threshold, just split) and the standalone SLIP-39 entry in [Key Management](categories/03-key-exchange-key-management.md). Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---

@@ -1171,3 +1171,297 @@ openssl pkcs12 -in bundle.p12 -nodes -out combined.pem
 **State of the art:** RFC 7292 (2014) [[1]](https://www.rfc-editor.org/rfc/rfc7292); PBES2 migration tracked in RFC 9579 (2024) which updates PKCS#12 to mandate PBKDF2 and AES. Supported natively by Windows (CertMgr), macOS Keychain, iOS, Android, Firefox, and all major TLS servers. Related to [PKIX / X.509 v3](#pkix--x509-v3-certificate-profile-rfc-5280), [ACME Protocol](#acme-protocol--automated-certificate-management), and [Key Wrapping / Envelope Encryption](#key-wrapping--envelope-encryption).
 
 ---
+
+## PBKDF2 / Password-Based Cryptography (PKCS#5 / RFC 8018)
+
+**Goal:** Derive a cryptographic key of arbitrary length from a password by repeatedly applying a pseudorandom function (PRF) with a salt and an iteration count — making brute-force and dictionary attacks computationally expensive while remaining deterministic for legitimate use.
+
+PBKDF2 (Password-Based Key Derivation Function 2) was specified by RSA Security in PKCS#5 v2.0 (1999), later republished as RFC 2898 and updated by RFC 8018 (2017). It is the NIST-recommended password KDF (SP 800-132) and underlies LUKS disk encryption, WPA2-PSK Wi-Fi, iOS data protection, PKCS#12 (see [PKCS#12 / PFX](#pkcs12--pfx-private-key--certificate-bundle)), and SLIP-39.
+
+**Algorithm (PBKDF2-HMAC-SHA256):**
+
+```
+DK = T1 || T2 || ... || Tdklen/hlen⌉
+
+Ti = U1 XOR U2 XOR ... XOR Uc
+
+U1 = PRF(Password, Salt || INT(i))
+U2 = PRF(Password, U1)
+...
+Uc = PRF(Password, Uc-1)
+```
+
+where `PRF = HMAC-SHA256`, `c` = iteration count, `Salt` is a random 16-byte value, and `i` is the block index. The output `DK` can be any length by concatenating blocks.
+
+**Parameters (NIST SP 800-132 recommendations):**
+
+| Parameter | Minimum | Recommended (2024) |
+|-----------|---------|-------------------|
+| Salt length | 128 bits | 128–256 bits |
+| Iteration count (c) | 1,000 | 600,000 (SHA-256); 100,000 (SHA-512) |
+| Output length | PRF output size | Match target key size |
+| PRF | HMAC-SHA-1 (legacy) | HMAC-SHA-256 or HMAC-SHA-512 |
+
+**Key derivation example (OpenSSL / Python):**
+
+```python
+import hashlib, os
+salt = os.urandom(16)
+dk = hashlib.pbkdf2_hmac('sha256', b'password', salt, iterations=600_000, dklen=32)
+```
+
+**PBKDF2 weaknesses:** Unlike Argon2id or scrypt, PBKDF2 is not memory-hard — it can be parallelized cheaply on GPUs and ASICs. At 600k iterations, a modern GPU achieves ~10⁶ guesses/second against PBKDF2-SHA256 versus ~10³/second against Argon2id. PBKDF2 is therefore appropriate only where memory-hard KDFs are unavailable (e.g., FIPS-constrained environments, hardware tokens).
+
+**Deployments:**
+
+| System | PBKDF2 usage |
+|--------|-------------|
+| WPA2-PSK | PBKDF2-HMAC-SHA1 (4096 iterations) over SSID+passphrase → PMK [[1]](https://www.rfc-editor.org/rfc/rfc4764) |
+| iOS Data Protection | PBKDF2-SHA256 (tens of millions of iterations, hardware-assisted) |
+| PKCS#12 / PBES2 | PBKDF2-SHA256 + AES-256-CBC for key bags (RFC 9579) [[1]](https://www.rfc-editor.org/rfc/rfc9579) |
+| SLIP-39 | PBKDF2-HMAC-SHA256 (10,000 iterations) for passphrase encryption of master secret |
+| Django / Spring | Default password hasher (PBKDF2-SHA256, 600k+ iterations) |
+
+**State of the art:** RFC 8018 (2017) [[1]](https://www.rfc-editor.org/rfc/rfc8018); NIST SP 800-132 [[2]](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf). For new password storage, prefer Argon2id. PBKDF2 remains the correct choice for FIPS 140-3 environments and hardware tokens where memory-hard KDFs are infeasible. See [Password-Based Key Derivation (KDF / PAKE)](#password-based-key-derivation-kdf--pake) and the [KDF Comparison](#kdf-comparison-pbkdf2-vs-bcrypt-vs-scrypt-vs-argon2id) section below.
+
+---
+
+## KDF Comparison: PBKDF2 vs bcrypt vs scrypt vs Argon2id
+
+**Goal:** Select the right password-hashing KDF by understanding the security/compatibility tradeoffs — memory-hardness, FPGA/ASIC resistance, parallelism limits, FIPS compliance, and practical throughput — so that legitimate authentication remains fast while offline cracking remains expensive.
+
+All four functions deliberately introduce work to slow brute-force attacks, but they differ in *which* resource they tax. The fundamental insight of memory-hard KDFs (scrypt, Argon2) is that memory is orders of magnitude more expensive than compute on custom silicon, so making a KDF require gigabytes of RAM equalises the cost between defenders (commodity servers) and attackers (ASIC farms).
+
+**Comparison table:**
+
+| Property | PBKDF2 | bcrypt | scrypt | Argon2id |
+|----------|--------|--------|--------|----------|
+| Year | 1999 | 1999 | 2009 | 2015 (PHC winner) |
+| Memory-hard | No | No (64 B state) | Yes (N·128·r bytes) | Yes (m kibibytes) |
+| ASIC/GPU resistance | Low | Moderate | High | Very high |
+| Parameters | iterations c, PRF | cost factor 2^n | N, r, p | m, t, p |
+| Max output length | Arbitrary | 60-char string | Arbitrary | Arbitrary |
+| FIPS 140-3 compliant | Yes (HMAC-SHA-256) | No | No | No |
+| Password length limit | None | 72 bytes (Blowfish) | None | None |
+| Parallelism | Easy (GPU) | Difficult (sequential) | Configurable (p param) | Configurable (p param) |
+| Side-channel risks | Low | Timing via Blowfish | Cache-timing (s-boxes) | Low (Argon2id mixes data/key) |
+| RFC/Standard | RFC 8018 | — | RFC 7914 | RFC 9106 |
+
+**When to use each:**
+
+| Use case | Recommended KDF |
+|----------|----------------|
+| New password storage (general) | Argon2id (m=64 MiB, t=3, p=4) |
+| FIPS 140-3 / government | PBKDF2-SHA256 (≥600k iterations) |
+| Legacy systems / interop | bcrypt (cost=12) |
+| High-value secrets, hardware wallets | scrypt (N=2²⁰, r=8, p=1) |
+| Disk encryption (interactive) | Argon2id or scrypt |
+
+**Argon2 variants:**
+
+| Variant | Defense |
+|---------|---------|
+| Argon2d | Data-dependent memory access; best ASIC resistance; vulnerable to side-channel |
+| Argon2i | Data-independent; side-channel safe; weaker ASIC resistance |
+| **Argon2id** | First half Argon2i, second half Argon2d; best of both; recommended default |
+
+**OWASP minimum parameters (2024):**
+- Argon2id: m=19 MiB, t=2, p=1 (minimum); m=64 MiB, t=3 preferred
+- bcrypt: cost factor ≥ 10 (12 preferred)
+- scrypt: N=2¹⁴ minimum; N=2²⁰ for high-value secrets
+- PBKDF2-SHA256: ≥ 600,000 iterations
+
+**State of the art:** Argon2id (RFC 9106, 2021) [[1]](https://www.rfc-editor.org/rfc/rfc9106) is the recommended default for all new systems. PHC (Password Hashing Competition) final report [[2]](https://github.com/P-H-C/phc-winner-argon2). OWASP Password Storage Cheat Sheet [[3]](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html). Related to [PBKDF2 / Password-Based Cryptography](#pbkdf2--password-based-cryptography-pkcs5--rfc-8018) and [Password-Based Key Derivation (KDF / PAKE)](#password-based-key-derivation-kdf--pake).
+
+---
+
+## OAuth 2.0 / OpenID Connect Cryptographic Components
+
+**Goal:** Secure delegated authorization (OAuth 2.0) and federated identity (OpenID Connect) using standard cryptographic building blocks — JWS-signed ID tokens, JWE-encrypted tokens, PKCE for code interception protection, mTLS or DPoP for sender-constrained access tokens, and JWKS for public key distribution.
+
+OAuth 2.0 (RFC 6749) delegates authorization without sharing credentials; OpenID Connect 1.0 layers identity assertions on top. Both rely on [JOSE / JWS / JWE / JWT](#jose--jws--jwe--jwt) as their wire format, but add higher-level cryptographic protocols for binding tokens to clients and preventing replay.
+
+**Core cryptographic flows:**
+
+```
+Authorization Code Flow (with PKCE):
+  Client:   code_verifier ← random(32 bytes)
+            code_challenge = BASE64URL(SHA-256(code_verifier))
+  → Authorization endpoint: response_type=code, code_challenge, code_challenge_method=S256
+  ← Authorization code (short-lived, single-use)
+  → Token endpoint: code + code_verifier (proves same client)
+  ← access_token (JWT), id_token (JWT), refresh_token
+```
+
+PKCE (RFC 7636) prevents authorization code interception by binding the code to a secret only the legitimate client knows — the `code_verifier` — without requiring client authentication at the redirect URI.
+
+**OpenID Connect ID Token (JWT claims):**
+
+```json
+{
+  "iss": "https://accounts.example.com",
+  "sub": "user:abc123",
+  "aud": "client_id_xyz",
+  "exp": 1735689600,
+  "iat": 1735603200,
+  "nonce": "n-0S6_WzA2Mj",
+  "at_hash": "77QmUPtjPfzWtF2AnpK9RQ"
+}
+```
+
+`at_hash` (access token hash) cryptographically binds the ID token to the access token: `LEFT128(SHA-256(access_token))` encoded in base64url.
+
+**DPoP (Demonstrating Proof of Possession, RFC 9449):**
+
+DPoP binds an access token to a client's ephemeral key pair, preventing token theft replay:
+
+```
+Client generates: (dpop_priv, dpop_pub) per-session EC key pair
+
+DPoP proof JWT header: {"typ":"dpop+jwt","alg":"ES256","jwk": dpop_pub}
+DPoP proof JWT claims: {"htm":"POST","htu":"https://api.example.com/resource",
+                        "iat":..., "jti":"unique-id", "ath": SHA256(access_token)}
+
+→ Resource server: Authorization: DPoP <access_token>
+                   DPoP: <dpop_proof_jwt>
+Server verifies: dpop_pub matches token binding, jti not replayed, ath matches token
+```
+
+**mTLS sender-constraining (RFC 8705):**
+
+An alternative to DPoP — the client's TLS client certificate thumbprint is embedded in the access token during issuance; the resource server verifies the TLS client cert matches.
+
+| Mechanism | Cryptographic binding |
+|-----------|----------------------|
+| Bearer token (plain) | None — token theft = full compromise |
+| PKCE | Code verifier binds auth code to client |
+| DPoP | Ephemeral EC key pair binds access token to client |
+| mTLS | TLS client cert thumbprint binds access token to cert |
+
+**JWKS (JSON Web Key Set) endpoint:**
+
+Authorization servers publish public keys at `/.well-known/jwks.json`; resource servers fetch them to verify JWS signatures on access tokens. Key rotation requires `kid` (key ID) matching; clients MUST NOT cache JWKS indefinitely.
+
+| Standard | Role |
+|----------|------|
+| **OAuth 2.0 (RFC 6749)** | Authorization framework [[1]](https://www.rfc-editor.org/rfc/rfc6749) |
+| **PKCE (RFC 7636)** | Code interception protection [[1]](https://www.rfc-editor.org/rfc/rfc7636) |
+| **OpenID Connect 1.0** | Identity layer on OAuth 2.0 [[1]](https://openid.net/specs/openid-connect-core-1_0.html) |
+| **DPoP (RFC 9449)** | Sender-constrained tokens via ephemeral key proof [[1]](https://www.rfc-editor.org/rfc/rfc9449) |
+| **mTLS OAuth (RFC 8705)** | Certificate-bound access tokens [[1]](https://www.rfc-editor.org/rfc/rfc8705) |
+
+**State of the art:** DPoP (RFC 9449, 2023) is the recommended token-binding mechanism for public clients. PKCE is mandatory for all OAuth 2.1 flows (draft). JAR (JWT-Secured Authorization Requests, RFC 9101) and JARM (JWT-Secured Authorization Response Mode) extend signing to the authorization request/response itself. Related to [JOSE / JWS / JWE / JWT](#jose--jws--jwe--jwt) and [Key Transparency / CONIKS](#key-transparency--coniks).
+
+---
+
+## Post-Quantum Key Exchange in Practice (Hybrid KEM)
+
+**Goal:** Achieve post-quantum security in deployed protocols without abandoning classical security guarantees — by combining a classical KEM (X25519 or P-256) with a post-quantum KEM (ML-KEM / Kyber) so that the shared secret is secure as long as *either* the classical or the PQ component is unbroken.
+
+A hybrid KEM combines two independent KEMs: `SS = KDF(SS_classical || SS_pq || context)`. An adversary must break *both* components to recover `SS`. This is the NIST-recommended transition strategy (SP 800-227) and is already deployed in TLS 1.3, Signal, and Chrome.
+
+**Deployed hybrid constructions:**
+
+| Scheme | Composition | Status |
+|--------|-------------|--------|
+| **X25519Kyber768** | X25519 + Kyber-768 (pre-standardization) | Chrome 116+ (TLS), Google [[1]](https://blog.chromium.org/2023/08/protecting-chrome-traffic-with-hybrid.html) |
+| **X-Wing** | X25519 + ML-KEM-768; single-hash combiner | IETF draft [[1]](https://datatracker.ietf.org/doc/draft-connolly-cfrg-xwing-kem/) |
+| **MLKEM768X25519** | ML-KEM-768 + X25519; TLS named group | TLS 1.3 RFC 8446 extension; IANA codepoint 0x11EC [[1]](https://www.iana.org/assignments/tls-parameters/) |
+| **P256Kyber768Draft00** | P-256 + Kyber-768 | AWS-LC, BoringSSL (transitional) |
+| **X25519MLKEM768** | X25519 + ML-KEM-768 (post-NIST-finalization) | TLS WG preferred designation post-FIPS 203 |
+
+**X-Wing construction (IETF draft):**
+
+X-Wing is a tightly specified combiner that avoids the subtleties of generic hybrid KEM composition:
+
+```
+Encapsulate(pk_xw, randomness):
+  (ss_m, ct_m) ← ML-KEM-768.Encaps(pk_m)
+  (ss_x, ct_x) ← X25519(ek_x, pk_x)   — ephemeral key ek_x
+  ss = SHA3-256("\.//^\\", ss_m, ct_m, ss_x, ct_x, pk_x)
+  return (ss, ct_m || ct_x)
+```
+
+The combiner uses a domain-separated SHA3-256 over both ciphertexts and both shared secrets, preventing cross-protocol attacks between components.
+
+**TLS 1.3 hybrid key exchange:**
+
+In TLS 1.3, a hybrid KEM is negotiated as a `NamedGroup` in the `supported_groups` extension. The `KeyShareEntry` carries the concatenation of both KEM public keys / encapsulations. The final shared secret is derived via HKDF as part of the [TLS 1.3 Key Schedule](#tls-13-key-schedule).
+
+```
+ClientHello:
+  supported_groups: [x25519_ml_kem_768, x25519, secp256r1]
+  key_share: [x25519_ml_kem_768: ek_x25519 || ek_mlkem]
+
+ServerHello:
+  key_share: x25519_ml_kem_768: ct_x25519 || ct_mlkem
+```
+
+**Signal Protocol (PQXDH):**
+
+Signal's PQXDH (2023) replaces X3DH's initial DH with a hybrid: X25519 + Kyber-1024 in the key establishment phase, adding a post-quantum Signed PreKey (SPQK). The session key includes `KDF(DH1 || DH2 || DH3 || DH4 || KEM_ss)`.
+
+**Security levels:**
+
+| Component | Classical security | PQ security |
+|-----------|-------------------|------------|
+| X25519 | 128-bit (ECDLP) | 0-bit (Shor's algorithm) |
+| ML-KEM-768 | 108-bit (LWE) | 178-bit (best known PQ attack) |
+| X-Wing hybrid | 128-bit classical | 178-bit PQ |
+
+**State of the art:** MLKEM768X25519 (IANA codepoint 0x11EC) is the emerging TLS standard. X-Wing is the IETF CFRG recommendation for a clean single-algorithm hybrid. NIST SP 800-227 (2024 draft) mandates hybrid KEMs during the transition period. Related to [Non-Interactive Key Exchange (NIKE)](#non-interactive-key-exchange-nike), [Key Exchange / Key Agreement](#key-exchange--key-agreement), and [Post-Quantum Cryptography](categories/15-quantum-cryptography.md#post-quantum-cryptography-pqc--nist-standardization).
+
+---
+
+## Auditable Key Directory (AKD) / Key Transparency v2
+
+**Goal:** A cryptographically auditable, append-only directory that maps usernames or identifiers to public keys — providing a publicly verifiable proof that the server has not silently swapped a user's key, while supporting efficient per-user lookup proofs, consistency proofs, and third-party monitoring without revealing the full directory.
+
+AKD (Auditable Key Directory) is the formal cryptographic protocol underlying modern key transparency deployments, including WhatsApp's SEEMless and Apple's iMessage Key Transparency. It supersedes the original CONIKS design (covered in [Key Transparency / CONIKS](#key-transparency--coniks)) by providing stronger consistency guarantees and a clean separation between the directory's append-only log and the key-value map proofs.
+
+**Core data structures:**
+
+AKD is built on a **Verifiable Random Function (VRF)**-keyed sparse Merkle tree whose epochs are chained in an append-only log:
+
+```
+Epoch e:
+  Label_u = VRF_prove(sk_server, username)   — unlinkable pseudonym
+  Leaf     = H(Label_u, version, public_key, expiry)
+  Root_e   = SparseMerkleTree.update(Root_{e-1}, Label_u, Leaf)
+  Epoch commitment: SignedTreeHead_e = SIG_server(Root_e || e || timestamp)
+```
+
+The VRF maps each username to a pseudonymous label, hiding the username set from observers while allowing any user to prove their own lookup.
+
+**Proofs provided by AKD:**
+
+| Proof type | What it proves | Size |
+|------------|---------------|------|
+| Lookup proof | Key binding for username at epoch e | O(log N) |
+| History proof | Full key history for a username across epochs | O(V · log N) |
+| Non-membership proof | Username has no entry at epoch e | O(log N) |
+| Consistency proof | Root_e was derived honestly from Root_{e-1} | O(log N) |
+
+**Audit model:**
+
+Third-party auditors fetch `SignedTreeHead` values from the server and verify:
+1. Each epoch root is consistent with the previous (append-only property)
+2. User-reported lookup proofs are valid against the published root
+3. The VRF outputs are well-formed (server cannot selectively lie about individual users)
+
+**Deployed systems:**
+
+| System | Protocol | Notes |
+|--------|----------|-------|
+| **WhatsApp Key Transparency** | SEEMless (Meta, 2023) | AKD-based; client audits own key history on each session [[1]](https://engineering.fb.com/2023/04/13/security/whatsapp-key-transparency/) |
+| **Apple iMessage KT** | Apple Key Transparency (2024) | VRF + Merkle map; third-party audited [[1]](https://www.apple.com/child-safety/pdf/Apple_Key_Transparency_Security_Assessment.pdf) |
+| **Signal Key Transparency** | Signal KT (2024) | Publicly monitorable; transparency log + contact key verification [[1]](https://signal.org/blog/key-transparency/) |
+| **Google Key Transparency** | KT v2 (2017–) | Open-source reference; CONIKS successor [[1]](https://github.com/google/keytransparency) |
+
+**Relation to Certificate Transparency:**
+
+CT (see [Certificate Transparency (CT)](#certificate-transparency-ct)) is an append-only log for X.509 certificates; AKD is an append-only, updatable *map* for user-to-key bindings. CT provides inclusion proofs; AKD additionally provides non-membership proofs and full history proofs for individual users.
+
+**State of the art:** AKD specification (Kaptchuk et al., 2021) [[1]](https://eprint.iacr.org/2020/1488); open-source Rust implementation by Meta [[2]](https://github.com/facebook/akd). Apple and Signal deployments (2024) mark the first mass-scale key transparency for end-to-end encrypted messaging. Related to [Key Transparency / CONIKS](#key-transparency--coniks), [Certificate Transparency (CT)](#certificate-transparency-ct), and [VRF](categories/09-commitments-verifiability.md#verifiable-random-function-vrf).
+
+---
