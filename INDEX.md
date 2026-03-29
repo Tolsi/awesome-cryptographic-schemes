@@ -1,304 +1,777 @@
-# Cryptographic Schemes Index
+# Index
 
-Alphabetical index of all scheme/protocol sections across the 20 category files.
+Alphabetical index of all 773 scheme entries.
 
-| Scheme / Protocol | Category |
-|-------------------|----------|
-| [Access Control Encryption (ACE)](categories/07-homomorphic-functional-encryption.md#access-control-encryption-ace) | Homomorphic & Functional Encryption |
-| [Accountable Decryption](categories/05-secret-sharing-threshold-cryptography.md#accountable-decryption) | Secret Sharing & Threshold Cryptography |
-| [Accountable Multi-Signatures / Subgroup Signatures](categories/08-signatures-advanced.md#accountable-multi-signatures--subgroup-signatures) | Signatures — Advanced |
-| [ACME Protocol / Automated Certificate Management](categories/03-key-exchange-key-management.md#acme-protocol--automated-certificate-management) | Key Exchange & Key Management |
-| [Adaptor Signatures / Scriptless Scripts](categories/08-signatures-advanced.md#adaptor-signatures--scriptless-scripts) | Signatures — Advanced |
-| [Aggregate Signatures (BLS Aggregate)](categories/08-signatures-advanced.md#aggregate-signatures-bls-aggregate) | Signatures — Advanced |
-| [Anonymous Broadcast Encryption](categories/11-anonymity-credentials.md#anonymous-broadcast-encryption) | Anonymity & Credentials |
-| [Anonymous Credentials](categories/11-anonymity-credentials.md#anonymous-credentials) | Anonymity & Credentials |
-| [Anonymous IBE](categories/07-homomorphic-functional-encryption.md#anonymous-ibe) | Homomorphic & Functional Encryption |
-| [Anonymous Reputation Systems](categories/11-anonymity-credentials.md#anonymous-reputation-systems) | Anonymity & Credentials |
-| [Apple PQ3 / Post-Quantum iMessage](categories/12-secure-communication-protocols.md#apple-pq3--post-quantum-imessage) | Secure Communication Protocols |
-| [Asynchronous BFT / Asynchronous MPC](categories/06-multi-party-computation.md#asynchronous-bft--asynchronous-mpc) | Multi-Party Computation |
-| [Asynchronous Verifiable Secret Sharing (AVSS)](categories/05-secret-sharing-threshold-cryptography.md#asynchronous-verifiable-secret-sharing-avss) | Secret Sharing & Threshold Cryptography |
-| [Attribute-Based & Functional Encryption](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption) | Homomorphic & Functional Encryption |
-| [Attribute-Based Signatures (ABS)](categories/08-signatures-advanced.md#attribute-based-signatures-abs) | Signatures — Advanced |
-| [Authenticated Encryption (AEAD)](categories/02-authenticated-structured-encryption.md#authenticated-encryption-aead) | Authenticated & Structured Encryption |
-| [Asymmetric (Public-Key) Encryption](categories/01-foundational-primitives.md#asymmetric-public-key-encryption) | Foundational Primitives |
-| [Accumulators](categories/09-commitments-verifiability.md#accumulators) | Commitments & Verifiability |
-| [Batch Arguments (BARG) / Accumulation Schemes](categories/16-obfuscation-advanced-hardness.md#batch-arguments-barg--accumulation-schemes) | Obfuscation & Advanced Hardness Assumptions |
-| [Batch Verification](categories/01-foundational-primitives.md#batch-verification) | Foundational Primitives |
-| [Binary-Field Proof Systems](categories/04-zero-knowledge-proof-systems.md#binary-field-proof-systems) | Zero-Knowledge & Proof Systems |
-| [BIP 324 / Opportunistic P2P Encryption](categories/12-secure-communication-protocols.md#bip-324--opportunistic-p2p-encryption) | Secure Communication Protocols |
-| [Bitcoin Taproot / BIP 340-342](categories/13-blockchain-distributed-ledger.md#bitcoin-taproot--bip-340-342) | Blockchain & Distributed Ledger |
-| [Blind Signatures](categories/08-signatures-advanced.md#blind-signatures) | Signatures — Advanced |
-| [Broadcast Authentication (TESLA)](categories/08-signatures-advanced.md#broadcast-authentication-tesla) | Signatures — Advanced |
-| [Broadcast Encryption](categories/07-homomorphic-functional-encryption.md#broadcast-encryption) | Homomorphic & Functional Encryption |
-| [Casper FFG / Ethereum Proof-of-Stake Finality](categories/13-blockchain-distributed-ledger.md#casper-ffg--ethereum-proof-of-stake-finality) | Blockchain & Distributed Ledger |
-| [Certificate Transparency (CT)](categories/03-key-exchange-key-management.md#certificate-transparency-ct) | Key Exchange & Key Management |
-| [Certificateless Cryptography](categories/03-key-exchange-key-management.md#certificateless-cryptography) | Key Exchange & Key Management |
-| [Certified Quantum Randomness / Proof of Quantumness](categories/15-quantum-cryptography.md#certified-quantum-randomness--proof-of-quantumness) | Quantum Cryptography & Post-Quantum |
-| [Chameleon Hash (Trapdoor Hash)](categories/09-commitments-verifiability.md#chameleon-hash-trapdoor-hash) | Commitments & Verifiability |
-| [Circular / KDM Security](categories/19-theoretical-foundations.md#circular--kdm-security) | Theoretical Foundations |
-| [Client Puzzles / Proof of Effort](categories/20-applied-niche-protocols.md#client-puzzles--proof-of-effort) | Applied & Niche Protocols |
-| [Coercion-Resistant Voting / Receipt-Freeness](categories/20-applied-niche-protocols.md#coercion-resistant-voting--receipt-freeness) | Applied & Niche Protocols |
-| [Commit-Reveal Schemes](categories/09-commitments-verifiability.md#commit-reveal-schemes) | Commitments & Verifiability |
-| [Commitment Schemes](categories/09-commitments-verifiability.md#commitment-schemes) | Commitments & Verifiability |
-| [Compressed Sigma Protocols](categories/04-zero-knowledge-proof-systems.md#compressed-sigma-protocols) | Zero-Knowledge & Proof Systems |
-| [Conditional Disclosure of Secrets (CDS)](categories/10-privacy-preserving-computation.md#conditional-disclosure-of-secrets-cds) | Privacy-Preserving Computation |
-| [Confidential Transactions (CT)](categories/13-blockchain-distributed-ledger.md#confidential-transactions-ct) | Blockchain & Distributed Ledger |
-| [Constrained / Policy-Based Signatures](categories/08-signatures-advanced.md#constrained--policy-based-signatures) | Signatures — Advanced |
-| [Continuous Group Key Agreement (CGKA) / MLS](categories/12-secure-communication-protocols.md#continuous-group-key-agreement-cgka--mls) | Secure Communication Protocols |
-| [Correlation-Intractable Hash Functions](categories/01-foundational-primitives.md#correlation-intractable-hash-functions) | Foundational Primitives |
-| [Covert Security / Publicly Auditable MPC](categories/06-multi-party-computation.md#covert-security--publicly-auditable-mpc) | Multi-Party Computation |
-| [Cryptographic Provenance Attestation (C2PA / SLSA)](categories/14-applied-infrastructure-pki.md#cryptographic-provenance-attestation-c2pa--slsa) | Applied Cryptography & Infrastructure / PKI |
-| [Cryptographic Reverse Firewalls](categories/19-theoretical-foundations.md#cryptographic-reverse-firewalls) | Theoretical Foundations |
-| [Cryptographic Watermarking for AI / Pseudorandom Codes](categories/17-ai-hardware-physical-security.md#cryptographic-watermarking-for-ai--pseudorandom-codes) | AI, Hardware & Physical Security |
-| [DANE / DNS-Based Authentication of Named Entities](categories/14-applied-infrastructure-pki.md#dane--dns-based-authentication-of-named-entities) | Applied Cryptography & Infrastructure / PKI |
-| [Data Availability Sampling (DAS)](categories/13-blockchain-distributed-ledger.md#data-availability-sampling-das) | Blockchain & Distributed Ledger |
-| [DC-Nets (Dining Cryptographers Networks)](categories/11-anonymity-credentials.md#dc-nets-dining-cryptographers-networks) | Anonymity & Credentials |
-| [Delay Encryption](categories/09-commitments-verifiability.md#delay-encryption) | Commitments & Verifiability |
-| [Delegatable Anonymous Credentials](categories/11-anonymity-credentials.md#delegatable-anonymous-credentials) | Anonymity & Credentials |
-| [Deniable Authentication](categories/18-covert-channels-steganography.md#deniable-authentication) | Covert Channels & Steganography |
-| [Deniable Encryption](categories/18-covert-channels-steganography.md#deniable-encryption) | Covert Channels & Steganography |
-| [Designated Verifier Signatures / Proofs](categories/08-signatures-advanced.md#designated-verifier-signatures--proofs) | Signatures — Advanced |
-| [Deterministic Encryption / Convergent Encryption](categories/02-authenticated-structured-encryption.md#deterministic-encryption--convergent-encryption) | Authenticated & Structured Encryption |
-| [Differential Privacy](categories/10-privacy-preserving-computation.md#differential-privacy) | Privacy-Preserving Computation |
-| [Digital Signatures](categories/01-foundational-primitives.md#digital-signatures) | Foundational Primitives |
-| [Digital Watermarking / Fingerprinting](categories/18-covert-channels-steganography.md#digital-watermarking--fingerprinting) | Covert Channels & Steganography |
-| [Disk Encryption / Tweakable Block Ciphers](categories/02-authenticated-structured-encryption.md#disk-encryption--tweakable-block-ciphers) | Authenticated & Structured Encryption |
-| [Distributed / Collaborative SNARKs](categories/04-zero-knowledge-proof-systems.md#distributed--collaborative-snarks) | Zero-Knowledge & Proof Systems |
-| [Distributed Key Generation (DKG)](categories/05-secret-sharing-threshold-cryptography.md#distributed-key-generation-dkg) | Secret Sharing & Threshold Cryptography |
-| [Distributed PRF (DPRF)](categories/06-multi-party-computation.md#distributed-prf-dprf) | Multi-Party Computation |
-| [DKIM / DomainKeys Identified Mail](categories/12-secure-communication-protocols.md#dkim--domainkeys-identified-mail) | Secure Communication Protocols |
-| [DNSSEC / DNS Security Extensions](categories/14-applied-infrastructure-pki.md#dnssec--dns-security-extensions) | Applied Cryptography & Infrastructure / PKI |
-| [DNSSEC-Based Key Infrastructure: SSHFP, TLSA, SMIMEA](categories/14-applied-infrastructure-pki.md#dnssec-based-key-infrastructure-sshfp-tlsa-smimea) | Applied Cryptography & Infrastructure / PKI |
-| [Double Ratchet / Symmetric Ratchet](categories/12-secure-communication-protocols.md#double-ratchet--symmetric-ratchet) | Secure Communication Protocols |
-| [DRBG (Deterministic Random Bit Generators)](categories/01-foundational-primitives.md#drbg-deterministic-random-bit-generators) | Foundational Primitives |
-| [DTLS / Datagram TLS](categories/12-secure-communication-protocols.md#dtls--datagram-tls) | Secure Communication Protocols |
-| [Dual-Mode Cryptosystems](categories/16-obfuscation-advanced-hardness.md#dual-mode-cryptosystems) | Obfuscation & Advanced Hardness Assumptions |
-| [E-Cash / Chaumian Digital Cash](categories/11-anonymity-credentials.md#e-cash--chaumian-digital-cash) | Anonymity & Credentials |
-| [EAP-PWD / Password-Based Enterprise WiFi Auth](categories/12-secure-communication-protocols.md#eap-pwd--password-based-enterprise-wifi-auth) | Secure Communication Protocols |
-| [EIP-712: Ethereum Typed Structured Data Signing](categories/13-blockchain-distributed-ledger.md#eip-712-ethereum-typed-structured-data-signing) | Blockchain & Distributed Ledger |
-| [EMV Cryptographic Authentication](categories/14-applied-infrastructure-pki.md#emv-cryptographic-authentication) | Applied Cryptography & Infrastructure / PKI |
-| [Encrypted Client Hello (ECH)](categories/12-secure-communication-protocols.md#encrypted-client-hello-ech) | Secure Communication Protocols |
-| [Encrypted Control Systems](categories/17-ai-hardware-physical-security.md#encrypted-control-systems) | AI, Hardware & Physical Security |
-| [Encrypted Mempools / Threshold Encryption for Transaction Ordering](categories/13-blockchain-distributed-ledger.md#encrypted-mempools--threshold-encryption-for-transaction-ordering) | Blockchain & Distributed Ledger |
-| [End-to-End Verifiable E-Voting](categories/20-applied-niche-protocols.md#end-to-end-verifiable-e-voting) | Applied & Niche Protocols |
-| [Equivalence-Based PQ Signatures](categories/15-quantum-cryptography.md#equivalence-based-pq-signatures) | Quantum Cryptography & Post-Quantum |
-| [Evolving Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#evolving-secret-sharing) | Secret Sharing & Threshold Cryptography |
-| [Fair Exchange / Atomic Swaps](categories/13-blockchain-distributed-ledger.md#fair-exchange--atomic-swaps) | Blockchain & Distributed Ledger |
-| [Fail-Stop Signatures](categories/08-signatures-advanced.md#fail-stop-signatures) | Signatures — Advanced |
-| [Fluid MPC (Dynamic Participants)](categories/06-multi-party-computation.md#fluid-mpc-dynamic-participants) | Multi-Party Computation |
-| [Folding Schemes](categories/04-zero-knowledge-proof-systems.md#folding-schemes) | Zero-Knowledge & Proof Systems |
-| [Format-Preserving Encryption (FPE)](categories/02-authenticated-structured-encryption.md#format-preserving-encryption-fpe) | Authenticated & Structured Encryption |
-| [Forward-Secure Signatures & Encryption](categories/08-signatures-advanced.md#forward-secure-signatures--encryption) | Signatures — Advanced |
-| [Fujisaki-Okamoto Transform](categories/01-foundational-primitives.md#fujisaki-okamoto-transform) | Foundational Primitives |
-| [Function Secret Sharing (FSS) / Distributed Point Functions (DPF)](categories/06-multi-party-computation.md#function-secret-sharing-fss--distributed-point-functions-dpf) | Multi-Party Computation |
-| [Functional Commitments](categories/09-commitments-verifiability.md#functional-commitments) | Commitments & Verifiability |
-| [Fuzzy Extractors / Secure Sketches](categories/01-foundational-primitives.md#fuzzy-extractors--secure-sketches) | Foundational Primitives |
-| [Fuzzy Message Detection (FMD)](categories/10-privacy-preserving-computation.md#fuzzy-message-detection-fmd) | Privacy-Preserving Computation |
-| [Fuzzy Private Set Intersection (FPSI)](categories/10-privacy-preserving-computation.md#fuzzy-private-set-intersection-fpsi) | Privacy-Preserving Computation |
-| [Garbled Circuits (expanded)](categories/06-multi-party-computation.md#garbled-circuits-expanded) | Multi-Party Computation |
-| [Garbled RAM](categories/06-multi-party-computation.md#garbled-ram) | Multi-Party Computation |
-| [General Access Structure Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#general-access-structure-secret-sharing) | Secret Sharing & Threshold Cryptography |
-| [General-Purpose zkVMs](categories/04-zero-knowledge-proof-systems.md#general-purpose-zkvms) | Zero-Knowledge & Proof Systems |
-| [Graph Encryption](categories/10-privacy-preserving-computation.md#graph-encryption) | Privacy-Preserving Computation |
-| [Groth-Sahai Proofs](categories/04-zero-knowledge-proof-systems.md#groth-sahai-proofs) | Zero-Knowledge & Proof Systems |
-| [Group Encryption](categories/11-anonymity-credentials.md#group-encryption) | Anonymity & Credentials |
-| [Group Key Agreement](categories/12-secure-communication-protocols.md#group-key-agreement) | Secure Communication Protocols |
-| [Hash Functions](categories/01-foundational-primitives.md#hash-functions) | Foundational Primitives |
-| [Hierarchical Deterministic Keys (BIP32 / HD Wallets)](categories/03-key-exchange-key-management.md#hierarchical-deterministic-keys-bip32--hd-wallets) | Key Exchange & Key Management |
-| [Hidden Vector Encryption (HVE)](categories/07-homomorphic-functional-encryption.md#hidden-vector-encryption-hve) | Homomorphic & Functional Encryption |
-| [Homomorphic Encryption (HE)](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-he) | Homomorphic & Functional Encryption |
-| [Homomorphic Hashing](categories/09-commitments-verifiability.md#homomorphic-hashing) | Commitments & Verifiability |
-| [Homomorphic Secret Sharing (HSS)](categories/06-multi-party-computation.md#homomorphic-secret-sharing-hss) | Multi-Party Computation |
-| [Homomorphic Signatures](categories/08-signatures-advanced.md#homomorphic-signatures) | Signatures — Advanced |
-| [Honey Encryption](categories/02-authenticated-structured-encryption.md#honey-encryption) | Authenticated & Structured Encryption |
-| [Human-Computable Cryptography](categories/19-theoretical-foundations.md#human-computable-cryptography) | Theoretical Foundations |
-| [IBC / Inter-Blockchain Communication Protocol](categories/13-blockchain-distributed-ledger.md#ibc--inter-blockchain-communication-protocol) | Blockchain & Distributed Ledger |
-| [Identity-Based Encryption (IBE)](categories/07-homomorphic-functional-encryption.md#identity-based-encryption-ibe) | Homomorphic & Functional Encryption |
-| [Identity-Based Signatures (IBS)](categories/08-signatures-advanced.md#identity-based-signatures-ibs) | Signatures — Advanced |
-| [IKEv2 / IPsec ESP](categories/12-secure-communication-protocols.md#ikev2--ipsec-esp) | Secure Communication Protocols |
-| [In-Sensor Cryptography](categories/17-ai-hardware-physical-security.md#in-sensor-cryptography) | AI, Hardware & Physical Security |
-| [Incremental Cryptography](categories/20-applied-niche-protocols.md#incremental-cryptography) | Applied & Niche Protocols |
-| [Indistinguishability Obfuscation (iO)](categories/16-obfuscation-advanced-hardness.md#indistinguishability-obfuscation-io) | Obfuscation & Advanced Hardness Assumptions |
-| [Interactive Oracle Proofs (IOP) / PCP](categories/04-zero-knowledge-proof-systems.md#interactive-oracle-proofs-iop--pcp) | Zero-Knowledge & Proof Systems |
-| [Isogeny-Based Cryptography](categories/15-quantum-cryptography.md#isogeny-based-cryptography) | Quantum Cryptography & Post-Quantum |
-| [JOSE / JWS / JWE / JWT](categories/03-key-exchange-key-management.md#jose--jws--jwe--jwt) | Key Exchange & Key Management |
-| [Kerberos v5](categories/14-applied-infrastructure-pki.md#kerberos-v5) | Applied Cryptography & Infrastructure / PKI |
-| [Key Encapsulation Mechanism (KEM) / DEM Paradigm](categories/02-authenticated-structured-encryption.md#key-encapsulation-mechanism-kem--dem-paradigm) | Authenticated & Structured Encryption |
-| [Key Exchange / Key Agreement](categories/03-key-exchange-key-management.md#key-exchange--key-agreement) | Key Exchange & Key Management |
-| [Key Transparency / CONIKS](categories/03-key-exchange-key-management.md#key-transparency--coniks) | Key Exchange & Key Management |
-| [Key Wrapping / Envelope Encryption](categories/03-key-exchange-key-management.md#key-wrapping--envelope-encryption) | Key Exchange & Key Management |
-| [Key-Aggregate Encryption](categories/07-homomorphic-functional-encryption.md#key-aggregate-encryption) | Homomorphic & Functional Encryption |
-| [Key-Committing AEAD](categories/02-authenticated-structured-encryption.md#key-committing-aead) | Authenticated & Structured Encryption |
-| [Key-Homomorphic PRF](categories/01-foundational-primitives.md#key-homomorphic-prf) | Foundational Primitives |
-| [Key-Insulated Cryptography](categories/20-applied-niche-protocols.md#key-insulated-cryptography) | Applied & Niche Protocols |
-| [KEMTLS (Post-Quantum TLS)](categories/12-secure-communication-protocols.md#kemtls-post-quantum-tls) | Secure Communication Protocols |
-| [Keyed-Verification Anonymous Credentials (KVAC)](categories/11-anonymity-credentials.md#keyed-verification-anonymous-credentials-kvac) | Anonymity & Credentials |
-| [Kleptography / Algorithm-Substitution Attacks (ASA)](categories/18-covert-channels-steganography.md#kleptography--algorithm-substitution-attacks-asa) | Covert Channels & Steganography |
-| [Laconic Cryptography](categories/16-obfuscation-advanced-hardness.md#laconic-cryptography) | Obfuscation & Advanced Hardness Assumptions |
-| [Lattice Isomorphism Problem (LIP) / HAWK](categories/15-quantum-cryptography.md#lattice-isomorphism-problem-lip--hawk) | Quantum Cryptography & Post-Quantum |
-| [Leakage-Resilient Cryptography](categories/19-theoretical-foundations.md#leakage-resilient-cryptography) | Theoretical Foundations |
-| [Leakage-Resilient Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#leakage-resilient-secret-sharing) | Secret Sharing & Threshold Cryptography |
-| [Lightweight Cryptography / ASCON](categories/01-foundational-primitives.md#lightweight-cryptography--ascon) | Foundational Primitives |
-| [Linear BFT Consensus (HotStuff / Tendermint)](categories/13-blockchain-distributed-ledger.md#linear-bft-consensus-hotstuff--tendermint) | Blockchain & Distributed Ledger |
-| [Linkable Ring Signatures](categories/08-signatures-advanced.md#linkable-ring-signatures) | Signatures — Advanced |
-| [Linked Timestamping](categories/20-applied-niche-protocols.md#linked-timestamping) | Applied & Niche Protocols |
-| [Lookup Arguments](categories/04-zero-knowledge-proof-systems.md#lookup-arguments) | Zero-Knowledge & Proof Systems |
-| [Lossy Encryption / Lossy Trapdoor Functions](categories/19-theoretical-foundations.md#lossy-encryption--lossy-trapdoor-functions) | Theoretical Foundations |
-| [Malleable Proof Systems / Controlled-Malleable NIZK](categories/04-zero-knowledge-proof-systems.md#malleable-proof-systems--controlled-malleable-nizk) | Zero-Knowledge & Proof Systems |
-| [Matchmaking Encryption](categories/07-homomorphic-functional-encryption.md#matchmaking-encryption) | Homomorphic & Functional Encryption |
-| [Mental Poker / Commutative Encryption](categories/06-multi-party-computation.md#mental-poker--commutative-encryption) | Multi-Party Computation |
-| [Merkle Mountain Ranges (MMR)](categories/09-commitments-verifiability.md#merkle-mountain-ranges-mmr) | Commitments & Verifiability |
-| [Message Authentication Codes (MAC)](categories/01-foundational-primitives.md#message-authentication-codes-mac) | Foundational Primitives |
-| [Message Franking / Abuse Reporting in E2E](categories/12-secure-communication-protocols.md#message-franking--abuse-reporting-in-e2e) | Secure Communication Protocols |
-| [MimbleWimble](categories/13-blockchain-distributed-ledger.md#mimblewimble) | Blockchain & Distributed Ledger |
-| [Mix Networks (Mixnets)](categories/11-anonymity-credentials.md#mix-networks-mixnets) | Anonymity & Credentials |
-| [MPC-in-the-Head (MPCitH)](categories/04-zero-knowledge-proof-systems.md#mpc-in-the-head-mpcith) | Zero-Knowledge & Proof Systems |
-| [Multi-Authority ABE](categories/07-homomorphic-functional-encryption.md#multi-authority-abe) | Homomorphic & Functional Encryption |
-| [Multi-Key / Threshold FHE](categories/07-homomorphic-functional-encryption.md#multi-key--threshold-fhe) | Homomorphic & Functional Encryption |
-| [Multi-Party Computation (MPC)](categories/06-multi-party-computation.md#multi-party-computation-mpc) | Multi-Party Computation |
-| [Multi-Prover Interactive Proofs (MIP)](categories/04-zero-knowledge-proof-systems.md#multi-prover-interactive-proofs-mip) | Zero-Knowledge & Proof Systems |
-| [Multilinear Maps](categories/16-obfuscation-advanced-hardness.md#multilinear-maps) | Obfuscation & Advanced Hardness Assumptions |
-| [Non-Black-Box Zero-Knowledge / Concurrent ZK](categories/19-theoretical-foundations.md#non-black-box-zero-knowledge--concurrent-zk) | Theoretical Foundations |
-| [Non-Committing Encryption](categories/02-authenticated-structured-encryption.md#non-committing-encryption) | Authenticated & Structured Encryption |
-| [Non-Interactive DKG (NIDKG)](categories/05-secret-sharing-threshold-cryptography.md#non-interactive-dkg-nidkg) | Secret Sharing & Threshold Cryptography |
-| [Non-Interactive Key Exchange (NIKE)](categories/03-key-exchange-key-management.md#non-interactive-key-exchange-nike) | Key Exchange & Key Management |
-| [Non-Malleable Codes](categories/19-theoretical-foundations.md#non-malleable-codes) | Theoretical Foundations |
-| [Non-Malleable Encryption / Commitments](categories/09-commitments-verifiability.md#non-malleable-encryption--commitments) | Commitments & Verifiability |
-| [Oblivious Automata / Branching Program Evaluation](categories/10-privacy-preserving-computation.md#oblivious-automata--branching-program-evaluation) | Privacy-Preserving Computation |
-| [Oblivious DNS (ODoH)](categories/10-privacy-preserving-computation.md#oblivious-dns-odoh) | Privacy-Preserving Computation |
-| [Oblivious Key-Value Store (OKVS)](categories/10-privacy-preserving-computation.md#oblivious-key-value-store-okvs) | Privacy-Preserving Computation |
-| [Oblivious Linear Evaluation (OLE) / VOLE](categories/06-multi-party-computation.md#oblivious-linear-evaluation-ole--vole) | Multi-Party Computation |
-| [Oblivious Message Retrieval (OMR)](categories/10-privacy-preserving-computation.md#oblivious-message-retrieval-omr) | Privacy-Preserving Computation |
-| [Oblivious Polynomial Evaluation (OPE)](categories/10-privacy-preserving-computation.md#oblivious-polynomial-evaluation-ope) | Privacy-Preserving Computation |
-| [Oblivious RAM (ORAM)](categories/10-privacy-preserving-computation.md#oblivious-ram-oram) | Privacy-Preserving Computation |
-| [Oblivious Sorting / Oblivious Data Structures](categories/10-privacy-preserving-computation.md#oblivious-sorting--oblivious-data-structures) | Privacy-Preserving Computation |
-| [Oblivious SQL / Encrypted Database Joins](categories/10-privacy-preserving-computation.md#oblivious-sql--encrypted-database-joins) | Privacy-Preserving Computation |
-| [Oblivious Transfer (OT)](categories/06-multi-party-computation.md#oblivious-transfer-ot) | Multi-Party Computation |
-| [One-Time Pad / Information-Theoretic Security](categories/01-foundational-primitives.md#one-time-pad--information-theoretic-security) | Foundational Primitives |
-| [One-Time Signatures (OTS)](categories/08-signatures-advanced.md#one-time-signatures-ots) | Signatures — Advanced |
-| [Onion Routing](categories/11-anonymity-credentials.md#onion-routing) | Anonymity & Credentials |
-| [OpenPGP (RFC 9580)](categories/12-secure-communication-protocols.md#openpgp-rfc-9580) | Secure Communication Protocols |
-| [Order-Fair Consensus](categories/13-blockchain-distributed-ledger.md#order-fair-consensus) | Blockchain & Distributed Ledger |
-| [Order-Preserving / Order-Revealing Encryption (OPE / ORE)](categories/02-authenticated-structured-encryption.md#order-preserving--order-revealing-encryption-ope--ore) | Authenticated & Structured Encryption |
-| [Packed Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#packed-secret-sharing) | Secret Sharing & Threshold Cryptography |
-| [Partially Blind Signatures](categories/08-signatures-advanced.md#partially-blind-signatures) | Signatures — Advanced |
-| [Password-Based Key Derivation (KDF / PAKE)](categories/03-key-exchange-key-management.md#password-based-key-derivation-kdf--pake) | Key Exchange & Key Management |
-| [Password Hardened Encryption (PHE)](categories/03-key-exchange-key-management.md#password-hardened-encryption-phe) | Key Exchange & Key Management |
-| [Physical Unclonable Functions (PUF)](categories/17-ai-hardware-physical-security.md#physical-unclonable-functions-puf) | AI, Hardware & Physical Security |
-| [Point Function Obfuscation / Digital Locker](categories/16-obfuscation-advanced-hardness.md#point-function-obfuscation--digital-locker) | Obfuscation & Advanced Hardness Assumptions |
-| [Position-Based Quantum Cryptography](categories/15-quantum-cryptography.md#position-based-quantum-cryptography) | Quantum Cryptography & Post-Quantum |
-| [Post-Quantum Cryptography](categories/15-quantum-cryptography.md#post-quantum-cryptography) | Quantum Cryptography & Post-Quantum |
-| [Prio / VDAF (Privacy-Preserving Aggregation)](categories/10-privacy-preserving-computation.md#prio--vdaf-privacy-preserving-aggregation) | Privacy-Preserving Computation |
-| [Privacy Pass / Anonymous Tokens](categories/11-anonymity-credentials.md#privacy-pass--anonymous-tokens) | Anonymity & Credentials |
-| [Privacy-Preserving Record Linkage (PPRL)](categories/10-privacy-preserving-computation.md#privacy-preserving-record-linkage-pprl) | Privacy-Preserving Computation |
-| [Private Function Evaluation (PFE)](categories/10-privacy-preserving-computation.md#private-function-evaluation-pfe) | Privacy-Preserving Computation |
-| [Private Heavy Hitters / Frequency Estimation](categories/10-privacy-preserving-computation.md#private-heavy-hitters--frequency-estimation) | Privacy-Preserving Computation |
-| [Private Information Retrieval (PIR)](categories/10-privacy-preserving-computation.md#private-information-retrieval-pir) | Privacy-Preserving Computation |
-| [Private Proximity Testing](categories/10-privacy-preserving-computation.md#private-proximity-testing) | Privacy-Preserving Computation |
-| [Private Set Difference / Set Operations](categories/10-privacy-preserving-computation.md#private-set-difference--set-operations) | Privacy-Preserving Computation |
-| [Private Set Intersection (PSI)](categories/10-privacy-preserving-computation.md#private-set-intersection-psi) | Privacy-Preserving Computation |
-| [Private Set Union (PSU)](categories/10-privacy-preserving-computation.md#private-set-union-psu) | Privacy-Preserving Computation |
-| [Private Stream Aggregation (PSA)](categories/10-privacy-preserving-computation.md#private-stream-aggregation-psa) | Privacy-Preserving Computation |
-| [Proactive Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#proactive-secret-sharing) | Secret Sharing & Threshold Cryptography |
-| [Proof of Location / Spatial Proofs](categories/17-ai-hardware-physical-security.md#proof-of-location--spatial-proofs) | AI, Hardware & Physical Security |
-| [Proof of Secure Erasure (PoSE)](categories/20-applied-niche-protocols.md#proof-of-secure-erasure-pose) | Applied & Niche Protocols |
-| [Proof of Solvency / Proof of Reserves](categories/09-commitments-verifiability.md#proof-of-solvency--proof-of-reserves) | Commitments & Verifiability |
-| [Proof of Work (PoW) / Proof of Space](categories/13-blockchain-distributed-ledger.md#proof-of-work-pow--proof-of-space) | Blockchain & Distributed Ledger |
-| [Proof-Carrying Data (PCD)](categories/04-zero-knowledge-proof-systems.md#proof-carrying-data-pcd) | Zero-Knowledge & Proof Systems |
-| [Proofs of Retrievability (PoR) / Provable Data Possession](categories/09-commitments-verifiability.md#proofs-of-retrievability-por--provable-data-possession) | Commitments & Verifiability |
-| [Property-Preserving Encryption (PPE)](categories/02-authenticated-structured-encryption.md#property-preserving-encryption-ppe) | Authenticated & Structured Encryption |
-| [Proxy Re-Encryption (PRE)](categories/07-homomorphic-functional-encryption.md#proxy-re-encryption-pre) | Homomorphic & Functional Encryption |
-| [Proxy Signatures](categories/08-signatures-advanced.md#proxy-signatures) | Signatures — Advanced |
-| [Pseudorandom Functions (PRF) & Pseudorandom Permutations (PRP)](categories/01-foundational-primitives.md#pseudorandom-functions-prf--pseudorandom-permutations-prp) | Foundational Primitives |
-| [Pseudorandom Generators (PRG)](categories/01-foundational-primitives.md#pseudorandom-generators-prg) | Foundational Primitives |
-| [Publicly Verifiable Secret Sharing (PVSS)](categories/05-secret-sharing-threshold-cryptography.md#publicly-verifiable-secret-sharing-pvss) | Secret Sharing & Threshold Cryptography |
-| [Puncturable / Constrained PRF](categories/01-foundational-primitives.md#puncturable--constrained-prf) | Foundational Primitives |
-| [Puncturable Encryption](categories/02-authenticated-structured-encryption.md#puncturable-encryption) | Authenticated & Structured Encryption |
-| [QUIC Packet Protection](categories/12-secure-communication-protocols.md#quic-packet-protection) | Secure Communication Protocols |
-| [Quantum Copy-Protection / Uncloneable Encryption](categories/15-quantum-cryptography.md#quantum-copy-protection--uncloneable-encryption) | Quantum Cryptography & Post-Quantum |
-| [Quantum Key Distribution (QKD)](categories/15-quantum-cryptography.md#quantum-key-distribution-qkd) | Quantum Cryptography & Post-Quantum |
-| [Quantum Money / Quantum Tokens](categories/15-quantum-cryptography.md#quantum-money--quantum-tokens) | Quantum Cryptography & Post-Quantum |
-| [Ramp Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#ramp-secret-sharing) | Secret Sharing & Threshold Cryptography |
-| [Randomness Beacons / Coin Tossing](categories/09-commitments-verifiability.md#randomness-beacons--coin-tossing) | Commitments & Verifiability |
-| [Randomness Extractors](categories/01-foundational-primitives.md#randomness-extractors) | Foundational Primitives |
-| [Range Proofs](categories/13-blockchain-distributed-ledger.md#range-proofs) | Blockchain & Distributed Ledger |
-| [Rational Cryptography](categories/19-theoretical-foundations.md#rational-cryptography) | Theoretical Foundations |
-| [Registration-Based Encryption (RBE)](categories/07-homomorphic-functional-encryption.md#registration-based-encryption-rbe) | Homomorphic & Functional Encryption |
-| [Rerandomizable Encryption](categories/02-authenticated-structured-encryption.md#rerandomizable-encryption) | Authenticated & Structured Encryption |
-| [Rerandomizable Signatures (PS Signatures)](categories/08-signatures-advanced.md#rerandomizable-signatures-ps-signatures) | Signatures — Advanced |
-| [Ring & Group Signatures](categories/08-signatures-advanced.md#ring--group-signatures) | Signatures — Advanced |
-| [Ring VRF](categories/08-signatures-advanced.md#ring-vrf) | Signatures — Advanced |
-| [Ristretto255 / Decaf (Prime-Order Group Abstractions)](categories/01-foundational-primitives.md#ristretto255--decaf-prime-order-group-abstractions) | Foundational Primitives |
-| [Robust Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#robust-secret-sharing) | Secret Sharing & Threshold Cryptography |
-| [Sanitizable Signatures](categories/08-signatures-advanced.md#sanitizable-signatures) | Signatures — Advanced |
-| [Sealed-Bid Auction Protocols](categories/10-privacy-preserving-computation.md#sealed-bid-auction-protocols) | Privacy-Preserving Computation |
-| [Searchable Encryption (SSE / PEKS)](categories/10-privacy-preserving-computation.md#searchable-encryption-sse--peks) | Privacy-Preserving Computation |
-| [Secret Handshakes / Hidden Credentials](categories/11-anonymity-credentials.md#secret-handshakes--hidden-credentials) | Anonymity & Credentials |
-| [Secret Leader Election](categories/13-blockchain-distributed-ledger.md#secret-leader-election) | Blockchain & Distributed Ledger |
-| [Secret Sharing Schemes (SSS)](categories/05-secret-sharing-threshold-cryptography.md#secret-sharing-schemes-sss) | Secret Sharing & Threshold Cryptography |
-| [Secret Sharing with Cheater Detection](categories/05-secret-sharing-threshold-cryptography.md#secret-sharing-with-cheater-detection) | Secret Sharing & Threshold Cryptography |
-| [Secret-Shared Shuffle](categories/06-multi-party-computation.md#secret-shared-shuffle) | Multi-Party Computation |
-| [Secure Aggregation (SecAgg)](categories/06-multi-party-computation.md#secure-aggregation-secagg) | Multi-Party Computation |
-| [Secure Channels / Protocol Constructions](categories/12-secure-communication-protocols.md#secure-channels--protocol-constructions) | Secure Communication Protocols |
-| [Secure Deduplication](categories/02-authenticated-structured-encryption.md#secure-deduplication) | Authenticated & Structured Encryption |
-| [Semaphore / Anonymous Group Signaling (RLN)](categories/11-anonymity-credentials.md#semaphore--anonymous-group-signaling-rln) | Anonymity & Credentials |
-| [Sequential Aggregate Signatures](categories/08-signatures-advanced.md#sequential-aggregate-signatures) | Signatures — Advanced |
-| [Sigma Protocols / Schnorr Identification](categories/04-zero-knowledge-proof-systems.md#sigma-protocols--schnorr-identification) | Zero-Knowledge & Proof Systems |
-| [Signcryption](categories/02-authenticated-structured-encryption.md#signcryption) | Authenticated & Structured Encryption |
-| [Sigstore / Keyless Code Signing](categories/14-applied-infrastructure-pki.md#sigstore--keyless-code-signing) | Applied Cryptography & Infrastructure / PKI |
-| [Silent OT / Pseudorandom Correlation Generators (PCG)](categories/06-multi-party-computation.md#silent-ot--pseudorandom-correlation-generators-pcg) | Multi-Party Computation |
-| [SLIP-39 / Shamir Backup for Hardware Wallets](categories/03-key-exchange-key-management.md#slip-39--shamir-backup-for-hardware-wallets) | Key Exchange & Key Management |
-| [SNARG (Succinct Non-Interactive Arguments without Zero-Knowledge)](categories/04-zero-knowledge-proof-systems.md#snarg-succinct-non-interactive-arguments-without-zero-knowledge) | Zero-Knowledge & Proof Systems |
-| [Somewhere Statistically Binding (SSB) Hash](categories/09-commitments-verifiability.md#somewhere-statistically-binding-ssb-hash) | Commitments & Verifiability |
-| [Sponge Construction / Duplex](categories/01-foundational-primitives.md#sponge-construction--duplex) | Foundational Primitives |
-| [Spooky Encryption](categories/16-obfuscation-advanced-hardness.md#spooky-encryption) | Obfuscation & Advanced Hardness Assumptions |
-| [Stealth Addresses](categories/11-anonymity-credentials.md#stealth-addresses) | Anonymity & Credentials |
-| [Steganography](categories/18-covert-channels-steganography.md#steganography) | Covert Channels & Steganography |
-| [Streaming / Online Secure Computation](categories/06-multi-party-computation.md#streaming--online-secure-computation) | Multi-Party Computation |
-| [Structure-Preserving Signatures (SPS)](categories/08-signatures-advanced.md#structure-preserving-signatures-sps) | Signatures — Advanced |
-| [Sumcheck Protocol](categories/04-zero-knowledge-proof-systems.md#sumcheck-protocol) | Zero-Knowledge & Proof Systems |
-| [Symmetric Encryption](categories/01-foundational-primitives.md#symmetric-encryption) | Foundational Primitives |
-| [TEE Remote Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation) | Applied Cryptography & Infrastructure / PKI |
-| [Threshold Blind Signatures](categories/08-signatures-advanced.md#threshold-blind-signatures) | Signatures — Advanced |
-| [Threshold Decryption](categories/05-secret-sharing-threshold-cryptography.md#threshold-decryption) | Secret Sharing & Threshold Cryptography |
-| [Threshold Ring Signatures](categories/08-signatures-advanced.md#threshold-ring-signatures) | Signatures — Advanced |
-| [Threshold Signature Schemes (TSS)](categories/08-signatures-advanced.md#threshold-signature-schemes-tss) | Signatures — Advanced |
-| [Time-Lock Puzzles / Timed-Release Encryption](categories/09-commitments-verifiability.md#time-lock-puzzles--timed-release-encryption) | Commitments & Verifiability |
-| [Token-Based Authentication (TOTP / FIDO2 / WebAuthn)](categories/12-secure-communication-protocols.md#token-based-authentication-totp--fido2--webauthn) | Secure Communication Protocols |
-| [Traceable Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#traceable-secret-sharing) | Secret Sharing & Threshold Cryptography |
-| [Traceable Signatures](categories/08-signatures-advanced.md#traceable-signatures) | Signatures — Advanced |
-| [Trapdoor Functions / Trapdoor Permutations](categories/01-foundational-primitives.md#trapdoor-functions--trapdoor-permutations) | Foundational Primitives |
-| [Transciphering / FHE-friendly Ciphers](categories/07-homomorphic-functional-encryption.md#transciphering--fhe-friendly-ciphers) | Homomorphic & Functional Encryption |
-| [TUF / The Update Framework](categories/14-applied-infrastructure-pki.md#tuf--the-update-framework) | Applied Cryptography & Infrastructure / PKI |
-| [Unclonable Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#unclonable-secret-sharing) | Secret Sharing & Threshold Cryptography |
-| [Undeniable Signatures](categories/08-signatures-advanced.md#undeniable-signatures) | Signatures — Advanced |
-| [Universal Hash Functions (Carter-Wegman)](categories/01-foundational-primitives.md#universal-hash-functions-carter-wegman) | Foundational Primitives |
-| [Universal One-Way Hash Functions (UOWHF)](categories/01-foundational-primitives.md#universal-one-way-hash-functions-uowhf) | Foundational Primitives |
-| [Universal Thresholdizer](categories/05-secret-sharing-threshold-cryptography.md#universal-thresholdizer) | Secret Sharing & Threshold Cryptography |
-| [Updatable CRS / Powers of Tau](categories/03-key-exchange-key-management.md#updatable-crs--powers-of-tau) | Key Exchange & Key Management |
-| [Updatable Encryption](categories/02-authenticated-structured-encryption.md#updatable-encryption) | Authenticated & Structured Encryption |
-| [Vector Commitments](categories/09-commitments-verifiability.md#vector-commitments) | Commitments & Verifiability |
-| [Verifiable Computation (VC)](categories/09-commitments-verifiability.md#verifiable-computation-vc) | Commitments & Verifiability |
-| [Verifiable Delay Functions (VDF)](categories/09-commitments-verifiability.md#verifiable-delay-functions-vdf) | Commitments & Verifiability |
-| [Verifiable Encryption](categories/09-commitments-verifiability.md#verifiable-encryption) | Commitments & Verifiability |
-| [Verifiable FHE](categories/07-homomorphic-functional-encryption.md#verifiable-fhe) | Homomorphic & Functional Encryption |
-| [Verifiable Information Dispersal (VID)](categories/05-secret-sharing-threshold-cryptography.md#verifiable-information-dispersal-vid) | Secret Sharing & Threshold Cryptography |
-| [Verifiable Random Functions (VRF)](categories/09-commitments-verifiability.md#verifiable-random-functions-vrf) | Commitments & Verifiability |
-| [Verifiable Timed Commitments](categories/09-commitments-verifiability.md#verifiable-timed-commitments) | Commitments & Verifiability |
-| [Visual Cryptography](categories/20-applied-niche-protocols.md#visual-cryptography) | Applied & Niche Protocols |
-| [VOLEitH (VOLE-in-the-Head)](categories/04-zero-knowledge-proof-systems.md#voleith-vole-in-the-head) | Zero-Knowledge & Proof Systems |
-| [W3C Decentralized Identifiers (DID) and Verifiable Credentials](categories/14-applied-infrastructure-pki.md#w3c-decentralized-identifiers-did-and-verifiable-credentials) | Applied Cryptography & Infrastructure / PKI |
-| [White-Box Cryptography](categories/02-authenticated-structured-encryption.md#white-box-cryptography) | Authenticated & Structured Encryption |
-| [Wiretap Channel / Physical-Layer Security](categories/17-ai-hardware-physical-security.md#wiretap-channel--physical-layer-security) | AI, Hardware & Physical Security |
-| [Witness Encryption](categories/16-obfuscation-advanced-hardness.md#witness-encryption) | Obfuscation & Advanced Hardness Assumptions |
-| [Witness Indistinguishability (WI) / Witness Hiding](categories/19-theoretical-foundations.md#witness-indistinguishability-wi--witness-hiding) | Theoretical Foundations |
-| [Witness PRF](categories/04-zero-knowledge-proof-systems.md#witness-prf) | Zero-Knowledge & Proof Systems |
-| [X3DH / Extended Triple DH Key Agreement](categories/12-secure-communication-protocols.md#x3dh--extended-triple-dh-key-agreement) | Secure Communication Protocols |
-| [YOSO Model (You Only Speak Once)](categories/06-multi-party-computation.md#yoso-model-you-only-speak-once) | Multi-Party Computation |
-| [Zero-Knowledge Proofs (ZK)](categories/04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk) | Zero-Knowledge & Proof Systems |
-| [Zero-Knowledge Sets](categories/04-zero-knowledge-proof-systems.md#zero-knowledge-sets) | Zero-Knowledge & Proof Systems |
-| [ZK-Friendly Hash Functions (Arithmetization-Oriented)](categories/01-foundational-primitives.md#zk-friendly-hash-functions-arithmetization-oriented) | Foundational Primitives |
-| [zkML (Zero-Knowledge Machine Learning)](categories/04-zero-knowledge-proof-systems.md#zkml-zero-knowledge-machine-learning) | Zero-Knowledge & Proof Systems |
-| [zkLLM / Verifiable AI Inference](categories/17-ai-hardware-physical-security.md#zkllm--verifiable-ai-inference) | AI, Hardware & Physical Security |
-| [zkTLS / MPC-TLS](categories/04-zero-knowledge-proof-systems.md#zktls--mpc-tls) | Zero-Knowledge & Proof Systems |
-| [Oblivious PRF (OPRF)](categories/10-privacy-preserving-computation.md#oblivious-prf-oprf) | Privacy-Preserving Computation |
+- [Access Control Encryption (ACE)](categories/07-homomorphic-functional-encryption.md#access-control-encryption-ace)
+- [Accountable Decryption](categories/05-secret-sharing-threshold-cryptography.md#accountable-decryption)
+- [Accountable Multi-Signatures / Subgroup Signatures](categories/08-signatures-advanced.md#accountable-multi-signatures-subgroup-signatures)
+- [Accumulators](categories/09-commitments-verifiability.md#accumulators)
+- [Accumulators for Credential Revocation](categories/11-anonymity-credentials.md#accumulators-for-credential-revocation)
+- [ACME Protocol / Automated Certificate Management](categories/03-key-exchange-key-management.md#acme-protocol-automated-certificate-management)
+- [ACME Protocol / Automated Certificate Management](categories/12-secure-communication-protocols.md#acme-protocol-automated-certificate-management)
+- [Acoustic Cryptanalysis](categories/17-ai-hardware-physical-security.md#acoustic-cryptanalysis)
+- [Adaptive vs. Static Corruptions in Multi-Party Protocols](categories/19-theoretical-foundations.md#adaptive-vs-static-corruptions-in-multi-party-protocols)
+- [Adaptor Signatures / Scriptless Scripts](categories/08-signatures-advanced.md#adaptor-signatures-scriptless-scripts)
+- [Advanced Single-Server PIR (OnionPIR / Spiral)](categories/10-privacy-preserving-computation.md#advanced-single-server-pir-onionpir-spiral)
+- [Adversarial / GAN Steganography](categories/18-covert-channels-steganography.md#adversarial-gan-steganography)
+- [AEGIS (A Fast Authenticated Encryption Algorithm)](categories/02-authenticated-structured-encryption.md#aegis-a-fast-authenticated-encryption-algorithm)
+- [AES Key Wrap (KW / KWP, RFC 5649 / NIST SP 800-38F)](categories/02-authenticated-structured-encryption.md#aes-key-wrap-kw-kwp-rfc-5649-nist-sp-800-38f)
+- [AES-CCM (Counter with CBC-MAC)](categories/02-authenticated-structured-encryption.md#aes-ccm-counter-with-cbc-mac)
+- [AES-CCM* (IEEE 802.15.4 / ZigBee)](categories/02-authenticated-structured-encryption.md#aes-ccm-ieee-802154-zigbee)
+- [Aggregate Signatures (BLS Aggregate)](categories/08-signatures-advanced.md#aggregate-signatures-bls-aggregate)
+- [AI Hardware Trojans (Backdoor Attacks on Neural Accelerators)](categories/17-ai-hardware-physical-security.md#ai-hardware-trojans-backdoor-attacks-on-neural-accelerators)
+- [AMD SEV-SNP — Attestation Report Structure](categories/14-applied-infrastructure-pki.md#amd-sev-snp-attestation-report-structure)
+- [Anonymous Broadcast Encryption](categories/11-anonymity-credentials.md#anonymous-broadcast-encryption)
+- [Anonymous Credentials](categories/11-anonymity-credentials.md#anonymous-credentials)
+- [Anonymous Credentials vs Group Signatures vs Ring Signatures](categories/11-anonymity-credentials.md#anonymous-credentials-vs-group-signatures-vs-ring-signatures)
+- [Anonymous IBE](categories/07-homomorphic-functional-encryption.md#anonymous-ibe)
+- [Anonymous Reputation Systems](categories/11-anonymity-credentials.md#anonymous-reputation-systems)
+- [Anonymous Whistleblowing Systems](categories/11-anonymity-credentials.md#anonymous-whistleblowing-systems)
+- [Anti-Tamper Mechanisms & Cryptographic Zeroization](categories/17-ai-hardware-physical-security.md#anti-tamper-mechanisms-cryptographic-zeroization)
+- [Apple PQ3 / Post-Quantum iMessage](categories/12-secure-communication-protocols.md#apple-pq3-post-quantum-imessage)
+- [Approximate Indistinguishability Obfuscation (aiO)](categories/16-obfuscation-advanced-hardness.md#approximate-indistinguishability-obfuscation-aio)
+- [ARIA Block Cipher](categories/01-foundational-primitives.md#aria-block-cipher)
+- [ARIANN and SecureNN (Private Neural Network Inference)](categories/06-multi-party-computation.md#ariann-and-securenn-private-neural-network-inference)
+- [Ascon-128 / Ascon-128a (NIST LWC Standard)](categories/02-authenticated-structured-encryption.md#ascon-128-ascon-128a-nist-lwc-standard)
+- [Asymmetric (Public-Key) Encryption](categories/01-foundational-primitives.md#asymmetric-public-key-encryption)
+- [Asynchronous BFT / Asynchronous MPC](categories/06-multi-party-computation.md#asynchronous-bft-asynchronous-mpc)
+- [Asynchronous MPC (Ben-Or-Kelmer-Rabin, Canetti-Rabin)](categories/06-multi-party-computation.md#asynchronous-mpc-ben-or-kelmer-rabin-canetti-rabin)
+- [Asynchronous Verifiable Secret Sharing (AVSS)](categories/05-secret-sharing-threshold-cryptography.md#asynchronous-verifiable-secret-sharing-avss)
+- [Attribute-Based & Functional Encryption](categories/07-homomorphic-functional-encryption.md#attribute-based-functional-encryption)
+- [Attribute-Based Signatures (ABS)](categories/08-signatures-advanced.md#attribute-based-signatures-abs)
+- [Audio Steganography (Echo Hiding & MP3Stego)](categories/18-covert-channels-steganography.md#audio-steganography-echo-hiding-mp3stego)
+- [Auditable Key Directory (AKD) / Key Transparency v2](categories/03-key-exchange-key-management.md#auditable-key-directory-akd-key-transparency-v2)
+- [Aurora and Fractal (Recursive IOP-Based Proof Systems)](categories/09-commitments-verifiability.md#aurora-and-fractal-recursive-iop-based-proof-systems)
+- [Authenticated Encryption (AEAD)](categories/02-authenticated-structured-encryption.md#authenticated-encryption-aead)
+- [Authenticated Encryption Security Models](categories/01-foundational-primitives.md#authenticated-encryption-security-models)
+- [Automated Protocol Verification (ProVerif, Tamarin, EasyCrypt)](categories/19-theoretical-foundations.md#automated-protocol-verification-proverif-tamarin-easycrypt)
+- [Average-Case Hardness & Planted Problems](categories/16-obfuscation-advanced-hardness.md#average-case-hardness-planted-problems)
+- [Aztec Protocol (Private Smart Contracts)](categories/11-anonymity-credentials.md#aztec-protocol-private-smart-contracts)
+- [Azure Confidential Computing — SGX and TDX Attestation](categories/14-applied-infrastructure-pki.md#azure-confidential-computing-sgx-and-tdx-attestation)
+- [Bandersnatch and In-Circuit VRF](categories/09-commitments-verifiability.md#bandersnatch-and-in-circuit-vrf)
+- [Batch Arguments (BARG) / Accumulation Schemes](categories/16-obfuscation-advanced-hardness.md#batch-arguments-barg-accumulation-schemes)
+- [Batch Verification](categories/01-foundational-primitives.md#batch-verification)
+- [Batch Verification of Signatures](categories/08-signatures-advanced.md#batch-verification-of-signatures)
+- [BBS+ Anonymous Credentials](categories/11-anonymity-credentials.md#bbs-anonymous-credentials)
+- [BDLOP Lattice Commitments](categories/09-commitments-verifiability.md#bdlop-lattice-commitments)
+- [Beaver Triples (Multiplication Triples)](categories/06-multi-party-computation.md#beaver-triples-multiplication-triples)
+- [Berlekamp-Welch Decoding for Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#berlekamp-welch-decoding-for-secret-sharing)
+- [BIKE (Bit-Flipping Key Encapsulation)](categories/15-quantum-cryptography.md#bike-bit-flipping-key-encapsulation)
+- [Bilinear Map Assumptions (DBDH, DLIN, SXDH, q-SDH, q-DBDHI)](categories/16-obfuscation-advanced-hardness.md#bilinear-map-assumptions-dbdh-dlin-sxdh-q-sdh-q-dbdhi)
+- [Binary-Field Proof Systems](categories/04-zero-knowledge-proof-systems.md#binary-field-proof-systems)
+- [BIP 324 / Opportunistic P2P Encryption](categories/12-secure-communication-protocols.md#bip-324-opportunistic-p2p-encryption)
+- [Bit Security and Its Definition](categories/19-theoretical-foundations.md#bit-security-and-its-definition)
+- [Bitcoin Taproot / BIP 340-342](categories/13-blockchain-distributed-ledger.md#bitcoin-taproot-bip-340-342)
+- [Black-Box Separations](categories/19-theoretical-foundations.md#black-box-separations)
+- [BLAKE2 Hash Function Internals](categories/01-foundational-primitives.md#blake2-hash-function-internals)
+- [Blakley's Geometric Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#blakleys-geometric-secret-sharing)
+- [Blind Signature-Based E-Cash (Chaum DigiCash)](categories/20-applied-niche-protocols.md#blind-signature-based-e-cash-chaum-digicash)
+- [Blind Signatures](categories/08-signatures-advanced.md#blind-signatures)
+- [BLISS & qTESLA (Early Lattice Signature Schemes)](categories/08-signatures-advanced.md#bliss-qtesla-early-lattice-signature-schemes)
+- [Block Cipher Modes of Operation](categories/01-foundational-primitives.md#block-cipher-modes-of-operation)
+- [Block-Cipher-Based Hash Compression Functions](categories/01-foundational-primitives.md#block-cipher-based-hash-compression-functions)
+- [Blockchain Steganography](categories/18-covert-channels-steganography.md#blockchain-steganography)
+- [Blockchain-Based Voting: Deployments and Controversies](categories/20-applied-niche-protocols.md#blockchain-based-voting-deployments-and-controversies)
+- [BMR Protocol (Constant-Round MPC)](categories/06-multi-party-computation.md#bmr-protocol-constant-round-mpc)
+- [Boneh-Boyen (BB) Short Signatures](categories/08-signatures-advanced.md#boneh-boyen-bb-short-signatures)
+- [Bootstrapping iO: Functional Encryption → iO](categories/16-obfuscation-advanced-hardness.md#bootstrapping-io-functional-encryption-io)
+- [Brakedown Polynomial Commitments](categories/09-commitments-verifiability.md#brakedown-polynomial-commitments)
+- [Briar / Bramble P2P Encrypted Messaging](categories/12-secure-communication-protocols.md#briar-bramble-p2p-encrypted-messaging)
+- [Bridge Security — Trust Model Taxonomy](categories/13-blockchain-distributed-ledger.md#bridge-security-trust-model-taxonomy)
+- [Broadcast Authentication (TESLA)](categories/08-signatures-advanced.md#broadcast-authentication-tesla)
+- [Broadcast Encryption](categories/07-homomorphic-functional-encryption.md#broadcast-encryption)
+- [Broadcast Steganography](categories/18-covert-channels-steganography.md#broadcast-steganography)
+- [Browser Fingerprinting and Anonymity Defenses](categories/11-anonymity-credentials.md#browser-fingerprinting-and-anonymity-defenses)
+- [Bulletproofs Inner-Product Argument](categories/04-zero-knowledge-proof-systems.md#bulletproofs-inner-product-argument)
+- [CAA / Certification Authority Authorization](categories/14-applied-infrastructure-pki.md#caa-certification-authority-authorization)
+- [CAESAR Lightweight Winners (ACORN, GIFT-COFB)](categories/02-authenticated-structured-encryption.md#caesar-lightweight-winners-acorn-gift-cofb)
+- [Camellia-GCM and ARIA-GCM](categories/02-authenticated-structured-encryption.md#camellia-gcm-and-aria-gcm)
+- [Carbyne Stack (Cloud-Native MPC)](categories/06-multi-party-computation.md#carbyne-stack-cloud-native-mpc)
+- [Casper FFG / Ethereum Proof-of-Stake Finality](categories/13-blockchain-distributed-ledger.md#casper-ffg-ethereum-proof-of-stake-finality)
+- [CBC Mode Padding and Padding Oracle Attacks](categories/02-authenticated-structured-encryption.md#cbc-mode-padding-and-padding-oracle-attacks)
+- [Certificate Transparency (CT)](categories/03-key-exchange-key-management.md#certificate-transparency-ct)
+- [Certificate Transparency (CT)](categories/14-applied-infrastructure-pki.md#certificate-transparency-ct)
+- [Certificateless Cryptography](categories/03-key-exchange-key-management.md#certificateless-cryptography)
+- [Certified Quantum Randomness / Proof of Quantumness](categories/15-quantum-cryptography.md#certified-quantum-randomness-proof-of-quantumness)
+- [Chameleon Hash (Trapdoor Hash)](categories/09-commitments-verifiability.md#chameleon-hash-trapdoor-hash)
+- [Ciphertext Stealing (CTS)](categories/02-authenticated-structured-encryption.md#ciphertext-stealing-cts)
+- [CirC (Compiler Infrastructure for ZK and MPC)](categories/04-zero-knowledge-proof-systems.md#circ-compiler-infrastructure-for-zk-and-mpc)
+- [Circom and SnarkJS](categories/04-zero-knowledge-proof-systems.md#circom-and-snarkjs)
+- [Circular / KDM Security](categories/19-theoretical-foundations.md#circular-kdm-security)
+- [CKKS Approximate Arithmetic & Rescaling](categories/07-homomorphic-functional-encryption.md#ckks-approximate-arithmetic-rescaling)
+- [Classic McEliece (Code-Based KEM)](categories/15-quantum-cryptography.md#classic-mceliece-code-based-kem)
+- [Client Puzzles / Proof of Effort](categories/20-applied-niche-protocols.md#client-puzzles-proof-of-effort)
+- [Cloud Cache Covert Channels](categories/18-covert-channels-steganography.md#cloud-cache-covert-channels)
+- [CMC Protocol / Certificate Lifecycle Management](categories/14-applied-infrastructure-pki.md#cmc-protocol-certificate-lifecycle-management)
+- [CMP (Certificate Management Protocol, RFC 4210/9483)](categories/03-key-exchange-key-management.md#cmp-certificate-management-protocol-rfc-42109483)
+- [CNSA 2.0 and PQC Migration Policy](categories/15-quantum-cryptography.md#cnsa-20-and-pqc-migration-policy)
+- [Coconut Credentials](categories/11-anonymity-credentials.md#coconut-credentials)
+- [Code Signing — Authenticode, Apple Notarization, Android Signing](categories/14-applied-infrastructure-pki.md#code-signing-authenticode-apple-notarization-android-signing)
+- [Code-Based Cryptography Overview](categories/15-quantum-cryptography.md#code-based-cryptography-overview)
+- [Code-Based Signatures (Wave, LESS, and Related)](categories/08-signatures-advanced.md#code-based-signatures-wave-less-and-related)
+- [Coercion-Resistant Voting / Receipt-Freeness](categories/20-applied-niche-protocols.md#coercion-resistant-voting-receipt-freeness)
+- [CoinJoin / WabiSabi](categories/11-anonymity-credentials.md#coinjoin-wabisabi)
+- [Cold Boot Attacks on DRAM](categories/17-ai-hardware-physical-security.md#cold-boot-attacks-on-dram)
+- [Combined AEAD Constructions: Encrypt-then-MAC, MAC-then-Encrypt, Encrypt-and-MAC](categories/02-authenticated-structured-encryption.md#combined-aead-constructions-encrypt-then-mac-mac-then-encrypt-encrypt-and-mac)
+- [Commercial QKD Systems and Quantum Network Deployments](categories/15-quantum-cryptography.md#commercial-qkd-systems-and-quantum-network-deployments)
+- [Commit-and-Prove SNARKs (LegoSNARK)](categories/09-commitments-verifiability.md#commit-and-prove-snarks-legosnark)
+- [Commit-Reveal Schemes](categories/09-commitments-verifiability.md#commit-reveal-schemes)
+- [Commitment Schemes](categories/09-commitments-verifiability.md#commitment-schemes)
+- [Composability Beyond UC: GNUC, SPS, and IITM](categories/19-theoretical-foundations.md#composability-beyond-uc-gnuc-sps-and-iitm)
+- [Compressed Sigma Protocols](categories/04-zero-knowledge-proof-systems.md#compressed-sigma-protocols)
+- [Computational Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#computational-secret-sharing)
+- [Concrete & Concrete ML (Zama)](categories/07-homomorphic-functional-encryption.md#concrete-concrete-ml-zama)
+- [Concrete Security and Reduction Tightness](categories/19-theoretical-foundations.md#concrete-security-and-reduction-tightness)
+- [Conditional Disclosure of Secrets (CDS)](categories/10-privacy-preserving-computation.md#conditional-disclosure-of-secrets-cds)
+- [Confidential GPU Computing (NVIDIA H100 CC, Azure Confidential GPU)](categories/17-ai-hardware-physical-security.md#confidential-gpu-computing-nvidia-h100-cc-azure-confidential-gpu)
+- [Confidential ML / TEE-Based Inference](categories/17-ai-hardware-physical-security.md#confidential-ml-tee-based-inference)
+- [Confidential Transactions (CT)](categories/13-blockchain-distributed-ledger.md#confidential-transactions-ct)
+- [Confidential Transactions with Bulletproofs — Liquid Network](categories/13-blockchain-distributed-ledger.md#confidential-transactions-with-bulletproofs-liquid-network)
+- [Constrained / Policy-Based Signatures](categories/08-signatures-advanced.md#constrained-policy-based-signatures)
+- [Constrained Pseudorandom Functions (CPRF)](categories/16-obfuscation-advanced-hardness.md#constrained-pseudorandom-functions-cprf)
+- [Content-Adaptive Image Steganography](categories/18-covert-channels-steganography.md#content-adaptive-image-steganography)
+- [Continual-Release Differential Privacy (Private Streaming Algorithms)](categories/10-privacy-preserving-computation.md#continual-release-differential-privacy-private-streaming-algorithms)
+- [Continuous Group Key Agreement (CGKA) / MLS](categories/12-secure-communication-protocols.md#continuous-group-key-agreement-cgka-mls)
+- [Continuous-Variable QKD (CV-QKD)](categories/15-quantum-cryptography.md#continuous-variable-qkd-cv-qkd)
+- [Correlation-Intractable Hash Functions](categories/01-foundational-primitives.md#correlation-intractable-hash-functions)
+- [COSE / CWT — CBOR Object Signing and Encryption](categories/14-applied-infrastructure-pki.md#cose-cwt-cbor-object-signing-and-encryption)
+- [Coverless Steganography](categories/18-covert-channels-steganography.md#coverless-steganography)
+- [Covert Security / Publicly Auditable MPC](categories/06-multi-party-computation.md#covert-security-publicly-auditable-mpc)
+- [CRT-based Secret Sharing (Mignotte / Asmuth-Bloom)](categories/05-secret-sharing-threshold-cryptography.md#crt-based-secret-sharing-mignotte-asmuth-bloom)
+- [Cryptographic Audit Logs and Append-Only Integrity](categories/20-applied-niche-protocols.md#cryptographic-audit-logs-and-append-only-integrity)
+- [Cryptographic Hardware Accelerators (AES-NI, SHA-NI, AVX-512 VAES)](categories/17-ai-hardware-physical-security.md#cryptographic-hardware-accelerators-aes-ni-sha-ni-avx-512-vaes)
+- [Cryptographic Lotteries & Fairness Protocols](categories/20-applied-niche-protocols.md#cryptographic-lotteries-fairness-protocols)
+- [Cryptographic Provenance Attestation (C2PA / SLSA)](categories/14-applied-infrastructure-pki.md#cryptographic-provenance-attestation-c2pa-slsa)
+- [Cryptographic Reverse Firewalls](categories/19-theoretical-foundations.md#cryptographic-reverse-firewalls)
+- [Cryptographic Sealed-Bid Auctions](categories/20-applied-niche-protocols.md#cryptographic-sealed-bid-auctions)
+- [Cryptographic Watermarking for AI / Pseudorandom Codes](categories/17-ai-hardware-physical-security.md#cryptographic-watermarking-for-ai-pseudorandom-codes)
+- [CSIDH and CTIDH — Isogeny Group Actions](categories/15-quantum-cryptography.md#csidh-and-ctidh-isogeny-group-actions)
+- [Cut-and-Choose for Garbled Circuits (Malicious 2PC)](categories/06-multi-party-computation.md#cut-and-choose-for-garbled-circuits-malicious-2pc)
+- [CWC Mode (Carter-Wegman + CTR)](categories/02-authenticated-structured-encryption.md#cwc-mode-carter-wegman-ctr)
+- [Cwtch and Session Protocol — Metadata-Resistant Group Messaging](categories/12-secure-communication-protocols.md#cwtch-and-session-protocol-metadata-resistant-group-messaging)
+- [DANE / DNS-Based Authentication of Named Entities](categories/14-applied-infrastructure-pki.md#dane-dns-based-authentication-of-named-entities)
+- [Data Availability Sampling (DAS)](categories/13-blockchain-distributed-ledger.md#data-availability-sampling-das)
+- [DC-Nets (Dining Cryptographers Networks)](categories/11-anonymity-credentials.md#dc-nets-dining-cryptographers-networks)
+- [Decentralized Multi-Client Functional Encryption (DMCFE)](categories/07-homomorphic-functional-encryption.md#decentralized-multi-client-functional-encryption-dmcfe)
+- [Decisional Composite Residuosity (DCR) Assumption](categories/16-obfuscation-advanced-hardness.md#decisional-composite-residuosity-dcr-assumption)
+- [DEEP-FRI](categories/04-zero-knowledge-proof-systems.md#deep-fri)
+- [Delay Encryption](categories/09-commitments-verifiability.md#delay-encryption)
+- [Delegatable Anonymous Credentials](categories/11-anonymity-credentials.md#delegatable-anonymous-credentials)
+- [Deniable Authentication](categories/18-covert-channels-steganography.md#deniable-authentication)
+- [Deniable Encryption](categories/18-covert-channels-steganography.md#deniable-encryption)
+- [Designated Verifier Signatures / Proofs](categories/08-signatures-advanced.md#designated-verifier-signatures-proofs)
+- [Deterministic Encryption / Convergent Encryption](categories/02-authenticated-structured-encryption.md#deterministic-encryption-convergent-encryption)
+- [DICE — Device Identifier Composition Engine](categories/14-applied-infrastructure-pki.md#dice-device-identifier-composition-engine)
+- [Differential Privacy](categories/10-privacy-preserving-computation.md#differential-privacy)
+- [Differential Privacy Auditing and Verification](categories/10-privacy-preserving-computation.md#differential-privacy-auditing-and-verification)
+- [Differential Privacy in ML (DP-SGD)](categories/17-ai-hardware-physical-security.md#differential-privacy-in-ml-dp-sgd)
+- [Differentially Private Machine Learning (DP-SGD / PATE)](categories/10-privacy-preserving-computation.md#differentially-private-machine-learning-dp-sgd-pate)
+- [Differentially Private Synthetic Data Generation (DP-GAN / DP-VAE)](categories/10-privacy-preserving-computation.md#differentially-private-synthetic-data-generation-dp-gan-dp-vae)
+- [Differing-Inputs Obfuscation (diO)](categories/16-obfuscation-advanced-hardness.md#differing-inputs-obfuscation-dio)
+- [Diffie-Hellman Assumption Variants (CDH, DDH, GDH, q-DH, co-CDH)](categories/16-obfuscation-advanced-hardness.md#diffie-hellman-assumption-variants-cdh-ddh-gdh-q-dh-co-cdh)
+- [Digital Signatures](categories/01-foundational-primitives.md#digital-signatures)
+- [Digital Watermarking / Fingerprinting](categories/18-covert-channels-steganography.md#digital-watermarking-fingerprinting)
+- [Direct Anonymous Attestation (DAA)](categories/11-anonymity-credentials.md#direct-anonymous-attestation-daa)
+- [Disk Encryption / Tweakable Block Ciphers](categories/02-authenticated-structured-encryption.md#disk-encryption-tweakable-block-ciphers)
+- [Distance-Bounding Protocols](categories/20-applied-niche-protocols.md#distance-bounding-protocols)
+- [Distributed / Collaborative SNARKs](categories/04-zero-knowledge-proof-systems.md#distributed-collaborative-snarks)
+- [Distributed Key Generation (DKG)](categories/05-secret-sharing-threshold-cryptography.md#distributed-key-generation-dkg)
+- [Distributed PRF (DPRF)](categories/06-multi-party-computation.md#distributed-prf-dprf)
+- [DKIM / DomainKeys Identified Mail](categories/12-secure-communication-protocols.md#dkim-domainkeys-identified-mail)
+- [DKLs23 & Next-Generation Threshold ECDSA](categories/08-signatures-advanced.md#dkls23-next-generation-threshold-ecdsa)
+- [DKLS23: Threshold ECDSA in Three Rounds](categories/05-secret-sharing-threshold-cryptography.md#dkls23-threshold-ecdsa-in-three-rounds)
+- [DNA Steganography](categories/18-covert-channels-steganography.md#dna-steganography)
+- [DNS over HTTPS (DoH) and DNS over TLS (DoT)](categories/12-secure-communication-protocols.md#dns-over-https-doh-and-dns-over-tls-dot)
+- [DNSCurve / Link-Level DNS Encryption](categories/12-secure-communication-protocols.md#dnscurve-link-level-dns-encryption)
+- [DNSSEC / DNS Security Extensions](categories/14-applied-infrastructure-pki.md#dnssec-dns-security-extensions)
+- [DNSSEC-Based Key Infrastructure: SSHFP, TLSA, SMIMEA](categories/14-applied-infrastructure-pki.md#dnssec-based-key-infrastructure-sshfp-tlsa-smimea)
+- [Double Ratchet / Symmetric Ratchet](categories/12-secure-communication-protocols.md#double-ratchet-symmetric-ratchet)
+- [Dragonfly Handshake / SAE (Simultaneous Authentication of Equals)](categories/03-key-exchange-key-management.md#dragonfly-handshake-sae-simultaneous-authentication-of-equals)
+- [drand / League of Entropy Randomness Beacon](categories/09-commitments-verifiability.md#drand-league-of-entropy-randomness-beacon)
+- [DRBG (Deterministic Random Bit Generators)](categories/01-foundational-primitives.md#drbg-deterministic-random-bit-generators)
+- [DTLS / Datagram TLS](categories/12-secure-communication-protocols.md#dtls-datagram-tls)
+- [Dual-Mode Cryptosystems](categories/16-obfuscation-advanced-hardness.md#dual-mode-cryptosystems)
+- [E-Cash / Chaumian Digital Cash](categories/11-anonymity-credentials.md#e-cash-chaumian-digital-cash)
+- [EAP-PWD / Password-Based Enterprise WiFi Auth](categories/12-secure-communication-protocols.md#eap-pwd-password-based-enterprise-wifi-auth)
+- [EAX Mode](categories/02-authenticated-structured-encryption.md#eax-mode)
+- [ECDSA — Details, Vulnerabilities, and RFC 6979](categories/08-signatures-advanced.md#ecdsa-details-vulnerabilities-and-rfc-6979)
+- [ECIES (Elliptic Curve Integrated Encryption Scheme)](categories/02-authenticated-structured-encryption.md#ecies-elliptic-curve-integrated-encryption-scheme)
+- [ECMQV (Elliptic Curve Menezes-Qu-Vanstone)](categories/03-key-exchange-key-management.md#ecmqv-elliptic-curve-menezes-qu-vanstone)
+- [EdDSA (Ed25519 & Ed448)](categories/08-signatures-advanced.md#eddsa-ed25519-ed448)
+- [Efficient Two-Party ECDSA (DKLS18 / Doerner et al.)](categories/06-multi-party-computation.md#efficient-two-party-ecdsa-dkls18-doerner-et-al)
+- [EIP-4844 Proto-Danksharding (Blob Transactions + KZG Ceremony)](categories/13-blockchain-distributed-ledger.md#eip-4844-proto-danksharding-blob-transactions-kzg-ceremony)
+- [EIP-712: Ethereum Typed Structured Data Signing](categories/13-blockchain-distributed-ledger.md#eip-712-ethereum-typed-structured-data-signing)
+- [Electromagnetic Side-Channel Analysis (EMCA)](categories/17-ai-hardware-physical-security.md#electromagnetic-side-channel-analysis-emca)
+- [ElGamal & Multiplicatively Homomorphic Encryption](categories/07-homomorphic-functional-encryption.md#elgamal-multiplicatively-homomorphic-encryption)
+- [EMP Toolkit (Efficient Multi-Party Computation Library)](categories/06-multi-party-computation.md#emp-toolkit-efficient-multi-party-computation-library)
+- [EMV Cryptographic Authentication](categories/14-applied-infrastructure-pki.md#emv-cryptographic-authentication)
+- [Encrypted Client Hello (ECH)](categories/12-secure-communication-protocols.md#encrypted-client-hello-ech)
+- [Encrypted Control Systems](categories/17-ai-hardware-physical-security.md#encrypted-control-systems)
+- [Encrypted Mempools / Threshold Encryption for Transaction Ordering](categories/13-blockchain-distributed-ledger.md#encrypted-mempools-threshold-encryption-for-transaction-ordering)
+- [End-to-End Verifiable E-Voting](categories/20-applied-niche-protocols.md#end-to-end-verifiable-e-voting)
+- [Entropy Source Models](categories/19-theoretical-foundations.md#entropy-source-models)
+- [Equivalence-Based PQ Signatures](categories/15-quantum-cryptography.md#equivalence-based-pq-signatures)
+- [EST (Enrollment over Secure Transport, RFC 7030)](categories/03-key-exchange-key-management.md#est-enrollment-over-secure-transport-rfc-7030)
+- [Ethereum BLS Aggregate Signatures (BDN / BLS12-381)](categories/13-blockchain-distributed-ledger.md#ethereum-bls-aggregate-signatures-bdn-bls12-381)
+- [Ethereum DVT — Distributed Validator Technology](categories/13-blockchain-distributed-ledger.md#ethereum-dvt-distributed-validator-technology)
+- [Ethereum PBS — Proposer-Builder Separation and MEV](categories/13-blockchain-distributed-ledger.md#ethereum-pbs-proposer-builder-separation-and-mev)
+- [EU EUDI Wallet Cryptographic Architecture (eIDAS 2.0)](categories/11-anonymity-credentials.md#eu-eudi-wallet-cryptographic-architecture-eidas-20)
+- [Evasive LWE & Tensor LWE](categories/16-obfuscation-advanced-hardness.md#evasive-lwe-tensor-lwe)
+- [Even-Mansour Construction](categories/01-foundational-primitives.md#even-mansour-construction)
+- [Evolving Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#evolving-secret-sharing)
+- [FAEST / VOLE-in-the-Head (Symmetric-Key PQ Signatures)](categories/15-quantum-cryptography.md#faest-vole-in-the-head-symmetric-key-pq-signatures)
+- [Fail-Stop Signatures](categories/08-signatures-advanced.md#fail-stop-signatures)
+- [Fair Exchange / Atomic Swaps](categories/13-blockchain-distributed-ledger.md#fair-exchange-atomic-swaps)
+- [Fair MPC (Fairness via Gradual Release)](categories/06-multi-party-computation.md#fair-mpc-fairness-via-gradual-release)
+- [Falcon / FN-DSA (NTRU-Based Lattice Signatures)](categories/08-signatures-advanced.md#falcon-fn-dsa-ntru-based-lattice-signatures)
+- [Fault Injection Attacks & Countermeasures](categories/17-ai-hardware-physical-security.md#fault-injection-attacks-countermeasures)
+- [Federated Learning Security: Poisoning & Byzantine Robustness](categories/17-ai-hardware-physical-security.md#federated-learning-security-poisoning-byzantine-robustness)
+- [Feige-Fiat-Shamir Identification Scheme](categories/09-commitments-verifiability.md#feige-fiat-shamir-identification-scheme)
+- [Feistel Networks (Luby-Rackoff Construction)](categories/01-foundational-primitives.md#feistel-networks-luby-rackoff-construction)
+- [FFDHE — Named Finite-Field DH Groups (RFC 7919)](categories/03-key-exchange-key-management.md#ffdhe-named-finite-field-dh-groups-rfc-7919)
+- [FHE Amortization & Batching (SIMD Packing)](categories/07-homomorphic-functional-encryption.md#fhe-amortization-batching-simd-packing)
+- [FHE Applications in Cloud Computing](categories/07-homomorphic-functional-encryption.md#fhe-applications-in-cloud-computing)
+- [FHE Benchmarks & Performance](categories/07-homomorphic-functional-encryption.md#fhe-benchmarks-performance)
+- [FHE for Private Neural Network Training](categories/07-homomorphic-functional-encryption.md#fhe-for-private-neural-network-training)
+- [FHE over the Integers (DGHV)](categories/07-homomorphic-functional-encryption.md#fhe-over-the-integers-dghv)
+- [FHEW Bootstrapping](categories/07-homomorphic-functional-encryption.md#fhew-bootstrapping)
+- [Fiat-Shamir with Aborts (Lattice Signature Paradigm)](categories/08-signatures-advanced.md#fiat-shamir-with-aborts-lattice-signature-paradigm)
+- [FIDO2 / WebAuthn / Passkeys](categories/14-applied-infrastructure-pki.md#fido2-webauthn-passkeys)
+- [Filecoin PoRep / PoSt (Proof of Replication / Proof of Spacetime)](categories/13-blockchain-distributed-ledger.md#filecoin-porep-post-proof-of-replication-proof-of-spacetime)
+- [Flashbots and SUAVE — Encrypted Order Flow and TEE-Based MEV](categories/13-blockchain-distributed-ledger.md#flashbots-and-suave-encrypted-order-flow-and-tee-based-mev)
+- [Fluid MPC (Dynamic Participants)](categories/06-multi-party-computation.md#fluid-mpc-dynamic-participants)
+- [Folding Schemes](categories/04-zero-knowledge-proof-systems.md#folding-schemes)
+- [Formal Verification of Cryptographic Hardware](categories/17-ai-hardware-physical-security.md#formal-verification-of-cryptographic-hardware)
+- [Format-Preserving Encryption (FPE)](categories/02-authenticated-structured-encryption.md#format-preserving-encryption-fpe)
+- [Forward-Secure Signatures & Encryption](categories/08-signatures-advanced.md#forward-secure-signatures-encryption)
+- [Frequency-Smoothing Oblivious Datastores (PANCAKE / Waffle)](categories/10-privacy-preserving-computation.md#frequency-smoothing-oblivious-datastores-pancake-waffle)
+- [FROST: Flexible Round-Optimized Schnorr Threshold Signatures](categories/05-secret-sharing-threshold-cryptography.md#frost-flexible-round-optimized-schnorr-threshold-signatures)
+- [Fujisaki-Okamoto Transform](categories/01-foundational-primitives.md#fujisaki-okamoto-transform)
+- [Function Secret Sharing (FSS) / Distributed Point Functions (DPF)](categories/06-multi-party-computation.md#function-secret-sharing-fss-distributed-point-functions-dpf)
+- [Function-Hiding Inner-Product Functional Encryption (FH-IPFE)](categories/07-homomorphic-functional-encryption.md#function-hiding-inner-product-functional-encryption-fh-ipfe)
+- [Functional Commitments](categories/09-commitments-verifiability.md#functional-commitments)
+- [Functional Encryption from iO](categories/16-obfuscation-advanced-hardness.md#functional-encryption-from-io)
+- [Fuzzy Extractors / Secure Sketches](categories/01-foundational-primitives.md#fuzzy-extractors-secure-sketches)
+- [Fuzzy Message Detection (FMD)](categories/10-privacy-preserving-computation.md#fuzzy-message-detection-fmd)
+- [Fuzzy Private Set Intersection (FPSI)](categories/10-privacy-preserving-computation.md#fuzzy-private-set-intersection-fpsi)
+- [Garbled Circuits (expanded)](categories/06-multi-party-computation.md#garbled-circuits-expanded)
+- [Garbled RAM](categories/06-multi-party-computation.md#garbled-ram)
+- [General Access Structure Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#general-access-structure-secret-sharing)
+- [General-Purpose zkVMs](categories/04-zero-knowledge-proof-systems.md#general-purpose-zkvms)
+- [Generic Group Model (GGM) and Algebraic Group Model (AGM)](categories/19-theoretical-foundations.md#generic-group-model-ggm-and-algebraic-group-model-agm)
+- [Gentry's Original FHE (Ideal Lattices)](categories/07-homomorphic-functional-encryption.md#gentrys-original-fhe-ideal-lattices)
+- [GKR Protocol (Doubly-Efficient Interactive Proofs)](categories/09-commitments-verifiability.md#gkr-protocol-doubly-efficient-interactive-proofs)
+- [GMW Protocol (Goldreich-Micali-Wigderson)](categories/06-multi-party-computation.md#gmw-protocol-goldreich-micali-wigderson)
+- [GNU Taler](categories/11-anonymity-credentials.md#gnu-taler)
+- [GNU Taler: Practical E-Cash with Income Transparency](categories/20-applied-niche-protocols.md#gnu-taler-practical-e-cash-with-income-transparency)
+- [GOST R 34.11-2012 (Streebog) and GOST R 34.10-2012](categories/01-foundational-primitives.md#gost-r-3411-2012-streebog-and-gost-r-3410-2012)
+- [GOST R 34.12-2015 Block Ciphers (Grasshopper / Magma)](categories/01-foundational-primitives.md#gost-r-3412-2015-block-ciphers-grasshopper-magma)
+- [GPU-Based Cryptographic Acceleration (CUDA AES, GPU FHE)](categories/17-ai-hardware-physical-security.md#gpu-based-cryptographic-acceleration-cuda-aes-gpu-fhe)
+- [Graph Encryption](categories/10-privacy-preserving-computation.md#graph-encryption)
+- [Greyhound / Labrador (Lattice-Based Polynomial Commitments)](categories/09-commitments-verifiability.md#greyhound-labrador-lattice-based-polynomial-commitments)
+- [Groth-Sahai Proofs](categories/04-zero-knowledge-proof-systems.md#groth-sahai-proofs)
+- [Groth16](categories/04-zero-knowledge-proof-systems.md#groth16)
+- [Groth16 / Zcash Sapling zk-SNARK](categories/13-blockchain-distributed-ledger.md#groth16-zcash-sapling-zk-snark)
+- [Group Encryption](categories/11-anonymity-credentials.md#group-encryption)
+- [Group Key Agreement](categories/12-secure-communication-protocols.md#group-key-agreement)
+- [Grover's Algorithm and Symmetric-Key Security](categories/15-quantum-cryptography.md#grovers-algorithm-and-symmetric-key-security)
+- [GSMA eSIM / Remote SIM Provisioning (RSP)](categories/14-applied-infrastructure-pki.md#gsma-esim-remote-sim-provisioning-rsp)
+- [GSW (Gentry-Sahai-Waters) FHE](categories/07-homomorphic-functional-encryption.md#gsw-gentry-sahai-waters-fhe)
+- [Halo and Halo2](categories/04-zero-knowledge-proof-systems.md#halo-and-halo2)
+- [Halo2 — Recursive SNARKs Without Trusted Setup (Zcash Orchard)](categories/13-blockchain-distributed-ledger.md#halo2-recursive-snarks-without-trusted-setup-zcash-orchard)
+- [Hardcore Predicates and the Goldreich-Levin Theorem](categories/19-theoretical-foundations.md#hardcore-predicates-and-the-goldreich-levin-theorem)
+- [Hardware Attestation in Mobile — Android Keystore and Apple Secure Enclave](categories/14-applied-infrastructure-pki.md#hardware-attestation-in-mobile-android-keystore-and-apple-secure-enclave)
+- [Hardware Security Modules (HSM) & FIPS 140-3](categories/17-ai-hardware-physical-security.md#hardware-security-modules-hsm-fips-140-3)
+- [Hardware True Random Number Generators (TRNGs)](categories/17-ai-hardware-physical-security.md#hardware-true-random-number-generators-trngs)
+- [Hardware-Oriented Stream Ciphers (eSTREAM / 3GPP)](categories/01-foundational-primitives.md#hardware-oriented-stream-ciphers-estream-3gpp)
+- [Hash Functions](categories/01-foundational-primitives.md#hash-functions)
+- [HE for Healthcare & Genomics](categories/07-homomorphic-functional-encryption.md#he-for-healthcare-genomics)
+- [Hedged Signatures](categories/08-signatures-advanced.md#hedged-signatures)
+- [HEIR (Homomorphic Encryption Intermediate Representation)](categories/07-homomorphic-functional-encryption.md#heir-homomorphic-encryption-intermediate-representation)
+- [HElib](categories/07-homomorphic-functional-encryption.md#helib)
+- [Helios — SNARK-Based Ethereum Light Client](categories/13-blockchain-distributed-ledger.md#helios-snark-based-ethereum-light-client)
+- [Hidden Vector Encryption (HVE)](categories/07-homomorphic-functional-encryption.md#hidden-vector-encryption-hve)
+- [Hierarchical Deterministic Keys (BIP32 / HD Wallets)](categories/03-key-exchange-key-management.md#hierarchical-deterministic-keys-bip32-hd-wallets)
+- [Hierarchical Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#hierarchical-secret-sharing)
+- [Histogram-Preserving Steganography](categories/18-covert-channels-steganography.md#histogram-preserving-steganography)
+- [HKDF (Extract-and-Expand Key Derivation)](categories/01-foundational-primitives.md#hkdf-extract-and-expand-key-derivation)
+- [Homomorphic Encryption (HE)](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-he)
+- [Homomorphic Encryption for ML Inference (CryptoNets)](categories/10-privacy-preserving-computation.md#homomorphic-encryption-for-ml-inference-cryptonets)
+- [Homomorphic Hashing](categories/09-commitments-verifiability.md#homomorphic-hashing)
+- [Homomorphic Secret Sharing (HSS)](categories/06-multi-party-computation.md#homomorphic-secret-sharing-hss)
+- [Homomorphic Signatures](categories/07-homomorphic-functional-encryption.md#homomorphic-signatures)
+- [Homomorphic Signatures](categories/08-signatures-advanced.md#homomorphic-signatures)
+- [Honest Majority vs Dishonest Majority MPC (Security Models)](categories/06-multi-party-computation.md#honest-majority-vs-dishonest-majority-mpc-security-models)
+- [Honey Encryption](categories/02-authenticated-structured-encryption.md#honey-encryption)
+- [HQC (Hamming Quasi-Cyclic) — FIPS 207](categories/15-quantum-cryptography.md#hqc-hamming-quasi-cyclic-fips-207)
+- [HSM Key Ceremony / Split Knowledge / Dual Control](categories/14-applied-infrastructure-pki.md#hsm-key-ceremony-split-knowledge-dual-control)
+- [Human-Computable Cryptography](categories/19-theoretical-foundations.md#human-computable-cryptography)
+- [Hybrid Argument Technique](categories/19-theoretical-foundations.md#hybrid-argument-technique)
+- [Hybrid PQ/Classical Key Exchange](categories/15-quantum-cryptography.md#hybrid-pqclassical-key-exchange)
+- [Hybrid Public Key Encryption (HPKE)](categories/02-authenticated-structured-encryption.md#hybrid-public-key-encryption-hpke)
+- [Hyperplane Membership Obfuscation](categories/16-obfuscation-advanced-hardness.md#hyperplane-membership-obfuscation)
+- [HyperPlonk](categories/04-zero-knowledge-proof-systems.md#hyperplonk)
+- [I2P (Invisible Internet Project)](categories/11-anonymity-credentials.md#i2p-invisible-internet-project)
+- [I2P — Garlic Routing and Tunnel-Based Anonymity](categories/12-secure-communication-protocols.md#i2p-garlic-routing-and-tunnel-based-anonymity)
+- [IBC / Inter-Blockchain Communication Protocol](categories/13-blockchain-distributed-ledger.md#ibc-inter-blockchain-communication-protocol)
+- [Identity-Based Encryption (IBE)](categories/07-homomorphic-functional-encryption.md#identity-based-encryption-ibe)
+- [Identity-Based Signatures (IBS)](categories/08-signatures-advanced.md#identity-based-signatures-ibs)
+- [IKEv1 vs IKEv2 (Internet Key Exchange)](categories/03-key-exchange-key-management.md#ikev1-vs-ikev2-internet-key-exchange)
+- [IKEv2 / IPsec ESP](categories/12-secure-communication-protocols.md#ikev2-ipsec-esp)
+- [In-Sensor Cryptography](categories/17-ai-hardware-physical-security.md#in-sensor-cryptography)
+- [Incremental Cryptography](categories/20-applied-niche-protocols.md#incremental-cryptography)
+- [Incremental Verifiable Computation (IVC) for Blockchain](categories/13-blockchain-distributed-ledger.md#incremental-verifiable-computation-ivc-for-blockchain)
+- [Indifferentiability Framework](categories/19-theoretical-foundations.md#indifferentiability-framework)
+- [Indistinguishability Obfuscation (iO)](categories/16-obfuscation-advanced-hardness.md#indistinguishability-obfuscation-io)
+- [Information-Theoretic Steganography (Cachin Model)](categories/18-covert-channels-steganography.md#information-theoretic-steganography-cachin-model)
+- [Inner Product Arguments (IPA) / Bulletproofs Polynomial Commitment](categories/09-commitments-verifiability.md#inner-product-arguments-ipa-bulletproofs-polynomial-commitment)
+- [Inner-Product Functional Encryption (IPFE)](categories/07-homomorphic-functional-encryption.md#inner-product-functional-encryption-ipfe)
+- [Interactive Oracle Proofs (IOP) / PCP](categories/04-zero-knowledge-proof-systems.md#interactive-oracle-proofs-iop-pcp)
+- [IRMA / Yivi Credential System](categories/11-anonymity-credentials.md#irma-yivi-credential-system)
+- [ISAP (NIST LWC Finalist, Side-Channel Resistant)](categories/02-authenticated-structured-encryption.md#isap-nist-lwc-finalist-side-channel-resistant)
+- [ISO 20022 / SWIFT MX Financial Message Signing](categories/20-applied-niche-protocols.md#iso-20022-swift-mx-financial-message-signing)
+- [Isogeny-Based Cryptography](categories/15-quantum-cryptography.md#isogeny-based-cryptography)
+- [IVC vs. PCD vs. Accumulation Schemes (Recursive Composition Taxonomy)](categories/04-zero-knowledge-proof-systems.md#ivc-vs-pcd-vs-accumulation-schemes-recursive-composition-taxonomy)
+- [J-PAKE (Password-Authenticated Key Exchange by Juggling)](categories/03-key-exchange-key-management.md#j-pake-password-authenticated-key-exchange-by-juggling)
+- [JOSE / JWS / JWE / JWT](categories/03-key-exchange-key-management.md#jose-jws-jwe-jwt)
+- [KDF Comparison: PBKDF2 vs bcrypt vs scrypt vs Argon2id](categories/03-key-exchange-key-management.md#kdf-comparison-pbkdf2-vs-bcrypt-vs-scrypt-vs-argon2id)
+- [Keccak-p Permutation](categories/01-foundational-primitives.md#keccak-p-permutation)
+- [KEMTLS (Post-Quantum TLS)](categories/12-secure-communication-protocols.md#kemtls-post-quantum-tls)
+- [Kerberos v5](categories/14-applied-infrastructure-pki.md#kerberos-v5)
+- [Key Encapsulation Mechanism (KEM) / DEM Paradigm](categories/02-authenticated-structured-encryption.md#key-encapsulation-mechanism-kem-dem-paradigm)
+- [Key Exchange / Key Agreement](categories/03-key-exchange-key-management.md#key-exchange-key-agreement)
+- [Key Transparency / CONIKS](categories/03-key-exchange-key-management.md#key-transparency-coniks)
+- [Key Wrapping / Envelope Encryption](categories/03-key-exchange-key-management.md#key-wrapping-envelope-encryption)
+- [Key-Aggregate Encryption](categories/07-homomorphic-functional-encryption.md#key-aggregate-encryption)
+- [Key-Committing AEAD](categories/02-authenticated-structured-encryption.md#key-committing-aead)
+- [Key-Homomorphic PRF](categories/01-foundational-primitives.md#key-homomorphic-prf)
+- [Key-Insulated Cryptography](categories/20-applied-niche-protocols.md#key-insulated-cryptography)
+- [Keyed-Verification Anonymous Credentials (KVAC)](categories/11-anonymity-credentials.md#keyed-verification-anonymous-credentials-kvac)
+- [Keyword PIR](categories/10-privacy-preserving-computation.md#keyword-pir)
+- [Kleptography / Algorithm-Substitution Attacks (ASA)](categories/18-covert-channels-steganography.md#kleptography-algorithm-substitution-attacks-asa)
+- [Knowledge-of-Exponent Assumption (KEA) and Falsifiability](categories/19-theoretical-foundations.md#knowledge-of-exponent-assumption-kea-and-falsifiability)
+- [Knowledge-Soundness, Extractability, and Simulation-Extractability](categories/19-theoretical-foundations.md#knowledge-soundness-extractability-and-simulation-extractability)
+- [KZG Polynomial Commitments](categories/09-commitments-verifiability.md#kzg-polynomial-commitments)
+- [Labeled PSI and Private Intersection-Sum (PSI-Sum)](categories/10-privacy-preserving-computation.md#labeled-psi-and-private-intersection-sum-psi-sum)
+- [Laconic Cryptography](categories/16-obfuscation-advanced-hardness.md#laconic-cryptography)
+- [Laconic OT and Laconic Cryptography](categories/10-privacy-preserving-computation.md#laconic-ot-and-laconic-cryptography)
+- [Lattice Isomorphism Problem (LIP) / HAWK](categories/15-quantum-cryptography.md#lattice-isomorphism-problem-lip-hawk)
+- [Lattice Sieving and BKZ Complexity](categories/15-quantum-cryptography.md#lattice-sieving-and-bkz-complexity)
+- [Lattice-Based MPC](categories/06-multi-party-computation.md#lattice-based-mpc)
+- [Leakage-Resilient Cryptography](categories/19-theoretical-foundations.md#leakage-resilient-cryptography)
+- [Leakage-Resilient Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#leakage-resilient-secret-sharing)
+- [Learning Parity with Noise (LPN) Assumption](categories/16-obfuscation-advanced-hardness.md#learning-parity-with-noise-lpn-assumption)
+- [Leftover Hash Lemma and Randomness Extraction](categories/19-theoretical-foundations.md#leftover-hash-lemma-and-randomness-extraction)
+- [Ligerito (Small-Field Polynomial Commitments and SNARKs)](categories/04-zero-knowledge-proof-systems.md#ligerito-small-field-polynomial-commitments-and-snarks)
+- [Ligero / Ligero++ (MPC-in-the-Head Commitments)](categories/09-commitments-verifiability.md#ligero-ligero-mpc-in-the-head-commitments)
+- [Ligero and Aurora](categories/04-zero-knowledge-proof-systems.md#ligero-and-aurora)
+- [Lightning Network Payment Channels](categories/13-blockchain-distributed-ledger.md#lightning-network-payment-channels)
+- [Lightweight Cryptography / ASCON](categories/01-foundational-primitives.md#lightweight-cryptography-ascon)
+- [Linear BFT Consensus (HotStuff / Tendermint)](categories/13-blockchain-distributed-ledger.md#linear-bft-consensus-hotstuff-tendermint)
+- [Linear Secret Sharing Schemes (LSSS)](categories/05-secret-sharing-threshold-cryptography.md#linear-secret-sharing-schemes-lsss)
+- [Linkable Ring Signatures](categories/08-signatures-advanced.md#linkable-ring-signatures)
+- [Linked Timestamping](categories/20-applied-niche-protocols.md#linked-timestamping)
+- [LLM-Based Linguistic Steganography](categories/18-covert-channels-steganography.md#llm-based-linguistic-steganography)
+- [LogUp-GKR (Logarithmic Derivative Lookups via GKR)](categories/04-zero-knowledge-proof-systems.md#logup-gkr-logarithmic-derivative-lookups-via-gkr)
+- [Lookup Arguments](categories/04-zero-knowledge-proof-systems.md#lookup-arguments)
+- [Lossy Encryption / Lossy Trapdoor Functions](categories/19-theoretical-foundations.md#lossy-encryption-lossy-trapdoor-functions)
+- [Malleable Proof Systems / Controlled-Malleable NIZK](categories/04-zero-knowledge-proof-systems.md#malleable-proof-systems-controlled-malleable-nizk)
+- [MarkPledge: Cast-as-Intended Verifiable Voting](categories/20-applied-niche-protocols.md#markpledge-cast-as-intended-verifiable-voting)
+- [Marlin and Lunar (Universal SNARKs for R1CS)](categories/04-zero-knowledge-proof-systems.md#marlin-and-lunar-universal-snarks-for-r1cs)
+- [MASCOT (Malicious Arithmetic MPC via OT)](categories/06-multi-party-computation.md#mascot-malicious-arithmetic-mpc-via-ot)
+- [MASQUE / HTTP/3-Based Tunneling Security](categories/12-secure-communication-protocols.md#masque-http3-based-tunneling-security)
+- [Matchmaking Encryption](categories/07-homomorphic-functional-encryption.md#matchmaking-encryption)
+- [mDL (Mobile Driver's License, ISO 18013-5)](categories/11-anonymity-credentials.md#mdl-mobile-drivers-license-iso-18013-5)
+- [Memory-Hard Proof of Work (Argon2, scrypt, Equihash)](categories/20-applied-niche-protocols.md#memory-hard-proof-of-work-argon2-scrypt-equihash)
+- [Mental Poker / Commutative Encryption](categories/06-multi-party-computation.md#mental-poker-commutative-encryption)
+- [Merkle Mountain Ranges (MMR)](categories/09-commitments-verifiability.md#merkle-mountain-ranges-mmr)
+- [Merkle-Damgård Construction](categories/01-foundational-primitives.md#merkle-damgrd-construction)
+- [Message Authentication Codes (MAC)](categories/01-foundational-primitives.md#message-authentication-codes-mac)
+- [Message Franking / Abuse Reporting in E2E](categories/12-secure-communication-protocols.md#message-franking-abuse-reporting-in-e2e)
+- [Microsoft SEAL](categories/07-homomorphic-functional-encryption.md#microsoft-seal)
+- [MimbleWimble](categories/13-blockchain-distributed-ledger.md#mimblewimble)
+- [MiMC and GMiMC (Minimal Multiplicative Complexity Hashes)](categories/09-commitments-verifiability.md#mimc-and-gmimc-minimal-multiplicative-complexity-hashes)
+- [Mina Protocol — Pickles Recursive SNARK (22 KB Blockchain)](categories/13-blockchain-distributed-ledger.md#mina-protocol-pickles-recursive-snark-22-kb-blockchain)
+- [Mix Networks (Mixnets)](categories/11-anonymity-credentials.md#mix-networks-mixnets)
+- [ML Modeling Attacks on Strong PUFs & ML-Based Privacy Attacks](categories/17-ai-hardware-physical-security.md#ml-modeling-attacks-on-strong-pufs-ml-based-privacy-attacks)
+- [ML-KEM (Kyber) Internals — Module LWE, NTT, and Noise Parameters](categories/15-quantum-cryptography.md#ml-kem-kyber-internals-module-lwe-ntt-and-noise-parameters)
+- [Model Extraction Attacks & Defenses](categories/17-ai-hardware-physical-security.md#model-extraction-attacks-defenses)
+- [Monero RingCT — Ring Signatures + Confidential Transactions](categories/13-blockchain-distributed-ledger.md#monero-ringct-ring-signatures-confidential-transactions)
+- [Monero's Privacy Stack](categories/11-anonymity-credentials.md#moneros-privacy-stack)
+- [Monotone Span Programs and Cryptographic Access Structures](categories/16-obfuscation-advanced-hardness.md#monotone-span-programs-and-cryptographic-access-structures)
+- [MPC for Collaborative Fraud Detection (Privacy-Preserving ML Fraud)](categories/06-multi-party-computation.md#mpc-for-collaborative-fraud-detection-privacy-preserving-ml-fraud)
+- [MPC for E-Voting (Helios, Belenios, Civitas)](categories/06-multi-party-computation.md#mpc-for-e-voting-helios-belenios-civitas)
+- [MPC from Minimal Assumptions (MPC from OWF)](categories/16-obfuscation-advanced-hardness.md#mpc-from-minimal-assumptions-mpc-from-owf)
+- [MPC-in-the-Head (MPCitH)](categories/04-zero-knowledge-proof-systems.md#mpc-in-the-head-mpcith)
+- [MRAE and Online Authenticated Encryption (OAE)](categories/02-authenticated-structured-encryption.md#mrae-and-online-authenticated-encryption-oae)
+- [Multi-Authority ABE](categories/07-homomorphic-functional-encryption.md#multi-authority-abe)
+- [Multi-Designated Verifier Signatures (MDVS)](categories/08-signatures-advanced.md#multi-designated-verifier-signatures-mdvs)
+- [Multi-Key / Threshold FHE](categories/07-homomorphic-functional-encryption.md#multi-key-threshold-fhe)
+- [Multi-Party Computation (MPC)](categories/06-multi-party-computation.md#multi-party-computation-mpc)
+- [Multi-Prover Interactive Proofs (MIP)](categories/04-zero-knowledge-proof-systems.md#multi-prover-interactive-proofs-mip)
+- [Multi-Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#multi-secret-sharing)
+- [Multilinear Maps](categories/16-obfuscation-advanced-hardness.md#multilinear-maps)
+- [Multilinear Polynomial Commitments](categories/09-commitments-verifiability.md#multilinear-polynomial-commitments)
+- [Multiplicative Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#multiplicative-secret-sharing)
+- [Multivariate PQ Signatures (UOV / MAYO)](categories/15-quantum-cryptography.md#multivariate-pq-signatures-uov-mayo)
+- [MuSig / MuSig2 (Schnorr Multi-Signatures)](categories/08-signatures-advanced.md#musig-musig2-schnorr-multi-signatures)
+- [Network / Protocol Steganography](categories/18-covert-channels-steganography.md#network-protocol-steganography)
+- [NIST PQC Signature Standards (ML-DSA & SLH-DSA)](categories/08-signatures-advanced.md#nist-pqc-signature-standards-ml-dsa-slh-dsa)
+- [NIZK: Definitions, Simulation Soundness, and Extractability](categories/19-theoretical-foundations.md#nizk-definitions-simulation-soundness-and-extractability)
+- [Noise Protocol Framework](categories/03-key-exchange-key-management.md#noise-protocol-framework)
+- [Non-Black-Box Zero-Knowledge / Concurrent ZK](categories/04-zero-knowledge-proof-systems.md#non-black-box-zero-knowledge-concurrent-zk)
+- [Non-Black-Box Zero-Knowledge / Concurrent ZK](categories/19-theoretical-foundations.md#non-black-box-zero-knowledge-concurrent-zk)
+- [Non-Committing Encryption](categories/02-authenticated-structured-encryption.md#non-committing-encryption)
+- [Non-Cryptographic Hash Functions (FNV / MurmurHash / xxHash)](categories/01-foundational-primitives.md#non-cryptographic-hash-functions-fnv-murmurhash-xxhash)
+- [Non-Interactive DKG (NIDKG)](categories/05-secret-sharing-threshold-cryptography.md#non-interactive-dkg-nidkg)
+- [Non-Interactive Key Exchange (NIKE)](categories/03-key-exchange-key-management.md#non-interactive-key-exchange-nike)
+- [Non-Malleable Codes](categories/19-theoretical-foundations.md#non-malleable-codes)
+- [Non-Malleable Encryption / Commitments](categories/09-commitments-verifiability.md#non-malleable-encryption-commitments)
+- [Nostr — Cryptographic Identity and Relay-Based Messaging](categories/12-secure-communication-protocols.md#nostr-cryptographic-identity-and-relay-based-messaging)
+- [NTRU Prime / Streamlined NTRU Prime](categories/15-quantum-cryptography.md#ntru-prime-streamlined-ntru-prime)
+- [NTRU-Based Encryption](categories/07-homomorphic-functional-encryption.md#ntru-based-encryption)
+- [Null iO (Obfuscation for Always-Zero Circuits)](categories/16-obfuscation-advanced-hardness.md#null-io-obfuscation-for-always-zero-circuits)
+- [Number Theoretic Transform (NTT) in FHE](categories/07-homomorphic-functional-encryption.md#number-theoretic-transform-ntt-in-fhe)
+- [OAuth 2.0 / OpenID Connect Cryptographic Components](categories/03-key-exchange-key-management.md#oauth-20-openid-connect-cryptographic-components)
+- [Obfuscation-Based & General-Circuit Functional Encryption](categories/07-homomorphic-functional-encryption.md#obfuscation-based-general-circuit-functional-encryption)
+- [Oblivious Automata / Branching Program Evaluation](categories/10-privacy-preserving-computation.md#oblivious-automata-branching-program-evaluation)
+- [Oblivious DNS (ODoH)](categories/10-privacy-preserving-computation.md#oblivious-dns-odoh)
+- [Oblivious DNS (ODoH) and Encrypted DNS Comparison](categories/20-applied-niche-protocols.md#oblivious-dns-odoh-and-encrypted-dns-comparison)
+- [Oblivious HTTP (OHTTP)](categories/12-secure-communication-protocols.md#oblivious-http-ohttp)
+- [Oblivious Key-Value Store (OKVS)](categories/10-privacy-preserving-computation.md#oblivious-key-value-store-okvs)
+- [Oblivious Linear Algebra (Secure Matrix Operations)](categories/06-multi-party-computation.md#oblivious-linear-algebra-secure-matrix-operations)
+- [Oblivious Linear Evaluation (OLE) / VOLE](categories/06-multi-party-computation.md#oblivious-linear-evaluation-ole-vole)
+- [Oblivious Message Retrieval (OMR)](categories/10-privacy-preserving-computation.md#oblivious-message-retrieval-omr)
+- [Oblivious Polynomial Evaluation (OPE)](categories/10-privacy-preserving-computation.md#oblivious-polynomial-evaluation-ope)
+- [Oblivious PRF (OPRF)](categories/10-privacy-preserving-computation.md#oblivious-prf-oprf)
+- [Oblivious RAM (ORAM)](categories/10-privacy-preserving-computation.md#oblivious-ram-oram)
+- [Oblivious Sorting / Oblivious Data Structures](categories/10-privacy-preserving-computation.md#oblivious-sorting-oblivious-data-structures)
+- [Oblivious SQL / Encrypted Database Joins](categories/10-privacy-preserving-computation.md#oblivious-sql-encrypted-database-joins)
+- [Oblivious Transfer (OT)](categories/06-multi-party-computation.md#oblivious-transfer-ot)
+- [OCB Mode (Offset Codebook Mode)](categories/02-authenticated-structured-encryption.md#ocb-mode-offset-codebook-mode)
+- [OCSP / Certificate Revocation](categories/03-key-exchange-key-management.md#ocsp-certificate-revocation)
+- [OCSP Stapling and Certificate Revocation](categories/14-applied-infrastructure-pki.md#ocsp-stapling-and-certificate-revocation)
+- [Olm / Matrix Pairwise Ratchet](categories/12-secure-communication-protocols.md#olm-matrix-pairwise-ratchet)
+- [OMEMO (Signal Protocol for XMPP)](categories/12-secure-communication-protocols.md#omemo-signal-protocol-for-xmpp)
+- [One-Time Pad / Information-Theoretic Security](categories/01-foundational-primitives.md#one-time-pad-information-theoretic-security)
+- [One-Time Signatures (OTS)](categories/08-signatures-advanced.md#one-time-signatures-ots)
+- [One-Way Functions and Impagliazzo's Five Worlds](categories/19-theoretical-foundations.md#one-way-functions-and-impagliazzos-five-worlds)
+- [Onion Routing](categories/11-anonymity-credentials.md#onion-routing)
+- [Online vs Offline Threshold Signing](categories/05-secret-sharing-threshold-cryptography.md#online-vs-offline-threshold-signing)
+- [OpenID for Verifiable Credentials (OID4VC)](categories/11-anonymity-credentials.md#openid-for-verifiable-credentials-oid4vc)
+- [OpenPGP (RFC 9580)](categories/12-secure-communication-protocols.md#openpgp-rfc-9580)
+- [OpenTimestamps](categories/20-applied-niche-protocols.md#opentimestamps)
+- [Optical and Thermal Covert Channels](categories/18-covert-channels-steganography.md#optical-and-thermal-covert-channels)
+- [Order-Fair Consensus](categories/13-blockchain-distributed-ledger.md#order-fair-consensus)
+- [Order-Preserving / Order-Revealing Encryption (OPE / ORE)](categories/02-authenticated-structured-encryption.md#order-preserving-order-revealing-encryption-ope-ore)
+- [Orion and Brakedown (Linear-Time SNARKs)](categories/04-zero-knowledge-proof-systems.md#orion-and-brakedown-linear-time-snarks)
+- [OT-Extension-Based PSI (KKRT16 / RR21)](categories/10-privacy-preserving-computation.md#ot-extension-based-psi-kkrt16-rr21)
+- [Packed Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#packed-secret-sharing)
+- [Paillier Additively Homomorphic Encryption](categories/07-homomorphic-functional-encryption.md#paillier-additively-homomorphic-encryption)
+- [Parameter Selection for BFV / BGV / CKKS](categories/07-homomorphic-functional-encryption.md#parameter-selection-for-bfv-bgv-ckks)
+- [Partially Blind Signatures](categories/08-signatures-advanced.md#partially-blind-signatures)
+- [Password Hardened Encryption (PHE)](categories/03-key-exchange-key-management.md#password-hardened-encryption-phe)
+- [Password Hashing & Memory-Hard KDFs](categories/01-foundational-primitives.md#password-hashing-memory-hard-kdfs)
+- [Password-Based Key Derivation (KDF / PAKE)](categories/03-key-exchange-key-management.md#password-based-key-derivation-kdf-pake)
+- [PBKDF2 / Password-Based Cryptography (PKCS#5 / RFC 8018)](categories/03-key-exchange-key-management.md#pbkdf2-password-based-cryptography-pkcs5-rfc-8018)
+- [Pedersen Commitments in Ristretto255 and the Dalek Library](categories/09-commitments-verifiability.md#pedersen-commitments-in-ristretto255-and-the-dalek-library)
+- [Perfect Forward Secrecy (PFS)](categories/19-theoretical-foundations.md#perfect-forward-secrecy-pfs)
+- [Photon-Beetle (NIST LWC Finalist)](categories/02-authenticated-structured-encryption.md#photon-beetle-nist-lwc-finalist)
+- [Physical Unclonable Functions (PUF)](categories/17-ai-hardware-physical-security.md#physical-unclonable-functions-puf)
+- [Picnic (Signatures from ZK Proofs of Symmetric Primitives)](categories/08-signatures-advanced.md#picnic-signatures-from-zk-proofs-of-symmetric-primitives)
+- [PKCS#11 / Cryptoki — HSM C API](categories/14-applied-infrastructure-pki.md#pkcs11-cryptoki-hsm-c-api)
+- [PKCS#12 / PFX (Private Key + Certificate Bundle)](categories/03-key-exchange-key-management.md#pkcs12-pfx-private-key-certificate-bundle)
+- [PKCS#7 / CMS — Cryptographic Message Syntax](categories/14-applied-infrastructure-pki.md#pkcs7-cms-cryptographic-message-syntax)
+- [PKIX / X.509 v3 Certificate Profile (RFC 5280)](categories/03-key-exchange-key-management.md#pkix-x509-v3-certificate-profile-rfc-5280)
+- [Plonky2](categories/04-zero-knowledge-proof-systems.md#plonky2)
+- [Point Function Obfuscation / Digital Locker](categories/16-obfuscation-advanced-hardness.md#point-function-obfuscation-digital-locker)
+- [Polkadot BABE/GRANDPA Hybrid Consensus](categories/13-blockchain-distributed-ledger.md#polkadot-babegrandpa-hybrid-consensus)
+- [Polynomial Commitment Scheme Comparison](categories/09-commitments-verifiability.md#polynomial-commitment-scheme-comparison)
+- [Position-Based Quantum Cryptography](categories/15-quantum-cryptography.md#position-based-quantum-cryptography)
+- [Post-Quantum Composite Signatures and Certificates](categories/15-quantum-cryptography.md#post-quantum-composite-signatures-and-certificates)
+- [Post-Quantum Cryptography](categories/15-quantum-cryptography.md#post-quantum-cryptography)
+- [Post-Quantum Key Exchange in Practice (Hybrid KEM)](categories/03-key-exchange-key-management.md#post-quantum-key-exchange-in-practice-hybrid-kem)
+- [Post-Quantum PKI Transition — Hybrid Certificates](categories/14-applied-infrastructure-pki.md#post-quantum-pki-transition-hybrid-certificates)
+- [Post-Quantum Signature Comparison: ML-DSA vs. SLH-DSA vs. FN-DSA](categories/08-signatures-advanced.md#post-quantum-signature-comparison-ml-dsa-vs-slh-dsa-vs-fn-dsa)
+- [Post-Quantum TLS Handshake — X25519Kyber768 Hybrid in Practice](categories/12-secure-communication-protocols.md#post-quantum-tls-handshake-x25519kyber768-hybrid-in-practice)
+- [Post-Quantum TLS Performance Benchmarks](categories/15-quantum-cryptography.md#post-quantum-tls-performance-benchmarks)
+- [Power Analysis Attacks & Masking Countermeasures](categories/17-ai-hardware-physical-security.md#power-analysis-attacks-masking-countermeasures)
+- [Predicate Encryption and Attribute Hiding](categories/16-obfuscation-advanced-hardness.md#predicate-encryption-and-attribute-hiding)
+- [Printer Steganography (Machine Identification Codes)](categories/18-covert-channels-steganography.md#printer-steganography-machine-identification-codes)
+- [Prio / VDAF (Privacy-Preserving Aggregation)](categories/10-privacy-preserving-computation.md#prio-vdaf-privacy-preserving-aggregation)
+- [Privacy Pass / Anonymous Tokens](categories/11-anonymity-credentials.md#privacy-pass-anonymous-tokens)
+- [Privacy Pools](categories/11-anonymity-credentials.md#privacy-pools)
+- [Privacy-Preserving Analytics (PAAPI, ITP, VDAF/Prio)](categories/20-applied-niche-protocols.md#privacy-preserving-analytics-paapi-itp-vdafprio)
+- [Privacy-Preserving Contact Tracing (GAEN / DP-3T)](categories/10-privacy-preserving-computation.md#privacy-preserving-contact-tracing-gaen-dp-3t)
+- [Privacy-Preserving Credit Scoring](categories/20-applied-niche-protocols.md#privacy-preserving-credit-scoring)
+- [Privacy-Preserving Disease Surveillance (DP Epidemiology)](categories/10-privacy-preserving-computation.md#privacy-preserving-disease-surveillance-dp-epidemiology)
+- [Privacy-Preserving Federated Learning](categories/10-privacy-preserving-computation.md#privacy-preserving-federated-learning)
+- [Privacy-Preserving Healthcare Data Sharing](categories/20-applied-niche-protocols.md#privacy-preserving-healthcare-data-sharing)
+- [Privacy-Preserving Location Services (Geo-Fencing / Trajectory Privacy)](categories/10-privacy-preserving-computation.md#privacy-preserving-location-services-geo-fencing-trajectory-privacy)
+- [Privacy-Preserving Record Linkage (PPRL)](categories/10-privacy-preserving-computation.md#privacy-preserving-record-linkage-pprl)
+- [Private Communication with Metadata Protection](categories/11-anonymity-credentials.md#private-communication-with-metadata-protection)
+- [Private Decision Trees and Random Forests (Bost et al., ABY3)](categories/06-multi-party-computation.md#private-decision-trees-and-random-forests-bost-et-al-aby3)
+- [Private Equality Testing (PET)](categories/10-privacy-preserving-computation.md#private-equality-testing-pet)
+- [Private Function Evaluation (PFE)](categories/10-privacy-preserving-computation.md#private-function-evaluation-pfe)
+- [Private Heavy Hitters / Frequency Estimation](categories/10-privacy-preserving-computation.md#private-heavy-hitters-frequency-estimation)
+- [Private Information Retrieval (PIR)](categories/10-privacy-preserving-computation.md#private-information-retrieval-pir)
+- [Private Nearest-Neighbor Search (Private Embedding Retrieval)](categories/10-privacy-preserving-computation.md#private-nearest-neighbor-search-private-embedding-retrieval)
+- [Private Proximity Testing](categories/10-privacy-preserving-computation.md#private-proximity-testing)
+- [Private Set Difference / Set Operations](categories/10-privacy-preserving-computation.md#private-set-difference-set-operations)
+- [Private Set Intersection (PSI)](categories/10-privacy-preserving-computation.md#private-set-intersection-psi)
+- [Private Set Union (PSU)](categories/10-privacy-preserving-computation.md#private-set-union-psu)
+- [Private Stream Aggregation (PSA)](categories/10-privacy-preserving-computation.md#private-stream-aggregation-psa)
+- [Proactive Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#proactive-secret-sharing)
+- [Proof of Location / Spatial Proofs](categories/17-ai-hardware-physical-security.md#proof-of-location-spatial-proofs)
+- [Proof of Secure Erasure (PoSE)](categories/20-applied-niche-protocols.md#proof-of-secure-erasure-pose)
+- [Proof of Solvency / Proof of Reserves](categories/09-commitments-verifiability.md#proof-of-solvency-proof-of-reserves)
+- [Proof of Unique Human (Worldcoin, Proof of Personhood)](categories/20-applied-niche-protocols.md#proof-of-unique-human-worldcoin-proof-of-personhood)
+- [Proof of Work (PoW) / Proof of Space](categories/13-blockchain-distributed-ledger.md#proof-of-work-pow-proof-of-space)
+- [Proof-Carrying Data (PCD)](categories/04-zero-knowledge-proof-systems.md#proof-carrying-data-pcd)
+- [Proofs of Retrievability (PoR) / Provable Data Possession](categories/09-commitments-verifiability.md#proofs-of-retrievability-por-provable-data-possession)
+- [Property-Preserving Encryption (PPE)](categories/02-authenticated-structured-encryption.md#property-preserving-encryption-ppe)
+- [Proxy Re-Encryption (PRE)](categories/07-homomorphic-functional-encryption.md#proxy-re-encryption-pre)
+- [Proxy Signatures](categories/08-signatures-advanced.md#proxy-signatures)
+- [Prêt à Voter](categories/20-applied-niche-protocols.md#prt-voter)
+- [Pseudoentropy and Computational Entropy](categories/19-theoretical-foundations.md#pseudoentropy-and-computational-entropy)
+- [Pseudorandom Functions (PRF) & Pseudorandom Permutations (PRP)](categories/01-foundational-primitives.md#pseudorandom-functions-prf-pseudorandom-permutations-prp)
+- [Pseudorandom Generators (PRG)](categories/01-foundational-primitives.md#pseudorandom-generators-prg)
+- [Pseudorandom Generators from One-Way Functions](categories/16-obfuscation-advanced-hardness.md#pseudorandom-generators-from-one-way-functions)
+- [Pseudorandom Secret Sharing (PRSS / PRZS)](categories/05-secret-sharing-threshold-cryptography.md#pseudorandom-secret-sharing-prss-przs)
+- [Publicly Verifiable Secret Sharing (PVSS)](categories/05-secret-sharing-threshold-cryptography.md#publicly-verifiable-secret-sharing-pvss)
+- [Puncturable / Constrained PRF](categories/01-foundational-primitives.md#puncturable-constrained-prf)
+- [Puncturable Encryption](categories/02-authenticated-structured-encryption.md#puncturable-encryption)
+- [QKD Information Reconciliation — CASCADE and LDPC](categories/15-quantum-cryptography.md#qkd-information-reconciliation-cascade-and-ldpc)
+- [Quadratic / Degree-2 Functional Encryption](categories/07-homomorphic-functional-encryption.md#quadratic-degree-2-functional-encryption)
+- [Quantum Advantage Experiments](categories/15-quantum-cryptography.md#quantum-advantage-experiments)
+- [Quantum Copy-Protection / Uncloneable Encryption](categories/15-quantum-cryptography.md#quantum-copy-protection-uncloneable-encryption)
+- [Quantum Error Correction — Surface Codes and Logical Qubits](categories/15-quantum-cryptography.md#quantum-error-correction-surface-codes-and-logical-qubits)
+- [Quantum Key Distribution (QKD)](categories/15-quantum-cryptography.md#quantum-key-distribution-qkd)
+- [Quantum Money / Quantum Tokens](categories/15-quantum-cryptography.md#quantum-money-quantum-tokens)
+- [Quantum Repeaters and Quantum Networks](categories/15-quantum-cryptography.md#quantum-repeaters-and-quantum-networks)
+- [Quantum Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#quantum-secret-sharing)
+- [Quantum Secret Sharing](categories/15-quantum-cryptography.md#quantum-secret-sharing)
+- [Quantum Steganography](categories/18-covert-channels-steganography.md#quantum-steganography)
+- [QUIC Connection Migration and Security](categories/12-secure-communication-protocols.md#quic-connection-migration-and-security)
+- [QUIC Packet Protection](categories/12-secure-communication-protocols.md#quic-packet-protection)
+- [Rainbow & Multivariate Quadratic Signatures](categories/08-signatures-advanced.md#rainbow-multivariate-quadratic-signatures)
+- [Ramp Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#ramp-secret-sharing)
+- [RANDAO and VDF — Unbiasable Randomness Beacon for Ethereum](categories/13-blockchain-distributed-ledger.md#randao-and-vdf-unbiasable-randomness-beacon-for-ethereum)
+- [Random Oracle Model (ROM) vs. Standard Model](categories/19-theoretical-foundations.md#random-oracle-model-rom-vs-standard-model)
+- [Random Self-Reducibility](categories/19-theoretical-foundations.md#random-self-reducibility)
+- [Randomized Encodings for Garbling and iO](categories/16-obfuscation-advanced-hardness.md#randomized-encodings-for-garbling-and-io)
+- [Randomness Beacons / Coin Tossing](categories/09-commitments-verifiability.md#randomness-beacons-coin-tossing)
+- [Randomness Extractors](categories/01-foundational-primitives.md#randomness-extractors)
+- [Range Proofs](categories/09-commitments-verifiability.md#range-proofs)
+- [Range Proofs](categories/13-blockchain-distributed-ledger.md#range-proofs)
+- [Rational Cryptography](categories/19-theoretical-foundations.md#rational-cryptography)
+- [RC4 Stream Cipher (Historical)](categories/01-foundational-primitives.md#rc4-stream-cipher-historical)
+- [RedShift](categories/04-zero-knowledge-proof-systems.md#redshift)
+- [Regenerating Codes for Distributed Storage](categories/05-secret-sharing-threshold-cryptography.md#regenerating-codes-for-distributed-storage)
+- [Registration-Based Encryption (RBE)](categories/07-homomorphic-functional-encryption.md#registration-based-encryption-rbe)
+- [Rerandomizable Encryption](categories/02-authenticated-structured-encryption.md#rerandomizable-encryption)
+- [Rerandomizable Signatures (PS Signatures)](categories/08-signatures-advanced.md#rerandomizable-signatures-ps-signatures)
+- [Reversible Data Hiding / Lossless Steganography](categories/18-covert-channels-steganography.md#reversible-data-hiding-lossless-steganography)
+- [Ring & Group Signatures](categories/08-signatures-advanced.md#ring-group-signatures)
+- [Ring VRF](categories/08-signatures-advanced.md#ring-vrf)
+- [RIPEMD-160](categories/01-foundational-primitives.md#ripemd-160)
+- [Ristretto255 / Decaf (Prime-Order Group Abstractions)](categories/01-foundational-primitives.md#ristretto255-decaf-prime-order-group-abstractions)
+- [Robust MPC with Cheater Identification](categories/06-multi-party-computation.md#robust-mpc-with-cheater-identification)
+- [Robust Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#robust-secret-sharing)
+- [Robustness, Capacity, and Imperceptibility Trade-offs](categories/18-covert-channels-steganography.md#robustness-capacity-and-imperceptibility-trade-offs)
+- [Rocca-S (Beyond-5G / 6G AEAD)](categories/02-authenticated-structured-encryption.md#rocca-s-beyond-5g-6g-aead)
+- [Romulus AEAD (NIST LWC Finalist)](categories/02-authenticated-structured-encryption.md#romulus-aead-nist-lwc-finalist)
+- [Rowhammer Attacks on DRAM](categories/17-ai-hardware-physical-security.md#rowhammer-attacks-on-dram)
+- [RPKI / BGPsec (Route Origin Authentication)](categories/12-secure-communication-protocols.md#rpki-bgpsec-route-origin-authentication)
+- [RPKI / Resource Public Key Infrastructure](categories/14-applied-infrastructure-pki.md#rpki-resource-public-key-infrastructure)
+- [RSA Assumption Variants (RSA, Strong RSA, Flexible RSA)](categories/16-obfuscation-advanced-hardness.md#rsa-assumption-variants-rsa-strong-rsa-flexible-rsa)
+- [RSA-PSS vs. PKCS#1 v1.5 Signatures](categories/08-signatures-advanced.md#rsa-pss-vs-pkcs1-v15-signatures)
+- [S/MIME (Secure/Multipurpose Internet Mail Extensions)](categories/12-secure-communication-protocols.md#smime-securemultipurpose-internet-mail-extensions)
+- [S/MIME — Secure/Multipurpose Internet Mail Extensions](categories/14-applied-infrastructure-pki.md#smime-securemultipurpose-internet-mail-extensions)
+- [Sangria, Arecibo, and Sonobe (Folding Ecosystem)](categories/04-zero-knowledge-proof-systems.md#sangria-arecibo-and-sonobe-folding-ecosystem)
+- [Sanitizable Signatures](categories/08-signatures-advanced.md#sanitizable-signatures)
+- [SCALE-MAMBA (MPC Framework)](categories/06-multi-party-computation.md#scale-mamba-mpc-framework)
+- [Scantegrity II](categories/20-applied-niche-protocols.md#scantegrity-ii)
+- [SCEP (Simple Certificate Enrollment Protocol, RFC 8894)](categories/03-key-exchange-key-management.md#scep-simple-certificate-enrollment-protocol-rfc-8894)
+- [Schnorr Half-Aggregation (Signature Aggregation Beyond BLS)](categories/08-signatures-advanced.md#schnorr-half-aggregation-signature-aggregation-beyond-bls)
+- [Schnorr Signatures (Original Scheme)](categories/08-signatures-advanced.md#schnorr-signatures-original-scheme)
+- [SCRAPE: Scalable Publicly Verifiable Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#scrape-scalable-publicly-verifiable-secret-sharing)
+- [SD-JWT and JSON Web Proof (JWP)](categories/11-anonymity-credentials.md#sd-jwt-and-json-web-proof-jwp)
+- [Sealed-Bid Auction Protocols](categories/10-privacy-preserving-computation.md#sealed-bid-auction-protocols)
+- [Searchable Encryption (SSE / PEKS)](categories/10-privacy-preserving-computation.md#searchable-encryption-sse-peks)
+- [Secret Handshakes / Hidden Credentials](categories/11-anonymity-credentials.md#secret-handshakes-hidden-credentials)
+- [Secret Leader Election](categories/13-blockchain-distributed-ledger.md#secret-leader-election)
+- [Secret Sharing Schemes (SSS)](categories/05-secret-sharing-threshold-cryptography.md#secret-sharing-schemes-sss)
+- [Secret Sharing with Cheater Detection](categories/05-secret-sharing-threshold-cryptography.md#secret-sharing-with-cheater-detection)
+- [Secret Sharing with Fairness](categories/05-secret-sharing-threshold-cryptography.md#secret-sharing-with-fairness)
+- [Secret-Shared Shuffle](categories/06-multi-party-computation.md#secret-shared-shuffle)
+- [Secure Aggregation (SecAgg)](categories/06-multi-party-computation.md#secure-aggregation-secagg)
+- [Secure Channels / Protocol Constructions](categories/12-secure-communication-protocols.md#secure-channels-protocol-constructions)
+- [Secure Computation on Graphs (Private Graph Algorithms)](categories/06-multi-party-computation.md#secure-computation-on-graphs-private-graph-algorithms)
+- [Secure Deduplication](categories/02-authenticated-structured-encryption.md#secure-deduplication)
+- [Secure MPC / HE for Private ML Inference](categories/17-ai-hardware-physical-security.md#secure-mpc-he-for-private-ml-inference)
+- [Secure Multi-Party Machine Learning (CrypTen / MOTION2NX)](categories/10-privacy-preserving-computation.md#secure-multi-party-machine-learning-crypten-motion2nx)
+- [Secure Time Synchronization (NTPsec, Roughtime)](categories/20-applied-niche-protocols.md#secure-time-synchronization-ntpsec-roughtime)
+- [SecureML and MPC-Based Machine Learning Inference](categories/06-multi-party-computation.md#secureml-and-mpc-based-machine-learning-inference)
+- [Security Amplification](categories/19-theoretical-foundations.md#security-amplification)
+- [Selective Disclosure Credential Formats Compared](categories/11-anonymity-credentials.md#selective-disclosure-credential-formats-compared)
+- [Semantic Security and IND-CPA / IND-CCA Security](categories/19-theoretical-foundations.md#semantic-security-and-ind-cpa-ind-cca-security)
+- [Semaphore / Anonymous Group Signaling (RLN)](categories/11-anonymity-credentials.md#semaphore-anonymous-group-signaling-rln)
+- [Sequential Aggregate Signatures](categories/08-signatures-advanced.md#sequential-aggregate-signatures)
+- [Share Conversion (Arithmetic-to-Boolean and Boolean-to-Arithmetic)](categories/05-secret-sharing-threshold-cryptography.md#share-conversion-arithmetic-to-boolean-and-boolean-to-arithmetic)
+- [Shared RSA Key Generation](categories/05-secret-sharing-threshold-cryptography.md#shared-rsa-key-generation)
+- [Sharemind (MPC Platform)](categories/06-multi-party-computation.md#sharemind-mpc-platform)
+- [Shor's Algorithm and Quantum Threats to Public-Key Cryptography](categories/15-quantum-cryptography.md#shors-algorithm-and-quantum-threats-to-public-key-cryptography)
+- [Shuffle Model of Differential Privacy](categories/10-privacy-preserving-computation.md#shuffle-model-of-differential-privacy)
+- [Side-Channel Resistant AES Implementations](categories/17-ai-hardware-physical-security.md#side-channel-resistant-aes-implementations)
+- [SIGMA Protocol (SIGn-and-MAc)](categories/03-key-exchange-key-management.md#sigma-protocol-sign-and-mac)
+- [Sigma Protocols / Schnorr Identification](categories/04-zero-knowledge-proof-systems.md#sigma-protocols-schnorr-identification)
+- [Signal Sealed Sender & PIR-Based Metadata Privacy](categories/20-applied-niche-protocols.md#signal-sealed-sender-pir-based-metadata-privacy)
+- [Signcryption](categories/02-authenticated-structured-encryption.md#signcryption)
+- [Sigstore / Keyless Code Signing](categories/14-applied-infrastructure-pki.md#sigstore-keyless-code-signing)
+- [Silent OT / Pseudorandom Correlation Generators (PCG)](categories/06-multi-party-computation.md#silent-ot-pseudorandom-correlation-generators-pcg)
+- [Simulation-Based Security (SIM) vs. Indistinguishability-Based Security (IND)](categories/19-theoretical-foundations.md#simulation-based-security-sim-vs-indistinguishability-based-security-ind)
+- [Single-Key vs. Multi-Key FHE](categories/07-homomorphic-functional-encryption.md#single-key-vs-multi-key-fhe)
+- [SipHash](categories/01-foundational-primitives.md#siphash)
+- [SLIP-39 / Shamir Backup for Hardware Wallets](categories/03-key-exchange-key-management.md#slip-39-shamir-backup-for-hardware-wallets)
+- [SLIP-39: Shamir's Secret Sharing for BIP-39 Mnemonics](categories/05-secret-sharing-threshold-cryptography.md#slip-39-shamirs-secret-sharing-for-bip-39-mnemonics)
+- [SM3 Hash Function](categories/01-foundational-primitives.md#sm3-hash-function)
+- [SM4 / Chinese National Standard Block Ciphers](categories/01-foundational-primitives.md#sm4-chinese-national-standard-block-ciphers)
+- [Smart Card & Secure Element Cryptography](categories/17-ai-hardware-physical-security.md#smart-card-secure-element-cryptography)
+- [SNARG (Succinct Non-Interactive Arguments without Zero-Knowledge)](categories/04-zero-knowledge-proof-systems.md#snarg-succinct-non-interactive-arguments-without-zero-knowledge)
+- [SNARK-Friendly Hash Functions (Poseidon / Rescue)](categories/09-commitments-verifiability.md#snark-friendly-hash-functions-poseidon-rescue)
+- [SNOW-V and SNOW-V-GCM](categories/02-authenticated-structured-encryption.md#snow-v-and-snow-v-gcm)
+- [Social Network Steganography](categories/18-covert-channels-steganography.md#social-network-steganography)
+- [Software Copy-Protection from iO](categories/16-obfuscation-advanced-hardness.md#software-copy-protection-from-io)
+- [Software-Oriented eSTREAM Stream Ciphers (Rabbit / HC-128)](categories/01-foundational-primitives.md#software-oriented-estream-stream-ciphers-rabbit-hc-128)
+- [Solana Proof of History (PoH)](categories/13-blockchain-distributed-ledger.md#solana-proof-of-history-poh)
+- [Somewhere Statistically Binding (SSB) Hash](categories/09-commitments-verifiability.md#somewhere-statistically-binding-ssb-hash)
+- [Sonic](categories/04-zero-knowledge-proof-systems.md#sonic)
+- [Spartan (Transparent R1CS SNARK via Sumcheck)](categories/04-zero-knowledge-proof-systems.md#spartan-transparent-r1cs-snark-via-sumcheck)
+- [Speculative Execution & Cache-Timing Side-Channel Attacks](categories/17-ai-hardware-physical-security.md#speculative-execution-cache-timing-side-channel-attacks)
+- [SPEKE (Simple Password Exponential Key Exchange)](categories/03-key-exchange-key-management.md#speke-simple-password-exponential-key-exchange)
+- [SPHINCS & SPHINCS+ (Stateless Hash-Based Signatures)](categories/08-signatures-advanced.md#sphincs-sphincs-stateless-hash-based-signatures)
+- [Sponge Construction / Duplex](categories/01-foundational-primitives.md#sponge-construction-duplex)
+- [SpongeWrap / Duplex-Based AEAD](categories/02-authenticated-structured-encryption.md#spongewrap-duplex-based-aead)
+- [Spooky Encryption](categories/16-obfuscation-advanced-hardness.md#spooky-encryption)
+- [Spread-Spectrum Steganography](categories/18-covert-channels-steganography.md#spread-spectrum-steganography)
+- [SQIsign (Isogeny-Based Signatures)](categories/08-signatures-advanced.md#sqisign-isogeny-based-signatures)
+- [SRTP / Secure Real-time Transport Protocol](categories/12-secure-communication-protocols.md#srtp-secure-real-time-transport-protocol)
+- [SSH Transport Layer / Secure Shell Cryptography](categories/12-secure-communication-protocols.md#ssh-transport-layer-secure-shell-cryptography)
+- [STAR-Vote](categories/20-applied-niche-protocols.md#star-vote)
+- [STARK Arithmetization: AIR and FRI](categories/04-zero-knowledge-proof-systems.md#stark-arithmetization-air-and-fri)
+- [STARK-Based Signatures](categories/08-signatures-advanced.md#stark-based-signatures)
+- [STARTTLS / Opportunistic vs. Mandatory TLS](categories/12-secure-communication-protocols.md#starttls-opportunistic-vs-mandatory-tls)
+- [Stateful Hash-Based Signatures (XMSS & LMS)](categories/08-signatures-advanced.md#stateful-hash-based-signatures-xmss-lms)
+- [Station-to-Station (STS) Protocol](categories/03-key-exchange-key-management.md#station-to-station-sts-protocol)
+- [Stealth Addresses](categories/11-anonymity-credentials.md#stealth-addresses)
+- [Steganalysis](categories/18-covert-channels-steganography.md#steganalysis)
+- [Steganographic File Systems](categories/18-covert-channels-steganography.md#steganographic-file-systems)
+- [Steganographic Protocols (StegProtocol / HYDAN)](categories/18-covert-channels-steganography.md#steganographic-protocols-stegprotocol-hydan)
+- [Steganography](categories/18-covert-channels-steganography.md#steganography)
+- [Streaming / Online Secure Computation](categories/06-multi-party-computation.md#streaming-online-secure-computation)
+- [Structure-Preserving Signatures (SPS)](categories/08-signatures-advanced.md#structure-preserving-signatures-sps)
+- [Subliminal Channels in Zero-Knowledge Proofs](categories/18-covert-channels-steganography.md#subliminal-channels-in-zero-knowledge-proofs)
+- [Succinct Functional Encryption for Turing Machines](categories/16-obfuscation-advanced-hardness.md#succinct-functional-encryption-for-turing-machines)
+- [Sumcheck Protocol](categories/04-zero-knowledge-proof-systems.md#sumcheck-protocol)
+- [SuperPack (Dishonest Majority MPC with Constant Online Communication)](categories/06-multi-party-computation.md#superpack-dishonest-majority-mpc-with-constant-online-communication)
+- [Supply Chain Attacks on Cryptographic Hardware](categories/17-ai-hardware-physical-security.md#supply-chain-attacks-on-cryptographic-hardware)
+- [Supply Chain Cryptography: in-toto, SLSA, and TUF](categories/20-applied-niche-protocols.md#supply-chain-cryptography-in-toto-slsa-and-tuf)
+- [Symbolic Model (Dolev-Yao) vs. Computational Model](categories/19-theoretical-foundations.md#symbolic-model-dolev-yao-vs-computational-model)
+- [Symmetric Encryption](categories/01-foundational-primitives.md#symmetric-encryption)
+- [TEE Remote Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation)
+- [Text / Linguistic Steganography](categories/18-covert-channels-steganography.md#text-linguistic-steganography)
+- [Threshold Blind Signatures](categories/08-signatures-advanced.md#threshold-blind-signatures)
+- [Threshold BLS Key Generation](categories/05-secret-sharing-threshold-cryptography.md#threshold-bls-key-generation)
+- [Threshold Decryption](categories/05-secret-sharing-threshold-cryptography.md#threshold-decryption)
+- [Threshold Raccoon: Post-Quantum Lattice Threshold Signatures](categories/05-secret-sharing-threshold-cryptography.md#threshold-raccoon-post-quantum-lattice-threshold-signatures)
+- [Threshold Ring Signatures](categories/08-signatures-advanced.md#threshold-ring-signatures)
+- [Threshold Signature Schemes (TSS)](categories/08-signatures-advanced.md#threshold-signature-schemes-tss)
+- [Threshold Verifiable Random Functions (Threshold VRF)](categories/05-secret-sharing-threshold-cryptography.md#threshold-verifiable-random-functions-threshold-vrf)
+- [Threshold VRF and Distributed Randomness](categories/09-commitments-verifiability.md#threshold-vrf-and-distributed-randomness)
+- [Time-Lock Puzzles / Timed-Release Encryption](categories/09-commitments-verifiability.md#time-lock-puzzles-timed-release-encryption)
+- [TinyOT (Maliciously Secure 2PC from OT)](categories/06-multi-party-computation.md#tinyot-maliciously-secure-2pc-from-ot)
+- [TLS 1.3 0-RTT / Early Data Security Properties](categories/12-secure-communication-protocols.md#tls-13-0-rtt-early-data-security-properties)
+- [TLS 1.3 Key Schedule](categories/03-key-exchange-key-management.md#tls-13-key-schedule)
+- [Token-Based Authentication (TOTP / FIDO2 / WebAuthn)](categories/12-secure-communication-protocols.md#token-based-authentication-totp-fido2-webauthn)
+- [Tor Hidden Services (.onion v3 Cryptography)](categories/20-applied-niche-protocols.md#tor-hidden-services-onion-v3-cryptography)
+- [Tor v3 Onion Services](categories/11-anonymity-credentials.md#tor-v3-onion-services)
+- [Tornado Cash — zkSNARK Privacy Mixer](categories/13-blockchain-distributed-ledger.md#tornado-cash-zksnark-privacy-mixer)
+- [Tox Protocol / Serverless P2P E2E Encrypted Chat](categories/12-secure-communication-protocols.md#tox-protocol-serverless-p2p-e2e-encrypted-chat)
+- [TPM 2.0 / Trusted Platform Module](categories/14-applied-infrastructure-pki.md#tpm-20-trusted-platform-module)
+- [Traceable Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#traceable-secret-sharing)
+- [Traceable Signatures](categories/08-signatures-advanced.md#traceable-signatures)
+- [Transciphering / FHE-friendly Ciphers](categories/07-homomorphic-functional-encryption.md#transciphering-fhe-friendly-ciphers)
+- [Trapdoor Commitments (Equivocable Commitments)](categories/09-commitments-verifiability.md#trapdoor-commitments-equivocable-commitments)
+- [Trapdoor Functions / Trapdoor Permutations](categories/01-foundational-primitives.md#trapdoor-functions-trapdoor-permutations)
+- [Triple Diffie-Hellman (3DH) / X3DH](categories/03-key-exchange-key-management.md#triple-diffie-hellman-3dh-x3dh)
+- [TUF / The Update Framework](categories/14-applied-infrastructure-pki.md#tuf-the-update-framework)
+- [TupleHash / ParallelHash (NIST SP 800-185)](categories/01-foundational-primitives.md#tuplehash-parallelhash-nist-sp-800-185)
+- [Tweakable Block Ciphers (LRW / XEX / XTS)](categories/01-foundational-primitives.md#tweakable-block-ciphers-lrw-xex-xts)
+- [Twin-Field QKD (TF-QKD)](categories/15-quantum-cryptography.md#twin-field-qkd-tf-qkd)
+- [Two-Party PSI from Garbled Circuits (Pinkas et al.)](categories/06-multi-party-computation.md#two-party-psi-from-garbled-circuits-pinkas-et-al)
+- [Unbalanced PSI (Client-Server PSI at Scale)](categories/10-privacy-preserving-computation.md#unbalanced-psi-client-server-psi-at-scale)
+- [Unclonable Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#unclonable-secret-sharing)
+- [Undeniable Signatures](categories/08-signatures-advanced.md#undeniable-signatures)
+- [Unforgeability Notions: EUF-CMA, SUF-CMA, and Beyond](categories/08-signatures-advanced.md#unforgeability-notions-euf-cma-suf-cma-and-beyond)
+- [Universal Composability (UC) Framework](categories/19-theoretical-foundations.md#universal-composability-uc-framework)
+- [Universal Hash Functions (Carter-Wegman)](categories/01-foundational-primitives.md#universal-hash-functions-carter-wegman)
+- [Universal One-Way Hash Functions (UOWHF)](categories/01-foundational-primitives.md#universal-one-way-hash-functions-uowhf)
+- [Universal Thresholdizer](categories/05-secret-sharing-threshold-cryptography.md#universal-thresholdizer)
+- [Updatable CRS / Powers of Tau](categories/03-key-exchange-key-management.md#updatable-crs-powers-of-tau)
+- [Updatable Encryption](categories/02-authenticated-structured-encryption.md#updatable-encryption)
+- [Updatable Trusted Setup Ceremonies (Sonic / Marlin)](categories/09-commitments-verifiability.md#updatable-trusted-setup-ceremonies-sonic-marlin)
+- [VBB Obfuscation Impossibility](categories/16-obfuscation-advanced-hardness.md#vbb-obfuscation-impossibility)
+- [Vector Commitments](categories/09-commitments-verifiability.md#vector-commitments)
+- [Verifiable Computation (VC)](categories/09-commitments-verifiability.md#verifiable-computation-vc)
+- [Verifiable Delay Functions (VDF)](categories/09-commitments-verifiability.md#verifiable-delay-functions-vdf)
+- [Verifiable Encryption](categories/09-commitments-verifiability.md#verifiable-encryption)
+- [Verifiable FHE](categories/07-homomorphic-functional-encryption.md#verifiable-fhe)
+- [Verifiable Information Dispersal (VID)](categories/05-secret-sharing-threshold-cryptography.md#verifiable-information-dispersal-vid)
+- [Verifiable Random Functions (ECVRF, RFC 9381)](categories/08-signatures-advanced.md#verifiable-random-functions-ecvrf-rfc-9381)
+- [Verifiable Random Functions (VRF)](categories/09-commitments-verifiability.md#verifiable-random-functions-vrf)
+- [Verifiable Timed Commitments](categories/09-commitments-verifiability.md#verifiable-timed-commitments)
+- [Verkle Trees (Ethereum State)](categories/13-blockchain-distributed-ledger.md#verkle-trees-ethereum-state)
+- [Video Steganography](categories/18-covert-channels-steganography.md#video-steganography)
+- [Visual Cryptography](categories/20-applied-niche-protocols.md#visual-cryptography)
+- [VOLE-Based Zero-Knowledge Proofs](categories/04-zero-knowledge-proof-systems.md#vole-based-zero-knowledge-proofs)
+- [VOLEitH (VOLE-in-the-Head)](categories/04-zero-knowledge-proof-systems.md#voleith-vole-in-the-head)
+- [Volume-Hiding Searchable Encryption (Encrypted Multi-Maps)](categories/10-privacy-preserving-computation.md#volume-hiding-searchable-encryption-encrypted-multi-maps)
+- [W3C Decentralized Identifiers (DID) and Verifiable Credentials](categories/14-applied-infrastructure-pki.md#w3c-decentralized-identifiers-did-and-verifiable-credentials)
+- [Wegman-Carter MAC (One-Time and Multi-Use)](categories/01-foundational-primitives.md#wegman-carter-mac-one-time-and-multi-use)
+- [WhatsApp Key Transparency / Auditable Key Directory (AKD)](categories/12-secure-communication-protocols.md#whatsapp-key-transparency-auditable-key-directory-akd)
+- [Whirlpool and Tiger Hash Functions](categories/01-foundational-primitives.md#whirlpool-and-tiger-hash-functions)
+- [White-Box Cryptography](categories/02-authenticated-structured-encryption.md#white-box-cryptography)
+- [White-Box Cryptography (WBC)](categories/17-ai-hardware-physical-security.md#white-box-cryptography-wbc)
+- [WireGuard Cryptographic Protocol](categories/03-key-exchange-key-management.md#wireguard-cryptographic-protocol)
+- [WireGuard Noise_IKpsk2 Handshake](categories/12-secure-communication-protocols.md#wireguard-noise_ikpsk2-handshake)
+- [Wiretap Channel / Physical-Layer Security](categories/17-ai-hardware-physical-security.md#wiretap-channel-physical-layer-security)
+- [Witness Encryption](categories/16-obfuscation-advanced-hardness.md#witness-encryption)
+- [Witness Encryption for Secret Sharing Policies](categories/05-secret-sharing-threshold-cryptography.md#witness-encryption-for-secret-sharing-policies)
+- [Witness Indistinguishability (WI) / Witness Hiding](categories/04-zero-knowledge-proof-systems.md#witness-indistinguishability-wi-witness-hiding)
+- [Witness Indistinguishability (WI) / Witness Hiding](categories/19-theoretical-foundations.md#witness-indistinguishability-wi-witness-hiding)
+- [Witness PRF](categories/04-zero-knowledge-proof-systems.md#witness-prf)
+- [Wombat Voting System](categories/20-applied-niche-protocols.md#wombat-voting-system)
+- [X3DH / Extended Triple DH Key Agreement](categories/12-secure-communication-protocols.md#x3dh-extended-triple-dh-key-agreement)
+- [Xoodyak (NIST LWC Finalist)](categories/02-authenticated-structured-encryption.md#xoodyak-nist-lwc-finalist)
+- [XOR-Based / Binary-Field Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#xor-based-binary-field-secret-sharing)
+- [XSalsa20 and XChaCha20 (Extended-Nonce Stream Ciphers)](categories/02-authenticated-structured-encryption.md#xsalsa20-and-xchacha20-extended-nonce-stream-ciphers)
+- [YOSO Model (You Only Speak Once)](categories/06-multi-party-computation.md#yoso-model-you-only-speak-once)
+- [Zcash Sapling Transaction Structure](categories/13-blockchain-distributed-ledger.md#zcash-sapling-transaction-structure)
+- [Zcash Shielded Protocols (Sapling / Orchard)](categories/11-anonymity-credentials.md#zcash-shielded-protocols-sapling-orchard)
+- [Zero-Knowledge Proofs (ZK)](categories/04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk)
+- [Zero-Knowledge Sets](categories/04-zero-knowledge-proof-systems.md#zero-knowledge-sets)
+- [Zeroizing Attacks on Multilinear Maps](categories/16-obfuscation-advanced-hardness.md#zeroizing-attacks-on-multilinear-maps)
+- [ZK Circuit DSLs: Noir, Leo, Cairo](categories/04-zero-knowledge-proof-systems.md#zk-circuit-dsls-noir-leo-cairo)
+- [ZK Proofs for Identity (Proof of Age / Nationality)](categories/04-zero-knowledge-proof-systems.md#zk-proofs-for-identity-proof-of-age-nationality)
+- [ZK Proofs for Regulatory Compliance (zkKYC / zkAML)](categories/04-zero-knowledge-proof-systems.md#zk-proofs-for-regulatory-compliance-zkkyc-zkaml)
+- [ZK Proofs for Supply Chain (Proof of Origin / Provenance)](categories/04-zero-knowledge-proof-systems.md#zk-proofs-for-supply-chain-proof-of-origin-provenance)
+- [ZK Rollups and Optimistic Rollups](categories/13-blockchain-distributed-ledger.md#zk-rollups-and-optimistic-rollups)
+- [ZK-Friendly Hash Functions (Arithmetization-Oriented)](categories/01-foundational-primitives.md#zk-friendly-hash-functions-arithmetization-oriented)
+- [zkBridge — Cross-Chain State Proofs](categories/13-blockchain-distributed-ledger.md#zkbridge-cross-chain-state-proofs)
+- [zkEVM Taxonomy and Ecosystem](categories/04-zero-knowledge-proof-systems.md#zkevm-taxonomy-and-ecosystem)
+- [zkLLM / Verifiable AI Inference](categories/17-ai-hardware-physical-security.md#zkllm-verifiable-ai-inference)
+- [zkML (Zero-Knowledge Machine Learning)](categories/04-zero-knowledge-proof-systems.md#zkml-zero-knowledge-machine-learning)
+- [ZKP-Based Attribute Predicates (Range Proofs for Credentials)](categories/11-anonymity-credentials.md#zkp-based-attribute-predicates-range-proofs-for-credentials)
+- [zkTLS / MPC-TLS](categories/04-zero-knowledge-proof-systems.md#zktls-mpc-tls)
+- [ZRTP / VoIP Media-Path Key Agreement](categories/12-secure-communication-protocols.md#zrtp-voip-media-path-key-agreement)
