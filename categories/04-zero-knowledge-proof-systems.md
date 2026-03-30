@@ -871,3 +871,131 @@
 **State of the art:** Sangria (2023, geometry research), Sonobe (2024, PSE / 0xPARC), CycleFold (2023, Aztec). These tools form the practical infrastructure for the [Folding Schemes](#folding-schemes) research programme. See [IVC vs. PCD vs. Accumulation Schemes](#ivc-vs-pcd-vs-accumulation-schemes-recursive-composition-taxonomy), [General-Purpose zkVMs](#general-purpose-zkvms).
 
 ---
+
+## Gemini (Elastic SNARKs)
+
+**Goal:** Enable a single SNARK prover to operate in both time-efficient and space-efficient modes, allowing proof generation on resource-constrained devices or for extremely large circuits.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **Gemini** | 2022 | Univariate PCS + R1CS | Elastic SNARK: linear-time prover (time mode) or log-memory prover (space mode); FFT-free; scales to tens of billions of constraints [[1]](https://eprint.iacr.org/2022/420) |
+
+**State of the art:** Gemini (EUROCRYPT 2022) is the first elastic SNARK, demonstrating practical proof generation for circuits with 2^{34}+ constraints on a single machine. Its space-efficient mode enables proving on memory-limited hardware. See [Spartan](#spartan-transparent-r1cs-snark-via-sumcheck), [Orion and Brakedown](#orion-and-brakedown-linear-time-snarks).
+
+---
+
+## Boojum (zkSync Era Proof System)
+
+**Goal:** Production STARK-based proof system optimized for consumer-grade GPU hardware, enabling decentralized proving for zkEVM rollups.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **Boojum** | 2023 | STARK + PLONK arithmetization | zkSync Era prover; runs on 16 GB GPU RAM (vs. prior 80 GB); STARK proofs wrapped into a pairing-based SNARK for on-chain verification [[1]](https://github.com/matter-labs/era-boojum) |
+| **Boojum CUDA** | 2023 | GPU-accelerated backend | CUDA library for GPU-accelerated field arithmetic, NTT, and Poseidon hashing inside the Boojum prover [[1]](https://github.com/matter-labs/era-boojum-cuda) |
+
+**State of the art:** Boojum (Matter Labs, 2023) powers zkSync Era mainnet. Its key innovation is reducing GPU memory requirements by ~5x compared to the prior SNARK-based system, enabling consumer hardware participation. See [zkEVM Taxonomy](#zkevm-taxonomy-and-ecosystem), [STARK Arithmetization](#stark-arithmetization-air-and-fri).
+
+---
+
+## LatticeFold (Post-Quantum Folding)
+
+**Goal:** Bring folding-based IVC to post-quantum security by replacing discrete-log commitments with lattice-based commitments, enabling recursive SNARKs secure against quantum adversaries.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **LatticeFold** | 2024 | Module-SIS + sumcheck | First lattice-based folding scheme; supports R1CS and CCS; operates over 64-bit fields; performance comparable to HyperNova [[1]](https://eprint.iacr.org/2024/257) |
+| **LatticeFold+** | 2025 | Module-SIS (improved) | Faster prover, simpler verification circuit, shorter folding proofs than LatticeFold [[1]](https://eprint.iacr.org/2025/247) |
+| **Lova** | 2024 | Unstructured lattices | Folding from unstructured lattice assumptions (standard LWE/SIS); avoids module structure [[1]](https://link.springer.com/chapter/10.1007/978-981-96-0894-2_10) |
+
+**State of the art:** LatticeFold (Boneh-Chen, 2024) is the first post-quantum folding scheme. LatticeFold+ (2025) improves all metrics. Lova (ASIACRYPT 2024) achieves folding from unstructured lattices. These are the only folding schemes plausibly secure against quantum computers. See [Folding Schemes](#folding-schemes), [Nova / SuperNova](#zero-knowledge-proofs-zk).
+
+---
+
+## Expander (GKR-Based Proof System)
+
+**Goal:** Fastest open-source ZK proof system combining the GKR interactive proof protocol with code-based polynomial commitments, targeting massively parallel computation.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **Expander** | 2024 | GKR + expander-code PCS | Polyhedra Network; 4500 Keccak-f/s on M3 Max; 2.16M Poseidon hashes/s on Ryzen; no FFT; field-agnostic [[1]](https://github.com/PolyhedraZK/Expander) |
+| **Expander-RS** | 2024 | Rust rewrite | Rust implementation; CUDA backend for GPU acceleration; used in zkBridge and zkPyTorch [[1]](https://blog.polyhedra.network/expander-rust-version-open-source/) |
+
+**State of the art:** Expander (Polyhedra, 2024) claims the fastest single-machine ZK prover throughput, exceeding Stwo and Plonky3 on hash-function benchmarks. Powers zkBridge (cross-chain) and [zkML](#zkml-zero-knowledge-machine-learning) applications. Built on [Orion/Brakedown](#orion-and-brakedown-linear-time-snarks) PCS and the [GKR Protocol](#sumcheck-protocol).
+
+---
+
+## Libra and Virgo (GKR-Based Transparent SNARKs)
+
+**Goal:** Turn the GKR interactive proof into a practical zero-knowledge SNARK with optimal (linear) prover time, no trusted setup, and post-quantum security.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **Libra** | 2019 | GKR + zkVPD | First ZK argument with optimal O(C) prover time for layered circuits; one-time setup depends only on input size, not circuit [[1]](https://eprint.iacr.org/2019/317) |
+| **Virgo** | 2020 | GKR + transparent PCS | Transparent (no trusted setup); O(C + n log n) prover; O(d log C + log^2 n) proof size; post-quantum via hash-based PCS [[1]](https://eprint.iacr.org/2019/1482) |
+| **Virgo++** | 2021 | GKR + data-parallel circuits | Extends Virgo to data-parallel circuits; reduces prover cost for repeated sub-circuits [[1]](https://eprint.iacr.org/2020/1247) |
+
+**State of the art:** Libra (CRYPTO 2019) and Virgo (S&P 2020) established GKR-based SNARKs as practical. Their ideas underpin [Expander](#expander-gkr-based-proof-system), [Ceno](#ceno-non-uniform-gkr-zkvm), and the GKR backend in [Plonky3](#binary-field-proof-systems). See [Sumcheck Protocol](#sumcheck-protocol), [Orion and Brakedown](#orion-and-brakedown-linear-time-snarks).
+
+---
+
+## Ceno (Non-Uniform GKR zkVM)
+
+**Goal:** Build a zkVM using the GKR protocol with non-uniform, segmented, and parallel proving, achieving faster prover times than Plonkish-based zkVMs by committing only to circuit inputs and outputs.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **Ceno** | 2024 | GKR + segment-parallel proving | Scroll/Missouri S&T; segments execution trace, proves identical segments via data-parallel circuits; asymmetric GKR (non-uniform prover, uniform verifier) [[1]](https://eprint.iacr.org/2024/387) |
+
+**State of the art:** Ceno (Journal of Cryptology, 2024) demonstrates that GKR-based zkVMs can significantly reduce commitment costs versus Plonkish approaches, since the prover commits only to inputs/outputs rather than all intermediate witnesses. Used by Scroll for next-generation proving. See [General-Purpose zkVMs](#general-purpose-zkvms), [Sumcheck Protocol](#sumcheck-protocol).
+
+---
+
+## BaseFold (Field-Agnostic Polynomial Commitments)
+
+**Goal:** Provide efficient multilinear polynomial commitment schemes that work over any sufficiently large finite field, removing the restriction to FFT-friendly fields required by FRI.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **BaseFold** | 2024 | Random foldable codes | Field-agnostic PCS for multilinear polynomials; O(n log n) prover, O(log^2 n) verifier; extends FRI's folding idea to non-FFT fields [[1]](https://eprint.iacr.org/2023/1705) |
+| **DeepFold** | 2024 | Reed-Solomon + multilinear | Maintains BaseFold's prover efficiency while improving concrete proof size for Reed-Solomon instantiations [[1]](https://eprint.iacr.org/2024/1595) |
+
+**State of the art:** BaseFold (CRYPTO 2024) enables STARK-like proofs over arbitrary fields (e.g., binary fields, small primes without FFT roots). Complements [Binius](#binary-field-proof-systems) and [Brakedown](#orion-and-brakedown-linear-time-snarks) as a field-agnostic PCS. DeepFold (2024) refines the Reed-Solomon instantiation.
+
+---
+
+## Zeromorph (Multilinear KZG Evaluation Proofs)
+
+**Goal:** Efficiently prove evaluations of multilinear polynomials committed via univariate KZG, with minimal overhead to achieve zero-knowledge.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **Zeromorph** | 2023 | KZG (univariate-to-multilinear) | ZK multilinear evaluation proof with only n+5 extra G1 ops for ZK (vs. 2^n in prior work); generic over any homomorphic univariate PCS [[1]](https://eprint.iacr.org/2023/917) |
+
+**State of the art:** Zeromorph (Journal of Cryptology, 2024) bridges the gap between univariate KZG (widely deployed, efficient) and multilinear polynomials (used in sumcheck-based SNARKs). Enables multilinear proof systems to reuse existing KZG trusted setups. See [Sumcheck Protocol](#sumcheck-protocol), [PLONK](#zero-knowledge-proofs-zk).
+
+---
+
+## Kimchi (Mina Protocol Proof System)
+
+**Goal:** Recursive zero-knowledge proof system powering the Mina blockchain's constant-size (~22 KB) chain state, extending PLONK with custom gates, lookups, and recursive composition via the Pickles framework.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **Kimchi** | 2021 | PLONK variant + IPA | Mina/O1Labs; extends PLONK with 15 registers, custom gates, lookup tables; no trusted setup (IPA-based) [[1]](https://o1-labs.github.io/proof-systems/specs/kimchi.html) |
+| **Pickles** | 2021 | Recursive composition layer | Wraps Kimchi proofs in a recursive proof-carrying-data (PCD) framework over Pasta curves (Pallas/Vesta); enables Mina's constant-size blockchain [[1]](https://minaprotocol.com/blog/kimchi-the-latest-update-to-minas-proof-system) |
+
+**State of the art:** Kimchi + Pickles (Mina Berkeley upgrade, 2023) is the only production PCD-based blockchain, maintaining a ~22 KB chain proof regardless of history length. Recent work adds bn254 KZG proof output and optional folding support. See [Proof-Carrying Data](#proof-carrying-data-pcd), [Halo and Halo2](#halo-and-halo2).
+
+---
+
+## SP1 Hypercube (Real-Time zkVM Proving)
+
+**Goal:** Achieve real-time (sub-12-second) zero-knowledge proof generation for full Ethereum L1 blocks via GPU-parallelized STARK recursion, enabling practical ZK rollups without latency.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **SP1 Hypercube** | 2025 | STARK + GPU cluster | Succinct Labs; proves 99.7% of L1 Ethereum blocks in <12s on 16x RTX 5090 GPUs; custom recursion VM; ~1000x faster than SP1 v1 [[1]](https://blog.succinct.xyz/real-time-proving-16-gpus/) |
+
+**State of the art:** SP1 Hypercube (Succinct, 2025) crosses the real-time proving threshold for Ethereum blocks. Builds on [SP1](#general-purpose-zkvms) and [Plonky3](#plonky2) backend with massive GPU parallelism. Represents the current frontier of zkVM prover performance. See [General-Purpose zkVMs](#general-purpose-zkvms), [STARK Arithmetization](#stark-arithmetization-air-and-fri).
+
+---

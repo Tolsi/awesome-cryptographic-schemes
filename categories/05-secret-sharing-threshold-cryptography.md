@@ -640,3 +640,139 @@
 **State of the art:** SLIP-39 is the dominant standard for mnemonic-based threshold seed backup; implemented in Trezor firmware, Ian Coleman's tool, and the `shamir-mnemonic` Python library. SSKR offers an alternative encoding for the Gordian/UR ecosystem. Both use Shamir over small-characteristic fields (GF(2^8) or GF(2^{10})) for byte-oriented efficiency — contrasting with the prime-field GF(p) arithmetic in Shamir's original paper. Distinct from [XOR-Based SS](#xor-based--binary-field-secret-sharing) (no threshold, just split) and the standalone SLIP-39 entry in [Key Management](categories/03-key-exchange-key-management.md). Extends [Secret Sharing](#secret-sharing-schemes-sss).
 
 ---
+
+## Weighted Threshold Secret Sharing
+
+**Goal:** Unequal influence in reconstruction. Assign each participant a positive integer weight reflecting their authority or stake; the secret is reconstructible by any coalition whose total weight meets or exceeds a threshold T, while coalitions below T learn nothing. Unlike standard (t,n)-threshold where every party counts equally, weighted SS models organizational hierarchies, PoS validators, and corporate governance.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Shamir Replication (naive)** | 1979 | Replicated Shamir shares | Give each party w_i copies of distinct Shamir shares; total threshold t = T; works but share size scales linearly with weight — impractical for large weights [[1]](https://dl.acm.org/doi/10.1145/359168.359176) |
+| **Benaloh-Leichter Weighted SS** | 1990 | Monotone formulae | Encode weighted threshold as a monotone formula and apply Ito-Saito-Nishizeki; first non-replicated approach but exponential share blowup in the worst case [[1]](https://doi.org/10.1007/0-387-34805-0_27) |
+| **Beimel-Tassa-Weinreb** | 2011 | Birkhoff interpolation | Ideal weighted SS for certain weight distributions using derivative evaluation; share size = secret size when weights satisfy divisibility conditions [[1]](https://link.springer.com/article/10.1007/s10623-010-9420-1) |
+| **Verifiable Weighted SS (Bulletproofs)** | 2025 | Bulletproofs + Shamir | First efficient verifiable weighted SS; proves correct weight assignment via range proofs; stake-aware for PoS systems [[1]](https://arxiv.org/abs/2505.24289) |
+
+**State of the art:** Ideal weighted SS exists only for restricted weight distributions (Beimel-Tassa 2011); general weights require super-polynomial share sizes (information-theoretic lower bound). Verifiable weighted SS (2025) adds verification for blockchain PoS applications. Related to [Hierarchical SS](#hierarchical-secret-sharing) and [General Access Structure SS](#general-access-structure-secret-sharing). Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## Secret Sharing with Cheater Identification (Harn-Lin)
+
+**Goal:** Pinpoint cheaters by identity. Go beyond cheater *detection* (knowing someone cheated) to cheater *identification* (knowing *who* cheated) during secret reconstruction — even when up to t/3 of the t reconstructing parties submit forged shares. The Harn-Lin family achieves this with minimal share expansion by leveraging pairwise consistency checks and MACs embedded in the sharing.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Harn-Lin (t, n) Cheater Identification** | 2009 | Bivariate polynomial + MAC | First efficient cheater-identifying SS for general (t,n); each party holds a row of a bivariate polynomial; pairwise consistency checks identify forged shares; identifies up to floor((t-1)/3) cheaters [[1]](https://doi.org/10.1007/s10623-009-9282-3) |
+| **Harn-Lin Strong CI-SS** | 2012 | Multi-polynomial + hash | Strengthened model: cheater identification even when cheaters see honest shares first (rushing adversary); uses multiple polynomials and hash commitments [[1]](https://doi.org/10.1016/j.ipl.2012.06.008) |
+| **Xu-Qin-Hu CI-SS** | 2015 | Polynomial + one-way function | Reduced share size: achieves cheater identification with shares only slightly larger than the secret; relaxes bivariate requirement [[1]](https://doi.org/10.1016/j.ins.2015.03.026) |
+| **Jhanwar-Safavi-Naini Efficient CI-SS** | 2013 | Universal hash + polynomial | Near-optimal: share size |S| + O(kappa) bits (kappa = security parameter); cheater identification for rushing adversaries; efficient verification [[1]](https://eprint.iacr.org/2013/549) |
+
+**State of the art:** Jhanwar-Safavi-Naini (2013) achieves near-optimal share size for cheater identification; Harn-Lin (2009, 2012) is the foundational construction. Stronger than [Cheater Detection](#secret-sharing-with-cheater-detection) (which only detects, not identifies) and complementary to [Robust SS](#robust-secret-sharing) (which corrects errors without identifying cheaters). Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## Secret Sharing over Non-Abelian Groups
+
+**Goal:** Secret sharing using non-commutative algebraic structures. Replace the underlying abelian group (or field) in Shamir/LSSS with a non-abelian group — opening new design possibilities, stronger security models against quantum adversaries (non-abelian hidden subgroup problem is harder), and connections to group-theoretic cryptography.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Desmedt-Pieprzyk Non-Abelian SS** | 1994 | Permutation groups | First non-abelian SS; shares are elements of a symmetric group S_n; reconstruction via group-theoretic interpolation; information-theoretic security [[1]](https://doi.org/10.1007/BFb0053451) |
+| **Algebraic Geometric SS (Chen-Cramer)** | 2006 | Algebraic geometry codes | Generalized algebraic SS using algebraic curves over non-prime fields; extends LSSS to broader algebraic structures [[1]](https://link.springer.com/chapter/10.1007/11818175_32) |
+| **Habeeb-Kahrobaei-Shpilrain** | 2012 | Semidirect product groups | SS using semidirect products of non-abelian groups; share reconstruction via non-commutative group operations; proposed as quantum-resistant [[1]](https://doi.org/10.1515/gcc-2012-0006) |
+| **Braid Group SS** | 2006 | Braid groups + conjugacy | Uses the conjugacy problem in braid groups; shares are braid words; non-abelian structure resists quantum Fourier sampling attacks [[1]](https://doi.org/10.1007/11889342_20) |
+
+**State of the art:** Non-abelian SS remains primarily theoretical; no schemes have seen practical deployment. Interest is driven by potential quantum resistance (the non-abelian hidden subgroup problem is believed hard for quantum computers, unlike Shor-vulnerable abelian groups). Semidirect product and braid group constructions are the most studied. Extends [Secret Sharing](#secret-sharing-schemes-sss); relates to post-quantum motivations in [Post-Quantum Cryptography](categories/15-quantum-cryptography.md#post-quantum-cryptography-pqc).
+
+---
+
+## Visual Secret Sharing
+
+**Goal:** Secret sharing decodable by human vision. Split a binary image (or grayscale/color image) into n printed transparency shares such that stacking any t transparencies reveals the secret image to the naked eye, while fewer than t stacked shares appear as random noise. No computation or devices required for reconstruction — just physical overlay.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Naor-Shamir Visual SS** | 1995 | Subpixel expansion | Foundational (2,2)-visual SS; each pixel expanded into m subpixels; stacking reveals black/white contrast; perfect information-theoretic secrecy; EUROCRYPT 1994 [[1]](https://doi.org/10.1007/BFb0053419) |
+| **Naor-Shamir (t,n) Generalization** | 1995 | Basis matrices + combinatorics | General (t,n)-threshold visual SS; contrast decreases as t grows; pixel expansion m = O(2^n); EUROCRYPT 1994 [[1]](https://doi.org/10.1007/BFb0053419) |
+| **Ateniese-Blundo-De Santis-Stinson** | 1996 | Monotone access structures | Extended visual SS to arbitrary monotone access structures (not just threshold); characterized by contrast and pixel expansion via linear algebra [[1]](https://doi.org/10.1016/S0304-3975(96)00127-6) |
+| **Probabilistic Visual SS (Yang)** | 2004 | Probabilistic subpixels | Eliminates pixel expansion: shares are same size as original image; probabilistic reconstruction trades deterministic contrast for no size blow-up [[1]](https://doi.org/10.1016/j.patrec.2004.01.006) |
+| **Colored Visual SS (Hou)** | 2003 | CMY color model | Extends visual SS to color images; separate sharing per color channel; meaningful color reconstruction via halftone techniques [[1]](https://doi.org/10.1016/S0031-3203(02)00258-3) |
+
+**State of the art:** Naor-Shamir (1995) is the foundational scheme; probabilistic visual SS (2004) solves the pixel-expansion problem. Visual SS is deployed in anti-counterfeiting, physical key ceremony backup, and low-tech secure authentication. Closely related to [Visual Cryptography](categories/20-applied-niche-protocols.md#visual-cryptography) in the applied protocols category. Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## AONT-RS: All-or-Nothing Transform with Reed-Solomon for Cloud Storage
+
+**Goal:** Secure and efficient data dispersal for cloud/distributed storage. Combine an All-or-Nothing Transform (AONT) — which makes it computationally infeasible to recover any part of the plaintext without all transform output blocks — with Reed-Solomon erasure coding, achieving confidentiality without per-share encryption and fault tolerance without full replication. Dramatically reduces storage overhead compared to encrypt-then-replicate.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Rivest AONT (OAEP-based)** | 1997 | Block cipher + hash | Original All-or-Nothing Transform; encrypts with random key, then XORs all ciphertext blocks into the key block; any missing block renders all blocks useless [[1]](https://doi.org/10.1007/BFb0052345) |
+| **AONT-RS (Resch-Plank)** | 2011 | AONT + Reed-Solomon | Combines AONT with systematic RS coding; s data blocks + (n-s) parity blocks; any s of n blocks suffice for recovery; confidentiality from AONT, fault-tolerance from RS; deployed in cloud storage research [[1]](https://doi.org/10.1109/FAST.2011.5544522) |
+| **Secure AONT-RS (Kurihara et al.)** | 2013 | Cauchy RS + improved AONT | Optimized AONT-RS with Cauchy Reed-Solomon for faster encoding/decoding; formal security proof under CPA model; reduced computational overhead [[1]](https://doi.org/10.1109/TPDS.2013.52) |
+| **CAONT-RS (Yan-Weng-Chen)** | 2017 | Computational AONT + RS | Computationally secure AONT-RS variant; uses AES-based AONT to avoid information-theoretic overhead; suitable for large-scale cloud deployments [[1]](https://doi.org/10.1109/TCC.2017.2679717) |
+
+**State of the art:** AONT-RS (Resch-Plank 2011) is the standard construction for secure distributed storage; achieves 1.5-3x storage overhead (vs. 3x for replication) while providing both confidentiality and fault tolerance. Used in Cleversafe (now IBM Cloud Object Storage), academic secure storage systems, and RAID-like distributed architectures. Distinct from [Computational SS](#computational-secret-sharing) (Krawczyk) which shares a key rather than dispersing data. Extends [Secret Sharing](#secret-sharing-schemes-sss) and relates to [Regenerating Codes](#regenerating-codes-for-distributed-storage).
+
+---
+
+## Rational Secret Sharing
+
+**Goal:** Incentive-compatible reconstruction. In standard SS, rational (selfish) players may deviate from the protocol — e.g., withholding their share to learn the secret from others without reciprocating. Rational SS designs mechanisms where following the protocol is a Nash equilibrium: no player benefits from deviating, even when all players are self-interested rather than honest or malicious.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Halpern-Teague Rational SS** | 2004 | Game theory + iterated protocol | First rational SS; shows standard SS has no Nash equilibrium for reconstruction; proposes iterated protocol where parties cannot distinguish the real round from dummy rounds [[1]](https://doi.org/10.1145/1007352.1007392) |
+| **Gordon-Katz Rational SS** | 2006 | Computational assumptions | Achieves rational SS in constant rounds under computational assumptions; eliminates the need for physical channels or simultaneous broadcast [[1]](https://eprint.iacr.org/2006/140) |
+| **Asharov-Lindell Utility-Independent** | 2010 | Simulation-based | Rational SS that works for any utility function (not just specific payoff matrices); simulation-based security definition; TCC 2010 [[1]](https://eprint.iacr.org/2009/561) |
+| **Fuchsbauer-Katz-Naccache** | 2010 | Verifiable computation | Efficient rational SS using verifiable computation to detect deviation; sub-linear communication in repeated games [[1]](https://eprint.iacr.org/2010/142) |
+
+**State of the art:** Asharov-Lindell (2010) gives the definitive utility-independent treatment. Rational SS bridges [Secret Sharing](#secret-sharing-schemes-sss) and game theory; closely related to [Rational Cryptography](categories/19-theoretical-foundations.md#rational-cryptography--mechanism-design-in-crypto) and [Secret Sharing with Fairness](#secret-sharing-with-fairness). Primarily theoretical; practical deployments remain limited.
+
+---
+
+## Verifiable Multi-Secret Sharing (VMSS)
+
+**Goal:** Distribute multiple secrets with dealer accountability. A dealer shares k independent secrets among n parties such that (1) each secret has its own threshold/access structure, (2) any party can verify their shares are consistent, and (3) shares are reusable across reconstruction phases for different secrets — without the dealer re-distributing. Combines the goals of [VSS](#secret-sharing-schemes-sss) and [Multi-Secret Sharing](#multi-secret-sharing).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **He-Dawson VMSS** | 1994 | One-way functions + polynomial | First VMSS; single set of shares verifiably encodes multiple secrets; uses hash-based commitments for verification [[1]](https://doi.org/10.1049/el:19941387) |
+| **Yang-Chang-Hwang VMSS** | 2004 | Shamir + discrete-log commitments | Efficient VMSS with reusable shares; verification via Feldman-style commitments on each secret polynomial; widely cited [[1]](https://www.sciencedirect.com/science/article/abs/pii/S0140366498001911) |
+| **Dehkordi-Mashhadi VMSS** | 2008 | Bilinear pairings + polynomial | VMSS using pairings for efficient batch verification; supports distinct thresholds per secret with constant-size public parameters [[1]](https://doi.org/10.1016/j.ipl.2008.05.006) |
+| **Liu-Ning-Liang VMSS** | 2016 | Lattice-based + polynomial | First post-quantum VMSS; verification based on lattice assumptions (SIS); resists quantum adversaries [[1]](https://doi.org/10.1016/j.ins.2016.03.037) |
+
+**State of the art:** Yang-Chang-Hwang (2004) and Dehkordi-Mashhadi (2008) are the most cited practical constructions; Liu et al. (2016) provides a post-quantum path. VMSS is used in key escrow, multi-authority credential systems, and digital rights management where a dealer must commit to multiple secrets simultaneously. Extends [Multi-Secret Sharing](#multi-secret-sharing) and [Verifiable SS](#secret-sharing-schemes-sss).
+
+---
+
+## Secret Sharing with Enrollment / Dynamic Secret Sharing
+
+**Goal:** Add or remove participants post-sharing. Allow new participants to receive valid shares, and revoke existing shares, without re-sharing the original secret from scratch or requiring all existing shareholders to participate. Essential for long-lived systems where the participant set changes over time.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Blundo-Cresti-De Santis-Vaccaro Dynamic SS** | 1993 | Bivariate polynomial | Dealer precomputes a bivariate polynomial; new shares derived from dealer's master; O(1) enrollment cost per new party; CRYPTO 1993 [[1]](https://link.springer.com/chapter/10.1007/3-540-48329-2_10) |
+| **Desmedt-Jajodia Enrollment** | 1997 | Redistribution + VSS | Existing shareholders jointly issue a new share without dealer involvement; threshold redistribution ensures forward secrecy against departed members [[1]](https://doi.org/10.1109/SECPRI.1997.601329) |
+| **CHURP (Dynamic Proactive SS)** | 2019 | Bivariate + committee rotation | Combines dynamic enrollment with proactive refresh; supports committee handoff in blockchain settings; tolerates Byzantine faults [[1]](https://eprint.iacr.org/2019/017) |
+| **Mobile Proactive SS (Maram et al.)** | 2024 | Threshold redistribution | Formalized mobile secret sharing: parties join and leave arbitrarily; secret remains secure as long as the threshold is not exceeded in any epoch [[1]](https://eprint.iacr.org/2024/203) |
+
+**State of the art:** CHURP (2019) is the standard for blockchain-era dynamic SS with proactive refresh. Desmedt-Jajodia (1997) introduced dealer-free enrollment. Closely related to [Proactive SS](#proactive-secret-sharing) (which refreshes shares periodically) and [Evolving SS](#evolving-secret-sharing) (which handles unbounded participants but without revocation). Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---
+
+## Function Secret Sharing (FSS) for Threshold Policies
+
+**Goal:** Distribute a function rather than a value. In function secret sharing, the dealer splits a function f into n function shares f_1, ..., f_n such that each f_i individually hides f, but any t shares allow pointwise reconstruction of f(x) for any input x. When the function class is restricted to point functions or interval functions, FSS yields compact shares and efficient evaluation — enabling applications like private database queries and distributed point functions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boyle-Gilboa-Ishai FSS** | 2015 | PRG tree + point functions | Foundational FSS construction; 2-party FSS for point functions with O(lambda) share size; enables lightweight PIR and DPF; EUROCRYPT 2015 [[1]](https://eprint.iacr.org/2015/879) |
+| **Multi-Party FSS** | 2019 | PRG + replicated SS | Extends FSS to t-of-n threshold; shares of decision tree or interval functions; enables multi-server private queries [[1]](https://eprint.iacr.org/2018/707) |
+| **FSS for Arithmetic Circuits** | 2021 | Homomorphic + PRG | FSS for richer function classes (low-degree polynomials, CNFs); enables distributed private analytics [[1]](https://eprint.iacr.org/2020/1392) |
+| **Verifiable FSS** | 2023 | FSS + MAC consistency | Adds verification: servers can check their function share evaluations are consistent without learning the function; prevents silent corruption [[1]](https://eprint.iacr.org/2023/1042) |
+
+**State of the art:** Boyle-Gilboa-Ishai (2015) is the foundational scheme; FSS for point functions (DPF) is deployed in private analytics (Prio, Apple/Google exposure notifications) and lightweight [PIR](categories/10-privacy-preserving-computation.md#private-information-retrieval-pir). Multi-party and verifiable FSS (2019-2023) extend to threshold settings. Closely related to [Distributed Point Functions / FSS](categories/06-multi-party-computation.md#function-secret-sharing--distributed-point-functions-fss--dpf) in the MPC category. Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+---

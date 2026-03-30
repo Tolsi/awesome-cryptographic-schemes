@@ -689,3 +689,143 @@
 **State of the art:** Loopix-style Poisson cover traffic (deployed in [Nym Network](#nym-network) and [Katzenpost](#katzenpost)) provides the strongest formal differential-privacy bound for high-latency mixnets. WTF-PAD (deployed in Tor Browser) and Tamaraw reduce website fingerprinting for low-latency systems. Foundational context for [Mix Networks](#mix-networks-mixnets), [Onion Routing](#onion-routing), and [Karaoke](#karaoke).
 
 ---
+
+## Oblivious Pseudorandom Functions (OPRF / VOPRF / POPRF)
+
+**Goal:** A two-party protocol where a server holds a PRF key k and a client holds an input x; the client obtains PRF(k, x) without the server learning x, and (in the verifiable variant) with a proof that the output is correct. OPRFs are the cryptographic core of Privacy Pass, password-hardening (OPAQUE), and private set intersection. The partially-oblivious variant (POPRF) allows a public metadata tag to be bound into the evaluation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Naor-Reingold OPRF** | 2004 | DH-based blind evaluation | Foundational construction: client blinds input, server evaluates on blinded point, client unblinds; basis for all modern EC-based OPRFs [[1]](https://eprint.iacr.org/2004/093) |
+| **VOPRF (Verifiable OPRF)** | 2015 | DH + DLEQ proof | Jarecki-Kiayias-Krawczyk: server attaches a DLEQ proof that the evaluation used the committed key; prevents malicious tagging [[1]](https://eprint.iacr.org/2014/650) |
+| **IETF OPRF (RFC 9497)** | 2023 | Ristretto255 / P-384 + DLEQ | Standardized OPRF, VOPRF, and POPRF modes; POPRF binds public info into evaluation; used in Privacy Pass (RFC 9576) and OPAQUE [[1]](https://www.rfc-editor.org/rfc/rfc9497) |
+| **2HashDH OPRF** | 2005 | Hash-to-curve + DH | Simple two-hash construction: H-to-curve, blind, evaluate, unblind; instantiated in Privacy Pass v1; proven in ROM [[1]](https://eprint.iacr.org/2005/010) |
+| **Threshold OPRF (tOPRF)** | 2020 | DH + Shamir secret sharing | Key split across n servers; t-of-n threshold evaluation; prevents single-server key compromise; used in distributed OPAQUE variants [[1]](https://eprint.iacr.org/2017/363) |
+
+**State of the art:** IETF RFC 9497 (2023) standardizes OPRF/VOPRF/POPRF over Ristretto255 and P-384. Deployed in [Privacy Pass](#privacy-pass--anonymous-tokens) (RFC 9576), [OPAQUE](categories/03-key-exchange-key-management.md#pake--password-authenticated-key-exchange), and private contact discovery. Threshold OPRF enables distributed credential issuance without a single point of trust. Related to [PRF/PRP](categories/01-foundational-primitives.md#pseudorandom-functions-prf--pseudorandom-permutations-prp).
+
+---
+
+## Group Signatures with Verifier-Local Revocation (VLR)
+
+**Goal:** Group signatures where revocation checks are performed entirely by the verifier using a public revocation list, without requiring signers to update their keys or interact with the group manager after initial enrollment. The verifier checks each signature against a revocation list of revocation tokens; if a match is found, the signature is rejected. Critical for offline verification scenarios (mDL, TPM attestation, transit cards).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boneh-Shacham VLR Group Sig** | 2004 | Pairings / q-SDH | First VLR group signature; verifier checks sig against revocation tokens in O(R) time per verification; no signer update needed [[1]](https://eprint.iacr.org/2004/234) |
+| **Nakanishi-Funabiki Efficient VLR** | 2005 | Pairings + accumulator | Reduced verification to O(1) using accumulator-based non-revocation witness; signer carries witness [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30580-4_5) |
+| **EPID 2.0 (VLR mode)** | 2011 | Pairings + Brickell-Li | Intel EPID with VLR: verifier holds SigRL (signature revocation list); checks each sig against SigRL entries; deployed in SGX attestation [[1]](https://eprint.iacr.org/2009/095) |
+| **Lattice-Based VLR Group Sig (Langlois et al.)** | 2014 | SIS + LWE | First post-quantum VLR group signature; proof size O(n log n) but avoids pairings entirely [[1]](https://eprint.iacr.org/2014/033) |
+| **Dynamic VLR Group Sig (Perera-Koshiba)** | 2018 | Pairings + dynamic join | Supports dynamic member enrollment without re-keying; VLR revocation remains verifier-local [[1]](https://eprint.iacr.org/2018/485) |
+
+**State of the art:** Intel EPID with SigRL-based VLR is the most widely deployed VLR group signature scheme (billions of Intel CPUs). Lattice-based VLR (Langlois et al.) provides the post-quantum path. VLR is the revocation model used in [Direct Anonymous Attestation (DAA)](#direct-anonymous-attestation-daa) and complements [Accumulators for Credential Revocation](#accumulators-for-credential-revocation). Related to [Ring & Group Signatures](categories/08-signatures-advanced.md#ring--group-signatures).
+
+---
+
+## zkSNARK-Based Anonymous Credentials
+
+**Goal:** Anonymous credentials where the presentation proof is a general-purpose zkSNARK rather than a scheme-specific sigma protocol. The issuer signs attributes (using ECDSA, EdDSA, or any standard signature); the holder proves knowledge of a valid signature and arbitrary predicates over attributes inside a zkSNARK circuit. This decouples the credential format from the privacy layer — any signed data can be made selectively disclosable after the fact.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **zk-creds (Rosenberg et al.)** | 2023 | Groth16 / PLONK + ECDSA-in-circuit | Prove possession of an ECDSA-signed credential (passport, driver's license) inside a zkSNARK; no issuer cooperation needed [[1]](https://eprint.iacr.org/2022/878) |
+| **Semaphore-style credential proofs** | 2020 | Groth16 + Merkle tree | Prove membership in a committed set of credential hashes; nullifier prevents double-use; used in Zupass for event tickets [[1]](https://semaphore.pse.dev/) |
+| **Circom Passport (Proof of Passport)** | 2024 | Groth16 + RSA/ECDSA verify circuit | Prove data from an ePassport RFID chip (nationality, age) without revealing identity; RSA signature verification inside Circom circuit [[1]](https://github.com/zk-passport/proof-of-passport) |
+| **Noir Credential Proofs** | 2024 | UltraHonk / PLONK + Noir DSL | Write credential verification circuits in Noir; compile to ACIR; prove BBS+ or ECDSA signature knowledge; composable with Aztec private state [[1]](https://noir-lang.org/) |
+| **zkLogin (Sui / Mysten Labs)** | 2023 | Groth16 + OIDC JWT verification | Prove possession of a Google/Apple OIDC JWT inside a zkSNARK; derive a blockchain address from the JWT sub claim without revealing email or identity [[1]](https://docs.sui.io/concepts/cryptography/zklogin) |
+
+**State of the art:** zk-creds and Circom Passport (2023-2024) demonstrate that existing government-issued credentials (passports, driver's licenses) can be made privacy-preserving without reissuing them. zkLogin (Sui) deploys OIDC-in-SNARK for millions of users. The approach is more flexible than [BBS+](#bbs-anonymous-credentials) (works with any signature) but produces larger proofs and requires circuit compilation. Related to [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems-overview) and [Anonymous Credentials](#anonymous-credentials).
+
+---
+
+## Signal KVAC v2 (zkgroup)
+
+**Goal:** Evolved keyed-verification anonymous credentials for Signal's group system, adding encrypted member profiles, group-level attribute verification, and auth credentials with expiration. The zkgroup library implements a purpose-built credential system where the Signal server (credential issuer) can verify presentations but cannot link them across sessions or learn which user is presenting.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CMZ KVAC (original)** | 2014 | Algebraic MAC + ZK | Chase-Meiklejohn-Zaverucha: foundational KVAC scheme; MAC on committed attributes with ZK proof of possession [[1]](https://eprint.iacr.org/2013/516) |
+| **Signal zkgroup v1** | 2020 | CMZ + Ristretto255 | Signal Private Group System: anonymous group membership credentials; server issues MAC-based credential; client proves membership without revealing UID [[1]](https://signal.org/blog/signal-private-group-system/) |
+| **Signal zkgroup v2 (auth credentials)** | 2022 | CMZ + expiring tokens + encrypted profiles | Auth credential with redemption timestamp; profile key credentials allow encrypted profile fetch without server learning which profile; pni credentials for phone-number privacy [[1]](https://github.com/nickolay/nickolay.github.io/blob/main/2023-01-08-signal-groups.md) |
+| **Signal Username Credentials** | 2024 | KVAC + encrypted username | Users prove username ownership to contacts via KVAC presentation; Signal server cannot link username to phone number or group membership [[1]](https://signal.org/blog/phone-number-privacy-usernames/) |
+
+**State of the art:** Signal zkgroup v2 (2022-2024) is the largest real-world KVAC deployment (100M+ users). The system has evolved from simple group membership to a multi-credential architecture covering auth tokens, profile keys, phone-number identifiers, and usernames. Extends [KVAC](#keyed-verification-anonymous-credentials-kvac); uses [Ristretto255](categories/01-foundational-primitives.md#ristretto255--decaf).
+
+---
+
+## CBDC Privacy Architectures
+
+**Goal:** Central Bank Digital Currency designs that balance regulatory compliance (AML, transaction limits) with user privacy. Unlike fully anonymous e-cash, CBDC privacy architectures provide tiered anonymity: small transactions may be payer-anonymous, while large transactions require identity disclosure. The cryptographic challenge is enforcing spending limits and regulatory thresholds without a central ledger that tracks all transactions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ECB Digital Euro (privacy tier model)** | 2023 | Blind signatures + pseudonymous ledger | Low-value offline: blind-signed tokens (Chaum-style); high-value online: pseudonymous accounts with AML threshold triggers [[1]](https://www.ecb.europa.eu/paym/digital_euro/investigation/profuse/shared/files/dedocs/ecb.dedocs231013_Digital_euro_privacy.en.pdf) |
+| **Platypus (Wüst-Kostiainen-Cap)** | 2022 | Blind sigs + range proofs + threshold reporting | Regulatory-compliant e-cash: user holds blind-signed coins; ZK range proof enforces per-period spending limit; threshold exceeded triggers identity disclosure [[1]](https://eprint.iacr.org/2021/1443) |
+| **PEReDi (Grothoff et al.)** | 2022 | Blind RSA + income transparency | "Private E-cash with Regulated Direct Issuance": issuer blind-signs coins; merchant deposits reveal income (one-sided transparency); basis of GNU Taler CBDC mode [[1]](https://taler.net/papers/peredi-2022.pdf) |
+| **Hamilton Project / OpenCBDC (MIT-Boston Fed)** | 2022 | Hash-based commitments + transaction processor | Research CBDC platform; explored privacy-preserving architectures; concluded 99,000 tx/s possible with privacy layer [[1]](https://www.bostonfed.org/publications/research-department-working-paper/2022/the-hamilton-project-a-broad-design-space-approach-to-cbdc-technical-research.aspx) |
+| **Bank of England CBDC Consultation** | 2023 | Pseudonymous accounts + AML gateway | "Digital Pound" design: accounts pseudonymous to intermediaries; BoE sees no personal data; AML performed at payment interface provider level [[1]](https://www.bankofengland.co.uk/paper/2023/the-digital-pound-consultation-paper) |
+
+**State of the art:** The ECB Digital Euro (pilot phase 2024-2025) uses a tiered privacy model with blind-signed offline tokens for small payments. Platypus (2022) provides the strongest formal privacy guarantees with regulatory compliance via ZK range proofs on spending limits. Extends [E-Cash / Chaumian Digital Cash](#e-cash--chaumian-digital-cash) and [GNU Taler](#gnu-taler) with compliance-aware privacy. Related to [Blind Signatures](categories/08-signatures-advanced.md#blind-signatures) and [Range Proofs](categories/13-blockchain-distributed-ledger.md#range-proofs).
+
+---
+
+## Post-Quantum Anonymous Credentials
+
+**Goal:** Anonymous credential schemes secure against quantum computers. Classical anonymous credentials (CL, BBS+, PS, KVAC) rely on discrete-log or pairing assumptions broken by Shor's algorithm. Post-quantum constructions replace these with lattice, hash, or code assumptions while preserving selective disclosure and unlinkability. The main challenge is achieving practical proof sizes and prover efficiency under PQ assumptions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Lattice-Based Anonymous Credentials (Jeudy et al.)** | 2023 | Module-SIS + Module-LWE | First practical lattice-based anonymous credentials with selective disclosure; proof size ~100 KB; unlinkable multi-show [[1]](https://eprint.iacr.org/2023/560) |
+| **Hash-Based Anonymous Credentials (Buser et al.)** | 2023 | SPHINCS+ / symmetric primitives | Anonymous credentials from hash-based assumptions only; conservative PQ security; large proofs (~500 KB) but minimal hardness assumptions [[1]](https://eprint.iacr.org/2023/490) |
+| **PQ-BBS (Araniti-Sakzad)** | 2024 | Module lattices + BBS-like structure | Lattice analogue of BBS+ signatures with selective disclosure; aims to be drop-in replacement for BBS+ in W3C VC ecosystem [[1]](https://eprint.iacr.org/2024/232) |
+| **MPCitH-Based Anonymous Credentials** | 2023 | MPC-in-the-Head + symmetric PRF | Credential presentation via MPCitH proof of MAC knowledge; MAC-based (like KVAC) but proven via Fiat-Shamir'd MPC simulation; PQ from symmetric assumptions [[1]](https://eprint.iacr.org/2023/1587) |
+
+**State of the art:** Lattice-based anonymous credentials (2023) are approaching practical sizes but remain 10-100x larger than BBS+ proofs. MPCitH-based credentials offer the most conservative assumptions (symmetric only) at the cost of proof size. PQ-BBS aims for ecosystem compatibility with [BBS+ Anonymous Credentials](#bbs-anonymous-credentials). Active NIST/IETF discussion on PQ credential migration. Related to [Post-Quantum Cryptography](categories/15-quantum-cryptography.md#post-quantum-cryptography-pqc) and [MPCitH](categories/04-zero-knowledge-proof-systems.md#mpc-in-the-head-mpcith).
+
+---
+
+## Credential Status Mechanisms (Revocation Transparency)
+
+**Goal:** Efficiently communicate credential revocation status while preserving holder privacy. A revoked credential must be rejected by verifiers, but the revocation mechanism should not enable tracking of non-revoked holders. Key trade-offs: update frequency, holder privacy during status checks, verifier offline capability, and issuer infrastructure cost.
+
+| Mechanism | Year | Basis | Note |
+|-----------|------|-------|------|
+| **CRL (Certificate Revocation List)** | 1999 | Signed list of serial numbers | X.509 standard; issuer publishes full list of revoked serial numbers; verifier downloads and checks; privacy issue: no holder interaction needed but lists grow large [[1]](https://www.rfc-editor.org/rfc/rfc5280) |
+| **OCSP (Online Certificate Status Protocol)** | 1999 | Signed per-certificate response | RFC 6960; verifier queries issuer for single certificate status; privacy risk: issuer learns which certificates are being verified [[1]](https://www.rfc-editor.org/rfc/rfc6960) |
+| **OAuth Status List (Token Status List)** | 2024 | Bitstring in signed JWT/CWT | IETF draft; compact bit-array where position i indicates revocation of credential i; signed by issuer; no per-check issuer interaction; mandated by eIDAS 2.0 ARF [[1]](https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/) |
+| **Revocation Transparency (Laurie-Kasper)** | 2012 | Merkle tree + append-only log | Append-only log of revocation events; verifiers check inclusion proofs; prevents silent revocation; inspired by Certificate Transparency [[1]](https://www.links.org/files/RevocationTransparency.pdf) |
+| **Accumulator-Based Non-Revocation Proofs** | 2002 | RSA/Pairing accumulator + ZK | Holder proves credential is NOT in revoked set via ZK witness; verifier learns nothing about which credential was checked; used in Hyperledger AnonCreds and Idemix [[1]](https://eprint.iacr.org/2008/539) |
+| **W3C VC Bitstring Status List** | 2024 | Bitstring + VC envelope | W3C specification; status list published as a Verifiable Credential containing a compressed bitstring; supports revocation and suspension; ecosystem-neutral [[1]](https://www.w3.org/TR/vc-bitstring-status-list/) |
+
+**State of the art:** OAuth Status List (IETF draft, 2024) is mandated by the [EU EUDI Wallet](#eu-eudi-wallet-cryptographic-architecture-eidas-20) for credential revocation. Accumulator-based ZK non-revocation proofs (used in [AnonCreds](#accumulators-for-credential-revocation) and [IRMA/Yivi](#irma--yivi-credential-system)) provide the strongest privacy but require holder witness updates. W3C Bitstring Status List is gaining adoption for VC ecosystems. Related to [Accumulators for Credential Revocation](#accumulators-for-credential-revocation) and [Certificate Transparency](categories/14-applied-infrastructure-pki.md#tee-remote-attestation).
+
+---
+
+## Anonymous Multi-Hop Locks (AMHL)
+
+**Goal:** Privacy-preserving payment channel routing. In a multi-hop payment (Alice -> Bob -> Carol -> Dave), each intermediary should learn only their immediate neighbors, not the sender, receiver, or full path. AMHLs replace hash-time-lock contracts (HTLCs) with homomorphic one-way functions so that locking scripts at each hop are unlinkable, preventing wormhole attacks and payment correlation by colluding intermediaries.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HTLC (Hash Time-Locked Contracts)** | 2015 | Hash preimage + timelock | Standard Lightning payment routing; same hash H(x) used at every hop; any two colluding intermediaries can correlate the payment [[1]](https://lightning.network/lightning-network-paper.pdf) |
+| **AMHL (Malavolta et al.)** | 2019 | Homomorphic one-way function + adaptor sigs | Each hop uses a different lock related by a homomorphic relation; intermediaries cannot link locks across hops; compatible with Schnorr/ECDSA adaptor signatures [[1]](https://eprint.iacr.org/2019/589) |
+| **Point Time-Locked Contracts (PTLCs)** | 2020 | Schnorr adaptor signatures | Lightning-specific AMHL instantiation; each hop uses a different Schnorr point; unlocking one reveals the adaptor secret for the next; planned for Lightning with Taproot [[1]](https://bitcoinops.org/en/topics/ptlc/) |
+| **Multi-Hop Locks from Lattices** | 2022 | Lattice-based adaptor sigs | Post-quantum AMHL construction; homomorphic lock relation from Module-LWE; compatible with lattice-based payment channels [[1]](https://eprint.iacr.org/2022/1247) |
+
+**State of the art:** PTLCs (planned for Bitcoin Lightning Network post-Taproot activation) will replace HTLCs to prevent payment correlation attacks. The Malavolta et al. AMHL framework (CCS 2019) is the theoretical foundation; lattice variants provide PQ readiness. Related to [Adaptor Signatures](categories/08-signatures-advanced.md#adaptor-signatures), [Atomic Swaps](categories/13-blockchain-distributed-ledger.md#fair-exchange--atomic-swaps), and [Sphinx packet format](#onion-routing) used in Lightning onion routing.
+
+---
+
+## Fuzzy Message Detection (FMD)
+
+**Goal:** Allow a recipient to detect messages intended for them on an encrypted broadcast channel without downloading and trial-decrypting every message, while revealing only a controlled false-positive rate to the server. The server applies a detection algorithm to each message using a detection key; it flags messages for the recipient but cannot distinguish true positives from false positives, providing differential privacy on the recipient's activity.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **FMD (Beck-Len-Maller-Zamfir)** | 2021 | DH-based flag-key pairs | First formal FMD definition; sender attaches a ciphertext-flag; server uses detection key to test flag; tunable false-positive rate p = 2^{-n} via multi-key scheme [[1]](https://eprint.iacr.org/2021/089) |
+| **FMD with Clue Keys (Penumbra)** | 2022 | FMD + ECDH clue generation | Deployed in Penumbra (privacy-focused Cosmos chain); each transaction includes a detection clue; full nodes filter for wallet using detection key; reduces sync bandwidth by 10-100x [[1]](https://protocol.penumbra.zone/main/crypto/fmd.html) |
+| **FMD from Oblivious Message Retrieval** | 2023 | PIR + FHE-based | Combines FMD detection with server-side homomorphic evaluation for stronger privacy; server cannot even learn false-positive rate [[1]](https://eprint.iacr.org/2021/1256) |
+
+**State of the art:** FMD (2021) solves a fundamental problem for encrypted blockchain wallets and messaging: efficient scanning without full download. Deployed in Penumbra's Cosmos chain (2023). The PIR-based variant from [Oblivious Message Retrieval](categories/10-privacy-preserving-computation.md#oblivious-message-retrieval-omr) provides the strongest server-privacy guarantees. Related to [Stealth Addresses](#stealth-addresses), [Zcash Shielded Protocols](#zcash-shielded-protocols-sapling--orchard), and [PIR](categories/10-privacy-preserving-computation.md#private-information-retrieval-pir).
+
+---

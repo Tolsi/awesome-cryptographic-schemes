@@ -733,4 +733,160 @@ Noise parameters η₁ and η₂ define the centered binomial distribution for s
 
 ---
 
+## Device-Independent Quantum Key Distribution (DI-QKD)
+
+**Goal:** Gold-standard quantum key exchange that makes zero assumptions about the internal workings of the devices — security is certified solely by observed Bell inequality violations between distant parties.
+
+| Protocol | Year | Basis | Note |
+|----------|------|-------|------|
+| **Ekert E91 (DI framing)** | 1991 | Bell inequality + entanglement | Original proposal to derive key security from Bell violation [[1]](https://link.springer.com/chapter/10.1007/978-3-319-53412-1_2) |
+| **Vazirani-Vidick DI-QKD** | 2014 | Loophole-free Bell test | First full security proof for DI-QKD against quantum adversaries [[1]](https://doi.org/10.1103/PhysRevLett.113.140501) |
+| **Nadlinger et al. (Oxford)** | 2022 | Trapped Sr-88 ions, 400 m | First complete DI-QKD experiment between distant nodes; loophole-free Bell test [[1]](https://www.nature.com/articles/s41586-022-04941-5) |
+| **Zhang et al. (USTC)** | 2022 | Trapped ions, finite-key | Parallel DI-QKD demonstration with finite-key security analysis [[1]](https://www.nature.com/articles/s41586-022-04891-y) |
+| **Routed Bell DI-QKD** | 2025 | Photonic routing | DI-QKD based on routed Bell tests; improved rate scaling [[1]](https://link.aps.org/doi/10.1103/PRXQuantum.6.020311) |
+
+**State of the art:** First experimental demonstrations achieved in 2022 (Oxford, USTC) over laboratory distances using trapped ions. Rates remain extremely low (~0.07 bits per heralded event). Practical deployment requires major improvements in entanglement distribution rates and detector efficiency. Extends [QKD](#quantum-key-distribution-qkd) to the strongest possible trust model.
+
+---
+
+## Quantum Secure Direct Communication (QSDC)
+
+**Goal:** Transmit secret messages directly over a quantum channel without first establishing a shared key — unlike QKD, the message itself travels as quantum states, with built-in eavesdropping detection.
+
+| Protocol | Year | Basis | Note |
+|----------|------|-------|------|
+| **Long-Liu Two-Step** | 2002 | EPR pairs | First QSDC protocol; transmit messages using entangled pairs with block checking [[1]](https://doi.org/10.1103/PhysRevA.65.032302) |
+| **DL04** | 2004 | Single photons | Practical single-photon QSDC; simpler than entanglement-based schemes [[1]](https://doi.org/10.1103/PhysRevA.69.052319) |
+| **Hu et al. (100 km fiber)** | 2022 | Time-bin + phase encoding | First intercity QSDC demonstration over 100 km fiber [[1]](https://www.nature.com/articles/lsa2016144) |
+| **15-User QSDC Network** | 2021 | DL04 + wavelength multiplexing | First multi-user QSDC network with 15 users; star topology [[1]](https://www.nature.com/articles/s41377-021-00634-2) |
+| **Chip-Integrated QDS+QSDC** | 2025 | Silicon photonics | Chip-integrated quantum signature network over 200 km fiber [[1]](https://www.nature.com/articles/s41377-025-01775-4) |
+
+**State of the art:** Demonstrated over 100 km fiber (2022) and in 15-user networks (2021). Active research in China with plans for metropolitan deployment. Unlike [QKD](#quantum-key-distribution-qkd), QSDC eliminates the key distribution step entirely, but requires quantum memory or block transmission for security checking.
+
+---
+
+## Quantum Digital Signatures (QDS)
+
+**Goal:** Information-theoretically secure digital signatures using quantum mechanics — guarantee non-repudiation, unforgeability, and transferability based on quantum no-cloning rather than computational hardness assumptions.
+
+| Protocol | Year | Basis | Note |
+|----------|------|-------|------|
+| **Gottesman-Chuang QDS** | 2001 | Quantum one-way functions | First QDS proposal; requires quantum memory and swap test [[1]](https://arxiv.org/abs/quant-ph/0105032) |
+| **Dunjko-Wallden-Kent QDS** | 2014 | Phase-encoded coherent states | First experimentally feasible QDS; no quantum memory needed [[1]](https://www.nature.com/articles/ncomms2172) |
+| **OTUH-QDS (One-Time Universal Hashing)** | 2018 | Universal hashing + QKD | Efficient multi-bit signing; 10^8x improvement for long messages [[1]](https://dl.acm.org/doi/10.1007/s11128-018-2116-2) |
+| **Experimental QDS Network (Nanjing)** | 2023 | BB84 + QDS | Quantum secure network with integrated digital signatures and encryption [[1]](https://academic.oup.com/nsr/article/10/4/nwac228/6769862) |
+| **High-Rate QDS (250 km)** | 2025 | Twin-field + QDS | 5186 signatures/sec over 75 km; QDS over 250 km fiber [[1]](https://arxiv.org/html/2603.16764) |
+
+**State of the art:** Practical QDS demonstrated in multi-user networks (2023) and over 250 km fiber (2025). Signature rates now exceed thousands per second. Complements [QKD](#quantum-key-distribution-qkd) by adding authentication and non-repudiation to quantum-secured channels.
+
+---
+
+## Blind Quantum Computation (BQC)
+
+**Goal:** Delegate arbitrary quantum computations to an untrusted quantum server while keeping inputs, outputs, and the computation itself perfectly private — the server learns nothing about what it is computing.
+
+| Protocol | Year | Basis | Note |
+|----------|------|-------|------|
+| **Childs (Circuit BQC)** | 2005 | Quantum circuit + OTP | First BQC protocol; requires quantum communication for each gate [[1]](https://doi.org/10.5555/2011637.2011639) |
+| **BFK (Broadbent-Fitzsimons-Kashefi)** | 2009 | Measurement-based QC | Universal BQC; client only prepares single qubits; server is computationally blind [[1]](https://arxiv.org/abs/0807.4154) |
+| **Morimae-Fujii** | 2013 | Topological codes + BQC | Fault-tolerant BQC using topological error correction [[1]](https://doi.org/10.1038/ncomms2043) |
+| **Verifiable BQC (Fitzsimons-Kashefi)** | 2017 | Trap qubits | Unconditionally verifiable BQC; client detects cheating server [[1]](https://hal.science/hal-02164540) |
+| **Mahadev Classical Verification** | 2018 | LWE + quantum | First protocol for a purely classical client to verify quantum computation [[1]](https://arxiv.org/abs/1804.01082) |
+
+**State of the art:** BFK protocol (2009) remains the standard for quantum-client BQC. Mahadev (2018, FOCS best paper) showed even a classical client can verify quantum computation under LWE. Experimental demonstrations exist for small circuits. Extends [Quantum Homomorphic Encryption](#quantum-homomorphic-encryption) to the interactive setting.
+
+---
+
+## Quantum Homomorphic Encryption (QHE)
+
+**Goal:** Compute on encrypted quantum data without decrypting it — a quantum server evaluates a quantum circuit on ciphertexts, returning encrypted results that only the key holder can decrypt. The quantum analogue of classical FHE.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Liang (QFHE from QOTPs)** | 2013 | Quantum one-time pad | First quantum FHE scheme for polynomial-size circuits; exponential overhead [[1]](https://arxiv.org/abs/1312.0877) |
+| **Broadbent-Jeffery (Leveled QFHE)** | 2015 | Pauli OTP + classical HE | Classical-key QHE for quantum circuits; leveled (bounded depth) [[1]](https://doi.org/10.1007/978-3-662-48000-7_29) |
+| **Mahadev (Classical-Key QFHE)** | 2018 | LWE + quantum gadgets | First compact classical-key QHE for all polynomial-time circuits [[1]](https://arxiv.org/abs/1708.02130) |
+| **Experimental QHE** | 2020 | Photonic qubits | First experimental demonstration of QHE on photonic platform [[1]](https://www.nature.com/articles/s41534-020-00340-8) |
+
+**State of the art:** Mahadev (2018) achieved compact classical-key QFHE under LWE. A no-go theorem shows that perfect information-theoretic QHE with non-exponential overhead is impossible. Practical implementations demonstrated on photonic platforms (2020). Related to [Blind Quantum Computation](#blind-quantum-computation-bqc) (interactive analogue) and classical [FHE](categories/07-homomorphic-functional-encryption.md#fully-homomorphic-encryption-fhe).
+
+---
+
+## Quantum Oblivious Transfer (QOT)
+
+**Goal:** Two-party cryptographic primitive where a sender transfers information to a receiver such that the sender does not know which piece was received — leveraging quantum mechanics to strengthen security guarantees beyond what is classically possible with computational assumptions alone.
+
+| Protocol | Year | Basis | Note |
+|----------|------|-------|------|
+| **BBCS (Bennett-Brassard-Crepeau-Skubiszewska)** | 1991 | Conjugate coding | First QOT protocol; builds on BB84 techniques [[1]](https://doi.org/10.1007/3-540-46766-1_37) |
+| **Lo (No-Go for Unconditional QOT)** | 1997 | Impossibility result | Proved unconditionally secure QOT is impossible (like quantum bit commitment) [[1]](https://doi.org/10.1103/PhysRevA.56.1154) |
+| **Bounded/Noisy Quantum Storage QOT** | 2008 | Noisy storage model | Secure QOT if adversary's quantum memory is bounded or noisy [[1]](https://doi.org/10.1103/PhysRevLett.100.220502) |
+| **Bartusek-Coladangelo-Khurana-Salvail** | 2021 | Extractable commitments | QOT from one-way functions (weaker assumption than classically needed) [[1]](https://eprint.iacr.org/2020/1500) |
+| **Experimental Secure MPC from QOT** | 2026 | Photonic + bit commitment | First experimental quantum-secure multiparty computation via QOT [[1]](https://www.nature.com/articles/s41534-026-01219-w) |
+
+**State of the art:** QOT from one-way functions (2021) is a landmark result — classically, OT requires public-key assumptions. The noisy quantum storage model provides practical security. First experimental QMPC from QOT demonstrated in 2026. Foundational for [Quantum MPC](#quantum-multi-party-computation-qmpc) and extends classical [Oblivious Transfer](categories/06-multi-party-computation.md#oblivious-transfer-ot--ot-extension).
+
+---
+
+## Quantum Byzantine Agreement (QBA)
+
+**Goal:** Achieve consensus among distributed parties in the presence of malicious actors, using quantum resources to break the classical 1/3 fault-tolerance bound — quantum entanglement or quantum digital signatures enable agreement tolerating up to (nearly) 1/2 faulty parties instead of the classical limit of 1/3.
+
+| Protocol | Year | Basis | Note |
+|----------|------|-------|------|
+| **Fitzi-Gisin-Maurer** | 2001 | Entangled qubits | First quantum protocol breaking 1/3 bound for 3 parties [[1]](https://doi.org/10.1103/PhysRevLett.87.217901) |
+| **Ben-Or-Hassidim** | 2005 | Quantum verifiable SS | Fast quantum BA in O(1) expected rounds with honest majority [[1]](https://doi.org/10.1145/1060590.1060662) |
+| **Luo-Feng-Zheng-Xu (QDS-based QBA)** | 2022 | Quantum digital signatures | Breaks 1/3 bound without entanglement; ~1/2 fault tolerance via QDS [[1]](https://spj.science.org/doi/10.34133/research.0272) |
+| **Experimental QBA (3-user photonic)** | 2024 | Integrated photonics | First experimental QBA on a 3-user quantum network [[1]](https://www.science.org/doi/10.1126/sciadv.adp2877) |
+| **Circular QBA (Scalable)** | 2025 | Semi-decentralized + QDS | Quadratic communication complexity; scalable to many parties [[1]](https://arxiv.org/abs/2602.11592) |
+
+**State of the art:** Classical BA requires n >= 3f+1 parties to tolerate f faults; quantum BA achieves nearly n >= 2f+1. Experimentally demonstrated on 3-user photonic network (2024). Relevant to quantum-secured blockchain and [consensus protocols](categories/13-blockchain-distributed-ledger.md#hotstuff--tendermint-bft).
+
+---
+
+## Quantum Zero-Knowledge Proofs
+
+**Goal:** Prove statements without revealing any information beyond their truth — where security holds even against adversaries equipped with quantum computers. Extends classical zero-knowledge to the quantum setting, addressing the challenge that quantum adversaries cannot be "rewound" in the standard way.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Watrous (ZK against Quantum Attacks)** | 2006 | Quantum rewinding | First proof that classical ZK for NP survives quantum verifiers; novel partial-rewind technique [[1]](https://arxiv.org/abs/quant-ph/0511020) |
+| **QSZK = QSZK_HV** | 2006 | Quantum statistical ZK | Honest-verifier and general quantum statistical ZK are equivalent [[1]](https://arxiv.org/abs/quant-ph/0202111) |
+| **Broadbent-Grilo (QMA-complete QZK)** | 2020 | Quantum commitments | Zero-knowledge for QMA (quantum NP); first computational QZK proof system for all QMA [[1]](https://doi.org/10.1109/FOCS46700.2020.00030) |
+| **Ananth-Gulati-Qian-Yuen (Concurrent QZK)** | 2022 | Post-quantum OWFs | Concurrent ZK against quantum attacks from post-quantum one-way functions [[1]](https://eprint.iacr.org/2020/1528) |
+| **Bartusek-Brakarski-Lombardi (Non-Interactive QZK)** | 2024 | LWE + quantum | Non-interactive zero-knowledge arguments for QMA in the CRS model [[1]](https://eprint.iacr.org/2024/032) |
+
+**State of the art:** ZK for NP against quantum adversaries established (Watrous 2006). ZK for QMA (quantum NP) achieved (Broadbent-Grilo 2020). Non-interactive quantum ZK from LWE (2024). Extends classical [Zero-Knowledge Proof Systems](categories/04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-overview) to the quantum threat model.
+
+---
+
+## Quantum Key Recycling (QKR)
+
+**Goal:** Encrypt classical messages using quantum ciphertexts such that the encryption key can be securely reused if no eavesdropping is detected — achieving information-theoretic security with key amortization. Classically impossible because a classical eavesdropper leaves no detectable trace.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bennett-Brassard-Breidbart** | 1982 | BB84-like encoding | Original idea predating QKD; encrypt a message, detect eavesdropping, reuse key [[1]](https://doi.org/10.1016/0304-3975(84)90083-3) |
+| **Damgard-Pedersen-Salvail** | 2005 | Quantum computer required | Rigorous security analysis; requires full quantum computation for users [[1]](https://doi.org/10.1007/11681878_1) |
+| **Fehr-Salvail QKR** | 2017 | BB84 qubits only | Practical QKR: prepare/measure single qubits; full key reuse if no attack detected [[1]](https://arxiv.org/abs/1610.05614) |
+| **Leermakers-Skoric (8-state QKR)** | 2018 | 8-state encoding | Optimal key recycling rate; robust against noise [[1]](https://eprint.iacr.org/2016/1122) |
+
+**State of the art:** Fehr-Salvail (2017) provides practical QKR using only BB84 preparation/measurement — no quantum computer needed. Offers better key efficiency than standard [QKD](#quantum-key-distribution-qkd) when messages are long, since the key is recycled rather than consumed. Security is information-theoretic.
+
+---
+
+## Quantum Fingerprinting
+
+**Goal:** Determine whether two large classical inputs held by separate parties are equal, using exponentially less quantum communication than any classical protocol — an established quantum communication complexity advantage with practical applications in data deduplication and equality testing.
+
+| Protocol | Year | Basis | Note |
+|----------|------|-------|------|
+| **Buhrman-Cleve-Watrous-de Wolf** | 2001 | Quantum SMP + swap test | First quantum fingerprinting; O(log n) qubits vs. classical Omega(sqrt(n)) bits [[1]](https://arxiv.org/abs/quant-ph/0102001) |
+| **Arrazola-Lutkenhaus (Coherent-State)** | 2014 | Coherent laser pulses | Practical protocol using coherent states; no single-photon sources needed [[1]](https://doi.org/10.1103/PhysRevA.89.062305) |
+| **Xu et al. (Experimental)** | 2015 | Coherent states, 2 Gbits | First experiment beating classical limit; tested on 2-gigabit inputs [[1]](https://doi.org/10.1103/PhysRevLett.112.040502) |
+| **Guan et al. (Channel Multiplexing)** | 2021 | WDM + simultaneous detection | Efficient experimental QF with channel multiplexing; improved practical rates [[1]](https://www.nature.com/articles/s41467-021-24745-x) |
+| **Kumar-Sidhu (One-Way Advantage)** | 2019 | Single-photon | Experimental demonstration surpassing best classical one-way protocol [[1]](https://www.nature.com/articles/s41467-019-12139-z) |
+
+**State of the art:** Experimentally demonstrated with exponential advantage over classical protocols on multi-gigabit inputs. Coherent-state implementations (Arrazola-Lutkenhaus 2014) make the protocol practical with standard telecom equipment. One of the clearest demonstrations of quantum advantage in communication complexity.
+
 ---

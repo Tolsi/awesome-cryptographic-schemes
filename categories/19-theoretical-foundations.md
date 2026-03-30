@@ -660,3 +660,134 @@
 **State of the art:** PathORAM (O(log n) amortized) is the standard practical ORAM used in SGX-based systems and MPC frameworks. OptORAMa (2021) is theoretically optimal but has large constants. See [Oblivious RAM](categories/10-privacy-preserving-computation.md#oblivious-ram-oram).
 
 ---
+
+## Worst-Case to Average-Case Reductions for Lattices
+
+**Goal:** Prove that breaking a randomly generated lattice instance is as hard as solving lattice problems on every possible lattice. This unique property — absent from number-theoretic assumptions like factoring — gives lattice-based cryptography its distinctive security foundation: an attacker who breaks one random instance can solve the hardest instances.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Ajtai's SIS reduction** | 1996 | Ajtai | First worst-case/average-case link: breaking random SIS implies solving GapSVP on every lattice [[1]](https://doi.org/10.1145/237814.237838) |
+| **LWE reduction (quantum)** | 2005 | Regev | Learning With Errors is as hard as worst-case SIVP/GapSVP via a quantum reduction [[1]](https://doi.org/10.1145/1060590.1060603) |
+| **Classical LWE reduction** | 2009 | Peikert | Removes quantum from the LWE reduction for certain parameter ranges [[1]](https://doi.org/10.1145/1536414.1536461) |
+| **Ring-LWE reduction** | 2010 | Lyubashevsky–Peikert–Regev | Worst-case hardness on ideal lattices; enables efficient Ring-LWE crypto [[1]](https://eprint.iacr.org/2012/230) |
+| **Module-LWE reduction** | 2012 | Langlois–Stehlé | Generalises SIS/LWE to module lattices; underpins ML-KEM (Kyber) [[1]](https://eprint.iacr.org/2012/090) |
+
+**State of the art:** Module-LWE/SIS reductions (Langlois-Stehlé 2012) underpin NIST PQC standards ML-KEM and ML-DSA. Ring-LWE remains efficient but with narrower worst-case guarantees. See [Foundational Primitives](categories/01-foundational-primitives.md), [Quantum Cryptography](categories/15-quantum-cryptography.md).
+
+---
+
+## Forking Lemma and Rewinding Techniques
+
+**Goal:** Extract secret keys from forged signatures by "rewinding" an adversary. The forking lemma shows that if an adversary forges a signature in the random oracle model with non-negligible probability, replaying it with a different random oracle yields a second forgery from which the secret can be recovered. This is the core proof technique for Schnorr, ECDSA, and many Fiat-Shamir-based schemes.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Pointcheval-Stern forking lemma** | 1996 | Pointcheval–Stern | Original lemma; proves security of ElGamal-type and Schnorr signatures in ROM [[1]](https://doi.org/10.1007/3-540-68339-9_34) |
+| **General forking lemma** | 2006 | Bellare–Neven | Generalises to multi-signatures and arbitrary interactive proofs; tighter bounds [[1]](https://doi.org/10.1145/1180405.1180453) |
+| **High-moment forking lemma** | 2023 | Diemert–Gellert–Jager–Lyu | Explicit high-moment bounds; tight multi-signature security for Schnorr [[1]](https://cic.iacr.org/p/1/2/2) |
+
+**State of the art:** The general forking lemma (Bellare-Neven 2006) is the standard tool for ROM security proofs of discrete-log-based signatures. High-moment variants (2023) close tightness gaps for multi-signatures. See [Signatures (Advanced)](categories/08-signatures-advanced.md).
+
+---
+
+## Code-Based Game-Playing Proofs
+
+**Goal:** Systematise cryptographic security proofs as disciplined transformations of pseudocode games. Each "hop" between games changes one small aspect; the sum of distinguishing advantages across hops bounds the adversary's total advantage. Eliminates the error-prone narrative style of earlier proofs.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Game-playing framework** | 2004 | Bellare–Rogaway | Foundational treatment: games as code, bad-event bounding, concrete applications (triple-DES, CBC-MAC) [[1]](https://eprint.iacr.org/2004/331) |
+| **Sequence of Games (Shoup)** | 2004 | Shoup | Independent formalisation of game sequences; widely adopted notation [[1]](https://eprint.iacr.org/2004/332) |
+| **CryptoVerif** | 2006 | Blanchet | Automated tool that mechanises game-based proofs in the computational model [[1]](https://doi.org/10.1007/11967668_14) |
+| **EasyCrypt** | 2011 | Barthe et al. | Machine-checked game-based proofs using relational Hoare logic [[1]](https://doi.org/10.1007/978-3-642-22792-9_23) |
+
+**State of the art:** Game-playing is the dominant proof methodology in symmetric and public-key cryptography. EasyCrypt and CryptoVerif provide machine-checked assurance. See [Automated Protocol Verification](categories/19-theoretical-foundations.md#automated-protocol-verification-proverif-tamarin-easycrypt).
+
+---
+
+## Quantum Random Oracle Model (QROM)
+
+**Goal:** Extend the Random Oracle Model to quantum adversaries who can query the oracle in superposition. Classical ROM proofs often break when the adversary makes quantum queries (e.g., Grover search over the oracle), so new proof techniques are needed for post-quantum security.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Random Oracles in a Quantum World** | 2011 | Boneh–Dagdelen–Fischlin–Lehmann–Schaffner–Zhandry | Defines QROM; shows classical ROM proofs can fail; gives QROM-secure signatures [[1]](https://eprint.iacr.org/2010/428) |
+| **Quantum-accessible ROM separation** | 2019 | Yamakawa–Zhandry | Constructs schemes secure in ROM but broken in QROM under standard assumptions [[1]](https://eprint.iacr.org/2020/1270) |
+| **Measure-and-reprogram** | 2019 | Don–Fehr–Majenz–Schaffner | General QROM proof technique: measure one query, reprogram oracle; proves Fiat-Shamir secure in QROM [[1]](https://eprint.iacr.org/2019/498) |
+| **Compressed oracle technique** | 2019 | Zhandry | Models quantum oracle access via compressed databases; simplifies QROM proofs [[1]](https://eprint.iacr.org/2018/544) |
+
+**State of the art:** QROM proofs are now required for post-quantum confidence; NIST PQC standards (ML-KEM, ML-DSA) have QROM analyses. Measure-and-reprogram and compressed oracles are the main techniques. See [Random Oracle Model vs. Standard Model](#random-oracle-model-rom-vs-standard-model), [Quantum Cryptography](categories/15-quantum-cryptography.md).
+
+---
+
+## Fine-Grained Cryptography
+
+**Goal:** Build cryptographic primitives secure against adversaries bounded to a specific polynomial resource (e.g., NC1 circuits, AC0 circuits), where honest computation uses strictly fewer resources. Achieves unconditional or complexity-theoretic security without assuming one-way functions exist — useful in worlds where standard assumptions might fail.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Fine-Grained Cryptography** | 2016 | Degwekar–Vaikuntanathan–Vasudevan | OWFs, PRGs, CRHFs, PKE in NC1 secure against all poly-time; weak PRFs unconditionally secure vs AC0 [[1]](https://eprint.iacr.org/2016/580) |
+| **Fine-Grained Crypto Revisited** | 2019 | Egashira–Wang–Tanaka | Adds OWPs, hash proof systems, trapdoor OWFs in the fine-grained setting [[1]](https://eprint.iacr.org/2019/1488) |
+| **Fine-Grained Complexity Without Crypto** | 2025 | Ball–Dachman-Soled–Kulkarni | Studies what fine-grained hardness survives when OWFs do not exist (Pessiland) [[1]](https://eprint.iacr.org/2025/324) |
+
+**State of the art:** Fine-grained crypto provides unconditional primitives (weak PRF vs AC0) and circuit-class-based PKE. Practically niche but theoretically important for understanding the minimal assumptions needed for cryptography. See [One-Way Functions and Impagliazzo's Five Worlds](#one-way-functions-and-impagliazzos-five-worlds).
+
+---
+
+## One-Way Functions and Kolmogorov Complexity
+
+**Goal:** Characterise the existence of one-way functions — the minimal assumption for almost all of cryptography — via the average-case hardness of a single natural problem: time-bounded Kolmogorov complexity (Kt). This identifies a "master problem" for cryptography: OWFs exist if and only if Kt is mildly hard on average.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **OWF ⟺ average-case Kt hardness** | 2020 | Liu–Pass | For every t(n) ≥ (1+ε)n, OWFs exist iff Kt is mildly hard on average [[1]](https://eprint.iacr.org/2020/423) |
+| **Kt hardness and auxiliary input OWF** | 2021 | Liu–Pass | Extends characterisation to auxiliary-input OWFs via conditional Kt complexity [[1]](https://arxiv.org/abs/2009.11514) |
+| **Interactive Kolmogorov and key agreement** | 2024 | Berman–Degwekar–Rothblum–Vasudevan | Worst-case hardness of interactive Kolmogorov complexity characterises key agreement [[1]](https://eprint.iacr.org/2024/425) |
+
+**State of the art:** Liu-Pass (2020) is a landmark equivalence connecting Impagliazzo's five worlds to a single concrete problem. The interactive extension (2024) reaches into Cryptomania (public-key crypto). See [One-Way Functions and Impagliazzo's Five Worlds](#one-way-functions-and-impagliazzos-five-worlds).
+
+---
+
+## Pseudorandom Correlation Generators (PCGs)
+
+**Goal:** Allow two (or more) parties to locally expand short correlated seeds into long streams of correlated randomness (OT correlations, Beaver triples, VOLE) with no further interaction. Replaces the expensive online generation of MPC preprocessing material with a one-time short seed exchange followed by silent local computation.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **PCG for OT correlations** | 2019 | Boyle–Couteau–Gilboa–Ishai–Kohl–Scholl | First concretely efficient PCG; silent OT extension from LPN variants [[1]](https://eprint.iacr.org/2019/448) |
+| **PCG from Ring-LPN** | 2020 | Boyle–Couteau–Gilboa–Ishai–Kohl–Scholl | Extends to VOLE and Beaver triples over large fields via Ring-LPN [[1]](https://eprint.iacr.org/2022/1035) |
+| **PCG for any finite field** | 2025 | Bombar–Couteau–Ducros–Servan-Schreiber | PCGs for Beaver triples over arbitrary finite fields including F2 [[1]](https://eprint.iacr.org/2025/169) |
+
+**State of the art:** PCGs based on Ring-LPN are the leading approach to silent MPC preprocessing. Actively deployed in VOLE-based ZK and MPC frameworks. See [Silent OT / PCG](categories/06-multi-party-computation.md#silent-ot--pseudorandom-correlation-generators-pcg), [OLE / VOLE](categories/06-multi-party-computation.md#oblivious-linear-evaluation-ole--vole).
+
+---
+
+## Gentry-Wichs Barrier (Non-Falsifiability of SNARGs)
+
+**Goal:** Prove a fundamental impossibility: adaptively sound succinct non-interactive arguments (SNARGs) for hard-on-average NP languages cannot be proven secure via black-box reduction to any falsifiable assumption. This explains why all known SNARK constructions rely on knowledge-type (non-falsifiable) assumptions or idealised models like the random oracle.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Gentry-Wichs impossibility** | 2011 | Gentry–Wichs | SNARGs for hard NP languages require non-falsifiable assumptions [[1]](https://eprint.iacr.org/2010/610) |
+| **Gentry-Wichs is tight** | 2021 | Waters–Wu | Constructs a non-adaptively sound SNARG from falsifiable assumptions, showing the barrier is tight [[1]](https://eprint.iacr.org/2019/1386) |
+| **Impossibility with preprocessing** | 2022 | Campanelli–Fiore–Querol | Extends impossibility to the preprocessing model; black-box extraction also impossible for adaptive SNARGs [[1]](https://eprint.iacr.org/2022/638) |
+
+**State of the art:** The Gentry-Wichs barrier (2011) remains the central theoretical explanation for why practical SNARKs (Groth16, Plonk, etc.) rely on knowledge assumptions or the ROM. Waters-Wu (2021) shows the bound is essentially tight. See [Knowledge-Soundness, Extractability](categories/19-theoretical-foundations.md#knowledge-soundness-extractability-and-simulation-extractability), [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md).
+
+---
+
+## Communication Complexity of Secure Computation
+
+**Goal:** Determine the minimum bits that must be exchanged to securely evaluate a function, even with unlimited computation. These lower bounds are information-theoretic and show that secure computation inherently costs more communication than insecure computation for many functions.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Franklin-Yung communication bounds** | 1992 | Franklin–Yung | First communication complexity study of secure computation; shows overhead is inherent [[1]](https://doi.org/10.1145/129712.129780) |
+| **Data-processing for residual information** | 2014 | Data–Prabhakaran–Prabhakaran | New information-theoretic tools; tight bounds for specific functions using residual information [[1]](https://eprint.iacr.org/2015/391) |
+| **Randomness and communication lower bounds** | 2016 | Data–Prabhakaran–Prabhakaran | Unified framework: joint lower bounds on communication and correlated randomness for IT-secure MPC [[1]](https://ieeexplore.ieee.org/document/7469867/) |
+| **OT complexity of MPC** | 2017 | Agrawal–Prabhakaran–Prabhakaran | Connects OT-hybrid communication cost to combinatorial properties of the function [[1]](https://link.springer.com/chapter/10.1007/978-3-319-63688-7_14) |
+
+**State of the art:** Information-theoretic lower bounds (2014-2017) using residual information and distribution switching provide the tightest known results. Active area connecting information theory and MPC. See [Multi-Party Computation](categories/06-multi-party-computation.md).
+
+---

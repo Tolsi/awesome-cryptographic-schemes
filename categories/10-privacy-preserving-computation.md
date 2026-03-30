@@ -697,3 +697,158 @@
 **State of the art:** PRV Accountant (tightest composition, adopted in Opacus/TF-Privacy); DP-Sniper for black-box empirical auditing; StatDP for statistical violation detection. Underpins trust in [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd--pate), [Shuffle Model DP](#shuffle-model-of-differential-privacy), and all deployed [Differential Privacy](#differential-privacy) systems.
 
 ---
+
+## DPF-Based Private Information Retrieval
+
+**Goal:** Build efficient 2-server PIR from distributed point functions (DPFs). A DPF lets a client split a point function (f(x*)=1, f(x)=0 elsewhere) into two keys such that neither key reveals x*. For PIR, the client generates DPF keys encoding the desired index; each server evaluates the DPF over the database and returns the result. Communication is sublinear, and computation is simple XOR and PRG operations -- no public-key crypto needed.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Gilboa-Ishai DPF** | 2014 | PRG-based | Foundational DPF construction; O(lambda) key size for point functions over {0,1}^n; enables 2-server PIR with log(n) communication [[1]](https://dl.acm.org/doi/10.1007/978-3-662-46800-5_26) |
+| **Boyle-Gilboa-Ishai Function Secret Sharing** | 2015 | PRG tree | Generalized DPF to function secret sharing (FSS); supports intervals, decision trees; enables richer 2-server computations beyond point queries [[1]](https://eprint.iacr.org/2015/879) |
+| **Incremental DPF (Boneh-Boyle-Corrigan-Gibbs-Gilboa-Ishai)** | 2021 | Prefix tree DPF | DPF that reveals all prefixes of the secret index; key building block for Poplar heavy hitters and prefix-based PIR; S&P 2021 [[1]](https://arxiv.org/abs/2012.14884) |
+| **Express (Eskandarian-Corrigan-Gibbs)** | 2021 | DPF + write-only ORAM | Private anonymous messaging via DPF-based PIR writes; each client writes to a bulletin board using DPF keys; 16x faster than Riposte; USENIX Sec 2021 [[1]](https://eprint.iacr.org/2021/013) |
+| **Duoram (Vadapalli-Storrier-Henry)** | 2023 | DPF + secret-shared memory | 2-server ORAM using DPF for address-private reads and writes; O(sqrt(n)) amortized communication; USENIX Sec 2023 [[1]](https://eprint.iacr.org/2022/1747) |
+
+**State of the art:** Gilboa-Ishai DPF (foundational), Duoram (2023, DPF-based ORAM), Express (DPF for anonymous messaging). DPFs underpin [Private Heavy Hitters](#private-heavy-hitters--frequency-estimation) (Poplar), 2-server [PIR](#private-information-retrieval-pir), and are a core primitive in [Function Secret Sharing](categories/06-multi-party-computation.md#function-secret-sharing-fss--distributed-point-functions-dpf).
+
+---
+
+## Forward-and-Backward-Private Dynamic Searchable Encryption
+
+**Goal:** Support insertions and deletions on encrypted databases while minimizing information leakage about past queries and deleted documents. Standard SSE leaks the update pattern; forward privacy ensures new insertions cannot be linked to prior search queries, and backward privacy ensures that deleted documents do not appear in future search results. Critical for practical encrypted database deployments.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bost Forward-Private SSE (Sigma-ophis)** | 2016 | Trapdoor permutation + PRF chain | First formal definition and construction of forward-private SSE; prevents file-injection attacks; CCS 2016 [[1]](https://eprint.iacr.org/2016/728) |
+| **Bost-Minaud-Ohrimenko (Backward-Private SSE)** | 2017 | ORAM + constrained PRF | First backward-private SSE taxonomy (Type-I/II/III); Type-I reveals nothing about deleted entries; CCS 2017 [[1]](https://eprint.iacr.org/2017/126) |
+| **AURA (Sun-Yuan-Wang-Chen-Liu)** | 2021 | Symmetric encryption + bitmap | Practical forward-and-backward-private SSE with near-optimal search time; O(n_w) for keyword w with n_w results; NDSS 2021 [[1]](https://eprint.iacr.org/2020/1239) |
+| **Mitra/Orion (Ghareh Chamani et al.)** | 2018 | Red-black tree + ORAM | Dynamic SSE with Type-II backward privacy; sublinear search via encrypted B-tree; NDSS 2018 [[1]](https://eprint.iacr.org/2017/1238) |
+| **SEAL (Demertzis-Papadopoulos-Papamanthou)** | 2020 | Locality-preserving allocation | SSE optimized for I/O efficiency on disk; forward-private with O(1) disk seeks per result; SIGMOD 2020 [[1]](https://dl.acm.org/doi/10.1145/3318464.3380579) |
+
+**State of the art:** AURA (2021) for practical forward+backward privacy; SEAL for disk-optimized SSE. Addresses the primary attack surface (file-injection attacks) of deployed [Searchable Encryption](#searchable-encryption-sse--peks). Complements [Volume-Hiding EMM](#volume-hiding-searchable-encryption-encrypted-multi-maps) for volume leakage suppression.
+
+---
+
+## Optimal Oblivious RAM (OptORAMa / PanORAMa)
+
+**Goal:** Close the gap between ORAM upper and lower bounds. Path ORAM achieves O(log n) bandwidth overhead but requires O(n) client storage or O(log^2 n) overhead with O(1) client storage. OptORAMa achieves the theoretically optimal O(log n) overhead with O(1) client storage -- matching the Goldreich-Ostrovsky lower bound. PanORAMa extends this to the parallel/concurrent setting.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Circuit ORAM (Wang et al.)** | 2015 | Tree-based + circuit-friendly eviction | Optimized for MPC: eviction via oblivious metadata scan; O(log n) bandwidth with smallest constant for MPC use; CCS 2015 [[1]](https://eprint.iacr.org/2014/672) |
+| **OptORAMa (Asharov-Chan-Nayak-Pass-Ren-Shi)** | 2020 | Hierarchical + hashing | First O(log n) bandwidth ORAM with O(1) client storage; matches Goldreich-Ostrovsky lower bound; EUROCRYPT 2020 [[1]](https://eprint.iacr.org/2018/892) |
+| **PanORAMa (Patel-Persiano-Yeo)** | 2021 | Parallel oblivious sort | Concurrent/parallel ORAM with O(log n) overhead per operation; supports batch access patterns; TCC 2021 [[1]](https://eprint.iacr.org/2021/1413) |
+| **ConcORAMa (Chakraborti-Canetti)** | 2023 | Tree ORAM + concurrency control | Concurrent ORAM with linearizable operations; enables multi-client access without serialization; USENIX Sec 2023 [[1]](https://eprint.iacr.org/2023/257) |
+
+**State of the art:** OptORAMa (2020) is theoretically optimal; Circuit ORAM remains dominant in MPC contexts; ConcORAMa for concurrent multi-client settings. Extends the foundational [ORAM](#oblivious-ram-oram) constructions (Path ORAM) and improves the building block used in [Oblivious SQL](#oblivious-sql--encrypted-database-joins) and [Private Nearest-Neighbor Search](#private-nearest-neighbor-search-private-embedding-retrieval).
+
+---
+
+## Private Contact Discovery Protocols
+
+**Goal:** Determine which of a user's phone contacts are registered on a messaging service -- without revealing the user's contact list to the server or leaking the server's full user database to the client. An extreme case of unbalanced PSI: a small client set (hundreds of contacts) against a massive server set (billions of users), with strict latency and bandwidth constraints for mobile devices.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Signal SGX-Based Contact Discovery** | 2017 | Intel SGX enclave | Server loads encrypted user database into SGX enclave; client sends encrypted contacts; intersection computed inside enclave; first production private contact discovery [[1]](https://signal.org/blog/private-contact-discovery/) |
+| **Signal CDS v2 (OHTTP + SGX)** | 2023 | OHTTP relay + SGX + rate limiting | Adds OHTTP proxy to hide client IP from SGX service; cryptographic rate limiting prevents enumeration; processes 1024 contacts in ~2 sec [[1]](https://eprint.iacr.org/2023/758) |
+| **Mobile Private Contact Discovery (Kales et al.)** | 2019 | Circuit-PSI + OT | Pure-crypto alternative to SGX; uses circuit-based PSI with O(client-set) communication; practical for mobile but slower than hardware-assisted [[1]](https://eprint.iacr.org/2019/517) |
+| **Apple PSI for iMessage** | 2021 | DH-based PSI + differential privacy | Combines commutative-hash PSI with DP noise injection to limit server-side inference; integrated into iOS contact suggestions [[1]](https://www.apple.com/privacy/docs/Differential_Privacy_Overview.pdf) |
+
+**State of the art:** Signal CDS v2 (2023, production with SGX + OHTTP) is the deployed benchmark; Kales et al. for TEE-free alternative. Specialization of [Unbalanced PSI](#unbalanced-psi-client-server-psi-at-scale) for the contact discovery use case; related to [OPRF](#oblivious-prf-oprf) and [ODoH](#oblivious-dns-odoh) for metadata protection.
+
+---
+
+## Distributed Aggregation Protocol (DAP / Divvi Up)
+
+**Goal:** Standardized, deployable infrastructure for privacy-preserving telemetry aggregation. DAP (IETF RFC 9746) operationalizes Prio/VDAF theory into a concrete client-aggregator-collector architecture: clients secret-share measurements across two non-colluding aggregators, which jointly verify and aggregate without seeing individual values. Deployed by ISRG (Divvi Up) for real-world browser and OS telemetry.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **IETF DAP (Distributed Aggregation Protocol)** | 2024 | VDAF + HTTPS | RFC 9746; defines roles (client, leader, helper, collector), task configuration, and batch semantics for Prio3/Poplar VDAFs [[1]](https://datatracker.ietf.org/doc/rfc9746/) |
+| **Divvi Up (ISRG)** | 2023 | DAP implementation | Production DAP service by Internet Security Research Group (Let's Encrypt); processes millions of measurements for Firefox, Android telemetry [[1]](https://divviup.org/) |
+| **Janus (Cloudflare + Divvi Up)** | 2023 | Rust DAP implementation | Open-source DAP aggregator; serves as both leader and helper; integrates with Daphne (helper) [[1]](https://github.com/divviup/janus) |
+| **Chrome Private Aggregation API** | 2023 | DAP + Attribution Reporting | Chrome integrates DAP for Privacy Sandbox ad measurement; clients send Prio3/Poplar shares to DAP aggregators [[1]](https://developers.google.com/privacy-sandbox/relevance/private-aggregation) |
+
+**State of the art:** DAP (RFC 9746) is the IETF standard; Divvi Up (ISRG) is the largest production deployment. Operationalizes [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation) theory; complements [Private Heavy Hitters](#private-heavy-hitters--frequency-estimation) (Poplar VDAF) and [Differential Privacy](#differential-privacy) (DP can be added at collector).
+
+---
+
+## Privacy-Preserving Biometric Authentication
+
+**Goal:** Authenticate users via biometrics (fingerprints, face, iris) without storing or revealing raw biometric templates. The server holds encrypted or secret-shared templates; the client's fresh biometric sample is compared in a privacy-preserving manner using fuzzy matching, HE, or MPC. Prevents template theft and cross-service tracking.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Fuzzy Vault (Juels-Sudan)** | 2002 | Polynomial interpolation + chaff points | Lock a secret with a biometric set; unlock only with a sufficiently similar set; information-theoretic security [[1]](https://doi.org/10.1109/ISIT.2002.1023680) |
+| **BioHashing (Jin et al.)** | 2004 | Random projection + binarization | Project biometric feature vectors with user-specific random matrix; cancelable biometrics -- revocable templates [[1]](https://doi.org/10.1016/j.patcog.2004.03.013) |
+| **Secure Fingerprint Matching via GC (Barni et al.)** | 2010 | Garbled circuits | FingerCode matching inside garbled circuits; server and client each contribute encrypted templates; IEEE T-IFS 2010 [[1]](https://ieeexplore.ieee.org/document/5416758) |
+| **CryptoFace (Sadeghi-Schneider-Wehrenberg)** | 2009 | HE + garbled circuits | Privacy-preserving face recognition: Eigenface distance computed under homomorphic encryption; ICISC 2009 [[1]](https://doi.org/10.1007/978-3-642-14423-3_16) |
+| **HE-Based Iris Matching (Gomez-Barrero et al.)** | 2017 | BFV + Hamming distance | Iris template comparison under FHE; 256-bit IrisCodes compared in ~50 ms; IEEE T-IFS 2017 [[1]](https://ieeexplore.ieee.org/document/7893698) |
+
+**State of the art:** HE-based iris/face matching for server-side privacy; garbled circuits for two-party fingerprint verification; Fuzzy Vault for template protection. Relies on [Fuzzy PSI](#fuzzy-private-set-intersection-fpsi) for approximate matching, [HE](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-he), and [Garbled Circuits](categories/06-multi-party-computation.md#garbled-circuits-expanded). Related to [PPRL](#privacy-preserving-record-linkage-pprl) for identity resolution.
+
+---
+
+## Leakage-Abuse Attacks and Countermeasures for Encrypted Search
+
+**Goal:** Quantify and mitigate the real-world damage from leakage profiles in deployed searchable encryption. SSE and OPE schemes intentionally reveal certain patterns (access pattern, volume, equality) for efficiency; leakage-abuse attacks exploit these patterns to reconstruct plaintext queries or database contents. Countermeasures include padding, ORAM integration, and differential privacy injection.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **IKK Attack (Islam-Kuzu-Kantarcioglu)** | 2012 | Co-occurrence analysis | First practical leakage-abuse attack on SSE; recovers query keywords from access-pattern leakage using known document frequency distribution; NDSS 2012 [[1]](https://personal.utdallas.edu/~mxk055100/publications/ndss2012.pdf) |
+| **Count Attack (Cash et al.)** | 2015 | Volume + frequency leakage | Passive attack recovering queries from result-size leakage alone; CCS 2015 [[1]](https://eprint.iacr.org/2016/718) |
+| **File-Injection Attack (Zhang et al.)** | 2016 | Chosen-document attack | Active attacker injects known documents; correlates search tokens with injected files to recover all queries; USENIX Sec 2016 [[1]](https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/zhang) |
+| **SEAL (Demertzis et al.)** | 2020 | I/O-efficient + padding | Locality-preserving SSE with tunable padding to resist volume attacks; SIGMOD 2020 [[1]](https://dl.acm.org/doi/10.1145/3318464.3380579) |
+| **Pancake/Waffle (Frequency Smoothing)** | 2020/2024 | Distribution flattening | Transform access distribution to uniform; defeats frequency analysis; see [Frequency-Smoothing Oblivious Datastores](#frequency-smoothing-oblivious-datastores-pancake--waffle) [[1]](https://eprint.iacr.org/2020/1501) |
+
+**State of the art:** IKK/Count/File-Injection attacks demonstrate that minimal leakage is exploitable in practice; SEAL and Pancake/Waffle are the leading countermeasures. Motivates [Volume-Hiding EMM](#volume-hiding-searchable-encryption-encrypted-multi-maps), [Forward-and-Backward-Private SSE](#forward-and-backward-private-dynamic-searchable-encryption), and full [ORAM](#oblivious-ram-oram) for settings requiring zero leakage.
+
+---
+
+## Private Set Membership Testing (Batch PIR / Private Membership Test)
+
+**Goal:** Test whether a client's item belongs to a server's set without revealing the item or the set. Unlike full PSI (which processes two sets and outputs their intersection), private membership testing handles a single query against a large server-side set. Enables private Safe Browsing, private certificate revocation checking, and private blocklist lookups.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bloom Filter PIR (Nojima-Kadobayashi)** | 2009 | PIR over Bloom filter | Encode server set in Bloom filter; client queries k positions via PIR; positive if all k bits are 1 [[1]](https://doi.org/10.1007/978-3-642-04474-8_20) |
+| **Checklist (Patel et al.)** | 2021 | 2-server PIR + client hints | Private Safe Browsing: client checks URLs against Google's phishing list; sublinear server work via offline hints; USENIX Sec 2021 [[1]](https://eprint.iacr.org/2021/345) |
+| **Cuckoo-Hashing Batch PIR (Angel et al.)** | 2018 | Cuckoo hashing + SealPIR | Batch multiple membership queries into one PIR round using cuckoo hashing; amortize cost across queries; IEEE S&P 2018 [[1]](https://eprint.iacr.org/2017/1142) |
+| **Private Membership Test from OPRF (Davidson et al.)** | 2023 | VOPRF + Bloom filter | Client evaluates VOPRF on query item; checks result against server-published Bloom filter of OPRF outputs; Privacy Pass-style; single round [[1]](https://www.rfc-editor.org/rfc/rfc9578) |
+
+**State of the art:** Checklist (2021) for private Safe Browsing; OPRF-based membership for lightweight single-query settings. Bridges [PIR](#private-information-retrieval-pir) and [PSI](#private-set-intersection-psi); used in [Keyword PIR](#keyword-pir) for private DNS/CRL lookups.
+
+---
+
+## Privacy-Preserving Ad Measurement (IPA / ARA)
+
+**Goal:** Measure ad conversion (did a user who saw an ad later purchase the product?) without tracking users across sites or revealing individual browsing behavior. Multiple parties (browser, ad-tech, publisher) collaborate using MPC or aggregation protocols to compute aggregate conversion statistics while providing formal differential privacy guarantees per user.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **IPA (Interoperable Private Attribution)** | 2023 | 3-party MPC + DP | W3C PATCG protocol; browser secret-shares conversion events across three helper servers; helpers compute aggregate attribution via MPC; per-user DP noise; Meta/Mozilla co-designed [[1]](https://eprint.iacr.org/2023/437) |
+| **ARA (Attribution Reporting API)** | 2023 | On-device + aggregation service | Chrome Privacy Sandbox; browser adds local DP noise to event-level reports; aggregate reports processed via TEE-based aggregation service [[1]](https://developers.google.com/privacy-sandbox/relevance/attribution-reporting) |
+| **Private Click Measurement (Apple)** | 2021 | Blinded tokens + unlinkability | Safari's ad attribution: 8-bit campaign ID, 4-bit conversion value; relay-based unlinkability; no cross-site tracking [[1]](https://webkit.org/blog/11529/introducing-private-click-measurement-pcm/) |
+| **Aggregatable Reports (Chrome)** | 2023 | Secret sharing + DAP | Conversion data secret-shared and sent to DAP aggregators; combined with Attribution Reporting for cross-site measurement [[1]](https://developers.google.com/privacy-sandbox/relevance/private-aggregation) |
+
+**State of the art:** IPA (W3C standard track, 3-party MPC) and ARA (Chrome production) are the leading approaches; Apple PCM for minimal-leakage attribution. Relies on [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation), [DAP](#distributed-aggregation-protocol-dap--divvi-up), and [Differential Privacy](#differential-privacy). Extends [Labeled PSI / PSI-Sum](#labeled-psi-and-private-intersection-sum-psi-sum) for join-and-aggregate patterns.
+
+---
+
+## Oblivious DNS over HTTPS Deployments (Encrypted Metadata Protocols)
+
+**Goal:** Prevent network observers and service providers from jointly learning both a user's identity and their queries. Beyond the base ODoH protocol (RFC 9230), a family of relay-based encrypted metadata protocols has emerged -- separating the "who" from the "what" across DNS, HTTP, and token issuance. Each uses HPKE-encrypted inner requests forwarded through an oblivious relay.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **iCloud Private Relay (Apple)** | 2021 | OHTTP + dual-hop relay | Two-relay architecture: Apple ingress relay (knows client IP) + third-party egress relay (knows destination); neither sees both; deployed on iOS 15+ [[1]](https://www.apple.com/privacy/docs/iCloud_Private_Relay_Overview_Dec2021.pdf) |
+| **Oblivious DNS over HTTPS (ODoH)** | 2022 | HPKE + proxy | RFC 9230; Cloudflare + Apple production deployment; client HPKE-encrypts DNS query to resolver; proxy strips identity metadata [[1]](https://www.rfc-editor.org/rfc/rfc9230) |
+| **OHTTP (Oblivious HTTP)** | 2024 | HPKE + relay | RFC 9458; generalizes ODoH to any HTTP resource; relay sees client but not request content; gateway sees request but not client [[1]](https://www.ietf.org/rfc/rfc9458.html) |
+| **Privacy Pass with OHTTP** | 2024 | VOPRF + OHTTP | RFC 9576/9577/9578; token issuance via OHTTP relay to prevent linkability between issuance and redemption; deployed in Cloudflare challenge bypass [[1]](https://www.rfc-editor.org/rfc/rfc9576) |
+| **Geolocated OHTTP (Google)** | 2024 | OHTTP + geo-bucketing | Google's IP Protection in Chrome: route third-party requests through OHTTP relays; geo-bucket egress IPs to preserve coarse location for CDNs [[1]](https://developers.google.com/privacy-sandbox/protections/ip-protection) |
+
+**State of the art:** iCloud Private Relay (billions of queries/day), Cloudflare ODoH, and Chrome IP Protection are the major deployments. Extends [Oblivious DNS (ODoH)](#oblivious-dns-odoh) to a broader encrypted-metadata ecosystem; related to [Onion Routing](categories/11-anonymity-credentials.md#onion-routing) and [Privacy Pass](categories/11-anonymity-credentials.md#privacy-pass--anonymous-tokens).
+
+---

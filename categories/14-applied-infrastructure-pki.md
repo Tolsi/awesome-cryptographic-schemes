@@ -1622,3 +1622,344 @@ Apple's Device Attestation (DeviceCheck) additionally provides a server-API-base
 **State of the art:** Android KeyMint 3.0 (Android 14, 2023); StrongBox HAL v4 (Android 14); Google Titan M2 security chip. Apple Secure Enclave Processor (all devices since iPhone 5s, 2013); App Attest API (iOS 14+, 2020); FIDO2 platform authenticator (iOS 16+). See [FIDO2 / WebAuthn / Passkeys](#fido2--webauthn--passkeys), [DICE — Device Identifier Composition Engine](#dice--device-identifier-composition-engine), and [TEE Remote Attestation](#tee-remote-attestation).
 
 ---
+
+## MACsec / IEEE 802.1AE — Link-Layer Encryption
+
+**Goal:** Provide hop-by-hop confidentiality, integrity, and replay protection at Layer 2 (Ethernet frames) between directly connected network devices. Every frame on the wire is authenticated and optionally encrypted, preventing eavesdropping and injection on LAN segments — including by physically tapping the cable.
+
+| Component | Standard | Function |
+|-----------|----------|----------|
+| **MACsec (802.1AE)** | IEEE 802.1AE-2018 | Frame encapsulation: SecTAG header + ICV (GCM-AES-128 or GCM-AES-256) [[1]](https://standards.ieee.org/ieee/802.1AE/7203/) |
+| **MKA (MACsec Key Agreement)** | IEEE 802.1X-2020 (clause 12) | Key agreement protocol: derives SAK (Secure Association Key) from CAK (Connectivity Association Key) [[2]](https://standards.ieee.org/ieee/802.1X/7345/) |
+| **SecTAG** | 802.1AE sec. 9 | 8-16 byte tag inserted after src MAC: SCI (Secure Channel Identifier) + PN (Packet Number, 32 or 64 bit) |
+| **Cipher suites** | 802.1AE-2018 | `GCM-AES-128` (default), `GCM-AES-256`, `GCM-AES-XPN-128/256` (extended PN for 100G+ links) [[3]](https://www.rfc-editor.org/rfc/rfc8439) |
+
+**MKA key hierarchy:**
+```
+CAK (Connectivity Association Key, 128/256 bit)
+  └─ via KDF ──► ICK (ICV Key) — authenticates MKA PDUs
+  └─ via KDF ──► KEK (Key Encrypting Key) — wraps SAK distribution
+  └─ generates ──► SAK (Secure Association Key) — used by GCM-AES for frame crypto
+```
+
+**Frame format (encrypted):**
+```
+[Dst MAC | Src MAC | SecTAG (8-16B) | Encrypted payload | ICV (8-16B) | FCS]
+```
+
+**Deployments:** Data center east-west traffic (Cisco TrustSec, Juniper MACsec); financial trading floors (mandated by PCI DSS for LAN segments); WAN MACsec over MPLS/dark fiber; cloud provider backbone links (Google, AWS). Linux kernel supports MACsec via `ip macsec` (since kernel 4.6).
+
+**State of the art:** IEEE 802.1AE-2018 (revision with XPN for high-speed links); MKA defined in IEEE 802.1X-2020. Hardware offload in all modern enterprise NICs and switches (Intel E810, Broadcom Memory, Cisco Catalyst, Arista). See [AEAD — Authenticated Encryption](categories/02-authenticated-structured-encryption.md#aead--authenticated-encryption-with-associated-data).
+
+---
+
+## UEFI Secure Boot / Measured Boot / dm-verity
+
+**Goal:** Establish a cryptographic chain of trust from platform firmware through bootloader to OS kernel, ensuring that only authorized code executes at each stage. Prevent bootkits, rootkits, and unauthorized OS modifications from persisting across reboots.
+
+| Mechanism | Layer | Crypto | Standard |
+|-----------|-------|--------|----------|
+| **UEFI Secure Boot** | Firmware → bootloader → kernel | RSA-2048/SHA-256 signature verification against key databases (db/dbx/KEK/PK) | UEFI Specification 2.10 [[1]](https://uefi.org/specifications) |
+| **Measured Boot (TCG)** | Firmware → PCRs | SHA-256 extend into TPM PCRs; remote attestation via TPM2_Quote | TCG PC Client Spec [[2]](https://trustedcomputinggroup.org/resource/pc-client-specific-platform-firmware-profile-specification/) |
+| **dm-verity** | Block device → filesystem | Merkle tree of SHA-256 hashes over 4K blocks; root hash signed | Linux kernel (Chrome OS, Android) [[3]](https://www.kernel.org/doc/html/latest/admin-guide/device-mapper/verity.html) |
+| **IMA (Integrity Measurement Architecture)** | File-level | Per-file SHA-256 digest extended into TPM PCR 10; appraisal against signed policy | Linux kernel [[4]](https://sourceforge.net/p/linux-ima/wiki/Home/) |
+| **Apple Secure Boot** | iBoot chain | IMG4 format: DER-encoded manifest signed by Apple root CA (RSA-4096/SHA-384) | Apple Platform Security Guide [[5]](https://support.apple.com/guide/security/secure-boot-sec4cb250c11/web) |
+
+**UEFI Secure Boot key hierarchy:**
+```
+PK (Platform Key) — OEM root; signs KEK updates
+  └─ KEK (Key Exchange Key) — signs db/dbx updates (Microsoft, OEM)
+       └─ db (Allowed Signatures Database) — contains trusted signing certs
+       └─ dbx (Forbidden Signatures Database) — revoked hashes/certs
+```
+
+**dm-verity Merkle tree:**
+```
+Signed root hash (RSA/ECDSA)
+  └─ Level 0: hash of (block[0] hash || block[1] hash || ...)
+       └─ Level 1: hash of each 4K data block
+```
+Android Verified Boot (AVB) uses dm-verity for system/vendor partitions; root hash stored in vbmeta signed by OEM key (RSA-4096 or ECDSA P-256). Chrome OS uses dm-verity for the root filesystem with kernel command-line root hash.
+
+**State of the art:** UEFI 2.10 (2022); Microsoft requires Secure Boot for Windows 11; Linux shim bootloader (signed by Microsoft UEFI CA) enables distro chains. Android Verified Boot 2.0 (AVB, AOSP). See [TPM 2.0](#tpm-20--trusted-platform-module), [DICE](#dice--device-identifier-composition-engine).
+
+---
+
+## GlobalPlatform SCP03 — Smart Card Secure Channel Protocol
+
+**Goal:** Establish an authenticated and encrypted command channel between an off-card entity (host application / card management system) and an on-card security domain (JavaCard applet / secure element), ensuring confidentiality and integrity of APDU commands and responses.
+
+| Protocol | Year | Crypto | Note |
+|----------|------|--------|------|
+| **SCP01** | 2003 | 3DES-CBC + single MAC | Legacy; broken by CBC padding oracles |
+| **SCP02** | 2006 | 3DES-CBC + C-MAC/R-MAC | Widely deployed; 112-bit effective security |
+| **SCP03** | 2014 | AES-128/192/256-CBC + CMAC | Current standard; mandatory for GP 2.3+ [[1]](https://globalplatform.org/specs-library/globalplatform-card-specification-v2-3-1/) |
+| **SCP11** | 2018 | ECDH (P-256) + AES + CMAC | Certificate-based mutual auth; TLS-like [[2]](https://globalplatform.org/specs-library/globalplatform-card-specification-v2-3-1/) |
+
+**SCP03 key set (per security domain):**
+
+| Key | Length | Purpose |
+|-----|--------|---------|
+| S-ENC | 16/24/32 bytes | Derives session encryption key (AES-CBC) |
+| S-MAC | 16/24/32 bytes | Derives session C-MAC key (AES-CMAC) |
+| S-RMAC | 16/24/32 bytes | Derives session R-MAC key (response MAC) |
+| DEK (Key Encryption Key) | 16/24/32 bytes | Wraps sensitive data (e.g., new keys during PUT KEY) |
+
+**SCP03 mutual authentication flow:**
+```
+Host → Card: INITIALIZE UPDATE (host challenge, 8 bytes)
+Card → Host: card challenge (8 bytes) + card cryptogram (AES-CMAC)
+  Session keys derived: KDF(static_key, host_challenge || card_challenge || counter)
+Host → Card: EXTERNAL AUTHENTICATE (host cryptogram + C-MAC)
+  // Now secure channel is established: all subsequent APDUs are C-MAC'd and optionally encrypted
+```
+
+**Security levels (OR'd bit flags):**
+- `0x01` — C-MAC on commands
+- `0x03` — C-MAC + C-DECRYPTION (encrypted command data)
+- `0x33` — C-MAC + C-DECRYPTION + R-MAC + R-ENCRYPTION (full duplex encryption)
+
+**Deployments:** SIM cards (GSMA SCP03 mandated for OTA), banking smart cards (EMV GP), government eID cards, eSE in smartphones (Google Titan M, Apple SE), secure elements for NFC payments, FIDO2 security keys (YubiKey uses SCP03 for management).
+
+**State of the art:** GlobalPlatform Card Specification v2.3.1 (2018); SCP03 mandatory. SCP11 (ECDH-based) gaining traction for IoT provisioning. See [eSIM / Remote SIM Provisioning](#gsma-esim--remote-sim-provisioning-rsp), [PKCS#11 / Cryptoki](#pkcs11--cryptoki--hsm-c-api).
+
+---
+
+## Matter / Thread IoT Device Security (CASE/PASE)
+
+**Goal:** Provide standardized, interoperable device authentication, commissioning, and secure messaging for smart home IoT devices — without relying on vendor-proprietary cloud services. Jointly developed by Apple, Google, Amazon, Samsung under the Connectivity Standards Alliance (CSA).
+
+| Protocol | Phase | Crypto | Purpose |
+|----------|-------|--------|---------|
+| **PASE** (Passcode-Authenticated Session Establishment) | Commissioning | SPAKE2+ (NIST P-256) + HKDF-SHA-256 | First-touch pairing using 8-digit setup code (from QR/NFC) [[1]](https://csa-iot.org/developer-resource/specifications-download-request/) |
+| **CASE** (Certificate-Authenticated Session Establishment) | Operational | Sigma-I protocol: ECDH (P-256) + ECDSA + HKDF + AES-CCM | Mutual auth using device attestation certificates (DAC) [[2]](https://csa-iot.org/developer-resource/specifications-download-request/) |
+| **Group messaging** | Multicast | AES-128-CCM with epoch keys | Efficient group commands (e.g., "all lights off") [[3]](https://csa-iot.org/developer-resource/specifications-download-request/) |
+
+**Matter PKI hierarchy:**
+```
+PAA (Product Attestation Authority) — root CA (CSA or vendor)
+  └─ PAI (Product Attestation Intermediate) — per-vendor intermediate
+       └─ DAC (Device Attestation Certificate) — per-device ECDSA P-256 cert
+            └─ CD (Certification Declaration) — signed by CSA, binds vendor+product to certified firmware
+```
+
+**CASE (Sigma-I variant) handshake:**
+```
+Initiator → Responder: ephemeral ECDH pubkey, initiator random
+Responder → Initiator: ephemeral ECDH pubkey, ECDSA sig over transcript, responder NOC cert
+Initiator → Responder: ECDSA sig over transcript, initiator NOC cert
+  Session keys: HKDF-SHA-256(ECDH_shared_secret, salts)
+  Subsequent messages: AES-128-CCM encrypted
+```
+
+**NOC (Node Operational Certificate):** Issued by the fabric's root CA (e.g., Apple Home, Google Home). Contains fabric ID + node ID. Allows multi-admin: a device can hold NOCs from multiple fabrics simultaneously.
+
+**Thread network layer:** IEEE 802.15.4 with AES-128-CCM at link layer; Thread 1.3 uses MLE (Mesh Link Establishment) with ECDH key exchange. Matter runs over Thread, Wi-Fi, or Ethernet — transport-agnostic.
+
+**State of the art:** Matter 1.4 (2024); 3,000+ certified devices. Thread 1.3 (2023). PASE uses SPAKE2+ per NIST submission. See [SPAKE2 / PAKE](categories/03-key-exchange-key-management.md#pake--password-authenticated-key-exchange), [DICE](#dice--device-identifier-composition-engine).
+
+---
+
+## IEEE 802.1X / EAP-TLS — Port-Based Network Access Control
+
+**Goal:** Authenticate devices before granting them access to a wired or wireless network. The switch/access point (authenticator) blocks all traffic from a port until the device (supplicant) proves its identity to a backend RADIUS/Diameter server using an EAP method — most commonly EAP-TLS with mutual X.509 certificate authentication.
+
+| EAP Method | RFC | Crypto | Note |
+|------------|-----|--------|------|
+| **EAP-TLS** | RFC 5216 / RFC 9190 | Mutual TLS 1.2/1.3 with X.509 certs | Gold standard; no passwords; requires client cert PKI [[1]](https://www.rfc-editor.org/rfc/rfc9190) |
+| **EAP-TTLS** | RFC 5281 | TLS tunnel + inner method (PAP/MSCHAPv2) | Server cert only; inner password auth [[2]](https://www.rfc-editor.org/rfc/rfc5281) |
+| **PEAP** | Microsoft/Cisco | TLS tunnel + MSCHAPv2 | Similar to EAP-TTLS; widely deployed in enterprise Wi-Fi |
+| **EAP-TLS 1.3** | RFC 9190 (2022) | TLS 1.3 (ECDHE + ECDSA/EdDSA) | Reduced round trips; encrypted client cert identity |
+| **TEAP** | RFC 7170 | TLS tunnel + multiple inner EAPs | Successor to PEAP; supports chaining and provisioning |
+
+**802.1X protocol flow:**
+```
+Supplicant ←── EAPOL ──► Authenticator (switch/AP) ←── RADIUS ──► Auth Server
+   │                            │                              │
+   ├─ EAP-Request/Identity ────►│                              │
+   │◄─ EAP-Response/Identity ──┤──── Access-Request ──────────►│
+   │   EAP-TLS handshake ◄─────┼───────────────────────────────┤
+   │   (TLS ClientHello,       │   (RADIUS carries EAP)        │
+   │    ServerHello, certs,    │                                │
+   │    Finished)              │                                │
+   │◄── EAP-Success ───────────┤◄── Access-Accept + MSK ───────┤
+   │                            │                                │
+   Port transitions: Unauthorized → Authorized
+```
+
+**Key derivation:** EAP-TLS exports a Master Session Key (MSK, 64 bytes) to the authenticator via RADIUS. For Wi-Fi (WPA2/3-Enterprise), the MSK becomes the PMK (Pairwise Master Key), feeding the 4-way handshake for per-session PTK derivation.
+
+**Deployments:** Enterprise Wi-Fi (WPA2/WPA3-Enterprise); wired NAC in corporate/government networks; eduroam (global academic roaming uses EAP-TLS/EAP-TTLS + RADIUS federation); 5G (EAP-AKA' for SIM auth, RFC 9048).
+
+**State of the art:** EAP-TLS 1.3 (RFC 9190, 2022) brings TLS 1.3 benefits (encrypted client identity, 0-RTT). WPA3-Enterprise 192-bit mode mandates EAP-TLS with Suite B (CNSA) ciphers. See [DANE](#dane--dns-based-authentication-of-named-entities), [FIDO2 / WebAuthn / Passkeys](#fido2--webauthn--passkeys).
+
+---
+
+## KMIP — Key Management Interoperability Protocol
+
+**Goal:** Provide a standardized client-server protocol for managing cryptographic keys and associated objects (certificates, secrets, opaque data) across heterogeneous key management systems (KMS), HSMs, and consuming applications — eliminating vendor lock-in for key lifecycle operations.
+
+| Version | Year | Organization | Key additions |
+|---------|------|-------------|---------------|
+| **KMIP 1.0** | 2010 | OASIS | Core object model, create/get/destroy operations [[1]](https://docs.oasis-open.org/kmip/kmip-spec/v2.1/os/kmip-spec-v2.1-os.html) |
+| **KMIP 1.4** | 2014 | OASIS | Sensitive/extractable attributes, streaming, re-key |
+| **KMIP 2.0** | 2019 | OASIS | JSON/XML encoding (in addition to TTLV), simplified profiles [[2]](https://docs.oasis-open.org/kmip/kmip-spec/v2.1/os/kmip-spec-v2.1-os.html) |
+| **KMIP 2.1** | 2020 | OASIS | Log operations, enhanced query, quantum-safe readiness |
+| **KMIP 3.0** | 2023 | OASIS | JOSE/JWT integration, PQC key types, improved access control [[3]](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=kmip) |
+
+**Object types managed:**
+
+| Object | Description |
+|--------|-------------|
+| Symmetric Key | AES, 3DES, HMAC keys |
+| Public/Private Key | RSA, EC, Ed25519 |
+| Certificate | X.509, PGP |
+| Secret Data | Passwords, seeds |
+| Opaque Data | Arbitrary blobs |
+| PGP Key | OpenPGP key bundles |
+
+**Key lifecycle operations:**
+```
+Create → Register → Get → Activate → [Re-key / Re-key Pair] → Deactivate → Destroy
+                                  ↕
+                           Locate / Check / GetAttributes
+```
+
+**Wire encoding (TTLV):** Default binary format: Tag (3 bytes, big-endian enum), Type (1 byte), Length (4 bytes), Value (padded to 8-byte boundary). Compact and deterministic — designed for HSM firmware parsers.
+
+**Deployments:** Enterprise KMS (Thales CipherTrust, IBM SKLM, Fortanix, Entrust KeyControl); cloud KMS (IBM Cloud Key Protect, Dell PowerProtect); database TDE (Oracle, MongoDB); tape encryption (IBM TS7700); storage encryption (NetApp, Pure Storage). Mandated by FIPS 140-3 CMVP for KMS interop testing.
+
+**State of the art:** KMIP 3.0 (2023) adds PQC key types (ML-KEM, ML-DSA) and JOSE interoperability. OASIS KMIP Profiles define compliance levels (Basic, Symmetric, Asymmetric, Storage). See [PKCS#11 / Cryptoki](#pkcs11--cryptoki--hsm-c-api), [HSM Key Ceremony](#hsm-key-ceremony--split-knowledge--dual-control).
+
+---
+
+## X.509 Certificate Path Validation (RFC 5280)
+
+**Goal:** Define a deterministic algorithm for validating a chain of X.509 certificates from a leaf (end-entity) certificate up to a trust anchor — checking signatures, validity periods, revocation status, name constraints, policy constraints, and key usage at each step. This algorithm is the foundation of all TLS, code signing, and S/MIME trust decisions.
+
+| Validation check | RFC section | Failure mode prevented |
+|-----------------|-------------|----------------------|
+| **Signature verification** | 6.1.3 | Forged or tampered certificate [[1]](https://www.rfc-editor.org/rfc/rfc5280) |
+| **Validity period** | 6.1.3(a)(2) | Expired or not-yet-valid cert |
+| **Name Constraints** | 6.1.4(b-c) | Sub-CA issuing certs for unauthorized domains [[2]](https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.10) |
+| **Key Usage / Extended Key Usage** | 6.1.4(b) | Cert used for wrong purpose (e.g., signing CA used as TLS server) |
+| **Policy Constraints** | 6.1.4(e) | Disallowed certificate policy OIDs |
+| **Basic Constraints (cA flag)** | 6.1.4(k) | Leaf cert misused as CA |
+| **CRL / OCSP revocation** | 6.1.3(a)(3) | Revoked cert still trusted [[3]](https://www.rfc-editor.org/rfc/rfc6960) |
+| **Authority Key Identifier** | 4.2.1.1 | Ambiguous issuer resolution |
+
+**Name Constraints (critical extension):**
+```
+X509v3 Name Constraints: critical
+    Permitted:
+        DNS: .example.com          -- this CA may only issue for *.example.com
+        RFC822: .example.com       -- and email addresses @example.com
+    Excluded:
+        DNS: .evil.example.com     -- but NOT this subdomain
+        IP: 0.0.0.0/0              -- no IP SANs permitted
+```
+
+Name Constraints are the primary mechanism for technically scoping intermediate CAs. Enterprises issuing from a publicly trusted root can be constrained to only their domains.
+
+**Path building vs. path validation:** RFC 5280 defines validation (given a chain, verify it). Path *building* — finding a valid chain from the leaf to a trust anchor when multiple chains are possible — is implementation-specific (OpenSSL, NSS, Go `x509`, Rust `rustls`). AIA (Authority Information Access) enables chain discovery via HTTP.
+
+**Common implementation pitfalls:** Hostname mismatch (Subject CN vs. SAN); missing intermediate certificates; improper revocation checking (soft-fail vs. hard-fail OCSP); cross-signed roots causing loop or ambiguous paths.
+
+**State of the art:** RFC 5280 (2008, Internet Standard); RFC 6818 (2013, updates). CA/Browser Forum Baseline Requirements v2.0 (2023) add stricter profile. Google Chrome implements "Chrome Root Program" with independent path validation. See [DANE](#dane--dns-based-authentication-of-named-entities), [Certificate Transparency](#certificate-transparency-ct), [OCSP Stapling](#ocsp-stapling-and-certificate-revocation).
+
+---
+
+## SPIFFE / SPIRE — Workload Identity Framework
+
+**Goal:** Assign cryptographically verifiable identities to software workloads (containers, VMs, processes) without relying on network location, IP addresses, or application-level secrets. Enables mutual TLS between microservices with automatic certificate issuance and rotation — no manual PKI management.
+
+| Component | Function | Standard |
+|-----------|----------|----------|
+| **SPIFFE** (Secure Production Identity Framework for Everyone) | Identity specification: URI-based identity (SPIFFE ID) + document formats (SVID) | SPIFFE Spec v1.0 (CNCF) [[1]](https://spiffe.io/docs/latest/spiffe-about/overview/) |
+| **SPIRE** (SPIFFE Runtime Environment) | Reference implementation: server (CA + registration API) + agent (node attestor + workload API) | CNCF Graduated project [[2]](https://github.com/spiffe/spire) |
+| **X509-SVID** | X.509 certificate with SPIFFE ID in SAN URI | Primary SVID format [[3]](https://github.com/spiffe/spiffe/blob/main/standards/X509-SVID.md) |
+| **JWT-SVID** | Signed JWT with `sub` = SPIFFE ID | For non-TLS contexts (HTTP headers, gRPC metadata) |
+
+**SPIFFE ID format:**
+```
+spiffe://trust-domain/path
+spiffe://production.example.com/payment-service/backend
+spiffe://cluster.local/ns/default/sa/web-frontend
+```
+
+**SPIRE attestation chain:**
+```
+SPIRE Server (CA)
+  └─ Node Attestation: verify platform identity
+       AWS: instance identity document (PKCS#7 signed by AWS)
+       K8s: projected service account token (bound to pod)
+       Azure: MSI token; GCP: instance metadata
+  └─ Workload Attestation: verify process identity
+       K8s: pod labels, service account, namespace
+       Unix: PID, UID, GID, binary path/hash
+       Docker: container ID, image hash
+  └─ Issue X509-SVID (short-lived: 1h default, auto-rotated)
+```
+
+**mTLS with SPIFFE:**
+```
+Service A (X509-SVID: spiffe://prod/svc-a) ◄─── mTLS ───► Service B (X509-SVID: spiffe://prod/svc-b)
+  Both sides validate: (1) cert signature chains to SPIRE CA, (2) SAN URI matches authorized SPIFFE ID
+```
+
+**Deployments:** Kubernetes service meshes (Istio uses SPIFFE IDs natively); HashiCorp Consul Connect; Pinterest, Uber, Bloomberg, ByteDance (production workload identity); CNCF graduated project (2022). Integrates with Envoy Proxy (SDS API serves SVIDs).
+
+**State of the art:** SPIFFE v1.0 (2024 CNCF standard). SPIRE v1.9 (2024); supports nested SPIRE topologies for multi-cluster. Federation allows cross-trust-domain authentication. See [PKCS#11 / Cryptoki](#pkcs11--cryptoki--hsm-c-api), [ACME Protocol](categories/03-key-exchange-key-management.md#acme-protocol--automated-certificate-management).
+
+---
+
+## Arm PSA Certified / Platform Security Architecture
+
+**Goal:** Define a standardized security architecture for Arm-based microcontrollers (Cortex-M) and application processors — specifying a hardware Root of Trust (RoT), secure boot, cryptographic services API, attestation, and secure storage. Enables IoT device manufacturers to build on a certified security foundation without designing custom trusted firmware from scratch.
+
+| Component | Layer | Function |
+|-----------|-------|----------|
+| **PSA-RoT (Root of Trust)** | Hardware + immutable firmware | Secure boot anchor, entropy source, isolation boundary [[1]](https://www.psacertified.org/getting-certified/silicon/) |
+| **PSA Crypto API** | Firmware | Portable C API for symmetric/asymmetric crypto, key management, hash, MAC, AEAD, key derivation [[2]](https://arm-software.github.io/psa-api/crypto/1.2/) |
+| **PSA Attestation** | Firmware service | Entity Attestation Token (EAT, CBOR/COSE-signed) reporting device identity, firmware version, security lifecycle [[3]](https://arm-software.github.io/psa-api/attestation/1.0/) |
+| **PSA Secure Storage** | Firmware service | Encrypted + authenticated storage with rollback protection (Internal Trusted Storage + Protected Storage) |
+| **TF-M (Trusted Firmware-M)** | Reference implementation | Open-source secure partition manager for Cortex-M (ARMv8-M TrustZone) [[4]](https://www.trustedfirmware.org/projects/tf-m/) |
+
+**PSA Crypto API (key operations):**
+```c
+psa_key_attributes_t attr = PSA_KEY_ATTRIBUTES_INIT;
+psa_set_key_type(&attr, PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_SECP_R1));
+psa_set_key_bits(&attr, 256);
+psa_set_key_usage_flags(&attr, PSA_KEY_USAGE_SIGN_HASH | PSA_KEY_USAGE_VERIFY_HASH);
+psa_set_key_algorithm(&attr, PSA_ALG_ECDSA(PSA_ALG_SHA_256));
+
+psa_key_id_t key_id;
+psa_generate_key(&attr, &key_id);   // key never leaves RoT
+psa_sign_hash(key_id, PSA_ALG_ECDSA(PSA_ALG_SHA_256), hash, 32, sig, sizeof(sig), &sig_len);
+```
+
+**PSA Attestation Token (IAT):**
+
+| Claim | Content |
+|-------|---------|
+| Instance ID | SHA-256 of attestation public key (unique per device) |
+| Implementation ID | Identifies firmware implementation |
+| Security Lifecycle | Assembly / PSA-RoT provisioning / Secured / Non-PSA-RoT debug / Recoverable / Decommissioned |
+| Boot Seed | Random value per boot cycle |
+| Software Components | Array of: measurement (hash), signer ID, version |
+
+Token is COSE_Sign1 (ECDSA P-256 or P-384), verifiable by a remote attestation service.
+
+**PSA Certified levels:**
+
+| Level | Assurance | Evaluation |
+|-------|-----------|------------|
+| Level 1 | Security questionnaire + PSA-RoT design review | Self-assessed |
+| Level 2 | Lab evaluation: software attack resistance | Third-party lab |
+| Level 3 | Lab evaluation: hardware attack resistance (side-channel, fault injection) | Third-party lab |
+
+**Deployments:** Nordic Semiconductor (nRF9160, nRF5340), STMicroelectronics (STM32L5, STM32U5), NXP (LPC55S69), Infineon (PSoC 64), Raspberry Pi Pico (RP2350 with Arm TrustZone). Mbed TLS implements the PSA Crypto API. Over 200 PSA Certified products.
+
+**State of the art:** PSA Crypto API 1.2 (2024); PSA Attestation API 1.0; TF-M v2.1 (2024). PSA Certified scheme recognized by ETSI EN 303 645 (European IoT cybersecurity standard). See [DICE](#dice--device-identifier-composition-engine), [TEE Remote Attestation](#tee-remote-attestation), [TPM 2.0](#tpm-20--trusted-platform-module).
+
+---

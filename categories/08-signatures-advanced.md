@@ -849,3 +849,179 @@ STARK-based signatures instantiate the general paradigm: to sign a message m, th
 **State of the art:** FAEST (NIST on-ramp Round 2, ~5 KB sigs); Whir (2024, ~5–10 KB sigs, fast prover). STARK signatures remain larger than ML-DSA/FN-DSA but offer transparent setup and pure hash-based security assumptions. Cross-links: [Picnic (Signatures from ZK Proofs of Symmetric Primitives)](#picnic-signatures-from-zk-proofs-of-symmetric-primitives), [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems), [MPCitH / VOLEitH Proof Systems](categories/04-zero-knowledge-proof-systems.md#mpcith--voleith-proof-systems).
 
 ---
+
+## SM2 Digital Signatures (Chinese National Standard)
+
+**Goal:** Elliptic-curve digital signature scheme standardized by the Chinese government (GB/T 32918.2-2016, ISO/IEC 14888-3:2018). Provides authentication and non-repudiation using a Chinese-designed 256-bit elliptic curve over F_p. Mandated for government and financial systems in China.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SM2 Signature** | 2010 | ECC (custom 256-bit curve) | Schnorr-like signature using Chinese-standard curve; similar structure to ECDSA but with ZA user identity hash [[1]](https://www.oscca.gov.cn/sca/xxgk/2010-12/17/content_1002386.shtml)[[2]](https://doi.org/10.1007/978-3-319-89339-6_13) |
+| **SM2 in ISO/IEC 14888-3** | 2018 | ECC | International standardization of SM2 signature alongside ECDSA and EdDSA [[1]](https://www.iso.org/standard/76382.html) |
+| **SM2 in TLS 1.3 (RFC 8998)** | 2021 | ECC + SM3 hash | SM2 key exchange and authentication integrated into TLS 1.3; uses SM3 as hash function [[1]](https://datatracker.ietf.org/doc/html/rfc8998) |
+| **SM2 with SM3** | 2010 | ECC + SM3 | Signing uses SM3 (256-bit Chinese hash standard) for message digest; ZA = SM3(ENTLA ‖ IDA ‖ curve params ‖ PK) [[1]](https://datatracker.ietf.org/doc/html/rfc7091) |
+
+SM2 is structurally similar to ECDSA but differs in key ways: (1) the signature includes a user-identity hash ZA mixed into the message digest, binding the signer's distinguished name and public key to each signature; (2) the verification equation differs from ECDSA (it computes t = r + s mod n and checks R = [s]G + [t]PK); (3) the curve is a custom Weierstrass curve over a 256-bit prime field, not a NIST or Brainpool curve. SM2 is widely deployed in Chinese banking (UnionPay), government PKI, and CFCA certificates. OpenSSL 1.1.1+ includes SM2 support. Security analysis shows SM2 is provably secure in the generic group model under standard assumptions, with a reduction comparable to ECDSA.
+
+**State of the art:** Mandated in Chinese government/financial systems (GB/T 32918); ISO-standardized (ISO/IEC 14888-3:2018); supported in OpenSSL, BoringSSL, and GmSSL. Cross-links: [Foundational Signature Schemes](categories/01-foundational-primitives.md#digital-signatures-ecdsa-eddsa-rsa-schnorr).
+
+---
+
+## GOST R 34.10-2012 (Russian Digital Signature Standard)
+
+**Goal:** Elliptic-curve digital signature scheme standardized by the Russian Federation (GOST R 34.10-2012, RFC 7091). Provides authentication using Russian-designed elliptic curves at 256-bit and 512-bit security levels. Mandated for Russian government communications and e-document systems.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **GOST R 34.10-2001** | 2001 | ECC (256-bit) | Original GOST ECC signature; Schnorr-like structure over a 256-bit curve; replaced RSA-based GOST R 34.10-94 [[1]](https://datatracker.ietf.org/doc/html/rfc5832) |
+| **GOST R 34.10-2012 (256-bit)** | 2012 | ECC (256-bit) | Updated standard with new curve parameters; uses GOST R 34.11-2012 (Streebog) hash [[1]](https://datatracker.ietf.org/doc/html/rfc7091)[[2]](https://datatracker.ietf.org/doc/html/rfc7836) |
+| **GOST R 34.10-2012 (512-bit)** | 2012 | ECC (512-bit) | High-security variant using 512-bit Streebog hash and 512-bit elliptic curve for ~256-bit security [[1]](https://datatracker.ietf.org/doc/html/rfc7091) |
+| **GOST in TLS 1.2 (RFC 9189)** | 2022 | ECC + Streebog | GOST cipher suites for TLS 1.2; uses GOST 34.10-2012 for authentication [[1]](https://datatracker.ietf.org/doc/html/rfc9189) |
+
+GOST R 34.10-2012 uses an elliptic curve over F_p with Russian-specified parameters (id-tc26-gost-3410-2012-256-paramSetA/B/C/D for 256-bit; id-tc26-gost-3410-12-512-paramSetA/B/C for 512-bit). The signing algorithm is: pick random k, compute R = [k]G, set r = x_R mod n, compute s = (rd + ke) mod n where e = hash(m). The unique 512-bit variant provides a higher security margin than any NIST curve. The hash function Streebog (GOST R 34.11-2012) is an independent design. Some western researchers have raised concerns about the design rationale of GOST curves (no "nothing-up-my-sleeve" seed), but no practical attacks are known.
+
+**State of the art:** GOST R 34.10-2012 is mandated in Russian Federation government systems and supported in OpenSSL (via GOST engine), Bouncy Castle, and CryptoPro CSP. The 512-bit variant provides the highest classical security level of any deployed ECC signature scheme. Cross-links: [Foundational Signature Schemes](categories/01-foundational-primitives.md#digital-signatures-ecdsa-eddsa-rsa-schnorr).
+
+---
+
+## FROST Threshold Schnorr Signatures
+
+**Goal:** Flexible Round-Optimized Schnorr Threshold signatures. A *t*-of-*n* threshold Schnorr signature scheme requiring only two rounds of communication. The resulting signature is a standard Schnorr signature — verifiers cannot distinguish a FROST-generated signature from one produced by a single signer. Designed for distributed key custody without a trusted dealer.
+
+| Scheme | Year | Rounds | Note |
+|--------|------|--------|------|
+| **FROST (Komlo-Goldberg)** | 2020 | 2 | Original FROST: preprocessing round + signing round; UC-secure under OMDL [[1]](https://eprint.iacr.org/2020/852) |
+| **FROST2 (re:FROST)** | 2023 | 2 | Refined security proof; identifiable abort; robustness extensions [[1]](https://eprint.iacr.org/2023/899) |
+| **FROST-DKG (Pedersen DKG + FROST)** | 2020 | 2 + DKG | Distributed key generation phase (Pedersen or Gennaro-Goldfeder DKG) followed by FROST signing [[1]](https://eprint.iacr.org/2020/852) |
+| **FROST-Ed25519 (RFC 9591)** | 2024 | 2 | IETF specification of FROST for Ed25519 and Ristretto255; interoperable wire format [[1]](https://datatracker.ietf.org/doc/rfc9591/) |
+| **FROST-secp256k1** | 2023 | 2 | FROST instantiation for Bitcoin's secp256k1 curve; compatible with BIP 340 (Schnorr) [[1]](https://github.com/ZcashFoundation/frost) |
+
+FROST achieves round-optimality for threshold Schnorr: Round 1 (preprocessing) generates nonce commitments which can be done offline before a message is known; Round 2 (signing) produces signature shares given a message. The coordinator aggregates shares into a single Schnorr signature. Security requires the One-More Discrete Logarithm (OMDL) assumption. FROST does not inherently provide robustness (a malicious participant can cause abort); the ROAST protocol wraps FROST to achieve guaranteed output delivery in asynchronous settings. The Zcash Foundation maintains a production-quality Rust implementation supporting Ed25519, Ristretto255, secp256k1, and P-256.
+
+**State of the art:** RFC 9591 (2024) standardizes FROST for Ed25519/Ristretto255. Used in Zcash (NU5 multisig), Bitcoin custody solutions, and federated signing services. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss), [ROAST (Robust Async FROST)](#roast-robust-asynchronous-threshold-signatures).
+
+---
+
+## CGGMP Threshold ECDSA
+
+**Goal:** UC-secure threshold ECDSA with identifiable abort. A *t*-of-*n* protocol that produces standard ECDSA signatures without ever reconstructing the private key. Designed for MPC wallet infrastructure where ECDSA compatibility (Bitcoin, Ethereum) is required.
+
+| Scheme | Year | Rounds | Note |
+|--------|------|--------|------|
+| **GG18 (Gennaro-Goldfeder)** | 2018 | 6 (presign) + 1 | First practical threshold ECDSA via multiplicative-to-additive share conversion; Paillier-based [[1]](https://eprint.iacr.org/2019/114) |
+| **GG20** | 2020 | 4 (presign) + 1 | Improved GG18 with identifiable abort; 4-round presigning [[1]](https://eprint.iacr.org/2020/540) |
+| **CGGMP (Canetti-Gennaro-Goldfeder-Makriyannis-Peled)** | 2021 | 3 (presign) + 1 | UC-secure, 3-round presigning, strong identifiable abort; proved in UC framework [[1]](https://eprint.iacr.org/2021/060) |
+| **CGGMP with auxiliary info** | 2021 | 3 + setup | Adds Paillier/Pedersen range proofs for key-refresh and auxiliary parameter generation [[1]](https://eprint.iacr.org/2021/060) |
+| **Multi-party CGGMP (n > 2)** | 2021 | 3 (presign) + 1 | Extends naturally to *t*-of-*n* with Feldman VSS for key generation phase [[1]](https://eprint.iacr.org/2021/060) |
+
+CGGMP improves over GG18/GG20 by achieving UC-security (composability) and strong identifiable abort — if any party cheats, all honest parties can identify the cheater and exclude them. The presigning phase converts multiplicative shares to additive shares using Paillier homomorphic encryption and zero-knowledge range proofs. Key generation uses Feldman's Verifiable Secret Sharing. The protocol requires expensive modular exponentiations (Paillier), making it slower than FROST, but it produces standard ECDSA signatures compatible with existing blockchain verification logic. Deployed in Fireblocks, Coinbase, Zengo, and other institutional MPC wallet providers.
+
+**State of the art:** CGGMP (2021) is the dominant threshold ECDSA protocol for production MPC wallets. Implementations: multi-party-ecdsa (ZenGo), tss-lib (Binance), Nash. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss).
+
+---
+
+## MuSig2 (Multi-Signatures for Bitcoin)
+
+**Goal:** Two-round multi-signature scheme where *n* signers produce a single Schnorr signature that verifies under an aggregated public key. Enables key aggregation: the combined public key is indistinguishable from a single key on-chain, providing privacy and efficiency. Standardized as BIP 327 for Bitcoin Taproot.
+
+| Scheme | Year | Rounds | Note |
+|--------|------|--------|------|
+| **MuSig (Maxwell-Poelstra-Seurin-Wuille)** | 2018 | 3 | Original multi-sig; 3 rounds needed to prevent rogue-key attacks [[1]](https://eprint.iacr.org/2018/068) |
+| **MuSig-DN (Deterministic Nonce)** | 2020 | 2 | Eliminates nonce-reuse risk via zero-knowledge proof of nonce derivation; expensive ZKP [[1]](https://eprint.iacr.org/2020/1057) |
+| **MuSig2 (Nick-Ruffing-Seurin)** | 2020 | 2 | Concurrent security with 2 rounds; signers send two nonce values in round 1 [[1]](https://eprint.iacr.org/2020/1261) |
+| **BIP 327 (MuSig2)** | 2022 | 2 | Bitcoin standardization; specifies key aggregation, nonce generation, partial signing, aggregation [[1]](https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki) |
+| **MuSig2 + Adaptor Signatures** | 2022 | 2 | Combining MuSig2 with adaptor signatures for scriptless scripts in Lightning/DLCs [[1]](https://eprint.iacr.org/2020/1261) |
+
+MuSig2 solves the key aggregation problem: given public keys PK₁,...,PKₙ, compute an aggregate key apk = Σ aᵢ·PKᵢ where aᵢ are key aggregation coefficients derived by hashing all public keys together (preventing rogue-key attacks). Signing requires each party to generate two nonce pairs in round 1; in round 2, a linear combination of these nonces is used for the Schnorr signing equation. The resulting signature is a standard BIP 340 Schnorr signature. MuSig2 achieves concurrent security — multiple signing sessions can run in parallel safely — which MuSig1 could not guarantee in 2 rounds. On Bitcoin, MuSig2 enables n-of-n multisig that appears as a single Taproot key-path spend, saving ~50% in transaction weight versus script-path multisig.
+
+**State of the art:** BIP 327 deployed in Bitcoin wallets (BitGo, Blockstream Green). Used in Lightning Network channel opens and Taproot-based custody. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss), [Adaptor Signatures / Scriptless Scripts](#adaptor-signatures--scriptless-scripts), [Taproot (Bitcoin Improvement)](categories/13-blockchain-distributed-ledger.md#taproot-bitcoin-improvement).
+
+---
+
+## BBS+ Signatures (Privacy-Preserving Selective Disclosure)
+
+**Goal:** Multi-message signature scheme enabling selective disclosure and zero-knowledge proof of possession. A signer signs a vector of messages (m₁,...,mₗ); the holder can later derive a zero-knowledge proof revealing any subset of messages while hiding the rest. Foundation of W3C Verifiable Credentials with privacy.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BBS (Boneh-Boyen-Shacham)** | 2004 | Pairings (Type III) | Short group signatures; basis for later BBS+ work [[1]](https://eprint.iacr.org/2004/174) |
+| **BBS+ (Au-Susilo-Mu)** | 2006 | Pairings | Multi-message extension; efficient proof of knowledge of signature [[1]](https://link.springer.com/chapter/10.1007/11832072_8) |
+| **BBS Signatures (IETF draft)** | 2023 | BLS12-381 pairing | IETF standardization (draft-irtf-cfrg-bbs-signatures); specifies ProofGen for selective disclosure [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-bbs-signatures/) |
+| **BBS+ in W3C VC Data Integrity** | 2023 | BLS12-381 | W3C Data Integrity BBS Cryptosuite (di-bbs-2023); JSON-LD selective disclosure [[1]](https://www.w3.org/TR/vc-di-bbs/) |
+| **Anonymous Credentials from BBS+** | 2006 | Pairings + Pedersen | Combine BBS+ with Pedersen commitments for attribute-based anonymous credentials [[1]](https://eprint.iacr.org/2016/663) |
+
+BBS+ signatures are constructed over Type III pairing groups (G₁, G₂, GT). A signature on messages (m₁,...,mₗ) is σ = (A, e, s) where A = [1/(sk + e)] · (P₁ + s·H₀ + Σ mᵢ·Hᵢ). The holder derives a ZK proof by re-randomizing: choose random r₁, r₂, compute A' = r₁·A, Ā = r₁·r₂·A, and prove knowledge of (e, s, hidden messages) via a Schnorr-style Sigma protocol. Verification uses a pairing check. This achieves unlinkability (two proofs from the same signature are computationally indistinguishable) and selective disclosure (reveal only chosen mᵢ values). The IETF draft specifies BLS12-381 as the mandatory curve, aligning with Ethereum 2.0 and Zcash infrastructure.
+
+**State of the art:** IETF draft-irtf-cfrg-bbs-signatures progressing toward RFC; W3C VC Data Integrity BBS Cryptosuite (2023); deployed in Hyperledger AnonCreds, Microsoft Entra Verified ID, and EU Digital Identity Wallet (EUDI) pilots. Cross-links: [Blind Signatures](#blind-signatures), [Anonymous Credentials](categories/11-anonymity-credentials.md#anonymous-credentials), [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps).
+
+---
+
+## Mercurial Signatures
+
+**Goal:** Sign equivalence classes of message vectors under a secret randomization relation. A mercurial signature on a representative of an equivalence class can be publicly converted into a valid signature on any other representative of the same class — without the signing key. Enables delegatable anonymous credentials and unlinkable token systems.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Mercurial Signatures (Chase-Kohlweiss-Lysyanskaya-Meiklejohn)** | 2014 | Pairings (Type III) | First formalization; public key and signature are both class-changeable [[1]](https://eprint.iacr.org/2014/944) |
+| **Mercurial Sig from EQS** | 2014 | Pairings | Mercurial sigs shown equivalent to Structure-Preserving Signatures on Equivalence Classes (SPS-EQ) [[1]](https://eprint.iacr.org/2014/944) |
+| **Crites-Kohlweiss-Preneel-Sedaghat** | 2023 | Pairings | Improved efficiency; tighter security reduction; practical instantiation [[1]](https://eprint.iacr.org/2023/1051) |
+| **Delegatable Anonymous Credentials from Mercurial Sigs** | 2019 | Pairings + Groth-Sahai | Multi-level delegation: user A delegates to B who delegates to C; each delegation is unlinkable [[1]](https://eprint.iacr.org/2018/1126) |
+
+Mercurial signatures operate on projective equivalence classes: two message vectors M = (M₁,...,Mₙ) and M' = (M'₁,...,M'ₙ) are equivalent if M' = ρ·M for some scalar ρ. The ConvertSig algorithm takes a signature σ on M and produces σ' on M' = ρ·M without the secret key. Similarly, ConvertPK changes the public key. This enables delegatable anonymous credentials: a credential issuer signs a user's attributes; the user re-randomizes the signature and public key before presenting, breaking linkability. The close relationship with SPS-EQ means advances in one directly transfer to the other.
+
+**State of the art:** Mercurial signatures (2023 improvements) enable practical delegatable anonymous credentials with O(1)-size proofs per delegation level. Cross-links: [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps), [Anonymous Credentials](categories/11-anonymity-credentials.md#anonymous-credentials), [Rerandomizable Signatures (PS Signatures)](#rerandomizable-signatures-ps-signatures).
+
+---
+
+## Structure-Preserving Signatures on Equivalence Classes (SPS-EQ)
+
+**Goal:** Sign equivalence classes of group-element vectors such that signatures can be publicly adapted to any class representative. All inputs and outputs (messages, keys, signatures) are group elements compatible with Groth-Sahai proofs. The core primitive behind efficient anonymous credentials, delegatable credentials, and blind token issuance in the pairing setting.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Hanser-Slamanig EQS** | 2014 | Pairings (Type III) | First EQS construction; sign [M]_R where [M]_R = {ρ·M : ρ ∈ Z_p*}; random-oracle model [[1]](https://eprint.iacr.org/2014/944) |
+| **Fuchsbauer-Hanser-Slamanig (FHS)** | 2019 | Pairings (Type III) | Standard-model EQS; optimal verification (3 pairing equations); basis of practical schemes [[1]](https://eprint.iacr.org/2018/1105) |
+| **EQS + Set Commitments** | 2023 | Pairings | Combine EQS with set commitments for attribute-hiding credentials with subset predicates [[1]](https://eprint.iacr.org/2022/1033) |
+| **EQS-based Anonymous Tokens** | 2021 | Pairings | Privacy Pass-style tokens: issuer signs blinded token; user unblinds + randomizes via EQS class change [[1]](https://eprint.iacr.org/2020/072) |
+
+SPS-EQ defines an equivalence relation on vectors of group elements: M ~ M' iff M' = ρ·M for some ρ ∈ Z_p*. The ChgRep algorithm takes (σ, M, ρ) and outputs σ' valid on ρ·M under the same public key — without the secret key. This is strictly more powerful than standard rerandomizable signatures because it changes the message, not just the signature. Applications: (1) anonymous credentials where showing a credential rerandomizes it; (2) blind issuance without interactive blind signing protocols; (3) delegatable credentials where each delegation level changes the representative. The FHS construction achieves EUF-CMA security under the co-CDH assumption in Type III pairings.
+
+**State of the art:** FHS (2019) is the practical standard-model EQS; combined with set commitments for W3C-style attribute credentials. Active research on EQS from lattices (post-quantum). Cross-links: [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps), [Mercurial Signatures](#mercurial-signatures), [Anonymous Credentials](categories/11-anonymity-credentials.md#anonymous-credentials).
+
+---
+
+## ROAST (Robust Asynchronous Threshold Signatures)
+
+**Goal:** Guarantee output delivery for threshold Schnorr signing in asynchronous networks with Byzantine participants. ROAST wraps FROST with a coordinator protocol that ensures a valid signature is always produced as long as *t* honest signers are available — even if up to *n - t* signers are malicious, unresponsive, or arbitrarily slow.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ROAST (Ruffing-Ronge-Jin-Schneider-Abdalla)** | 2022 | Schnorr/FROST | Robust wrapper: coordinator manages multiple concurrent FROST sessions; guaranteed completion [[1]](https://eprint.iacr.org/2022/550) |
+| **ROAST + FROST-secp256k1** | 2023 | secp256k1 / Schnorr | Instantiation for Bitcoin Taproot; Blockstream Liquid federation uses ROAST for block signing [[1]](https://blog.blockstream.com/roast-robust-asynchronous-schnorr-threshold-signatures/) |
+| **ROAST with Identifiable Abort** | 2022 | Schnorr | Combines robustness with cheater identification; detect-and-exclude misbehaving signers [[1]](https://eprint.iacr.org/2022/550) |
+
+ROAST works by having the coordinator maintain a set of "available" signers and initiate multiple concurrent FROST signing sessions. When a session fails (a signer is unresponsive or sends an invalid share), the coordinator marks that signer as unavailable, selects a different *t*-subset from available signers, and starts a new session. The key insight is that the coordinator only needs *one* session to succeed, and since there are at least *t* honest signers, at least one subset of *t* available signers is fully honest. The protocol terminates in at most *n - t + 1* session attempts. ROAST adds negligible overhead beyond FROST itself — the wrapper is purely a coordination mechanism with no additional cryptographic operations.
+
+**State of the art:** Deployed in Blockstream Liquid Network for federated block signing (11-of-15). Proposed for Bitcoin multisig custody and federated Lightning nodes. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss), [FROST Threshold Schnorr Signatures](#frost-threshold-schnorr-signatures).
+
+---
+
+## Hash-Based Signatures: XMSS, LMS, and SPHINCS+
+
+**Goal:** Post-quantum digital signatures whose security relies solely on the collision resistance and preimage resistance of hash functions — no number-theoretic or lattice assumptions. Stateful schemes (XMSS, LMS) offer small signatures but require careful state management; stateless SPHINCS+ (SLH-DSA) trades larger signatures for operational simplicity.
+
+| Scheme | Year | Type | Note |
+|--------|------|------|------|
+| **XMSS (eXtended Merkle Signature Scheme)** | 2011 | Stateful, hash-based | Merkle tree of WOTS+ keys; RFC 8391; NIST SP 800-208 recommended [[1]](https://datatracker.ietf.org/doc/html/rfc8391)[[2]](https://csrc.nist.gov/pubs/sp/800/208/final) |
+| **XMSS^MT (Multi-Tree XMSS)** | 2013 | Stateful, hash-based | Hypertree variant; multiple XMSS trees in layers; supports 2^60 signatures [[1]](https://datatracker.ietf.org/doc/html/rfc8391) |
+| **LMS (Leighton-Micali Signatures)** | 2019 | Stateful, hash-based | Simpler Merkle tree design; RFC 8554; NIST SP 800-208 recommended [[1]](https://datatracker.ietf.org/doc/html/rfc8554)[[2]](https://csrc.nist.gov/pubs/sp/800/208/final) |
+| **HSS (Hierarchical Signature System)** | 2019 | Stateful, hash-based | Multi-tree extension of LMS; analogous to XMSS^MT; RFC 8554 [[1]](https://datatracker.ietf.org/doc/html/rfc8554) |
+| **SPHINCS+** | 2017 | Stateless, hash-based | Hypertree of FORS + WOTS+; no state management; NIST PQC winner (SLH-DSA) [[1]](https://sphincs.org/)[[2]](https://csrc.nist.gov/pubs/fips/205/final) |
+| **SLH-DSA (FIPS 205)** | 2024 | Stateless, hash-based | NIST standardization of SPHINCS+; parameter sets SLH-DSA-SHA2-{128,192,256}{s,f} and SHAKE variants [[1]](https://csrc.nist.gov/pubs/fips/205/final) |
+| **SPHINCS-alpha** | 2023 | Stateless, hash-based | Improved SPHINCS+ with tweaked FORS and better parameter selection; ~15% smaller signatures [[1]](https://eprint.iacr.org/2023/021) |
+
+Stateful schemes (XMSS, LMS) use a Merkle tree whose leaves are one-time signature (WOTS+) key pairs. The signer must track which leaf index has been used; reusing a leaf index catastrophically leaks the secret key. This makes them unsuitable for general-purpose use but ideal for firmware signing, code signing, and HSM-based applications where state tracking is feasible. XMSS^MT and HSS use a hypertree structure (a tree of trees) to support large message counts (2^40 to 2^60) without enormous key generation times. SPHINCS+ eliminates state entirely by using a pseudorandom index derived from the message and secret key to select the leaf, converting the stateful scheme into a stateless one at the cost of larger signatures (7–49 KB depending on parameter set vs. 1–3 KB for XMSS/LMS). SLH-DSA (FIPS 205) standardizes SPHINCS+ with SHA-256 and SHAKE-256 instantiations at NIST security levels 1, 3, and 5. The "s" (small) parameter sets minimize signature size; the "f" (fast) sets minimize signing time.
+
+**State of the art:** SLH-DSA / FIPS 205 (2024) is the NIST-standardized stateless hash-based signature. XMSS (RFC 8391) and LMS (RFC 8554) recommended by NIST SP 800-208 for stateful use cases (firmware signing). SPHINCS-alpha (2023) offers improved parameters. Cross-links: [One-Time Signatures (OTS)](#one-time-signatures-ots), [Post-Quantum Signature Comparison](#post-quantum-signature-comparison-ml-dsa-vs-slh-dsa-vs-fn-dsa), [Post-Quantum Cryptography (PQC)](categories/15-quantum-cryptography.md#post-quantum-cryptography-pqc--nist-standards).
+
+---

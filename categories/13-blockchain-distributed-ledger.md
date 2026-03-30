@@ -1334,3 +1334,339 @@ The Nomad bug (August 2022) bypassed this by allowing the zero hash `0x00...00` 
 **State of the art:** ZK bridges (Succinct Telepathy, Polymer, Union) are in production on mainnet (2024) but at lower TVL than multisig bridges due to proving cost. Wormhole post-mortem [[1]](https://extropy-io.medium.com/solanas-wormhole-hack-post-mortem-analysis-3b68b9e88e13); Nomad post-mortem [[2]](https://medium.com/nomad-xyz-blog/nomad-bridge-hack-root-cause-analysis-875ad2e5aacd); L2Beat bridge risk framework [[3]](https://l2beat.com/bridges/summary). See [zkBridge](#zkbridge--cross-chain-state-proofs), [IBC](#ibc--inter-blockchain-communication-protocol), [Helios Light Client](#helios--snark-based-ethereum-light-client).
 
 ---
+
+## Seraphis — Monero Next-Generation Transaction Protocol
+
+**Goal:** Replace Monero's current CLSAG-based RingCT with a more flexible membership-proof framework that supports larger anonymity sets, forward secrecy of sender identity, modular address schemes (Jamtis), and efficient scanning — while retaining Monero's default-on privacy for amounts, senders, and recipients.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Seraphis (koe et al.)** | 2022 | Grootle / Triptych membership proofs | Replaces CLSAG ring sigs with logarithmic-size set membership proofs; enables ring sizes of 128+ [[1]](https://github.com/UkoeHB/Seraphis) |
+| **Jamtis Address Scheme** | 2022 | ECDH + key hierarchy | New address format for Seraphis; separates find-received, view-balance, and spend privileges; 3-tier key hierarchy [[1]](https://gist.github.com/tevador/50160d160d24cfc6c52ae02eb3d17024) |
+| **Grootle One-out-of-Many Proof** | 2021 | Commitment-to-zero proof | Logarithmic-size membership proof for committed values; generalises Groth-Kohlweiss [[1]](https://eprint.iacr.org/2021/1256) |
+| **Triptych** | 2020 | Generalised Schnorr + matrix | Linkable ring signature with O(log N) size; candidate for Seraphis membership layer [[1]](https://eprint.iacr.org/2020/018) |
+
+**Key improvements over CLSAG RingCT:**
+
+| Property | CLSAG (current Monero) | Seraphis (proposed) |
+|----------|----------------------|---------------------|
+| Ring size | 16 (linear proof size) | 128+ (logarithmic proof size) |
+| Proof size scaling | O(n) in ring size | O(log n) in ring size |
+| Address scheme | CryptoNote (limited key separation) | Jamtis (find/view/spend tiers) |
+| Forward secrecy | No — compromised key reveals past sends | Yes — e_sender is ephemeral |
+| Tx chaining | Not supported | Supported (outputs usable before confirmation) |
+
+**State of the art:** Seraphis is under active development for Monero (2024-2025); no mainnet activation date yet. Seraphis specification [[1]](https://github.com/UkoeHB/Seraphis); Jamtis address scheme [[2]](https://gist.github.com/tevador/50160d160d24cfc6c52ae02eb3d17024). See [Monero RingCT](#monero-ringct--ring-signatures--confidential-transactions), [Ring Signatures](categories/08-signatures-advanced.md#ring-signatures), [Confidential Transactions](#confidential-transactions-ct).
+
+---
+
+## Bulletproofs+ — Optimised Range Proofs
+
+**Goal:** Improve upon Bulletproofs with a tighter security reduction and ~16% smaller proof size for range proofs, using a weighted inner product argument that eliminates redundant group elements — deployed in Monero (2022) and under consideration for other confidential transaction systems.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bulletproofs (Bunz et al.)** | 2018 | Inner product argument | Logarithmic-size range proofs; no trusted setup; deployed in Monero, Liquid [[1]](https://eprint.iacr.org/2017/1066) |
+| **Bulletproofs+ (Chung et al.)** | 2022 | Weighted inner product argument | ~16% smaller proofs; tighter soundness; adopted by Monero in 2022 [[1]](https://eprint.iacr.org/2020/735) |
+| **Bulletproofs++ (Eagen)** | 2022 | Reciprocal argument | Further ~15% reduction over BP+; norm argument for range proofs; proposed for Monero [[1]](https://eprint.iacr.org/2022/510) |
+
+**Size comparison for 64-bit range proofs:**
+
+| Proof type | 1 output | 2 outputs (aggregated) | 8 outputs (aggregated) |
+|------------|----------|----------------------|----------------------|
+| Bulletproofs | 674 bytes | 738 bytes | 930 bytes |
+| Bulletproofs+ | 576 bytes | 640 bytes | 800 bytes |
+| Bulletproofs++ | ~490 bytes | ~550 bytes | ~700 bytes |
+
+**State of the art:** Bulletproofs+ deployed on Monero mainnet (August 2022, hard fork v15). Bulletproofs++ proposed for future Monero upgrade. BP+ paper (Chung et al., 2020) [[1]](https://eprint.iacr.org/2020/735). See [Range Proofs](#range-proofs), [Confidential Transactions](#confidential-transactions-ct), [Monero RingCT](#monero-ringct--ring-signatures--confidential-transactions).
+
+---
+
+## DECO — Decentralised Oracle via TLS Proofs
+
+**Goal:** Allow a user to prove statements about data received from any TLS-protected web server (bank balance, identity record, API response) to a verifier or smart contract — without revealing the data to the verifier and without any server-side modification — by using a three-party handshake protocol that splits the TLS session key between the prover and a semi-trusted notary.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DECO (Zhang et al., Cornell)** | 2020 | TLS 1.2/1.3 + 2PC + ZKP | Three-party TLS handshake; prover and verifier jointly hold session key; CCS 2020 [[1]](https://eprint.iacr.org/2019/1332) |
+| **TLSNotary** | 2022 | TLS 1.2 + MPC (garbled circuits) | Open-source implementation of DECO-style TLS proofs; 2PC for HMAC key split [[1]](https://tlsnotary.org/) |
+| **zkTLS (Reclaim Protocol)** | 2024 | TLS 1.3 + SNARK | Generates ZK proofs of TLS session content; on-chain verifiable [[1]](https://www.reclaimprotocol.org/) |
+| **Town Crier** | 2016 | TLS + TEE (Intel SGX) | TEE-based TLS oracle; predecessor to DECO; TEE scrapes HTTPS data [[1]](https://eprint.iacr.org/2016/168) |
+
+**DECO protocol overview:**
+
+```
+Prover (P)                 Server (S, e.g. bank API)          Verifier (V, notary)
+  │                              │                                │
+  ├── TLS handshake with S ──────┤                                │
+  │   (P and V jointly compute   │                                │
+  │    session key via 2PC:      │                                │
+  │    P holds key_share_P,      │                                │
+  │    V holds key_share_V,      │                                │
+  │    neither knows full key)   │                                │
+  │                              │                                │
+  ├── Request data from S ───────┤                                │
+  ├── Receive encrypted response ┤                                │
+  │   (P decrypts locally using  │                                │
+  │    key_share_P + key_share_V │                                │
+  │    via 2PC; V never sees     │                                │
+  │    plaintext)                │                                │
+  │                              │                                │
+  ├── ZK proof to V: ────────────┼────────────────────────────────┤
+  │   "decrypted response        │   V verifies: TLS MAC is valid │
+  │    satisfies predicate P"    │   + ZK proof checks out        │
+```
+
+**State of the art:** TLSNotary is the most mature open-source implementation (2024). Chainlink acquired DECO from Cornell (2020) for oracle integration. zkTLS (Reclaim, Opacity) is the emerging direction using SNARKs for fully on-chain verification. DECO paper (Zhang et al., CCS 2020) [[1]](https://eprint.iacr.org/2019/1332). See [Zero-Knowledge Proofs](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems-overview), [Secure Communication Protocols](categories/12-secure-communication-protocols.md).
+
+---
+
+## VRF-Based Consensus and Leader Election (Algorand)
+
+**Goal:** Use Verifiable Random Functions (VRFs) to enable private, non-interactive leader election and committee selection where each participant locally determines whether they are selected for a role — without any interactive protocol — and can prove their selection to the network with a compact VRF proof. Deployed in Algorand, Cardano (Ouroboros Praos), and Polkadot (BABE).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Algorand BA* (Gilad et al.)** | 2017 | VRF (ECVRF) + Byzantine agreement | Cryptographic sortition: each user evaluates VRF; selected if output < threshold; MIT [[1]](https://arxiv.org/abs/1607.01341) |
+| **Ouroboros Praos (Cardano)** | 2017 | VRF + stake-weighted threshold | PoS slot leader election via VRF; security under semi-adaptive corruptions [[1]](https://eprint.iacr.org/2017/573) |
+| **Ouroboros Genesis** | 2018 | VRF + chain selection rule | Extends Praos with secure bootstrapping from genesis without checkpoints [[1]](https://eprint.iacr.org/2018/378) |
+| **BABE (Polkadot)** | 2020 | VRF (Sr25519 / Ristretto) | Blind slot assignment; primary + secondary leaders; see Polkadot BABE/GRANDPA [[1]](https://wiki.polkadot.com/learn/learn-consensus/) |
+
+**Algorand cryptographic sortition:**
+
+```
+For each step of consensus:
+  (hash, proof) = VRF_Eval(sk_user, seed || round || step)
+  weight = user's stake / total_stake
+  selected = hash < threshold(weight)
+
+If selected:
+  Broadcast (message, proof) to network
+  Any node verifies: VRF_Verify(pk_user, seed || round || step, hash, proof) = 1
+  and checks hash < threshold(weight)
+```
+
+**Key properties:**
+
+| Property | Algorand sortition | Traditional leader election |
+|----------|-------------------|---------------------------|
+| Communication rounds | 0 (self-selection) | O(n) or O(n^2) |
+| Leader known before acting | No (private until broadcast) | Yes (public schedule) |
+| DoS resistance | Leader identity hidden until proposal | Leader is a known target |
+| Finality | Immediate (Byzantine agreement) | Probabilistic (longest chain) |
+
+**State of the art:** Algorand mainnet (June 2019) uses ECVRF over Ed25519; Cardano mainnet (July 2020) uses Ouroboros Praos VRF. Both process thousands of TPS with instant finality. Algorand paper [[1]](https://arxiv.org/abs/1607.01341); Ouroboros Praos [[2]](https://eprint.iacr.org/2017/573). See [Secret Leader Election](#secret-leader-election), [Verifiable Random Functions](categories/09-commitments-verifiability.md#verifiable-random-functions-vrf), [Polkadot BABE/GRANDPA](#polkadot-babegrandpa-hybrid-consensus).
+
+---
+
+## Recursive SNARKs for Rollups — Nova and ProtoStar Folding
+
+**Goal:** Enable ZK rollups to prove arbitrarily long sequences of state transitions with constant proof size and near-linear prover cost by *folding* successive computation steps into a single accumulated instance rather than verifying one SNARK inside another — dramatically reducing the overhead of recursive proof composition.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Nova (Kothapalli-Setty-Tzialla)** | 2021 | R1CS folding + Pedersen commitments | First practical folding scheme; fold two R1CS instances into one relaxed instance [[1]](https://eprint.iacr.org/2021/370) |
+| **SuperNova** | 2022 | Non-uniform IVC via Nova | Different circuit at each step; supports branching programs (e.g., VM opcode dispatch) [[1]](https://eprint.iacr.org/2022/1758) |
+| **HyperNova** | 2023 | CCS folding + sum-check | Generalises Nova to Customisable Constraint Systems; subsumes R1CS, PLONK, AIR [[1]](https://eprint.iacr.org/2023/573) |
+| **ProtoStar** | 2023 | Special-sound folding for PLONK | Folding for PLONKish arithmetisation with lookup arguments; IPA/KZG compatible [[1]](https://eprint.iacr.org/2023/620) |
+| **Sangria** | 2023 | Relaxed PLONK folding | Adapts Nova's approach to PLONK constraint systems; KZG-based [[1]](https://geometry.xyz/notebook/sangria-a-folding-scheme-for-plonk) |
+| **ProtoGalaxy** | 2023 | Multi-instance folding | Fold k > 2 instances simultaneously; amortises folding cost [[1]](https://eprint.iacr.org/2023/1106) |
+
+**Nova folding in detail:**
+
+```
+Classical recursion (expensive):
+  π₂ proves "I verified π₁ inside my circuit" → circuit includes full SNARK verifier → huge
+
+Nova folding (cheap):
+  Instance u₁ = (commitment, public IO, error term)
+  Instance u₂ = new step's instance
+  Challenge r ← random (Fiat-Shamir)
+  Folded instance u' = u₁ + r·u₂  (linear combination of committed witnesses)
+  Cost: O(|circuit|) field operations — no SNARK verification inside the circuit
+```
+
+**Rollup deployment:**
+
+| Rollup / zkVM | Folding scheme | Status |
+|---------------|---------------|--------|
+| **Nexus zkVM** | Nova / HyperNova | Research / testnet |
+| **Lurk (Protocol Labs)** | Nova (Arecibo) | Alpha; Lisp-based zkVM |
+| **SP1 (Succinct)** | STARK recursion (not folding) | Production; RISC-V zkVM |
+| **RISC Zero** | STARK recursion + Groth16 wrapper | Production; RISC-V zkVM |
+
+**State of the art:** Nova (2021) and HyperNova (2023) are the leading folding constructions; ProtoStar extends folding to PLONKish systems. Production rollup provers (SP1, RISC Zero) currently prefer STARK recursion but folding integration is active research. Nova paper [[1]](https://eprint.iacr.org/2021/370); ProtoStar [[2]](https://eprint.iacr.org/2023/620). See [IVC for Blockchain](#incremental-verifiable-computation-ivc-for-blockchain), [ZK Rollups](#zk-rollups-and-optimistic-rollups), [Folding Schemes](categories/04-zero-knowledge-proof-systems.md#folding-schemes-and-proof-carrying-data-pcd).
+
+---
+
+## Cross-Chain Bridges — Hash Time-Locked Contracts and Light Client Proofs
+
+**Goal:** Enable trustless asset transfer and message passing between independent blockchains using cryptographic mechanisms — either hash time-locked contracts (HTLCs) for atomic swaps between chains with scripting support, or light client proofs that verify the source chain's consensus on the destination chain without intermediaries.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HTLC Atomic Swap** | 2013 | Hash preimage + timelocks | Cross-chain swap: Alice locks on chain A with hash h; Bob locks on chain B with same h; preimage reveal claims both [[1]](https://en.bitcoin.it/wiki/Atomic_swap) |
+| **PTLC (Point Time-Locked Contracts)** | 2019 | Adaptor signatures | Scriptless HTLC replacement; no hash correlation across hops; requires Schnorr [[1]](https://suredbits.com/payment-points-part-1/) |
+| **SPV Relay (BTC Relay)** | 2016 | Merkle proof + PoW verification | Verify Bitcoin tx on Ethereum by relaying block headers + SPV proof [[1]](https://github.com/ethereum/btcrelay) |
+| **IBC Light Client** | 2021 | Tendermint light client + Merkle proof | Verify counterparty chain headers via >=2/3 validator sigs; see [IBC](#ibc--inter-blockchain-communication-protocol) [[1]](https://ibc.cosmos.network/) |
+| **ZK Light Client Bridge** | 2023 | SNARK-proven consensus verification | Prove BLS/Ed25519 signature verification inside a SNARK; see [zkBridge](#zkbridge--cross-chain-state-proofs) [[1]](https://arxiv.org/abs/2210.00264) |
+| **Optimistic Bridge (Nomad-style)** | 2022 | Fraud proofs + challenge window | Post state root; 7-day challenge; 1-of-n honest watcher assumption [[1]](https://docs.connext.network/) |
+
+**HTLC cross-chain protocol:**
+
+```
+Chain A (Alice has asset_A)              Chain B (Bob has asset_B)
+─────────────────────────────            ─────────────────────────
+Alice picks secret s, h = H(s)
+Alice locks asset_A: "claimable          Bob locks asset_B: "claimable
+  by Bob with preimage of h              by Alice with preimage of h
+  before time T₁"                        before time T₂ (T₂ < T₁)"
+
+Alice reveals s to claim asset_B  ────►  Bob sees s on-chain
+on chain B                               Bob uses s to claim asset_A
+                                          on chain A
+```
+
+**Light client proof verification cost:**
+
+| Verification method | On-chain cost | Trust assumption |
+|---------------------|--------------|-----------------|
+| Full header relay | ~200K gas/header (Ethereum) | Source chain consensus |
+| SNARK-wrapped light client | ~300K gas/proof (one-time) | SNARK soundness + source consensus |
+| Optimistic relay | ~50K gas (post root) | 1 honest watcher |
+
+**State of the art:** IBC (Cosmos, 115+ chains) is the most deployed light-client bridge protocol. ZK bridges (Succinct, Polymer, Union) are the emerging standard for EVM chains. HTLCs remain the simplest trustless mechanism for chains with scripting support. See [Fair Exchange / Atomic Swaps](#fair-exchange--atomic-swaps), [IBC](#ibc--inter-blockchain-communication-protocol), [zkBridge](#zkbridge--cross-chain-state-proofs), [Bridge Security](#bridge-security--trust-model-taxonomy).
+
+---
+
+## Penumbra — Private DEX with Threshold Encryption
+
+**Goal:** Build a fully private, Cosmos-based decentralised exchange where transaction amounts, asset types, and trading activity are hidden by default using a combination of Groth16 zk-SNARKs, threshold encryption for MEV prevention, and a novel batch-swap mechanism that executes trades without revealing individual orders.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Penumbra Shielded Pool** | 2023 | Groth16 + Decaf377 (Decaf on Ed25519) | Zcash-style shielded notes; multi-asset; Pedersen commitments for amounts and asset types [[1]](https://penumbra.zone/technology) |
+| **Penumbra Batch Swaps** | 2023 | Sealed-bid batch auction + threshold decryption | Users submit encrypted swap intents; decrypted after ordering; uniform clearing price per batch [[1]](https://penumbra.zone/blog/batching-and-uniform-clearing-prices) |
+| **Flow Encryption (Penumbra TE)** | 2023 | Threshold Ferveo DKG + AES | Validators jointly decrypt swap intents only after batch cutoff; prevents front-running [[1]](https://github.com/anoma/ferveo) |
+
+**MEV prevention via threshold encryption:**
+
+```
+User submits swap intent (encrypted under validators' threshold public key)
+  │ Intent: "swap 100 ATOM for OSMO at market price"
+  ▼
+Block inclusion (intents are opaque ciphertext)
+  │ No validator can read individual intents
+  ▼
+Threshold decryption (≥ 2/3 validators contribute shares)
+  │ All intents in the batch decrypted simultaneously
+  ▼
+Batch execution (uniform clearing price)
+  │ All swaps at same price — no front-running advantage
+```
+
+**State of the art:** Penumbra mainnet launched 2024 on Cosmos (IBC-connected). Combines shielded transactions (Zcash-style), threshold encryption (MEV protection), and batch auctions (fair pricing). Penumbra protocol spec [[1]](https://protocol.penumbra.zone/); Ferveo DKG [[2]](https://github.com/anoma/ferveo). See [Encrypted Mempools](#encrypted-mempools--threshold-encryption-for-transaction-ordering), [Confidential Transactions](#confidential-transactions-ct), [IBC](#ibc--inter-blockchain-communication-protocol).
+
+---
+
+## FHE-Based Encrypted DeFi (fhEVM)
+
+**Goal:** Execute smart contract logic on encrypted state using Fully Homomorphic Encryption (FHE) — so that a blockchain can process token transfers, AMM swaps, and auctions where the on-chain state (balances, bids, votes) is never revealed in plaintext to validators, users, or observers.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **fhEVM (Zama)** | 2023 | TFHE + EVM integration | EVM-compatible smart contracts operating on FHE-encrypted uint types; TFHE library for Solidity [[1]](https://github.com/zama-ai/fhevm) |
+| **Sunscreen** | 2023 | BFV/CKKS FHE compiler | Rust FHE compiler targeting blockchain applications; BFV for integer arithmetic [[1]](https://sunscreen.tech/) |
+| **Fhenix** | 2024 | fhEVM (Zama TFHE) + optimistic rollup | L2 rollup with native FHE execution; encrypted ERC-20 operations [[1]](https://www.fhenix.io/) |
+| **Inco Network** | 2024 | fhEVM + modular chain | Standalone FHE-enabled chain; confidential DeFi and gaming [[1]](https://www.inco.org/) |
+
+**fhEVM architecture:**
+
+```
+Solidity contract with encrypted types:
+  euint32 balance;                    // encrypted 32-bit unsigned int
+  function transfer(einput to, einput amount, bytes calldata proof) {
+      euint32 enoughBalance = TFHE.le(amount, balance);
+      balance = TFHE.select(enoughBalance, balance - amount, balance);
+  }
+
+All operations (add, sub, le, select) computed homomorphically on ciphertexts
+Validators process encrypted state — never see plaintext balances
+Decryption requires threshold key ceremony (network-wide threshold FHE)
+```
+
+**Threshold FHE for decryption:** The network's FHE secret key is split across validators via a threshold scheme. Decryption (e.g., for a user requesting their own balance) requires a threshold of validators to contribute partial decryptions — no single validator can decrypt any value.
+
+**State of the art:** Zama fhEVM is the leading implementation (testnet, 2024); Fhenix and Inco are building FHE-native rollups. TFHE bootstrapping latency (~100 ms per gate) limits throughput but is improving rapidly. fhEVM whitepaper [[1]](https://github.com/zama-ai/fhevm/blob/main/fhevm-whitepaper.pdf). See [Fully Homomorphic Encryption](categories/07-homomorphic-functional-encryption.md), [Encrypted Mempools](#encrypted-mempools--threshold-encryption-for-transaction-ordering).
+
+---
+
+## Aztec Protocol — Private Smart Contracts (Noir / PLONK)
+
+**Goal:** Enable programmable privacy on Ethereum — private token transfers, confidential DeFi interactions, and arbitrary private computation — by executing smart contract logic inside a zk-SNARK circuit on the client side and posting only the proof on-chain, so that transaction details (sender, recipient, amount, function arguments) remain hidden.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Aztec Connect (v1)** | 2022 | PLONK (TurboPlonk) | ZK bridge to Ethereum DeFi; private deposits into Aave/Lido/etc.; sunset 2023 [[1]](https://aztec.network/) |
+| **Aztec Network (v2 / Noir)** | 2024 | UltraPlonk + Honk prover | Full private smart contract L2; client-side proof generation; private + public state [[1]](https://aztec.network/) |
+| **Noir Language** | 2023 | Domain-specific ZK language | Rust-like language compiling to ACIR (Abstract Circuit IR); backend-agnostic (PLONK, Groth16) [[1]](https://noir-lang.org/) |
+| **Honk Prover** | 2024 | UltraPlonk + Goblin recursive verifier | Aztec's next-gen prover; recursive proof aggregation via Goblin Plonk; no trusted setup path [[1]](https://github.com/AztecProtocol/aztec-packages) |
+
+**Private execution model:**
+
+```
+User (client-side):
+  1. Fetch encrypted note data from Aztec L2
+  2. Decrypt notes using viewing key
+  3. Execute private function locally (e.g., transfer, swap)
+  4. Generate SNARK proof of correct execution
+  5. Submit proof + encrypted output notes to Aztec sequencer
+
+Sequencer:
+  1. Verify SNARK proofs
+  2. Update note commitment tree (append new commitments, record nullifiers)
+  3. Aggregate batch proof → post single proof to Ethereum L1
+
+Ethereum L1:
+  1. Verify aggregated SNARK proof (~300K gas)
+  2. Update Aztec rollup state root
+```
+
+**UTXO-based private state:** Aztec uses a note-based (UTXO) model for private state — similar to Zcash. Each private value is a *note* with a commitment in a global Merkle tree. Spending a note reveals a *nullifier* (unique, unlinkable to the commitment) and creates new note commitments. Public state uses a standard key-value store accessible to the kernel circuit.
+
+**State of the art:** Aztec Network testnet launched 2024; Noir is used by external teams (e.g., Mach 34, ZKEmail). UltraPlonk deployed; Honk prover under development for production. Noir documentation [[1]](https://noir-lang.org/); Aztec protocol spec [[2]](https://docs.aztec.network/). See [ZK Rollups](#zk-rollups-and-optimistic-rollups), [Zcash Sapling Transaction Structure](#zcash-sapling-transaction-structure), [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems-overview).
+
+---
+
+## Interchain Security and Mesh Security (Cosmos)
+
+**Goal:** Allow a Cosmos Hub validator set to extend its economic security to consumer chains — so that new application-specific blockchains do not need to bootstrap their own validator set and staked capital — using cryptographic mechanisms (cross-chain validator set verification, IBC-based slashing evidence, and double-signing proofs) to enforce slashing conditions across chains.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Replicated Security (ICS v1)** | 2023 | IBC + CometBFT validator set replication | Cosmos Hub validators run consumer chain; slashing evidence relayed via IBC [[1]](https://cosmos.network/interchain-security) |
+| **Opt-in Security (Partial Set Security, ICS v2)** | 2024 | IBC + selective validator participation | Validators opt in per consumer chain; subset security with top-N or power-cap [[1]](https://informal.systems/blog/partial-set-security) |
+| **Mesh Security** | 2024 | IBC + cross-chain restaking | Validators on chain A can restake on chain B without running B's software; delegated security [[1]](https://mesh.informal.systems/) |
+| **Double-Signing Evidence** | 2019 | Ed25519 equivocation proof | Two signed conflicting blocks at same height; relayed via IBC for cross-chain slashing [[1]](https://docs.cosmos.network/v0.50/build/modules/evidence) |
+
+**Replicated Security architecture:**
+
+```
+Cosmos Hub (provider chain)
+  │ Validator set V = {v₁, ..., vₙ} with staked ATOM
+  │
+  ├─ IBC: send ValidatorSetChangePacket to consumer chain
+  │   (consumer adopts Hub's validator set via CometBFT light client)
+  │
+  ├─ Consumer chain runs with Hub's validators
+  │   (validators must run consumer chain binary alongside Hub)
+  │
+  └─ Slashing: if validator double-signs on consumer chain,
+      evidence relayed via IBC → Hub slashes validator's ATOM stake
+```
+
+**Cryptographic slashing evidence:** A double-signing proof consists of two signed block proposals (or prevotes) at the same height and round, with valid Ed25519 signatures from the same validator key. The IBC relayer submits this evidence as an IBC packet; the provider chain's evidence module verifies both signatures and slashes the validator's bond.
+
+**State of the art:** Replicated Security live on Cosmos Hub (March 2023); Neutron and Stride are the first consumer chains. Partial Set Security (2024) allows opt-in. Mesh Security is under development by Osmosis and Informal Systems. ICS documentation [[1]](https://cosmos.network/interchain-security); Mesh Security spec [[2]](https://mesh.informal.systems/). See [IBC](#ibc--inter-blockchain-communication-protocol), [Casper FFG](#casper-ffg--ethereum-proof-of-stake-finality), [Linear BFT Consensus](#linear-bft-consensus-hotstuff--tendermint).
+
+---

@@ -517,3 +517,164 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 **State of the art:** NVIDIA H100 in Confidential Computing mode is the current production standard; ~2–5% performance overhead from memory encryption is the cost of GPU-level isolation. Azure, Google, and AWS all offer confidential GPU VMs as of 2024. Interaction with [Confidential ML / TEE-Based Inference](#confidential-ml--tee-based-inference), [GPU-Based Cryptographic Acceleration](#gpu-based-cryptographic-acceleration-cuda-aes-gpu-fhe), and [TEE Remote Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation).
 
 ---
+
+## Federated Learning Secure Aggregation (SecAgg)
+
+**Goal:** Allow a central server to compute the sum (or average) of model updates from many clients without learning any individual client's update. Cryptographic secure aggregation ensures that only the aggregate gradient is revealed — even if the server and a threshold of clients collude — using secret sharing, pairwise masking, or threshold homomorphic encryption.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bonawitz et al. Practical SecAgg** | 2017 | Pairwise masking + Shamir SS | First practical secure aggregation for FL; each pair of clients shares a PRG seed; masks cancel in summation; tolerates up to 1/3 dropouts; CCS 2017 [[1]](https://dl.acm.org/doi/10.1145/3133956.3133982) |
+| **Bell et al. SecAgg+** | 2020 | Sparse graph masking | Reduces per-client communication from O(n) to O(sqrt(n)) by replacing complete pairwise graph with sparse random graph; Google [[1]](https://dl.acm.org/doi/10.1145/3372297.3417885) |
+| **FLAME SecAgg (Flamingo)** | 2023 | Single-server + decentralized | Single-server SecAgg with decentralised trust; removes need for trusted setup server; S&P 2023 [[1]](https://eprint.iacr.org/2023/486) |
+| **LightSecAgg (Kadhe et al.)** | 2022 | One-shot masking | Each client generates a single mask independent of other clients; avoids pairwise seed agreement; communication-optimal [[1]](https://arxiv.org/abs/2109.14236) |
+| **SecAgg with Verifiable Aggregation** | 2024 | MPC + SNARK | Adds ZK proof that the server computed the aggregate correctly; prevents server-side result manipulation [[1]](https://eprint.iacr.org/2024/831) |
+
+**State of the art:** Bonawitz SecAgg is deployed in Google's production FL system (Gboard, Android); SecAgg+ reduces communication overhead for large federations. Verifiable variants (2024) add integrity guarantees. Bridges [Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#shamirs-secret-sharing-sss) and [Federated Learning Security](#federated-learning-security-poisoning--byzantine-robustness).
+
+---
+
+## Encrypted ML Frameworks (CrypTen, TF Encrypted, PySyft)
+
+**Goal:** Provide developer-friendly frameworks that let ML engineers run training or inference on encrypted data using familiar APIs (PyTorch, TensorFlow, NumPy) while the framework transparently handles the underlying MPC, HE, or secret-sharing protocols. Lowers the barrier from cryptographic expertise to a single import.
+
+| Framework | Year | Basis | Note |
+|-----------|------|-------|------|
+| **TF Encrypted** | 2018 | TensorFlow + 3-party MPC | Encrypted ML as a TensorFlow graph; uses ABY3-style 3-party secret sharing; supports linear and CNN layers [[1]](https://arxiv.org/abs/1810.08130) |
+| **PySyft (OpenMined)** | 2018 | PyTorch + SMPC + DP | Open-source library for privacy-preserving ML; supports remote execution, MPC, and DP over PyTorch tensors [[1]](https://arxiv.org/abs/1811.04017) |
+| **CrypTen (Meta AI)** | 2021 | PyTorch + 3-party SS | Secret-shared tensor operations with PyTorch-like API; supports training and inference; CrypTen autograd for backpropagation over encrypted values [[1]](https://arxiv.org/abs/2109.00984) |
+| **Concrete ML (Zama)** | 2022 | TFHE + scikit-learn/PyTorch | Compile scikit-learn and PyTorch models to run entirely under TFHE encryption; quantization-aware training for FHE compatibility [[1]](https://github.com/zama-ai/concrete-ml) |
+| **HELayers (IBM)** | 2023 | HElib + CKKS | Production-grade HE inference library; tile-tensor abstraction maps neural-network layers to CKKS ciphertext packing; supports CNNs and transformers [[1]](https://github.com/IBM/helayers) |
+
+**State of the art:** CrypTen and Concrete ML are the most actively maintained frameworks (2024); Concrete ML uniquely compiles standard ML models to pure FHE without MPC. HELayers targets enterprise HE inference. All build on [HE](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-he) and [MPC](categories/06-multi-party-computation.md#secure-multi-party-computation-mpc).
+
+---
+
+## zkML (Zero-Knowledge Machine Learning)
+
+**Goal:** Prove in zero knowledge that a specific ML model produced a specific output on a specific input — without revealing model weights, input data, or intermediate activations. Enables verifiable AI-as-a-service, on-chain ML inference verification, and regulatory audits of black-box models.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **EZKL** | 2023 | Halo2 + quantized models | Open-source toolkit; compiles ONNX models to Halo2 ZK circuits; supports CNNs, transformers, and decision trees [[1]](https://github.com/zkonduit/ezkl) |
+| **Daniel Kang et al. Scaling zkML** | 2022 | Customized circuit compilers | First systematic study of scaling ZK proofs for ML; introduces optimised gadgets for ReLU, softmax, and matrix multiplication [[1]](https://arxiv.org/abs/2210.08674) |
+| **zkLLM (Sun-Li-Zhang)** | 2024 | tlookup + zkAttn | ZK proof for full LLM inference (13B params); custom attention proof protocol; CCS 2024 [[1]](https://arxiv.org/abs/2404.16109) |
+| **Modulus Labs / Remainder** | 2023 | GKR protocol | Interactive proof system adapted for deep neural networks; logarithmic verifier time in model size [[1]](https://arxiv.org/abs/2306.02456) |
+| **opML (Optimistic ML)** | 2024 | Fraud proof + ZK fallback | Optimistic verification of ML inference on-chain; ZK proof generated only on dispute; reduces cost by 1000x vs full zkML [[1]](https://arxiv.org/abs/2401.17555) |
+
+**State of the art:** EZKL is the most widely deployed zkML toolkit (2024); zkLLM extends to billion-parameter models but proving time remains minutes-scale. Optimistic approaches (opML) trade latency for cost. Extends [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems) and [Verifiable AI Inference](#zkllm--verifiable-ai-inference).
+
+---
+
+## Model Watermarking & Fingerprinting for IP Protection
+
+**Goal:** Embed a persistent, verifiable identifier into a trained ML model's weights or behaviour so that the model's owner can later prove ownership — even after the model has been fine-tuned, pruned, distilled, or extracted. Distinct from output watermarking (marking generated text/images): this watermarks the model itself.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Uchida et al. DNN Watermarking** | 2017 | Weight regularization | First DNN watermarking; embed a bit string into weight statistics via a regularization loss term; survives fine-tuning [[1]](https://dl.acm.org/doi/10.1145/3078971.3078974) |
+| **Adi et al. Backdoor Watermark** | 2018 | Backdoor trigger | Embed a secret trigger set; the watermarked model classifies trigger inputs to a specific label; verifiable without model access (black-box) [[1]](https://www.usenix.org/conference/usenixsecurity18/presentation/adi) |
+| **Conferrable / Dataset Inference (Maini et al.)** | 2021 | Dataset membership | Prove that a suspect model was trained on proprietary data by testing dataset-specific generalization patterns; no modification to model required [[1]](https://arxiv.org/abs/2104.10706) |
+| **DNN Fingerprinting (Lukas et al.)** | 2021 | Adversarial examples as fingerprints | Generate model-specific adversarial examples that transfer to stolen copies but not independently trained models; USENIX Sec 2021 [[1]](https://www.usenix.org/conference/usenixsecurity21/presentation/lukas) |
+| **Proof-of-Learning (Jia et al.)** | 2021 | Training transcript | Record cryptographic snapshots during training; prover demonstrates they performed the actual computation; S&P 2021 [[1]](https://ieeexplore.ieee.org/document/9519402) |
+
+**State of the art:** Backdoor-based watermarking (Adi et al.) is the most robust to model modification; fingerprinting (Lukas et al.) requires no model modification at all. Proof-of-Learning addresses the complementary problem of proving training provenance. Related to [Cryptographic Watermarking for AI / Pseudorandom Codes](#cryptographic-watermarking-for-ai--pseudorandom-codes) and [Model Extraction Attacks & Defenses](#model-extraction-attacks--defenses).
+
+---
+
+## SRAM PUF Key Generation & Fuzzy Extractors
+
+**Goal:** Derive stable, reproducible cryptographic keys from the inherently noisy power-up state of SRAM cells. Each SRAM cell has a preferred power-up value (0 or 1) determined by manufacturing variation, but ~5–15% of cells are unstable across reads. Fuzzy extractors and helper-data algorithms correct these noisy bits into a reliable key without leaking information about the key through the public helper data.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Guajardo et al. SRAM PUF Key Storage** | 2007 | SRAM + fuzzy extractor | First demonstration of stable key generation from SRAM PUF using BCH code-based fuzzy extractor; 128-bit keys from 4 KB SRAM [[1]](https://ieeexplore.ieee.org/document/4261993) |
+| **Dodis et al. Fuzzy Extractors** | 2008 | Information theory + ECC | Formal definition of fuzzy extractors (Gen, Rep); secure sketch + strong extractor; foundational theory for all PUF key derivation [[1]](https://link.springer.com/article/10.1007/s00145-006-0264-y) |
+| **Intrinsic ID SRAM PUF (BroadKey)** | 2012+ | Commercial SRAM PUF IP | Commercial PUF IP core deployed in NXP, Microchip, Renesas MCUs; derives device-unique 256-bit AES keys; NIST-validated entropy [[1]](https://www.intrinsic-id.com/broadkey/) |
+| **Reverse Fuzzy Extractor (van der Leest et al.)** | 2012 | Server-side enrollment | Enrollment done on secure server; device only runs reproduction (Rep); reduces on-device complexity for IoT [[1]](https://link.springer.com/chapter/10.1007/978-3-642-31912-9_6) |
+| **Lattice PUF (Jin et al.)** | 2023 | LWE + PUF | Combines PUF noise tolerance with lattice-based hardness; helper data is an LWE instance; resists ML modeling attacks on the PUF [[1]](https://ieeexplore.ieee.org/document/9896757) |
+
+**State of the art:** Intrinsic ID BroadKey is the dominant commercial SRAM PUF solution, deployed in hundreds of millions of MCUs. Lattice PUF (2023) adds post-quantum security to the helper-data scheme. Extends [Physical Unclonable Functions (PUF)](#physical-unclonable-functions-puf) and uses [Fuzzy Extractors](categories/01-foundational-primitives.md#randomness-extractors--fuzzy-extractors).
+
+---
+
+## Arbiter PUF Protocols & Advanced Compositions
+
+**Goal:** Build challenge-response authentication protocols from Arbiter PUFs and their compositions (XOR Arbiter PUF, Feed-Forward Arbiter PUF, Interpose PUF) that resist machine-learning modeling attacks. The core Arbiter PUF exploits race conditions between two signal paths on a chip, but its linear structure makes it vulnerable to logistic-regression cloning — motivating increasingly complex compositions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Arbiter PUF (Lim et al.)** | 2005 | Delay-based race | Two parallel delay paths; final arbiter measures which signal arrives first; exponential CRP space from linear hardware; MIT [[1]](https://ieeexplore.ieee.org/document/1407935) |
+| **XOR Arbiter PUF (Suh-Devadas)** | 2007 | XOR of k Arbiter PUFs | XOR k independent Arbiter PUF responses; exponentially increases modeling complexity (from linear to k-th order) [[1]](https://dl.acm.org/doi/10.1145/1278480.1278484) |
+| **Feed-Forward Arbiter PUF** | 2007 | Internal feedback loop | Route intermediate arbiter outputs back as challenge bits to later stages; breaks the simple linear model [[1]](https://ieeexplore.ieee.org/document/4261993) |
+| **Interpose PUF (Nguyen et al.)** | 2019 | Interposed challenge bit | Insert the response of one Arbiter PUF as a challenge bit into a second; provably resists known reliability-based ML attacks [[1]](https://eprint.iacr.org/2019/1210) |
+| **Lockdown Protocol (Yu et al.)** | 2016 | Rate limiting + CRP refresh | Protocol-level defense: limit the number of CRPs exposed per session and refresh CRP space; makes modeling infeasible within CRP budget [[1]](https://ieeexplore.ieee.org/document/7495542) |
+
+**State of the art:** Interpose PUF (2019) and Lockdown Protocol (2016) represent the best combined hardware-protocol defense against ML attacks on Arbiter PUFs. Pure Arbiter PUFs without protocol-level protection are considered broken. Related to [Physical Unclonable Functions (PUF)](#physical-unclonable-functions-puf) and [ML Modeling Attacks on Strong PUFs](#ml-modeling-attacks-on-strong-pufs--ml-based-privacy-attacks).
+
+---
+
+## RISC-V Cryptography Extensions (Zbk*, Zkn*, Zks*, Zvk*)
+
+**Goal:** Add dedicated cryptographic instructions to the open RISC-V ISA so that embedded, IoT, and server-class RISC-V cores can execute AES, SHA-2, SM3/SM4, and carry-less multiplication in constant time and at hardware speed — without proprietary silicon IP. The extensions are ratified as part of the RISC-V standard and freely implementable by any vendor.
+
+| Extension | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Zbkb / Zbkc / Zbkx (Bitmanip for Crypto)** | 2021 | Bit manipulation | Carry-less multiply, byte-reverse, bit-rotate, crossbar permutation; building blocks shared across AES, SHA, SM4 [[1]](https://github.com/riscv/riscv-crypto/releases) |
+| **Zkne / Zknd (AES Encrypt / Decrypt)** | 2021 | AES round instructions | AES-32 and AES-64 instructions for SubBytes + MixColumns in a single cycle; constant-time by design; ratified 2021 [[1]](https://github.com/riscv/riscv-crypto/releases) |
+| **Zknh (SHA-256 / SHA-512)** | 2021 | SHA-2 compression | Dedicated SHA-256 and SHA-512 Sigma and Sum instructions; 3-5x speedup over software; ratified 2021 [[1]](https://github.com/riscv/riscv-crypto/releases) |
+| **Zksed / Zksh (SM4 / SM3)** | 2021 | Chinese national algorithms | SM4 block cipher and SM3 hash instructions for Chinese cryptographic compliance; ratified alongside Zkn [[1]](https://github.com/riscv/riscv-crypto/releases) |
+| **Zvkned / Zvkg / Zvksh (Vector Crypto)** | 2023 | RISC-V Vector + crypto | Vectorised cryptographic instructions operating on RISC-V V-extension registers; AES, GCM-GHASH, SHA-2, SM3/SM4 on vector widths; ratified 2023 [[1]](https://github.com/riscv/riscv-crypto/releases) |
+
+**State of the art:** Scalar crypto extensions (Zkn, Zks) are ratified and shipping in SiFive, T-Head, and Andes cores (2023+). Vector crypto (Zvk*) was ratified in 2023 and enables throughputs competitive with ARM Crypto Extensions and Intel AES-NI. The open specification model allows any foundry to implement without licensing. Complements [Cryptographic Hardware Accelerators](#cryptographic-hardware-accelerators-aes-ni-sha-ni-avx-512-vaes) and [Side-Channel Resistant AES](#side-channel-resistant-aes-implementations).
+
+---
+
+## ARM Confidential Compute Architecture (CCA)
+
+**Goal:** Provide hardware-enforced isolation for security-sensitive workloads on ARM processors — called Realms — that are protected from the hypervisor, host OS, and other VMs. ARM CCA introduces a new execution context (Realm world) managed by a small, formally verified Realm Management Monitor (RMM), distinct from both the Normal and Secure worlds of TrustZone.
+
+| Component / Scheme | Year | Basis | Note |
+|-------------------|------|-------|------|
+| **ARM CCA Architecture (ARMv9-A)** | 2021 | Realm world + GPT | Introduces Realm world as fourth exception level context; Granule Protection Tables (GPT) enforce memory isolation in hardware; announced with ARMv9 [[1]](https://www.arm.com/architecture/security-features/arm-confidential-compute-architecture) |
+| **Realm Management Monitor (RMM)** | 2022 | Minimal firmware | Small firmware component managing Realm lifecycle; target for formal verification; reference implementation open-sourced by ARM [[1]](https://developer.arm.com/documentation/den0137/latest/) |
+| **ARM CCA Attestation** | 2022 | CCA token + RATS | Hardware-rooted attestation tokens prove Realm identity and measurement to remote verifiers; follows IETF RATS architecture [[1]](https://developer.arm.com/documentation/den0096/latest) |
+| **Certus (Li et al.)** | 2024 | Formal verification of RMM | Machine-checked functional correctness proof of the ARM RMM using Coq/Hol; guarantees memory isolation properties [[1]](https://arxiv.org/abs/2404.00476) |
+| **Veraison Attestation Verifier** | 2023 | Open-source verifier | CNCF project for verifying CCA (and other TEE) attestation tokens; interoperates with Azure, GCP, and ARM reference implementations [[1]](https://github.com/veraison/veraison) |
+
+**State of the art:** ARM CCA is shipping in ARMv9.2-A silicon (Cortex-X4, Neoverse V2) and supported in Linux 6.x kernels; cloud deployment expected 2025-2026 on ARM-based instances. The RMM's small TCB and formal verification effort (Certus) distinguish CCA from Intel TDX's larger firmware base. Interacts with [Confidential ML / TEE-Based Inference](#confidential-ml--tee-based-inference) and [TEE Remote Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation).
+
+---
+
+## Intel Trust Domain Extensions (TDX)
+
+**Goal:** Provide VM-level confidential computing on Intel processors by creating hardware-isolated Trust Domains (TDs) whose memory is encrypted and integrity-protected from the hypervisor, BIOS, SMM, and other VMs. TDX extends Intel's TME-MK (Total Memory Encryption - Multi-Key) with per-TD encryption keys managed entirely in hardware, plus a minimal TDX Module firmware for TD lifecycle management.
+
+| Component / Scheme | Year | Basis | Note |
+|-------------------|------|-------|------|
+| **Intel TDX 1.0 (Sapphire Rapids)** | 2023 | SEAM + TME-MK | First production TDX; TDX Module runs in a new SEAM (Secure Arbitration Mode) VMX root; per-TD AES-XTS memory encryption; Sapphire Rapids Xeon [[1]](https://www.intel.com/content/www/us/en/developer/tools/trust-domain-extensions/overview.html) |
+| **TDX Module (Intel firmware)** | 2023 | Minimal TCB | ~100 KLOC firmware managing TD creation, memory assignment, and attestation; smaller TCB than full hypervisor; source code published for audit [[1]](https://github.com/intel/tdx-module) |
+| **TDX Attestation (Intel Trust Authority)** | 2023 | ECDSA quote + remote verifier | TD generates a hardware-signed attestation quote; Intel Trust Authority or third-party verifier validates TD identity and measurements [[1]](https://www.intel.com/content/www/us/en/security/trust-authority.html) |
+| **TDX Connect (Device TDX)** | 2024 | PCIe IDE + TDX | Extends TD trust boundary to PCIe devices (GPUs, NICs, accelerators) via PCIe Integrity and Data Encryption; enables confidential GPU and DMA [[1]](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-trust-domain-extensions-confidential-computing.html) |
+| **Gramine-TDX (CCS 2024)** | 2024 | LibOS for TDX | Lightweight library OS enabling unmodified Linux applications inside TDX TDs with minimal TCB; CCS 2024 [[1]](https://dl.acm.org/doi/10.1145/3658644.3690323) |
+
+**State of the art:** TDX 1.0 is generally available on 4th/5th Gen Xeon (Sapphire/Emerald Rapids) and deployed on Azure, GCP, and AWS. TDX Connect (2024) extends confidential computing to accelerators. Linux 6.2+ includes upstream TDX guest support. Complements [ARM CCA](#arm-confidential-compute-architecture-cca), [Confidential GPU Computing](#confidential-gpu-computing-nvidia-h100-cc-azure-confidential-gpu), and [Confidential ML / TEE-Based Inference](#confidential-ml--tee-based-inference).
+
+---
+
+## CKKS-Based Homomorphic Encryption for ML Training
+
+**Goal:** Train machine learning models on encrypted data using the CKKS (Cheon-Kim-Kim-Song) approximate homomorphic encryption scheme, which natively supports fixed-point arithmetic on encrypted real numbers. CKKS enables encrypted gradient computation, aggregation, and model updates without ever decrypting the training data — providing cryptographic privacy throughout the entire training pipeline, not just inference.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CKKS (Cheon-Kim-Kim-Song)** | 2017 | Approximate HE over RLWE | First HE scheme supporting approximate fixed-point arithmetic; encode real vectors into polynomial plaintext slots; rescaling manages noise growth; ASIACRYPT 2017 [[1]](https://link.springer.com/chapter/10.1007/978-3-319-70694-8_15) |
+| **Nandakumar et al. Encrypted SGD** | 2019 | CKKS + gradient descent | First encrypted logistic regression and NN training using CKKS; demonstrates convergence on MNIST with accuracy within 1% of plaintext [[1]](https://arxiv.org/abs/1811.00778) |
+| **CryptoNets (Gilad-Bachrach et al.)** | 2016 | SEAL (BFV) | First HE-based neural network inference; polynomial activation functions replace ReLU for HE compatibility; Microsoft Research [[1]](https://proceedings.mlr.press/v48/gilad-bachrach16.html) |
+| **Lee et al. Privacy-Preserving ML Training (CKKS)** | 2022 | CKKS bootstrapping + mini-batch SGD | Encrypted CNN training with CKKS bootstrapping for deep circuits; trains on CIFAR-10 under encryption; ICML 2022 [[1]](https://proceedings.mlr.press/v162/lee22e.html) |
+| **OpenFHE CKKS (Polyakov et al.)** | 2022 | Open-source HE library | Production-grade CKKS implementation with bootstrapping, multi-party, and proxy re-encryption support; successor to PALISADE; used in ML-HE research [[1]](https://github.com/openfheorg/openfhe-development) |
+| **HE-Transformer (Intel)** | 2023 | CKKS + ONNX | Compile ONNX model graphs to CKKS homomorphic operations; enables encrypted inference on standard model formats [[1]](https://github.com/IntelAI/he-transformer) |
+
+**State of the art:** CKKS with bootstrapping enables encrypted training on small-to-medium models (logistic regression, shallow CNNs); encrypted training of deep networks remains 10,000-100,000x slower than plaintext. GPU acceleration of CKKS (see [GPU-Based Cryptographic Acceleration](#gpu-based-cryptographic-acceleration-cuda-aes-gpu-fhe)) is narrowing the gap. Extends [Homomorphic Encryption](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-he) and complements [Secure MPC / HE for Private ML Inference](#secure-mpc--he-for-private-ml-inference).
+
+---

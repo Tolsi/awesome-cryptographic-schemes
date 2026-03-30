@@ -1062,3 +1062,142 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 **State of the art:** Robust AE is a design principle rather than a single standardized scheme. Key-committing AEAD (AEAD-CMT-4, 2022) addresses the multi-key dimension. TLS 1.3 (RFC 8446) addresses partial decryption leakage by mandating that no plaintext is released until the tag is verified. The nonce-masking in TLS 1.3 record layer addresses nonce-hiding. See [Key-Committing AEAD](#key-committing-aead) and [MRAE and Online Authenticated Encryption (OAE)](#mrae-and-online-authenticated-encryption-oae).
 
 ---
+
+## COLM (COPA + ELmD Merge)
+
+**Goal:** Nonce-misuse-resistant authenticated encryption built from two parallelizable AES encryption layers connected by a linear mixing function, providing both confidentiality and authenticity even when nonces are repeated — selected as a CAESAR competition defense-in-depth co-winner alongside Deoxys-II.
+
+| Scheme | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **COLM0** | 2016 | AES-128 dual-layer | Primary variant for general-purpose AEAD; single-pass parallelizable; CAESAR defense-in-depth winner [[1]](https://link.springer.com/article/10.1007/s00145-024-09492-8) |
+| **COLMt** | 2016 | AES-128 dual-layer + intermediate tags | Variant with periodic intermediate tag verification for constrained devices and streaming applications [[1]](https://link.springer.com/article/10.1007/s00145-024-09492-8) |
+
+**State of the art:** COLM was selected as one of the two defense-in-depth winners of the CAESAR competition (2019) alongside Deoxys-II. Its nonce-misuse resistance makes it suitable for environments where nonce uniqueness cannot be guaranteed. For new deployments, AES-GCM-SIV (RFC 8452) or Deoxys-II are more commonly adopted, but COLM remains a strong academic reference for dual-layer AEAD design. See [Deterministic AEAD with Any Nonce (DAEAD / ANYDAE)](#deterministic-aead-with-any-nonce-daead--anydae).
+
+---
+
+## MORUS (CAESAR High-Speed Finalist)
+
+**Goal:** Extremely high-speed authenticated encryption optimized for modern 64-bit and SIMD-capable processors, achieving sub-cycle-per-byte throughput — a CAESAR competition finalist in the high-performance use case alongside AEGIS and OCB.
+
+| Scheme | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **MORUS-640-128** | 2014 | State-update AEAD, 128-bit key | 640-bit state; ~0.7 cpb on Haswell; CAESAR third-round finalist [[1]](https://competitions.cr.yp.to/caesar-submissions.html) |
+| **MORUS-1280-128** | 2014 | State-update AEAD, 128-bit key | 1280-bit state; higher throughput on AVX2 [[1]](https://competitions.cr.yp.to/caesar-submissions.html) |
+| **MORUS-1280-256** | 2014 | State-update AEAD, 256-bit key | 256-bit security variant; same 1280-bit state [[1]](https://competitions.cr.yp.to/caesar-submissions.html) |
+
+**State of the art:** MORUS was not selected for the final CAESAR portfolio due to the discovery of a linear correlation in the full keystream by Kales et al. (Asiacrypt 2018), which enables distinguishing attacks and partial plaintext recovery in broadcast settings [[1]](https://eprint.iacr.org/2018/464). Despite this, the attack requires extremely large data volumes and MORUS remains of academic interest for its state-update design paradigm. AEGIS-128L (which was selected) offers similar throughput with stronger security margins. See [AEGIS (A Fast Authenticated Encryption Algorithm)](#aegis-a-fast-authenticated-encryption-algorithm).
+
+---
+
+## NORX (Parallel Sponge-Based AEAD)
+
+**Goal:** Parallel and scalable authenticated encryption based on a sponge-like construction using only bitwise operations (no modular additions), enabling efficient constant-time implementations resistant to timing side channels — a CAESAR competition third-round candidate.
+
+| Scheme | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **NORX v3.0** | 2014 | Parallel monkeyDuplex sponge | Configurable parallelism degree D; 2.51 cpb serial on Haswell; CAESAR Round 3 [[1]](https://link.springer.com/chapter/10.1007/978-3-319-11212-1_2) |
+| **NORX-8 / NORX-16** | 2015 | 8/16-bit word NORX | Lightweight variants targeting 8-bit and 16-bit microcontrollers [[1]](https://eprint.iacr.org/2015/1154) |
+
+**State of the art:** NORX was eliminated after CAESAR Round 3 following a state-recovery attack on NORX v2.0 by Chaigneau and Gilbert (Journal of Cryptology, 2019) [[1]](https://link.springer.com/article/10.1007/s00145-018-9297-9). The v3.0 specification addressed this attack, but the design was not selected for the final portfolio. NORX's parallel sponge approach influenced later permutation-based AEAD designs. See [SpongeWrap / Duplex-Based AEAD](#spongewrap--duplex-based-aead).
+
+---
+
+## Elephant (NIST LWC Finalist)
+
+**Goal:** Lightweight parallelizable authenticated encryption using an encrypt-then-MAC construction with small permutations and LFSR-based masking, targeting constrained hardware with minimal overhead beyond the underlying permutation circuit — a NIST Lightweight Cryptography competition finalist.
+
+| Scheme | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Dumbo** | 2019 | Spongent-pi[160] + LFSR mask | 160-bit permutation; smallest variant; ~2 900 GE in ASIC [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/elephant-spec-final.pdf) |
+| **Jumbo** | 2019 | Spongent-pi[176] + LFSR mask | 176-bit permutation; slightly larger state for better throughput [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/elephant-spec-final.pdf) |
+| **Delirium** | 2019 | Keccak-f[200] + LFSR mask | 200-bit Keccak permutation; fastest Elephant variant in software [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/elephant-spec-final.pdf) |
+
+**State of the art:** Elephant was one of ten NIST LWC finalists (2021) but was not selected as the winner — Ascon was chosen instead (2023). Elephant's key distinguishing feature is its parallelizable mode of operation (the only finalist offering this), making it attractive for high-throughput hardware implementations. Dumbo and Jumbo use the well-analyzed Spongent permutation family, while Delirium leverages the Keccak permutation. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
+
+---
+
+## TinyJAMBU (NIST LWC Finalist)
+
+**Goal:** Ultra-compact authenticated encryption built on a lightweight 128-bit keyed permutation using a simple feedback shift register structure, achieving one of the smallest RAM and flash memory footprints among all NIST LWC candidates — designed for the most constrained IoT devices.
+
+| Scheme | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **TinyJAMBU-128** | 2019 | 128-bit keyed permutation, 128-bit key | 96-bit nonce, 64-bit tag; extremely small footprint; NIST LWC finalist [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/tinyjambu-spec-final.pdf) |
+| **TinyJAMBU-192** | 2019 | 128-bit keyed permutation, 192-bit key | Same structure with 192-bit key for higher security margin [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/tinyjambu-spec-final.pdf) |
+| **TinyJAMBU-256** | 2019 | 128-bit keyed permutation, 256-bit key | 256-bit key variant; highest security margin [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/tinyjambu-spec-final.pdf) |
+
+**State of the art:** TinyJAMBU was a NIST LWC finalist but was not selected as the winner. Its keyed-permutation approach (as opposed to unkeyed permutation + sponge) gives it an unusually small state, but the 64-bit tag limits forgery resistance compared to Ascon's 128-bit tag. Post-competition analysis revealed beyond-full-round integral distinguishers [[1]](https://eprint.iacr.org/2023/960), though these do not directly break the full cipher. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
+
+---
+
+## Schwaemm / SPARKLE (NIST LWC Finalist)
+
+**Goal:** Lightweight authenticated encryption using ARX-based (Addition-Rotation-XOR) permutations in a Beetle sponge mode, achieving very high throughput on microcontrollers without requiring hardware AES or bit-slicing — a NIST Lightweight Cryptography competition finalist.
+
+| Scheme | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Schwaemm256-128** | 2019 | Sparkle384 permutation + Beetle mode | Primary AEAD; 128-bit key/tag; 5x faster than AES-GCM on ARM Cortex-M [[1]](https://sparkle-lwc.github.io/) |
+| **Schwaemm192-192** | 2019 | Sparkle384 permutation + Beetle mode | 192-bit key and tag variant [[1]](https://sparkle-lwc.github.io/) |
+| **Schwaemm128-128** | 2019 | Sparkle256 permutation + Beetle mode | Smallest variant; 128-bit key/tag; minimal state [[1]](https://sparkle-lwc.github.io/) |
+| **Schwaemm256-256** | 2019 | Sparkle512 permutation + Beetle mode | Highest security; 256-bit key and tag [[1]](https://sparkle-lwc.github.io/) |
+
+**State of the art:** Schwaemm was a NIST LWC finalist (2021) but lost to Ascon. On ARM Cortex-M3/M4 microcontrollers, Schwaemm256-128 is roughly 5x faster than AES-GCM and 2x faster than Ascon, making it the fastest software AEAD among the finalists on these platforms. The underlying Sparkle permutation family uses only ARX operations, enabling efficient constant-time software implementations without needing lookup tables or hardware accelerators. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
+
+---
+
+## Pyjamask (Masking-Optimized AEAD)
+
+**Goal:** Authenticated encryption specifically designed for efficient high-order side-channel masking in software, minimizing the number of nonlinear (AND) gates to reduce the cost of masked implementations — targeting secure embedded systems where side-channel resistance is a primary requirement.
+
+| Scheme | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Pyjamask-128-AEAD** | 2019 | Pyjamask-128 block cipher + OCB mode | 128-bit block; bitslice design; lowest AND-depth among NIST LWC candidates [[1]](https://tosc.iacr.org/index.php/ToSC/article/view/8617) |
+| **Pyjamask-96-AEAD** | 2019 | Pyjamask-96 block cipher + OCB mode | 96-bit block; even fewer AND gates; hardware-oriented [[1]](https://tosc.iacr.org/index.php/ToSC/article/view/8617) |
+
+**State of the art:** Pyjamask was a NIST LWC Round 2 candidate (not advanced to the finalist round). Its primary contribution is demonstrating that a block cipher can be designed from the ground up for efficient masking — achieving high-order masked implementations at a fraction of the cost of masking AES or GIFT. The bitslice construction evaluates all nonlinear gates in parallel, enabling efficient masking up to order 128 in software. Pyjamask's design principles have influenced subsequent masking-friendly cipher research. See [Leakage-Resilient AEAD (LRAE)](#leakage-resilient-aead-lrae).
+
+---
+
+## Spook (Leakage-Resilient Sponge-Based AEAD)
+
+**Goal:** Authenticated encryption with state-of-the-art leakage resilience — maintaining security even when side-channel measurements (power traces, electromagnetic emanations) leak information about intermediate computations — by combining a dedicated key-derivation step with bitslice tweakable block ciphers and a duplex sponge mode.
+
+| Scheme | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Spook** | 2019 | Clyde-128 TBC + Shadow-512 permutation | Leakage-resilient duplex mode; nonce-misuse resilient; NIST LWC Round 2 [[1]](https://www.spook.dev/) |
+| **Clyde-128** | 2019 | 128-bit tweakable block cipher (LS-design) | Internal TBC; bitslice structure for efficient masking [[1]](https://www.spook.dev/) |
+| **Shadow-512 / Shadow-384** | 2019 | 512/384-bit permutation (LS-design) | Internal permutation for the sponge duplex layer [[1]](https://www.spook.dev/) |
+
+**State of the art:** Spook was a NIST LWC Round 2 candidate (not advanced to the finalist round). Its distinguishing contribution is the formalization of leakage resilience in the duplex sponge setting: a fresh key derivation at the start of each message ensures that side-channel leakage from one message cannot be used to attack another. Spook also provides nonce-misuse resilience and beyond-birthday-bound security relative to the TBC block size. See [Leakage-Resilient AEAD (LRAE)](#leakage-resilient-aead-lrae) and [ISAP (NIST LWC Finalist, Side-Channel Resistant)](#isap-nist-lwc-finalist-side-channel-resistant).
+
+---
+
+## ESTATE (Energy-Efficient Short-Tweak TBC-Based AEAD)
+
+**Goal:** Lightweight authenticated encryption optimized for short messages and minimal hardware area, using a tweakable block cipher with a very short (4-bit) tweak in a MAC-then-Encrypt paradigm — providing nonce-misuse resistance with minimal circuit overhead beyond the underlying block cipher.
+
+| Scheme | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **ESTATE[TweGIFT]** | 2019 | TweGIFT-128 (4-bit tweak) + MAC-then-Encrypt | Ultra-lightweight; 128-bit key/nonce/tag; nonce-misuse resistant; NIST LWC Round 2 [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/round-2/spec-doc-rnd2/estate-spec-round2.pdf) |
+| **ESTATE[TweAES]** | 2019 | TweAES-128 (4-bit tweak) + MAC-then-Encrypt | AES-based variant for platforms with AES hardware [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/round-2/spec-doc-rnd2/estate-spec-round2.pdf) |
+| **sESTATE[TweAES-6]** | 2019 | Reduced-round TweAES-6 + MAC-then-Encrypt | Aggressive performance variant with 6-round AES [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/round-2/spec-doc-rnd2/estate-spec-round2.pdf) |
+
+**State of the art:** ESTATE was a NIST LWC Round 2 candidate (not advanced to the finalist round). Its primary innovation is demonstrating that a 4-bit tweak is sufficient to build a provably secure AEAD mode — enabling extremely compact TBC instantiations. ESTATE improves upon the earlier SUNDAE design by reducing the number of block cipher calls by one and eliminating the need for a multiplication circuit, reducing both hardware area and energy consumption. The TweGIFT instantiation achieves nonce-misuse resistance at a circuit size competitive with the smallest AEAD implementations. See [CAESAR Lightweight Winners (ACORN, GIFT-COFB)](#caesar-lightweight-winners-acorn-gift-cofb).
+
+---
+
+## Partitioning Oracle Attacks and Committing AEAD Landscape
+
+**Goal:** Defend against partitioning oracle attacks — a class of chosen-ciphertext attacks that exploit the fact that standard AEAD schemes (AES-GCM, ChaCha20-Poly1305, XSalsa20-Poly1305) allow efficient multi-key collisions, enabling an adversary to craft a single ciphertext that decrypts validly under many different keys and use a decryption oracle to efficiently identify which key is correct.
+
+| Scheme | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Partitioning Oracle Attack** | 2021 | Attack on non-committing AEAD | Efficient key-recovery via multi-key ciphertext collisions against AES-GCM, ChaCha20-Poly1305 [[1]](https://eprint.iacr.org/2020/1491) |
+| **CTX (Committing AEAD via context)** | 2022 | Generic transform | Efficient committing AEAD from any AEAD + collision-resistant hash; Bellare-Hoang Eurocrypt 2022 [[1]](https://link.springer.com/chapter/10.1007/978-3-031-07085-3_29) |
+| **CCX / HFC** | 2022 | Generic transform | Succinctly-committing: commitment fits in the existing tag (no ciphertext expansion) [[1]](https://csrc.nist.gov/csrc/media/Events/2023/third-workshop-on-block-cipher-modes-of-operation/documents/accepted-papers/The%20Landscape%20of%20Committing%20Authenticated%20Encryption.pdf) |
+| **Flexible PBE** | 2023 | Password-based encryption | Provably resists partitioning oracle attacks in cloud storage setting [[1]](https://www.researchgate.net/publication/370120732_Flexible_Password-Based_Encryption_Securing_Cloud_Storage_and_Provably_Resisting_Partitioning-Oracle_Attacks) |
+
+**State of the art:** Partitioning oracle attacks (Len, Grubbs, Ristenpart; USENIX Security 2021) demonstrated that non-committing AEAD is a practical vulnerability, not just a theoretical concern — particularly in password-based encryption and anonymous messaging. The Bellare-Hoang line of work (Eurocrypt 2022, Crypto 2024) provides efficient generic transforms (CTX, CCX) that add key commitment to any AEAD with minimal overhead. The NIST Block Cipher Modes Workshop (2023) discussed standardizing committing AEAD modes. See [Key-Committing AEAD](#key-committing-aead) and [Robust Authenticated Encryption (RAE / Beyond INT-CTXT)](#robust-authenticated-encryption-rae--beyond-int-ctxt).
+
+---

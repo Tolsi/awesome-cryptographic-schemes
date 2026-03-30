@@ -790,3 +790,134 @@ Private neural network training is harder than inference: training requires many
 | **AutoFHE (NAS for FHE-friendly models)** | 2023 | CKKS | Architecture search for FHE-trainable networks | Neural architecture search targeting low-degree polynomial activations [[1]](https://eprint.iacr.org/2023/1016) |
 
 **State of the art:** Encrypted federated learning with Paillier/CKKS aggregation (FATE, PySyft) is production-deployed at scale. Pure FHE training (Kim, Han-Ki) is feasible for logistic regression and shallow networks but not yet for large models. The dominant bottleneck is non-polynomial activations: [TFHE programmable bootstrapping](#fhew-bootstrapping) handles ReLU exactly via LUT but is slower than CKKS polynomial approximation for deep networks. [Concrete ML](#concrete--concrete-ml-zama) provides user-friendly access to FHE-trained quantized models. Related to [HE for Healthcare & Genomics](#he-for-healthcare--genomics) and [FHE Applications in Cloud Computing](#fhe-applications-in-cloud-computing).
+
+---
+
+## Lattigo (Multiparty HE in Go)
+
+**Goal:** Provide a pure-Go library for lattice-based homomorphic encryption with native support for multiparty (threshold) protocols, targeting distributed systems and microservice architectures.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Lattigo v5** | 2020 | RLWE (BFV, BGV, CKKS) | Full-RNS implementation with multiparty key generation, threshold decryption, and interactive bootstrapping [[1]](https://github.com/tuneinsight/lattigo) |
+| **Multiparty CKKS bootstrapping** | 2022 | Threshold CKKS | Distributed bootstrapping with secret-shared keys; enables multi-party approximate-arithmetic FHE [[1]](https://homomorphicencryption.org/wp-content/uploads/2020/12/wahc20_demo_christian.pdf) |
+
+**State of the art:** Lattigo v5 is the leading Go-native HE library, actively maintained by Tune Insight (EPFL spin-off). Its pure-Go implementation enables cross-platform builds including WASM for browser clients. Performance is competitive with C++ libraries for single-threaded workloads. Complements [OpenFHE](#homomorphic-encryption-he) (C++) and [Microsoft SEAL](#microsoft-seal) (C++) by serving the Go/distributed-systems ecosystem.
+
+---
+
+## TenSEAL (Encrypted Tensor Operations)
+
+**Goal:** Provide a Python-first library for homomorphic encryption on tensors, enabling privacy-preserving machine learning with minimal cryptographic expertise by wrapping Microsoft SEAL in a NumPy-like API.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **TenSEAL** | 2021 | CKKS, BFV (via SEAL) | Python/C++ library; encrypted CNN inference on MNIST in under 1 second [[1]](https://arxiv.org/abs/2104.03152) |
+| **CKKSVector / BFVVector** | 2021 | RLWE tensors | Supports encrypted dot products, matrix multiplication, and convolutions for ML workloads [[1]](https://github.com/OpenMined/TenSEAL) |
+
+**State of the art:** TenSEAL (OpenMined) is the most widely used Python HE library for ML prototyping, presented at ICLR 2021 DPML Workshop [[1]](https://dp-ml.github.io/2021-workshop-ICLR/files/18.pdf). Integrates with PySyft for federated learning. Limited to leveled HE (no bootstrapping). For production deployment, see [Concrete ML](#concrete--concrete-ml-zama) (which includes a compiler) or [Microsoft SEAL](#microsoft-seal) (C++ back-end).
+
+---
+
+## PhantomFHE (GPU-Accelerated HE)
+
+**Goal:** Accelerate word-wise homomorphic encryption (BFV, BGV, CKKS) on NVIDIA GPUs using CUDA, achieving order-of-magnitude speedups over CPU-only libraries for large-scale encrypted computation.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Phantom** | 2023 | CUDA / RLWE (BFV, BGV, CKKS) | 7x speedup over prior GPU HE for CKKS multiplication; enhanced hybrid key-switching reduces memory overhead [[1]](https://eprint.iacr.org/2023/049) |
+| **Phantom bootstrapping** | 2024 | CUDA / CKKS | Amortized bootstrapping at 0.423 us per bit — 257x over single-threaded CPU [[1]](https://dl.acm.org/doi/abs/10.1109/TDSC.2024.3363900) |
+
+**State of the art:** PhantomFHE is published in IEEE TDSC 2024 and available under GPLv3 [[1]](https://github.com/encryptorion-lab/phantom-fhe). It is among the fastest GPU HE implementations, alongside [HEonGPU](#heongpu-gpu-fhe-library) and Cheddar. Does not yet support bootstrapping for all schemes. Compare with [Intel HEXL](#intel-hexl-he-hardware-acceleration) for CPU-side acceleration.
+
+---
+
+## HEonGPU (GPU FHE Library)
+
+**Goal:** Provide a high-performance, multi-stream CUDA library for fully homomorphic encryption (BFV, CKKS, TFHE) that minimizes CPU-GPU data transfer overhead and supports collective bootstrapping.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **HEonGPU** | 2024 | CUDA / BFV, CKKS, TFHE | Multi-stream architecture eliminates host-device transfer bottleneck; supports collective bootstrapping for BFV and CKKS [[1]](https://eprint.iacr.org/2024/1543) |
+| **HEonGPU serializer** | 2025 | Compression | Zlib-compressed serialization of HE objects; up to 60% reduction in storage and bandwidth [[1]](https://github.com/Alisah-Ozcan/HEonGPU) |
+
+**State of the art:** HEonGPU (Sabanci University) is one of the few GPU libraries supporting TFHE alongside BFV/CKKS on GPU, enabling gate-level FHE acceleration. Complements [PhantomFHE](#phantomfhe-gpu-accelerated-he) (word-wise focus) and [TFHE-rs](#homomorphic-encryption-he) (CPU Rust). Related to [NTT in FHE](#number-theoretic-transform-ntt-in-fhe) for the polynomial arithmetic kernel.
+
+---
+
+## Apple Swift Homomorphic Encryption
+
+**Goal:** Production-grade, open-source Swift library for BFV homomorphic encryption, designed for Apple ecosystem deployment including iOS 18 Live Caller ID Lookup via private information retrieval (PIR).
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **swift-homomorphic-encryption** | 2024 | BFV (RLWE) | Apple's open-source Swift package; post-quantum 128-bit security parameters; used in iOS 18 Live Caller ID [[1]](https://www.swift.org/blog/announcing-swift-homomorphic-encryption/) |
+| **HomomorphicEncryptionProtobuf** | 2024 | Serialization | Protobuf-based ciphertext serialization for client-server PIR queries [[1]](https://github.com/apple/swift-homomorphic-encryption) |
+
+**State of the art:** First major deployment of HE in a consumer operating system (iOS 18, 2024). The Live Caller ID Lookup feature uses keyword PIR over BFV-encrypted queries so the server never learns the queried phone number. Released under Apache 2.0 license. Compared with [Microsoft SEAL](#microsoft-seal) (C++/general-purpose) and [Concrete](#concrete--concrete-ml-zama) (TFHE/compiler-based), Apple's library is narrowly scoped to BFV-PIR but production-hardened for mobile deployment.
+
+---
+
+## Covercrypt (Quantum-Safe ABE KEM)
+
+**Goal:** Efficient attribute-based key encapsulation mechanism (KEM) with hidden access policies, post-quantum security via DDH+LWE hybridization, and user traceability — enabling fine-grained encrypted access control without revealing who the intended recipients are.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Covercrypt** | 2023 | DDH + LWE hybrid | Early-abort KEM for hidden CP-ABE policies with traceability; hundreds of microseconds per encapsulation [[1]](https://eprint.iacr.org/2023/836) |
+| **ETSI TS 104 015** | 2025 | Standardization | ETSI standard for quantum-safe hybrid KEMAC; formal security analysis with ECDH + ML-KEM instantiation [[1]](https://eprint.iacr.org/2025/544) |
+
+**State of the art:** Covercrypt is developed by Cosmian and standardized by ETSI as TS 104 015 [[1]](https://link.springer.com/chapter/10.1007/978-3-032-07891-9_5). It is the first attribute-based encryption scheme to achieve an ETSI standard with explicit post-quantum guarantees. Open-source Rust implementation available [[2]](https://github.com/Cosmian/cover_crypt). Related to [Attribute-Based & Functional Encryption](#attribute-based--functional-encryption) and [Multi-Authority ABE](#multi-authority-abe).
+
+---
+
+## Sunscreen (Rust FHE Compiler)
+
+**Goal:** Developer-friendly Rust compiler that automatically transforms annotated Rust functions into optimized FHE circuits, lowering the barrier to building privacy-preserving applications without deep cryptographic knowledge.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Sunscreen FHE compiler** | 2022 | BFV (via SEAL back-end) | Rust procedural macros annotate functions; compiler handles encoding, encryption, noise budget, and parameter selection [[1]](https://github.com/Sunscreen-tech/Sunscreen) |
+| **Sunscreen ZKP compiler** | 2023 | Bulletproofs | Companion ZKP compiler for proving statements about encrypted data; shares the Rust annotation framework [[1]](https://docs.sunscreen.tech/) |
+
+**State of the art:** Sunscreen demonstrates the "FHE compiler" approach where developers write ordinary Rust and the compiler handles cryptographic complexity — similar in philosophy to [Concrete](#concrete--concrete-ml-zama) (Python/MLIR) and [HEIR](#heir-homomorphic-encryption-intermediate-representation) (MLIR). Experimental status; not externally audited. The project has explored transitioning from BFV to TFHE for its back-end.
+
+---
+
+## Intel HEXL (HE Hardware Acceleration)
+
+**Goal:** Accelerate the low-level modular polynomial arithmetic at the core of all RLWE-based HE schemes by exploiting Intel AVX-512 and IFMA52 instructions, providing a drop-in acceleration layer for HE libraries.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Intel HEXL** | 2021 | AVX-512 / IFMA52 | Up to 7.2x NTT speedup and 6.0x modular multiplication speedup over native C++ on Ice Lake Xeon [[1]](https://eprint.iacr.org/2021/420) |
+| **HEXL integration** | 2021 | Library plugin | Adopted by Microsoft SEAL, PALISADE (now OpenFHE), and HElib as optional acceleration back-end [[1]](https://github.com/IntelLabs/hexl) |
+
+**State of the art:** Intel HEXL is the standard CPU-side acceleration layer for RLWE-based HE, available under Apache 2.0. It targets 3rd-generation Intel Xeon Scalable Processors and later. Best performance requires AVX-512-IFMA52 support. Complements GPU acceleration approaches like [PhantomFHE](#phantomfhe-gpu-accelerated-he) and [HEonGPU](#heongpu-gpu-fhe-library). Related to [NTT in FHE](#number-theoretic-transform-ntt-in-fhe) and [Parameter Selection for BFV/BGV/CKKS](#parameter-selection-for-bfv--bgv--ckks).
+
+---
+
+## FHERMA (FHE Components Platform)
+
+**Goal:** Open challenge platform and reusable component library for fully homomorphic encryption, fostering practical FHE development by crowd-sourcing optimized implementations of common FHE building blocks.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **FHERMA platform** | 2024 | OpenFHE-based | Black-box and white-box FHE challenges with automated evaluation; winning solutions become open-source components [[1]](https://eprint.iacr.org/2024/612) |
+| **FHERMA Cookbook** | 2025 | Component library | Curated library of optimized FHE components (matrix multiply, comparison, sorting) under Apache 2.0 [[1]](https://eprint.iacr.org/2025/1302) |
+
+**State of the art:** FHERMA is a joint effort by Fair Math and the OpenFHE team, with IBM researchers publishing challenges on the platform [[1]](https://www.ibm.com/blog/ibm-researchers-to-publish-fhe-challenges-on-the-fherma-platform/). The platform provides rapid automated evaluation and a public leaderboard. Winning solutions are integrated into an open-source Apache 2.0 component library, directly usable with [OpenFHE](#homomorphic-encryption-he). Related to [FHE Benchmarks & Performance](#fhe-benchmarks--performance).
+
+---
+
+## Multi-Input Quadratic Functional Encryption (MIQFE)
+
+**Goal:** Enable computation of quadratic functions (degree-2 polynomials) over encrypted inputs from multiple independent data sources, supporting applications such as differentially private encrypted analytics and biometric matching.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **MIQFE from pairings (Agrawal et al.)** | 2021 | Bilinear maps | First multi-input FE for quadratic functions from pairings; simulation-secure in fine-grained corruption model [[1]](https://link.springer.com/chapter/10.1007/978-3-030-84259-8_8) |
+| **Stronger MIQFE (Agrawal et al.)** | 2022 | Bilinear maps | Extended functionality and stronger security model for multi-input quadratic FE [[1]](https://eprint.iacr.org/2022/1168.pdf) |
+| **Simulation-secure MIQFE (SAC 2024)** | 2024 | Bilinear maps + IPFE | First simulation-secure secret-key MIQFE; application to differentially private quadratic queries on encrypted databases [[1]](https://eprint.iacr.org/2024/2050) |
+
+**State of the art:** Multi-input quadratic FE extends [Quadratic / Degree-2 Functional Encryption](#quadratic--degree-2-functional-encryption) to the multi-client setting, enabling each data owner to encrypt independently while an analyst computes cross-client quadratic statistics. The SAC 2024 simulation-secure construction is the strongest security result to date. Practical implementations exist for small input dimensions. Related to [DMCFE](#decentralized-multi-client-functional-encryption-dmcfe) and [Inner-Product Functional Encryption](#inner-product-functional-encryption-ipfe).

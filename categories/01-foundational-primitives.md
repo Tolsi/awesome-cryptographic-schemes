@@ -1052,3 +1052,124 @@ G(a, b, c, d, x, y):
 **State of the art:** AES-128 is preferred over AES-256 in RKA-sensitive contexts (AES-128 has no known RKA weakness). HMAC's two-key derivation remains standard. Double PRF (independent keys) is the practical mitigation for protocols needing RKA resistance; see [Puncturable / Constrained PRF](#puncturable--constrained-prf) for key delegation, and [Key Exchange & KDFs](categories/03-key-exchange-key-management.md) for key derivation patterns.
 
 ---
+
+## SM4 (Chinese Standard Block Cipher)
+
+**Goal:** Symmetric encryption using the Chinese national standard block cipher, mandated for wireless LAN (WAPI) and widely used in Chinese government and commercial applications.
+
+| Algorithm | Year | Type | Note |
+|-----------|------|------|------|
+| **SM4** | 2006 | Block cipher | 128-bit block, 128-bit key, 32-round Feistel-like (unbalanced generalized Feistel); standardized as GB/T 32907-2016 and ISO/IEC 18033-3:2010/Amd 1 [[1]](https://www.iso.org/standard/81490.html) |
+| **SM4-GCM / SM4-CCM** | 2021 | AEAD modes | SM4 used in GCM and CCM modes; specified in RFC 8998 for TLS 1.3 with SM cipher suites [[1]](https://www.rfc-editor.org/rfc/rfc8998) |
+
+**State of the art:** SM4 is mandatory in Chinese regulatory contexts (OSCCA). ARM added SM4 acceleration instructions in ARMv8.2-A (2017). Cryptanalysis shows full 32-round SM4 has no practical attack; best known is a linear attack on 24 rounds. See [Symmetric Encryption](#symmetric-encryption).
+
+---
+
+## ARIA and SEED (Korean Standard Block Ciphers)
+
+**Goal:** Symmetric encryption using South Korean national standard block ciphers, developed as alternatives to AES for Korean government and telecommunications use.
+
+| Algorithm | Year | Type | Note |
+|-----------|------|------|------|
+| **ARIA** | 2003 | Block cipher | 128-bit block, 128/192/256-bit keys; involutional SPN structure; Korean standard (KS X 1213) and RFC 5794 [[1]](https://www.rfc-editor.org/rfc/rfc5794) |
+| **SEED** | 1998 | Block cipher | 128-bit block, 128-bit key, 16-round Feistel; Korean TTA standard, RFC 4269; widely used in Korean banking and e-government [[1]](https://www.rfc-editor.org/rfc/rfc4269) |
+
+**State of the art:** ARIA and SEED are mandated in Korean KISA/NIS cryptographic standards. SEED is gradually being replaced by ARIA and AES in newer deployments. Both have no practical cryptanalytic breaks on full rounds.
+
+---
+
+## Kuznyechik and Magma (Russian GOST Ciphers)
+
+**Goal:** Symmetric encryption using Russian national standard block ciphers specified in GOST R 34.12-2015, used in government, military, and commercial applications in Russia and CIS countries.
+
+| Algorithm | Year | Type | Note |
+|-----------|------|------|------|
+| **Kuznyechik** | 2015 | Block cipher | 128-bit block, 256-bit key, 10-round SPN; GOST R 34.12-2015; RFC 7801 [[1]](https://www.rfc-editor.org/rfc/rfc7801) |
+| **Magma** | 1989 | Block cipher | 64-bit block, 256-bit key, 32-round Feistel; originally GOST 28147-89, updated in GOST R 34.12-2015; RFC 8891 [[1]](https://www.rfc-editor.org/rfc/rfc8891) |
+
+**State of the art:** Kuznyechik is the primary Russian cipher for new systems. Magma is legacy but still standardized. Controversy exists around the S-box generation process (Perrin & Udovenko 2019 showed the Kuznyechik/Streebog S-box has unexplained algebraic structure [[1]](https://eprint.iacr.org/2019/092)). No practical break on full rounds of either cipher.
+
+---
+
+## Streebog (GOST R 34.11-2012) and SM3 (Chinese Hash)
+
+**Goal:** Cryptographic hashing using national standard hash functions from Russia and China, providing collision resistance and integrity for government-mandated applications.
+
+| Algorithm | Year | Output | Note |
+|-----------|------|--------|------|
+| **Streebog** | 2012 | 256 / 512 bit | Russian standard GOST R 34.11-2012; Merkle-Damgard with 512-bit internal state; RFC 6986 [[1]](https://www.rfc-editor.org/rfc/rfc6986) |
+| **SM3** | 2010 | 256 bit | Chinese standard GB/T 32905-2016; Merkle-Damgard, similar structure to SHA-256 but with different compression function; used in Chinese PKI, digital signatures [[1]](https://www.oscca.gov.cn/sca/xxgk/2010-12/17/1002389/files/302a3ada057c4a73830536d03e683110.pdf) |
+
+**State of the art:** SM3 is mandatory in Chinese regulatory contexts alongside SM2/SM4. Streebog is required for Russian GOST compliance. Both have the same S-box provenance concerns as Kuznyechik. SM3 has no known practical attacks on the full 64 rounds; best collision attack reaches 28 steps. See [Hash Functions](#hash-functions).
+
+---
+
+## CLEFIA and MISTY1 (Japanese Industry Ciphers)
+
+**Goal:** Symmetric encryption using block ciphers developed by Japanese corporations, designed with provable resistance to differential and linear cryptanalysis via the theory of decorrelation and MISTY structure.
+
+| Algorithm | Year | Type | Note |
+|-----------|------|------|------|
+| **CLEFIA** | 2007 | Block cipher | Sony; 128-bit block, 128/192/256-bit keys; generalized Feistel with diffusion switching mechanism; ISO/IEC 29192-2 lightweight standard [[1]](https://www.sony.net/Products/cryptography/clefia/) |
+| **MISTY1** | 1997 | Block cipher | Mitsubishi; 64-bit block, 128-bit key; recursive Feistel structure; provable security against differential/linear attacks; NESSIE selected, RFC 2994 [[1]](https://www.rfc-editor.org/rfc/rfc2994) |
+
+**State of the art:** MISTY1 was integral-attacked on the full 8 rounds by Todo (2015) using division property, a landmark result that spurred new cryptanalytic techniques [[1]](https://eprint.iacr.org/2015/767). CLEFIA remains unbroken on full rounds and is used in lightweight IoT contexts. See [Lightweight Symmetric Primitives](#lightweight-symmetric-primitives).
+
+---
+
+## Ascon (NIST Lightweight AEAD and Hashing Winner)
+
+**Goal:** Provide authenticated encryption with associated data (AEAD) and hashing for constrained devices (microcontrollers, embedded sensors, IoT), selected by NIST as the primary standard from the Lightweight Cryptography competition.
+
+| Algorithm | Year | Type | Note |
+|-----------|------|------|------|
+| **Ascon-128 / Ascon-128a** | 2014 | AEAD (sponge) | 128-bit key, 128-bit nonce; duplex sponge with 320-bit permutation (64-bit words x 5); Ascon-128a has double-rate for higher throughput [[1]](https://ascon.iaik.tugraz.at/) |
+| **Ascon-Hash / Ascon-XOF** | 2014 | Hash / XOF | 256-bit hash output; sponge-based; NIST SP 800-232 (2025) [[1]](https://csrc.nist.gov/pubs/sp/800/232/final) |
+| **Ascon permutation** | 2014 | Permutation | 5-round (p_a=12, p_b=6/8) SPN on 5x64-bit state; designed for efficient bitsliced and 32-bit implementations [[1]](https://eprint.iacr.org/2021/1574) |
+
+**State of the art:** NIST selected Ascon as the winner of the Lightweight Cryptography Standardization Process in February 2023, published as NIST SP 800-232. Best cryptanalysis reaches 7 of 12 rounds on the permutation. Hardware implementations achieve <3000 GE. See [Lightweight Symmetric Primitives](#lightweight-symmetric-primitives) and [Authenticated Encryption (AEAD)](categories/02-authenticated-structured-encryption.md#authenticated-encryption-aead).
+
+---
+
+## PRESENT, GIFT, and SKINNY (Lightweight Block Ciphers)
+
+**Goal:** Ultra-compact block ciphers optimized for hardware implementation in area-constrained environments (RFID tags, smart cards, sensor nodes), achieving security in as few logic gates as possible.
+
+| Algorithm | Year | Type | Note |
+|-----------|------|------|------|
+| **PRESENT** | 2007 | Block cipher | 64-bit block, 80/128-bit key; 31-round SPN; ISO/IEC 29192-2; ~1570 GE in hardware [[1]](https://link.springer.com/chapter/10.1007/978-3-540-74735-2_31) |
+| **GIFT-128** | 2017 | Block cipher | 128-bit block, 128-bit key; 40-round SPN; improved PRESENT with better diffusion and efficiency; basis of GIFT-COFB (NIST LWC finalist) [[1]](https://eprint.iacr.org/2017/622) |
+| **SKINNY** | 2016 | Tweakable block cipher | 64/128-bit block; lightweight tweakable cipher based on TWEAKEY framework; designed as a "competition for SIMON" [[1]](https://eprint.iacr.org/2016/660) |
+| **Midori** | 2015 | Block cipher | 64/128-bit block; optimized for low energy consumption (not just area); uses almost-MDS matrices [[1]](https://eprint.iacr.org/2015/1142) |
+
+**State of the art:** PRESENT is the ISO standard for lightweight block ciphers. GIFT-COFB was a NIST LWC finalist (lost to Ascon). SKINNY is widely used in academic constructions and as a building block for MACs and AEAD modes (e.g., Romulus, another NIST LWC finalist). See [Lightweight Symmetric Primitives](#lightweight-symmetric-primitives).
+
+---
+
+## TurboSHAKE and MarsupilamiFourteen
+
+**Goal:** High-performance extendable-output functions (XOFs) derived from reduced-round Keccak, offering faster hashing than SHAKE while retaining comfortable security margins; used as building blocks for protocols, KDFs, and randomness generation.
+
+| Algorithm | Year | Type | Note |
+|-----------|------|------|------|
+| **TurboSHAKE128 / TurboSHAKE256** | 2023 | XOF | 12-round Keccak-p (vs 24 for SHA-3); 128/256-bit security; domain-separated via single separator byte; NIST SP 800-185 draft [[1]](https://keccak.team/files/TurboSHAKE.pdf) |
+| **MarsupilamiFourteen** | 2023 | XOF | 14-round Keccak-p variant; 256-bit security; conservative margin between TurboSHAKE (12 rounds) and full Keccak (24 rounds) [[1]](https://keccak.team/files/TurboSHAKE.pdf) |
+| **KangarooTwelve (K12)** | 2016 | XOF | 12-round Keccak-p + Sakura tree hashing for parallelism; same round count as TurboSHAKE but adds tree structure for large inputs [[1]](https://keccak.team/kangarootwelve.html) |
+
+**State of the art:** TurboSHAKE provides ~2x speedup over SHAKE with a 6x security margin against known attacks (best attack reaches 8 of 12 rounds). Increasingly adopted in post-quantum schemes (e.g., ML-KEM and ML-DSA internal hashing). MarsupilamiFourteen offers a middle ground for conservative deployments. See [Hash Functions](#hash-functions) and [Extendable-Output Functions](#hash-functions).
+
+---
+
+## LSH (Korean Lightweight Secure Hash)
+
+**Goal:** High-performance cryptographic hash function designed for wide-pipe Merkle-Damgard construction, standardized as a Korean national hash algorithm optimized for modern 64-bit and SIMD architectures.
+
+| Algorithm | Year | Output | Note |
+|-----------|------|--------|------|
+| **LSH-256** | 2014 | 256 bit | Wide-pipe design with 1024-bit internal state; ARX-based step function; Korean standard KS X 3262; 2x faster than SHA-256 on x86-64 [[1]](https://seed.kisa.or.kr/kisa/Board/20/detailView.do) |
+| **LSH-512** | 2014 | 512 bit | 2048-bit internal state; outperforms SHA-512 and BLAKE2b on SIMD-capable platforms [[1]](https://eprint.iacr.org/2014/457) |
+
+**State of the art:** LSH is a KISA/KS standard alongside ARIA and SEED. No practical attacks have been found on the full 26/28-step variants. Performance is competitive with BLAKE2 when AVX2 is available. Primarily deployed in Korean government and financial systems. See [Hash Functions](#hash-functions).
+
+---

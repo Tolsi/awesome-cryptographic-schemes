@@ -1867,3 +1867,148 @@ The implicit rejection (`z` is a random value in the secret key) ensures that a 
 **State of the art:** FIPS 203 (NIST, August 2024) [[1]](https://doi.org/10.6028/NIST.FIPS.203); Kyber specification paper [[2]](https://pq-crystals.org/kyber/data/kyber-specification-round3-20210804.pdf); security analysis [[3]](https://eprint.iacr.org/2017/634). Deployed in: OpenSSL 3.x (via OQS), BoringSSL, AWS-LC, libsodium (planned), Go 1.23+ (`crypto/mlkem`). Related to [Post-Quantum Key Exchange (Hybrid KEM)](#post-quantum-key-exchange-in-practice-hybrid-kem), [KEM Combiner Constructions](#kem-combiner-constructions), and [Post-Quantum Cryptography](categories/15-quantum-cryptography.md#post-quantum-cryptography-pqc--nist-standardization).
 
 ---
+
+## HPKE (Hybrid Public Key Encryption, RFC 9180)
+
+**Goal:** Provide a standardized, composable public-key encryption scheme that combines a KEM, KDF, and AEAD into a single abstraction usable across many protocols.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HPKE Base mode** | 2022 | KEM + KDF + AEAD | Sender encapsulates to recipient public key; no sender auth [[1]](https://www.rfc-editor.org/rfc/rfc9180.html) |
+| **HPKE Auth mode** | 2022 | KEM + static sender key | Sender authenticates via KEM private key; no certificates needed [[1]](https://www.rfc-editor.org/rfc/rfc9180.html) |
+| **HPKE PSK mode** | 2022 | KEM + pre-shared key | Authentication from high-entropy PSK; binds PSK into key schedule [[1]](https://www.rfc-editor.org/rfc/rfc9180.html) |
+| **HPKE AuthPSK mode** | 2022 | KEM + sender key + PSK | Strongest mode: both sender-key and PSK authentication [[1]](https://www.rfc-editor.org/rfc/rfc9180.html) |
+
+**State of the art:** RFC 9180 (IRTF CFRG, February 2022) [[1]](https://datatracker.ietf.org/doc/rfc9180/). HPKE is the encryption substrate for TLS Encrypted Client Hello (ECH), Oblivious DNS-over-HTTPS (ODoH), Oblivious HTTP (RFC 9458), and MLS (RFC 9420). Default instantiation: X25519 + HKDF-SHA256 + AES-128-GCM or ChaCha20-Poly1305. Cloudflare explainer [[2]](https://blog.cloudflare.com/hybrid-public-key-encryption/). Related to [KEM Combiner Constructions](#kem-combiner-constructions) and [Key Exchange](#key-exchange--key-agreement).
+
+---
+
+## ZRTP (Media Path Key Agreement for Secure RTP)
+
+**Goal:** Negotiate encryption keys for VoIP calls directly in the media path, without relying on PKI or signaling-layer trust, using ephemeral Diffie-Hellman with verbal Short Authentication String (SAS) verification.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ZRTP** | 2011 | Ephemeral DH + SAS | RFC 6189; media-path key agreement for SRTP; no PKI required [[1]](https://www.rfc-editor.org/rfc/rfc6189.html) |
+| **ZRTP SAS verification** | 2011 | Human-readable hash | Users verbally compare a short string to detect MitM; continuity via cached shared secrets [[1]](https://www.rfc-editor.org/rfc/rfc6189.html) |
+| **ZRTP Multistream** | 2011 | Derived keys | Additional media streams derive keys from the initial ZRTP session [[1]](https://www.rfc-editor.org/rfc/rfc6189.html) |
+
+**State of the art:** RFC 6189 (April 2011); designed by Phil Zimmermann (PGP creator) [[1]](https://www.rfc-editor.org/rfc/rfc6189.html). Provides perfect forward secrecy by destroying ephemeral keys after each call. Used in Signal (legacy), Ozone, Ozone, and various secure VoIP clients. Zimmermann blog post [[2]](https://blog.cryptographyengineering.com/2012/11/24/lets-talk-about-zrtp/). Related to [Key Exchange](#key-exchange--key-agreement) and [Noise Protocol Framework](#noise-protocol-framework).
+
+---
+
+## EDHOC (Ephemeral Diffie-Hellman Over COSE, RFC 9528)
+
+**Goal:** Provide a lightweight authenticated key exchange optimized for constrained IoT devices, using CBOR encoding and COSE cryptography to minimize message sizes and code footprint.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **EDHOC Method 0** | 2024 | Signature + Signature | Both parties authenticate with signatures; most general [[1]](https://www.rfc-editor.org/rfc/rfc9528.html) |
+| **EDHOC Method 1** | 2024 | Signature + Static DH | Initiator signs, responder uses static DH key; reduces responder cost [[1]](https://www.rfc-editor.org/rfc/rfc9528.html) |
+| **EDHOC Method 2** | 2024 | Static DH + Signature | Initiator uses static DH, responder signs [[1]](https://www.rfc-editor.org/rfc/rfc9528.html) |
+| **EDHOC Method 3** | 2024 | Static DH + Static DH | Both parties use static DH keys; smallest messages, no signatures [[1]](https://www.rfc-editor.org/rfc/rfc9528.html) |
+
+**State of the art:** RFC 9528 (IETF LAKE WG, March 2024) [[1]](https://datatracker.ietf.org/doc/rfc9528/). Designed for networks like 6TiSCH, LoRaWAN, and Cellular IoT where bandwidth is extremely constrained. Establishes OSCORE security contexts in as few as 101 bytes total exchange. Implementations in Rust (lakers), C (libedhoc), and Java [[2]](https://github.com/lake-rs/lakers). IETF blog post [[3]](https://www.ietf.org/blog/edhoc/). Related to [Key Exchange](#key-exchange--key-agreement) and [SIGMA Protocol](#sigma-protocol-sign-and-mac).
+
+---
+
+## HQC (Hamming Quasi-Cyclic KEM)
+
+**Goal:** Provide a post-quantum key encapsulation mechanism based on the hardness of decoding quasi-cyclic codes over the Hamming metric, serving as a code-based backup to lattice-based ML-KEM.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HQC-128** | 2017 | QCSD problem | NIST Level 1; pk 2,249 B, ct 4,497 B [[1]](https://pqc-hqc.org/) |
+| **HQC-192** | 2017 | QCSD problem | NIST Level 3; pk 4,522 B, ct 9,042 B [[1]](https://pqc-hqc.org/) |
+| **HQC-256** | 2017 | QCSD problem | NIST Level 5; pk 7,245 B, ct 14,485 B [[1]](https://pqc-hqc.org/) |
+
+**State of the art:** Selected by NIST as the fifth post-quantum standard (March 2025), providing algorithmic diversity as a code-based alternative to lattice-based ML-KEM [[1]](https://www.nist.gov/news-events/news/2025/03/nist-selects-hqc-fifth-algorithm-post-quantum-encryption). Draft standard expected ~2027. Security based on the Quasi-Cyclic Syndrome Decoding (QCSD) problem, with decades of cryptanalysis on the underlying coding-theory hardness. Larger keys/ciphertexts than ML-KEM but built on a fundamentally different mathematical assumption. Related to [ML-KEM (CRYSTALS-Kyber) Internals](#ml-kem-crystals-kyber-internals) and [Post-Quantum Key Exchange (Hybrid KEM)](#post-quantum-key-exchange-in-practice-hybrid-kem).
+
+---
+
+## FrodoKEM (Conservative Lattice-Based KEM)
+
+**Goal:** Provide a post-quantum KEM whose security relies on plain, unstructured Learning With Errors (LWE) -- avoiding the algebraic structure of Module-LWE used by ML-KEM -- at the cost of larger keys and ciphertexts.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **FrodoKEM-640** | 2016 | Plain LWE | NIST Level 1; pk 9,616 B, ct 9,720 B, ss 16 B [[1]](https://frodokem.org/) |
+| **FrodoKEM-976** | 2016 | Plain LWE | NIST Level 3; pk 15,632 B, ct 15,744 B, ss 24 B [[1]](https://frodokem.org/) |
+| **FrodoKEM-1344** | 2016 | Plain LWE | NIST Level 5; pk 21,520 B, ct 21,632 B, ss 32 B [[1]](https://frodokem.org/) |
+
+**State of the art:** NIST Round 3 alternate candidate (not selected for NIST standardization) but endorsed by European agencies (BSI, ANSSI, NLNCSA/AIVD) as a conservative fallback [[1]](https://frodokem.org/). Undergoing ISO standardization. Full protocol runs in ~1 ms on server hardware [[2]](https://www.microsoft.com/en-us/research/blog/frodokem-a-conservative-quantum-safe-cryptographic-algorithm/). Specification paper [[3]](https://eprint.iacr.org/2016/659). Related to [ML-KEM (CRYSTALS-Kyber) Internals](#ml-kem-crystals-kyber-internals) and [KEM Combiner Constructions](#kem-combiner-constructions).
+
+---
+
+## Classic McEliece (Code-Based KEM)
+
+**Goal:** Provide a post-quantum KEM with an extremely conservative security foundation based on binary Goppa codes, offering very small ciphertexts and fast decapsulation at the cost of large public keys.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **mceliece348864** | 2017 | Binary Goppa codes | NIST Level 1; pk 261 KB, ct 96 B [[1]](https://classic.mceliece.org/) |
+| **mceliece460896** | 2017 | Binary Goppa codes | NIST Level 3; pk 524 KB, ct 156 B [[1]](https://classic.mceliece.org/) |
+| **mceliece6688128** | 2017 | Binary Goppa codes | NIST Level 5; pk 1,044 KB, ct 208 B [[1]](https://classic.mceliece.org/) |
+| **mceliece6960119** | 2017 | Binary Goppa codes | NIST Level 5 (alt); pk 1,047 KB, ct 194 B [[1]](https://classic.mceliece.org/) |
+| **mceliece8192128** | 2017 | Binary Goppa codes | NIST Level 5 (high); pk 1,357 KB, ct 208 B [[1]](https://classic.mceliece.org/) |
+
+**State of the art:** NIST Round 4 candidate; NIST deferred standardization pending ISO completion to avoid incompatible standards [[1]](https://classic.mceliece.org/nist.html). The McEliece cryptosystem (1978) has a 45+ year security track record with no significant algorithmic improvements in attacks. Tiny ciphertexts but very large public keys make it best suited for long-lived keys or scenarios where the public key can be cached. Wikipedia overview [[2]](https://en.wikipedia.org/wiki/McEliece_cryptosystem). Related to [HQC](#hqc-hamming-quasi-cyclic-kem), [ML-KEM](#ml-kem-crystals-kyber-internals), and [Post-Quantum Key Exchange (Hybrid KEM)](#post-quantum-key-exchange-in-practice-hybrid-kem).
+
+---
+
+## SIDH / SIKE (Broken Isogeny-Based Key Exchange)
+
+**Goal:** Provide a post-quantum key exchange based on supersingular isogeny graphs -- broken in 2022 by the Castryck-Decru attack and included here as a cautionary historical reference.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SIDH** | 2011 | Supersingular isogenies | Original isogeny-based DH analog; auxiliary torsion points shared [[1]](https://eprint.iacr.org/2011/506) |
+| **SIKE** | 2017 | SIDH + FO transform | IND-CCA2 KEM built on SIDH; NIST Round 4 candidate [[1]](https://sike.org/) |
+| **Castryck-Decru attack** | 2022 | Kani's glue-and-split | Recovers secret isogeny in polynomial time using auxiliary point info; breaks all SIKE parameters [[1]](https://eprint.iacr.org/2022/975) |
+
+**State of the art:** SIKE and SIDH are broken and must not be used [[1]](https://www.schneier.com/blog/archives/2022/08/sike-broken.html). The Castryck-Decru attack (July 2022) breaks SIKEp434 in ~1 hour on a single core by exploiting the auxiliary torsion point information inherent to the SIDH protocol structure. NIST immediately withdrew SIKE from consideration. The attack does not affect other isogeny schemes (CSIDH, SQISign) that do not reveal auxiliary points [[2]](https://eprint.iacr.org/2022/975.pdf). Related to [Non-Interactive Key Exchange (NIKE)](#non-interactive-key-exchange-nike) and [Post-Quantum Cryptography](categories/15-quantum-cryptography.md#post-quantum-cryptography-pqc--nist-standardization).
+
+---
+
+## Age Encryption Format
+
+**Goal:** Provide a simple, modern file encryption format with explicit key management -- small copy-pastable keys, no configuration, and composable UNIX-style operation -- as a practical replacement for GPG/PGP file encryption.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **age X25519 recipient** | 2019 | X25519 + HKDF + ChaCha20-Poly1305 | Asymmetric encryption to an `age1...` public key; ephemeral X25519 key agreement [[1]](https://github.com/FiloSottile/age) |
+| **age scrypt recipient** | 2019 | scrypt + ChaCha20-Poly1305 | Password-based encryption; scrypt KDF with configurable work factor [[1]](https://github.com/FiloSottile/age) |
+| **age SSH recipient** | 2019 | ssh-rsa / ssh-ed25519 | Encrypt to existing SSH keys; no new key management needed [[1]](https://github.com/FiloSottile/age) |
+| **age plugin system** | 2021 | Extensible | Plugins for YubiKey (PIV), cloud KMS, passkeys, etc. [[1]](https://words.filippo.io/age-plugins/) |
+
+**State of the art:** Format specification v1 [[1]](https://age-encryption.org/v1); reference implementation by Filippo Valsorda [[2]](https://github.com/FiloSottile/age). Implementations in Go, Rust (rage), Java (jagged), Python, and others. Used in SOPS, chezmoi, and infrastructure automation. Post-quantum recipient support added in age v1.3.0+ via ML-KEM-768 plugin. No algorithm negotiation by design -- single fixed cipher suite per recipient type. Related to [Key Wrapping / Envelope Encryption](#key-wrapping--envelope-encryption) and [Password-Based Key Derivation](#password-based-key-derivation-kdf--pake).
+
+---
+
+## SFrame (Secure Frame for Real-Time Media, RFC 9605)
+
+**Goal:** Provide end-to-end encryption for real-time media frames in multiparty video/audio calls, decoupling media encryption from key management so that Selective Forwarding Units (SFUs) can route encrypted media without access to plaintext.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SFrame per-sender keys** | 2024 | AEAD (AES-GCM / AES-CTR+HMAC) | Each sender holds a unique symmetric key; SFU sees only encrypted frames [[1]](https://www.rfc-editor.org/rfc/rfc9605.html) |
+| **SFrame key derivation** | 2024 | HKDF-based ratchet | Keys derived from a base secret; ratcheting supports forward secrecy within a session [[1]](https://www.rfc-editor.org/rfc/rfc9605.html) |
+| **SFrame + MLS integration** | 2024 | MLS epoch secrets | MLS provides group key agreement; SFrame consumes per-sender media keys from MLS epochs [[1]](https://www.rfc-editor.org/rfc/rfc9605.html)[[2]](https://www.rfc-editor.org/rfc/rfc9420.html) |
+
+**State of the art:** RFC 9605 (IETF, August 2024) [[1]](https://datatracker.ietf.org/doc/rfc9605/). Deployed in Ozone, Cisco Webex, and other WebRTC-based conferencing platforms. Independent of RTP (works with any media transport). Designed to pair with MLS (RFC 9420) for group key management while SFrame handles per-frame authenticated encryption. Cisco reference implementation [[2]](https://github.com/cisco/sframe). Related to [Double Ratchet and KDF Chain Key Management](#double-ratchet-and-kdf-chain-key-management) and [TLS 1.3 Key Schedule](#tls-13-key-schedule).
+
+---
+
+## Oblivious HTTP (OHTTP, RFC 9458)
+
+**Goal:** Enable a client to send HTTP requests to a target server such that no single entity learns both the client's identity (IP address) and the request content, using HPKE-based encapsulation through a relay-gateway architecture.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **OHTTP encapsulation** | 2024 | HPKE (RFC 9180) | Client encrypts request to gateway's public key; relay forwards without decrypting [[1]](https://www.rfc-editor.org/rfc/rfc9458.html) |
+| **OHTTP key configuration** | 2024 | KEM + KDF + AEAD IDs | Gateway publishes key config (KEM ID, KDF ID, AEAD ID, public key); client fetches via DNS SVCB [[1]](https://www.rfc-editor.org/rfc/rfc9458.html)[[2]](https://datatracker.ietf.org/doc/html/rfc9540) |
+| **OHTTP response encapsulation** | 2024 | HPKE export context | Response encrypted with key derived from request's HPKE context; binds response to request [[1]](https://www.rfc-editor.org/rfc/rfc9458.html) |
+
+**State of the art:** RFC 9458 (IETF OHAI WG, January 2024) [[1]](https://www.rfc-editor.org/rfc/rfc9458.html). Deployed by Google Safe Browsing (via Fastly relay), Apple Private Relay, and Mozilla Firefox. Service discovery via RFC 9540 DNS SVCB records [[2]](https://datatracker.ietf.org/doc/html/rfc9540). Cloudflare formal privacy analysis [[3]](https://blog.cloudflare.com/stronger-than-a-promise-proving-oblivious-http-privacy-properties/). Related to [HPKE](#hpke-hybrid-public-key-encryption-rfc-9180) and [Key Exchange](#key-exchange--key-agreement).
+
+---

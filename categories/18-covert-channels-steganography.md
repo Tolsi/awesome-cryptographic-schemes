@@ -443,3 +443,137 @@
 **State of the art:** HYDAN remains the reference binary-level steganographic scheme; FTE / SkypeMorph are deployed in censorship circumvention tools (Tor pluggable transports). StegProtocol (von Ahn-Hopper 2004) provides the foundational security definition for protocol-level steganography. Related to [Network / Protocol Steganography](#network--protocol-steganography) (transport-layer complement), [Kleptography / ASA](#kleptography--algorithm-substitution-attacks-asa) (protocol subversion), and [Deniable Encryption](#deniable-encryption) (coercion-resistant communication).
 
 ---
+
+## VoIP Steganography
+
+**Goal:** Exploit the real-time, loss-tolerant nature of Voice over IP protocols (RTP, RTCP, SIP) to create covert communication channels by embedding hidden data in codec payloads, unused protocol fields, or deliberately delayed packets — leveraging the fact that VoIP receivers routinely discard late or corrupted packets without raising alarms.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **LACK (Lost Audio Packets Steganography)** | 2008 | Intentionally delayed RTP packets | Replaces payload of deliberately delayed voice packets; receiver-side jitter buffer discards originals, covert receiver extracts hidden data; hybrid storage-timing channel with capacity dependent on codec rate [[1]](https://link.springer.com/article/10.1007/s11235-009-9245-y) |
+| **RTP/RTCP Field Steganography (Mazurczyk-Szczypiorski)** | 2008 | Unused RTP/RTCP header fields | Exploits padding, extension, and CSRC count fields in RTP headers and unused fields in RTCP sender/receiver reports; first systematic application of header-field stego to VoIP-specific protocols [[1]](https://arxiv.org/abs/0805.2938) |
+| **G.711 LSB Steganography (Huang et al.)** | 2011 | Codec payload LSB substitution | Replaces least significant bits of G.711 μ-law/A-law audio samples with covert data; exploits the codec's 8-bit quantisation; imperceptible degradation at 1 bit/sample (~8 kb/s capacity at 64 kb/s codec rate) [[1]](https://dl.acm.org/doi/10.1145/2543581.2543587) |
+| **Stega-Talk** | 2015 | G.711 LSB matching | Implements LSB matching (±1 modification) rather than replacement in G.711 payloads to reduce statistical detectability; open-source VoIP steganography tool with real-time embedding/extraction [[1]](https://pmc.ncbi.nlm.nih.gov/articles/PMC7913304/) |
+
+**State of the art:** LACK is the canonical VoIP timing-based covert channel; G.711 LSB methods are the simplest payload-based schemes. VoIP steganalysis uses sliding-window RS analysis and QIM detection on compressed speech frames. The high data rates and real-time nature of VoIP make it an attractive carrier — typical capacity ranges from 2–64 kb/s depending on codec and embedding depth. Related to [Network / Protocol Steganography](#network--protocol-steganography) (transport-layer channels) and [Audio Steganography](#audio-steganography-echo-hiding--mp3stego) (codec-domain embedding).
+
+---
+
+## Electromagnetic Emanation Covert Channels (TEMPEST)
+
+**Goal:** Exploit the unintentional electromagnetic radiation emitted by computing equipment — displays, cables, keyboards, CPUs — to either passively eavesdrop on data being processed (side channel) or actively modulate emanations to exfiltrate data from air-gapped systems (covert channel). The classic TEMPEST threat, known since WWII and publicly described by van Eck in 1985.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Van Eck Phreaking** | 1985 | CRT electromagnetic emanation | First unclassified demonstration of remotely reconstructing a CRT display image from its EM emissions using a modified TV receiver and directional antenna at hundreds of metres; cost ~$15 in parts [[1]](https://en.wikipedia.org/wiki/Van_Eck_phreaking) |
+| **TEMPEST Fonts (Kuhn)** | 2003 | Soft TEMPEST countermeasure | Designs display fonts that minimise high-frequency harmonic content in video signals; reduces emanation signal-to-noise ratio by >20 dB without hardware shielding; software-only TEMPEST countermeasure [[1]](https://www.cl.cam.ac.uk/~mgk25/pet2003-tempest.pdf) |
+| **AirHopper (Guri et al.)** | 2014 | GPU-generated FM radio signal | Malware on an air-gapped computer generates controlled FM radio signals via the GPU/display cable acting as an antenna; a nearby mobile phone's FM receiver demodulates the covert data; demonstrated 60 bytes/s exfiltration [[1]](https://arxiv.org/abs/1411.0237) |
+| **Deep-TEMPEST (Fernandez et al.)** | 2024 | Deep learning + HDMI EM emanation | Uses a CNN to reconstruct displayed text from HDMI cable electromagnetic emanations captured by an SDR; reduces character error rate from 90% (classical gr-tempest) to <30%; open-source implementation [[1]](https://arxiv.org/abs/2407.09717) |
+
+**State of the art:** Deep-TEMPEST (2024) represents the modern state of the art, applying deep learning to dramatically improve eavesdropping quality on digital (HDMI) displays. AirHopper demonstrates active EM covert channel construction for air-gap exfiltration. Countermeasures include TEMPEST-rated shielding (NATO SDIP-27), TEMPEST fonts, and noise-injection techniques. Related to [Optical and Thermal Covert Channels](#optical-and-thermal-covert-channels) (alternative air-gap exfiltration) and [Cloud Cache Covert Channels](#cloud-cache-covert-channels) (microarchitectural analogue).
+
+---
+
+## Air-Gap Acoustic and Ultrasonic Covert Channels
+
+**Goal:** Exfiltrate data from air-gapped (network-isolated) computers by encoding information in acoustic or ultrasonic signals generated by hardware components — speakers, fans, hard drives, motherboard buzzers, or even LCD pixel-driving circuits — and received by a nearby microphone, smartphone, or gyroscope sensor outside the security perimeter.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Fansmitter (Guri et al.)** | 2016 | Computer fan RPM modulation | Malware controls CPU/chassis fan speed to encode bits in acoustic frequency shifts; no speakers required; receiver is a nearby smartphone microphone; demonstrated ~15 bits/min over several metres [[1]](https://www.sciencedirect.com/science/article/abs/pii/S0167404820300080) |
+| **DiskFiltration (Guri et al.)** | 2016 | HDD seek-noise modulation | Encodes data in covert acoustic signals generated by controlled hard-drive seek operations; speakerless exfiltration at ~180 bits/min; effective up to 2 metres [[1]](https://arxiv.org/abs/1608.03431) |
+| **GAIROSCOPE (Guri)** | 2021 | Speaker-to-gyroscope ultrasonic | Generates ultrasonic tones (19–24 kHz) from air-gapped PC speakers; smartphone MEMS gyroscope resonates at these frequencies and demodulates the signal without microphone access; bypasses mobile OS microphone permissions [[1]](https://arxiv.org/abs/2208.09764) |
+| **PIXHELL (Guri)** | 2024 | LCD pixel-driving acoustic emission | Displays specially crafted pixel patterns on an air-gapped monitor to generate covert acoustic signals from the LCD's internal components ("singing pixels"); no speakers, fans, or external hardware required; received by nearby microphone [[1]](https://arxiv.org/abs/2409.04930) |
+
+**State of the art:** Guri et al. (Ben-Gurion University) have systematically catalogued acoustic air-gap channels across all common PC components (2016–2024). GAIROSCOPE is notable for bypassing smartphone microphone restrictions. All acoustic channels are low-bandwidth (bits/min to bits/sec) but require no network connectivity. Countermeasures include acoustic shielding, fan-speed locking, SSD-only policies, and ultrasonic jamming. Related to [Optical and Thermal Covert Channels](#optical-and-thermal-covert-channels) (complementary air-gap exfiltration modalities) and [Electromagnetic Emanation Covert Channels](#electromagnetic-emanation-covert-channels-tempest) (EM-based air-gap channels).
+
+---
+
+## GPU Covert Channels
+
+**Goal:** Exploit shared microarchitectural resources within GPUs — L2 caches, DRAM, interconnects (NVLink), and uncore components — to create covert communication channels between co-resident workloads on multi-tenant GPU infrastructure, bypassing process isolation, container boundaries, and even NVIDIA MIG (Multi-Instance GPU) hardware partitioning.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **GPU Cache Covert Channel (Naghibijouybari et al.)** | 2017 | GPU L2 cache contention | Reverse-engineers GPU cache hierarchy; uses Prime+Probe on GPU L2 cache sets to create a cross-process covert channel; demonstrated on NVIDIA GPUs at ~4 MB/s bandwidth [[1]](https://dl.acm.org/doi/10.1145/3133956.3134049) |
+| **Spy in the GPU-box (Dutta et al.)** | 2023 | Cross-GPU L2 cache contention | Demonstrates covert channels across physically separate GPUs in a multi-GPU system; attacker on one GPU causes measurable contention on another GPU's L2 cache; achieved 3.95 MB/s covert bandwidth [[1]](https://dl.acm.org/doi/abs/10.1145/3579371.3589080) |
+| **NVBleed (2025)** | 2025 | NVLink interconnect leakage | Exploits NVLink communication patterns between GPUs; reverse-engineers inter-GPU traffic to identify contention-based timing delays and leaky NVLink performance counters as covert channel vectors; works across separate VMs [[1]](https://arxiv.org/abs/2503.17847) |
+| **Veiled Pathways (Miao et al.)** | 2024 | GPU uncore (NVENC/NVDEC/DRAM freq) | Identifies four novel leakage sources in GPU uncore: DRAM frequency scaling, NVENC utilisation, NVDEC utilisation, and NVJPEG utilisation; bypasses NVIDIA MIG hardware isolation on server GPUs [[1]](https://faculty.ist.psu.edu/wu/papers/Veiled-Pathways.pdf) |
+
+**State of the art:** GPU covert channels are a rapidly emerging threat in cloud ML infrastructure where multiple tenants share GPU nodes. NVBleed (2025) and Veiled Pathways (2024) demonstrate that even hardware-level isolation (MIG) is insufficient. Mitigations include temporal partitioning of GPU resources and disabling performance counters. Related to [Cloud Cache Covert Channels](#cloud-cache-covert-channels) (CPU-side analogue) and [Optical and Thermal Covert Channels](#optical-and-thermal-covert-channels) (alternative exfiltration from GPU-equipped systems).
+
+---
+
+## Transient Execution Covert Channels
+
+**Goal:** Exploit speculative and out-of-order execution in modern CPUs to create covert channels that transmit data through microarchitectural state changes (cache occupancy, branch predictor state, TLB entries) caused by transiently executed instructions whose architectural effects are rolled back. These channels underpin Spectre-class attacks and enable cross-process, cross-VM, and cross-privilege-level data exfiltration.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Spectre v1 (Kocher et al.)** | 2018 | Branch prediction + cache timing | Mistrains branch predictor to speculatively access victim memory; transient load brings secret into cache; attacker recovers via Flush+Reload; affects virtually all modern CPUs (Intel, AMD, ARM) [[1]](https://spectreattack.com/spectre.pdf) |
+| **Meltdown (Lipp et al.)** | 2018 | Out-of-order execution + cache | Exploits out-of-order execution to read kernel memory from user space; transient instruction accesses privileged data before permission check completes; secret encoded in cache state [[1]](https://meltdownattack.com/meltdown.pdf) |
+| **SMoTherSpectre (Bhattacharyya et al.)** | 2019 | Port contention side channel | Uses execution-port contention rather than cache as the covert channel for transient execution; sender and receiver share an execution port; demonstrated cross-SMT-thread covert channel at ~1.2 kb/s [[1]](https://dl.acm.org/doi/10.1145/3319535.3363194) |
+| **Spectre-BHB / Branch History Injection** | 2022 | Branch history buffer poisoning | Bypasses hardware Spectre mitigations (eIBRS, CSV2) by injecting attacker-controlled entries into the branch history buffer; demonstrates that hardware fixes remain insufficient; affects Intel and ARM processors [[1]](https://www.vusec.net/projects/bhi-spectre-bhb/) |
+
+**State of the art:** Transient execution covert channels are a fundamental limitation of speculative CPUs; hardware mitigations (retpolines, eIBRS, STIBP) impose significant performance overhead and remain bypassable (Spectre-BHB 2022). The covert channel bandwidth ranges from kb/s to MB/s depending on the microarchitectural vector. Related to [Cloud Cache Covert Channels](#cloud-cache-covert-channels) (cache-based channels used as the encoding mechanism) and [GPU Covert Channels](#gpu-covert-channels) (analogous microarchitectural exploitation on accelerators).
+
+---
+
+## Power-Line Covert Channels
+
+**Goal:** Exfiltrate data from air-gapped computers by encoding information in deliberate fluctuations of the system's electrical power consumption, which propagate through AC power lines and can be measured by an attacker with a current sensor attached to the power outlet or electrical panel — bypassing all network, electromagnetic, and acoustic isolation.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **PowerHammer (Guri et al.)** | 2018 | CPU workload → current modulation | Malware modulates CPU utilisation to encode bits in power consumption fluctuations; attacker reads current variations on the power line using a non-invasive current clamp; line-level attack achieves ~1000 bits/s; phase-level (main panel) achieves ~10 bits/s [[1]](https://arxiv.org/abs/1804.04014) |
+| **POWER-SUPPLaY (Guri)** | 2020 | PSU acoustic + power-line dual channel | Exploits the switching frequency of the computer's power supply unit to simultaneously create an acoustic emanation and a conducted emission on the power line; dual-modality covert channel; demonstrated at ~50 bits/s [[1]](https://eprint.iacr.org/2020/516.pdf) |
+| **PowerBridge (Guri)** | 2024 | Smart plug power-line infiltration | Uses a compromised smart plug as a bidirectional covert channel relay; malware on the air-gapped computer modulates power consumption, smart plug measures it and relays to the attacker over Wi-Fi; also enables infiltration (commands sent via power toggling) [[1]](https://www.mdpi.com/2076-3417/14/14/6321) |
+
+**State of the art:** PowerHammer (2018) is the foundational power-line exfiltration scheme; PowerBridge (2024) extends the threat to smart-home infrastructure. Countermeasures include power-line noise injection, UPS isolation, and monitoring for anomalous CPU utilisation patterns. Related to [Air-Gap Acoustic and Ultrasonic Covert Channels](#air-gap-acoustic-and-ultrasonic-covert-channels) (complementary air-gap exfiltration) and [Optical and Thermal Covert Channels](#optical-and-thermal-covert-channels) (alternative physical-layer channels).
+
+---
+
+## Domain Fronting
+
+**Goal:** Circumvent Internet censorship by exploiting the architecture of content delivery networks (CDNs) and HTTPS encryption to disguise the true destination of a network connection. The censor sees a TLS connection to an innocuous, high-collateral-damage domain (e.g., google.com), while the actual HTTP request is routed to a censored destination — creating a covert channel inside legitimate HTTPS traffic.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Domain Fronting (Fifield et al.)** | 2015 | TLS SNI / HTTP Host mismatch | Places an allowed domain in the DNS query and TLS SNI extension while placing the true (censored) destination in the encrypted HTTP Host header; CDN edge server routes the request to the real destination; censor must block the entire CDN to block the channel [[1]](https://www.bamsoftware.com/papers/fronting/) |
+| **meek (Tor Pluggable Transport)** | 2014 | Domain fronting via cloud CDN | Implements domain fronting as a Tor pluggable transport; routes Tor traffic through Google App Engine, Amazon CloudFront, or Azure CDN; deployed at scale for censorship circumvention in China and Iran [[1]](https://trac.torproject.org/projects/tor/wiki/doc/meek) |
+| **Encrypted Client Hello (ECH)** | 2023 | TLS 1.3 extension | Encrypts the TLS Client Hello (including SNI) using a key published in DNS; prevents censors from observing the destination domain even at the TLS layer; IETF draft standard; deployed by Cloudflare [[1]](https://datatracker.ietf.org/doc/draft-ietf-tls-esni/) |
+| **Domain Shadowing (Wei et al.)** | 2021 | Compromised CDN subdomain | Attacker registers subdomains under a legitimate CDN customer's domain; covert traffic to attacker-controlled subdomains inherits the parent domain's CDN certificate and reputation; harder to detect than standard domain fronting [[1]](https://www.usenix.org/system/files/sec21-wei.pdf) |
+
+**State of the art:** Classic domain fronting was disabled by major CDN providers (Google, Amazon) in 2018, but ECH (2023) provides a standards-track replacement that encrypts the entire Client Hello. meek remains deployed as a Tor pluggable transport. Domain shadowing (2021) extends the technique to compromised subdomains. Related to [Steganographic Protocols](#steganographic-protocols-stegprotocol--hydan) (protocol-level covert channels) and [Network / Protocol Steganography](#network--protocol-steganography) (network-layer hiding).
+
+---
+
+## Font and Glyph Steganography
+
+**Goal:** Embed hidden data in text documents by imperceptibly perturbing the shapes (glyphs) of typeset characters or by manipulating font metadata, so that the document appears visually identical to a human reader but encodes a covert payload recoverable by machine analysis — surviving printing, scanning, and format conversion.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Line/Word Shifting (Brassil et al.)** | 1995 | Microadjustment of line/word spacing | Shifts lines vertically or words horizontally by sub-pixel amounts to encode bits; one of the earliest document steganography methods; survives photocopying; ~1 bit per line or word [[1]](https://doi.org/10.1109/JPROC.1999.771070) |
+| **FontCode (Xiao et al.)** | 2018 | Glyph perturbation on font manifold | Perturbs glyph shapes along a learned font manifold using a generative model; each character encodes bits via its position on the manifold; recoverable from vector graphics, pixel images, and even print-scan; error-correction coded; ~1.6 bits/character [[1]](https://dl.acm.org/doi/10.1145/3152823) |
+| **Homoglyph Substitution Steganography** | 2010s | Unicode lookalike codepoints | Replaces Latin characters with visually identical Unicode homoglyphs (e.g., Cyrillic 'а' U+0430 for Latin 'a' U+0061); encoding is invisible to the human eye; capacity ~1 bit per replaceable character; detectable by Unicode normalisation [[1]](https://www.usenix.org/conference/usenixsecurity21/presentation/boucher) |
+| **FontGuard (2025)** | 2025 | Deep font watermarking | Uses deep learning to embed imperceptible watermarks in font glyph outlines; robust to rasterisation, anti-aliasing, and format conversion; designed for font IP protection and document provenance [[1]](https://www.researchgate.net/publication/390545447_FontGuard_A_Robust_Font_Watermarking_Approach_Leveraging_Deep_Font_Knowledge) |
+
+**State of the art:** FontCode (2018) is the most capable glyph-perturbation scheme, surviving print-scan cycles with error correction. Homoglyph methods are trivially deployed but defeated by Unicode normalisation. FontGuard (2025) extends glyph-level watermarking with deep learning robustness. Related to [Text / Linguistic Steganography](#text--linguistic-steganography) (semantic-level text hiding), [Digital Watermarking / Fingerprinting](#digital-watermarking--fingerprinting) (document provenance), and [Printer Steganography](#printer-steganography-machine-identification-codes) (physical document tracking).
+
+---
+
+## QUIC Protocol Steganography
+
+**Goal:** Exploit the design features of the QUIC transport protocol — encrypted headers, variable-length Connection IDs, connection migration, padding frames, and the RETRY token mechanism — to create covert channels that are invisible to network middleboxes, since QUIC encrypts nearly all header fields beyond the first byte.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **QUIC Connection ID Covert Channel (QuiCC)** | 2022 | Connection ID field manipulation | Encodes covert data in the variable-length Connection ID (CID) field of QUIC packets; CIDs are opaque to the network and chosen freely by endpoints; capacity scales with CID length (up to 20 bytes per packet) [[1]](https://github.com/nuvious/QuiCC) |
+| **QUIC Covert Channel Taxonomy (Mileva et al.)** | 2023 | Systematic protocol analysis | Identifies 20 novel covert channels in QUIC exploiting header fields, frame types, padding, ACK ranges, and connection migration; analyses transmission rate, undetectability, and robustness for each; first comprehensive QUIC stego taxonomy [[1]](https://lib.jucs.org/article/154672/download/pdf/) |
+| **QuicCourier** | 2025 | QUIC packet padding manipulation | Creates a covert channel by appending secret data as padding at the end of QUIC packets or within packet payloads via a proxy node; leverages QUIC's encrypted transport to hide the padding from DPI; evaluated on real web-browsing traffic [[1]](https://www.computer.org/csdl/journal/tq/2025/05/10916752/24TAwn09eRq) |
+| **QUIC-Exfil** | 2025 | Server Preferred Address abuse | Exploits QUIC's Server Preferred Address feature to redirect connections to attacker-controlled endpoints for data exfiltration; the migration appears as legitimate connection migration to middleboxes [[1]](https://arxiv.org/abs/2505.05292) |
+
+**State of the art:** QUIC's encryption-by-default design makes it inherently more hospitable to covert channels than TCP/TLS. Mileva et al. (2023) provide the definitive taxonomy of 20 QUIC covert channel vectors. QuicCourier and QUIC-Exfil (2025) demonstrate practical exploitation. Countermeasures are limited since QUIC's encrypted headers are opaque to middleboxes by design. Related to [Network / Protocol Steganography](#network--protocol-steganography) (TCP/IP-layer channels), [Steganographic Protocols](#steganographic-protocols-stegprotocol--hydan) (application-layer protocol hiding), and [Domain Fronting](#domain-fronting) (encrypted-transport censorship circumvention).
+
+---

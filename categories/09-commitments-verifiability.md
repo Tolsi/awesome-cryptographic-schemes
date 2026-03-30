@@ -924,3 +924,160 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 **State of the art:** Algebraic VCs (Campanelli et al. 2020) are the foundation of verifiable decentralised storage — any subvector of chunks can be verified against one commitment, with proofs merged across nodes. The 2022 impossibility result confirms pairings are necessary for constant-size algebraic VCs. Related to [Vector Commitments](#vector-commitments), [Functional Commitments](#functional-commitments), and [Verkle Trees](#verkle-trees).
 
 ---
+
+## Statistically-Hiding Commitments from LWE
+
+**Goal:** Commitment schemes where hiding holds against computationally unbounded adversaries, constructed from the Learning With Errors (LWE) assumption — providing post-quantum security with statistical hiding. Unlike Pedersen commitments (which rely on DLP), LWE-based statistically-hiding commitments survive quantum attacks while preserving the strong hiding guarantee needed for simulation-based security proofs.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Kawachi-Tanaka-Xagawa** | 2009 | LWE | First statistically-hiding commitment from LWE; uses lossy encryption paradigm; TCC 2009 [[1]](https://link.springer.com/chapter/10.1007/978-3-642-00457-5_23) |
+| **Peikert-Vaikuntanathan-Waters** | 2008 | LWE (lossy TDFs) | Statistically-hiding commitment via lossy trapdoor functions from LWE; STOC 2008 [[1]](https://eprint.iacr.org/2007/279) |
+| **Benhamouda-Blazy-Ducas-Quach** | 2020 | Module-LWE | Hash-then-commit paradigm yielding efficient statistically-hiding commitments from structured lattices; ASIACRYPT 2020 [[1]](https://eprint.iacr.org/2020/1547) |
+| **Jain-Kalai-Khurana-Ron-Zewi** | 2021 | LWE | Constant-round statistically-hiding commitments with extractability; used in round-optimal MPC from LWE; STOC 2021 [[1]](https://eprint.iacr.org/2020/1434) |
+
+**State of the art:** LWE-based statistically-hiding commitments are the post-quantum replacement for Pedersen commitments in simulation-based proofs. The structured-lattice variant (Module-LWE, 2020) offers practical efficiency. Round-optimal constructions (Jain et al. 2021) enable constant-round MPC from LWE alone. See [BDLOP Lattice Commitments](#bdlop-lattice-commitments) and [Perfectly Binding vs Perfectly Hiding Commitments](#perfectly-binding-vs-perfectly-hiding-commitments).
+
+---
+
+## Merkle Patricia Tries as Commitment Schemes
+
+**Goal:** An authenticated key-value store combining a radix trie (prefix tree) with Merkle hashing, enabling compact proofs of inclusion, exclusion, and state transitions over arbitrary key-value maps. The Merkle Patricia Trie (MPT) is Ethereum's state commitment structure: every account balance, contract storage slot, and transaction receipt is committed via a single 32-byte root hash, with O(log n) membership and non-membership proofs.
+
+| Property | Value |
+|----------|-------|
+| **Structure** | Radix-16 (hex) trie with branch, extension, and leaf nodes |
+| **Root** | Single Keccak-256 hash — commits to entire key-value map |
+| **Inclusion proof** | O(log₁₆ n) hash nodes along the key path |
+| **Non-membership proof** | Path terminates at divergent prefix; verifiable against root |
+| **Update** | O(log₁₆ n) re-hashing along affected path |
+
+| Variant | Year | Note |
+|---------|------|------|
+| **Ethereum Modified Merkle Patricia Trie** | 2014 | Hex-prefix encoding with RLP serialisation; Ethereum Yellow Paper [[1]](https://ethereum.github.io/yellowpaper/paper.pdf) |
+| **Compact Merkle Multiproof** | 2019 | EIP-1186: prove multiple storage slots in one multi-proof against MPT root [[1]](https://eips.ethereum.org/EIPS/eip-1186) |
+| **Sparse Merkle Tree (SMT)** | 2016 | Binary trie over 2²⁵⁶ keyspace; explicit non-membership proofs; used in ZK-rollups [[1]](https://eprint.iacr.org/2016/683) |
+| **Binary Merkle Patricia Trie** | 2020 | Binary variant (branching factor 2) proposed for Ethereum 2.0 for SNARK-friendliness [[1]](https://ethresear.ch/t/binary-trie-format/7621) |
+
+**State of the art:** The MPT is Ethereum's current state commitment (mainnet since 2015) and the most widely deployed authenticated dictionary in production. Sparse Merkle Trees are preferred in ZK-rollups (StarkNet, zkSync) for their SNARK-friendliness. Ethereum's roadmap replaces MPT with [Verkle Trees](#verkle-trees) ("The Verge") for smaller state witnesses. Related to [Accumulators](#accumulators) and [Vector Commitments](#vector-commitments).
+
+---
+
+## Selective-Opening Security for Commitments
+
+**Goal:** Security under adaptive partial opening. An adversary sees n commitments, then adaptively selects a subset to be opened, and must still learn nothing about the unopened values. Standard hiding only guarantees security for a single commitment; selective-opening (SO) security extends this to the multi-commitment setting — critical for protocols where an adversary can force selective decommitment (e.g., MPC, e-voting, oblivious transfer).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bellare-Hofheinz-Yilek (BHY)** | 2009 | Lossy encryption | First formalisation of sender SO security (simulation and indistinguishability variants); EUROCRYPT 2009 [[1]](https://eprint.iacr.org/2009/101) |
+| **Hofheinz (receiver SO)** | 2011 | DDH / DLIN | First receiver selective-opening secure commitment; PKC 2011 [[1]](https://eprint.iacr.org/2011/066) |
+| **Fehr-Hofheinz-Kiltz-Schaffner** | 2017 | LWE | SO-secure commitments from lattice assumptions; post-quantum; TCC 2017 [[1]](https://eprint.iacr.org/2016/678) |
+| **Hazay-Patra-Warinschi** | 2015 | DDH | Efficient adaptively SO-secure commitments in the UC model [[1]](https://eprint.iacr.org/2014/965) |
+
+**State of the art:** SO security is required in any protocol where the adversary adaptively chooses which commitments to open (MPC, parallel OT, e-voting). LWE-based SO-secure commitments (2017) provide post-quantum guarantees. Standard Pedersen commitments are NOT SO-secure in general. See [UC-Secure Commitments](#uc-secure-commitments) and [Commitment Schemes](#commitment-schemes).
+
+---
+
+## Rate-1 Commitments
+
+**Goal:** Commitments with optimal communication efficiency — the commitment string is only negligibly longer than the committed message itself (rate approaching 1). Standard commitments (Pedersen, hash-based) have rate < 1 because the commitment includes randomness overhead. Rate-1 constructions minimise bandwidth, enabling efficient commitments to large data (databases, machine learning models, blockchain states).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Hemenway-Ostrovsky-Rosen** | 2012 | LWE (lossy modes) | First rate-1 commitment from LWE; uses lossy encryption; CRYPTO 2012 [[1]](https://eprint.iacr.org/2012/474) |
+| **Gentry-Halevi-Vaikuntanathan** | 2015 | LWE (GSW-FHE) | Rate-1 commitment via FHE bootstrapping; ITCS 2015 [[1]](https://eprint.iacr.org/2014/714) |
+| **Brakerski-Vaikuntanathan** | 2018 | LWE | Rate-1 OT and commitments from standard LWE; avoids FHE; FOCS 2018 [[1]](https://eprint.iacr.org/2018/895) |
+| **Devadas-Quach-Vaikuntanathan-Wee** | 2023 | LWE | Rate-1 extractable commitments; enables rate-1 MPC and SNARG; EUROCRYPT 2023 [[1]](https://eprint.iacr.org/2022/1648) |
+
+**State of the art:** Rate-1 commitments from LWE (Brakerski-Vaikuntanathan 2018) achieve near-optimal bandwidth. Rate-1 extractable variants (2023) enable communication-efficient MPC and compact SNARGs from standard assumptions. Related to [Statistically-Hiding Commitments from LWE](#statistically-hiding-commitments-from-lwe) and [Commitment Schemes](#commitment-schemes).
+
+---
+
+## Batch Commitments and Amortised Opening
+
+**Goal:** Commit to many values simultaneously and open subsets efficiently — with amortised cost per opening much lower than individual commitments. Essential for scaling commitment-heavy protocols (ZK proofs, blockchain state, verifiable databases) where thousands or millions of values must be committed and selectively opened.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Feist-Khovratovich (FK) Technique** | 2023 | KZG + FFT | Amortised KZG: compute all n single-point proofs in O(n log n) via FFT; used in Ethereum EIP-4844 [[1]](https://eprint.iacr.org/2023/033) |
+| **Pointproofs Batch Aggregation** | 2020 | Pairings | Aggregate proofs across multiple vector commitments into one; cross-commitment batching; CCS 2020 [[1]](https://eprint.iacr.org/2020/419) |
+| **Hyperproofs** | 2022 | KZG + tree structure | Efficient batch update and opening for vector commitments; O(log n) update, O(1) amortised proof; IEEE S&P 2022 [[1]](https://eprint.iacr.org/2021/599) |
+| **Multi-opening KZG (Boneh-Drake-Fisch-Gabizon)** | 2020 | KZG + vanishing polynomials | Open f at multiple points with a single proof via quotient by vanishing polynomial [[1]](https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html) |
+
+**State of the art:** The FK technique (2023) is deployed in Ethereum's EIP-4844 for computing blob KZG proofs at scale. Pointproofs and Hyperproofs enable efficient batch operations on vector commitments for blockchain state validation. Multi-opening KZG is standard in PLONK-based proof systems. Related to [KZG Polynomial Commitments](#kzg-polynomial-commitments) and [Vector Commitments](#vector-commitments).
+
+---
+
+## Round-Optimal Commitment Protocols
+
+**Goal:** Achieve commitment functionality (hiding + binding) in the minimum number of communication rounds. In the plain model, perfectly-hiding commitments require at least 2 rounds (1 round for commit, 1 for decommit), but achieving additional properties (extractability, equivocability, non-malleability) simultaneously may require more. Round complexity directly impacts latency in interactive protocols.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Naor Bit Commitment** | 1991 | PRG (any OWF) | 2-round perfectly-binding bit commitment from any OWF; optimal [[1]](https://link.springer.com/article/10.1007/BF00196774) |
+| **Haitner-Reingold** | 2007 | OWF | 2-round statistically-hiding commitment from any OWF; matches Naor in round count [[1]](https://eprint.iacr.org/2006/337) |
+| **Pass-Wee** | 2009 | OWF | 1-round (non-interactive) commitment in the CRS model with both hiding and extractability [[1]](https://eprint.iacr.org/2009/080) |
+| **Khurana-Sahai** | 2017 | LWE / DDH | 2-round MPC from 2-round commitments with simultaneous extractability and equivocability [[1]](https://eprint.iacr.org/2017/316) |
+
+**State of the art:** 2 rounds are necessary and sufficient for statistically-hiding commitments in the plain model (Haitner-Reingold 2007). In the CRS model, non-interactive (1-round) schemes achieve extractability and equivocability simultaneously. Round-optimal commitments are a key building block for round-optimal MPC. See [Commitment Schemes](#commitment-schemes) and [UC-Secure Commitments](#uc-secure-commitments).
+
+---
+
+## Homomorphic Commitments for MPC
+
+**Goal:** Commitments that support addition and (limited) multiplication on committed values, enabling verifiable computation within MPC protocols. Parties commit to their inputs, then jointly compute on the commitments without opening them — with the homomorphic structure ensuring correctness at every step. The workhorse of SPDZ-style actively secure MPC.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Pedersen (additive homomorphism)** | 1991 | DLP | com(a) + com(b) = com(a + b); basis of SPDZ MAC checking [[1]](https://link.springer.com/chapter/10.1007/3-540-46766-1_9) |
+| **SPDZ Commitment MAC** | 2012 | Pedersen + MAC | Commit-and-MAC on secret-shared values; information-theoretic active security via linear homomorphism [[1]](https://eprint.iacr.org/2011/535) |
+| **BGW + Verifiable SS** | 1988 | Shamir SS + commitments | Commitments on polynomial shares enable active security in BGW MPC [[1]](https://dl.acm.org/doi/10.1145/62212.62213) |
+| **BDLOP for Lattice MPC** | 2018 | Module-SIS / Module-LWE | Additively homomorphic lattice commitment enabling post-quantum actively secure MPC [[1]](https://eprint.iacr.org/2016/997) |
+
+**State of the art:** Pedersen commitments with information-theoretic MACs (SPDZ, 2012+) are the standard for actively secure MPC over arithmetic circuits. BDLOP provides the post-quantum analogue. Multiplicative homomorphism requires additional zero-knowledge proofs (e.g., multiplication triples). See [Commitment Schemes](#commitment-schemes), [BDLOP Lattice Commitments](#bdlop-lattice-commitments), and [Multi-Party Computation](categories/06-multi-party-computation.md#secure-multi-party-computation-mpc).
+
+---
+
+## Succinct Mercurial Commitments
+
+**Goal:** Commitments that can be opened to either a "hard" value (standard binding opening) or a "soft" opening (reveals that the commitment is to *some* value, without specifying which). Mercurial commitments enable zero-knowledge sets and authenticated dictionaries where a committer can prove both membership and non-membership without revealing the set size or contents.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chase-Healy-Lysyanskaya-Malkin-Reyzin** | 2005 | DDH | First mercurial commitment; enables ZK sets; CRYPTO 2005 [[1]](https://eprint.iacr.org/2005/060) |
+| **Catalano-Dodis-Visconti** | 2006 | Trapdoor commitments | Mercurial commitments from any trapdoor commitment; TCC 2006 [[1]](https://eprint.iacr.org/2005/438) |
+| **Libert-Yung Concise Mercurial VC** | 2010 | Pairings (q-SDH) | First concise (constant-size) mercurial vector commitment; enables efficient ZK authenticated dictionaries [[1]](https://eprint.iacr.org/2010/099) |
+
+**State of the art:** Mercurial commitments are the foundation of zero-knowledge sets — proving set (non-)membership while hiding the set itself. Libert-Yung (2010) achieves constant-size proofs via pairings. Applications include privacy-preserving revocation lists and anonymous credential blacklists. Related to [Vector Commitments](#vector-commitments) and [Accumulators](#accumulators).
+
+---
+
+## Verifiable Computation Delegation (Succinct Arguments for Delegated Computation)
+
+**Goal:** A computationally weak client delegates a computation f(x) to a powerful server, receiving a result y and a succinct proof that y = f(x) — verifiable in time much less than computing f. Unlike general-purpose SNARKs, delegation schemes are optimised for the asymmetric client-server setting: the verifier (client) has limited resources, while the prover (server) has abundant computation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **GGP (Gennaro-Gentry-Parno)** | 2010 | FHE + Yao's garbled circuits | First general-purpose VC from FHE; amortised verification cheaper than re-execution [[1]](https://eprint.iacr.org/2009/547) |
+| **Pinocchio (Parno-Howell-Gentry-Raykova)** | 2013 | QAPs + pairings | First practical VC; quadratic arithmetic programs; verifier runs in O(|input|) time [[1]](https://eprint.iacr.org/2013/279) |
+| **Hyrax (Wahby et al.)** | 2018 | Sumcheck + Pedersen | Doubly-efficient, transparent VC; no trusted setup; IEEE S&P 2018 [[1]](https://eprint.iacr.org/2017/1132) |
+| **VOLE-based VC (Weng et al.)** | 2021 | VOLE + IT-MAC | Constant-round delegated computation with information-theoretic verification via VOLE; CCS 2021 [[1]](https://eprint.iacr.org/2021/740) |
+
+**State of the art:** Modern SNARK/STARK systems (PLONK, Groth16, STARKs) subsume VC for most use cases. Specialised delegation schemes remain relevant for settings requiring minimal verifier hardware (IoT, mobile) or information-theoretic security (VOLE-based). Related to [Verifiable Computation (VC)](#verifiable-computation-vc) and [GKR Protocol](#gkr-protocol-doubly-efficient-interactive-proofs).
+
+---
+
+## Compact Proofs of Exponentiation (PoE) and Knowledge of Exponent (KEA)
+
+**Goal:** Prove knowledge of, or correctness of, a large exponentiation without revealing the exponent. PoE proves that y = gˣ for a claimed x without the verifier re-computing the exponentiation — critical for VDF verification and accumulator updates. KEA (Knowledge of Exponent Assumption) assumes that any party producing a valid DH pair (g, gᵃ, h, hᵃ) must "know" a, enabling extractable commitments and SNARKs.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Wesolowski PoE** | 2019 | Groups of unknown order | O(1)-size proof that y = g^(2^T); single group element; used in VDF verification [[1]](https://eprint.iacr.org/2018/623) |
+| **Pietrzak PoE** | 2019 | Groups of unknown order | O(log T)-size proof via recursive halving; no generic group model needed [[1]](https://eprint.iacr.org/2018/627) |
+| **KEA1 (Damgard)** | 1991 | DLP | Knowledge of Exponent Assumption: producing (g, gᵃ, h, hᵃ) implies knowing a; used in SNARK extractors [[1]](https://link.springer.com/chapter/10.1007/3-540-46766-1_36) |
+| **Bitansky-Canetti-Chiesa-Tromer** | 2013 | KEA + pairings | KEA over bilinear groups enables succinct extractable commitments underpinning preprocessing SNARKs [[1]](https://eprint.iacr.org/2011/443) |
+
+**State of the art:** Wesolowski PoE is deployed in VDF verification (Chia, Ethereum research) and Boneh-Bunz-Fisch accumulator batching. KEA over pairing groups is the extractability backbone of Groth16 and other preprocessing SNARKs. Related to [Verifiable Delay Functions (VDF)](#verifiable-delay-functions-vdf), [Accumulators](#accumulators), and [Extractable Commitments](#extractable-commitments).
+
+---

@@ -435,6 +435,183 @@ The ecosystem divides into two design philosophies. **On-device computation** (P
 
 ---
 
+## Mental Poker Protocols
+
+**Goal:** Play a fair card game over a network with no trusted dealer. All players can verify that the deck was randomly shuffled, each card is dealt to exactly one player, no player can see another's hand, and the game's outcome is publicly verifiable — using only cryptographic operations with no trusted third party.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Shamir-Rivest-Adleman Mental Poker** | 1981 | Commutative encryption (SRA) | First mental poker protocol; commutative encryption allows players to jointly shuffle; O(n²) operations per card deal [[1]](https://doi.org/10.1007/PL00003816) |
+| **Crépeau Verifiable Shuffle** | 1986 | Cut-and-choose + commitment | First protocol with verifiable shuffle; each player proves shuffle correctness without revealing permutation [[1]](https://doi.org/10.1007/3-540-39799-X_10) |
+| **Barnett-Smart Mental Poker** | 2003 | ElGamal + ZK shuffle proofs | Efficient mental poker using re-encryption mixnets; O(n log n) shuffle proof; first practical protocol for >2 players [[1]](https://eprint.iacr.org/2003/043) |
+| **Castagnos et al. (class group-based)** | 2020 | Class group encryption + ZK | Uses linearly homomorphic encryption from class groups; avoids the pairing-based overhead; efficient for real-time play [[1]](https://eprint.iacr.org/2020/376) |
+| **Kaleidoscope (ZK-based card games)** | 2018 | SNARKs + commit-reveal | Generalizes mental poker to arbitrary card games; each player proves move legality via SNARK without revealing hand [[1]](https://eprint.iacr.org/2017/899) |
+
+The fundamental challenge is implementing a "shared deck" where no single party controls the card ordering, yet each card can be privately revealed to exactly one player. Commutative encryption (where Enc_A(Enc_B(m)) = Enc_B(Enc_A(m))) enables this: all players jointly encrypt the deck, shuffle it, and then selectively decrypt individual cards. Modern approaches replace commutative ciphers with re-encryption shuffles and ZK shuffle proofs, which are more efficient and have well-understood security.
+
+**State of the art:** Barnett-Smart (practical implementations for online poker); Kaleidoscope (general card games via SNARKs). See [MPC](categories/06-multi-party-computation.md#secure-multi-party-computation-mpc) and [ZK Proofs](categories/04-zero-knowledge-proof-systems.md#zero-knowledge-proofs).
+
+---
+
+## OPAQUE: Password-Authenticated Key Exchange
+
+**Goal:** Establish a shared key from a password without the server ever learning or storing the password in any recoverable form — not even a salted hash. The server stores only a cryptographic envelope that it cannot open without the client's password, and the protocol is immune to pre-computation and offline dictionary attacks by the server.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **OPAQUE (Jarecki-Krawczyk-Xu)** | 2018 | OPRF + AKE + envelope | Client registers an envelope of keys encrypted under a password-derived key; server stores envelope + OPRF key; login runs OPRF to recover keys then AKE; server never sees password [[1]](https://eprint.iacr.org/2018/163) |
+| **IETF draft-irtf-cfrg-opaque** | 2023 | OPRF (ristretto255/P-256) + 3DH AKE | Standardization effort; OPRF via VOPRF; AKE via triple-DH (like Signal X3DH); envelope stores client private key encrypted under OPRF output [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-opaque/) |
+| **Strong aPAKE (Bourdrez et al.)** | 2021 | OPAQUE + key stretching | Adds server-side key stretching (Argon2) inside the OPRF evaluation; resists server compromise + offline attack combination [[1]](https://eprint.iacr.org/2021/864) |
+
+Unlike traditional password hashing (bcrypt, Argon2), where the server stores a hash and can mount offline dictionary attacks on its own database, OPAQUE uses an oblivious PRF so the server never processes the raw password. The client evaluates OPRF(password) with the server's OPRF key, receiving a high-entropy key that decrypts the stored envelope containing the client's AKE private key. Even a fully compromised server database is useless without performing an online attack against the OPRF. This makes OPAQUE the strongest known form of password-based authentication.
+
+**State of the art:** IETF CFRG standardization in progress (draft-irtf-cfrg-opaque); implemented in Cloudflare, WhatsApp key backup, and Facebook credential storage. Related to [PAKE](categories/03-key-exchange-key-management.md#password-authenticated-key-exchange-pake--kdf) and [OPRF](categories/10-privacy-preserving-computation.md#oblivious-prf-oprf--voprf).
+
+---
+
+## Verifiable Delay Functions (VDFs)
+
+**Goal:** Compute a function that provably requires a specified number of sequential steps — even with massive parallelism — and produces an output that anyone can verify quickly. Enables trustless randomness generation, fair leader election, and time-release encryption without a trusted timekeeper.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Wesolowski VDF** | 2019 | Repeated squaring in hidden-order group | Compute y = x^(2^T) mod N; verification via a single group exponentiation with a Fiat-Shamir-derived challenge; proof is a single group element [[1]](https://eprint.iacr.org/2018/623) |
+| **Pietrzak VDF** | 2019 | Repeated squaring + recursive halving | Compute y = x^(2^T) mod N; proof is O(log T) group elements via recursive halving argument; weaker assumptions than Wesolowski [[1]](https://eprint.iacr.org/2018/627) |
+| **Chia VDF (class group)** | 2019 | Class group of imaginary quadratic field | No trusted setup: class groups provide a hidden-order group without RSA modulus generation; deployed in Chia blockchain for timelord proofs [[1]](https://docs.chia.net/timelord-algorithm/) |
+| **MinRoot VDF** | 2022 | Iterated permutation in prime field | VDF from iterated cube-root in F_p; SNARK-friendly (algebraic circuit); designed for Ethereum [[1]](https://eprint.iacr.org/2022/1626) |
+| **Ethereum VDF Research** | 2023 | ASIC-accelerated Wesolowski | Ethereum Foundation funds ASIC design to ensure VDF evaluation speed is bounded; public VDF ASIC prevents private speedup advantage [[1]](https://vdfresearch.org/) |
+
+The key property is **sequential hardness**: T sequential squarings cannot be parallelized below T steps (under the repeated-squaring assumption), yet verification takes O(log T) or O(1) exponentiations. Wesolowski's proof is a single group element but relies on the adaptive root assumption; Pietrzak's proof is larger (O(log T) elements) but relies only on the standard sequential squaring assumption. Both require a group of unknown order — either an RSA modulus (trusted setup) or a class group (no setup). The Ethereum research program addresses the "ASIC gap" problem: if one party has a 10x faster squaring chip, they can evaluate the VDF early and gain an unfair advantage.
+
+**State of the art:** Chia Network (class-group VDF in production); Ethereum VDF research ongoing; Wesolowski/Pietrzak are the two standard constructions. Related to [Time-Lock Puzzles](categories/09-commitments-verifiability.md#time-lock-puzzles--timed-release-encryption), [Randomness Beacons](categories/09-commitments-verifiability.md#randomness-beacons), and [Client Puzzles](#client-puzzles--proof-of-effort).
+
+---
+
+## Proof of Storage (Filecoin PoRep / PoSt)
+
+**Goal:** Prove that a storage provider is physically dedicating unique disk space to store a client's data — not just pretending by re-deriving it on demand, deduplicating it, or storing it only once across multiple claimed replicas. Enables decentralized storage markets where payment is tied to verifiable, ongoing storage.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Proof of Retrievability (PoR) — Juels-Kaliski** | 2007 | Sentinel insertion + MAC | Server stores file + random sentinels; verifier checks sentinel positions; first formal PoR [[1]](https://doi.org/10.1145/1315245.1315317) |
+| **Compact PoR (Shacham-Waters)** | 2008 | BLS signatures + homomorphic tags | Verifier checks random linear combination of file blocks; O(1) proof size regardless of file size [[1]](https://eprint.iacr.org/2008/073) |
+| **Proof of Replication (PoRep) — Filecoin** | 2017 | Depth-robust graph labeling + Poseidon hash | Miner encodes data via a sequential graph labeling process; unique replica per miner; encoding is slow (ensures physical storage), verification is fast via SNARK [[1]](https://filecoin.io/proof-of-replication.pdf) |
+| **Proof of Spacetime (PoSt) — Filecoin** | 2017 | Repeated PoRep challenges over time | Miner proves continuous storage by responding to periodic random challenges; missed challenges slash collateral; WindowPoSt (every 24h) + WinningPoSt (per block) [[1]](https://spec.filecoin.io/algorithms/pos/) |
+| **Chia Proof of Space** | 2019 | Beyond Hellman + graph pebbling | Miner pre-computes and stores large lookup tables from a random function; lookup proofs demonstrate committed disk space; combined with VDF for consensus [[1]](https://www.chia.net/wp-content/uploads/2022/09/Chia_Proof_of_Space_Construction_v1.1.pdf) |
+
+The core challenge is preventing "outsourcing attacks" (miner stores data on someone else's disk), "generation attacks" (miner re-derives data from a short seed instead of storing it), and "sybil storage" (claiming N copies but storing only 1). Filecoin's PoRep addresses this by requiring an encoding step that is inherently sequential and miner-specific — each replica is a unique transformation of the original data through a depth-robust graph, meaning the miner must have physically performed the slow encoding. PoSt extends this guarantee over time: the miner must respond to random challenges that require reading specific positions of the encoded replica, proving the data remains stored.
+
+**State of the art:** Filecoin (production since 2020; >20 EiB stored); Chia (proof of space + VDF consensus). Related to [PoW / Proof of Space](categories/13-blockchain-distributed-ledger.md#proof-of-work-pow--proof-of-space) and [Proof of Data Possession / PoR](categories/09-commitments-verifiability.md#proof-of-retrievability-por--proof-of-data-possession-pdp).
+
+---
+
+## Cryptographic Reverse Firewalls
+
+**Goal:** Protect a cryptographic protocol participant even when their own machine is compromised or backdoored — by routing all communication through an external "reverse firewall" that re-randomizes messages to strip any subliminal channels, without needing to know the participant's secret keys or trust the participant's implementation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Mironov-Stephens-Brito CRF** | 2015 | Re-randomizable encryption + signatures | First formalization of cryptographic reverse firewalls; defines security: firewall preserves functionality + eliminates subliminal channels; constructions for OT, key exchange, and signatures [[1]](https://eprint.iacr.org/2014/758) |
+| **CRF for Key Exchange (Dodis et al.)** | 2016 | Rerandomizable DH | Reverse firewall for Diffie-Hellman: firewall re-randomizes DH messages so that even a kleptographic implementation cannot exfiltrate the secret key [[1]](https://eprint.iacr.org/2016/424) |
+| **CRF for Signatures (Ateniese et al.)** | 2016 | Rerandomizable Schnorr | Reverse firewall re-randomizes Schnorr signature nonces; prevents nonce-covert-channel attacks (cf. NIST Dual_EC_DRBG-style backdoors) [[1]](https://eprint.iacr.org/2015/1189) |
+| **CRF for MPC** | 2020 | Rerandomizable garbled circuits | Extends CRFs to general MPC protocols; firewall rerandomizes garbled circuit messages without knowing the circuit inputs [[1]](https://eprint.iacr.org/2020/594) |
+
+The motivating threat is **algorithm substitution attacks (ASA)**: a compromised implementation uses subliminal channels in its random-looking outputs (nonces, ciphertexts) to leak secret keys to a passive eavesdropper. The NSA's Dual_EC_DRBG backdoor is the canonical example. A cryptographic reverse firewall sits between the user's compromised machine and the network, re-randomizing every outgoing message. The key property is that the firewall does not need the user's secret key — it only needs the protocol to be algebraically rerandomizable. The firewall maintains functionality (the protocol still works correctly) while destroying any covert channel. The limitation is that the protocol must be designed with rerandomizability in mind.
+
+**State of the art:** Theoretical framework (2015+); practical constructions exist for DH, Schnorr, ElGamal, and OT. Closely related to [Kleptography / ASA](categories/18-covert-channels-steganography.md#kleptography--algorithm-substitution-attacks-asa) (the attack CRFs defend against) and [Cryptographic Reverse Firewalls](categories/19-theoretical-foundations.md#cryptographic-reverse-firewalls) in category 19.
+
+---
+
+## Leakage-Resilient Protocols
+
+**Goal:** Maintain security even when the adversary obtains partial information about secret keys via side-channel attacks (power analysis, electromagnetic emanations, cache timing, cold-boot attacks). The secret key leaks bounded bits per invocation, but the protocol remains secure as long as total leakage stays below a threshold.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Dziembowski-Pietrzak Leakage-Resilient Stream Cipher** | 2008 | Alternating extraction | First leakage-resilient stream cipher; key updated each round via alternating extractors; tolerates λ bits of leakage per round [[1]](https://eprint.iacr.org/2008/491) |
+| **Kiltz-Pietrzak Leakage-Resilient ElGamal** | 2010 | Hash proof systems | CCA-secure PKE tolerating leakage; based on smooth projective hash functions; first leakage-resilient CCA encryption [[1]](https://eprint.iacr.org/2009/429) |
+| **Faust-Kiltz-Pietrzak-Rothblum Leakage-Resilient Sigs** | 2010 | One-time sigs + tree-based refreshing | Signature scheme secure under continual leakage; key refreshed after each signature via a binary tree of one-time keys [[1]](https://eprint.iacr.org/2009/282) |
+| **Dodis-Haralambiev-Lopez-Alt-Wichs Efficient PKE** | 2010 | Lattice-based + leakage | Efficient LWE-based encryption tolerating key leakage up to (1-o(1)) fraction of the key length [[1]](https://eprint.iacr.org/2010/163) |
+| **Continual Leakage Model (Brakerski et al.)** | 2010 | Key-update + bounded leakage per epoch | Security under unbounded total leakage, as long as per-epoch leakage is bounded; key refreshed between epochs; captures real-world side-channel settings [[1]](https://eprint.iacr.org/2010/278) |
+
+The model captures real-world attacks where an adversary cannot extract the full key but obtains partial information each time the key is used (e.g., differential power analysis on a smart card). The "bounded leakage model" allows up to λ bits of arbitrary leakage of the secret key; the "continual leakage model" allows λ bits per time period with key updates between periods. Constructions typically rely on secret sharing the key internally and refreshing shares, or on algebraic structures (hash proof systems, lattices) where partial key leakage does not break the underlying hardness assumption.
+
+**State of the art:** Continual-leakage model with key refresh (theoretical); lattice-based constructions are most efficient. Related to [Leakage-Resilient Cryptography](categories/19-theoretical-foundations.md#leakage-resilient-cryptography) (foundations) and [Key-Insulated Cryptography](#key-insulated-cryptography) (complementary approach).
+
+---
+
+## Time-Release Cryptography / Timed Commitments
+
+**Goal:** Encrypt a message so that it cannot be decrypted until a specified future time — without relying on a trusted third party to release a key. The recipient (or anyone) can force-open the ciphertext by performing a predetermined amount of sequential computation, or wait for a time-server to release a decryption token.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Rivest-Shamir-Wagner Time-Lock Puzzles** | 1996 | Repeated squaring mod N | Encrypt message under key derivable only by computing x^(2^T) mod N; T sequential squarings enforce minimum wall-clock time; original "send a message to the future" construction [[1]](https://people.csail.mit.edu/rivest/pubs/RSW96.pdf) |
+| **Boneh-Naor Timed Commitments** | 2000 | Time-lock puzzle + ZK proof of correctness | Committer proves the timed commitment contains the correct value via a ZK proof; prevents malicious commitments that are unsolvable or contain garbage [[1]](https://doi.org/10.1007/3-540-44598-6_15) |
+| **Thyagarajan et al. Verifiable Timed Signatures** | 2020 | Time-lock puzzle + adaptor sigs | Signer produces a "timed signature" that becomes valid after T sequential squarings; enables fair exchange without simultaneous participation [[1]](https://eprint.iacr.org/2020/1563) |
+| **drand + Timelock Encryption** | 2023 | Threshold BLS + identity-based encryption | Message encrypted under a future round number of the drand randomness beacon; beacon nodes collectively produce BLS signature each round, which serves as the decryption key; no computation required by recipient [[1]](https://eprint.iacr.org/2023/189) |
+| **Delay Encryption (Burdges-De Feo)** | 2021 | VDF + identity-based encryption | Encryption keyed to a future identity; decryption key computable only after VDF evaluation; combines VDF and IBE into a single primitive [[1]](https://eprint.iacr.org/2020/638) |
+
+Two paradigms exist. **Computational time-release** (Rivest-Shamir-Wagner) forces the recipient to perform T sequential squarings — no parallelism helps, but the sender must estimate the recipient's hardware speed. **Beacon-based time-release** (drand) encrypts to a future beacon round; when the beacon fires, the decryption key is publicly available — no computation needed, but the beacon must be trusted (or threshold-distributed). Timed commitments add verifiability: the committer proves the puzzle is well-formed, preventing denial-of-service via unsolvable puzzles. Applications include sealed-bid auctions (bids auto-open at deadline), cryptocurrency fair exchange, and digital wills.
+
+**State of the art:** drand timelock encryption (production, used by Filecoin and Protocol Labs); VDF-based delay encryption (research). Related to [Time-Lock Puzzles](categories/09-commitments-verifiability.md#time-lock-puzzles--timed-release-encryption), [VDFs](#verifiable-delay-functions-vdfs), and [Delay Encryption](categories/09-commitments-verifiability.md#delay-encryption).
+
+---
+
+## Secure Location Verification
+
+**Goal:** Cryptographically verify that a prover is physically located at a claimed position in space — using the speed of light as an unforgeable physical constraint — without trusting the prover's hardware or software. Multiple verifiers at known positions challenge the prover and measure response times to triangulate and bound the prover's location.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chandran-Goyal-Moriarty-Ostrovsky Secure Positioning** | 2009 | Multi-verifier timing + commitment | First formal model for secure positioning; proves impossibility of position verification with a bounded number of colluding adversaries; possible in the bounded-storage model [[1]](https://eprint.iacr.org/2009/364) |
+| **Buhrman et al. Position-Based Quantum Crypto** | 2011 | Quantum no-cloning + EPR pairs | Position verification using quantum channels; no-cloning theorem prevents adversaries from duplicating quantum challenges; secure against non-entangled adversaries [[1]](https://doi.org/10.1007/978-3-642-22792-9_26) |
+| **Brands-Chaum Distance Bounding (applied)** | 1993 | Challenge-response + speed-of-light timing | Multi-verifier extension of distance bounding; prover must respond within time consistent with claimed position relative to all verifiers [[1]](https://doi.org/10.1007/3-540-48285-7_30) |
+| **GPS Authentication (Tippenhauer et al.)** | 2011 | Signal authentication + anomaly detection | Demonstrated GPS spoofing attacks; proposed authenticated navigation signals using symmetric MAC (TESLA-like) over civilian GPS [[1]](https://doi.org/10.1145/2046707.2046729) |
+| **Galileo OSNMA** | 2023 | TESLA MAC + ECDSA over navigation signal | First deployed authenticated GNSS; navigation message carries TESLA MACs and ECDSA signatures; receivers verify signal authenticity; operational since 2023 [[1]](https://www.gsc-europa.eu/sites/default/files/sites/all/files/Galileo_OSNMA_User_ICD_for_Test_Phase_v1.1.pdf) |
+
+A fundamental impossibility result (Chandran et al., 2009) shows that classical secure positioning is impossible against multiple colluding adversaries who can relay messages at the speed of light. Quantum position verification circumvents this using the no-cloning theorem: adversaries cannot copy a quantum challenge to relay it to multiple positions. In practice, GPS/GNSS authentication (Galileo OSNMA) provides "good enough" location verification for civilian use by authenticating navigation signals, preventing spoofing rather than proving exact position.
+
+**State of the art:** Galileo OSNMA (production 2023, first authenticated GNSS); quantum position verification (theoretical); classical schemes require physical assumptions. Related to [Distance-Bounding Protocols](#distance-bounding-protocols) and [Proof of Location](categories/17-ai-hardware-physical-security.md#proof-of-location).
+
+---
+
+## Cryptography for Genomic Privacy
+
+**Goal:** Enable genomic analyses — disease risk scoring, pharmacogenomics, GWAS (genome-wide association studies), and ancestry queries — on encrypted or secret-shared genomic data, so that neither the analyst, the cloud, nor other study participants learn an individual's raw genome. Combines multi-key HE, MPC, and differential privacy to protect the most sensitive and immutable personal data.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HEGP (Lauter-Lopez-Alt-Naehrig)** | 2014 | BGV HE + SIMD packing | First practical HE-based GWAS; SNP-level chi-squared statistics computed on encrypted genotypes; demonstrated on 400+ samples [[1]](https://doi.org/10.1186/1471-2105-15-S7-S3) |
+| **PLINK-HE (Kim-Lauter)** | 2015 | CKKS approximate HE | Encrypted logistic regression for genome-wide association; supports real-valued phenotype covariates; practical for ~10K SNPs [[1]](https://doi.org/10.1186/s12920-015-0077-5) |
+| **iDASH Genomic Privacy Competition** | 2014+ | Various (HE, MPC, DP) | Annual competition benchmarking genomic privacy solutions; tasks include encrypted GWAS, secure genotype imputation, and private federated learning on genomic data [[1]](http://www.humangenomeprivacy.org/) |
+| **Multi-Key HE for Genomics (Chen et al.)** | 2019 | Multi-key CKKS | Multiple hospitals encrypt genomes under their own keys; joint computation without combining keys; threshold decryption of aggregate results only [[1]](https://eprint.iacr.org/2019/524) |
+| **Secure Genome Sequence Comparison (Atallah et al.)** | 2003 | Edit distance via GC | First secure edit distance computation on genomic sequences via Yao's garbled circuits; enables private similarity testing [[1]](https://doi.org/10.1145/882082.882100) |
+
+Genomic data is uniquely sensitive: it is immutable (cannot be revoked or changed like a password), identifies relatives, reveals disease predispositions, and is increasingly required for precision medicine. The iDASH competition has driven practical progress since 2014, benchmarking encrypted GWAS, secure genotype imputation, and private machine learning on genomic data. Multi-key HE is particularly natural for genomics: each hospital encrypts under its own key, a cloud computes on the joint ciphertext, and only a threshold of hospitals can decrypt the aggregate result — no party ever sees raw genomes from another institution.
+
+**State of the art:** Multi-key CKKS for multi-institutional GWAS (research prototypes); iDASH competition drives annual benchmarks; Microsoft SEAL and HEAAN used in genomic HE implementations. Related to [FHE](categories/07-homomorphic-functional-encryption.md#fully-homomorphic-encryption-fhe) and [Multi-Key / Threshold FHE](categories/07-homomorphic-functional-encryption.md#multi-key--threshold-fhe).
+
+---
+
+## Satellite Communication Cryptography
+
+**Goal:** Secure communication links between ground stations and satellites — including LEO, GEO, and deep-space — against eavesdropping, jamming, and spoofing, under constraints of extreme latency, limited computational power onboard, and long mission lifetimes that may outlast cryptographic algorithms.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CCSDS Space Data Link Security (SDLS)** | 2015 | AES-GCM + key management | CCSDS standard for authenticated encryption of telecommand and telemetry; AES-256-GCM for GEO/LEO links; handles frame-level encryption with anti-replay [[1]](https://public.ccsds.org/Pubs/355x0b2.pdf) |
+| **CCSDS Key Management (SDLS-KM)** | 2020 | ECDH + X.509 adapted for space | Key agreement for satellite links; adapts ECDH to high-latency channels; pre-positioned keys for emergency; group key for broadcast [[1]](https://public.ccsds.org/Pubs/357x0b1.pdf) |
+| **QKD via Satellite (Micius)** | 2017 | BB84 + decoy state | First satellite-to-ground QKD; Chinese Micius satellite demonstrated 1200 km QKD link; key rates ~1 kbit/s [[1]](https://doi.org/10.1038/nature23655) |
+| **Blockstream Satellite (Bitcoin broadcast)** | 2017 | AES + ECDSA | Broadcasts Bitcoin blockchain and encrypted messages via GEO satellites; receivers verify ECDSA signatures on blocks; provides censorship-resistant access [[1]](https://blockstream.com/satellite/) |
+| **NIST IR 8270 (Crypto for Space)** | 2023 | Lightweight + PQC recommendations | NIST guidelines for cryptographic algorithm selection for space missions; addresses 15+ year mission lifetimes requiring PQC readiness [[1]](https://csrc.nist.gov/publications/detail/nistir/8270/draft) |
+
+Space links face unique constraints: GEO round-trip latency is ~600ms (making interactive key exchange expensive), onboard processors are radiation-hardened but computationally limited, mission lifetimes of 15-30 years require crypto-agility, and the broadcast nature of satellite signals makes eavesdropping trivial. CCSDS SDLS addresses these with pre-positioned keys and frame-level AES-GCM. Satellite QKD (Micius) extends quantum key distribution to intercontinental distances by using free-space optical channels through the atmosphere, avoiding fiber-optic losses over long distances. Post-quantum readiness is critical because satellites launched today may operate beyond the expected timeline for large-scale quantum computers.
+
+**State of the art:** CCSDS SDLS (deployed on ESA/NASA missions); Micius QKD (Chinese Academy of Sciences, 2017+); NIST PQC recommendations for long-lived space missions. Related to [QKD](categories/15-quantum-cryptography.md#quantum-key-distribution-qkd) and [Lightweight Cryptography](categories/01-foundational-primitives.md#lightweight-cryptography).
+
+---
+
 ## ISO 20022 / SWIFT MX Financial Message Signing
 
 **Goal:** Authenticate and integrity-protect high-value interbank payment messages (ISO 20022 / SWIFT MX format) so that a message cannot be forged, replayed, or tampered with in transit — while preserving the structured XML payload that downstream systems parse for compliance screening and settlement.

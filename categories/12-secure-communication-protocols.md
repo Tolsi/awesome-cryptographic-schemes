@@ -1498,3 +1498,173 @@ Each node decrypts its layer, learns only next-hop, and forwards. The destinatio
 **State of the art:** Cwtch 1.12+ (2024); Session 1.18+ (2024). Both provide metadata resistance that Signal does not (Signal's servers see sender/recipient identifiers). Session's onion routing is not as battle-tested as Tor; Cwtch's Tor dependency makes it robust but subject to Tor blocking. See [Anonymity / Onion Routing](categories/11-anonymity-credentials.md#onion-routing--tor), [Double Ratchet](#double-ratchet--symmetric-ratchet), [Briar](#briar--bramble-p2p-encrypted-messaging).
 
 ---
+
+## MIMI / More Instant Messaging Interoperability
+
+**Goal:** Enable end-to-end encrypted messaging interoperability across different providers (e.g., WhatsApp, Signal, iMessage) without undermining E2E security guarantees, as mandated by the EU Digital Markets Act.
+
+| Protocol | Year | Basis | Note |
+|----------|------|-------|------|
+| **MIMI Protocol** | 2023 | MLS + HTTPS | IETF draft; hub-based room model; each room hosted by one provider, federated membership [[1]](https://datatracker.ietf.org/doc/draft-ietf-mimi-protocol/) |
+| **MIMI Architecture** | 2023 | MLS + X.509/VCs | Defines identity, key discovery, and policy across providers [[1]](https://datatracker.ietf.org/doc/html/draft-ietf-mimi-arch-01) |
+| **MIMI Content Format** | 2023 | MLS application data | Standardized message semantics (text, media, reactions, threads) for cross-provider rooms [[1]](https://datatracker.ietf.org/doc/draft-ietf-mimi-content/) |
+
+**State of the art:** IETF MIMI working group active (draft-ietf-mimi-protocol-05, Oct 2025). Built on top of [MLS (RFC 9420)](#continuous-group-key-agreement-cgka--mls) for E2E encryption. Driven by EU DMA interoperability requirements for gatekeepers. Matrix proposed as a transport framework candidate. See [MLS](#continuous-group-key-agreement-cgka--mls), [Secure Channels](#secure-channels--protocol-constructions).
+
+---
+
+## SFrame / Secure Frame for Real-Time Media
+
+**Goal:** Lightweight end-to-end encryption for audio and video in multiparty conference calls, allowing Selective Forwarding Units (SFUs) to route media by metadata without accessing plaintext content. Designed to be transport-agnostic (works with or without RTP).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SFrame** | 2024 | AEAD + per-sender keys | **RFC 9605**; encrypts whole media frames or per-packet; KID field selects key, CTR constructs nonce [[1]](https://www.rfc-editor.org/rfc/rfc9605.html) |
+
+**Cipher suites:** AES_128_CTR_HMAC_SHA256_80, AES_128_GCM_SHA256_128, AES_256_GCM_SHA512_128.
+
+**Key differences from [SRTP](#srtp--secure-real-time-transport-protocol):**
+- Transport-agnostic (not tied to RTP)
+- Encrypts entire media frames (not individual RTP packets), reducing per-packet overhead
+- Designed for E2E encryption through SFUs; SRTP typically terminates at the SFU
+- Key management is out-of-band (e.g., via [MLS](#continuous-group-key-agreement-cgka--mls))
+
+**State of the art:** RFC 9605 (Sep 2024); widely deployed in group video platforms (Cisco Webex, others). Cisco provides an open-source C++ implementation [[1]](https://github.com/cisco/sframe). See [SRTP](#srtp--secure-real-time-transport-protocol), [MLS](#continuous-group-key-agreement-cgka--mls).
+
+---
+
+## Rosenpass / Post-Quantum Key Exchange for WireGuard
+
+**Goal:** Add post-quantum security to [WireGuard](#wireguard-noise_ikpsk2-handshake) without modifying the kernel module, by running a separate post-quantum key exchange daemon that injects fresh symmetric keys into WireGuard's pre-shared key (PSK) slot every two minutes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Rosenpass** | 2023 | Classic McEliece + ML-KEM (Kyber) | Formally verified (ProVerif); Noise-inspired handshake; Classic McEliece for auth, Kyber for forward secrecy [[1]](https://rosenpass.eu/) |
+
+**Protocol design:**
+- Two post-quantum KEMs in a hybrid: **Classic McEliece** (code-based, conservative) for authentication/confidentiality and **ML-KEM-512** (lattice-based) for forward secrecy
+- Runs as a userspace Rust daemon alongside WireGuard; injects a new PSK every 2 minutes via WireGuard's existing PSK interface
+- Cookie-based DoS resistance (addresses WireGuard CVE-2021-46873)
+- Formally verified using ProVerif symbolic analysis
+
+**State of the art:** Rosenpass v0.2+ (2024); packaged for Arch Linux, NixOS; integrated into NetBird mesh VPN [[1]](https://github.com/rosenpass/rosenpass). Funded by NLnet/NGI [[1]](https://nlnet.nl/project/Rosenpass/). See [WireGuard Noise_IKpsk2](#wireguard-noise_ikpsk2-handshake), [Post-Quantum TLS](#post-quantum-tls-handshake--x25519kyber768-hybrid-in-practice).
+
+---
+
+## age / Modern File Encryption Format
+
+**Goal:** Provide a simple, composable, UNIX-style file encryption tool and format with small explicit keys, no configuration knobs, and no PGP legacy — as a modern replacement for GPG file encryption.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **age** | 2019 | X25519 + ChaCha20-Poly1305 | Designed by Filippo Valsorda (Go team); 64 KiB chunks; AEAD per chunk [[1]](https://github.com/FiloSottile/age) |
+| **age (passphrase mode)** | 2019 | scrypt + ChaCha20-Poly1305 | Symmetric encryption with scrypt KDF (r=8, P=1); tunable work factor [[1]](https://github.com/C2SP/C2SP/blob/main/age.md) |
+
+**Format structure:**
+- **Header:** plaintext; contains one or more "stanzas" — each wraps the file key for one recipient (X25519 public key or scrypt passphrase)
+- **Payload:** file key encrypts payload via HKDF-SHA-256 -> ChaCha20-Poly1305; split into 64 KiB chunks, each independently authenticated; final chunk flagged to detect truncation
+
+**Implementations:** Go (reference, `filippo.io/age`), Rust (`rage` by str4d), TypeScript (`typage`), Java (`jagged`). Plugin system for hardware tokens (age-plugin-yubikey).
+
+**State of the art:** age v1.2+ (2024); specification maintained at C2SP [[1]](https://github.com/C2SP/C2SP/blob/main/age.md). Adopted by SOPS, chezmoi, and infrastructure tooling. Not a protocol for interactive communication — strictly offline file encryption. See [OpenPGP](#openpgp-rfc-9580).
+
+---
+
+## Saltpack / NaCl-Based Authenticated Message Format
+
+**Goal:** Modern replacement for PGP message format, built as a thin wrapper around NaCl (Networking and Cryptography Library). Provides encryption, signing, and signcryption with repudiable authentication, recipient anonymity, and chunk-based streaming.
+
+| Mode | Year | Basis | Note |
+|------|------|-------|------|
+| **Saltpack Encryption v2** | 2017 | X25519 + XSalsa20-Poly1305 | Multi-recipient; ephemeral sender key; repudiable auth; 1 MiB chunks [[1]](https://saltpack.org/encryption-format-v2) |
+| **Saltpack Signing v2** | 2017 | Ed25519 | Attached or detached signatures; chunk-based streaming [[1]](https://saltpack.org/signing-format-v2) |
+| **Saltpack Signcryption v2** | 2017 | Ed25519 + X25519 + XSalsa20-Poly1305 | Combined encrypt + sign; non-repudiable (sender signs each chunk) [[1]](https://saltpack.org/signcryption-format) |
+
+**Design properties:**
+- Only authenticated data is ever output (no unauthenticated plaintext release)
+- Recipient list is hidden (each recipient key slot is encrypted)
+- Chunks cannot be reordered or spliced across messages (sequential nonce)
+- Truncation is detectable (final chunk flag)
+- Binary format uses MessagePack; ASCII armor available for copy-paste
+
+**State of the art:** Developed by Keybase; used in Keybase Chat and Keybase filesystem. Keybase was acquired by Zoom (2020); Saltpack spec remains open [[1]](https://github.com/keybase/saltpack). See [OpenPGP](#openpgp-rfc-9580), [age](#age--modern-file-encryption-format).
+
+---
+
+## NTS / Network Time Security
+
+**Goal:** Provide cryptographic authentication and integrity for NTP (Network Time Protocol) time synchronization, preventing man-in-the-middle attacks that could shift a client's clock — which would break TLS certificate validation, TOTP codes, and other time-dependent security mechanisms.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **NTS** | 2020 | TLS 1.3 + AEAD cookies | **RFC 8915**; two-phase: NTS-KE (key establishment over TLS) + NTS extension fields (per-packet AEAD auth) [[1]](https://www.rfc-editor.org/rfc/rfc8915) |
+
+**Protocol phases:**
+1. **NTS Key Establishment (NTS-KE):** Client connects to NTS-KE server on TCP port 4460; TLS 1.3 handshake authenticates server via X.509; negotiates AEAD algorithm (AES-SIV); TLS key export provides symmetric keys; server sends opaque cookies; connection closes (server retains no per-client state)
+2. **NTS Extension Fields:** Client sends NTP request with cookie + AEAD-authenticated extension fields; server validates cookie, reconstructs keys, sends authenticated NTP response with fresh cookies
+
+**Security properties:** Server authentication (X.509 via TLS), packet integrity (AEAD), replay resistance (unique cookies), no server-side state (cookies are opaque, self-encrypted by server), forward secrecy (from TLS 1.3 handshake).
+
+**State of the art:** Deployed by Cloudflare (time.cloudflare.com) [[1]](https://blog.cloudflare.com/nts-is-now-rfc/), Netnod, and others. Supported by Chrony, NTPsec, ntpd-rs. See [DTLS](#dtls--datagram-tls), [Secure Channels](#secure-channels--protocol-constructions).
+
+---
+
+## Roughtime / Authenticated Rough Time Synchronization
+
+**Goal:** Provide cryptographically authenticated wall-clock time to clients that may have no prior idea of the current time — using public-key signatures (not symmetric keys) so any client can verify responses without pre-shared secrets. Designed for "rough" accuracy (~10 seconds), sufficient to validate TLS certificates and prevent clock-based attacks.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Roughtime** | 2016 | Ed25519 signatures | Google-designed; every response is signed; supports ecosystem auditing via chained proofs [[1]](https://roughtime.googlesource.com/roughtime/+/HEAD/PROTOCOL.md) |
+
+**Protocol design:**
+- Server holds a long-term Ed25519 key and publishes a delegation certificate to a short-term online signing key
+- Client sends a 64-byte random nonce; server replies with: `{timestamp, radius, nonce-hash, signature}`
+- Responses include a Merkle tree of client nonces — one signature covers many clients (batch efficiency)
+- **Ecosystem auditing:** Client can chain responses from multiple servers; if any server lies, the signed timestamps form a cryptographic proof of misbehavior
+
+**State of the art:** IETF draft-ietf-ntp-roughtime (draft-19, 2025) [[1]](https://datatracker.ietf.org/doc/draft-ietf-ntp-roughtime/). Public servers operated by Google and Cloudflare [[1]](https://developers.cloudflare.com/time-services/roughtime/). Implementations in Go, Rust (roughenough), C. Complements [NTS](#nts--network-time-security) (which provides precise authenticated time but requires initial clock accuracy for TLS).
+
+---
+
+## SCRAM / Salted Challenge Response Authentication Mechanism
+
+**Goal:** Password-based mutual authentication that never transmits the plaintext password, stores only salted/hashed credentials on the server, and binds to the TLS channel to prevent credential forwarding — replacing legacy PLAIN and CRAM-MD5 SASL mechanisms.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SCRAM-SHA-1** | 2010 | PBKDF2 + HMAC-SHA-1 | **RFC 5802**; SASL/GSS-API mechanism; salted storage; mutual auth [[1]](https://www.rfc-editor.org/rfc/rfc5802) |
+| **SCRAM-SHA-256** | 2016 | PBKDF2 + HMAC-SHA-256 | **RFC 7677**; upgrade to SHA-256; recommended for new deployments [[1]](https://www.rfc-editor.org/rfc/rfc7677.html) |
+| **SCRAM-SHA-256-PLUS** | 2016 | PBKDF2 + HMAC-SHA-256 + channel binding | RFC 7677; binds to TLS channel via `tls-server-end-point` or `tls-unique`; prevents credential relay [[1]](https://datatracker.ietf.org/doc/html/rfc7677) |
+
+**Protocol flow (4 messages):**
+1. **Client-first:** username + client nonce
+2. **Server-first:** server nonce + salt + iteration count
+3. **Client-final:** client proof = `HMAC(StoredKey, AuthMessage) XOR ClientKey`; channel binding data
+4. **Server-final:** server signature = `HMAC(ServerKey, AuthMessage)` — proves server knows the password hash
+
+**Security properties:** Server stores `StoredKey = H(ClientKey)` and `ServerKey` — neither is sufficient to impersonate the client. PBKDF2 with configurable iteration count resists offline brute-force. Channel binding (`-PLUS` variants) prevents MITM relay attacks.
+
+**State of the art:** Default auth in PostgreSQL 10+ (scram-sha-256), MongoDB 4.0+, CockroachDB. Supported in XMPP (XEP-0474), IMAP, SMTP. See [EAP-PWD](#eap-pwd--password-based-enterprise-wifi-auth), [TOTP/FIDO2/WebAuthn](#token-based-authentication-totp--fido2--webauthn).
+
+---
+
+## tcpcrypt / Opportunistic TCP Stream Encryption
+
+**Goal:** Encrypt all TCP traffic by default at the transport layer, with zero configuration and graceful fallback — providing opportunistic encryption that protects against passive eavesdroppers without requiring certificates, PKI, or application changes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **tcpcrypt** | 2019 | TCP-ENO + ECDHE | **RFC 8548** (Experimental); negotiated via TCP options; kernel-level; transparent to applications [[1]](https://www.rfc-editor.org/rfc/rfc8548.html) |
+| **TCP-ENO** | 2019 | TCP option negotiation | **RFC 8547**; generic framework for negotiating TCP encryption; tcpcrypt is the first instantiation [[1]](https://datatracker.ietf.org/doc/html/rfc8547) |
+
+**Design properties:**
+- Negotiated entirely within TCP SYN/SYN-ACK options (no extra round trips)
+- Falls back to unencrypted TCP if either side does not support it (or middleboxes strip options)
+- Tolerates NATs, resegmentation, and other middlebox behavior
+- Provides a **session ID** that applications can use for higher-level authentication (e.g., binding to application-layer credentials)
+- Does not authenticate peers by itself — prevents passive eavesdropping but not active MITM without additional application-layer binding
+
+**State of the art:** RFC 8548 (Experimental, May 2019). Linux kernel prototype exists. Adoption limited by middlebox interference with TCP options and competition from TLS-everywhere and [QUIC](#quic-packet-protection). Conceptually related to [BIP 324](#bip-324--opportunistic-p2p-encryption) (opportunistic encryption for Bitcoin P2P). See [Secure Channels](#secure-channels--protocol-constructions), [STARTTLS](#starttls--opportunistic-vs-mandatory-tls).
+
+---

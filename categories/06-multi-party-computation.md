@@ -629,3 +629,130 @@
 **State of the art:** Async MPC achieves t < n/3 (information-theoretic) and t < n/2 (with computational assumptions and security-with-abort). The gap between sync and async tolerance (n/3 vs n/2 for IT-MPC) is fundamental. Modern async MPC is used in distributed key generation ceremonies and DeFi threshold services that cannot rely on a synchronous clock. Distinct from [Asynchronous BFT](#asynchronous-bft--asynchronous-mpc) (consensus focus) — async MPC is about computing arbitrary functions, not just agreement. Related to [AVSS](categories/05-secret-sharing-threshold-cryptography.md#asynchronous-verifiable-secret-sharing-avss) and [Robust MPC](#robust-mpc-with-cheater-identification).
 
 ---
+
+## Replicated Secret Sharing MPC (Araki et al.)
+
+**Goal:** Achieve extremely high-throughput three-party computation with an honest majority by exploiting replicated secret sharing, where each party holds two of three additive shares. AND gates require communicating only a single bit per gate per party, enabling billions of gates per second on commodity hardware.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Araki et al. (Semi-honest 3PC)** | 2016 | Replicated secret sharing | 1 bit communication per AND gate; 7 billion AND gates/s throughput; CCS 2016 [[1]](https://eprint.iacr.org/2016/768) |
+| **Furukawa et al. (Malicious 3PC)** | 2017 | Replicated SS + cut-and-choose | Extend Araki to malicious security via post-execution verification; EUROCRYPT 2017 [[1]](https://eprint.iacr.org/2016/944) |
+| **Replicated SS over Rings** | 2023 | Replicated SS + Z_{2^k} | Multi-party replicated secret sharing over rings for privacy-preserving ML; supports native integer arithmetic [[1]](https://www.acsu.buffalo.edu/~mblanton/publications/popets23-1.pdf) |
+
+**State of the art:** Araki et al. remains the highest-throughput semi-honest 3PC protocol known; Furukawa et al. achieves malicious security with modest overhead. The replicated SS approach underpins practical frameworks like ABY3 and MP-SPDZ's replicated-sharing backends. Related to [ABY / ABY3](#multi-party-computation-mpc), [Sharemind](#sharemind-mpc-platform), and [Honest Majority MPC](#honest-majority-vs-dishonest-majority-mpc-security-models).
+
+---
+
+## MPC-in-the-Head (IKOS Paradigm)
+
+**Goal:** Construct zero-knowledge proofs from any MPC protocol, treated as a black box. The prover simulates an MPC protocol "in their head" among virtual parties, commits to each party's view, and the verifier checks a random subset of views for consistency. Privacy of the MPC protocol guarantees zero-knowledge; soundness comes from the fact that cheating requires corrupting views that are likely to be checked.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **IKOS (Ishai-Kushilevitz-Ostrovsky-Sahai)** | 2007 | Any semi-honest MPC | First MPC-in-the-head construction; transforms any t-private MPC into a ZK proof; STOC 2007 [[1]](https://web.cs.ucla.edu/~rafail/PUBLIC/77.pdf) |
+| **KKW (Katz-Kolesnikov-Wang)** | 2018 | MPC-in-the-head + OT | Improved MPCitH with fewer parties and better concrete efficiency; CCS 2018 [[1]](https://eprint.iacr.org/2018/475) |
+| **Syndrome Decoding in the Head (SDitH)** | 2022 | MPCitH + code-based crypto | Post-quantum signatures from MPCitH applied to syndrome decoding; NIST PQC candidate [[1]](https://eprint.iacr.org/2022/188) |
+| **VOLEitH (Baum et al.)** | 2023 | VOLE + MPCitH | Replace MPC with VOLE correlations for more efficient ZK proofs; smaller proof sizes [[1]](https://eprint.iacr.org/2023/996) |
+
+**State of the art:** MPCitH is the dominant paradigm for post-quantum ZK signatures (SDitH is a NIST PQC candidate); VOLEitH achieves the best concrete proof sizes for arithmetic relations. The paradigm bridges [MPC](#multi-party-computation-mpc) and [Zero-Knowledge Proof Systems](categories/04-zero-knowledge-proof-systems.md#mpc-in-the-head-mpcith). Related to [VOLE](#oblivious-linear-evaluation-ole--vole) and [Silent OT / PCG](#silent-ot--pseudorandom-correlation-generators-pcg).
+
+---
+
+## Fantastic Four / SWIFT (Small-Party Honest-Majority MPC)
+
+**Goal:** Practically efficient MPC for small fixed numbers of parties (3 or 4) with an honest majority and malicious security. These protocols exploit the specific structure of 3-party or 4-party settings to achieve much higher throughput than general n-party protocols, targeting privacy-preserving machine learning workloads.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SWIFT** | 2021 | 3PC + replicated SS | First robust and efficient PPML framework in 3PC with malicious security; guarantees output delivery; USENIX Security 2021 [[1]](https://eprint.iacr.org/2020/592) |
+| **Fantastic Four (Dalskov et al.)** | 2021 | 4PC + replicated SS | Honest-majority 4PC with malicious security; simpler design than prior 4PC; no function-dependent preprocessing; USENIX Security 2021 [[1]](https://www.usenix.org/conference/usenixsecurity21/presentation/dalskov) |
+| **Tetrad (Koti et al.)** | 2022 | 4PC + mixed sharing | Fast 4PC with fairness and guaranteed output delivery; optimized for ML inference; NDSS 2022 [[1]](https://eprint.iacr.org/2021/755) |
+| **Secure 5PC** | 2024 | 5PC + private robustness | Five-party computation with minimal online communication and private robustness [[1]](https://link.springer.com/chapter/10.1007/978-981-96-0954-3_3) |
+
+**State of the art:** SWIFT (3PC) and Fantastic Four (4PC) are the leading protocols for small-party honest-majority PPML, both implemented in MP-SPDZ. The 4-party setting is attractive because it allows malicious security with guaranteed output delivery while tolerating 1 corruption. Related to [ABY3](#multi-party-computation-mpc), [Replicated SS MPC](#replicated-secret-sharing-mpc-araki-et-al), and [SecureML](#secureml-and-mpc-based-machine-learning-inference).
+
+---
+
+## MPC-Friendly Symmetric Primitives (LowMC, MiMC)
+
+**Goal:** Design block ciphers and hash functions that minimize the number of non-linear (multiplicative) operations, since multiplications are the expensive bottleneck in MPC, FHE, and ZK proof systems. Standard ciphers like AES require hundreds of AND gates per block; MPC-friendly designs reduce this by 5-50x, enabling efficient hybrid protocols where data is encrypted locally and decrypted inside MPC.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **LowMC** | 2015 | Substitution-permutation network | Minimizes multiplicative depth and count; configurable AND-gate budget; up to 5x faster than AES in MPC [[1]](https://eprint.iacr.org/2016/687) |
+| **MiMC** | 2016 | x^3 round function over F_p | Minimal multiplicative complexity over large fields; 1 multiplication per round; efficient for SNARK-based applications [[1]](https://eprint.iacr.org/2016/492) |
+| **Rasta / HERA** | 2018 | Alternating moduli | Nonce-based encryption using alternating mod-2 and mod-3 operations; sublinear multiplicative complexity [[1]](https://eprint.iacr.org/2018/181) |
+| **Ciminion** | 2021 | Toffoli gates + Farfalle-like | MPC/FHE-friendly with very low AND depth; designed for SPDZ-style protocols [[1]](https://eprint.iacr.org/2021/267) |
+
+**State of the art:** LowMC is used in Picnic post-quantum signatures (NIST alternate candidate); MiMC is widely used in ZK-SNARK circuits. The design goal is to minimize the multiplicative depth (for round-complexity) and multiplicative count (for communication). Related to [Garbled Circuits](#garbled-circuits-expanded), [Silent OT / PCG](#silent-ot--pseudorandom-correlation-generators-pcg), and [ZK-Friendly Hash Functions](categories/01-foundational-primitives.md#zk-friendly-hash-functions).
+
+---
+
+## Conclave (MPC for Relational Analytics on Big Data)
+
+**Goal:** Scale MPC to big-data relational analytics by compiling SQL-like queries into a hybrid of local cleartext processing and small MPC steps. Rather than running the entire query inside MPC (which is prohibitively slow for large datasets), Conclave identifies which operations can be safely performed locally and pushes only the privacy-sensitive joins and aggregations into MPC, achieving orders-of-magnitude speedup.
+
+| System | Year | Basis | Note |
+|--------|------|-------|------|
+| **Conclave (Volgushev et al.)** | 2019 | Hybrid cleartext + MPC compiler | Query compiler for multi-party relational analytics; 3-6 orders of magnitude faster than pure MPC; EuroSys 2019 [[1]](https://dl.acm.org/doi/10.1145/3302424.3303982) |
+| **Senate** | 2021 | Malicious-secure MPC + SQL | Maliciously secure collaborative analytics platform for relational queries; tolerates n-1 corruptions [[1]](https://www.usenix.org/conference/osdi21/presentation/poddar) |
+| **Secrecy** | 2022 | Secret sharing + relational algebra | MPC system for SQL with native relational operators (join, group-by, order-by) over secret-shared tables [[1]](https://dl.acm.org/doi/10.14778/3514061.3514066) |
+
+**State of the art:** Conclave + Sharemind is deployed for real analytics; Senate provides malicious security for SQL. The key insight is that most data in a relational query can be processed locally — only the privacy-critical operations (joins across parties, aggregations revealing cross-party patterns) need MPC. Related to [Sharemind](#sharemind-mpc-platform), [Carbyne Stack](#carbyne-stack-cloud-native-mpc), and [Oblivious SQL](categories/10-privacy-preserving-computation.md#oblivious-sql--private-database-queries).
+
+---
+
+## Obliv-C (Language for Data-Oblivious Computation)
+
+**Goal:** Provide a programming language and compiler that makes it easy to write secure two-party computations without cryptographic expertise. Obliv-C extends C with an obliv type qualifier — variables marked obliv are automatically encrypted and all operations on them are compiled into garbled circuit gates. The type system ensures that secret data can never leak through control flow or memory access patterns.
+
+| Component | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Obliv-C (Zahur-Evans)** | 2015 | C extension + garbled circuits | Language-level obliv types; compiles to Yao's protocol; extensible to ORAM and custom protocols; ePrint 2015/1153 [[1]](https://eprint.iacr.org/2015/1153) |
+| **FLORAM (Doerner-Shelat)** | 2017 | Obliv-C + function SS ORAM | Oblivious RAM built in Obliv-C using FSS; practical ORAM for MPC without expensive recursion [[1]](https://eprint.iacr.org/2017/827) |
+| **ObliVM (Liu et al.)** | 2015 | Custom DSL + garbled circuits | Alternative MPC programming framework with automatic ORAM insertion for array accesses; IEEE S&P 2015 [[1]](https://eprint.iacr.org/2015/398) |
+
+**State of the art:** Obliv-C and ObliVM pioneered the "MPC compiler" approach — write high-level code, get secure computation automatically. Obliv-C's type-system approach has influenced subsequent frameworks (EMP, ABY, MP-SPDZ front-ends). Related to [Garbled Circuits](#garbled-circuits-expanded), [EMP Toolkit](#emp-toolkit-efficient-multi-party-computation-library), and [ORAM](categories/10-privacy-preserving-computation.md#oblivious-ram-oram).
+
+---
+
+## Delphi (Cryptographic Private Inference Service)
+
+**Goal:** Co-design cryptography and machine learning to achieve fast private neural network inference. Delphi shifts expensive homomorphic encryption operations to an offline preprocessing phase and uses lightweight additive secret sharing online, while a planner automatically selects network architectures that balance accuracy against cryptographic cost — replacing expensive non-linear activations (ReLU) with cheaper alternatives where accuracy loss is minimal.
+
+| System | Year | Basis | Note |
+|--------|------|-------|------|
+| **Delphi (Mishra et al.)** | 2020 | 2PC: HE (offline) + additive SS (online) | 22x faster online latency than Gazelle; planner co-optimizes architecture and crypto; USENIX Security 2020 [[1]](https://eprint.iacr.org/2020/050) |
+| **Gazelle (Juvekar-Vaikuntanathan-Chandrakasan)** | 2018 | RLWE-HE + garbled circuits | First practical HE+GC hybrid for private inference; lattice-based linear layers + GC for ReLU; USENIX Security 2018 [[1]](https://eprint.iacr.org/2018/073) |
+| **CrypTFlow2** | 2020 | 2PC: OT + HE | End-to-end private inference with automatic TensorFlow-to-MPC compilation; CCS 2020 [[1]](https://eprint.iacr.org/2020/1002) |
+
+**State of the art:** Delphi and CrypTFlow2 represent the preprocessing-model approach to private inference — heavy HE offline, fast SS online. Delphi's architecture co-design (replacing some ReLUs with polynomials) is a key practical insight adopted by subsequent systems. Distinct from [ARIANN / SecureNN](#ariann-and-securenn-private-neural-network-inference) (which focus on FSS-based or 3PC approaches) and [Cheetah / BOLT](#ariann-and-securenn-private-neural-network-inference) (which further optimize the non-linear layers). Related to [Garbled Circuits](#garbled-circuits-expanded) and [HE](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-fhe--she--phe).
+
+---
+
+## Multipars / MHz2k (Efficient MPC Preprocessing over Rings)
+
+**Goal:** Generate authenticated multiplication triples over rings Z_{2^k} (native machine integers) more efficiently than SPDZ2k/Overdrive2k, using improved packing techniques for lattice-based homomorphic encryption or lightweight linear HE. Operating over rings rather than prime fields avoids expensive modular reduction and matches the natural word size of CPUs, making MPC practical for integer-heavy workloads like ML inference.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Overdrive2k (Orsini-Smart-Vercauteren)** | 2020 | BGV + ring packing | First SHE-based preprocessing for SPDZ2k over Z_{2^k}; extends Overdrive packing to rings [[1]](https://link.springer.com/chapter/10.1007/978-3-030-40186-3_12) |
+| **MHz2k** | 2021 | BGV + improved ZK packing | 3.5x better amortized communication than Overdrive2k; new packing and resharing techniques [[1]](https://eprint.iacr.org/2021/1383) |
+| **Multipars** | 2024 | Linear HE + ring preprocessing | 11x faster than Overdrive2k; first actively secure N-party protocol over Z_{2^k} using only linear HE in offline phase; PoPETs 2024 [[1]](https://petsymposium.org/popets/2024/popets-2024-0038.pdf) |
+
+**State of the art:** Multipars (2024) is the current state of the art for ring-based MPC preprocessing, outperforming all prior approaches by large margins. The progression from Overdrive2k to MHz2k to Multipars reflects a trend toward lighter cryptographic assumptions (linear HE instead of SHE) and better amortization. Related to [MASCOT / Overdrive](#mascot-malicious-arithmetic-mpc-via-ot), [SPDZ2k](#multi-party-computation-mpc), and [Lattice-Based MPC](#lattice-based-mpc).
+
+---
+
+## CGGMP21 (UC Threshold ECDSA with Identifiable Aborts)
+
+**Goal:** Provide a universally composable (UC-secure), non-interactive threshold ECDSA protocol where misbehaving signers are publicly identifiable. CGGMP21 allows any t-of-n parties to produce a standard ECDSA signature — compatible with Bitcoin, Ethereum, and all existing ECDSA verifiers — while supporting proactive key refresh (periodic re-sharing of key material to limit the window of compromise) and presigning (message-independent preprocessing that makes the final signing round non-interactive).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CGGMP21 (Canetti-Gennaro-Goldfeder-Makriyannis-Peled)** | 2021 | Paillier + UC framework + presigning | UC-secure t-of-n threshold ECDSA; non-interactive signing via presigning; identifiable aborts; CCS 2020 / ePrint 2021 [[1]](https://eprint.iacr.org/2021/060) |
+| **Doerner et al. 3-Round Threshold ECDSA** | 2023 | OT + multiplicative-to-additive | Reduce threshold ECDSA to 3 rounds; improves on CGGMP21 round complexity [[1]](https://eprint.iacr.org/2023/765) |
+| **Synedrion (Entropy)** | 2023 | CGGMP21 implementation | Production Rust implementation of CGGMP21; audited; used in Entropy Network [[1]](https://github.com/entropyxyz/synedrion) |
+
+**State of the art:** CGGMP21 is the dominant production protocol for threshold ECDSA in MPC wallets (Fireblocks MPC-CMP, ZenGo, Entropy); its presigning mechanism enables sub-second signing latency. Distinct from [DKLS18/GG20](#efficient-two-party-ecdsa-dkls18--doerner-et-al) (which covers the OT-based and earlier Paillier-based 2PC approaches). Related to [Threshold Signature Schemes](categories/08-signatures-advanced.md#threshold-signature-schemes-tss) and [Key Management](categories/03-key-exchange-key-management.md).
