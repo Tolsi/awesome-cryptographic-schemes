@@ -968,7 +968,7 @@ Every ~400,000 iterations (~400 ms), the current `(count, stateₙ)` is checkpoi
 Deployed on Solana mainnet since March 2020; ~50,000 TPS; one of the highest-throughput L1s
 
 **Implementations:**
-- [solana-labs/solana](https://github.com/solana-labs/solana) ⭐ 14k — Rust, Solana validator with PoH implementation
+- [solana-labs/solana](https://github.com/solana-labs/solana) ⭐ 14k [archived] — Rust, Solana validator with PoH implementation
 - [anza-xyz/agave](https://github.com/anza-xyz/agave) ⭐ 1.7k — Rust, Anza validator client (Solana fork)
 
 **Security status:** Caution

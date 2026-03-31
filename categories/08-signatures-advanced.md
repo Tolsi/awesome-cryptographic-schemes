@@ -41,7 +41,7 @@
 
 **Production readiness:** Production
 **Implementations:**
-- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 — Rust/TypeScript, BBS+ selective disclosure
+- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — Rust/TypeScript, BBS+ selective disclosure
 - [privacypass](https://github.com/raphaelrobert/privacypass) ⭐ 62 — Go, RSA blind signature (Privacy Pass)
 **Security status:** Secure
 **Community acceptance:** Standard
@@ -212,7 +212,7 @@
 
 **Production readiness:** Mature
 **Implementations:**
-- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 — Rust/TypeScript, BBS+ rerandomizable sigs
+- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — Rust/TypeScript, BBS+ rerandomizable sigs
 **Security status:** Secure
 **Community acceptance:** Widely trusted
 
@@ -616,7 +616,7 @@ BB signatures fill the gap between BLS (random-oracle model, single group elemen
 **Implementations:**
 - [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library for BB and Waters signatures
 - [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit with BB support
-- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 — Rust, BBS04/BBS+ (BB descendant)
+- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — Rust, BBS04/BBS+ (BB descendant)
 **Security status:** Secure
 **Community acceptance:** Widely trusted
 
@@ -1360,7 +1360,7 @@ BBS+ signatures are constructed over Type III pairing groups (G₁, G₂, GT). A
 
 **Production readiness:** Mature
 **Implementations:**
-- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 — Rust/TypeScript, BBS+ reference
+- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — Rust/TypeScript, BBS+ reference
 - [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) ⭐ 85 — Rust, AnonCreds with BBS+
 - [draft-irtf-cfrg-bbs-signatures](https://datatracker.ietf.org/doc/draft-irtf-cfrg-bbs-signatures/) — IETF draft
 **Security status:** Secure

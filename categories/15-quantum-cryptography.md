@@ -1172,7 +1172,7 @@ Quantinuum H2 certified randomness (2025) is the first practically useful demons
 
 **Implementations:**
 - [Cirq (Google)](https://github.com/quantumlib/Cirq) ⭐ 4.9k — Python, framework used for Sycamore random circuit sampling
-- [Strawberry Fields (Xanadu)](https://github.com/XanaduAI/strawberryfields) ⭐ 842 — Python, photonic quantum computing for boson sampling
+- [Strawberry Fields (Xanadu)](https://github.com/XanaduAI/strawberryfields) ⭐ 842 [archived] — Python, photonic quantum computing for boson sampling
 - [Quantinuum Quantum Origin](https://www.quantinuum.com/products/quantum-origin) — commercial certified randomness product
 
 **Security status:** Secure

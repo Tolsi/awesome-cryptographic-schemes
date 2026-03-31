@@ -53,7 +53,7 @@ Active adoption in messaging protocols (Signal, Matrix) and cloud backup; no sta
 
 **Implementations:**
 - [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust, key-committing AEAD in Signal protocol
-- [miscreant](https://github.com/miscreant/miscreant.rb) ⭐ 22 — Ruby/JS/Rust, AES-SIV (partially committing)
+- [miscreant](https://github.com/miscreant/miscreant.rb) ⭐ 22 [archived] — Ruby/JS/Rust, AES-SIV (partially committing)
 
 **Security status:** Secure
 Provably secure transforms; HtE and CMT-4 add minimal overhead to base AEAD with formal proofs.
@@ -109,7 +109,7 @@ Deployed in PCI-DSS tokenization systems, payment processing, and legacy databas
 
 **Implementations:**
 - [pyffx](https://github.com/emulbreh/pyffx) ⭐ 55 — Python, FF1 implementation
-- [format-preserving-encryption](https://github.com/capitalone/fpe) ⭐ 208 — Go, FF1 implementation by Capital One
+- [format-preserving-encryption](https://github.com/capitalone/fpe) ⭐ 208 [archived] — Go, FF1 implementation by Capital One
 - [Mysto FPE](https://github.com/mysto/java-fpe) ⭐ 75 — Java, FF1 and FF3-1 implementations
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, FF1 support (via EVP API)
 
@@ -193,7 +193,7 @@ No standardization; used in academic encrypted database research. Widely critici
 AES-SIV is deployed in cloud storage, key wrapping, and encrypted databases; convergent encryption is used in deduplication systems.
 
 **Implementations:**
-- [miscreant](https://github.com/miscreant/miscreant.rb) ⭐ 22 — Ruby/JS/Rust/Go, AES-SIV (RFC 5297)
+- [miscreant](https://github.com/miscreant/miscreant.rb) ⭐ 22 [archived] — Ruby/JS/Rust/Go, AES-SIV (RFC 5297)
 - [Tink](https://github.com/tink-crypto/tink) ⭐ 13k — Java/Go/C++/Python, AES-SIV (deterministic AEAD)
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-SIV support
 
@@ -645,7 +645,7 @@ AES-SIV and AES-GCM-SIV are deployed in Google infrastructure, TLS, and cloud ke
 **Implementations:**
 - [BoringSSL](https://boringssl.googlesource.com/boringssl/) — C, AES-GCM-SIV (used in Google production)
 - [Tink](https://github.com/tink-crypto/tink) ⭐ 13k — Java/Go/C++, AES-GCM-SIV and AES-SIV
-- [miscreant](https://github.com/miscreant/miscreant.rb) ⭐ 22 — Ruby/JS/Rust, AES-SIV
+- [miscreant](https://github.com/miscreant/miscreant.rb) ⭐ 22 [archived] — Ruby/JS/Rust, AES-SIV
 
 **Security status:** Secure
 AES-SIV and AES-GCM-SIV are provably MRAE-secure; nonce reuse leaks only plaintext equality, not authenticity.
@@ -1521,7 +1521,7 @@ AES-SIV (RFC 5297) is deployed in production; Deoxys-II is a CAESAR winner with 
 
 **Implementations:**
 - [Tink](https://github.com/tink-crypto/tink) ⭐ 13k — Java/Go/C++, AES-SIV (deterministic AEAD)
-- [miscreant](https://github.com/miscreant/miscreant.rb) ⭐ 22 — Ruby/JS/Rust, AES-SIV
+- [miscreant](https://github.com/miscreant/miscreant.rb) ⭐ 22 [archived] — Ruby/JS/Rust, AES-SIV
 - [Deoxys reference](https://sites.google.com/view/deoxyscipher) — C, Deoxys-II reference implementation
 
 **Security status:** Secure

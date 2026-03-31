@@ -211,7 +211,7 @@ Certificate Transparency is mandatory for all publicly trusted TLS certificates 
 **Implementations:**
 - [Trillian](https://github.com/google/trillian) ⭐ 3.7k — Go, Google's verifiable data structure server (CT log backend)
 - [certificate-transparency-go](https://github.com/google/certificate-transparency-go) ⭐ 1.1k — Go, CT log tools and libraries
-- [ct-woodpecker](https://github.com/letsencrypt/ct-woodpecker) ⭐ 190 — Go, CT log monitor by Let's Encrypt
+- [ct-woodpecker](https://github.com/letsencrypt/ct-woodpecker) ⭐ 190 [archived] — Go, CT log monitor by Let's Encrypt
 - [sigstore/rekor](https://github.com/sigstore/rekor) ⭐ 1.1k — Go, transparency log inspired by CT
 
 **Security status:** Secure
@@ -571,7 +571,7 @@ X3DH is the session initiation protocol for Signal, WhatsApp, and Facebook Messe
 
 **Implementations:**
 - [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift, Signal Protocol including X3DH
-- [libsignal-protocol-java](https://github.com/signalapp/libsignal-protocol-java) ⭐ 1.9k — Java, Signal X3DH + Double Ratchet
+- [libsignal-protocol-java](https://github.com/signalapp/libsignal-protocol-java) ⭐ 1.9k [archived] — Java, Signal X3DH + Double Ratchet
 - [vodozemac](https://github.com/matrix-org/vodozemac) ⭐ 347 — Rust, Matrix Olm/Megolm (X3DH-inspired)
 
 **Security status:** Secure
@@ -2411,7 +2411,7 @@ Deployed in Signal, WhatsApp, Facebook Messenger, and Google Messages; billions 
 
 **Implementations:**
 - [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift, Signal Protocol Double Ratchet
-- [libsignal-protocol-java](https://github.com/signalapp/libsignal-protocol-java) ⭐ 1.9k — Java, Signal Double Ratchet
+- [libsignal-protocol-java](https://github.com/signalapp/libsignal-protocol-java) ⭐ 1.9k [archived] — Java, Signal Double Ratchet
 - [vodozemac](https://github.com/matrix-org/vodozemac) ⭐ 347 — Rust, Matrix Olm/Megolm ratchet (Double Ratchet-inspired)
 
 **Security status:** Secure

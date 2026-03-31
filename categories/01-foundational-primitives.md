@@ -1444,7 +1444,7 @@ NR-AEAD (AES-GCM, ChaCha20-Poly1305) deployed in TLS 1.3, WireGuard. NMR-AEAD (A
 **Implementations:**
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-GCM, AES-CCM, ChaCha20-Poly1305
 - [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C, AES-GCM-SIV (RFC 8452)
-- [miscreant](https://github.com/miscreant/miscreant) ⭐ 475 — Multi-language, AES-SIV and AES-PMAC-SIV
+- [miscreant](https://github.com/miscreant/miscreant) ⭐ 475 [archived] — Multi-language, AES-SIV and AES-PMAC-SIV
 
 **Security status:** Secure
 Individual schemes are secure at recommended parameters. Security model choice (NR vs NMR) depends on nonce management discipline; NMR is strictly stronger.

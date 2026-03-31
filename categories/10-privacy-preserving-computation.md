@@ -243,7 +243,7 @@ Used as internal building block in PSI research implementations; no standalone p
 
 **Implementations:**
 - [osu-crypto/libOTe](https://github.com/osu-crypto/libOTe) ⭐ 492 — C++, includes RB-OKVS implementation for PSI
-- [Visa-Research/volepsi](https://github.com/Visa-Research/volepsi) ⭐ 135 — C++, VOLE-based PSI using OKVS
+- [Visa-Research/volepsi](https://github.com/Visa-Research/volepsi) ⭐ 135 [archived] — C++, VOLE-based PSI using OKVS
 
 **Security status:** Secure
 Provably secure encoding; queries on non-programmed keys return random noise; security reduces to underlying PRF
@@ -974,7 +974,7 @@ Signal private contact discovery deployed at scale; Apple PSI for iMessage in pr
 
 **Implementations:**
 - [microsoft/APSI](https://github.com/microsoft/APSI) ⭐ 208 — C++, asymmetric/unbalanced PSI from Microsoft
-- [signalapp/ContactDiscoveryService](https://github.com/signalapp/ContactDiscoveryService) ⭐ 282 — Java, Signal SGX-based contact discovery
+- [signalapp/ContactDiscoveryService](https://github.com/signalapp/ContactDiscoveryService) ⭐ 282 [archived] — Java, Signal SGX-based contact discovery
 
 **Security status:** Secure
 FHE-based variants proven under RLWE; SGX-based variants rely on hardware trust assumptions
@@ -1175,7 +1175,7 @@ Implemented in major PSI libraries; used for billion-scale PSI in research and i
 
 **Implementations:**
 - [osu-crypto/libPSI](https://github.com/osu-crypto/libPSI) ⭐ 186 — C++, includes KKRT16 and RR21 implementations
-- [Visa-Research/volepsi](https://github.com/Visa-Research/volepsi) ⭐ 135 — C++, VOLE-based PSI (builds on RR21)
+- [Visa-Research/volepsi](https://github.com/Visa-Research/volepsi) ⭐ 135 [archived] — C++, VOLE-based PSI (builds on RR21)
 
 **Security status:** Secure
 Semi-honest security; provably secure under random oracle model; combine with IKNP/ALSZ for malicious security
@@ -1406,7 +1406,7 @@ EUROCRYPT 2020 (OptORAMa); important theoretical result but practical deployment
 Signal CDS v2 deployed at scale serving hundreds of millions of users; Apple PSI for iMessage in production
 
 **Implementations:**
-- [signalapp/ContactDiscoveryService](https://github.com/signalapp/ContactDiscoveryService) ⭐ 282 — Java, Signal SGX-based contact discovery
+- [signalapp/ContactDiscoveryService](https://github.com/signalapp/ContactDiscoveryService) ⭐ 282 [archived] — Java, Signal SGX-based contact discovery
 
 **Security status:** Caution
 SGX-based variants depend on hardware trust (vulnerable to side-channel attacks); pure-crypto alternatives slower but stronger
@@ -1627,7 +1627,7 @@ Research implementations available; explored for ad conversion measurement and f
 
 **Implementations:**
 - [osu-crypto/libPSI](https://github.com/osu-crypto/libPSI) ⭐ 186 — C++, includes circuit-PSI implementations
-- [Visa-Research/volepsi](https://github.com/Visa-Research/volepsi) ⭐ 135 — C++, VOLE-based PSI with secret-shared output
+- [Visa-Research/volepsi](https://github.com/Visa-Research/volepsi) ⭐ 135 [archived] — C++, VOLE-based PSI with secret-shared output
 
 **Security status:** Secure
 Provably secure under standard assumptions; semi-honest security; output reveals nothing about intersection to either party

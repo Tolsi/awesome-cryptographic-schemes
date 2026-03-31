@@ -21,7 +21,7 @@ Deployed in EU EUDI Wallet (eIDAS 2.0), Hyperledger AnonCreds, IBM idemix, Micro
 - [Hyperledger AnonCreds](https://github.com/hyperledger/anoncreds-rs) ⭐ 85 — Rust, CL-based anonymous credentials
 - [idemix (IBM)](https://github.com/IBM/idemix) ⭐ 36 — Go, Idemix anonymous credential library
 - [sd-jwt-rust](https://github.com/openwallet-foundation-labs/sd-jwt-rust) ⭐ 20 — Rust, SD-JWT reference implementation
-- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 — TypeScript, BBS+ signatures for W3C VCs
+- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — TypeScript, BBS+ signatures for W3C VCs
 
 **Security status:** Secure
 CL and BBS+ are well-studied under standard assumptions; SD-JWT is hash-based and conservative. Parameter choices are mature.
@@ -518,7 +518,7 @@ Zcash is the premier privacy-focused cryptocurrency; Halo 2 is widely used beyon
 W3C VC DI BBS Cryptosuites v1.0 published (2024); IETF CFRG draft active; evaluated for EU eIDAS 2.0 but not yet mandated.
 
 **Implementations:**
-- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 — TypeScript, BBS+ signature library
+- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — TypeScript, BBS+ signature library
 - [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) ⭐ 85 — Rust, BBS+ in Hyperledger AnonCreds v2
 - [decentralized-identity/bbs-signature](https://github.com/decentralized-identity/bbs-signature) ⭐ 101 — Rust, DIF BBS+ reference implementation
 - [mattrglobal/pairing_crypto](https://github.com/mattrglobal/pairing_crypto) ⭐ 31 — Rust, BLS12-381 pairing crypto for BBS+
@@ -693,7 +693,7 @@ VB accumulators used in Hyperledger AnonCreds v2; RSA/pairing accumulators deplo
 **Implementations:**
 - [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) ⭐ 85 — Rust, VB accumulator for AnonCreds v2 revocation
 - [privacybydesign/gabi](https://github.com/privacybydesign/gabi) ⭐ 11 — Go, accumulator-based revocation in IRMA/Yivi
-- [nicola/accumulator](https://github.com/cambrian/accumulator) ⭐ 138 — Rust, RSA and bilinear accumulator library
+- [nicola/accumulator](https://github.com/cambrian/accumulator) ⭐ 138 [archived] — Rust, RSA and bilinear accumulator library
 
 **Security status:** Secure
 RSA accumulators require trusted setup (factorization); pairing-based and VB accumulators avoid this. All constructions well-studied.
@@ -896,7 +896,7 @@ All four major formats have production deployments: CL (AnonCreds), BBS+ (W3C VC
 
 **Implementations:**
 - [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) ⭐ 85 — Rust, CL-based AnonCreds
-- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 — TypeScript, BBS+ signatures
+- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — TypeScript, BBS+ signatures
 - [danielfett/sd-jwt](https://github.com/danielfett/sd-jwt) ⭐ 4 — Python, SD-JWT reference
 
 **Security status:** Secure

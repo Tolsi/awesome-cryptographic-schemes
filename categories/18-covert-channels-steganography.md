@@ -1070,7 +1070,7 @@ Foundational censorship circumvention technique; meek is deployed in Tor; ECH is
 FontCode has a research implementation; homoglyph tools are readily available; FontGuard (2025) is a research prototype.
 
 **Implementations:**
-- [confusables (homoglyph detection)](https://github.com/vhf/confusable_homoglyphs) ⭐ 165 — Python, Unicode homoglyph detection and substitution library
+- [confusables (homoglyph detection)](https://github.com/vhf/confusable_homoglyphs) ⭐ 165 [archived] — Python, Unicode homoglyph detection and substitution library
 
 **Security status:** Caution
 Homoglyph methods are trivially defeated by Unicode normalisation; FontCode survives print-scan with error correction; FontGuard adds deep-learning robustness.

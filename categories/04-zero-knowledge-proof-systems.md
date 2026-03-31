@@ -396,7 +396,7 @@ FAEST is advancing through NIST standardization. VOLEitH is gaining recognition 
 Circle STARKs + Stwo are in production at StarkWare. Plonky3 (with small-field support) powers SP1 and Polygon CDK.
 
 **Implementations:**
-- [Binius](https://github.com/IrreducibleOSS/binius) ⭐ 133 — Rust — binary tower field proof system (Irreducible)
+- [Binius](https://github.com/IrreducibleOSS/binius) ⭐ 133 [archived] — Rust — binary tower field proof system (Irreducible)
 - [Stwo](https://github.com/starkware-libs/stwo) ⭐ 481 — Rust — Circle STARK prover (StarkWare)
 - [Plonky3](https://github.com/Plonky3/Plonky3) ⭐ 772 — Rust — modular prover framework (Goldilocks/M31/BabyBear)
 
@@ -987,7 +987,7 @@ Universally adopted in the STARK ecosystem. Published at ITCS 2020 by the StarkW
 Scroll (Type 2), Polygon zkEVM (Type 2.5), and Taiko (Type 1) are on Ethereum mainnet. zkSync Era (Type 4) has been live since 2023.
 
 **Implementations:**
-- [scroll-zkevm](https://github.com/scroll-tech/scroll-zkevm) ⭐ 684 — Rust/Go — Scroll's Type 2 zkEVM circuits
+- [scroll-zkevm](https://github.com/scroll-tech/scroll-zkevm) ⭐ 684 [archived] — Rust/Go — Scroll's Type 2 zkEVM circuits
 - [polygon-zkevm](https://github.com/0xPolygonHermez/zkevm-prover) ⭐ 243 — C++ — Polygon zkEVM prover
 - [zksync-era](https://github.com/matter-labs/zksync-era) ⭐ 3.2k — Rust — zkSync Era node and prover
 - [taiko-mono](https://github.com/taikoxyz/taiko-mono) ⭐ 4.6k — TypeScript/Solidity — Taiko Type 1 zkEVM
@@ -1558,8 +1558,8 @@ EUROCRYPT 2022. Important for resource-constrained proving scenarios. Recognized
 Powers zkSync Era mainnet (live since 2023). Processes millions of transactions with STARK proofs wrapped in pairing-based SNARKs.
 
 **Implementations:**
-- [era-boojum](https://github.com/matter-labs/era-boojum) ⭐ 303 — Rust — Boojum proving system
-- [era-boojum-cuda](https://github.com/matter-labs/era-boojum-cuda) ⭐ 25 — CUDA/Rust — GPU-accelerated Boojum backend
+- [era-boojum](https://github.com/matter-labs/era-boojum) ⭐ 303 [archived] — Rust — Boojum proving system
+- [era-boojum-cuda](https://github.com/matter-labs/era-boojum-cuda) ⭐ 25 [archived] — CUDA/Rust — GPU-accelerated Boojum backend
 
 **Security status:** Caution
 STARK backend is secure. Boojum wraps STARKs into pairing-based SNARKs for on-chain verification; the composition is sound but complex. Ongoing audits.

@@ -545,7 +545,7 @@ v3 onion services mandatory since October 2021; thousands of production services
 **Implementations:**
 - [Tor](https://github.com/torproject/tor) ⭐ 4.9k — C, reference implementation of Tor including v3 onion services
 - [Arti](https://gitlab.torproject.org/tpo/core/arti) — Rust, next-generation Tor implementation with onion service support
-- [OnionBalance](https://github.com/DonnchaC/onionbalance) ⭐ 275 — Python, load balancing for onion services
+- [OnionBalance](https://github.com/DonnchaC/onionbalance) ⭐ 275 [archived] — Python, load balancing for onion services
 
 **Security status:** Secure
 Ed25519 + X25519 + SHA3 provide 256-bit security; v3 addresses are not enumerable (unlike v2); client authorization adds per-client encryption. Traffic analysis remains an open research problem.

@@ -1052,7 +1052,7 @@ Multiple working clients exist but no formal security audit of the protocol. Not
 
 **Implementations:**
 - [c-toxcore](https://github.com/TokTok/c-toxcore) ⭐ 2.6k — C; reference Tox protocol implementation
-- [qTox](https://github.com/qTox/qTox) ⭐ 5.0k — C++; desktop Tox client
+- [qTox](https://github.com/qTox/qTox) ⭐ 5.0k [archived] — C++; desktop Tox client
 - [Toxic](https://github.com/JFreegman/toxic) ⭐ 1.3k — C; CLI Tox client
 
 **Security status:** Caution
@@ -1218,7 +1218,7 @@ Universally deployed in SMTP, IMAP, POP3, LDAP. MTA-STS and DANE harden the secu
 **Implementations:**
 - [Postfix](https://github.com/vdukhovni/postfix) ⭐ 530 — C; MTA with STARTTLS, DANE, MTA-STS support
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C; TLS library underlying most STARTTLS implementations
-- [Exim](https://github.com/Exim/exim) ⭐ 780 — C; MTA with STARTTLS and DANE support
+- [Exim](https://github.com/Exim/exim) ⭐ 780 [archived] — C; MTA with STARTTLS and DANE support
 - [Dovecot](https://github.com/dovecot/core) ⭐ 1.2k — C; IMAP/POP3 server with STARTTLS
 
 **Security status:** Caution

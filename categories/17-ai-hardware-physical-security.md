@@ -16,7 +16,7 @@
 Academic prototypes only; zkLLM proving time (~15 min for 13B params) precludes production use
 
 **Implementations:**
-- [zkLLM (official)](https://github.com/jvhs0706/zkllm-ccs2024) ⭐ 58 — Python/Rust, reference implementation from CCS 2024 paper
+- [zkLLM (official)](https://github.com/jvhs0706/zkllm-ccs2024) ⭐ 58 [archived] — Python/Rust, reference implementation from CCS 2024 paper
 - [zkPyTorch (PolyhedraZK)](https://github.com/PolyhedraZK/ExpanderCompilerCollection) ⭐ 42 — Rust, Expander proof engine for PyTorch inference
 
 **Security status:** Caution
@@ -1240,7 +1240,7 @@ Encrypted training demonstrated on small models (logistic regression, shallow CN
 **Implementations:**
 - [OpenFHE](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, production-grade CKKS with bootstrapping support
 - [SEAL (Microsoft)](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, BFV/CKKS HE library
-- [HE-Transformer (Intel)](https://github.com/IntelAI/he-transformer) ⭐ 176 — C++, compile ONNX graphs to CKKS operations
+- [HE-Transformer (Intel)](https://github.com/IntelAI/he-transformer) ⭐ 176 [archived] — C++, compile ONNX graphs to CKKS operations
 - [Lattigo](https://github.com/tuneinsight/lattigo) ⭐ 1.4k — Go, CKKS/BFV HE library with bootstrapping
 
 **Security status:** Caution
@@ -1293,7 +1293,7 @@ Open Compute Project specification; backed by Microsoft, Google, AMD, NVIDIA; CH
 Academic prototypes (zkDL, zkPoT); proving time is practical for small networks but not yet for production-scale training
 
 **Implementations:**
-- [zkDL (reference)](https://github.com/jvhs0706/zkdl-train) ⭐ 8 — Python/Rust, GPU-accelerated ZK proofs for training verification
+- [zkDL (reference)](https://github.com/jvhs0706/zkdl-train) ⭐ 8 [archived] — Python/Rust, GPU-accelerated ZK proofs for training verification
 
 **Security status:** Caution
 ZK proof systems are sound under stated assumptions; training verification is a new application with limited adversarial evaluation

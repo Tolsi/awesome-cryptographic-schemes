@@ -283,7 +283,7 @@ Async BFT protocols (DAG-Rider variants) are deployed in production blockchains 
 
 **Implementations:**
 - [HoneyBadgerBFT](https://github.com/initc3/HoneyBadgerBFT-Python) ⭐ 143 — Python, reference implementation of async BFT
-- [Narwhal-Tusk](https://github.com/MystenLabs/narwhal) ⭐ 179 — Rust, DAG-based mempool and consensus (Mysten Labs/Sui)
+- [Narwhal-Tusk](https://github.com/MystenLabs/narwhal) ⭐ 179 [archived] — Rust, DAG-based mempool and consensus (Mysten Labs/Sui)
 - [aptos-core](https://github.com/aptos-labs/aptos-core) ⭐ 6.4k — Rust, includes DAG-based consensus implementation
 
 **Security status:** Secure
@@ -1071,7 +1071,7 @@ Private neural network inference is a rapidly growing field; Cheetah and BOLT re
 VOLE-PSI and KKRT are deployed in real-world PSI applications; circuit-PSI is used in production MPC pipelines.
 
 **Implementations:**
-- [VOLE-PSI](https://github.com/Visa-Research/volepsi) ⭐ 135 — C++, Visa Research's VOLE-based PSI implementation
+- [VOLE-PSI](https://github.com/Visa-Research/volepsi) ⭐ 135 [archived] — C++, Visa Research's VOLE-based PSI implementation
 - [libPSI](https://github.com/osu-crypto/libPSI) ⭐ 186 — C++, comprehensive PSI library (KKRT, OPRF-based, circuit-PSI)
 - [emp-toolkit](https://github.com/emp-toolkit) — C++, garbled-circuit-based PSI
 - [PSI (OpenMined)](https://github.com/OpenMined/PSI) ⭐ 151 — C++/Python, private set intersection library

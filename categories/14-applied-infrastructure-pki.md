@@ -48,8 +48,8 @@
 Deployed at scale in EU Digital Identity Wallet (eIDAS 2.0, 450M citizens), Apple/Google Wallet mDL, IATA Travel Pass, and academic credentialing systems worldwide.
 
 **Implementations:**
-- [SpruceID DIDKit](https://github.com/spruceid/didkit) ⭐ 318 — Rust, cross-platform DID/VC toolkit
-- [Walt.id SSI Kit](https://github.com/walt-id/waltid-ssikit) ⭐ 112 — Kotlin, enterprise SSI library
+- [SpruceID DIDKit](https://github.com/spruceid/didkit) ⭐ 318 [archived] — Rust, cross-platform DID/VC toolkit
+- [Walt.id SSI Kit](https://github.com/walt-id/waltid-ssikit) ⭐ 112 [archived] — Kotlin, enterprise SSI library
 - [Veramo](https://github.com/decentralized-identity/veramo) ⭐ 533 — TypeScript, DIF-maintained DID framework
 - [Hyperledger Aries](https://github.com/hyperledger/aries-framework-go) ⭐ 240 — Go, enterprise agent framework
 - [Microsoft ION](https://github.com/koush/ion) ⭐ 6.3k — TypeScript, Sidetree-based DID on Bitcoin
