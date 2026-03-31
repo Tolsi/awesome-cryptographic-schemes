@@ -7,22 +7,22 @@ Cross-references to foundational concepts: [Symmetric Encryption](01-foundationa
 <!-- TOC -->
 ## Contents (11 schemes)
 
-**[🇨🇳 China (OSCCA / GM/T)](#-china-oscca--gmt)**
-- [SM4 / Chinese National Standard Block Ciphers](#sm4--chinese-national-standard-block-ciphers)
+**[🇨🇳 China (OSCCA / GM/T)](#china-oscca-gmt)**
+- [SM4 / Chinese National Standard Block Ciphers](#sm4-chinese-national-standard-block-ciphers)
 - [SM3 Hash Function](#sm3-hash-function)
 - [SM2 Digital Signatures (Chinese National Standard)](#sm2-digital-signatures-chinese-national-standard)
 
-**[🇷🇺 Russia (GOST)](#-russia-gost)**
-- [GOST R 34.12-2015 Block Ciphers (Grasshopper / Magma)](#gost-r-3412-2015-block-ciphers-grasshopper--magma)
+**[🇷🇺 Russia (GOST)](#russia-gost)**
+- [GOST R 34.12-2015 Block Ciphers (Grasshopper / Magma)](#gost-r-3412-2015-block-ciphers-grasshopper-magma)
 - [GOST R 34.11-2012 (Streebog) and GOST R 34.10-2012](#gost-r-3411-2012-streebog-and-gost-r-3410-2012)
 - [GOST R 34.10-2012 (Russian Digital Signature Standard)](#gost-r-3410-2012-russian-digital-signature-standard)
 
-**[🇰🇷 South Korea (KISA / NIS)](#-south-korea-kisa--nis)**
+**[🇰🇷 South Korea (KISA / NIS)](#south-korea-kisa-nis)**
 - [ARIA Block Cipher](#aria-block-cipher)
 - [ARIA and SEED (Korean Standard Block Ciphers)](#aria-and-seed-korean-standard-block-ciphers)
 - [LSH (Korean Lightweight Secure Hash)](#lsh-korean-lightweight-secure-hash)
 
-**[🇯🇵 Japan (CRYPTREC)](#-japan-cryptrec)**
+**[🇯🇵 Japan (CRYPTREC)](#japan-cryptrec)**
 - [Camellia-GCM and ARIA-GCM](#camellia-gcm-and-aria-gcm)
 - [CLEFIA and MISTY1 (Japanese Industry Ciphers)](#clefia-and-misty1-japanese-industry-ciphers)
 <!-- /TOC -->
