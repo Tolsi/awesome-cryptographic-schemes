@@ -4,13 +4,6 @@ Several nations have developed sovereign cryptographic algorithms — independen
 
 Cross-references to foundational concepts: [Symmetric Encryption](01-foundational-primitives.md#symmetric-encryption), [Hash Functions](01-foundational-primitives.md#hash-functions), [Digital Signatures](01-foundational-primitives.md#digital-signatures), [AEAD](04-zero-knowledge-proof-systems.md#folding-schemes).
 
----
-
-**🇨🇳 China (OSCCA / GM/T)**
-
----
-
-
 <!-- TOC -->
 ## Contents (11 schemes)
 
@@ -26,6 +19,12 @@ Cross-references to foundational concepts: [Symmetric Encryption](01-foundationa
 - [Camellia-GCM and ARIA-GCM](#camellia-gcm-and-aria-gcm)
 - [CLEFIA and MISTY1 (Japanese Industry Ciphers)](#clefia-and-misty1-japanese-industry-ciphers)
 <!-- /TOC -->
+
+---
+
+**🇨🇳 China (OSCCA / GM/T)**
+
+---
 
 ## SM4 / Chinese National Standard Block Ciphers
 
