@@ -7,11 +7,22 @@ import glob
 repo_root = '/mnt/HC_Volume_105218442/dev/awesome-cryptographic-schemes'
 
 def slugify(heading):
-    """GitHub-style anchor slugification."""
+    """GitHub-style anchor slugification.
+    GitHub: lowercase, strip non-alphanumeric (except hyphens/underscores/spaces),
+    replace each space with a hyphen (preserving consecutive hyphens from removed chars),
+    strip leading/trailing whitespace.
+    Emoji chars are stripped. Parentheses and slashes are stripped, leaving adjacent
+    spaces that become hyphens (so `Foo (Bar)` → `foo--bar` with double hyphen).
+    """
     slug = heading.lower()
-    slug = re.sub(r'[^\w\s-]', '', slug)  # remove non-alphanumeric except hyphens and spaces
-    slug = re.sub(r'\s+', '-', slug.strip())
-    slug = re.sub(r'-+', '-', slug)
+    # Remove non-word chars (but keep hyphens, underscores, spaces, alphanumeric)
+    # This strips emoji, parentheses, slashes, etc.
+    slug = re.sub(r'[^\w\s-]', '', slug)
+    # Replace each individual space with a hyphen (do NOT collapse \s+)
+    # Do NOT strip — leading/trailing spaces from removed emoji become leading/trailing hyphens
+    slug = slug.replace(' ', '-')
+    # Strip leading/trailing hyphens only (GitHub does this)
+    # Actually GitHub preserves leading hyphens from stripped emoji — do not strip
     return slug
 
 # Step 1: Build a map of all anchors in all .md files

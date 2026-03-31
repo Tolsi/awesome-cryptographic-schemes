@@ -8,12 +8,12 @@
 - [Mix Networks (Mixnets)](#mix-networks-mixnets)
 - [Onion Routing](#onion-routing)
 - [DC-Nets (Dining Cryptographers Networks)](#dc-nets-dining-cryptographers-networks)
-- [Privacy Pass / Anonymous Tokens](#privacy-pass-anonymous-tokens)
-- [Secret Handshakes / Hidden Credentials](#secret-handshakes-hidden-credentials)
-- [Semaphore / Anonymous Group Signaling (RLN)](#semaphore-anonymous-group-signaling-rln)
+- [Privacy Pass / Anonymous Tokens](#privacy-pass--anonymous-tokens)
+- [Secret Handshakes / Hidden Credentials](#secret-handshakes--hidden-credentials)
+- [Semaphore / Anonymous Group Signaling (RLN)](#semaphore--anonymous-group-signaling-rln)
 - [Delegatable Anonymous Credentials](#delegatable-anonymous-credentials)
 - [Keyed-Verification Anonymous Credentials (KVAC)](#keyed-verification-anonymous-credentials-kvac)
-- [E-Cash / Chaumian Digital Cash](#e-cash-chaumian-digital-cash)
+- [E-Cash / Chaumian Digital Cash](#e-cash--chaumian-digital-cash)
 - [Anonymous Broadcast Encryption](#anonymous-broadcast-encryption)
 - [Anonymous Reputation Systems](#anonymous-reputation-systems)
 - [Stealth Addresses](#stealth-addresses)
@@ -21,15 +21,15 @@
 - [Tor v3 Onion Services](#tor-v3-onion-services)
 - [I2P (Invisible Internet Project)](#i2p-invisible-internet-project)
 - [GNU Taler](#gnu-taler)
-- [Zcash Shielded Protocols (Sapling / Orchard)](#zcash-shielded-protocols-sapling-orchard)
+- [Zcash Shielded Protocols (Sapling / Orchard)](#zcash-shielded-protocols-sapling--orchard)
 - [BBS+ Anonymous Credentials](#bbs-anonymous-credentials)
 - [Monero's Privacy Stack](#moneros-privacy-stack)
-- [CoinJoin / WabiSabi](#coinjoin-wabisabi)
+- [CoinJoin / WabiSabi](#coinjoin--wabisabi)
 - [Privacy Pools](#privacy-pools)
 - [Group Encryption](#group-encryption)
 - [Direct Anonymous Attestation (DAA)](#direct-anonymous-attestation-daa)
 - [Accumulators for Credential Revocation](#accumulators-for-credential-revocation)
-- [IRMA / Yivi Credential System](#irma-yivi-credential-system)
+- [IRMA / Yivi Credential System](#irma--yivi-credential-system)
 - [ZKP-Based Attribute Predicates (Range Proofs for Credentials)](#zkp-based-attribute-predicates-range-proofs-for-credentials)
 - [SD-JWT and JSON Web Proof (JWP)](#sd-jwt-and-json-web-proof-jwp)
 - [OpenID for Verifiable Credentials (OID4VC)](#openid-for-verifiable-credentials-oid4vc)
@@ -50,7 +50,7 @@
 - [Talek](#talek)
 - [Karaoke](#karaoke)
 - [Traffic Analysis Attacks and Cover Traffic Defenses](#traffic-analysis-attacks-and-cover-traffic-defenses)
-- [Oblivious Pseudorandom Functions (OPRF / VOPRF / POPRF)](#oblivious-pseudorandom-functions-oprf-voprf-poprf)
+- [Oblivious Pseudorandom Functions (OPRF / VOPRF / POPRF)](#oblivious-pseudorandom-functions-oprf--voprf--poprf)
 - [Group Signatures with Verifier-Local Revocation (VLR)](#group-signatures-with-verifier-local-revocation-vlr)
 - [zkSNARK-Based Anonymous Credentials](#zksnark-based-anonymous-credentials)
 - [Signal KVAC v2 (zkgroup)](#signal-kvac-v2-zkgroup)
@@ -59,6 +59,7 @@
 - [Credential Status Mechanisms (Revocation Transparency)](#credential-status-mechanisms-revocation-transparency)
 - [Anonymous Multi-Hop Locks (AMHL)](#anonymous-multi-hop-locks-amhl)
 <!-- /TOC -->
+
 
 ## Anonymous Credentials
 
@@ -268,7 +269,7 @@ Growing adoption in Ethereum ecosystem; used by PSE (Privacy & Scaling Explorati
 | **Belenkiy-Chase-Kohlweiss-Lysyanskaya** | 2009 | GS proofs + P-signatures | Practical delegatable creds from Groth-Sahai proofs [[1]](https://eprint.iacr.org/2008/428) |
 | **Camenisch-Drijvers-Dubovitskaya** | 2017 | CL sigs + delegation | Practical construction with attribute-based delegation [[1]](https://eprint.iacr.org/2017/115) |
 
-**State of the art:** Delegatable creds from [Malleable Proofs](04-zero-knowledge-proof-systems.md#malleable-proof-systems-controlled-malleable-nizk) and [SPS/EQS](08-signatures-advanced.md#structure-preserving-signatures-sps). Extends [Anonymous Credentials](#anonymous-credentials).
+**State of the art:** Delegatable creds from [Malleable Proofs](04-zero-knowledge-proof-systems.md#malleable-proof-systems--controlled-malleable-nizk) and [SPS/EQS](08-signatures-advanced.md#structure-preserving-signatures-sps). Extends [Anonymous Credentials](#anonymous-credentials).
 
 **Production readiness:** Research
 Academic constructions only; no production implementations.
@@ -322,7 +323,7 @@ Deployed at massive scale in Signal; peer-reviewed (CCS 2014); endorsed by crypt
 | **Compact E-Cash (Camenisch-Hohenberger-Lysyanskaya)** | 2005 | Pairings + ZK | Withdraw N coins at once; O(1) wallet storage [[1]](https://eprint.iacr.org/2005/060) |
 | **Divisible E-Cash (Okamoto)** | 1995 | Binary tree coins | Single coin of value N subdivides into any denomination combination; O(log N) communication per payment [[1]](https://link.springer.com/chapter/10.1007/3-540-44750-4_35) |
 
-**State of the art:** Compact E-Cash (CHL 2005); modern [Privacy Pass](#privacy-pass-anonymous-tokens) is essentially single-use e-cash tokens. See [Blind Signatures](08-signatures-advanced.md#blind-signatures).
+**State of the art:** Compact E-Cash (CHL 2005); modern [Privacy Pass](#privacy-pass--anonymous-tokens) is essentially single-use e-cash tokens. See [Blind Signatures](08-signatures-advanced.md#blind-signatures).
 
 **Production readiness:** Mature
 GNU Taler is production-deployed; Compact E-Cash informs modern token systems; Chaum's original scheme inspired all privacy coins.
@@ -404,7 +405,7 @@ Active research area but no standardization; combines multiple privacy primitive
 | **ERC-5564 (Ethereum Standard)** | 2023 | ECDH + view tags | Standardized stealth addresses for Ethereum; view tags for efficient scanning [[1]](https://eips.ethereum.org/EIPS/eip-5564) |
 | **Stealth Addresses + ZK (Umbra)** | 2022 | ECDH + ZK proofs | Privacy-preserving withdrawal using ZK proofs; deployed on Ethereum [[1]](https://www.umbra.cash/) |
 
-**State of the art:** ERC-5564 (Ethereum standard); Umbra (deployed). Related to [NIKE](03-key-exchange-key-management.md#non-interactive-key-exchange-nike) and [HD Wallets](03-key-exchange-key-management.md#hierarchical-deterministic-keys-bip32-hd-wallets).
+**State of the art:** ERC-5564 (Ethereum standard); Umbra (deployed). Related to [NIKE](03-key-exchange-key-management.md#non-interactive-key-exchange-nike) and [HD Wallets](03-key-exchange-key-management.md#hierarchical-deterministic-keys-bip32--hd-wallets).
 
 **Production readiness:** Experimental
 Umbra deployed on Ethereum mainnet; ERC-5564 standardized but adoption still growing; Monero uses stealth addresses in production.
@@ -514,7 +515,7 @@ Active community since 2003; smaller anonymity set than Tor; preferred for inter
 | **Taler with Clause-Schnorr** | 2021 | Blind Schnorr (CS-blind) | Replaces RSA blind sigs with more efficient Clause-Schnorr blind signatures; reduces coin size and signing overhead [[1]](https://www.taler.net/papers/cs-thesis.pdf) |
 | **NGI Taler (EU rollout)** | 2024 | Taler + central bank integration | 11-partner EU consortium; targets CBDC-compatible deployment; income transparency for tax compliance [[1]](https://ngi.eu/blog/2023/05/02/gnu-taler/) |
 
-**State of the art:** GNU Taler with Clause-Schnorr blind signatures; selected for EU NGI rollout (2024–2027). Provides stronger payer anonymity than traditional e-cash while retaining merchant accountability. Extends [E-Cash / Chaumian Digital Cash](#e-cash-chaumian-digital-cash) and [Blind Signatures](08-signatures-advanced.md#blind-signatures).
+**State of the art:** GNU Taler with Clause-Schnorr blind signatures; selected for EU NGI rollout (2024–2027). Provides stronger payer anonymity than traditional e-cash while retaining merchant accountability. Extends [E-Cash / Chaumian Digital Cash](#e-cash--chaumian-digital-cash) and [Blind Signatures](08-signatures-advanced.md#blind-signatures).
 
 **Production readiness:** Production
 Selected for EU NGI rollout (2024-2027); 11-partner EU consortium; production-ready exchange software.
@@ -604,7 +605,7 @@ W3C Technical Report; active IETF CFRG standardization; mandated for EU eIDAS 2.
 | **CLSAG (Compact LSAG)** | 2020 | Compact linkable SAG | Replaced MLSAG; ~25% smaller, ~20% faster verify; same privacy guarantees [[1]](https://eprint.iacr.org/2019/654) |
 | **Bulletproofs+** | 2022 | Improved reciprocal-weight IPA | ~5–7% smaller and faster than Bulletproofs; deployed in Monero network upgrade Oct 2022 [[1]](https://eprint.iacr.org/2022/510) |
 
-**State of the art:** Monero (2022 network upgrade) uses CLSAG ring signatures (ring size 16), dual-key stealth addresses, and RingCT with Bulletproofs+ range proofs. Seraphis (in design) would decouple membership proofs from ownership proofs for more modular upgrades. Relies on [Ring & Group Signatures](08-signatures-advanced.md#ring-group-signatures), [Stealth Addresses](#stealth-addresses), and [Range Proofs](09-commitments-verifiability.md#range-proofs).
+**State of the art:** Monero (2022 network upgrade) uses CLSAG ring signatures (ring size 16), dual-key stealth addresses, and RingCT with Bulletproofs+ range proofs. Seraphis (in design) would decouple membership proofs from ownership proofs for more modular upgrades. Relies on [Ring & Group Signatures](08-signatures-advanced.md#ring--group-signatures), [Stealth Addresses](#stealth-addresses), and [Range Proofs](09-commitments-verifiability.md#range-proofs).
 
 **Production readiness:** Production
 Deployed on Monero mainnet since 2014; mandatory privacy (all transactions use ring sigs, stealth addresses, RingCT since 2017).
@@ -633,7 +634,7 @@ Largest privacy-by-default cryptocurrency; active research community; peer-revie
 | **PayJoin (BIP 78)** | 2020 | Collaborative 2-party tx | Sender and receiver co-sign one tx; breaks common-input-ownership heuristic; indistinguishable from regular payments [[1]](https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki) |
 | **Async PayJoin (BIP 77)** | 2023 | PayJoin + asynchronous relay | Removes requirement for simultaneous online presence; relay server learns nothing [[1]](https://github.com/bitcoin/bips/blob/master/bip-0077.mediawiki) |
 
-**State of the art:** WabiSabi (deployed in Wasabi Wallet 2.0, 2022) is the cryptographically strongest coordinator-blind CoinJoin, building directly on [KVAC](#keyed-verification-anonymous-credentials-kvac). PayJoin (BIP 78) is a simpler two-party variant requiring no mixing round. Related to [E-Cash / Chaumian Digital Cash](#e-cash-chaumian-digital-cash) and [Blind Signatures](08-signatures-advanced.md#blind-signatures).
+**State of the art:** WabiSabi (deployed in Wasabi Wallet 2.0, 2022) is the cryptographically strongest coordinator-blind CoinJoin, building directly on [KVAC](#keyed-verification-anonymous-credentials-kvac). PayJoin (BIP 78) is a simpler two-party variant requiring no mixing round. Related to [E-Cash / Chaumian Digital Cash](#e-cash--chaumian-digital-cash) and [Blind Signatures](08-signatures-advanced.md#blind-signatures).
 
 **Production readiness:** Production
 WabiSabi deployed in Wasabi Wallet 2.0 (2022); PayJoin (BIP 78) supported by multiple wallets.
@@ -659,7 +660,7 @@ WabiSabi peer-reviewed (ePrint 2021/206); CoinJoin is a widely accepted Bitcoin 
 | **Privacy Pools (Buterin et al.)** | 2023 | zk-SNARK + dual Merkle proof | User proves deposit is in the full pool AND in a curated association set; withdrawer reveals neither deposit leaf nor set membership, only validity [[1]](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4563364) |
 | **0xbow Privacy Pools (deployed)** | 2024 | Groth16 + Ethereum smart contract | Production implementation of the Buterin et al. design; association set providers (ASPs) publish compliance-filtered trees [[1]](https://www.theblock.co/post/348959/0xbow-privacy-pools-new-cypherpunk-tool-inspired-research-ethereum-founder-vitalik-buterin) |
 
-**State of the art:** 0xbow Privacy Pools (2024) deploys the dual-Merkle zkSNARK design. Extends [Zcash Shielded Protocols](#zcash-shielded-protocols-sapling-orchard) with compliance-aware association sets. The underlying ZK circuit relies on [Groth16](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems) and [Merkle-tree membership proofs](09-commitments-verifiability.md#vector-commitments).
+**State of the art:** 0xbow Privacy Pools (2024) deploys the dual-Merkle zkSNARK design. Extends [Zcash Shielded Protocols](#zcash-shielded-protocols-sapling--orchard) with compliance-aware association sets. The underlying ZK circuit relies on [Groth16](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems) and [Merkle-tree membership proofs](09-commitments-verifiability.md#vector-commitments).
 
 **Production readiness:** Experimental
 0xbow Privacy Pools deployed on Ethereum mainnet (2024); Tornado Cash deployed but sanctioned by OFAC (2022).
@@ -990,7 +991,7 @@ Each format is standardized in its domain: CL (Hyperledger), BBS+ (W3C/IETF), SD
 | **Linkable Ring Signatures (LRS)** | 2004 | Liu-Wei-Wong; key image prevents double-use, preserves anonymity [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30539-2_15) |
 | **Traceable Ring Signatures** | 2007 | Fujisaki-Suzuki; signer-traceable on double-spend; used in e-cash-like protocols [[1]](https://eprint.iacr.org/2006/389) |
 
-**State of the art:** Anonymous credentials provide the richest attribute functionality; group signatures add mandatory accountability (GM can open); ring signatures require no issuer but offer only membership proofs. Modern usage: [CLSAG (Monero)](#moneros-privacy-stack) for ring sigs, [Intel EPID / DAA](#direct-anonymous-attestation-daa) for group sigs, [BBS+](#bbs-anonymous-credentials) / [KVAC](#keyed-verification-anonymous-credentials-kvac) for anonymous credentials. See [Ring & Group Signatures](08-signatures-advanced.md#ring-group-signatures).
+**State of the art:** Anonymous credentials provide the richest attribute functionality; group signatures add mandatory accountability (GM can open); ring signatures require no issuer but offer only membership proofs. Modern usage: [CLSAG (Monero)](#moneros-privacy-stack) for ring sigs, [Intel EPID / DAA](#direct-anonymous-attestation-daa) for group sigs, [BBS+](#bbs-anonymous-credentials) / [KVAC](#keyed-verification-anonymous-credentials-kvac) for anonymous credentials. See [Ring & Group Signatures](08-signatures-advanced.md#ring--group-signatures).
 
 **Production readiness:** Production
 All three families have production deployments: BBS+/KVAC (credentials), EPID (group sigs), CLSAG (ring sigs).
@@ -1050,7 +1051,7 @@ SecureDrop is the gold standard endorsed by Freedom of the Press Foundation; rec
 | **Cwtch** | 2018 | Tor v3 onion services + multi-party | Group conversations over Tor onion services; server-side stores nothing (server is just an onion service relay); metadata-private by design [[1]](https://cwtch.im/) |
 | **Vuvuzela / Alpenhorn** | 2015 | DC-nets + noise | Research system: adds cover traffic with differential-privacy guarantees on metadata; provable metadata privacy bounds; not yet deployed at scale [[1]](https://dl.acm.org/doi/10.1145/2815400.2815417) |
 
-**State of the art:** SimpleX Chat (2022–) provides the strongest deployed metadata privacy: zero persistent user identifiers, per-contact queue pairs, and no server-side social graph. Session provides decentralized onion routing without phone numbers. Briar is unique in peer-to-peer operation over Tor and Bluetooth — no infrastructure required. Vuvuzela (research) gives formal differential-privacy metadata bounds. Complements [Onion Routing](#onion-routing), [Mix Networks](#mix-networks-mixnets), and [Double Ratchet / Signal Protocol](12-secure-communication-protocols.md#double-ratchet-symmetric-ratchet).
+**State of the art:** SimpleX Chat (2022–) provides the strongest deployed metadata privacy: zero persistent user identifiers, per-contact queue pairs, and no server-side social graph. Session provides decentralized onion routing without phone numbers. Briar is unique in peer-to-peer operation over Tor and Bluetooth — no infrastructure required. Vuvuzela (research) gives formal differential-privacy metadata bounds. Complements [Onion Routing](#onion-routing), [Mix Networks](#mix-networks-mixnets), and [Double Ratchet / Signal Protocol](12-secure-communication-protocols.md#double-ratchet--symmetric-ratchet).
 
 **Production readiness:** Production
 SimpleX Chat and Session are production apps with active user bases; Briar deployed for activist use.
@@ -1081,7 +1082,7 @@ SimpleX and Briar recommended by privacy researchers; Vuvuzela remains research-
 | **Aztec Sequencer / Fernet** | 2024 | Encrypted mempool + PBS | Sequencer sees only encrypted transaction blobs; decentralized sequencer selection; block building without transaction inspection; mev-resistance via sealed-bid ordering [[1]](https://aztec.network/blog/aztec-network-decentralization/) |
 | **Noir Language** | 2023 | ACIR (Abstract Circuit IR) | Domain-specific language for ZK circuits; compiles to ACIR; backends: Barretenberg (UltraHonk/PLONK), Gnark, Halo2; used beyond Aztec for general ZK app development [[1]](https://noir-lang.org/docs/) |
 
-**State of the art:** Aztec Network (Noir + UltraHonk, 2024 testnet) is the most advanced programmable-privacy L2 — combining UTXO-style private state with arbitrary smart contract logic. The Noir language is gaining adoption as a general ZK DSL beyond Aztec. Complements [Zcash Shielded Protocols](#zcash-shielded-protocols-sapling-orchard) (fixed note semantics) and [Privacy Pools](#privacy-pools) (compliance-aware mixing). Relies on [PLONK / UltraHonk](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems) proof systems and [Encrypted Mempools](13-blockchain-distributed-ledger.md#encrypted-mempools-threshold-encryption-for-transaction-ordering).
+**State of the art:** Aztec Network (Noir + UltraHonk, 2024 testnet) is the most advanced programmable-privacy L2 — combining UTXO-style private state with arbitrary smart contract logic. The Noir language is gaining adoption as a general ZK DSL beyond Aztec. Complements [Zcash Shielded Protocols](#zcash-shielded-protocols-sapling--orchard) (fixed note semantics) and [Privacy Pools](#privacy-pools) (compliance-aware mixing). Relies on [PLONK / UltraHonk](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems) proof systems and [Encrypted Mempools](13-blockchain-distributed-ledger.md#encrypted-mempools--threshold-encryption-for-transaction-ordering).
 
 **Production readiness:** Experimental
 Aztec Network testnet active (2024); Noir language gaining adoption; Aztec 2.0/Connect were deployed on Ethereum mainnet.
@@ -1370,7 +1371,7 @@ Traffic analysis is a well-studied research area; WTF-PAD adopted by Tor Project
 | **2HashDH OPRF** | 2005 | Hash-to-curve + DH | Simple two-hash construction: H-to-curve, blind, evaluate, unblind; instantiated in Privacy Pass v1; proven in ROM [[1]](https://eprint.iacr.org/2005/010) |
 | **Threshold OPRF (tOPRF)** | 2020 | DH + Shamir secret sharing | Key split across n servers; t-of-n threshold evaluation; prevents single-server key compromise; used in distributed OPAQUE variants [[1]](https://eprint.iacr.org/2017/363) |
 
-**State of the art:** IETF RFC 9497 (2023) standardizes OPRF/VOPRF/POPRF over Ristretto255 and P-384. Deployed in [Privacy Pass](#privacy-pass-anonymous-tokens) (RFC 9576), [OPAQUE](03-key-exchange-key-management.md#password-authenticated-key-exchange-pake), and private contact discovery. Threshold OPRF enables distributed credential issuance without a single point of trust. Related to [PRF/PRP](01-foundational-primitives.md#pseudorandom-functions-prf-pseudorandom-permutations-prp).
+**State of the art:** IETF RFC 9497 (2023) standardizes OPRF/VOPRF/POPRF over Ristretto255 and P-384. Deployed in [Privacy Pass](#privacy-pass--anonymous-tokens) (RFC 9576), [OPAQUE](03-key-exchange-key-management.md#password-authenticated-key-exchange-pake), and private contact discovery. Threshold OPRF enables distributed credential issuance without a single point of trust. Related to [PRF/PRP](01-foundational-primitives.md#pseudorandom-functions-prf--pseudorandom-permutations-prp).
 
 **Production readiness:** Production
 IETF RFC 9497 (2023); deployed in Privacy Pass (RFC 9576), OPAQUE password protocol, and private contact discovery.
@@ -1401,7 +1402,7 @@ IETF RFC 9497; deployed by Cloudflare, Apple, Google; foundational primitive for
 | **Lattice-Based VLR Group Sig (Langlois et al.)** | 2014 | SIS + LWE | First post-quantum VLR group signature; proof size O(n log n) but avoids pairings entirely [[1]](https://eprint.iacr.org/2014/033) |
 | **Dynamic VLR Group Sig (Perera-Koshiba)** | 2018 | Pairings + dynamic join | Supports dynamic member enrollment without re-keying; VLR revocation remains verifier-local [[1]](https://eprint.iacr.org/2018/485) |
 
-**State of the art:** Intel EPID with SigRL-based VLR is the most widely deployed VLR group signature scheme (billions of Intel CPUs). Lattice-based VLR (Langlois et al.) provides the post-quantum path. VLR is the revocation model used in [Direct Anonymous Attestation (DAA)](#direct-anonymous-attestation-daa) and complements [Accumulators for Credential Revocation](#accumulators-for-credential-revocation). Related to [Ring & Group Signatures](08-signatures-advanced.md#ring-group-signatures).
+**State of the art:** Intel EPID with SigRL-based VLR is the most widely deployed VLR group signature scheme (billions of Intel CPUs). Lattice-based VLR (Langlois et al.) provides the post-quantum path. VLR is the revocation model used in [Direct Anonymous Attestation (DAA)](#direct-anonymous-attestation-daa) and complements [Accumulators for Credential Revocation](#accumulators-for-credential-revocation). Related to [Ring & Group Signatures](08-signatures-advanced.md#ring--group-signatures).
 
 **Production readiness:** Production
 Intel EPID with SigRL-based VLR deployed in billions of Intel CPUs for SGX attestation.
@@ -1460,7 +1461,7 @@ Rapidly growing area; zkLogin (Sui) and Zupass demonstrate viability; more flexi
 | **Signal zkgroup v2 (auth credentials)** | 2022 | CMZ + expiring tokens + encrypted profiles | Auth credential with redemption timestamp; profile key credentials allow encrypted profile fetch without server learning which profile; pni credentials for phone-number privacy [[1]](https://github.com/nickolay/nickolay.github.io/blob/main/2023-01-08-signal-groups.md) |
 | **Signal Username Credentials** | 2024 | KVAC + encrypted username | Users prove username ownership to contacts via KVAC presentation; Signal server cannot link username to phone number or group membership [[1]](https://signal.org/blog/phone-number-privacy-usernames/) |
 
-**State of the art:** Signal zkgroup v2 (2022-2024) is the largest real-world KVAC deployment (100M+ users). The system has evolved from simple group membership to a multi-credential architecture covering auth tokens, profile keys, phone-number identifiers, and usernames. Extends [KVAC](#keyed-verification-anonymous-credentials-kvac); uses [Ristretto255](01-foundational-primitives.md#ristretto255-decaf-prime-order-group-abstractions).
+**State of the art:** Signal zkgroup v2 (2022-2024) is the largest real-world KVAC deployment (100M+ users). The system has evolved from simple group membership to a multi-credential architecture covering auth tokens, profile keys, phone-number identifiers, and usernames. Extends [KVAC](#keyed-verification-anonymous-credentials-kvac); uses [Ristretto255](01-foundational-primitives.md#ristretto255--decaf-prime-order-group-abstractions).
 
 **Production readiness:** Production
 Deployed in Signal messenger serving 100M+ users; covers group membership, auth tokens, profile keys, and usernames.
@@ -1489,7 +1490,7 @@ Largest KVAC deployment worldwide (100M+ users); peer-reviewed cryptographic des
 | **Hamilton Project / OpenCBDC (MIT-Boston Fed)** | 2022 | Hash-based commitments + transaction processor | Research CBDC platform; explored privacy-preserving architectures; concluded 99,000 tx/s possible with privacy layer [[1]](https://www.bostonfed.org/publications/research-department-working-paper/2022/the-hamilton-project-a-broad-design-space-approach-to-cbdc-technical-research.aspx) |
 | **Bank of England CBDC Consultation** | 2023 | Pseudonymous accounts + AML gateway | "Digital Pound" design: accounts pseudonymous to intermediaries; BoE sees no personal data; AML performed at payment interface provider level [[1]](https://www.bankofengland.co.uk/paper/2023/the-digital-pound-consultation-paper) |
 
-**State of the art:** The ECB Digital Euro (pilot phase 2024-2025) uses a tiered privacy model with blind-signed offline tokens for small payments. Platypus (2022) provides the strongest formal privacy guarantees with regulatory compliance via ZK range proofs on spending limits. Extends [E-Cash / Chaumian Digital Cash](#e-cash-chaumian-digital-cash) and [GNU Taler](#gnu-taler) with compliance-aware privacy. Related to [Blind Signatures](08-signatures-advanced.md#blind-signatures) and [Range Proofs](09-commitments-verifiability.md#range-proofs).
+**State of the art:** The ECB Digital Euro (pilot phase 2024-2025) uses a tiered privacy model with blind-signed offline tokens for small payments. Platypus (2022) provides the strongest formal privacy guarantees with regulatory compliance via ZK range proofs on spending limits. Extends [E-Cash / Chaumian Digital Cash](#e-cash--chaumian-digital-cash) and [GNU Taler](#gnu-taler) with compliance-aware privacy. Related to [Blind Signatures](08-signatures-advanced.md#blind-signatures) and [Range Proofs](09-commitments-verifiability.md#range-proofs).
 
 **Production readiness:** Experimental
 ECB Digital Euro in pilot phase (2024-2025); GNU Taler selected for EU CBDC pilots; Hamilton Project (MIT/Boston Fed) completed research phase.
@@ -1546,7 +1547,7 @@ Active NIST/IETF discussion on PQ credential migration; PQ-BBS aims for W3C VC e
 | **Accumulator-Based Non-Revocation Proofs** | 2002 | RSA/Pairing accumulator + ZK | Holder proves credential is NOT in revoked set via ZK witness; verifier learns nothing about which credential was checked; used in Hyperledger AnonCreds and Idemix [[1]](https://eprint.iacr.org/2008/539) |
 | **W3C VC Bitstring Status List** | 2024 | Bitstring + VC envelope | W3C specification; status list published as a Verifiable Credential containing a compressed bitstring; supports revocation and suspension; ecosystem-neutral [[1]](https://www.w3.org/TR/vc-bitstring-status-list/) |
 
-**State of the art:** OAuth Status List (IETF draft, 2024) is mandated by the [EU EUDI Wallet](#eu-eudi-wallet-cryptographic-architecture-eidas-20) for credential revocation. Accumulator-based ZK non-revocation proofs (used in [AnonCreds](#accumulators-for-credential-revocation) and [IRMA/Yivi](#irma-yivi-credential-system)) provide the strongest privacy but require holder witness updates. W3C Bitstring Status List is gaining adoption for VC ecosystems. Related to [Accumulators for Credential Revocation](#accumulators-for-credential-revocation) and [Certificate Transparency](14-applied-infrastructure-pki.md#tee-remote-attestation).
+**State of the art:** OAuth Status List (IETF draft, 2024) is mandated by the [EU EUDI Wallet](#eu-eudi-wallet-cryptographic-architecture-eidas-20) for credential revocation. Accumulator-based ZK non-revocation proofs (used in [AnonCreds](#accumulators-for-credential-revocation) and [IRMA/Yivi](#irma--yivi-credential-system)) provide the strongest privacy but require holder witness updates. W3C Bitstring Status List is gaining adoption for VC ecosystems. Related to [Accumulators for Credential Revocation](#accumulators-for-credential-revocation) and [Certificate Transparency](14-applied-infrastructure-pki.md#tee-remote-attestation).
 
 **Production readiness:** Production
 CRL and OCSP deployed globally in X.509 PKI; OAuth Status List mandated by EU EUDI Wallet; accumulator-based revocation in AnonCreds/IRMA.
@@ -1575,7 +1576,7 @@ CRL/OCSP are IETF standards (RFC 5280, RFC 6960); OAuth Status List mandated by 
 | **Point Time-Locked Contracts (PTLCs)** | 2020 | Schnorr adaptor signatures | Lightning-specific AMHL instantiation; each hop uses a different Schnorr point; unlocking one reveals the adaptor secret for the next; planned for Lightning with Taproot [[1]](https://bitcoinops.org/en/topics/ptlc/) |
 | **Multi-Hop Locks from Lattices** | 2022 | Lattice-based adaptor sigs | Post-quantum AMHL construction; homomorphic lock relation from Module-LWE; compatible with lattice-based payment channels [[1]](https://eprint.iacr.org/2022/1247) |
 
-**State of the art:** PTLCs (planned for Bitcoin Lightning Network post-Taproot activation) will replace HTLCs to prevent payment correlation attacks. The Malavolta et al. AMHL framework (CCS 2019) is the theoretical foundation; lattice variants provide PQ readiness. Related to [Adaptor Signatures](08-signatures-advanced.md#proxy-signatures), [Atomic Swaps](13-blockchain-distributed-ledger.md#fair-exchange-atomic-swaps), and [Sphinx packet format](#onion-routing) used in Lightning onion routing.
+**State of the art:** PTLCs (planned for Bitcoin Lightning Network post-Taproot activation) will replace HTLCs to prevent payment correlation attacks. The Malavolta et al. AMHL framework (CCS 2019) is the theoretical foundation; lattice variants provide PQ readiness. Related to [Adaptor Signatures](08-signatures-advanced.md#proxy-signatures), [Atomic Swaps](13-blockchain-distributed-ledger.md#fair-exchange--atomic-swaps), and [Sphinx packet format](#onion-routing) used in Lightning onion routing.
 
 **Production readiness:** Experimental
 PTLCs planned for Bitcoin Lightning Network post-Taproot; not yet deployed; HTLC (predecessor) is in production.

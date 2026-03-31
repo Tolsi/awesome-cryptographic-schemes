@@ -6,25 +6,25 @@
 
 - [Steganography](#steganography)
 - [Information-Theoretic Steganography (Cachin Model)](#information-theoretic-steganography-cachin-model)
-- [Network / Protocol Steganography](#network-protocol-steganography)
+- [Network / Protocol Steganography](#network--protocol-steganography)
 - [Content-Adaptive Image Steganography](#content-adaptive-image-steganography)
 - [Steganalysis](#steganalysis)
 - [Broadcast Steganography](#broadcast-steganography)
-- [Digital Watermarking / Fingerprinting](#digital-watermarking-fingerprinting)
-- [Kleptography / Algorithm-Substitution Attacks (ASA)](#kleptography-algorithm-substitution-attacks-asa)
+- [Digital Watermarking / Fingerprinting](#digital-watermarking--fingerprinting)
+- [Kleptography / Algorithm-Substitution Attacks (ASA)](#kleptography--algorithm-substitution-attacks-asa)
 - [Deniable Encryption](#deniable-encryption)
 - [Deniable Authentication](#deniable-authentication)
-- [Audio Steganography (Echo Hiding & MP3Stego)](#audio-steganography-echo-hiding-mp3stego)
-- [Text / Linguistic Steganography](#text-linguistic-steganography)
+- [Audio Steganography (Echo Hiding & MP3Stego)](#audio-steganography-echo-hiding--mp3stego)
+- [Text / Linguistic Steganography](#text--linguistic-steganography)
 - [DNA Steganography](#dna-steganography)
-- [Adversarial / GAN Steganography](#adversarial-gan-steganography)
+- [Adversarial / GAN Steganography](#adversarial--gan-steganography)
 - [Histogram-Preserving Steganography](#histogram-preserving-steganography)
 - [Video Steganography](#video-steganography)
 - [Steganographic File Systems](#steganographic-file-systems)
 - [Spread-Spectrum Steganography](#spread-spectrum-steganography)
 - [Printer Steganography (Machine Identification Codes)](#printer-steganography-machine-identification-codes)
 - [Robustness, Capacity, and Imperceptibility Trade-offs](#robustness-capacity-and-imperceptibility-trade-offs)
-- [Reversible Data Hiding / Lossless Steganography](#reversible-data-hiding-lossless-steganography)
+- [Reversible Data Hiding / Lossless Steganography](#reversible-data-hiding--lossless-steganography)
 - [Coverless Steganography](#coverless-steganography)
 - [Blockchain Steganography](#blockchain-steganography)
 - [Cloud Cache Covert Channels](#cloud-cache-covert-channels)
@@ -33,7 +33,7 @@
 - [LLM-Based Linguistic Steganography](#llm-based-linguistic-steganography)
 - [Quantum Steganography](#quantum-steganography)
 - [Optical and Thermal Covert Channels](#optical-and-thermal-covert-channels)
-- [Steganographic Protocols (StegProtocol / HYDAN)](#steganographic-protocols-stegprotocol-hydan)
+- [Steganographic Protocols (StegProtocol / HYDAN)](#steganographic-protocols-stegprotocol--hydan)
 - [VoIP Steganography](#voip-steganography)
 - [Electromagnetic Emanation Covert Channels (TEMPEST)](#electromagnetic-emanation-covert-channels-tempest)
 - [Air-Gap Acoustic and Ultrasonic Covert Channels](#air-gap-acoustic-and-ultrasonic-covert-channels)
@@ -50,6 +50,7 @@
 - [Spread-Spectrum Watermarking](#spread-spectrum-watermarking)
 - [Reversible Data Hiding (RDH)](#reversible-data-hiding-rdh)
 <!-- /TOC -->
+
 
 ## Steganography
 
@@ -89,7 +90,7 @@ Steganography is a well-studied academic field but has no standardisation body; 
 | **Universal Stegosystem (Cachin)** | 1998 | i.i.d. cover distribution | Constructs a perfectly secure system when cover is i.i.d.; no key needed beyond shared distribution [[1]](https://eprint.iacr.org/2000/028) |
 | **Perfectly Secure Stego via Min-Entropy Coupling** | 2021 | Optimal transport | Achieves zero KL divergence using minimum-entropy coupling of message and cover; capacity-optimal [[1]](https://openreview.net/forum?id=HQ67mj5rJdR) |
 
-**State of the art:** Cachin's 1998 model is the standard information-theoretic framework; complements the computational model of [Hopper-Langford-von Ahn](#steganography). Min-entropy coupling (2021) achieves optimal capacity under perfect secrecy. Related to [Wiretap Channel](17-ai-hardware-physical-security.md#wiretap-channel-physical-layer-security) (physical-layer secrecy).
+**State of the art:** Cachin's 1998 model is the standard information-theoretic framework; complements the computational model of [Hopper-Langford-von Ahn](#steganography). Min-entropy coupling (2021) achieves optimal capacity under perfect secrecy. Related to [Wiretap Channel](17-ai-hardware-physical-security.md#wiretap-channel--physical-layer-security) (physical-layer secrecy).
 
 
 **Production readiness:** Research
@@ -117,7 +118,7 @@ Standard theoretical framework in the steganography research community; Cachin's
 | **RSTEG (Retransmission Steganography)** | 2008 | TCP retransmission | Intentionally suppress ACK to trigger retransmission; carry steganogram in retransmitted payload instead of original data [[1]](https://link.springer.com/article/10.1007/s00500-009-0530-1) |
 | **HICCUPS** | 2003 | WLAN corrupted frames | Embed covert data in intentionally corrupted WLAN frames that legitimate receivers discard; ~1 Mb/s capacity in 802.11g networks [[1]](https://www.semanticscholar.org/paper/HICCUPS-%3A-Hidden-Communication-System-for-Corrupted-Szczypiorski/cb42073a770527059d2b597560547bf926777c7f) |
 
-**State of the art:** Network steganography spans storage channels (header-field manipulation) and timing channels (inter-packet delays). Active-warden countermeasures (traffic normalisation, timing jitter removal) are the primary defences. See also [Kleptography / ASA](#kleptography-algorithm-substitution-attacks-asa) for protocol-level covert exfiltration.
+**State of the art:** Network steganography spans storage channels (header-field manipulation) and timing channels (inter-packet delays). Active-warden countermeasures (traffic normalisation, timing jitter removal) are the primary defences. See also [Kleptography / ASA](#kleptography--algorithm-substitution-attacks-asa) for protocol-level covert exfiltration.
 
 
 **Production readiness:** Experimental
@@ -177,7 +178,7 @@ S-UNIWARD is the de facto benchmark in the image steganography research communit
 | **Spatial Rich Model (SRM)** | 2012 | High-order co-occurrence features | 34,671-dimensional feature set of noise residuals; ensemble SVM classifier; gold standard for classical steganalysis [[1]](http://dde.binghamton.edu/kodovsky/pdf/TIFS2012-SRM.pdf) |
 | **Xu-Net / Ye-Net / Yedroudj-Net** | 2016–2018 | CNN with high-pass pre-filter | Deep CNN steganalysers with fixed KV/SRM-inspired pre-processing layers; match or exceed SRM accuracy on adaptive schemes [[1]](https://arxiv.org/abs/1904.01444) |
 
-**State of the art:** CNN-based detectors (Xu-Net, Yedroudj-Net, SRNet) are the state of the art for spatial-domain steganalysis; JPEG steganalysis uses J-UNIWARD features or DCTR. Arms race with [Content-Adaptive Image Steganography](#content-adaptive-image-steganography). Active-warden detection applies to [Network / Protocol Steganography](#network-protocol-steganography).
+**State of the art:** CNN-based detectors (Xu-Net, Yedroudj-Net, SRNet) are the state of the art for spatial-domain steganalysis; JPEG steganalysis uses J-UNIWARD features or DCTR. Arms race with [Content-Adaptive Image Steganography](#content-adaptive-image-steganography). Active-warden detection applies to [Network / Protocol Steganography](#network--protocol-steganography).
 
 
 **Production readiness:** Mature
@@ -320,7 +321,7 @@ Signal Protocol is the gold standard for deniable messaging; OTR established the
 | **Di Raimondo-Gennaro-Krawczyk** | 2006 | DH + HMAC | Practical deniable authentication in key exchange; basis of Signal's deniability [[1]](https://eprint.iacr.org/2006/280) |
 | **Dodis-Fiore-Ostrovsky-Rosen** | 2012 | Ring signatures | Deniable auth equivalent to ring signatures of size 2 [[1]](https://eprint.iacr.org/2012/282) |
 
-**State of the art:** DH-based deniable auth (in Signal, OTR); ring-signature-based for formal guarantees. Related to [Designated Verifier Signatures](08-signatures-advanced.md#designated-verifier-signatures-proofs).
+**State of the art:** DH-based deniable auth (in Signal, OTR); ring-signature-based for formal guarantees. Related to [Designated Verifier Signatures](08-signatures-advanced.md#designated-verifier-signatures--proofs).
 
 
 **Production readiness:** Production
@@ -546,7 +547,7 @@ VeraCrypt is the de facto standard for deniable disk encryption; independently a
 | **QIM-SS (Quantisation Index Modulation)** | 2001 | Dither modulation | Each cover sample is quantised to one of two shifted lattices depending on the message bit; more robust than additive SS against gain attacks; theoretical capacity equals the dirty-paper coding bound [[1]](https://doi.org/10.1109/18.910567) |
 | **Informed Spread-Spectrum (Eggers-Bauml-Tzschoppe)** | 2003 | Costa dirty-paper coding | Jointly optimises embedding sequence and quantiser using knowledge of the host signal; approaches the Gel'fand-Pinsker capacity bound for watermarking channels [[1]](https://ieeexplore.ieee.org/document/1192077) |
 
-**State of the art:** QIM and informed spread-spectrum achieve near-capacity embedding with provable robustness to amplitude scaling and additive noise; these dominate robust watermarking. For pure steganography (where robustness is less critical), adaptive content-based schemes (S-UNIWARD) outperform SS in undetectability. Related to [Digital Watermarking / Fingerprinting](#digital-watermarking-fingerprinting) (SS is the dominant watermarking paradigm) and [Audio Steganography](#audio-steganography-echo-hiding-mp3stego).
+**State of the art:** QIM and informed spread-spectrum achieve near-capacity embedding with provable robustness to amplitude scaling and additive noise; these dominate robust watermarking. For pure steganography (where robustness is less critical), adaptive content-based schemes (S-UNIWARD) outperform SS in undetectability. Related to [Digital Watermarking / Fingerprinting](#digital-watermarking--fingerprinting) (SS is the dominant watermarking paradigm) and [Audio Steganography](#audio-steganography-echo-hiding--mp3stego).
 
 
 **Production readiness:** Mature
@@ -574,7 +575,7 @@ Spread-spectrum watermarking is the dominant paradigm in the watermarking indust
 | **EFF Dot Decoder** | 2005 | Reverse-engineered protocol | Electronic Frontier Foundation decoded the Xerox scheme by scanning prints at 2400 dpi under blue light; published an open decoder; established the presence of MICs on printers from Xerox, HP, Canon, and others [[1]](https://www.eff.org/pages/list-printers-which-do-or-do-not-print-tracking-dots) |
 | **Randomised Tracking Dots (TU Dresden)** | 2018 | Reversed-engineered + anonymising patch | TU Dresden researchers fully decoded the tracking dot protocol and released an open anonymisation tool that overlays randomised noise to obscure printer fingerprint while leaving printout appearance unchanged [[1]](https://dud.inf.tu-dresden.de/en/forschung/aktuell/2018/tracking-dots/) |
 
-**State of the art:** MICs are a mandatory (covert, non-consensual) steganographic channel in virtually all colour laser printers sold since the 1990s; the EFF/TU Dresden work makes the encoding public. No standards-track countermeasure exists; the TU Dresden anonymisation patch provides partial protection. Closely related to [Digital Watermarking / Fingerprinting](#digital-watermarking-fingerprinting) (origin identification) and [Kleptography / ASA](#kleptography-algorithm-substitution-attacks-asa) (covert channel embedded by the device manufacturer).
+**State of the art:** MICs are a mandatory (covert, non-consensual) steganographic channel in virtually all colour laser printers sold since the 1990s; the EFF/TU Dresden work makes the encoding public. No standards-track countermeasure exists; the TU Dresden anonymisation patch provides partial protection. Closely related to [Digital Watermarking / Fingerprinting](#digital-watermarking--fingerprinting) (origin identification) and [Kleptography / ASA](#kleptography--algorithm-substitution-attacks-asa) (covert channel embedded by the device manufacturer).
 
 
 **Production readiness:** Production
@@ -603,7 +604,7 @@ MICs are a covert, non-consensual surveillance mechanism; widely criticised by p
 | **Steganographic Capacity (Ker)** | 2007 | Square-root law | In natural covers, the steganographic capacity grows as O(√n) with cover size n (not linearly); embedding more than O(√n) bits leads to statistically detectable modifications regardless of embedding method [[1]](https://doi.org/10.1117/12.696774) |
 | **Distortion-Limited Stego (Filler-Judas-Fridrich)** | 2011 | STCs + syndrome coding | Syndrome-Trellis Codes achieve capacity of the additive distortion-limited steganographic channel; first practical scheme reaching the theoretical embedding efficiency bound [[1]](https://doi.org/10.1109/TIFS.2011.2134094) |
 
-**State of the art:** Ker's square-root law governs undetectability limits; STCs (Filler-Judas-Fridrich 2011) achieve the practical capacity bound for additive distortion. Dirty-paper coding (Costa 1983) governs the robustness-capacity trade-off for watermarking. These results underpin all modern scheme design in [Content-Adaptive Image Steganography](#content-adaptive-image-steganography), [Spread-Spectrum Steganography](#spread-spectrum-steganography), and [Digital Watermarking / Fingerprinting](#digital-watermarking-fingerprinting).
+**State of the art:** Ker's square-root law governs undetectability limits; STCs (Filler-Judas-Fridrich 2011) achieve the practical capacity bound for additive distortion. Dirty-paper coding (Costa 1983) governs the robustness-capacity trade-off for watermarking. These results underpin all modern scheme design in [Content-Adaptive Image Steganography](#content-adaptive-image-steganography), [Spread-Spectrum Steganography](#spread-spectrum-steganography), and [Digital Watermarking / Fingerprinting](#digital-watermarking--fingerprinting).
 
 
 **Production readiness:** Research
@@ -632,7 +633,7 @@ Ker's square-root law and Costa's dirty-paper coding bound are universally accep
 | **PVO (Pixel Value Ordering)** | 2013 | Local prediction error | Exploits prediction-error expansion in sorted pixel quadruples; achieves high embedding capacity with very low distortion; state-of-the-art reversible image steganography [[1]](https://doi.org/10.1109/TIP.2013.2275005) |
 | **RDH in Encrypted Images (Zhang et al.)** | 2011 | Compressible encrypted domain | Encrypts image, vacates room by compressing a subset of bits, embeds payload in vacated space; receiver can extract payload or restore plaintext independently; enables reversible stego over encrypted cloud storage [[1]](https://ieeexplore.ieee.org/document/5762603) |
 
-**State of the art:** Histogram shifting (Ni et al. 2006) and PVO (2013) are the practical standards for unencrypted images; RDH-in-encrypted-images (Zhang 2011) is increasingly important for cloud storage scenarios. Reversible data hiding is used in medical imaging (where the original must be recoverable) and legal forensics. Related to [Content-Adaptive Image Steganography](#content-adaptive-image-steganography) (irreversible counterpart) and [Digital Watermarking / Fingerprinting](#digital-watermarking-fingerprinting).
+**State of the art:** Histogram shifting (Ni et al. 2006) and PVO (2013) are the practical standards for unencrypted images; RDH-in-encrypted-images (Zhang 2011) is increasingly important for cloud storage scenarios. Reversible data hiding is used in medical imaging (where the original must be recoverable) and legal forensics. Related to [Content-Adaptive Image Steganography](#content-adaptive-image-steganography) (irreversible counterpart) and [Digital Watermarking / Fingerprinting](#digital-watermarking--fingerprinting).
 
 
 **Production readiness:** Mature
@@ -660,7 +661,7 @@ Important in specialised domains (medical imaging, legal forensics); active rese
 | **Text Coverless Stego (Chen et al.)** | 2018 | Knowledge-graph sentence retrieval | Selects genuine sentences from a news corpus whose knowledge-graph triples hash to message segments; retrieved sentences are forwarded unmodified; steganalysis cannot distinguish from ordinary news sharing [[1]](https://www.hindawi.com/journals/scn/2018/6941420/) |
 | **GAN-Synthesised Coverless (Hu et al.)** | 2021 | Conditional GAN image generation | Generates a photorealistic image conditioned on a secret key and message index; image is never stored — it is generated fresh, so no carrier database is needed; defeats passive steganalysis by construction [[1]](https://ieeexplore.ieee.org/document/9364920) |
 
-**State of the art:** Coverless steganography defeats all passive (statistical) steganalysis at the cost of requiring a shared corpus or generative model. GAN-based synthesis (2021) removes the database requirement. Active wardens that restrict which images may be transmitted can still block coverless channels. Related to [Steganalysis](#steganalysis) (the principal attack this approach evades) and [Adversarial / GAN Steganography](#adversarial-gan-steganography).
+**State of the art:** Coverless steganography defeats all passive (statistical) steganalysis at the cost of requiring a shared corpus or generative model. GAN-based synthesis (2021) removes the database requirement. Active wardens that restrict which images may be transmitted can still block coverless channels. Related to [Steganalysis](#steganalysis) (the principal attack this approach evades) and [Adversarial / GAN Steganography](#adversarial--gan-steganography).
 
 
 **Production readiness:** Research
@@ -688,7 +689,7 @@ Growing research area since 2015; GAN-based methods (2021) have increased intere
 | **Covert Communication via Ethereum Events (Li et al.)** | 2019 | Smart contract event logs | Deploys a smart contract that emits log events containing steganographic payload in event parameters; normal blockchain explorers display events as routine contract activity [[1]](https://ieeexplore.ieee.org/document/8845161) |
 | **Bitcoin Script Steganography** | 2020 | Witness / unlocking script fields | Embeds data in the unlocking script or SegWit witness fields of multi-signature transactions; fields must contain valid script data but have spare entropy that is not consensus-checked [[1]](https://arxiv.org/abs/2005.09630) |
 
-**State of the art:** OP_RETURN is the highest-capacity, simplest channel (80 bytes/tx, widely used by legitimate protocols). Script-field and address-generation methods provide higher imperceptibility at lower capacity. Blockchain steganography is resilient to censorship once confirmed, but transactions cost fees and capacity is low (~80 bytes/tx for OP_RETURN). Related to [Network / Protocol Steganography](#network-protocol-steganography) and [Blockchain & Distributed Ledger](13-blockchain-distributed-ledger.md).
+**State of the art:** OP_RETURN is the highest-capacity, simplest channel (80 bytes/tx, widely used by legitimate protocols). Script-field and address-generation methods provide higher imperceptibility at lower capacity. Blockchain steganography is resilient to censorship once confirmed, but transactions cost fees and capacity is low (~80 bytes/tx for OP_RETURN). Related to [Network / Protocol Steganography](#network--protocol-steganography) and [Blockchain & Distributed Ledger](13-blockchain-distributed-ledger.md).
 
 
 **Production readiness:** Experimental
@@ -716,7 +717,7 @@ Research interest driven by blockchain proliferation; no standardisation; used i
 | **DRAM Row-Buffer Covert Channel (Pessl et al.)** | 2016 | DRAM row activation timing | Encodes bits in row-buffer hit/miss timing across process boundaries; achieves ~12 Mb/s; bypasses LLC isolation mechanisms such as Intel CAT [[1]](https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/pessl) |
 | **Memory-Bus Locking Covert Channel** | 2021 | LOCK prefix bus contention | Sender issues LOCK-prefixed instructions to saturate the memory bus; receiver measures instruction latency; demonstrated across containers on the same host at ~100 kb/s [[1]](https://arxiv.org/abs/2107.14808) |
 
-**State of the art:** Flush+Reload and Prime+Probe are the foundational demonstrations; Intel CAT and page-deduplication disablement are the main mitigations. These channels exploit the same mechanisms as [Spectre/Meltdown](17-ai-hardware-physical-security.md#wiretap-channel-physical-layer-security)-class side channels but target covert exfiltration rather than leaking secrets. Related to [Kleptography / ASA](#kleptography-algorithm-substitution-attacks-asa) (covert exfiltration of key material).
+**State of the art:** Flush+Reload and Prime+Probe are the foundational demonstrations; Intel CAT and page-deduplication disablement are the main mitigations. These channels exploit the same mechanisms as [Spectre/Meltdown](17-ai-hardware-physical-security.md#wiretap-channel--physical-layer-security)-class side channels but target covert exfiltration rather than leaking secrets. Related to [Kleptography / ASA](#kleptography--algorithm-substitution-attacks-asa) (covert exfiltration of key material).
 
 
 **Production readiness:** Research
@@ -764,7 +765,7 @@ Active research area; publications in ACM CCS and multimedia security venues; no
 
 ## Subliminal Channels in Zero-Knowledge Proofs
 
-**Goal:** Exploit the verifier-chosen or prover-chosen randomness in interactive zero-knowledge proof protocols as a covert channel, allowing the prover (or a subverted verifier) to embed a hidden message in the proof transcript that is invisible to observers who only check the proof's validity. Distinct from [Kleptography / ASA](#kleptography-algorithm-substitution-attacks-asa) (which targets signature randomness); here the cover is the ZK proof itself.
+**Goal:** Exploit the verifier-chosen or prover-chosen randomness in interactive zero-knowledge proof protocols as a covert channel, allowing the prover (or a subverted verifier) to embed a hidden message in the proof transcript that is invisible to observers who only check the proof's validity. Distinct from [Kleptography / ASA](#kleptography--algorithm-substitution-attacks-asa) (which targets signature randomness); here the cover is the ZK proof itself.
 
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
@@ -773,7 +774,7 @@ Active research area; publications in ACM CCS and multimedia security venues; no
 | **Groth16 Subliminal Channel (Bellare-Hoang)** | 2021 | Groth16 proof randomness | Identifies subliminal bandwidth in the δ and γ randomness of Groth16 proofs; a subverted prover can leak ~256 bits of witness per proof while producing a perfectly valid SNARK; demonstrates ASA threat for non-interactive ZK systems [[1]](https://eprint.iacr.org/2021/1352) |
 | **Subliminal-Free SNARKs (Faonio-Fiore-Russo)** | 2023 | Updatable CRS + randomness extraction | Constructs SNARKs where the prover's output is randomness-extractable; any subliminal channel is computationally closed by a public extractor; requires an updatable CRS (structured reference string) [[1]](https://eprint.iacr.org/2023/1029) |
 
-**State of the art:** Non-interactive ZK systems (Groth16, PLONK) are susceptible to subliminal channels in proof randomness; mitigation requires deterministic randomness derivation (RFC 6979-style) or subliminal-free SNARK constructions. Related to [Kleptography / ASA](#kleptography-algorithm-substitution-attacks-asa) (same adversarial model applied to signatures) and [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems).
+**State of the art:** Non-interactive ZK systems (Groth16, PLONK) are susceptible to subliminal channels in proof randomness; mitigation requires deterministic randomness derivation (RFC 6979-style) or subliminal-free SNARK constructions. Related to [Kleptography / ASA](#kleptography--algorithm-substitution-attacks-asa) (same adversarial model applied to signatures) and [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems).
 
 
 **Production readiness:** Research
@@ -802,7 +803,7 @@ Growing awareness in the ZK community; Bellare-Hoang 2021 analysis has prompted 
 | **DISCOP** | 2023 | Distribution-copying sampling | Reformulates embedding as distribution matching: constructs a per-step mapping from message bits to tokens that preserves the marginal distribution exactly; zero KL divergence with unmodified LLM output under i.i.d. token assumption [[1]](https://arxiv.org/abs/2307.04451) |
 | **Perfectly Secure Linguistic Stego (Ding et al.)** | 2023 | Min-entropy coupling + LLM | Applies minimum-entropy coupling (Cicalese-Gargano-Vaccaro) to the LLM token distribution to achieve ε = 0 KL divergence; optimal capacity equals the per-token min-entropy of the model [[1]](https://arxiv.org/abs/2310.09502) |
 
-**State of the art:** METEOR and DISCOP are the leading provably-secure schemes; DISCOP achieves zero distributional divergence per token under i.i.d. assumptions. Practical detectability risks arise from multi-token dependencies not captured by marginal KL; n-gram and perplexity-ratio tests can distinguish some constructions. Builds on [Text / Linguistic Steganography](#text-linguistic-steganography) and [Information-Theoretic Steganography](#information-theoretic-steganography-cachin-model); related to [Steganography](#steganography) (where Meteor first appeared).
+**State of the art:** METEOR and DISCOP are the leading provably-secure schemes; DISCOP achieves zero distributional divergence per token under i.i.d. assumptions. Practical detectability risks arise from multi-token dependencies not captured by marginal KL; n-gram and perplexity-ratio tests can distinguish some constructions. Builds on [Text / Linguistic Steganography](#text--linguistic-steganography) and [Information-Theoretic Steganography](#information-theoretic-steganography-cachin-model); related to [Steganography](#steganography) (where Meteor first appeared).
 
 
 **Production readiness:** Experimental
@@ -859,7 +860,7 @@ Small research community at the intersection of quantum information and steganog
 | **HEAT (Thermal Covert Channel, Bartolini et al.)** | 2016 | CPU heat sink thermal gradient | CPU on one die encodes bits by toggling computational load; a co-located die's on-chip thermal sensor reads temperature fluctuations; demonstrated cross-core channel at ~1–10 b/s inside a single package [[1]](https://dl.acm.org/doi/10.1145/2934583.2934601) |
 | **BitWhisper (Guri et al.)** | 2015 | Thermal emission between adjacent computers | Two physically adjacent computers (no shared network); sender CPU generates heat patterns by varying workload; receiver's thermal sensor decodes; 8 bits/hour over ~15 cm air gap [[1]](https://arxiv.org/abs/1503.07919) |
 
-**State of the art:** Guri et al. (Ben-Gurion University) have systematically catalogued optical and thermal air-gap covert channels (2015–2021); LED-based channels achieve the highest rates (~4 kb/s). Countermeasures include LED covers, physical shielding, camera restrictions near sensitive hardware, and software LED-rate limiters. Related to [Cloud Cache Covert Channels](#cloud-cache-covert-channels) (microarchitectural exfiltration analogue) and [Hardware Side-Channels](17-ai-hardware-physical-security.md#wiretap-channel-physical-layer-security).
+**State of the art:** Guri et al. (Ben-Gurion University) have systematically catalogued optical and thermal air-gap covert channels (2015–2021); LED-based channels achieve the highest rates (~4 kb/s). Countermeasures include LED covers, physical shielding, camera restrictions near sensitive hardware, and software LED-rate limiters. Related to [Cloud Cache Covert Channels](#cloud-cache-covert-channels) (microarchitectural exfiltration analogue) and [Hardware Side-Channels](17-ai-hardware-physical-security.md#wiretap-channel--physical-layer-security).
 
 
 **Production readiness:** Research
@@ -878,7 +879,7 @@ Guri et al. have systematically catalogued these channels (2015-2024); accepted 
 
 ## Steganographic Protocols (StegProtocol / HYDAN)
 
-**Goal:** Embed hidden communication directly inside the bytestream of standard application-layer protocols or executable files so that the covert channel is indistinguishable from normal protocol traffic or benign software. Unlike network-header methods ([Network / Protocol Steganography](#network-protocol-steganography)), these schemes exploit semantic or syntactic redundancy at the application or binary level.
+**Goal:** Embed hidden communication directly inside the bytestream of standard application-layer protocols or executable files so that the covert channel is indistinguishable from normal protocol traffic or benign software. Unlike network-header methods ([Network / Protocol Steganography](#network--protocol-steganography)), these schemes exploit semantic or syntactic redundancy at the application or binary level.
 
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
@@ -888,7 +889,7 @@ Guri et al. have systematically catalogued these channels (2015-2024); accepted 
 | **TLS Record-Size Covert Channel** | 2018 | TLS fragmentation choices | Sender fragments application data into TLS records of sizes encoding message bits; record size is a free parameter within the TLS spec; receiver observes record boundaries; survives across TLS 1.3 implementations [[1]](https://ieeexplore.ieee.org/document/8622529) |
 | **SkypeMorph / FTE (Format-Transforming Encryption)** | 2012–2013 | Protocol format mimicry | Transforms Tor traffic to mimic Skype or arbitrary protocol formats using a format grammar; the ciphertext byte distribution matches the target protocol's statistical profile; defeats DPI-based censorship [[1]](https://cacm.acm.org/research/format-transforming-encryption/) |
 
-**State of the art:** HYDAN remains the reference binary-level steganographic scheme; FTE / SkypeMorph are deployed in censorship circumvention tools (Tor pluggable transports). StegProtocol (von Ahn-Hopper 2004) provides the foundational security definition for protocol-level steganography. Related to [Network / Protocol Steganography](#network-protocol-steganography) (transport-layer complement), [Kleptography / ASA](#kleptography-algorithm-substitution-attacks-asa) (protocol subversion), and [Deniable Encryption](#deniable-encryption) (coercion-resistant communication).
+**State of the art:** HYDAN remains the reference binary-level steganographic scheme; FTE / SkypeMorph are deployed in censorship circumvention tools (Tor pluggable transports). StegProtocol (von Ahn-Hopper 2004) provides the foundational security definition for protocol-level steganography. Related to [Network / Protocol Steganography](#network--protocol-steganography) (transport-layer complement), [Kleptography / ASA](#kleptography--algorithm-substitution-attacks-asa) (protocol subversion), and [Deniable Encryption](#deniable-encryption) (coercion-resistant communication).
 
 
 **Production readiness:** Experimental
@@ -916,7 +917,7 @@ FTE is integrated into Tor's pluggable transport ecosystem; HYDAN is a well-cite
 | **G.711 LSB Steganography (Huang et al.)** | 2011 | Codec payload LSB substitution | Replaces least significant bits of G.711 μ-law/A-law audio samples with covert data; exploits the codec's 8-bit quantisation; imperceptible degradation at 1 bit/sample (~8 kb/s capacity at 64 kb/s codec rate) [[1]](https://dl.acm.org/doi/10.1145/2543581.2543587) |
 | **Stega-Talk** | 2015 | G.711 LSB matching | Implements LSB matching (±1 modification) rather than replacement in G.711 payloads to reduce statistical detectability; open-source VoIP steganography tool with real-time embedding/extraction [[1]](https://pmc.ncbi.nlm.nih.gov/articles/PMC7913304/) |
 
-**State of the art:** LACK is the canonical VoIP timing-based covert channel; G.711 LSB methods are the simplest payload-based schemes. VoIP steganalysis uses sliding-window RS analysis and QIM detection on compressed speech frames. The high data rates and real-time nature of VoIP make it an attractive carrier — typical capacity ranges from 2–64 kb/s depending on codec and embedding depth. Related to [Network / Protocol Steganography](#network-protocol-steganography) (transport-layer channels) and [Audio Steganography](#audio-steganography-echo-hiding-mp3stego) (codec-domain embedding).
+**State of the art:** LACK is the canonical VoIP timing-based covert channel; G.711 LSB methods are the simplest payload-based schemes. VoIP steganalysis uses sliding-window RS analysis and QIM detection on compressed speech frames. The high data rates and real-time nature of VoIP make it an attractive carrier — typical capacity ranges from 2–64 kb/s depending on codec and embedding depth. Related to [Network / Protocol Steganography](#network--protocol-steganography) (transport-layer channels) and [Audio Steganography](#audio-steganography-echo-hiding--mp3stego) (codec-domain embedding).
 
 
 **Production readiness:** Experimental
@@ -1086,7 +1087,7 @@ Part of Guri et al.'s systematic air-gap exfiltration research programme; accept
 | **Encrypted Client Hello (ECH)** | 2023 | TLS 1.3 extension | Encrypts the TLS Client Hello (including SNI) using a key published in DNS; prevents censors from observing the destination domain even at the TLS layer; IETF draft standard; deployed by Cloudflare [[1]](https://datatracker.ietf.org/doc/draft-ietf-tls-esni/) |
 | **Domain Shadowing (Wei et al.)** | 2021 | Compromised CDN subdomain | Attacker registers subdomains under a legitimate CDN customer's domain; covert traffic to attacker-controlled subdomains inherits the parent domain's CDN certificate and reputation; harder to detect than standard domain fronting [[1]](https://www.usenix.org/system/files/sec21-wei.pdf) |
 
-**State of the art:** Classic domain fronting was disabled by major CDN providers (Google, Amazon) in 2018, but ECH (2023) provides a standards-track replacement that encrypts the entire Client Hello. meek remains deployed as a Tor pluggable transport. Domain shadowing (2021) extends the technique to compromised subdomains. Related to [Steganographic Protocols](#steganographic-protocols-stegprotocol-hydan) (protocol-level covert channels) and [Network / Protocol Steganography](#network-protocol-steganography) (network-layer hiding).
+**State of the art:** Classic domain fronting was disabled by major CDN providers (Google, Amazon) in 2018, but ECH (2023) provides a standards-track replacement that encrypts the entire Client Hello. meek remains deployed as a Tor pluggable transport. Domain shadowing (2021) extends the technique to compromised subdomains. Related to [Steganographic Protocols](#steganographic-protocols-stegprotocol--hydan) (protocol-level covert channels) and [Network / Protocol Steganography](#network--protocol-steganography) (network-layer hiding).
 
 
 **Production readiness:** Deprecated
@@ -1114,7 +1115,7 @@ Foundational censorship circumvention technique; meek is deployed in Tor; ECH is
 | **Homoglyph Substitution Steganography** | 2010s | Unicode lookalike codepoints | Replaces Latin characters with visually identical Unicode homoglyphs (e.g., Cyrillic 'а' U+0430 for Latin 'a' U+0061); encoding is invisible to the human eye; capacity ~1 bit per replaceable character; detectable by Unicode normalisation [[1]](https://www.usenix.org/conference/usenixsecurity21/presentation/boucher) |
 | **FontGuard (2025)** | 2025 | Deep font watermarking | Uses deep learning to embed imperceptible watermarks in font glyph outlines; robust to rasterisation, anti-aliasing, and format conversion; designed for font IP protection and document provenance [[1]](https://www.researchgate.net/publication/390545447_FontGuard_A_Robust_Font_Watermarking_Approach_Leveraging_Deep_Font_Knowledge) |
 
-**State of the art:** FontCode (2018) is the most capable glyph-perturbation scheme, surviving print-scan cycles with error correction. Homoglyph methods are trivially deployed but defeated by Unicode normalisation. FontGuard (2025) extends glyph-level watermarking with deep learning robustness. Related to [Text / Linguistic Steganography](#text-linguistic-steganography) (semantic-level text hiding), [Digital Watermarking / Fingerprinting](#digital-watermarking-fingerprinting) (document provenance), and [Printer Steganography](#printer-steganography-machine-identification-codes) (physical document tracking).
+**State of the art:** FontCode (2018) is the most capable glyph-perturbation scheme, surviving print-scan cycles with error correction. Homoglyph methods are trivially deployed but defeated by Unicode normalisation. FontGuard (2025) extends glyph-level watermarking with deep learning robustness. Related to [Text / Linguistic Steganography](#text--linguistic-steganography) (semantic-level text hiding), [Digital Watermarking / Fingerprinting](#digital-watermarking--fingerprinting) (document provenance), and [Printer Steganography](#printer-steganography-machine-identification-codes) (physical document tracking).
 
 
 **Production readiness:** Experimental
@@ -1142,7 +1143,7 @@ Small research community; FontCode (ACM SIGGRAPH 2018) is the most cited glyph s
 | **QuicCourier** | 2025 | QUIC packet padding manipulation | Creates a covert channel by appending secret data as padding at the end of QUIC packets or within packet payloads via a proxy node; leverages QUIC's encrypted transport to hide the padding from DPI; evaluated on real web-browsing traffic [[1]](https://www.computer.org/csdl/journal/tq/2025/05/10916752/24TAwn09eRq) |
 | **QUIC-Exfil** | 2025 | Server Preferred Address abuse | Exploits QUIC's Server Preferred Address feature to redirect connections to attacker-controlled endpoints for data exfiltration; the migration appears as legitimate connection migration to middleboxes [[1]](https://arxiv.org/abs/2505.05292) |
 
-**State of the art:** QUIC's encryption-by-default design makes it inherently more hospitable to covert channels than TCP/TLS. Mileva et al. (2023) provide the definitive taxonomy of 20 QUIC covert channel vectors. QuicCourier and QUIC-Exfil (2025) demonstrate practical exploitation. Countermeasures are limited since QUIC's encrypted headers are opaque to middleboxes by design. Related to [Network / Protocol Steganography](#network-protocol-steganography) (TCP/IP-layer channels), [Steganographic Protocols](#steganographic-protocols-stegprotocol-hydan) (application-layer protocol hiding), and [Domain Fronting](#domain-fronting) (encrypted-transport censorship circumvention).
+**State of the art:** QUIC's encryption-by-default design makes it inherently more hospitable to covert channels than TCP/TLS. Mileva et al. (2023) provide the definitive taxonomy of 20 QUIC covert channel vectors. QuicCourier and QUIC-Exfil (2025) demonstrate practical exploitation. Countermeasures are limited since QUIC's encrypted headers are opaque to middleboxes by design. Related to [Network / Protocol Steganography](#network--protocol-steganography) (TCP/IP-layer channels), [Steganographic Protocols](#steganographic-protocols-stegprotocol--hydan) (application-layer protocol hiding), and [Domain Fronting](#domain-fronting) (encrypted-transport censorship circumvention).
 
 
 **Production readiness:** Experimental

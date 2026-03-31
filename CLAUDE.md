@@ -134,7 +134,14 @@ Sections cross-reference each other using Markdown anchor links of the form:
 [Section Name](#scheme-name)
 ```
 
-GitHub slugifies anchors by: lowercasing, replacing spaces with hyphens, dropping characters that are not alphanumeric, hyphens, or underscores. Parentheses and slashes are removed (not replaced with hyphens), so `## Foo (Bar) / Baz` becomes `#foo-bar-baz` (single hyphens, not double). For links across files:
+GitHub slugifies anchors by: lowercasing, removing non-alphanumeric characters (except hyphens, underscores, and spaces), then replacing each space with a hyphen. Key rules:
+- Parentheses and slashes are **removed** (not replaced), but surrounding spaces remain, producing double hyphens: `## Foo (Bar) / Baz` → `#foo--bar----baz`.
+- Emoji characters (e.g. flag emoji 🇨🇳) are **stripped**, leaving surrounding spaces that become hyphens: `## 🇨🇳 China` → `#-china` (leading hyphen preserved).
+- Multiple consecutive hyphens are **NOT collapsed** by GitHub — `--` stays `--`.
+- Test anchors on GitHub directly when in doubt — local Markdown renderers may differ.
+- The canonical source of truth for anchors is the GitHub-rendered page (inspect element or `curl` the HTML and look for `id="user-content-..."`).
+
+For links across files:
 
 ```markdown
 [Section Name](NN-filename.md#section-name-slug)

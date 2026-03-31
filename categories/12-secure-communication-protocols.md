@@ -4,56 +4,57 @@
 <!-- TOC -->
 ## Contents (49 schemes)
 
-- [Secure Channels / Protocol Constructions](#secure-channels-protocol-constructions)
-- [Double Ratchet / Symmetric Ratchet](#double-ratchet-symmetric-ratchet)
-- [Continuous Group Key Agreement (CGKA) / MLS](#continuous-group-key-agreement-cgka-mls)
-- [X3DH / Extended Triple DH Key Agreement](#x3dh-extended-triple-dh-key-agreement)
-- [DTLS / Datagram TLS](#dtls-datagram-tls)
-- [IKEv2 / IPsec ESP](#ikev2-ipsec-esp)
+- [Secure Channels / Protocol Constructions](#secure-channels--protocol-constructions)
+- [Double Ratchet / Symmetric Ratchet](#double-ratchet--symmetric-ratchet)
+- [Continuous Group Key Agreement (CGKA) / MLS](#continuous-group-key-agreement-cgka--mls)
+- [X3DH / Extended Triple DH Key Agreement](#x3dh--extended-triple-dh-key-agreement)
+- [DTLS / Datagram TLS](#dtls--datagram-tls)
+- [IKEv2 / IPsec ESP](#ikev2--ipsec-esp)
 - [OpenPGP (RFC 9580)](#openpgp-rfc-9580)
 - [QUIC Packet Protection](#quic-packet-protection)
-- [BIP 324 / Opportunistic P2P Encryption](#bip-324-opportunistic-p2p-encryption)
-- [Apple PQ3 / Post-Quantum iMessage](#apple-pq3-post-quantum-imessage)
+- [BIP 324 / Opportunistic P2P Encryption](#bip-324--opportunistic-p2p-encryption)
+- [Apple PQ3 / Post-Quantum iMessage](#apple-pq3--post-quantum-imessage)
 - [KEMTLS (Post-Quantum TLS)](#kemtls-post-quantum-tls)
 - [Encrypted Client Hello (ECH)](#encrypted-client-hello-ech)
-- [EAP-PWD / Password-Based Enterprise WiFi Auth](#eap-pwd-password-based-enterprise-wifi-auth)
-- [Message Franking / Abuse Reporting in E2E](#message-franking-abuse-reporting-in-e2e)
+- [EAP-PWD / Password-Based Enterprise WiFi Auth](#eap-pwd--password-based-enterprise-wifi-auth)
+- [Message Franking / Abuse Reporting in E2E](#message-franking--abuse-reporting-in-e2e)
 - [Group Key Agreement](#group-key-agreement)
-- [Token-Based Authentication (TOTP / FIDO2 / WebAuthn)](#token-based-authentication-totp-fido2-webauthn)
-- [SSH Transport Layer / Secure Shell Cryptography](#ssh-transport-layer-secure-shell-cryptography)
-- [SRTP / Secure Real-time Transport Protocol](#srtp-secure-real-time-transport-protocol)
+- [Token-Based Authentication (TOTP / FIDO2 / WebAuthn)](#token-based-authentication-totp--fido2--webauthn)
+- [SSH Transport Layer / Secure Shell Cryptography](#ssh-transport-layer--secure-shell-cryptography)
+- [SRTP / Secure Real-time Transport Protocol](#srtp--secure-real-time-transport-protocol)
 - [S/MIME (Secure/Multipurpose Internet Mail Extensions)](#smime-securemultipurpose-internet-mail-extensions)
 - [OMEMO (Signal Protocol for XMPP)](#omemo-signal-protocol-for-xmpp)
-- [DKIM / DomainKeys Identified Mail](#dkim-domainkeys-identified-mail)
-- [ZRTP / VoIP Media-Path Key Agreement](#zrtp-voip-media-path-key-agreement)
-- [DNSCurve / Link-Level DNS Encryption](#dnscurve-link-level-dns-encryption)
-- [Briar / Bramble P2P Encrypted Messaging](#briar-bramble-p2p-encrypted-messaging)
-- [Tox Protocol / Serverless P2P E2E Encrypted Chat](#tox-protocol-serverless-p2p-e2e-encrypted-chat)
-- [Olm / Matrix Pairwise Ratchet](#olm-matrix-pairwise-ratchet)
+- [DKIM / DomainKeys Identified Mail](#dkim--domainkeys-identified-mail)
+- [ZRTP / VoIP Media-Path Key Agreement](#zrtp--voip-media-path-key-agreement)
+- [DNSCurve / Link-Level DNS Encryption](#dnscurve--link-level-dns-encryption)
+- [Briar / Bramble P2P Encrypted Messaging](#briar--bramble-p2p-encrypted-messaging)
+- [Tox Protocol / Serverless P2P E2E Encrypted Chat](#tox-protocol--serverless-p2p-e2e-encrypted-chat)
+- [Olm / Matrix Pairwise Ratchet](#olm--matrix-pairwise-ratchet)
 - [WireGuard Noise_IKpsk2 Handshake](#wireguard-noise_ikpsk2-handshake)
-- [STARTTLS / Opportunistic vs. Mandatory TLS](#starttls-opportunistic-vs-mandatory-tls)
+- [STARTTLS / Opportunistic vs. Mandatory TLS](#starttls--opportunistic-vs-mandatory-tls)
 - [Oblivious HTTP (OHTTP)](#oblivious-http-ohttp)
-- [ACME Protocol / Automated Certificate Management](#acme-protocol-automated-certificate-management)
-- [WhatsApp Key Transparency / Auditable Key Directory (AKD)](#whatsapp-key-transparency-auditable-key-directory-akd)
-- [TLS 1.3 0-RTT / Early Data Security Properties](#tls-13-0-rtt-early-data-security-properties)
+- [ACME Protocol / Automated Certificate Management](#acme-protocol--automated-certificate-management)
+- [WhatsApp Key Transparency / Auditable Key Directory (AKD)](#whatsapp-key-transparency--auditable-key-directory-akd)
+- [TLS 1.3 0-RTT / Early Data Security Properties](#tls-13-0-rtt--early-data-security-properties)
 - [QUIC Connection Migration and Security](#quic-connection-migration-and-security)
-- [RPKI / BGPsec (Route Origin Authentication)](#rpki-bgpsec-route-origin-authentication)
-- [MASQUE / HTTP/3-Based Tunneling Security](#masque-http3-based-tunneling-security)
+- [RPKI / BGPsec (Route Origin Authentication)](#rpki--bgpsec-route-origin-authentication)
+- [MASQUE / HTTP/3-Based Tunneling Security](#masque--http3-based-tunneling-security)
 - [DNS over HTTPS (DoH) and DNS over TLS (DoT)](#dns-over-https-doh-and-dns-over-tls-dot)
-- [I2P — Garlic Routing and Tunnel-Based Anonymity](#i2p-garlic-routing-and-tunnel-based-anonymity)
-- [Post-Quantum TLS Handshake — X25519Kyber768 Hybrid in Practice](#post-quantum-tls-handshake-x25519kyber768-hybrid-in-practice)
-- [Nostr — Cryptographic Identity and Relay-Based Messaging](#nostr-cryptographic-identity-and-relay-based-messaging)
-- [Cwtch and Session Protocol — Metadata-Resistant Group Messaging](#cwtch-and-session-protocol-metadata-resistant-group-messaging)
-- [MIMI / More Instant Messaging Interoperability](#mimi-more-instant-messaging-interoperability)
-- [SFrame / Secure Frame for Real-Time Media](#sframe-secure-frame-for-real-time-media)
-- [Rosenpass / Post-Quantum Key Exchange for WireGuard](#rosenpass-post-quantum-key-exchange-for-wireguard)
-- [age / Modern File Encryption Format](#age-modern-file-encryption-format)
-- [Saltpack / NaCl-Based Authenticated Message Format](#saltpack-nacl-based-authenticated-message-format)
-- [NTS / Network Time Security](#nts-network-time-security)
-- [Roughtime / Authenticated Rough Time Synchronization](#roughtime-authenticated-rough-time-synchronization)
-- [SCRAM / Salted Challenge Response Authentication Mechanism](#scram-salted-challenge-response-authentication-mechanism)
-- [tcpcrypt / Opportunistic TCP Stream Encryption](#tcpcrypt-opportunistic-tcp-stream-encryption)
+- [I2P — Garlic Routing and Tunnel-Based Anonymity](#i2p--garlic-routing-and-tunnel-based-anonymity)
+- [Post-Quantum TLS Handshake — X25519Kyber768 Hybrid in Practice](#post-quantum-tls-handshake--x25519kyber768-hybrid-in-practice)
+- [Nostr — Cryptographic Identity and Relay-Based Messaging](#nostr--cryptographic-identity-and-relay-based-messaging)
+- [Cwtch and Session Protocol — Metadata-Resistant Group Messaging](#cwtch-and-session-protocol--metadata-resistant-group-messaging)
+- [MIMI / More Instant Messaging Interoperability](#mimi--more-instant-messaging-interoperability)
+- [SFrame / Secure Frame for Real-Time Media](#sframe--secure-frame-for-real-time-media)
+- [Rosenpass / Post-Quantum Key Exchange for WireGuard](#rosenpass--post-quantum-key-exchange-for-wireguard)
+- [age / Modern File Encryption Format](#age--modern-file-encryption-format)
+- [Saltpack / NaCl-Based Authenticated Message Format](#saltpack--nacl-based-authenticated-message-format)
+- [NTS / Network Time Security](#nts--network-time-security)
+- [Roughtime / Authenticated Rough Time Synchronization](#roughtime--authenticated-rough-time-synchronization)
+- [SCRAM / Salted Challenge Response Authentication Mechanism](#scram--salted-challenge-response-authentication-mechanism)
+- [tcpcrypt / Opportunistic TCP Stream Encryption](#tcpcrypt--opportunistic-tcp-stream-encryption)
 <!-- /TOC -->
+
 
 ## Secure Channels / Protocol Constructions
 
@@ -98,7 +99,7 @@ TLS 1.3 (RFC 8446), MLS (RFC 9420), WireGuard (IETF RFC pending), ECH (RFC 9849)
 | **Sesame (Signal)** | 2017 | Double Ratchet + X3DH | Session management for multiple devices [[1]](https://signal.org/docs/specifications/sesame/) |
 | **Matrix / Megolm** | 2016 | Symmetric ratchet | Group messaging ratchet; sender ratchet only (efficient for groups) [[1]](https://gitlab.matrix.org/matrix-org/olm/-/blob/master/docs/megolm.md) |
 
-**State of the art:** Signal Double Ratchet (WhatsApp, Signal, Google Messages); Megolm for large groups. See also [Secure Channels](#secure-channels-protocol-constructions).
+**State of the art:** Signal Double Ratchet (WhatsApp, Signal, Google Messages); Megolm for large groups. See also [Secure Channels](#secure-channels--protocol-constructions).
 
 **Production readiness:** Production
 Deployed in WhatsApp (~3B users), Signal, Google Messages, Facebook Messenger, and Matrix (Megolm).
@@ -127,7 +128,7 @@ Widely trusted and peer-reviewed. Signal Protocol is the de facto standard for p
 | **MLS (Messaging Layer Security)** | 2023 | TreeKEM + proposals | **IETF RFC 9420**; standard for group E2E messaging [[1]](https://www.rfc-editor.org/rfc/rfc9420) |
 | **CoCoA (Continuous Cooperative Key Agreement)** | 2022 | Server-aided CGKA | Relaxed model; server helps coordinate but learns nothing [[1]](https://eprint.iacr.org/2022/251) |
 
-**State of the art:** MLS (RFC 9420); adopted by Cisco Webex, Wire, Matrix. Extends [Double Ratchet](#double-ratchet-symmetric-ratchet) to groups.
+**State of the art:** MLS (RFC 9420); adopted by Cisco Webex, Wire, Matrix. Extends [Double Ratchet](#double-ratchet--symmetric-ratchet) to groups.
 
 **Production readiness:** Production
 RFC 9420 finalized in 2023; deployed in Cisco Webex, Wire, and under adoption in Matrix.
@@ -169,7 +170,7 @@ IETF RFC 9420 (2023). Adopted by major messaging platforms; endorsed by the IETF
 | **X3DH** | 2016 | Signal Foundation; used in Signal, WhatsApp (~3B users), Facebook Messenger [[1]](https://signal.org/docs/specifications/x3dh/) |
 | **PQXDH** | 2023 | Post-quantum X3DH; replaces one DH with ML-KEM-1024; deployed in Signal [[1]](https://signal.org/docs/specifications/pqxdh/) |
 
-**Security properties:** Forward secrecy (EK_A deleted after use), deniability (no long-term signatures on message content), break-in recovery (via [Double Ratchet](#double-ratchet-symmetric-ratchet)).
+**Security properties:** Forward secrecy (EK_A deleted after use), deniability (no long-term signatures on message content), break-in recovery (via [Double Ratchet](#double-ratchet--symmetric-ratchet)).
 
 **State of the art:** PQXDH (2023) deployed in Signal for all new sessions — first production PQ upgrade in a major messaging app. Combines X25519 DH with ML-KEM-1024 in a hybrid fashion; keys derived from both.
 
@@ -364,7 +365,7 @@ IETF RFC 9580 (2024). Long-established standard for encrypted email and file sig
 | **RFC 9001** | Using TLS 1.3 with QUIC (crypto layer) |
 | **RFC 9002** | QUIC loss detection and congestion control |
 
-**State of the art:** RFC 9001 (2021) is the cryptographic specification. HTTP/3 mandates QUIC. All major browsers and CDNs (Cloudflare, Google, Fastly) deploy QUIC. See [Secure Channels](#secure-channels-protocol-constructions) and [Authenticated Encryption](02-authenticated-structured-encryption.md#authenticated-encryption-aead).
+**State of the art:** RFC 9001 (2021) is the cryptographic specification. HTTP/3 mandates QUIC. All major browsers and CDNs (Cloudflare, Google, Fastly) deploy QUIC. See [Secure Channels](#secure-channels--protocol-constructions) and [Authenticated Encryption](02-authenticated-structured-encryption.md#authenticated-encryption-aead).
 
 **Production readiness:** Production
 Carries ~30% of global web traffic (2024). Deployed in all major browsers and CDNs.
@@ -400,7 +401,7 @@ IETF RFC 9000 (transport), RFC 9001 (crypto), RFC 9002 (congestion). HTTP/3 mand
 
 **Key insight — Elligator encoding:** Unencoded X25519 public keys have a detectable bit pattern. BIP 324 uses Elligator2 to encode keys as uniformly random 32-byte strings, making the handshake indistinguishable from random noise.
 
-**State of the art:** BIP 324 (2024) is the cryptographic foundation for Bitcoin's V2 P2P protocol; deployed in Bitcoin Core 27.0. Motivates similar opportunistic encryption for other P2P networks. See [Secure Channels](#secure-channels-protocol-constructions).
+**State of the art:** BIP 324 (2024) is the cryptographic foundation for Bitcoin's V2 P2P protocol; deployed in Bitcoin Core 27.0. Motivates similar opportunistic encryption for other P2P networks. See [Secure Channels](#secure-channels--protocol-constructions).
 
 **Production readiness:** Production
 Deployed in Bitcoin Core 26.0+ (2023); majority of Bitcoin nodes running V2 transport by 2025.
@@ -441,7 +442,7 @@ Bitcoin BIP 324; adopted by Bitcoin Core. Well-received by the Bitcoin developer
 
 **Formal analysis:** Linker et al. (USENIX Security 2025) verified PQ3 with Tamarin prover under standard symbolic model.
 
-**State of the art:** PQ3 (2024) is the first large-scale deployment of ongoing PQ rekeying in a consumer messaging app. Sets a new bar beyond [PQXDH](#x3dh-extended-triple-dh-key-agreement). See [Key Exchange](#group-key-agreement), [Double Ratchet](#double-ratchet-symmetric-ratchet).
+**State of the art:** PQ3 (2024) is the first large-scale deployment of ongoing PQ rekeying in a consumer messaging app. Sets a new bar beyond [PQXDH](#x3dh--extended-triple-dh-key-agreement). See [Key Exchange](#group-key-agreement), [Double Ratchet](#double-ratchet--symmetric-ratchet).
 
 **Production readiness:** Production
 Deployed to ~2 billion devices in iOS 17.4+ (2024). All new iMessage conversations use PQ3.
@@ -475,7 +476,7 @@ Proprietary Apple protocol; not an open standard. Formally analysed and well-rec
 | **KEMTLS-PDK** | 2021 | Pre-distributed key variant; 0-RTT server auth [[1]](https://eprint.iacr.org/2021/779) |
 | **KEMTLS with Kyber** | 2022 | Concrete instantiation with ML-KEM-768 + Dilithium for CA chain; experimental [[1]](https://eprint.iacr.org/2022/1086) |
 
-**State of the art:** KEMTLS (2020) is not yet deployed but is the leading proposal for PQ TLS without PQ signatures. Current TLS deployments use hybrid X25519+ML-KEM (see [PQ Key Exchange](#rosenpass-post-quantum-key-exchange-for-wireguard)) for the key exchange, still relying on classical signatures for authentication. KEMTLS targets the next migration step.
+**State of the art:** KEMTLS (2020) is not yet deployed but is the leading proposal for PQ TLS without PQ signatures. Current TLS deployments use hybrid X25519+ML-KEM (see [PQ Key Exchange](#rosenpass--post-quantum-key-exchange-for-wireguard)) for the key exchange, still relying on classical signatures for authentication. KEMTLS targets the next migration step.
 
 **Production readiness:** Research
 Academic proposal with experimental implementations; not deployed in production. Targets the next phase of PQ TLS migration.
@@ -501,7 +502,7 @@ Active academic research and IETF discussion. Not yet standardized. Endorsed by 
 | **ESNI (Encrypted SNI)** | 2018 | AES + DH | First attempt; encrypted only SNI field; deployed by Cloudflare [[1]](https://blog.cloudflare.com/encrypted-sni/) |
 | **ECH (Encrypted Client Hello)** | 2024 | HPKE (RFC 9180) | **RFC 9849**; encrypts entire ClientHello; deployed in Chrome, Firefox, Cloudflare [[1]](https://www.rfc-editor.org/rfc/rfc9849.html) |
 
-**State of the art:** ECH (RFC 9849, 2024); deployed in major browsers. Complements [ODoH](#oblivious-http-ohttp) and [TLS in Secure Channels](#secure-channels-protocol-constructions).
+**State of the art:** ECH (RFC 9849, 2024); deployed in major browsers. Complements [ODoH](#oblivious-http-ohttp) and [TLS in Secure Channels](#secure-channels--protocol-constructions).
 
 **Production readiness:** Production
 Deployed in Chrome, Firefox, and Cloudflare since 2024. RFC 9849 finalized.
@@ -539,7 +540,7 @@ IETF RFC 9849 (2024). Endorsed by major browser vendors and CDN providers. Key c
 
 **WPA3 SAE:** Simultaneous Authentication of Equals — same Dragonfly construction (RFC 7664) applied to WPA3 personal mode without RADIUS. Mandatory on all WiFi 6 devices (~5B devices by 2025).
 
-**State of the art:** RFC 5931 (EAP-PWD), Wi-Fi Alliance WPA3 SAE (2018). EAP-PWD for enterprise (with RADIUS); SAE for home/small office. See [Password-Based KDF / PAKE](#eap-pwd-password-based-enterprise-wifi-auth), [DTLS](#dtls-datagram-tls).
+**State of the art:** RFC 5931 (EAP-PWD), Wi-Fi Alliance WPA3 SAE (2018). EAP-PWD for enterprise (with RADIUS); SAE for home/small office. See [Password-Based KDF / PAKE](#eap-pwd--password-based-enterprise-wifi-auth), [DTLS](#dtls--datagram-tls).
 
 **Production readiness:** Production
 WPA3 SAE is mandatory on all Wi-Fi 6 devices (~5B devices by 2025). EAP-PWD deployed in enterprise RADIUS environments.
@@ -682,7 +683,7 @@ FIDO2/WebAuthn is a W3C standard and FIDO Alliance specification. TOTP is IETF R
 
 **Post-quantum (OpenSSH 10.0, 2025):** `mlkem768x25519-sha256` is the new default KEX — a hybrid of ML-KEM-768 and X25519, providing both classical and post-quantum forward secrecy.
 
-**State of the art:** OpenSSH 10.0 (2025) defaults to ML-KEM-768 + X25519 hybrid KEX and Ed25519 host keys. RFC 9142 (2022) deprecates weak algorithms (DH group1, hmac-md5). Terrapin patch (strict KEX) in OpenSSH 9.6. See [Secure Channels](#secure-channels-protocol-constructions).
+**State of the art:** OpenSSH 10.0 (2025) defaults to ML-KEM-768 + X25519 hybrid KEX and Ed25519 host keys. RFC 9142 (2022) deprecates weak algorithms (DH group1, hmac-md5). Terrapin patch (strict KEX) in OpenSSH 9.6. See [Secure Channels](#secure-channels--protocol-constructions).
 
 **Production readiness:** Production
 OpenSSH is the dominant SSH implementation; installed on virtually every Linux/macOS/BSD server.
@@ -742,7 +743,7 @@ SRTP does not specify its own key management; instead DTLS-SRTP is the mandatory
 
 **Deployments:** All WebRTC implementations (Chrome, Firefox, Safari), SIP-based VoIP (Asterisk, FreeSWITCH), video conferencing (Zoom, Teams use SRTP internally), IPTV multicast.
 
-**State of the art:** RFC 3711 (2004) for SRTP; RFC 5764 (2010) for DTLS-SRTP. WebRTC mandates DTLS-SRTP (RFC 8827, 2021). AES-256-GCM as an SRTP cipher is specified in RFC 7714 (2016) — modernizes SRTP to use AEAD and eliminate the separate HMAC-SHA1. See [DTLS](#dtls-datagram-tls).
+**State of the art:** RFC 3711 (2004) for SRTP; RFC 5764 (2010) for DTLS-SRTP. WebRTC mandates DTLS-SRTP (RFC 8827, 2021). AES-256-GCM as an SRTP cipher is specified in RFC 7714 (2016) — modernizes SRTP to use AEAD and eliminate the separate HMAC-SHA1. See [DTLS](#dtls--datagram-tls).
 
 **Production readiness:** Production
 Deployed in all WebRTC implementations, SIP VoIP systems, and video conferencing platforms.
@@ -855,7 +856,7 @@ Alice (2 devices) → Bob (3 devices)
 
 **Deployments:** Conversations (Android), Gajim (desktop), Dino (Linux), Monal (iOS/macOS), Profanity (CLI). Supported by all major XMPP servers (ejabberd, Prosody, MongooseIM).
 
-**State of the art:** OMEMO 2 (XEP-0384 v0.9.0, 2025); widely deployed in the XMPP ecosystem. Provides the same cryptographic guarantees as Signal (forward secrecy, post-compromise security, deniability) within XMPP's federated model. See [Double Ratchet](#double-ratchet-symmetric-ratchet), [X3DH](#x3dh-extended-triple-dh-key-agreement).
+**State of the art:** OMEMO 2 (XEP-0384 v0.9.0, 2025); widely deployed in the XMPP ecosystem. Provides the same cryptographic guarantees as Signal (forward secrecy, post-compromise security, deniability) within XMPP's federated model. See [Double Ratchet](#double-ratchet--symmetric-ratchet), [X3DH](#x3dh--extended-triple-dh-key-agreement).
 
 **Production readiness:** Production
 Deployed in all major XMPP clients; OMEMO 2 is the current version in active use.
@@ -963,7 +964,7 @@ IETF RFC 6376, RFC 8463 (Ed25519). Effectively mandatory for email deliverabilit
 
 **Deployments:** Signal/RedPhone (Android, until 2017; replaced by Signal Protocol channel for auth), Jitsi Desktop (GNU ZRTP4J), Linphone (bZRTP, actively maintained through 2025), Twinkle, Zfone (Zimmermann's reference implementation).
 
-**State of the art:** RFC 6189 (2011). Signal deprecated ZRTP in 2017 in favour of using its own Signal Protocol session for call authentication; DTLS-SRTP is now the WebRTC standard for browser calls. ZRTP remains relevant for SIP/softphone deployments (Linphone, Jitsi). A post-quantum ZRTP extension (replacing DH with a hybrid KEM) is in early draft. See [SRTP](#srtp-secure-real-time-transport-protocol), [DTLS](#dtls-datagram-tls).
+**State of the art:** RFC 6189 (2011). Signal deprecated ZRTP in 2017 in favour of using its own Signal Protocol session for call authentication; DTLS-SRTP is now the WebRTC standard for browser calls. ZRTP remains relevant for SIP/softphone deployments (Linphone, Jitsi). A post-quantum ZRTP extension (replacing DH with a hybrid KEM) is in early draft. See [SRTP](#srtp--secure-real-time-transport-protocol), [DTLS](#dtls--datagram-tls).
 
 **Production readiness:** Mature
 Deployed in Linphone and Jitsi Desktop. Largely superseded by DTLS-SRTP for WebRTC. Still relevant for SIP/softphone use cases.
@@ -1008,7 +1009,7 @@ IETF Informational RFC 6189. Superseded by DTLS-SRTP in WebRTC contexts. Remains
 **Implementations:** djbdns/dnscache (Bernstein's reference resolver), CurveDNS (authoritative proxy by Jan Mojžíš), dqcache.
 No notable open-source implementations available.
 
-**State of the art:** DNSCurve was never standardized as an IETF RFC. DNS-over-TLS (RFC 7858) and DNS-over-HTTPS (RFC 8484) have since addressed the confidentiality gap on the stub-resolver-to-recursive-resolver leg, while DNSSEC covers end-to-end integrity. DNSCurve's Curve25519 + NaCl design was influential — it popularized `crypto_box` for link-layer encryption and prefigured WireGuard's approach. See [Secure Channels](#secure-channels-protocol-constructions), [Applied Infrastructure PKI](14-applied-infrastructure-pki.md#dnssec-dns-security-extensions).
+**State of the art:** DNSCurve was never standardized as an IETF RFC. DNS-over-TLS (RFC 7858) and DNS-over-HTTPS (RFC 8484) have since addressed the confidentiality gap on the stub-resolver-to-recursive-resolver leg, while DNSSEC covers end-to-end integrity. DNSCurve's Curve25519 + NaCl design was influential — it popularized `crypto_box` for link-layer encryption and prefigured WireGuard's approach. See [Secure Channels](#secure-channels--protocol-constructions), [Applied Infrastructure PKI](14-applied-infrastructure-pki.md#dnssec--dns-security-extensions).
 
 **Production readiness:** Deprecated
 Never standardized as an RFC. Superseded by DoT (RFC 7858) and DoH (RFC 8484) for DNS confidentiality.
@@ -1055,7 +1056,7 @@ IETF draft only; never progressed to RFC. Historically influential (popularized 
 
 **Security note:** CVE-2023-33982 (fixed in Briar 1.5.3) — BHP was not fully forward-secure in the contact-pairing step; compromise of both long-term keys post-handshake could expose the pairing secret. Fixed by adding ephemeral keys to BHP.
 
-**State of the art:** Briar 1.5+ (2023+); open specification at `code.briarproject.org/briar/briar-spec`. Designed for journalists and activists. The Bramble suite is the most complete open specification for delay-tolerant, infrastructure-free E2E encrypted messaging. See [Anonymity / Onion Routing](11-anonymity-credentials.md), [Double Ratchet](#double-ratchet-symmetric-ratchet).
+**State of the art:** Briar 1.5+ (2023+); open specification at `code.briarproject.org/briar/briar-spec`. Designed for journalists and activists. The Bramble suite is the most complete open specification for delay-tolerant, infrastructure-free E2E encrypted messaging. See [Anonymity / Onion Routing](11-anonymity-credentials.md), [Double Ratchet](#double-ratchet--symmetric-ratchet).
 
 **Production readiness:** Mature
 Deployed for journalists and activists. Production Android app; desktop beta. Infrastructure-independent design limits mainstream adoption.
@@ -1100,7 +1101,7 @@ Open specification; well-regarded in the privacy/activist community. Not standar
 | **Antox** | Android | Maintained fork |
 | **Toxic** | CLI | Terminal client |
 
-**State of the art:** Tox protocol specification maintained by the TokTok project (`toktok.ltd/spec`). No formal audit; not recommended for high-threat-model use without independent review. The NaCl/libsodium cryptographic primitives (Curve25519 + XSalsa20-Poly1305) are state-of-the-art; the protocol layering and metadata exposure are the open research questions. Compare [Briar](#briar-bramble-p2p-encrypted-messaging) for a more threat-modelled P2P alternative. See [[1]](https://toktok.ltd/spec.html).
+**State of the art:** Tox protocol specification maintained by the TokTok project (`toktok.ltd/spec`). No formal audit; not recommended for high-threat-model use without independent review. The NaCl/libsodium cryptographic primitives (Curve25519 + XSalsa20-Poly1305) are state-of-the-art; the protocol layering and metadata exposure are the open research questions. Compare [Briar](#briar--bramble-p2p-encrypted-messaging) for a more threat-modelled P2P alternative. See [[1]](https://toktok.ltd/spec.html).
 
 **Production readiness:** Experimental
 Multiple working clients exist but no formal security audit of the protocol. Not recommended for high-threat-model use.
@@ -1151,7 +1152,7 @@ Olm is a pairwise Double Ratchet protocol. Each pair of Matrix devices establish
 
 **Deployments:** Element (Web, Desktop, iOS, Android), FluffyChat, Nheko, Cinny — all major Matrix clients. Used by German government (Bundeswehr), French government (Tchap), NATO-aligned agencies.
 
-**State of the art:** vodozemac (2023) — a formally verified Rust reimplementation via the Hax framework — replaces libolm as the reference implementation in Element Web/X. See [Double Ratchet](#double-ratchet-symmetric-ratchet), [X3DH](#x3dh-extended-triple-dh-key-agreement).
+**State of the art:** vodozemac (2023) — a formally verified Rust reimplementation via the Hax framework — replaces libolm as the reference implementation in Element Web/X. See [Double Ratchet](#double-ratchet--symmetric-ratchet), [X3DH](#x3dh--extended-triple-dh-key-agreement).
 
 **Production readiness:** Production
 Deployed in all major Matrix clients (Element, FluffyChat, Nheko, Cinny). Used by German and French governments.
@@ -1205,7 +1206,7 @@ Responder knows: static key pair (s_r)
 
 **Formal verification:** Donenfeld & Milner (2017), Lipp–Blanchet–Bhargavan (2019) verified with ProVerif and Tamarin; full secrecy and authentication properties proven under the symbolic model. [[1]](https://eprint.iacr.org/2019/1347)
 
-**State of the art:** WireGuard in Linux kernel 5.6+ (2020). Static codebase; no version negotiation. PSK layer provides optional symmetric post-quantum resistance (256-bit pre-shared key must be exchanged out-of-band). A full PQ WireGuard (`mlkem768x25519` replacing X25519 DH) is under active development. See [Secure Channels](#secure-channels-protocol-constructions), [IKEv2 / IPsec](#ikev2-ipsec-esp).
+**State of the art:** WireGuard in Linux kernel 5.6+ (2020). Static codebase; no version negotiation. PSK layer provides optional symmetric post-quantum resistance (256-bit pre-shared key must be exchanged out-of-band). A full PQ WireGuard (`mlkem768x25519` replacing X25519 DH) is under active development. See [Secure Channels](#secure-channels--protocol-constructions), [IKEv2 / IPsec](#ikev2--ipsec-esp).
 
 **Production readiness:** Production
 In Linux kernel since 5.6 (2020). Deployed on Windows, macOS, iOS, Android, FreeBSD, OpenBSD. Used by major VPN providers.
@@ -1265,7 +1266,7 @@ A simpler alternative: TLS wraps the entire connection from the first byte (no S
 | POP3 | 110 | 110 (RFC 2595) | 995 |
 | LDAP | 389 | 389 (RFC 2830) | 636 |
 
-**State of the art:** Google and Microsoft enforce MTA-STS for outbound mail to major domains. DANE + DNSSEC is more secure but requires DNSSEC deployment at both ends. RFC 8314 (2018) recommends implicit TLS for mail clients. STARTTLS remains necessary for inter-server SMTP relay (port 25). See [Secure Channels](#secure-channels-protocol-constructions), [Applied Infrastructure PKI](14-applied-infrastructure-pki.md#dane-dns-based-authentication-of-named-entities).
+**State of the art:** Google and Microsoft enforce MTA-STS for outbound mail to major domains. DANE + DNSSEC is more secure but requires DNSSEC deployment at both ends. RFC 8314 (2018) recommends implicit TLS for mail clients. STARTTLS remains necessary for inter-server SMTP relay (port 25). See [Secure Channels](#secure-channels--protocol-constructions), [Applied Infrastructure PKI](14-applied-infrastructure-pki.md#dane--dns-based-authentication-of-named-entities).
 
 **Production readiness:** Production
 Universally deployed in SMTP, IMAP, POP3, LDAP. MTA-STS and DANE harden the security model.
@@ -1330,7 +1331,7 @@ Gateway knows: Request content + Relay IP (never learns Client IP)
 
 **Deployments:** Apple iCloud Private Relay (OHTTP variant), Cloudflare DNS-over-OHTTP, Google SafeBrowsing v5 (OHTTP for URL lookups), Meta (Threads telemetry), Fastly OHTTP relay service.
 
-**State of the art:** RFC 9458 (2023). Deployed at scale for DNS and telemetry. Complements [Oblivious DoH (ODoH)](10-privacy-preserving-computation.md#oblivious-dns-odoh) — ODoH is an earlier DNS-specific predecessor; OHTTP generalizes to arbitrary HTTP. See [Secure Channels](#secure-channels-protocol-constructions), [ECH](#encrypted-client-hello-ech).
+**State of the art:** RFC 9458 (2023). Deployed at scale for DNS and telemetry. Complements [Oblivious DoH (ODoH)](10-privacy-preserving-computation.md#oblivious-dns-odoh) — ODoH is an earlier DNS-specific predecessor; OHTTP generalizes to arbitrary HTTP. See [Secure Channels](#secure-channels--protocol-constructions), [ECH](#encrypted-client-hello-ech).
 
 **Production readiness:** Production
 Deployed at scale by Apple (iCloud Private Relay), Cloudflare, Google, and Meta.
@@ -1394,7 +1395,7 @@ Allows the CA to signal the optimal renewal window to clients, enabling mass-ren
 
 **Deployments:** Let's Encrypt (~380 million active certificates, 2024), ZeroSSL, Google Trust Services, Cloudflare, Buypass. Clients: Certbot, acme.sh, Caddy (built-in), Traefik, nginx `ngx_http_acme_module`.
 
-**State of the art:** RFC 8555 (2019) is universally adopted; Let's Encrypt issues ~6 million certificates per day (2024). Short-lived certificates (6-day) under `draft-ietf-acme-shortlived` would replace revocation with expiry. ARI (RFC 9730) is the latest extension. See [Applied Infrastructure PKI](14-applied-infrastructure-pki.md), [Secure Channels](#secure-channels-protocol-constructions).
+**State of the art:** RFC 8555 (2019) is universally adopted; Let's Encrypt issues ~6 million certificates per day (2024). Short-lived certificates (6-day) under `draft-ietf-acme-shortlived` would replace revocation with expiry. ARI (RFC 9730) is the latest extension. See [Applied Infrastructure PKI](14-applied-infrastructure-pki.md), [Secure Channels](#secure-channels--protocol-constructions).
 
 **Production readiness:** Production
 Let's Encrypt issues ~6 million certificates per day. Used by all major hosting providers and CDNs.
@@ -1454,7 +1455,7 @@ IETF RFC 8555 (2019), RFC 9730 (ARI, 2024). Let's Encrypt has issued billions of
 | Monitor | Any party can watch all certs | Only user can prove their own key |
 | Audit | CT logs publicly enumerable | Log consistency verifiable without enumeration |
 
-**State of the art:** AKD (2022) is the leading design; deployed by WhatsApp (2023). See [Key Transparency](03-key-exchange-key-management.md#key-transparency-coniks), [X3DH](#x3dh-extended-triple-dh-key-agreement), [Certificate Transparency](14-applied-infrastructure-pki.md).
+**State of the art:** AKD (2022) is the leading design; deployed by WhatsApp (2023). See [Key Transparency](03-key-exchange-key-management.md#key-transparency--coniks), [X3DH](#x3dh--extended-triple-dh-key-agreement), [Certificate Transparency](14-applied-infrastructure-pki.md).
 
 **Production readiness:** Production
 Deployed by WhatsApp (2023) for ~2 billion users. Google Key Transparency operational for internal services.
@@ -1524,7 +1525,7 @@ A network adversary who captures a client's 0-RTT flight can replay it to a diff
 - HTTP/3 (QUIC) also supports 0-RTT with the same replay caveats (RFC 9001 §9.2)
 - gRPC over HTTP/2 generally disables 0-RTT due to non-idempotent RPC semantics
 
-**State of the art:** RFC 8446 (TLS 1.3, 2018) specifies 0-RTT. The consensus recommendation is to use 0-RTT only for idempotent, replay-safe operations and to treat 0-RTT data as unauthenticated until the handshake completes. See [Secure Channels](#secure-channels-protocol-constructions), [QUIC Packet Protection](#quic-packet-protection).
+**State of the art:** RFC 8446 (TLS 1.3, 2018) specifies 0-RTT. The consensus recommendation is to use 0-RTT only for idempotent, replay-safe operations and to treat 0-RTT data as unauthenticated until the handshake completes. See [Secure Channels](#secure-channels--protocol-constructions), [QUIC Packet Protection](#quic-packet-protection).
 
 **Production readiness:** Production
 Enabled by major CDNs (Cloudflare, Google, Fastly) for HTTP GET requests. Supported in OpenSSL 1.1.1+, BoringSSL, NSS.
@@ -1590,7 +1591,7 @@ Result: observers on the new path see a different CID → cannot correlate with 
 
 **Deployments:** All QUIC implementations support connection migration (Chrome, Firefox, curl/quiche, QUIC-Go, MsQuic). Apple uses QUIC connection migration in the FaceTime and iMessage stacks on iOS. HTTP/3 connections over QUIC automatically migrate when the device switches networks.
 
-**State of the art:** RFC 9000 (2021) specifies connection migration; CID rotation is required for migration privacy. Multi-path QUIC is in active IETF standardization (`draft-ietf-quic-multipath`). See [QUIC Packet Protection](#quic-packet-protection), [DTLS](#dtls-datagram-tls).
+**State of the art:** RFC 9000 (2021) specifies connection migration; CID rotation is required for migration privacy. Multi-path QUIC is in active IETF standardization (`draft-ietf-quic-multipath`). See [QUIC Packet Protection](#quic-packet-protection), [DTLS](#dtls--datagram-tls).
 
 **Production readiness:** Production
 Supported by all major QUIC implementations. Used in production by Chrome, Safari, curl, and Apple's FaceTime/iMessage stacks.
@@ -1666,7 +1667,7 @@ RPKI secures route *origin*; BGPsec extends this to the entire AS path:
 - Cloudflare, AWS, Google all publish ROAs and perform origin validation
 - BGPsec: fewer than 1% of ASes; practical deployment blocked by performance and chicken-and-egg problems
 
-**State of the art:** RPKI origin validation (RFC 6480/6482/6811) is the deployed standard; reaching ~50% global prefix coverage. BGPsec (RFC 8205) is standardized but minimally deployed. ASPA (Autonomous System Provider Authorization, `draft-ietf-sidrops-aspa-profile`) is the next step — encodes customer-provider relationships to detect route leaks without full BGPsec. See [Applied Infrastructure PKI](14-applied-infrastructure-pki.md#dnssec-dns-security-extensions), [Secure Channels](#secure-channels-protocol-constructions).
+**State of the art:** RPKI origin validation (RFC 6480/6482/6811) is the deployed standard; reaching ~50% global prefix coverage. BGPsec (RFC 8205) is standardized but minimally deployed. ASPA (Autonomous System Provider Authorization, `draft-ietf-sidrops-aspa-profile`) is the next step — encodes customer-provider relationships to detect route leaks without full BGPsec. See [Applied Infrastructure PKI](14-applied-infrastructure-pki.md#dnssec--dns-security-extensions), [Secure Channels](#secure-channels--protocol-constructions).
 
 **Production readiness:** Production
 RPKI origin validation at ~50% global prefix coverage (2024). BGPsec standardized but <1% deployed.
@@ -1747,7 +1748,7 @@ Capsule Type (varint) | Capsule Length (varint) | Capsule Data
 - Google's QUIC proxying infrastructure uses HTTP/3 CONNECT
 - IETF MASQUE working group actively standardizing extensions (ECH + MASQUE, authenticated CONNECT)
 
-**State of the art:** RFC 9298 (CONNECT-UDP, 2022) and RFC 9484 (CONNECT-IP, 2023) are the current standards. The IETF MASQUE working group is extending to multipath, happy eyeballs, and authenticated IP proxying. Primary use cases are privacy proxies (iCloud Private Relay), CDN edge proxying, and WebRTC NAT traversal. See [QUIC Packet Protection](#quic-packet-protection), [QUIC Connection Migration](#quic-connection-migration-and-security), [Oblivious HTTP](#oblivious-http-ohttp), [IKEv2 / IPsec](#ikev2-ipsec-esp).
+**State of the art:** RFC 9298 (CONNECT-UDP, 2022) and RFC 9484 (CONNECT-IP, 2023) are the current standards. The IETF MASQUE working group is extending to multipath, happy eyeballs, and authenticated IP proxying. Primary use cases are privacy proxies (iCloud Private Relay), CDN edge proxying, and WebRTC NAT traversal. See [QUIC Packet Protection](#quic-packet-protection), [QUIC Connection Migration](#quic-connection-migration-and-security), [Oblivious HTTP](#oblivious-http-ohttp), [IKEv2 / IPsec](#ikev2--ipsec-esp).
 
 **Production readiness:** Production
 Deployed by Apple (iCloud Private Relay), Cloudflare WARP, and Google QUIC proxying infrastructure.
@@ -1814,7 +1815,7 @@ GET is also defined (query Base64url-encoded in URL parameter `?dns=`); POST is 
 
 **Deployments:** Cloudflare (1.1.1.1), Google (8.8.8.8), Quad9 (9.9.9.9) all support both DoT and DoH. Firefox defaults to DoH via Cloudflare (US) since 2020. Android 9+ supports DoT as "Private DNS". Windows 11 supports DoH natively. iOS 14+ supports DoH and DoT via configuration profiles.
 
-**State of the art:** RFC 7858 (DoT, 2016), RFC 8484 (DoH, 2018). DoH over HTTP/3 (DoH3) is in active deployment at Cloudflare and Google. RFC 9230 (ODoH, 2022) is the privacy-maximizing successor. See [DNSCurve](#dnscurve-link-level-dns-encryption), [Oblivious HTTP](#oblivious-http-ohttp), [Encrypted Client Hello](#encrypted-client-hello-ech).
+**State of the art:** RFC 7858 (DoT, 2016), RFC 8484 (DoH, 2018). DoH over HTTP/3 (DoH3) is in active deployment at Cloudflare and Google. RFC 9230 (ODoH, 2022) is the privacy-maximizing successor. See [DNSCurve](#dnscurve--link-level-dns-encryption), [Oblivious HTTP](#oblivious-http-ohttp), [Encrypted Client Hello](#encrypted-client-hello-ech).
 
 **Production readiness:** Production
 Deployed by all major DNS resolvers (Cloudflare, Google, Quad9). Firefox defaults to DoH. Android 9+ supports DoT natively. Windows 11 supports DoH.
@@ -1887,7 +1888,7 @@ The modern I2P session layer replaces the legacy ElGamal+AES-256-CBC+SessionTag 
 | Network size | ~50 000 routers (2024) | ~7 000 relays (2024) |
 | Standardization | Community spec at geti2p.net | Tor Project specs at spec.torproject.org |
 
-**State of the art:** I2P 2.x with ECIES-X25519-AEAD-Ratchet (2020+) and NTCP2 transport. Java I2P and i2pd (C++) are the main router implementations. Deployed for privacy-sensitive file sharing (I2PSnark BitTorrent), eepsite hosting, and anonymous IRC. See [Anonymity / Onion Routing](11-anonymity-credentials.md#onion-routing), [Secure Channels](#secure-channels-protocol-constructions).
+**State of the art:** I2P 2.x with ECIES-X25519-AEAD-Ratchet (2020+) and NTCP2 transport. Java I2P and i2pd (C++) are the main router implementations. Deployed for privacy-sensitive file sharing (I2PSnark BitTorrent), eepsite hosting, and anonymous IRC. See [Anonymity / Onion Routing](11-anonymity-credentials.md#onion-routing), [Secure Channels](#secure-channels--protocol-constructions).
 
 **Production readiness:** Mature
 ~50,000 active routers (2024). Stable for file sharing, eepsite hosting, and anonymous IRC. Niche user base compared to Tor.
@@ -1951,7 +1952,7 @@ Server responds with:
 
 **What is NOT yet post-quantum:** TLS certificates still use ECDSA P-256 or RSA signatures for server authentication. A quantum adversary who can break ECDSA could forge server certificates at handshake time. The hybrid KEM protects the *session key* (forward secrecy against future quantum decryption of recorded traffic), not the authentication chain. Full PQ TLS authentication requires PQ signatures in certificates — still in progress (see [KEMTLS](#kemtls-post-quantum-tls), NIST ML-DSA/SLH-DSA).
 
-**State of the art:** `X25519MLKEM768` is the current standard name (IANA, 2024); deployed by default in Chrome, Firefox, Cloudflare, Google, AWS CloudFront. OpenSSH 10.0 defaults to the same hybrid for SSH (as `mlkem768x25519-sha256`). See [KEMTLS](#kemtls-post-quantum-tls), [X3DH / PQXDH](#x3dh-extended-triple-dh-key-agreement), [Secure Channels](#secure-channels-protocol-constructions).
+**State of the art:** `X25519MLKEM768` is the current standard name (IANA, 2024); deployed by default in Chrome, Firefox, Cloudflare, Google, AWS CloudFront. OpenSSH 10.0 defaults to the same hybrid for SSH (as `mlkem768x25519-sha256`). See [KEMTLS](#kemtls-post-quantum-tls), [X3DH / PQXDH](#x3dh--extended-triple-dh-key-agreement), [Secure Channels](#secure-channels--protocol-constructions).
 
 **Production readiness:** Production
 ~20% of global TLS 1.3 handshakes use hybrid KEM (2025). Deployed by default in Chrome, Firefox, Cloudflare, AWS CloudFront.
@@ -2022,7 +2023,7 @@ ciphertext = ChaCha20-Poly1305(chacha_key, chacha_nonce, padded_plaintext)
 
 **Deployments:** Damus (iOS), Amethyst (Android), Snort (web), Primal (web/mobile). ~1 500 public relays (2024). Bitcoin Lightning payments integrated via NIP-57 (Zaps). NIP-46 (Nostr Connect) and NIP-96 (file storage) extend the base protocol.
 
-**State of the art:** NIP-44 (2024) for encrypted DMs; NIP-01 core spec stable. Nostr does not provide forward secrecy or post-compromise security in its DM model — a leaked private key exposes all past DMs. This is a known limitation; NIP-104 (group chats with MLS) is under active discussion. See [Signatures — Advanced](08-signatures-advanced.md), [Double Ratchet](#double-ratchet-symmetric-ratchet).
+**State of the art:** NIP-44 (2024) for encrypted DMs; NIP-01 core spec stable. Nostr does not provide forward secrecy or post-compromise security in its DM model — a leaked private key exposes all past DMs. This is a known limitation; NIP-104 (group chats with MLS) is under active discussion. See [Signatures — Advanced](08-signatures-advanced.md), [Double Ratchet](#double-ratchet--symmetric-ratchet).
 
 **Production readiness:** Experimental
 Multiple clients deployed; ~1500 public relays (2024). Protocol is stable but DM encryption lacks forward secrecy.
@@ -2100,7 +2101,7 @@ Each node decrypts its layer, learns only next-hop, and forwards. The destinatio
 | Group forward secrecy | No (PSK) | Partial (per-member DR) |
 | Audits | Limited | Independent audits 2021, 2023 |
 
-**State of the art:** Cwtch 1.12+ (2024); Session 1.18+ (2024). Both provide metadata resistance that Signal does not (Signal's servers see sender/recipient identifiers). Session's onion routing is not as battle-tested as Tor; Cwtch's Tor dependency makes it robust but subject to Tor blocking. See [Anonymity / Onion Routing](11-anonymity-credentials.md#onion-routing), [Double Ratchet](#double-ratchet-symmetric-ratchet), [Briar](#briar-bramble-p2p-encrypted-messaging).
+**State of the art:** Cwtch 1.12+ (2024); Session 1.18+ (2024). Both provide metadata resistance that Signal does not (Signal's servers see sender/recipient identifiers). Session's onion routing is not as battle-tested as Tor; Cwtch's Tor dependency makes it robust but subject to Tor blocking. See [Anonymity / Onion Routing](11-anonymity-credentials.md#onion-routing), [Double Ratchet](#double-ratchet--symmetric-ratchet), [Briar](#briar--bramble-p2p-encrypted-messaging).
 
 **Production readiness:** Experimental
 Both are deployed with active user bases but smaller scale than mainstream messengers. Session has had independent audits (2021, 2023).
@@ -2129,7 +2130,7 @@ Privacy-focused communities. Cwtch developed by Open Privacy Research Society. S
 | **MIMI Architecture** | 2023 | MLS + X.509/VCs | Defines identity, key discovery, and policy across providers [[1]](https://datatracker.ietf.org/doc/html/draft-ietf-mimi-arch-01) |
 | **MIMI Content Format** | 2023 | MLS application data | Standardized message semantics (text, media, reactions, threads) for cross-provider rooms [[1]](https://datatracker.ietf.org/doc/draft-ietf-mimi-content/) |
 
-**State of the art:** IETF MIMI working group active (draft-ietf-mimi-protocol-05, Oct 2025). Built on top of [MLS (RFC 9420)](#continuous-group-key-agreement-cgka-mls) for E2E encryption. Driven by EU DMA interoperability requirements for gatekeepers. Matrix proposed as a transport framework candidate. See [MLS](#continuous-group-key-agreement-cgka-mls), [Secure Channels](#secure-channels-protocol-constructions).
+**State of the art:** IETF MIMI working group active (draft-ietf-mimi-protocol-05, Oct 2025). Built on top of [MLS (RFC 9420)](#continuous-group-key-agreement-cgka--mls) for E2E encryption. Driven by EU DMA interoperability requirements for gatekeepers. Matrix proposed as a transport framework candidate. See [MLS](#continuous-group-key-agreement-cgka--mls), [Secure Channels](#secure-channels--protocol-constructions).
 
 **Production readiness:** Research
 IETF draft stage; no production deployments yet. Driven by EU DMA regulatory requirements.
@@ -2155,13 +2156,13 @@ Active IETF MIMI working group (draft-05, 2025). Driven by EU DMA mandate. Major
 
 **Cipher suites:** AES_128_CTR_HMAC_SHA256_80, AES_128_GCM_SHA256_128, AES_256_GCM_SHA512_128.
 
-**Key differences from [SRTP](#srtp-secure-real-time-transport-protocol):**
+**Key differences from [SRTP](#srtp--secure-real-time-transport-protocol):**
 - Transport-agnostic (not tied to RTP)
 - Encrypts entire media frames (not individual RTP packets), reducing per-packet overhead
 - Designed for E2E encryption through SFUs; SRTP typically terminates at the SFU
-- Key management is out-of-band (e.g., via [MLS](#continuous-group-key-agreement-cgka-mls))
+- Key management is out-of-band (e.g., via [MLS](#continuous-group-key-agreement-cgka--mls))
 
-**State of the art:** RFC 9605 (Sep 2024); widely deployed in group video platforms (Cisco Webex, others). Cisco provides an open-source C++ implementation [[1]](https://github.com/cisco/sframe). See [SRTP](#srtp-secure-real-time-transport-protocol), [MLS](#continuous-group-key-agreement-cgka-mls).
+**State of the art:** RFC 9605 (Sep 2024); widely deployed in group video platforms (Cisco Webex, others). Cisco provides an open-source C++ implementation [[1]](https://github.com/cisco/sframe). See [SRTP](#srtp--secure-real-time-transport-protocol), [MLS](#continuous-group-key-agreement-cgka--mls).
 
 **Production readiness:** Production
 Deployed in Cisco Webex for E2E encrypted group video. RFC 9605 finalized September 2024.
@@ -2191,7 +2192,7 @@ IETF RFC 9605 (2024). Designed for E2E encrypted conferencing. Complements MLS (
 - Cookie-based DoS resistance (addresses WireGuard CVE-2021-46873)
 - Formally verified using ProVerif symbolic analysis
 
-**State of the art:** Rosenpass v0.2+ (2024); packaged for Arch Linux, NixOS; integrated into NetBird mesh VPN [[1]](https://github.com/rosenpass/rosenpass). Funded by NLnet/NGI [[1]](https://nlnet.nl/project/Rosenpass/). See [WireGuard Noise_IKpsk2](#wireguard-noise_ikpsk2-handshake), [Post-Quantum TLS](#post-quantum-tls-handshake-x25519kyber768-hybrid-in-practice).
+**State of the art:** Rosenpass v0.2+ (2024); packaged for Arch Linux, NixOS; integrated into NetBird mesh VPN [[1]](https://github.com/rosenpass/rosenpass). Funded by NLnet/NGI [[1]](https://nlnet.nl/project/Rosenpass/). See [WireGuard Noise_IKpsk2](#wireguard-noise_ikpsk2-handshake), [Post-Quantum TLS](#post-quantum-tls-handshake--x25519kyber768-hybrid-in-practice).
 
 **Production readiness:** Experimental
 Working daemon packaged for Arch Linux and NixOS; integrated into NetBird mesh VPN. Not yet widely deployed.
@@ -2258,7 +2259,7 @@ C2SP specification. Designed by Filippo Valsorda (Go team). Widely adopted in in
 - Truncation is detectable (final chunk flag)
 - Binary format uses MessagePack; ASCII armor available for copy-paste
 
-**State of the art:** Developed by Keybase; used in Keybase Chat and Keybase filesystem. Keybase was acquired by Zoom (2020); Saltpack spec remains open [[1]](https://github.com/keybase/saltpack). See [OpenPGP](#openpgp-rfc-9580), [age](#age-modern-file-encryption-format).
+**State of the art:** Developed by Keybase; used in Keybase Chat and Keybase filesystem. Keybase was acquired by Zoom (2020); Saltpack spec remains open [[1]](https://github.com/keybase/saltpack). See [OpenPGP](#openpgp-rfc-9580), [age](#age--modern-file-encryption-format).
 
 **Production readiness:** Mature
 Deployed in Keybase Chat and Keybase filesystem. Spec is open but Keybase product is in maintenance mode (Zoom acquisition, 2020).
@@ -2289,7 +2290,7 @@ Open specification. Developed by Keybase. Not standardized by IETF. Limited adop
 
 **Security properties:** Server authentication (X.509 via TLS), packet integrity (AEAD), replay resistance (unique cookies), no server-side state (cookies are opaque, self-encrypted by server), forward secrecy (from TLS 1.3 handshake).
 
-**State of the art:** Deployed by Cloudflare (time.cloudflare.com) [[1]](https://blog.cloudflare.com/nts-is-now-rfc/), Netnod, and others. Supported by Chrony, NTPsec, ntpd-rs. See [DTLS](#dtls-datagram-tls), [Secure Channels](#secure-channels-protocol-constructions).
+**State of the art:** Deployed by Cloudflare (time.cloudflare.com) [[1]](https://blog.cloudflare.com/nts-is-now-rfc/), Netnod, and others. Supported by Chrony, NTPsec, ntpd-rs. See [DTLS](#dtls--datagram-tls), [Secure Channels](#secure-channels--protocol-constructions).
 
 **Production readiness:** Production
 Deployed by Cloudflare, Netnod, and other time service providers. Supported in major NTP implementations.
@@ -2321,7 +2322,7 @@ IETF RFC 8915 (2020). Deployed by major time service providers. Growing adoption
 - Responses include a Merkle tree of client nonces — one signature covers many clients (batch efficiency)
 - **Ecosystem auditing:** Client can chain responses from multiple servers; if any server lies, the signed timestamps form a cryptographic proof of misbehavior
 
-**State of the art:** IETF draft-ietf-ntp-roughtime (draft-19, 2025) [[1]](https://datatracker.ietf.org/doc/draft-ietf-ntp-roughtime/). Public servers operated by Google and Cloudflare [[1]](https://developers.cloudflare.com/time-services/roughtime/). Implementations in Go, Rust (roughenough), C. Complements [NTS](#nts-network-time-security) (which provides precise authenticated time but requires initial clock accuracy for TLS).
+**State of the art:** IETF draft-ietf-ntp-roughtime (draft-19, 2025) [[1]](https://datatracker.ietf.org/doc/draft-ietf-ntp-roughtime/). Public servers operated by Google and Cloudflare [[1]](https://developers.cloudflare.com/time-services/roughtime/). Implementations in Go, Rust (roughenough), C. Complements [NTS](#nts--network-time-security) (which provides precise authenticated time but requires initial clock accuracy for TLS).
 
 **Production readiness:** Experimental
 Public servers operated by Google and Cloudflare. IETF draft (not yet RFC). Limited client integration.
@@ -2357,7 +2358,7 @@ IETF draft-19 (2025); not yet an RFC. Operated by Google and Cloudflare. Designe
 
 **Security properties:** Server stores `StoredKey = H(ClientKey)` and `ServerKey` — neither is sufficient to impersonate the client. PBKDF2 with configurable iteration count resists offline brute-force. Channel binding (`-PLUS` variants) prevents MITM relay attacks.
 
-**State of the art:** Default auth in PostgreSQL 10+ (scram-sha-256), MongoDB 4.0+, CockroachDB. Supported in XMPP (XEP-0474), IMAP, SMTP. See [EAP-PWD](#eap-pwd-password-based-enterprise-wifi-auth), [TOTP/FIDO2/WebAuthn](#token-based-authentication-totp-fido2-webauthn).
+**State of the art:** Default auth in PostgreSQL 10+ (scram-sha-256), MongoDB 4.0+, CockroachDB. Supported in XMPP (XEP-0474), IMAP, SMTP. See [EAP-PWD](#eap-pwd--password-based-enterprise-wifi-auth), [TOTP/FIDO2/WebAuthn](#token-based-authentication-totp--fido2--webauthn).
 
 **Production readiness:** Production
 Default authentication in PostgreSQL 10+, MongoDB 4.0+, CockroachDB. Supported in XMPP, IMAP, SMTP.
@@ -2391,7 +2392,7 @@ IETF RFC 5802 (SCRAM-SHA-1), RFC 7677 (SCRAM-SHA-256). Default in major database
 - Provides a **session ID** that applications can use for higher-level authentication (e.g., binding to application-layer credentials)
 - Does not authenticate peers by itself — prevents passive eavesdropping but not active MITM without additional application-layer binding
 
-**State of the art:** RFC 8548 (Experimental, May 2019). Linux kernel prototype exists. Adoption limited by middlebox interference with TCP options and competition from TLS-everywhere and [QUIC](#quic-packet-protection). Conceptually related to [BIP 324](#bip-324-opportunistic-p2p-encryption) (opportunistic encryption for Bitcoin P2P). See [Secure Channels](#secure-channels-protocol-constructions), [STARTTLS](#starttls-opportunistic-vs-mandatory-tls).
+**State of the art:** RFC 8548 (Experimental, May 2019). Linux kernel prototype exists. Adoption limited by middlebox interference with TCP options and competition from TLS-everywhere and [QUIC](#quic-packet-protection). Conceptually related to [BIP 324](#bip-324--opportunistic-p2p-encryption) (opportunistic encryption for Bitcoin P2P). See [Secure Channels](#secure-channels--protocol-constructions), [STARTTLS](#starttls--opportunistic-vs-mandatory-tls).
 
 **Production readiness:** Experimental
 Linux kernel prototype exists. Limited adoption due to middlebox interference and competition from TLS-everywhere.

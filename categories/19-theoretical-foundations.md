@@ -5,16 +5,16 @@
 ## Contents (55 schemes)
 
 - [Leakage-Resilient Cryptography](#leakage-resilient-cryptography)
-- [Circular / KDM Security](#circular-kdm-security)
+- [Circular / KDM Security](#circular--kdm-security)
 - [Non-Malleable Codes](#non-malleable-codes)
-- [Witness Indistinguishability (WI) / Witness Hiding](#witness-indistinguishability-wi-witness-hiding)
-- [Non-Black-Box Zero-Knowledge / Concurrent ZK](#non-black-box-zero-knowledge-concurrent-zk)
+- [Witness Indistinguishability (WI) / Witness Hiding](#witness-indistinguishability-wi--witness-hiding)
+- [Non-Black-Box Zero-Knowledge / Concurrent ZK](#non-black-box-zero-knowledge--concurrent-zk)
 - [Rational Cryptography](#rational-cryptography)
 - [Human-Computable Cryptography](#human-computable-cryptography)
 - [Cryptographic Reverse Firewalls](#cryptographic-reverse-firewalls)
-- [Lossy Encryption / Lossy Trapdoor Functions](#lossy-encryption-lossy-trapdoor-functions)
+- [Lossy Encryption / Lossy Trapdoor Functions](#lossy-encryption--lossy-trapdoor-functions)
 - [Random Oracle Model (ROM) vs. Standard Model](#random-oracle-model-rom-vs-standard-model)
-- [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa-ind-cca-security)
+- [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa--ind-cca-security)
 - [Universal Composability (UC) Framework](#universal-composability-uc-framework)
 - [One-Way Functions and Impagliazzo's Five Worlds](#one-way-functions-and-impagliazzos-five-worlds)
 - [Black-Box Separations](#black-box-separations)
@@ -58,8 +58,9 @@
 - [Communication Complexity of Secure Computation](#communication-complexity-of-secure-computation)
 - [Game-Based vs. Simulation-Based Security Paradigms](#game-based-vs-simulation-based-security-paradigms)
 - [Algebraic Group Model (AGM)](#algebraic-group-model-agm)
-- [Memory-Hard Functions (MHF) — Formal Theory](#memory-hard-functions-mhf-formal-theory)
+- [Memory-Hard Functions (MHF) — Formal Theory](#memory-hard-functions-mhf--formal-theory)
 <!-- /TOC -->
+
 
 ## Leakage-Resilient Cryptography
 
@@ -152,7 +153,7 @@ Well-established in TCC/CRYPTO/EUROCRYPT theory community; limited awareness out
 | **WI from Sigma Protocols** | 1994 | DLP | Run two Sigma protocols in parallel; WI without ZK [[1]](https://doi.org/10.1007/BFb0053443) |
 | **Resettable WI (Deng-Goyal-Sahai)** | 2009 | One-way functions | WI secure even if verifier can reset prover to initial state [[1]](https://doi.org/10.1109/FOCS.2009.12) |
 
-**State of the art:** WI is the default security notion for many sub-protocols in [MPC](06-multi-party-computation.md#multi-party-computation-mpc) and credential systems. Composes better than ZK — see [ZK Proofs](04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk), [Sigma Protocols](04-zero-knowledge-proof-systems.md#sigma-protocols-schnorr-identification).
+**State of the art:** WI is the default security notion for many sub-protocols in [MPC](06-multi-party-computation.md#multi-party-computation-mpc) and credential systems. Composes better than ZK — see [ZK Proofs](04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk), [Sigma Protocols](04-zero-knowledge-proof-systems.md#sigma-protocols--schnorr-identification).
 
 **Production readiness:** Mature
 WI is used as a building block inside deployed protocols (e.g., parallel Sigma protocols in credential systems) rather than as a standalone primitive.
@@ -260,7 +261,7 @@ Intellectually interesting and published at top venues (ITCS); not considered vi
 | **CRF for MPC** | 2020 | Rerandomizable garbled circuits | Extends CRFs to general MPC protocols; firewall rerandomizes garbled circuit messages without knowing the circuit inputs [[1]](https://eprint.iacr.org/2020/594) |
 | **CRF for 2PC (Chen-Haeberlen-Hicks-Tzialla)** | 2022 | Garbled circuits | Subversion-resistant two-party computation [[1]](https://eprint.iacr.org/2022/849) |
 
-**State of the art:** Theoretical framework (Mironov-Stephens-Davidowitz 2015); practical constructions exist for DH, Schnorr, ElGamal, and OT. Active research area post-Snowden. Closely related to [Kleptography / ASA](18-covert-channels-steganography.md#kleptography-algorithm-substitution-attacks-asa).
+**State of the art:** Theoretical framework (Mironov-Stephens-Davidowitz 2015); practical constructions exist for DH, Schnorr, ElGamal, and OT. Active research area post-Snowden. Closely related to [Kleptography / ASA](18-covert-channels-steganography.md#kleptography--algorithm-substitution-attacks-asa).
 
 **Production readiness:** Research
 Theoretical framework with academic prototypes; no production deployment of a standalone cryptographic reverse firewall exists.
@@ -374,7 +375,7 @@ IND-CCA2 is mandated by NIST, IETF, and ISO for all public-key encryption and KE
 | **UC journal version** | 2020 | Canetti | Definitive JACM version; consolidates all prior revisions; introduces global subroutines and global functionalities [[1]](https://dl.acm.org/doi/10.1145/3402457) |
 | **EasyUC** | 2019 | Canetti–Stoughton–Varia | Machine-checked UC proofs using the EasyCrypt proof assistant [[1]](https://eprint.iacr.org/2019/582) |
 
-**State of the art:** UC is the canonical composition framework for [MPC](06-multi-party-computation.md#multi-party-computation-mpc), [CGKA/MLS](12-secure-communication-protocols.md#continuous-group-key-agreement-cgka-mls), and [OT](06-multi-party-computation.md#oblivious-transfer-ot). Simulation-based security is the language of the UC model; game-based definitions (IND-CPA, etc.) remain preferred for standalone primitives.
+**State of the art:** UC is the canonical composition framework for [MPC](06-multi-party-computation.md#multi-party-computation-mpc), [CGKA/MLS](12-secure-communication-protocols.md#continuous-group-key-agreement-cgka--mls), and [OT](06-multi-party-computation.md#oblivious-transfer-ot). Simulation-based security is the language of the UC model; game-based definitions (IND-CPA, etc.) remain preferred for standalone primitives.
 
 **Production readiness:** Mature
 UC is the standard security framework for MPC, MLS, and threshold protocols; all serious protocol designs invoke UC security. EasyUC provides machine-checked proofs.
@@ -430,7 +431,7 @@ Impagliazzo's five worlds and the HILL theorem are cornerstones of cryptographic
 | **OWF ↛ key agreement** | 1989 | Impagliazzo–Rudich | Oracle world where OWFs exist but no key exchange protocol is secure; foundational separation result [[1]](https://doi.org/10.1145/73007.73012) |
 | **OWP ↛ collision-resistant hash** | 1998 | Simon | One-way permutations do not black-box imply collision-resistant hash functions [[1]](https://link.springer.com/chapter/10.1007/3-540-68339-9_23) |
 | **RTV framework** | 2004 | Reingold–Trevisan–Vadhan | Unified framework classifying black-box reductions: fully / semi / non-black-box; systematic catalogue of separations [[1]](https://eprint.iacr.org/2004/049) |
-| **Non-black-box techniques** | 2001 | Barak | Non-black-box simulation circumvents some separations for ZK; demonstrates limits of oracle-based lower bounds (see [Non-Black-Box ZK](#non-black-box-zero-knowledge-concurrent-zk)) [[1]](https://doi.org/10.1109/SFCS.2001.959902) |
+| **Non-black-box techniques** | 2001 | Barak | Non-black-box simulation circumvents some separations for ZK; demonstrates limits of oracle-based lower bounds (see [Non-Black-Box ZK](#non-black-box-zero-knowledge--concurrent-zk)) [[1]](https://doi.org/10.1109/SFCS.2001.959902) |
 | **BB-uselessness composability** | 2021 | Couteau–Hartmann | Black-box uselessness composes: two BB-useless primitives cannot be combined to yield a useful one [[1]](https://eprint.iacr.org/2021/016) |
 
 **State of the art:** The Impagliazzo-Rudich oracle argument and the RTV taxonomy (2004) remain the standard tools. Non-black-box constructions (Barak, Bitansky-Paneth) partially circumvent these barriers for specific tasks (ZK, SNARGs) but not for key exchange or OT. Active area: non-black-box separations for PKE from OWF.
@@ -606,7 +607,7 @@ GGM (Shoup 1997) is universally cited for DLog parameter justification. AGM (201
 | **Impossibility of tight reductions** | 2015 | Bader–Jager–Li–Schäge | For certain signature schemes with tight security, proved tight black-box reductions from standard assumptions are impossible; separation between tight and loose security [[1]](https://eprint.iacr.org/2015/374) |
 | **Almost-tight security** | 2014 | Chen–Wee | "Almost-tight" reductions (loss at most linear in security parameter) for IBE and PKE; achieves near-optimal concrete security in the standard model [[1]](https://eprint.iacr.org/2013/134) |
 
-**State of the art:** Concrete security analysis is mandatory for standards work — NIST PQC submissions were evaluated in part on tightness of their security reductions. Almost-tight reductions are the practical goal when perfectly tight ones are impossible. See [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa-ind-cca-security) and [Random Oracle Model](#random-oracle-model-rom-vs-standard-model).
+**State of the art:** Concrete security analysis is mandatory for standards work — NIST PQC submissions were evaluated in part on tightness of their security reductions. Almost-tight reductions are the practical goal when perfectly tight ones are impossible. See [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa--ind-cca-security) and [Random Oracle Model](#random-oracle-model-rom-vs-standard-model).
 
 **Production readiness:** Production
 Concrete security analysis directly determines parameter sizes in all deployed standards (AES key lengths, NIST PQC parameters, TLS cipher suite recommendations).
@@ -636,7 +637,7 @@ Concrete security analysis is mandatory in NIST, IETF, and ISO standardization p
 | **Signal / Double Ratchet PFS** | 2016 | Diffie-Hellman ratchet | Per-message ephemeral DH updates provide forward secrecy and break-in recovery; strongest deployed PFS [[1]](https://signal.org/docs/specifications/doubleratchet/) |
 | **Puncturable encryption / fine-grained PFS** | 2015 | Green–Miers | Receiver can "puncture" a secret key so it no longer decrypts a specific ciphertext; enables message-level PFS without re-keying the full session [[1]](https://eprint.iacr.org/2015/1189) |
 
-**State of the art:** ECDHE in TLS 1.3 (X25519 / P-256) is the universal deployment standard. The Double Ratchet's per-message PFS goes further — see [Secure Channels](12-secure-communication-protocols.md#double-ratchet-symmetric-ratchet) and [Key Exchange](03-key-exchange-key-management.md#triple-diffie-hellman-3dh-x3dh). Puncturable encryption generalises PFS to the ciphertext level.
+**State of the art:** ECDHE in TLS 1.3 (X25519 / P-256) is the universal deployment standard. The Double Ratchet's per-message PFS goes further — see [Secure Channels](12-secure-communication-protocols.md#double-ratchet--symmetric-ratchet) and [Key Exchange](03-key-exchange-key-management.md#triple-diffie-hellman-3dh--x3dh). Puncturable encryption generalises PFS to the ciphertext level.
 
 **Production readiness:** Production
 PFS via ECDHE is mandatory in TLS 1.3 (RFC 8446) and deployed on every major browser and server. The Signal Double Ratchet provides per-message PFS for billions of users.
@@ -783,7 +784,7 @@ Universally accepted; Raz's parallel repetition theorem (1998) is one of the mos
 | **Ideal functionality paradigm (UC)** | 2001 | Canetti | Formalised real/ideal world comparison as universal composition; every UC-secure protocol is SIM-secure in the strongest sense [[1]](https://eprint.iacr.org/2000/067) |
 | **IND ↛ SIM for PKE under adaptive corruptions** | 2011 | Nielsen–Wichs | Separation: IND-CCA2-secure PKE does not achieve SIM-based security when the receiver can be adaptively corrupted; non-committing encryption is necessary [[1]](https://eprint.iacr.org/2011/215) |
 
-**State of the art:** IND-CPA/IND-CCA2 remain the standard for standalone primitives (PKE, KEM, signatures). SIM-based / UC security is required for protocols that must compose — [MPC](06-multi-party-computation.md#multi-party-computation-mpc), [CGKA/MLS](12-secure-communication-protocols.md#continuous-group-key-agreement-cgka-mls), [OT](06-multi-party-computation.md#oblivious-transfer-ot). Non-committing encryption bridges the gap when adaptive corruptions are needed under SIM. See [Universal Composability (UC) Framework](#universal-composability-uc-framework) and [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa-ind-cca-security).
+**State of the art:** IND-CPA/IND-CCA2 remain the standard for standalone primitives (PKE, KEM, signatures). SIM-based / UC security is required for protocols that must compose — [MPC](06-multi-party-computation.md#multi-party-computation-mpc), [CGKA/MLS](12-secure-communication-protocols.md#continuous-group-key-agreement-cgka--mls), [OT](06-multi-party-computation.md#oblivious-transfer-ot). Non-committing encryption bridges the gap when adaptive corruptions are needed under SIM. See [Universal Composability (UC) Framework](#universal-composability-uc-framework) and [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa--ind-cca-security).
 
 **Production readiness:** Production
 Both paradigms are used in the security analysis of all deployed protocols: IND for standalone primitives, SIM for composed protocols (MPC, MLS, OT).
@@ -1472,7 +1473,7 @@ Liu-Pass (2020) is a landmark result in theoretical cryptography, published at F
 | **PCG from Ring-LPN** | 2020 | Boyle–Couteau–Gilboa–Ishai–Kohl–Scholl | Extends to VOLE and Beaver triples over large fields via Ring-LPN [[1]](https://eprint.iacr.org/2022/1035) |
 | **PCG for any finite field** | 2025 | Bombar–Couteau–Ducros–Servan-Schreiber | PCGs for Beaver triples over arbitrary finite fields including F2 [[1]](https://eprint.iacr.org/2025/169) |
 
-**State of the art:** PCGs based on Ring-LPN are the leading approach to silent MPC preprocessing. Actively deployed in VOLE-based ZK and MPC frameworks. See [Silent OT / PCG](06-multi-party-computation.md#silent-ot-pseudorandom-correlation-generators-pcg), [OLE / VOLE](06-multi-party-computation.md#oblivious-linear-evaluation-ole-vole).
+**State of the art:** PCGs based on Ring-LPN are the leading approach to silent MPC preprocessing. Actively deployed in VOLE-based ZK and MPC frameworks. See [Silent OT / PCG](06-multi-party-computation.md#silent-ot--pseudorandom-correlation-generators-pcg), [OLE / VOLE](06-multi-party-computation.md#oblivious-linear-evaluation-ole--vole).
 
 **Production readiness:** Experimental
 PCGs are implemented in research MPC frameworks (libOTe, MP-SPDZ); actively transitioning from research to production use in VOLE-based ZK systems.

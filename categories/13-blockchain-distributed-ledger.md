@@ -4,53 +4,54 @@
 <!-- TOC -->
 ## Contents (46 schemes)
 
-- [Proof of Work (PoW) / Proof of Space](#proof-of-work-pow-proof-of-space)
+- [Proof of Work (PoW) / Proof of Space](#proof-of-work-pow--proof-of-space)
 - [Data Availability Sampling (DAS)](#data-availability-sampling-das)
-- [Encrypted Mempools / Threshold Encryption for Transaction Ordering](#encrypted-mempools-threshold-encryption-for-transaction-ordering)
-- [Casper FFG / Ethereum Proof-of-Stake Finality](#casper-ffg-ethereum-proof-of-stake-finality)
-- [Bitcoin Taproot / BIP 340-342](#bitcoin-taproot-bip-340-342)
+- [Encrypted Mempools / Threshold Encryption for Transaction Ordering](#encrypted-mempools--threshold-encryption-for-transaction-ordering)
+- [Casper FFG / Ethereum Proof-of-Stake Finality](#casper-ffg--ethereum-proof-of-stake-finality)
+- [Bitcoin Taproot / BIP 340-342](#bitcoin-taproot--bip-340-342)
 - [MimbleWimble](#mimblewimble)
 - [Confidential Transactions (CT)](#confidential-transactions-ct)
-- [Fair Exchange / Atomic Swaps](#fair-exchange-atomic-swaps)
-- [IBC / Inter-Blockchain Communication Protocol](#ibc-inter-blockchain-communication-protocol)
+- [Fair Exchange / Atomic Swaps](#fair-exchange--atomic-swaps)
+- [IBC / Inter-Blockchain Communication Protocol](#ibc--inter-blockchain-communication-protocol)
 - [EIP-712: Ethereum Typed Structured Data Signing](#eip-712-ethereum-typed-structured-data-signing)
-- [Linear BFT Consensus (HotStuff / Tendermint)](#linear-bft-consensus-hotstuff-tendermint)
+- [Linear BFT Consensus (HotStuff / Tendermint)](#linear-bft-consensus-hotstuff--tendermint)
 - [Secret Leader Election](#secret-leader-election)
 - [Order-Fair Consensus](#order-fair-consensus)
-- [Groth16 / Zcash Sapling zk-SNARK](#groth16-zcash-sapling-zk-snark)
+- [Groth16 / Zcash Sapling zk-SNARK](#groth16--zcash-sapling-zk-snark)
 - [Lightning Network Payment Channels](#lightning-network-payment-channels)
 - [ZK Rollups and Optimistic Rollups](#zk-rollups-and-optimistic-rollups)
 - [Verkle Trees (Ethereum State)](#verkle-trees-ethereum-state)
-- [Filecoin PoRep / PoSt (Proof of Replication / Proof of Spacetime)](#filecoin-porep-post-proof-of-replication-proof-of-spacetime)
-- [EIP-4844 Proto-Danksharding (Blob Transactions + KZG Ceremony)](#eip-4844-proto-danksharding-blob-transactions-kzg-ceremony)
-- [Mina Protocol — Pickles Recursive SNARK (22 KB Blockchain)](#mina-protocol-pickles-recursive-snark-22-kb-blockchain)
+- [Filecoin PoRep / PoSt (Proof of Replication / Proof of Spacetime)](#filecoin-porep--post-proof-of-replication--proof-of-spacetime)
+- [EIP-4844 Proto-Danksharding (Blob Transactions + KZG Ceremony)](#eip-4844-proto-danksharding-blob-transactions--kzg-ceremony)
+- [Mina Protocol — Pickles Recursive SNARK (22 KB Blockchain)](#mina-protocol--pickles-recursive-snark-22-kb-blockchain)
 - [Solana Proof of History (PoH)](#solana-proof-of-history-poh)
 - [Polkadot BABE/GRANDPA Hybrid Consensus](#polkadot-babegrandpa-hybrid-consensus)
-- [Ethereum BLS Aggregate Signatures (BDN / BLS12-381)](#ethereum-bls-aggregate-signatures-bdn-bls12-381)
-- [Helios — SNARK-Based Ethereum Light Client](#helios-snark-based-ethereum-light-client)
-- [zkBridge — Cross-Chain State Proofs](#zkbridge-cross-chain-state-proofs)
-- [Monero RingCT — Ring Signatures + Confidential Transactions](#monero-ringct-ring-signatures-confidential-transactions)
-- [Halo2 — Recursive SNARKs Without Trusted Setup (Zcash Orchard)](#halo2-recursive-snarks-without-trusted-setup-zcash-orchard)
-- [Ethereum PBS — Proposer-Builder Separation and MEV](#ethereum-pbs-proposer-builder-separation-and-mev)
-- [Flashbots and SUAVE — Encrypted Order Flow and TEE-Based MEV](#flashbots-and-suave-encrypted-order-flow-and-tee-based-mev)
-- [Ethereum DVT — Distributed Validator Technology](#ethereum-dvt-distributed-validator-technology)
-- [RANDAO and VDF — Unbiasable Randomness Beacon for Ethereum](#randao-and-vdf-unbiasable-randomness-beacon-for-ethereum)
+- [Ethereum BLS Aggregate Signatures (BDN / BLS12-381)](#ethereum-bls-aggregate-signatures-bdn--bls12-381)
+- [Helios — SNARK-Based Ethereum Light Client](#helios--snark-based-ethereum-light-client)
+- [zkBridge — Cross-Chain State Proofs](#zkbridge--cross-chain-state-proofs)
+- [Monero RingCT — Ring Signatures + Confidential Transactions](#monero-ringct--ring-signatures--confidential-transactions)
+- [Halo2 — Recursive SNARKs Without Trusted Setup (Zcash Orchard)](#halo2--recursive-snarks-without-trusted-setup-zcash-orchard)
+- [Ethereum PBS — Proposer-Builder Separation and MEV](#ethereum-pbs--proposer-builder-separation-and-mev)
+- [Flashbots and SUAVE — Encrypted Order Flow and TEE-Based MEV](#flashbots-and-suave--encrypted-order-flow-and-tee-based-mev)
+- [Ethereum DVT — Distributed Validator Technology](#ethereum-dvt--distributed-validator-technology)
+- [RANDAO and VDF — Unbiasable Randomness Beacon for Ethereum](#randao-and-vdf--unbiasable-randomness-beacon-for-ethereum)
 - [Incremental Verifiable Computation (IVC) for Blockchain](#incremental-verifiable-computation-ivc-for-blockchain)
-- [Tornado Cash — zkSNARK Privacy Mixer](#tornado-cash-zksnark-privacy-mixer)
+- [Tornado Cash — zkSNARK Privacy Mixer](#tornado-cash--zksnark-privacy-mixer)
 - [Zcash Sapling Transaction Structure](#zcash-sapling-transaction-structure)
-- [Confidential Transactions with Bulletproofs — Liquid Network](#confidential-transactions-with-bulletproofs-liquid-network)
-- [Bridge Security — Trust Model Taxonomy](#bridge-security-trust-model-taxonomy)
-- [Seraphis — Monero Next-Generation Transaction Protocol](#seraphis-monero-next-generation-transaction-protocol)
-- [Bulletproofs+ — Optimised Range Proofs](#bulletproofs-optimised-range-proofs)
-- [DECO — Decentralised Oracle via TLS Proofs](#deco-decentralised-oracle-via-tls-proofs)
+- [Confidential Transactions with Bulletproofs — Liquid Network](#confidential-transactions-with-bulletproofs--liquid-network)
+- [Bridge Security — Trust Model Taxonomy](#bridge-security--trust-model-taxonomy)
+- [Seraphis — Monero Next-Generation Transaction Protocol](#seraphis--monero-next-generation-transaction-protocol)
+- [Bulletproofs+ — Optimised Range Proofs](#bulletproofs--optimised-range-proofs)
+- [DECO — Decentralised Oracle via TLS Proofs](#deco--decentralised-oracle-via-tls-proofs)
 - [VRF-Based Consensus and Leader Election (Algorand)](#vrf-based-consensus-and-leader-election-algorand)
-- [Recursive SNARKs for Rollups — Nova and ProtoStar Folding](#recursive-snarks-for-rollups-nova-and-protostar-folding)
-- [Cross-Chain Bridges — Hash Time-Locked Contracts and Light Client Proofs](#cross-chain-bridges-hash-time-locked-contracts-and-light-client-proofs)
-- [Penumbra — Private DEX with Threshold Encryption](#penumbra-private-dex-with-threshold-encryption)
+- [Recursive SNARKs for Rollups — Nova and ProtoStar Folding](#recursive-snarks-for-rollups--nova-and-protostar-folding)
+- [Cross-Chain Bridges — Hash Time-Locked Contracts and Light Client Proofs](#cross-chain-bridges--hash-time-locked-contracts-and-light-client-proofs)
+- [Penumbra — Private DEX with Threshold Encryption](#penumbra--private-dex-with-threshold-encryption)
 - [FHE-Based Encrypted DeFi (fhEVM)](#fhe-based-encrypted-defi-fhevm)
-- [Aztec Protocol — Private Smart Contracts (Noir / PLONK)](#aztec-protocol-private-smart-contracts-noir-plonk)
+- [Aztec Protocol — Private Smart Contracts (Noir / PLONK)](#aztec-protocol--private-smart-contracts-noir--plonk)
 - [Interchain Security and Mesh Security (Cosmos)](#interchain-security-and-mesh-security-cosmos)
 <!-- /TOC -->
+
 
 ## Proof of Work (PoW) / Proof of Space
 
@@ -162,7 +163,7 @@ Active area of research and development; endorsed by Ethereum researchers; Shutt
 
 **Sync committee (Altair, 2021):** A rotating subset of 512 validators sign each block header with BLS. Light clients verify only the sync committee aggregate signature (~100 bytes) instead of all ~500K attestations. Enables mobile/browser light clients.
 
-**Deployed at:** Ethereum mainnet (merged September 2022); ~$40B staked ETH secured by Casper FFG. Gasper = Casper FFG + LMD-GHOST fork choice. See [Aggregate Signatures (BLS)](#ethereum-bls-aggregate-signatures-bdn-bls12-381), [Threshold Signatures](08-signatures-advanced.md#threshold-signature-schemes-tss).
+**Deployed at:** Ethereum mainnet (merged September 2022); ~$40B staked ETH secured by Casper FFG. Gasper = Casper FFG + LMD-GHOST fork choice. See [Aggregate Signatures (BLS)](#ethereum-bls-aggregate-signatures-bdn--bls12-381), [Threshold Signatures](08-signatures-advanced.md#threshold-signature-schemes-tss).
 
 **State of the art:** Casper FFG is live on Ethereum mainnet since The Merge (September 2022). Single-slot finality (SSF) research aims to reduce finalization time from ~13 minutes to one slot (12 seconds) by combining Casper FFG with BLS aggregate signature optimizations.
 
@@ -210,7 +211,7 @@ Core Ethereum consensus protocol; reviewed by hundreds of researchers; formalise
 
 **Enables:** MuSig2 (BIP 327) threshold multisig, FROST, DLC, Lightning PTLC, cross-chain atomic swaps via adaptor signatures. ~65% of Bitcoin transactions use Taproot by 2025.
 
-**State of the art:** Taproot is the current Bitcoin signature standard. See [Adaptor Signatures](08-signatures-advanced.md#adaptor-signatures-scriptless-scripts), [Threshold Signatures](08-signatures-advanced.md#threshold-signature-schemes-tss).
+**State of the art:** Taproot is the current Bitcoin signature standard. See [Adaptor Signatures](08-signatures-advanced.md#adaptor-signatures--scriptless-scripts), [Threshold Signatures](08-signatures-advanced.md#threshold-signature-schemes-tss).
 
 **Production readiness:** Production
 Activated on Bitcoin mainnet November 2021 (block 709,632); ~65% of transactions use Taproot by 2025
@@ -323,7 +324,7 @@ Well-established in privacy-coin ecosystem; reviewed by leading cryptographers; 
 | **Adaptor Signature Atomic Swaps** | 2018 | Adaptor sigs | Scriptless swaps using adaptor signatures; better privacy than HTLC [[1]](https://eprint.iacr.org/2020/476) |
 | **Submarine Swaps** | 2018 | HTLC (on-chain ↔ off-chain) | Swap between Lightning Network and on-chain Bitcoin [[1]](https://docs.lightning.engineering/the-lightning-network/multihop-payments/hash-time-lock-contract-htlc) |
 
-**State of the art:** Adaptor signature swaps for privacy (see [Adaptor Signatures](08-signatures-advanced.md#adaptor-signatures-scriptless-scripts)); HTLC for simplicity. Atomic swaps enable trustless DEXs.
+**State of the art:** Adaptor signature swaps for privacy (see [Adaptor Signatures](08-signatures-advanced.md#adaptor-signatures--scriptless-scripts)); HTLC for simplicity. Atomic swaps enable trustless DEXs.
 
 **Production readiness:** Production
 HTLCs deployed in Lightning Network and cross-chain atomic swap tools; adaptor signature swaps in development
@@ -509,7 +510,7 @@ Ethereum EIP standard (finalized); universally adopted by wallets (MetaMask, Led
 
 **Security:** Safety under ≤ ⌊(n-1)/3⌋ Byzantine faults. Liveness under partial synchrony (GST model). Threshold-BLS aggregation is secure under co-CDH on BLS12-381.
 
-**State of the art:** HotStuff (PODC 2019) and its derivatives power Aptos, Sui, and Diem. Tendermint (2014) powers Cosmos. Both use [BLS Aggregate Signatures](#ethereum-bls-aggregate-signatures-bdn-bls12-381) or [Threshold Signatures](08-signatures-advanced.md#threshold-signature-schemes-tss) as their cryptographic core.
+**State of the art:** HotStuff (PODC 2019) and its derivatives power Aptos, Sui, and Diem. Tendermint (2014) powers Cosmos. Both use [BLS Aggregate Signatures](#ethereum-bls-aggregate-signatures-bdn--bls12-381) or [Threshold Signatures](08-signatures-advanced.md#threshold-signature-schemes-tss) as their cryptographic core.
 
 **Production readiness:** Production
 Tendermint powers 270+ Cosmos chains; HotStuff derivatives power Aptos and Sui mainnets
@@ -564,7 +565,7 @@ Algorand sortition is well-reviewed and deployed; Whisk is under active Ethereum
 | **Themis** | 2023 | Batch-ordering + consensus | Strong order-fairness with standard liveness; negligible overhead over BFT [[1]](https://eprint.iacr.org/2021/1465) |
 | **BEAT-MEV** | 2024 | Batched threshold encryption | Epochless batched TE for encrypted mempools; USENIX Security 2025 [[1]](https://eprint.iacr.org/2024/1533) |
 
-**State of the art:** Themis (2023) for consensus-level fairness; BEAT-MEV for encryption-based MEV prevention. Extends [Encrypted Mempools](#encrypted-mempools-threshold-encryption-for-transaction-ordering) and [Async BFT](06-multi-party-computation.md#asynchronous-bft-asynchronous-mpc).
+**State of the art:** Themis (2023) for consensus-level fairness; BEAT-MEV for encryption-based MEV prevention. Extends [Encrypted Mempools](#encrypted-mempools--threshold-encryption-for-transaction-ordering) and [Async BFT](06-multi-party-computation.md#asynchronous-bft--asynchronous-mpc).
 
 **Production readiness:** Research
 Academic proposals (Aequitas, Themis); no large-scale mainnet deployment; BEAT-MEV accepted at USENIX Security 2025
@@ -613,7 +614,7 @@ Sapling uses two circuits: Spend (proves ownership + nullifier) and Output (prov
 
 **Limitations:** Circuit-specific trusted setup; proving is slow (~1–3 seconds on a PC). Superseded by universal-SRS SNARKs (PLONK, Marlin) for new systems, but Groth16 remains the gold standard for per-proof verification efficiency.
 
-**State of the art:** Groth16 is deployed in Zcash Sapling (2018, billions of shielded transactions), Filecoin PoRep/PoSt (see below), Semaphore (Ethereum), and Tornado Cash circuits. EUROCRYPT 2016 paper [[1]](https://eprint.iacr.org/2016/260). See [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems), [Filecoin PoRep/PoSt](#filecoin-porep-post-proof-of-replication-proof-of-spacetime).
+**State of the art:** Groth16 is deployed in Zcash Sapling (2018, billions of shielded transactions), Filecoin PoRep/PoSt (see below), Semaphore (Ethereum), and Tornado Cash circuits. EUROCRYPT 2016 paper [[1]](https://eprint.iacr.org/2016/260). See [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems), [Filecoin PoRep/PoSt](#filecoin-porep--post-proof-of-replication--proof-of-spacetime).
 
 **Production readiness:** Production
 Deployed in Zcash Sapling (2018), Filecoin (2020), Semaphore, Tornado Cash; billions of proofs generated
@@ -657,14 +658,14 @@ Each commitment transaction is asymmetric — Alice's version of state N makes h
 | **2-of-2 funding output** | P2WSH multisig | Locks funds; requires both signatures to spend |
 | **Commitment transaction** | ECDSA → Schnorr (Taproot) | Current channel state; asymmetric timelocks |
 | **Revocation key** | `rev = H(per_commitment_secret)` | Claim all funds if counterparty cheats |
-| **HTLC output** | SHA-256 hashlock + CLTV timelock | In-flight payments; see [Atomic Swaps](#fair-exchange-atomic-swaps) |
+| **HTLC output** | SHA-256 hashlock + CLTV timelock | In-flight payments; see [Atomic Swaps](#fair-exchange--atomic-swaps) |
 | **PTLC (Taproot upgrade)** | Adaptor signature + point lock | Replaces HTLC; breaks payment correlation |
 
 **Multi-hop payments:** Alice can pay Carol through Bob using chained HTLCs. Each hop adds a hashlock with the same preimage — Carol reveals the preimage to Bob, Bob reveals it to Alice, atomically. PTLCs (Point Time-Lock Contracts) use adaptor signatures to provide the same atomicity without hash correlation across hops.
 
 **Eltoo / LN-Symmetry (Decker-Russell-Osuntokun, 2018):** Proposed replacement for penalty channels. Uses `SIGHASH_ANYPREVOUT` (BIP 118, not yet activated) to allow the latest state to supersede any earlier state — no revocation keys, no asymmetric states, simpler watchtower logic. Awaits Bitcoin soft-fork activation.
 
-**State of the art:** LN-Penalty (Poon-Dryja) is deployed in production — ~5,000 BTC capacity, ~15,000 nodes (2025). Taproot channels (PTLC-ready) rolled out in 2024 via LND and CLN. Original paper [[1]](https://lightning.network/lightning-network-paper.pdf); Eltoo [[2]](https://blockstream.com/eltoo.pdf). See [Adaptor Signatures](08-signatures-advanced.md#adaptor-signatures-scriptless-scripts), [Fair Exchange / Atomic Swaps](#fair-exchange-atomic-swaps).
+**State of the art:** LN-Penalty (Poon-Dryja) is deployed in production — ~5,000 BTC capacity, ~15,000 nodes (2025). Taproot channels (PTLC-ready) rolled out in 2024 via LND and CLN. Original paper [[1]](https://lightning.network/lightning-network-paper.pdf); Eltoo [[2]](https://blockstream.com/eltoo.pdf). See [Adaptor Signatures](08-signatures-advanced.md#adaptor-signatures--scriptless-scripts), [Fair Exchange / Atomic Swaps](#fair-exchange--atomic-swaps).
 
 **Production readiness:** Production
 ~5,000 BTC capacity, ~15,000 nodes (2025); Taproot channels rolling out via LND and CLN
@@ -829,7 +830,7 @@ Both PoSt variants are also Groth16 SNARKs, compressing large Merkle proofs to ~
 
 **Scale:** Filecoin mainnet stores ~1.7 EiB (exbibytes) of data (2025), secured by continuous WindowPoSt proofs from ~2,000 storage providers. Each 32 GiB sector requires ~1.5 hours of SDR encoding and ~30 minutes of SNARK proving on GPU.
 
-**State of the art:** SDR PoRep and PoSt are deployed on Filecoin mainnet (launched 2020). Original PoRep paper (Fisch et al.) [[1]](https://eprint.iacr.org/2018/678); Filecoin Proof of Useful Space technical report [[2]](https://research.protocol.ai/publications/filecoin-proof-of-useful-space/giacomelli2023.pdf). See [Groth16 / Zcash Sapling zk-SNARK](#groth16-zcash-sapling-zk-snark), [Proof of Work / Proof of Space](#proof-of-work-pow-proof-of-space).
+**State of the art:** SDR PoRep and PoSt are deployed on Filecoin mainnet (launched 2020). Original PoRep paper (Fisch et al.) [[1]](https://eprint.iacr.org/2018/678); Filecoin Proof of Useful Space technical report [[2]](https://research.protocol.ai/publications/filecoin-proof-of-useful-space/giacomelli2023.pdf). See [Groth16 / Zcash Sapling zk-SNARK](#groth16--zcash-sapling-zk-snark), [Proof of Work / Proof of Space](#proof-of-work-pow--proof-of-space).
 
 **Production readiness:** Production
 Filecoin mainnet since October 2020; ~1.7 EiB stored; ~2,000 storage providers running continuous PoSt proofs
@@ -944,7 +945,7 @@ Recursive SNARKs require verifying one proof inside the circuit of another. This
 
 **zkApps (programmable privacy):** Since every Mina account can carry a SNARK proof of its state, smart contracts ("zkApps") are zero-knowledge by default. A zkApp circuit runs client-side; the on-chain state update is accompanied by a Pickles proof of correct execution — users never reveal private inputs to the network.
 
-**State of the art:** Mina mainnet launched March 2021; Kimchi replaced the earlier Groth16-based system in 2022. Pickles specification [[1]](https://o1-labs.github.io/proof-systems/pickles/overview.html); Pasta curves [[2]](https://o1-labs.github.io/proof-systems/specs/pasta.html); technical overview [[3]](https://minaprotocol.com/blog/22kb-sized-blockchain-a-technical-reference). See [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems), [Groth16 / Zcash Sapling zk-SNARK](#groth16-zcash-sapling-zk-snark).
+**State of the art:** Mina mainnet launched March 2021; Kimchi replaced the earlier Groth16-based system in 2022. Pickles specification [[1]](https://o1-labs.github.io/proof-systems/pickles/overview.html); Pasta curves [[2]](https://o1-labs.github.io/proof-systems/specs/pasta.html); technical overview [[3]](https://minaprotocol.com/blog/22kb-sized-blockchain-a-technical-reference). See [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems), [Groth16 / Zcash Sapling zk-SNARK](#groth16--zcash-sapling-zk-snark).
 
 **Production readiness:** Production
 Mina mainnet launched March 2021; Kimchi proof system replaced Groth16 in 2022; zkApps live
@@ -990,7 +991,7 @@ Every ~400,000 iterations (~400 ms), the current `(count, stateₙ)` is checkpoi
 
 **Performance:** At ~400 ms slots with ~50,000 transactions per second, Solana's PoH enables one of the highest throughputs of any L1 (2025). The SHA-256 loop runs at ~500 MHz on modern CPUs, producing ~400,000 hashes/second.
 
-**State of the art:** PoH deployed on Solana mainnet since March 2020. Whitepaper (Yakovenko, 2017) [[1]](https://solana.com/solana-whitepaper.pdf); blog post [[2]](https://medium.com/solana-labs/proof-of-history-a-clock-for-blockchain-cf47a61a9274). See [Verifiable Delay Functions](09-commitments-verifiability.md#verifiable-delay-functions-vdf), [Linear BFT Consensus](#linear-bft-consensus-hotstuff-tendermint).
+**State of the art:** PoH deployed on Solana mainnet since March 2020. Whitepaper (Yakovenko, 2017) [[1]](https://solana.com/solana-whitepaper.pdf); blog post [[2]](https://medium.com/solana-labs/proof-of-history-a-clock-for-blockchain-cf47a61a9274). See [Verifiable Delay Functions](09-commitments-verifiability.md#verifiable-delay-functions-vdf), [Linear BFT Consensus](#linear-bft-consensus-hotstuff--tendermint).
 
 **Production readiness:** Production
 Deployed on Solana mainnet since March 2020; ~50,000 TPS; one of the highest-throughput L1s
@@ -1049,7 +1050,7 @@ Key property: GRANDPA finalizes entire chain prefixes in one message round — i
 
 **Fault tolerance:** Safe under ≤ 1/3 Byzantine stake for both BABE and GRANDPA. GRANDPA tolerates ≤ 1/5 Byzantine nodes even in asynchronous conditions (partial sync fallback).
 
-**State of the art:** BABE/GRANDPA deployed on Polkadot mainnet (launched May 2020); BEEFY deployed for Polkadot–Ethereum bridge (2023). GRANDPA paper (Stewart & Kokoris-Kogia, 2020) [[1]](https://arxiv.org/abs/2007.01560); Web3 Foundation overview [[2]](https://wiki.polkadot.com/learn/learn-consensus/). See [Linear BFT Consensus](#linear-bft-consensus-hotstuff-tendermint), [Casper FFG](#casper-ffg-ethereum-proof-of-stake-finality), [Aggregate Signatures (BLS)](08-signatures-advanced.md#aggregate-signatures-bls-aggregate).
+**State of the art:** BABE/GRANDPA deployed on Polkadot mainnet (launched May 2020); BEEFY deployed for Polkadot–Ethereum bridge (2023). GRANDPA paper (Stewart & Kokoris-Kogia, 2020) [[1]](https://arxiv.org/abs/2007.01560); Web3 Foundation overview [[2]](https://wiki.polkadot.com/learn/learn-consensus/). See [Linear BFT Consensus](#linear-bft-consensus-hotstuff--tendermint), [Casper FFG](#casper-ffg--ethereum-proof-of-stake-finality), [Aggregate Signatures (BLS)](08-signatures-advanced.md#aggregate-signatures-bls-aggregate).
 
 **Production readiness:** Production
 Polkadot mainnet since May 2020; BEEFY finality gadget deployed for bridges (2023); powers 50+ parachains
@@ -1108,7 +1109,7 @@ Verification:         e(σ, G₂) == e(H(m), PK)   [one pairing product check]
 | Verify aggregate (N signers, 1 msg) | ~3 ms (same 2 pairings) |
 | Batch verify M aggregates | ~3 + 0.5M ms (Miller-loop batching) |
 
-**State of the art:** BLS12-381 aggregate signatures are live on Ethereum mainnet (since Altair, October 2021); ~500,000 validators produce ~450,000 attestations per epoch. BDN paper [[1]](https://eprint.iacr.org/2018/483); BLS12-381 spec [[2]](https://hackmd.io/@benjaminion/bls12-381). See [Aggregate Signatures (BLS)](08-signatures-advanced.md#aggregate-signatures-bls-aggregate), [Casper FFG](#casper-ffg-ethereum-proof-of-stake-finality).
+**State of the art:** BLS12-381 aggregate signatures are live on Ethereum mainnet (since Altair, October 2021); ~500,000 validators produce ~450,000 attestations per epoch. BDN paper [[1]](https://eprint.iacr.org/2018/483); BLS12-381 spec [[2]](https://hackmd.io/@benjaminion/bls12-381). See [Aggregate Signatures (BLS)](08-signatures-advanced.md#aggregate-signatures-bls-aggregate), [Casper FFG](#casper-ffg--ethereum-proof-of-stake-finality).
 
 **Production readiness:** Production
 Live on Ethereum mainnet since Altair (October 2021); ~500,000 validators producing aggregate signatures every epoch
@@ -1159,7 +1160,7 @@ Wrapping the sync-committee BLS verification in a SNARK converts Helios's output
 
 **Security model:** Trust reduces to (a) Ethereum genesis, (b) the sync committee assumption (≥ 2/3 of the 512-member committee is honest). This is weaker than full consensus but sufficient for many cross-chain applications.
 
-**State of the art:** Helios (Rust, open source) is in production use for Ethereum RPC verification. Telepathy deployed on several EVM chains (2023). SP1-Helios (2024) wraps Helios in a RISC-V zkVM proof. Helios repo [[1]](https://github.com/a16z/helios); Telepathy paper [[2]](https://telepathy.gitbook.io/telepathy/). See [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems), [zkBridge](#zkbridge-cross-chain-state-proofs), [Ethereum BLS Aggregate Signatures](#ethereum-bls-aggregate-signatures-bdn-bls12-381).
+**State of the art:** Helios (Rust, open source) is in production use for Ethereum RPC verification. Telepathy deployed on several EVM chains (2023). SP1-Helios (2024) wraps Helios in a RISC-V zkVM proof. Helios repo [[1]](https://github.com/a16z/helios); Telepathy paper [[2]](https://telepathy.gitbook.io/telepathy/). See [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems), [zkBridge](#zkbridge--cross-chain-state-proofs), [Ethereum BLS Aggregate Signatures](#ethereum-bls-aggregate-signatures-bdn--bls12-381).
 
 **Production readiness:** Production
 Helios (Rust) in production for Ethereum RPC verification; Telepathy deployed on EVM chains (2023); SP1-Helios (2024)
@@ -1223,7 +1224,7 @@ BLS12-381 pairing arithmetic is expensive inside most SNARK arithmetizations bec
 
 **Security model:** Trust is reduced to (a) the source chain's consensus assumption and (b) the soundness of the SNARK proof system. No multisig, no oracle, no committee with a treasury to bribe.
 
-**State of the art:** Succinct Telepathy (2023) is the first production zkBridge on Ethereum mainnet. zkBridge paper (Xie et al., 2022) [[1]](https://arxiv.org/abs/2210.00264). See [Helios Light Client](#helios-snark-based-ethereum-light-client), [IBC](#ibc-inter-blockchain-communication-protocol), [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems).
+**State of the art:** Succinct Telepathy (2023) is the first production zkBridge on Ethereum mainnet. zkBridge paper (Xie et al., 2022) [[1]](https://arxiv.org/abs/2210.00264). See [Helios Light Client](#helios--snark-based-ethereum-light-client), [IBC](#ibc--inter-blockchain-communication-protocol), [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems).
 
 **Production readiness:** Experimental
 Succinct Telepathy deployed on mainnet (2023); other systems (Polymer, Union) in early production or testnet
@@ -1346,7 +1347,7 @@ Orchard replaces Sapling's Spend/Output circuits (Groth16 over BLS12-381) with H
 
 **Ecosystem adoption:** Halo2 is used not only in Zcash Orchard but also in the Ethereum ecosystem: Scroll, Polygon zkEVM, and Axiom all use halo2 (with KZG commitments instead of IPA) for their zkEVM circuits; PSE (Privacy & Scaling Explorations) maintains `halo2` as an open library.
 
-**State of the art:** Halo2 deployed in Zcash Orchard (NU5 upgrade, May 2022). Original Halo paper (Bowe-Grigg-Hopwood, 2019) [[1]](https://eprint.iacr.org/2019/1021); halo2 book [[2]](https://zcash.github.io/halo2/). See [Groth16 / Zcash Sapling zk-SNARK](#groth16-zcash-sapling-zk-snark), [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems), [Mina Protocol](#mina-protocol-pickles-recursive-snark-22-kb-blockchain).
+**State of the art:** Halo2 deployed in Zcash Orchard (NU5 upgrade, May 2022). Original Halo paper (Bowe-Grigg-Hopwood, 2019) [[1]](https://eprint.iacr.org/2019/1021); halo2 book [[2]](https://zcash.github.io/halo2/). See [Groth16 / Zcash Sapling zk-SNARK](#groth16--zcash-sapling-zk-snark), [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems), [Mina Protocol](#mina-protocol--pickles-recursive-snark-22-kb-blockchain).
 
 **Production readiness:** Production
 Deployed in Zcash Orchard (NU5, May 2022); halo2 library used by Scroll, Polygon zkEVM, and Axiom
@@ -1400,7 +1401,7 @@ Ethereum Beacon chain finalises the block
 
 **Inclusion lists (EIP-7547):** Proposers can publish a list of transactions that the chosen builder *must* include, restoring censorship resistance — builders who omit listed transactions have their block rejected.
 
-**State of the art:** MEV-Boost (Flashbots, 2022) runs on >90% of Ethereum blocks; ePBS (EIP-7732) is under active research and targeted for a future fork. Inclusion lists (EIP-7547) are planned alongside ePBS. See [Encrypted Mempools](#encrypted-mempools-threshold-encryption-for-transaction-ordering), [Flashbots and SUAVE](#flashbots-and-suave-encrypted-order-flow-and-tee-based-mev), [Casper FFG](#casper-ffg-ethereum-proof-of-stake-finality).
+**State of the art:** MEV-Boost (Flashbots, 2022) runs on >90% of Ethereum blocks; ePBS (EIP-7732) is under active research and targeted for a future fork. Inclusion lists (EIP-7547) are planned alongside ePBS. See [Encrypted Mempools](#encrypted-mempools--threshold-encryption-for-transaction-ordering), [Flashbots and SUAVE](#flashbots-and-suave--encrypted-order-flow-and-tee-based-mev), [Casper FFG](#casper-ffg--ethereum-proof-of-stake-finality).
 
 **Production readiness:** Production
 MEV-Boost (Flashbots, 2022) runs on >90% of Ethereum blocks; ePBS (EIP-7732) under research for future fork
@@ -1457,7 +1458,7 @@ Block submitted to target chain (Ethereum, Polygon, …)
 | TEE (SUAVE) | TEE manufacturer (Intel) + attestation | Near-zero overhead | Devnet / early 2025 |
 | Commit-reveal | No additional trust | Adds one block delay | Widely used (simple protocols) |
 
-**State of the art:** SUAVE devnet launched 2024; Rigil testnet (2024) is the first public SUAVE deployment. MEV-Boost (non-TEE) remains the dominant production system. SUAVE paper [[1]](https://writings.flashbots.net/the-future-of-mev-is-suave); TEE attestation background in [TEE Remote Attestation](14-applied-infrastructure-pki.md#tee-remote-attestation). See [Encrypted Mempools](#encrypted-mempools-threshold-encryption-for-transaction-ordering), [Ethereum PBS](#ethereum-pbs-proposer-builder-separation-and-mev).
+**State of the art:** SUAVE devnet launched 2024; Rigil testnet (2024) is the first public SUAVE deployment. MEV-Boost (non-TEE) remains the dominant production system. SUAVE paper [[1]](https://writings.flashbots.net/the-future-of-mev-is-suave); TEE attestation background in [TEE Remote Attestation](14-applied-infrastructure-pki.md#tee-remote-attestation). See [Encrypted Mempools](#encrypted-mempools--threshold-encryption-for-transaction-ordering), [Ethereum PBS](#ethereum-pbs--proposer-builder-separation-and-mev).
 
 **Production readiness:** Experimental
 MEV-Boost in production; SUAVE Rigil testnet launched 2024; TEE-based block building in early devnet stage
@@ -1503,7 +1504,7 @@ A validator key `sk` is split into `n` shares `sk_1, …, sk_n` using a `(t, n)`
 
 **EIP-7441 — Whisk interaction:** EIP-7441 proposes a shuffled secret leader election (Whisk) for Ethereum that hides the next block proposer's identity until proposal time, complicating coordinated attacks on DVT clusters. DVT integration with Ethereum's validator duties is being standardised across the ecosystem.
 
-**State of the art:** Obol and SSV both have validators on Ethereum mainnet (2024); tens of thousands of ETH secured via DVT. SSV whitepaper [[1]](https://ssv.network/tech-paper/); Obol documentation [[2]](https://docs.obol.org/). See [Threshold Signatures](08-signatures-advanced.md#threshold-signature-schemes-tss), [Distributed Key Generation](05-secret-sharing-threshold-cryptography.md#distributed-key-generation-dkg), [Casper FFG](#casper-ffg-ethereum-proof-of-stake-finality).
+**State of the art:** Obol and SSV both have validators on Ethereum mainnet (2024); tens of thousands of ETH secured via DVT. SSV whitepaper [[1]](https://ssv.network/tech-paper/); Obol documentation [[2]](https://docs.obol.org/). See [Threshold Signatures](08-signatures-advanced.md#threshold-signature-schemes-tss), [Distributed Key Generation](05-secret-sharing-threshold-cryptography.md#distributed-key-generation-dkg), [Casper FFG](#casper-ffg--ethereum-proof-of-stake-finality).
 
 **Production readiness:** Production
 Obol and SSV have validators on Ethereum mainnet (2024); tens of thousands of ETH secured via DVT
@@ -1560,7 +1561,7 @@ Because the VDF takes longer than the reveal window, the last revealer cannot co
 
 **MinRoot VDF (2022):** Ethereum's current preferred VDF construction iterates `(x, y) ↦ (y, (x + y)^{1/5})` over a large prime field — the inverse fifth-power is the sequential bottleneck. Faster than class-group VDFs on hardware [[1]](https://eprint.iacr.org/2022/1626).
 
-**Current deployment:** Ethereum PoS uses RANDAO alone (VDF not yet live); VDF integration awaits ASIC hardware development and protocol specification. RANDAO spec [[2]](https://eth2book.info/capella/part2/building_blocks/randomness/). See [Verifiable Delay Functions](09-commitments-verifiability.md#verifiable-delay-functions-vdf), [Secret Leader Election](#secret-leader-election), [Casper FFG](#casper-ffg-ethereum-proof-of-stake-finality).
+**Current deployment:** Ethereum PoS uses RANDAO alone (VDF not yet live); VDF integration awaits ASIC hardware development and protocol specification. RANDAO spec [[2]](https://eth2book.info/capella/part2/building_blocks/randomness/). See [Verifiable Delay Functions](09-commitments-verifiability.md#verifiable-delay-functions-vdf), [Secret Leader Election](#secret-leader-election), [Casper FFG](#casper-ffg--ethereum-proof-of-stake-finality).
 
 **State of the art:** RANDAO is deployed on Ethereum mainnet. VDF integration (MinRoot-based) is in active research with ASIC development ongoing. Ethereum Foundation funds VDF hardware R&D; production deployment is pending.
 
@@ -1611,7 +1612,7 @@ RANDAO is deployed as Ethereum's randomness source; VDF integration is endorsed 
 
 **Relationship to folding schemes and PCD:** IVC generalises to Proof-Carrying Data (PCD) — where each computation step carries a proof verified by the next step, enabling distributed/parallel incremental proving. See [Folding Schemes and PCD](04-zero-knowledge-proof-systems.md#proof-carrying-data-pcd).
 
-**State of the art:** Nova and HyperNova are the leading theoretical constructions (2023–2024); both are integrated into production zkVMs (SP1, RISC Zero). Mina's Pickles is the most prominent production IVC system. Survey [[4]](https://eprint.iacr.org/2023/620). See [Mina Protocol](#mina-protocol-pickles-recursive-snark-22-kb-blockchain), [Halo2](#halo2-recursive-snarks-without-trusted-setup-zcash-orchard), [ZK Rollups](#zk-rollups-and-optimistic-rollups), [Folding Schemes](04-zero-knowledge-proof-systems.md#proof-carrying-data-pcd).
+**State of the art:** Nova and HyperNova are the leading theoretical constructions (2023–2024); both are integrated into production zkVMs (SP1, RISC Zero). Mina's Pickles is the most prominent production IVC system. Survey [[4]](https://eprint.iacr.org/2023/620). See [Mina Protocol](#mina-protocol--pickles-recursive-snark-22-kb-blockchain), [Halo2](#halo2--recursive-snarks-without-trusted-setup-zcash-orchard), [ZK Rollups](#zk-rollups-and-optimistic-rollups), [Folding Schemes](04-zero-knowledge-proof-systems.md#proof-carrying-data-pcd).
 
 **Production readiness:** Experimental
 Mina's Pickles is the most prominent production IVC; Nova and HyperNova integrated into zkVM prototypes (SP1, RISC Zero)
@@ -1669,7 +1670,7 @@ Withdraw (to fresh address):
 
 **Limitations:** Anonymity set size is bounded by the number of deposits between deposit and withdrawal. Timing and gas-pattern analysis can partially deanonymise users. The relayer (who submits the withdrawal transaction to avoid linking the withdrawing address to a funding source) must be trusted for liveness but not for privacy.
 
-**State of the art:** Tornado Cash v2 deployed on Ethereum mainnet; OFAC sanctioned the contracts (August 2022). Tornado Cash Nova (2021) generalised to arbitrary amounts using shielded transfers (a Zcash-style shielded pool on Ethereum). Source code [[1]](https://github.com/tornadocash/tornado-core); audit [[2]](https://tornado.cash/audits/TornadoCash_audit_ABDK.pdf). See [Groth16 / Zcash Sapling zk-SNARK](#groth16-zcash-sapling-zk-snark), [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems), [Commitment Schemes](09-commitments-verifiability.md#commitment-schemes).
+**State of the art:** Tornado Cash v2 deployed on Ethereum mainnet; OFAC sanctioned the contracts (August 2022). Tornado Cash Nova (2021) generalised to arbitrary amounts using shielded transfers (a Zcash-style shielded pool on Ethereum). Source code [[1]](https://github.com/tornadocash/tornado-core); audit [[2]](https://tornado.cash/audits/TornadoCash_audit_ABDK.pdf). See [Groth16 / Zcash Sapling zk-SNARK](#groth16--zcash-sapling-zk-snark), [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems), [Commitment Schemes](09-commitments-verifiability.md#commitment-schemes).
 
 **Production readiness:** Production
 Tornado Cash v2 deployed on Ethereum mainnet; OFAC sanctioned (August 2022); contracts remain on-chain and functional
@@ -1741,9 +1742,9 @@ Incoming viewing key (ivk) → scan + decrypt received notes without spending
 Full viewing key (fvk = (ak, nk, ovk)) → view all activity without spending
 ```
 
-**Sapling vs. Orchard:** Zcash Orchard (NU5, 2022) replaces Sapling's Groth16/BLS12-381 circuits with Halo2/Pallas circuits and unifies each Spend+Output into a single *action*, eliminating separate proof types. See [Halo2](#halo2-recursive-snarks-without-trusted-setup-zcash-orchard).
+**Sapling vs. Orchard:** Zcash Orchard (NU5, 2022) replaces Sapling's Groth16/BLS12-381 circuits with Halo2/Pallas circuits and unifies each Spend+Output into a single *action*, eliminating separate proof types. See [Halo2](#halo2--recursive-snarks-without-trusted-setup-zcash-orchard).
 
-**State of the art:** Sapling activated on Zcash mainnet October 2018; remains the most widely used shielded protocol by transaction count. Sapling specification [[1]](https://zips.z.cash/protocol/sapling.pdf); ZIP 32 (HD shielded keys) [[2]](https://zips.z.cash/zip-0032). See [Groth16 / Zcash Sapling zk-SNARK](#groth16-zcash-sapling-zk-snark), [Confidential Transactions](#confidential-transactions-ct), [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems).
+**State of the art:** Sapling activated on Zcash mainnet October 2018; remains the most widely used shielded protocol by transaction count. Sapling specification [[1]](https://zips.z.cash/protocol/sapling.pdf); ZIP 32 (HD shielded keys) [[2]](https://zips.z.cash/zip-0032). See [Groth16 / Zcash Sapling zk-SNARK](#groth16--zcash-sapling-zk-snark), [Confidential Transactions](#confidential-transactions-ct), [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems).
 
 **Production readiness:** Production
 Sapling activated on Zcash mainnet October 2018; remains the most widely used shielded protocol by transaction count
@@ -1871,7 +1872,7 @@ The Nomad bug (August 2022) bypassed this by allowing the zero hash `0x00...00` 
 | Finality latency | Minutes | 7 days | Minutes–hours |
 | Trust assumption | k honest signers | 1 online watcher | SNARK soundness |
 
-**State of the art:** ZK bridges (Succinct Telepathy, Polymer, Union) are in production on mainnet (2024) but at lower TVL than multisig bridges due to proving cost. Wormhole post-mortem [[1]](https://extropy-io.medium.com/solanas-wormhole-hack-post-mortem-analysis-3b68b9e88e13); Nomad post-mortem [[2]](https://medium.com/nomad-xyz-blog/nomad-bridge-hack-root-cause-analysis-875ad2e5aacd); L2Beat bridge risk framework [[3]](https://l2beat.com/bridges/summary). See [zkBridge](#zkbridge-cross-chain-state-proofs), [IBC](#ibc-inter-blockchain-communication-protocol), [Helios Light Client](#helios-snark-based-ethereum-light-client).
+**State of the art:** ZK bridges (Succinct Telepathy, Polymer, Union) are in production on mainnet (2024) but at lower TVL than multisig bridges due to proving cost. Wormhole post-mortem [[1]](https://extropy-io.medium.com/solanas-wormhole-hack-post-mortem-analysis-3b68b9e88e13); Nomad post-mortem [[2]](https://medium.com/nomad-xyz-blog/nomad-bridge-hack-root-cause-analysis-875ad2e5aacd); L2Beat bridge risk framework [[3]](https://l2beat.com/bridges/summary). See [zkBridge](#zkbridge--cross-chain-state-proofs), [IBC](#ibc--inter-blockchain-communication-protocol), [Helios Light Client](#helios--snark-based-ethereum-light-client).
 
 **Production readiness:** Production
 Multisig and light-client bridges are in production; ZK bridges deployed on mainnet (2024); >$2.5B lost to bridge exploits historically
@@ -1911,7 +1912,7 @@ Bridge security taxonomy is well-established in academic and industry literature
 | Forward secrecy | No — compromised key reveals past sends | Yes — e_sender is ephemeral |
 | Tx chaining | Not supported | Supported (outputs usable before confirmation) |
 
-**State of the art:** Seraphis is under active development for Monero (2024-2025); no mainnet activation date yet. Seraphis specification [[1]](https://github.com/UkoeHB/Seraphis); Jamtis address scheme [[2]](https://gist.github.com/tevador/50160d160d24cfc6c52ae02eb3d17024). See [Monero RingCT](#monero-ringct-ring-signatures-confidential-transactions), [Ring Signatures](08-signatures-advanced.md#linkable-ring-signatures), [Confidential Transactions](#confidential-transactions-ct).
+**State of the art:** Seraphis is under active development for Monero (2024-2025); no mainnet activation date yet. Seraphis specification [[1]](https://github.com/UkoeHB/Seraphis); Jamtis address scheme [[2]](https://gist.github.com/tevador/50160d160d24cfc6c52ae02eb3d17024). See [Monero RingCT](#monero-ringct--ring-signatures--confidential-transactions), [Ring Signatures](08-signatures-advanced.md#linkable-ring-signatures), [Confidential Transactions](#confidential-transactions-ct).
 
 **Production readiness:** Research
 Under active development for Monero (2024-2025); no mainnet activation date; Seraphis library prototype available
@@ -1946,7 +1947,7 @@ Well-received by Monero research community; Triptych published at ESORICS 2021; 
 | Bulletproofs+ | 576 bytes | 640 bytes | 800 bytes |
 | Bulletproofs++ | ~490 bytes | ~550 bytes | ~700 bytes |
 
-**State of the art:** Bulletproofs+ deployed on Monero mainnet (August 2022, hard fork v15). Bulletproofs++ proposed for future Monero upgrade. BP+ paper (Chung et al., 2020) [[1]](https://eprint.iacr.org/2020/735). See [Range Proofs](09-commitments-verifiability.md#range-proofs), [Confidential Transactions](#confidential-transactions-ct), [Monero RingCT](#monero-ringct-ring-signatures-confidential-transactions).
+**State of the art:** Bulletproofs+ deployed on Monero mainnet (August 2022, hard fork v15). Bulletproofs++ proposed for future Monero upgrade. BP+ paper (Chung et al., 2020) [[1]](https://eprint.iacr.org/2020/735). See [Range Proofs](09-commitments-verifiability.md#range-proofs), [Confidential Transactions](#confidential-transactions-ct), [Monero RingCT](#monero-ringct--ring-signatures--confidential-transactions).
 
 **Production readiness:** Production
 Bulletproofs+ deployed on Monero mainnet (August 2022, hard fork v15); Bulletproofs++ proposed for future upgrade
@@ -2131,8 +2132,8 @@ Nova (Microsoft Research, 2021) and HyperNova (2023) published at top venues; Pr
 | **HTLC Atomic Swap** | 2013 | Hash preimage + timelocks | Cross-chain swap: Alice locks on chain A with hash h; Bob locks on chain B with same h; preimage reveal claims both [[1]](https://en.bitcoin.it/wiki/Atomic_swap) |
 | **PTLC (Point Time-Locked Contracts)** | 2019 | Adaptor signatures | Scriptless HTLC replacement; no hash correlation across hops; requires Schnorr [[1]](https://suredbits.com/payment-points-part-1/) |
 | **SPV Relay (BTC Relay)** | 2016 | Merkle proof + PoW verification | Verify Bitcoin tx on Ethereum by relaying block headers + SPV proof [[1]](https://github.com/ethereum/btcrelay) |
-| **IBC Light Client** | 2021 | Tendermint light client + Merkle proof | Verify counterparty chain headers via >=2/3 validator sigs; see [IBC](#ibc-inter-blockchain-communication-protocol) [[1]](https://ibc.cosmos.network/) |
-| **ZK Light Client Bridge** | 2023 | SNARK-proven consensus verification | Prove BLS/Ed25519 signature verification inside a SNARK; see [zkBridge](#zkbridge-cross-chain-state-proofs) [[1]](https://arxiv.org/abs/2210.00264) |
+| **IBC Light Client** | 2021 | Tendermint light client + Merkle proof | Verify counterparty chain headers via >=2/3 validator sigs; see [IBC](#ibc--inter-blockchain-communication-protocol) [[1]](https://ibc.cosmos.network/) |
+| **ZK Light Client Bridge** | 2023 | SNARK-proven consensus verification | Prove BLS/Ed25519 signature verification inside a SNARK; see [zkBridge](#zkbridge--cross-chain-state-proofs) [[1]](https://arxiv.org/abs/2210.00264) |
 | **Optimistic Bridge (Nomad-style)** | 2022 | Fraud proofs + challenge window | Post state root; 7-day challenge; 1-of-n honest watcher assumption [[1]](https://docs.connext.network/) |
 
 **HTLC cross-chain protocol:**
@@ -2158,7 +2159,7 @@ on chain B                               Bob uses s to claim asset_A
 | SNARK-wrapped light client | ~300K gas/proof (one-time) | SNARK soundness + source consensus |
 | Optimistic relay | ~50K gas (post root) | 1 honest watcher |
 
-**State of the art:** IBC (Cosmos, 115+ chains) is the most deployed light-client bridge protocol. ZK bridges (Succinct, Polymer, Union) are the emerging standard for EVM chains. HTLCs remain the simplest trustless mechanism for chains with scripting support. See [Fair Exchange / Atomic Swaps](#fair-exchange-atomic-swaps), [IBC](#ibc-inter-blockchain-communication-protocol), [zkBridge](#zkbridge-cross-chain-state-proofs), [Bridge Security](#bridge-security-trust-model-taxonomy).
+**State of the art:** IBC (Cosmos, 115+ chains) is the most deployed light-client bridge protocol. ZK bridges (Succinct, Polymer, Union) are the emerging standard for EVM chains. HTLCs remain the simplest trustless mechanism for chains with scripting support. See [Fair Exchange / Atomic Swaps](#fair-exchange--atomic-swaps), [IBC](#ibc--inter-blockchain-communication-protocol), [zkBridge](#zkbridge--cross-chain-state-proofs), [Bridge Security](#bridge-security--trust-model-taxonomy).
 
 **Production readiness:** Production
 IBC (115+ chains), HTLCs (Lightning, atomic swaps), and ZK light client bridges (Succinct, Polymer) all in production
@@ -2203,7 +2204,7 @@ Batch execution (uniform clearing price)
   │ All swaps at same price — no front-running advantage
 ```
 
-**State of the art:** Penumbra mainnet launched 2024 on Cosmos (IBC-connected). Combines shielded transactions (Zcash-style), threshold encryption (MEV protection), and batch auctions (fair pricing). Penumbra protocol spec [[1]](https://protocol.penumbra.zone/); Ferveo DKG [[2]](https://github.com/anoma/ferveo). See [Encrypted Mempools](#encrypted-mempools-threshold-encryption-for-transaction-ordering), [Confidential Transactions](#confidential-transactions-ct), [IBC](#ibc-inter-blockchain-communication-protocol).
+**State of the art:** Penumbra mainnet launched 2024 on Cosmos (IBC-connected). Combines shielded transactions (Zcash-style), threshold encryption (MEV protection), and batch auctions (fair pricing). Penumbra protocol spec [[1]](https://protocol.penumbra.zone/); Ferveo DKG [[2]](https://github.com/anoma/ferveo). See [Encrypted Mempools](#encrypted-mempools--threshold-encryption-for-transaction-ordering), [Confidential Transactions](#confidential-transactions-ct), [IBC](#ibc--inter-blockchain-communication-protocol).
 
 **Production readiness:** Production
 Penumbra mainnet launched 2024 on Cosmos (IBC-connected); shielded transactions and batch swaps operational
@@ -2249,7 +2250,7 @@ Decryption requires threshold key ceremony (network-wide threshold FHE)
 
 **Threshold FHE for decryption:** The network's FHE secret key is split across validators via a threshold scheme. Decryption (e.g., for a user requesting their own balance) requires a threshold of validators to contribute partial decryptions — no single validator can decrypt any value.
 
-**State of the art:** Zama fhEVM is the leading implementation (testnet, 2024); Fhenix and Inco are building FHE-native rollups. TFHE bootstrapping latency (~100 ms per gate) limits throughput but is improving rapidly. fhEVM whitepaper [[1]](https://github.com/zama-ai/fhevm/blob/main/fhevm-whitepaper.pdf). See [Fully Homomorphic Encryption](07-homomorphic-functional-encryption.md), [Encrypted Mempools](#encrypted-mempools-threshold-encryption-for-transaction-ordering).
+**State of the art:** Zama fhEVM is the leading implementation (testnet, 2024); Fhenix and Inco are building FHE-native rollups. TFHE bootstrapping latency (~100 ms per gate) limits throughput but is improving rapidly. fhEVM whitepaper [[1]](https://github.com/zama-ai/fhevm/blob/main/fhevm-whitepaper.pdf). See [Fully Homomorphic Encryption](07-homomorphic-functional-encryption.md), [Encrypted Mempools](#encrypted-mempools--threshold-encryption-for-transaction-ordering).
 
 **Production readiness:** Experimental
 Zama fhEVM on testnet (2024); Fhenix and Inco building FHE-native rollups; no mainnet production deployment yet
@@ -2346,7 +2347,7 @@ Cosmos Hub (provider chain)
 
 **Cryptographic slashing evidence:** A double-signing proof consists of two signed block proposals (or prevotes) at the same height and round, with valid Ed25519 signatures from the same validator key. The IBC relayer submits this evidence as an IBC packet; the provider chain's evidence module verifies both signatures and slashes the validator's bond.
 
-**State of the art:** Replicated Security live on Cosmos Hub (March 2023); Neutron and Stride are the first consumer chains. Partial Set Security (2024) allows opt-in. Mesh Security is under development by Osmosis and Informal Systems. ICS documentation [[1]](https://cosmos.network/interchain-security); Mesh Security spec [[2]](https://mesh.informal.systems/). See [IBC](#ibc-inter-blockchain-communication-protocol), [Casper FFG](#casper-ffg-ethereum-proof-of-stake-finality), [Linear BFT Consensus](#linear-bft-consensus-hotstuff-tendermint).
+**State of the art:** Replicated Security live on Cosmos Hub (March 2023); Neutron and Stride are the first consumer chains. Partial Set Security (2024) allows opt-in. Mesh Security is under development by Osmosis and Informal Systems. ICS documentation [[1]](https://cosmos.network/interchain-security); Mesh Security spec [[2]](https://mesh.informal.systems/). See [IBC](#ibc--inter-blockchain-communication-protocol), [Casper FFG](#casper-ffg--ethereum-proof-of-stake-finality), [Linear BFT Consensus](#linear-bft-consensus-hotstuff--tendermint).
 
 **Production readiness:** Production
 Replicated Security live on Cosmos Hub since March 2023; Neutron and Stride are first consumer chains; Partial Set Security launched 2024

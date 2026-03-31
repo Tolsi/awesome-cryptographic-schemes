@@ -6,68 +6,69 @@
 
 - [Private Set Intersection (PSI)](#private-set-intersection-psi)
 - [Private Set Union (PSU)](#private-set-union-psu)
-- [Private Set Difference / Set Operations](#private-set-difference-set-operations)
+- [Private Set Difference / Set Operations](#private-set-difference--set-operations)
 - [Oblivious RAM (ORAM)](#oblivious-ram-oram)
-- [Frequency-Smoothing Oblivious Datastores (PANCAKE / Waffle)](#frequency-smoothing-oblivious-datastores-pancake-waffle)
+- [Frequency-Smoothing Oblivious Datastores (PANCAKE / Waffle)](#frequency-smoothing-oblivious-datastores-pancake--waffle)
 - [Private Information Retrieval (PIR)](#private-information-retrieval-pir)
-- [Searchable Encryption (SSE / PEKS)](#searchable-encryption-sse-peks)
+- [Searchable Encryption (SSE / PEKS)](#searchable-encryption-sse--peks)
 - [Oblivious PRF (OPRF)](#oblivious-prf-oprf)
 - [Oblivious Key-Value Store (OKVS)](#oblivious-key-value-store-okvs)
-- [Oblivious Sorting / Oblivious Data Structures](#oblivious-sorting-oblivious-data-structures)
+- [Oblivious Sorting / Oblivious Data Structures](#oblivious-sorting--oblivious-data-structures)
 - [Private Function Evaluation (PFE)](#private-function-evaluation-pfe)
 - [Oblivious Message Retrieval (OMR)](#oblivious-message-retrieval-omr)
 - [Oblivious DNS (ODoH)](#oblivious-dns-odoh)
 - [Fuzzy Private Set Intersection (FPSI)](#fuzzy-private-set-intersection-fpsi)
 - [Private Proximity Testing](#private-proximity-testing)
-- [Private Heavy Hitters / Frequency Estimation](#private-heavy-hitters-frequency-estimation)
+- [Private Heavy Hitters / Frequency Estimation](#private-heavy-hitters--frequency-estimation)
 - [Private Stream Aggregation (PSA)](#private-stream-aggregation-psa)
 - [Privacy-Preserving Record Linkage (PPRL)](#privacy-preserving-record-linkage-pprl)
 - [Differential Privacy](#differential-privacy)
-- [Prio / VDAF (Privacy-Preserving Aggregation)](#prio-vdaf-privacy-preserving-aggregation)
+- [Prio / VDAF (Privacy-Preserving Aggregation)](#prio--vdaf-privacy-preserving-aggregation)
 - [Sealed-Bid Auction Protocols](#sealed-bid-auction-protocols)
 - [Oblivious Polynomial Evaluation (OPE)](#oblivious-polynomial-evaluation-ope)
 - [Fuzzy Message Detection (FMD)](#fuzzy-message-detection-fmd)
 - [Graph Encryption](#graph-encryption)
-- [Oblivious Automata / Branching Program Evaluation](#oblivious-automata-branching-program-evaluation)
-- [Oblivious SQL / Encrypted Database Joins](#oblivious-sql-encrypted-database-joins)
+- [Oblivious Automata / Branching Program Evaluation](#oblivious-automata--branching-program-evaluation)
+- [Oblivious SQL / Encrypted Database Joins](#oblivious-sql--encrypted-database-joins)
 - [Labeled PSI and Private Intersection-Sum (PSI-Sum)](#labeled-psi-and-private-intersection-sum-psi-sum)
 - [Volume-Hiding Searchable Encryption (Encrypted Multi-Maps)](#volume-hiding-searchable-encryption-encrypted-multi-maps)
 - [Shuffle Model of Differential Privacy](#shuffle-model-of-differential-privacy)
-- [Differentially Private Machine Learning (DP-SGD / PATE)](#differentially-private-machine-learning-dp-sgd-pate)
-- [Advanced Single-Server PIR (OnionPIR / Spiral)](#advanced-single-server-pir-onionpir-spiral)
+- [Differentially Private Machine Learning (DP-SGD / PATE)](#differentially-private-machine-learning-dp-sgd--pate)
+- [Advanced Single-Server PIR (OnionPIR / Spiral)](#advanced-single-server-pir-onionpir--spiral)
 - [Conditional Disclosure of Secrets (CDS)](#conditional-disclosure-of-secrets-cds)
-- [Privacy-Preserving Contact Tracing (GAEN / DP-3T)](#privacy-preserving-contact-tracing-gaen-dp-3t)
+- [Privacy-Preserving Contact Tracing (GAEN / DP-3T)](#privacy-preserving-contact-tracing-gaen--dp-3t)
 - [Laconic OT and Laconic Cryptography](#laconic-ot-and-laconic-cryptography)
 - [Keyword PIR](#keyword-pir)
 - [Unbalanced PSI (Client-Server PSI at Scale)](#unbalanced-psi-client-server-psi-at-scale)
 - [Homomorphic Encryption for ML Inference (CryptoNets)](#homomorphic-encryption-for-ml-inference-cryptonets)
-- [Differentially Private Synthetic Data Generation (DP-GAN / DP-VAE)](#differentially-private-synthetic-data-generation-dp-gan-dp-vae)
+- [Differentially Private Synthetic Data Generation (DP-GAN / DP-VAE)](#differentially-private-synthetic-data-generation-dp-gan--dp-vae)
 - [Privacy-Preserving Federated Learning](#privacy-preserving-federated-learning)
-- [Secure Multi-Party Machine Learning (CrypTen / MOTION2NX)](#secure-multi-party-machine-learning-crypten-motion2nx)
+- [Secure Multi-Party Machine Learning (CrypTen / MOTION2NX)](#secure-multi-party-machine-learning-crypten--motion2nx)
 - [Private Nearest-Neighbor Search (Private Embedding Retrieval)](#private-nearest-neighbor-search-private-embedding-retrieval)
 - [Private Equality Testing (PET)](#private-equality-testing-pet)
-- [OT-Extension-Based PSI (KKRT16 / RR21)](#ot-extension-based-psi-kkrt16-rr21)
+- [OT-Extension-Based PSI (KKRT16 / RR21)](#ot-extension-based-psi-kkrt16--rr21)
 - [Privacy-Preserving Disease Surveillance (DP Epidemiology)](#privacy-preserving-disease-surveillance-dp-epidemiology)
 - [Continual-Release Differential Privacy (Private Streaming Algorithms)](#continual-release-differential-privacy-private-streaming-algorithms)
-- [Privacy-Preserving Location Services (Geo-Fencing / Trajectory Privacy)](#privacy-preserving-location-services-geo-fencing-trajectory-privacy)
+- [Privacy-Preserving Location Services (Geo-Fencing / Trajectory Privacy)](#privacy-preserving-location-services-geo-fencing--trajectory-privacy)
 - [Differential Privacy Auditing and Verification](#differential-privacy-auditing-and-verification)
 - [DPF-Based Private Information Retrieval](#dpf-based-private-information-retrieval)
 - [Forward-and-Backward-Private Dynamic Searchable Encryption](#forward-and-backward-private-dynamic-searchable-encryption)
-- [Optimal Oblivious RAM (OptORAMa / PanORAMa)](#optimal-oblivious-ram-optorama-panorama)
+- [Optimal Oblivious RAM (OptORAMa / PanORAMa)](#optimal-oblivious-ram-optorama--panorama)
 - [Private Contact Discovery Protocols](#private-contact-discovery-protocols)
-- [Distributed Aggregation Protocol (DAP / Divvi Up)](#distributed-aggregation-protocol-dap-divvi-up)
+- [Distributed Aggregation Protocol (DAP / Divvi Up)](#distributed-aggregation-protocol-dap--divvi-up)
 - [Privacy-Preserving Biometric Authentication](#privacy-preserving-biometric-authentication)
 - [Leakage-Abuse Attacks and Countermeasures for Encrypted Search](#leakage-abuse-attacks-and-countermeasures-for-encrypted-search)
-- [Private Set Membership Testing (Batch PIR / Private Membership Test)](#private-set-membership-testing-batch-pir-private-membership-test)
-- [Privacy-Preserving Ad Measurement (IPA / ARA)](#privacy-preserving-ad-measurement-ipa-ara)
+- [Private Set Membership Testing (Batch PIR / Private Membership Test)](#private-set-membership-testing-batch-pir--private-membership-test)
+- [Privacy-Preserving Ad Measurement (IPA / ARA)](#privacy-preserving-ad-measurement-ipa--ara)
 - [Oblivious DNS over HTTPS Deployments (Encrypted Metadata Protocols)](#oblivious-dns-over-https-deployments-encrypted-metadata-protocols)
-- [Spiral PIR / SimplePIR / DoublePIR](#spiral-pir-simplepir-doublepir)
+- [Spiral PIR / SimplePIR / DoublePIR](#spiral-pir--simplepir--doublepir)
 - [Circuit-PSI (PSI with Secret-Shared Output)](#circuit-psi-psi-with-secret-shared-output)
-- [Private Intersection-Sum (PSI-Sum / Private Join and Compute)](#private-intersection-sum-psi-sum-private-join-and-compute)
-- [STAR — Secret Sharing for Private Threshold Aggregation Reporting](#star-secret-sharing-for-private-threshold-aggregation-reporting)
-- [DP-3T / GAEN (Decentralized Privacy-Preserving Proximity Tracing)](#dp-3t-gaen-decentralized-privacy-preserving-proximity-tracing)
+- [Private Intersection-Sum (PSI-Sum / Private Join and Compute)](#private-intersection-sum-psi-sum--private-join-and-compute)
+- [STAR — Secret Sharing for Private Threshold Aggregation Reporting](#star--secret-sharing-for-private-threshold-aggregation-reporting)
+- [DP-3T / GAEN (Decentralized Privacy-Preserving Proximity Tracing)](#dp-3t--gaen-decentralized-privacy-preserving-proximity-tracing)
 - [Private Information Delivery (PID)](#private-information-delivery-pid)
 <!-- /TOC -->
+
 
 ## Private Set Intersection (PSI)
 
@@ -218,7 +219,7 @@ USENIX Security Distinguished Paper (PANCAKE); growing interest as practical alt
 | **FrodoPIR** | 2023 | Plain LWE | Single-server; client-independent offline phase; ~1 s per query on 1M×1KB DB; ePrint 2022/981; PoPETS 2023 [[1]](https://eprint.iacr.org/2022/981) |
 | **Checklist** | 2021 | 2-server; offline/online hints | Sublinear server time per query via client-stored hints; first system for private Safe-Browsing lookups; 6.7× faster than prior 2-server PIR; USENIX Sec 2021 [[1]](https://eprint.iacr.org/2021/345) |
 
-**State of the art:** SimplePIR/DoublePIR (speed), Spiral (throughput, see [Advanced Single-Server PIR](#advanced-single-server-pir-onionpir-spiral)), FrodoPIR (scalable single-server with offline preprocessing), Checklist (sublinear server time with client hints), IT-PIR (information-theoretic setting).
+**State of the art:** SimplePIR/DoublePIR (speed), Spiral (throughput, see [Advanced Single-Server PIR](#advanced-single-server-pir-onionpir--spiral)), FrodoPIR (scalable single-server with offline preprocessing), Checklist (sublinear server time with client hints), IT-PIR (information-theoretic setting).
 
 **Production readiness:** Mature
 SimplePIR/DoublePIR and Spiral have working implementations; Checklist deployed for private Safe Browsing research
@@ -305,7 +306,7 @@ IETF RFC 9497 (CFRG); used in RFC 9578 (Privacy Pass); endorsed by Cloudflare, A
 | **OKVS (Garimella et al.)** | 2021 | Banded matrix | Near-optimal rate (encoding ≈ n items); backbone of fast PSI [[1]](https://eprint.iacr.org/2021/883) |
 | **RB-OKVS (Random Band)** | 2022 | Banded linear algebra | Improved; O(n) encode/decode; used in fastest PSI implementations [[1]](https://eprint.iacr.org/2022/320) |
 
-**State of the art:** RB-OKVS (2022); enables PSI on millions of items in seconds. Key building block for [PSI](#private-set-intersection-psi) and [Silent OT](06-multi-party-computation.md#silent-ot-pseudorandom-correlation-generators-pcg).
+**State of the art:** RB-OKVS (2022); enables PSI on millions of items in seconds. Key building block for [PSI](#private-set-intersection-psi) and [Silent OT](06-multi-party-computation.md#silent-ot--pseudorandom-correlation-generators-pcg).
 
 **Production readiness:** Experimental
 Used as internal building block in PSI research implementations; no standalone production deployment
@@ -490,10 +491,10 @@ Academic interest primarily driven by COVID-19; limited adoption outside contact
 |--------|------|-------|------|
 | **RAPPOR (Google)** | 2014 | Local DP + Bloom filters | First deployed private frequency estimation; Chrome telemetry [[1]](https://doi.org/10.1145/2660267.2660348) |
 | **Poplar (Boneh et al.)** | 2021 | Incremental DPF | Private heavy hitters via distributed point functions; no public-key crypto needed [[1]](https://arxiv.org/abs/2012.14884) |
-| **Prio3 + VDAF (IETF)** | 2023 | Secret sharing + ZK | Standardized (draft-irtf-cfrg-vdaf); used in Mozilla/Apple telemetry; extends [Prio/VDAF](#prio-vdaf-privacy-preserving-aggregation) [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-vdaf/) |
+| **Prio3 + VDAF (IETF)** | 2023 | Secret sharing + ZK | Standardized (draft-irtf-cfrg-vdaf); used in Mozilla/Apple telemetry; extends [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation) [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-vdaf/) |
 | **Mastic** | 2024 | IDPF + attribute filtering | Extends Poplar to weighted, attribute-filtered metrics under two-server MPC; PoPETS 2025 [[1]](https://eprint.iacr.org/2024/221) |
 
-**State of the art:** Poplar/Prio3 for heavy hitters, Mastic (2025, weighted heavy hitters); RAPPOR for local DP. Related to [Prio/VDAF](#prio-vdaf-privacy-preserving-aggregation) and [Differential Privacy](#differential-privacy).
+**State of the art:** Poplar/Prio3 for heavy hitters, Mastic (2025, weighted heavy hitters); RAPPOR for local DP. Related to [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation) and [Differential Privacy](#differential-privacy).
 
 **Production readiness:** Production
 RAPPOR deployed in Chrome; Poplar/Prio3 in Firefox and Apple telemetry; Mastic in development
@@ -629,7 +630,7 @@ IETF RFC 9746 (DAP); draft-irtf-cfrg-vdaf; deployed by ISRG, Mozilla, Google, Ap
 | **Brandt Sealed-Bid Auction** | 2002 | Homomorphic enc + ZK | First practical sealed-bid auction; Vickrey (second-price) via MPC [[1]](https://doi.org/10.1007/3-540-36563-X_5) |
 | **Lipmaa-Asokan-Niemi** | 2002 | Paillier + range proofs | Efficient first-price sealed-bid auction; additive homomorphic [[1]](https://doi.org/10.1007/3-540-36563-X_4) |
 | **Bogetoft et al. (Danish Sugar Beet Auction)** | 2009 | MPC (Shamir SS) | First real-world MPC auction; 1200+ farmers, Danish sugar beet contracts [[1]](https://doi.org/10.1007/978-3-642-03549-4_19) |
-| **MEV Auction / Fair Ordering** | 2023 | Threshold encryption | Transaction ordering auctions to prevent MEV extraction; see [Encrypted Mempools](13-blockchain-distributed-ledger.md#encrypted-mempools-threshold-encryption-for-transaction-ordering) [[1]](https://eprint.iacr.org/2023/1063) |
+| **MEV Auction / Fair Ordering** | 2023 | Threshold encryption | Transaction ordering auctions to prevent MEV extraction; see [Encrypted Mempools](13-blockchain-distributed-ledger.md#encrypted-mempools--threshold-encryption-for-transaction-ordering) [[1]](https://eprint.iacr.org/2023/1063) |
 
 **State of the art:** MPC-based auctions for high-value settings; threshold encryption auctions for blockchain MEV. Combines [MPC](06-multi-party-computation.md#multi-party-computation-mpc), [HE](#graph-encryption), and [ZK Proofs](04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk).
 
@@ -704,7 +705,7 @@ Published in 2021 (Beck-Len-Maller-Zamfir); deployed in Penumbra; solving a prac
 
 ## Graph Encryption
 
-**Goal:** Outsource a graph database to an untrusted server and query it privately. The server evaluates encrypted graph queries (shortest path, subgraph matching, neighbor queries) without seeing the graph structure or query. Extends [Searchable Encryption](#searchable-encryption-sse-peks) to graph-structured data.
+**Goal:** Outsource a graph database to an untrusted server and query it privately. The server evaluates encrypted graph queries (shortest path, subgraph matching, neighbor queries) without seeing the graph structure or query. Extends [Searchable Encryption](#searchable-encryption-sse--peks) to graph-structured data.
 
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
@@ -712,7 +713,7 @@ Published in 2021 (Beck-Len-Maller-Zamfir); deployed in Penumbra; solving a prac
 | **Ghosh-Kamara-Tamassia GES** | 2021 | Graph encryption | Graph encryption for shortest path queries; sublinear query time [[1]](https://eprint.iacr.org/2021/865) |
 | **PathGES** | 2024 | GES + optimization | Efficient single-pair shortest path on encrypted graphs; logarithmic storage overhead [[1]](https://eprint.iacr.org/2024/845) |
 
-**State of the art:** PathGES (2024); extends [SSE](#searchable-encryption-sse-peks) to relational/graph queries. Active area for encrypted databases.
+**State of the art:** PathGES (2024); extends [SSE](#searchable-encryption-sse--peks) to relational/graph queries. Active area for encrypted databases.
 
 **Production readiness:** Research
 Academic prototypes; no production encrypted graph database deployments
@@ -757,7 +758,7 @@ Limited to specialized applications (private DNA search, virus scanning); well-s
 
 ## Oblivious SQL / Encrypted Database Joins
 
-**Goal:** Execute SQL operations on encrypted data without revealing queries or data to the server. Beyond keyword [SSE](#searchable-encryption-sse-peks): support joins, aggregations, GROUP BY, and range queries on fully encrypted relational databases while hiding access patterns.
+**Goal:** Execute SQL operations on encrypted data without revealing queries or data to the server. Beyond keyword [SSE](#searchable-encryption-sse--peks): support joins, aggregations, GROUP BY, and range queries on fully encrypted relational databases while hiding access patterns.
 
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
@@ -765,7 +766,7 @@ Limited to specialized applications (private DNA search, virus scanning); well-s
 | **ObliDB (Eskandarian-Boneh)** | 2019 | ORAM + oblivious ops | Full oblivious query processing hiding access patterns for arbitrary SQL; VLDB [[1]](https://dl.acm.org/doi/10.14778/3364324.3364331) |
 | **Opaque (Zheng-Dave-Beekman-Popa-Gonzalez-Stoica)** | 2017 | SGX + oblivious operators | Hardware-assisted encrypted SQL with oblivious operators; Spark integration [[1]](https://people.eecs.berkeley.edu/~wzheng/opaque.pdf) |
 
-**State of the art:** ObliDB (2019) for full obliviousness; CryptDB for practical deployment; Opaque for hardware-assisted. Extends [ORAM](#oblivious-ram-oram), [SSE](#searchable-encryption-sse-peks), and [Graph Encryption](#graph-encryption).
+**State of the art:** ObliDB (2019) for full obliviousness; CryptDB for practical deployment; Opaque for hardware-assisted. Extends [ORAM](#oblivious-ram-oram), [SSE](#searchable-encryption-sse--peks), and [Graph Encryption](#graph-encryption).
 
 **Production readiness:** Experimental
 CryptDB deployed in research settings; Opaque demonstrated with Spark; ObliDB is a research prototype
@@ -793,7 +794,7 @@ CryptDB highly cited (3000+ citations); influenced MongoDB Queryable Encryption;
 | **Labeled PSI from FHE (Chen et al.)** | 2021 | BFV FHE + OPRF | Unbalanced labeled PSI: client with small set retrieves values associated with matching elements from large server set; O(√|X|) HE multiplications; 85% communication reduction vs. prior work; CCS 2021 [[1]](https://eprint.iacr.org/2021/1116) |
 | **Circuit-PSI with Linear Complexity (Chandran et al.)** | 2022 | OPPRF + garbled circuits | Compute arbitrary function over intersection items in MPC; linear communication via relaxed batch OPPRF [[1]](https://eprint.iacr.org/2021/034) |
 
-**State of the art:** Labeled PSI from FHE (CCS 2021) for unbalanced settings; PSI-Sum (2020) deployed in privacy-preserving ad attribution. Extends [PSI](#private-set-intersection-psi) and [OKVS](#oblivious-key-value-store-okvs); complements [Prio/VDAF](#prio-vdaf-privacy-preserving-aggregation).
+**State of the art:** Labeled PSI from FHE (CCS 2021) for unbalanced settings; PSI-Sum (2020) deployed in privacy-preserving ad attribution. Extends [PSI](#private-set-intersection-psi) and [OKVS](#oblivious-key-value-store-okvs); complements [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation).
 
 **Production readiness:** Production
 PSI-Sum deployed in Google ad measurement; Labeled PSI prototypes available
@@ -820,7 +821,7 @@ Deployed by Google for ad attribution; Microsoft APSI actively maintained; stron
 | **Dynamic Volume-Hiding EMM (Patel et al.)** | 2021 | Dense Subgraph Transform | Supports updates with forward and backward privacy while hiding volume; O(ℓ log n) overhead [[1]](https://eprint.iacr.org/2021/765) |
 | **XorMM (Patel-Persiano-Yeo-Yung)** | 2022 | XOR-based EMM | Optimal query communication: client receives exactly ℓ results, zero data loss; 1.23n storage, 76% storage savings vs. prior work; CCS 2022 [[1]](https://dl.acm.org/doi/10.1145/3548606.3559345) |
 
-**State of the art:** XorMM (CCS 2022) for optimal overhead; Dynamic VH-EMM (2021) for updatable datasets. Addresses the primary practical attack surface against deployed [Searchable Encryption](#searchable-encryption-sse-peks).
+**State of the art:** XorMM (CCS 2022) for optimal overhead; Dynamic VH-EMM (2021) for updatable datasets. Addresses the primary practical attack surface against deployed [Searchable Encryption](#searchable-encryption-sse--peks).
 
 **Production readiness:** Research
 Academic prototypes; not yet integrated into production encrypted database systems
@@ -847,7 +848,7 @@ CCS 2022 (XorMM); addresses critical leakage-abuse attack surface; expected to i
 | **Privacy Blanket (Balle-Bell-Gascón-Nissim)** | 2019 | Amplification by shuffling | Quantifies the privacy amplification: local ε₀-DP + shuffling → (ε, δ)-DP with ε = O(ε₀√(log(1/δ)/n)); CRYPTO 2019 [[1]](https://arxiv.org/abs/1903.02837) |
 | **Feldman-McMillan-Talwar Hiding Among Clones** | 2021 | Poisson-subsampling analysis | Near-optimal amplification analysis; nearly tight bounds for practical parameters [[1]](https://arxiv.org/abs/2012.12803) |
 
-**State of the art:** Privacy Blanket / Feldman et al. amplification bounds underpin all shuffle-model deployments; Prochlo in production at Google. Positioned between [Differential Privacy](#differential-privacy) (local DP row) and central DP; complements [Private Heavy Hitters](#private-heavy-hitters-frequency-estimation) and [Prio/VDAF](#prio-vdaf-privacy-preserving-aggregation).
+**State of the art:** Privacy Blanket / Feldman et al. amplification bounds underpin all shuffle-model deployments; Prochlo in production at Google. Positioned between [Differential Privacy](#differential-privacy) (local DP row) and central DP; complements [Private Heavy Hitters](#private-heavy-hitters--frequency-estimation) and [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation).
 
 **Production readiness:** Production
 Prochlo deployed at Google; shuffle-model amplification used in Apple and Google telemetry pipelines
@@ -1068,7 +1069,7 @@ Signal deployment is the gold standard; Microsoft APSI actively maintained; CCS 
 | **PEGASUS (Lu et al.)** | 2021 | CKKS ↔ FHEW switching | Fast ReLU evaluation via scheme-switching between CKKS and FHEW; 50–100× faster non-linear evaluation vs. prior work; CCS 2021 [[1]](https://eprint.iacr.org/2020/1606) |
 | **HELiKs / Iron (Hao et al.)** | 2022 | CKKS + optimized packing | Transformer inference on encrypted data; enables private LLM queries; CCS 2022 [[1]](https://eprint.iacr.org/2022/1396) |
 
-**State of the art:** PEGASUS (2021) for fast ReLU via scheme switching; GAZELLE hybrid approach for practical CNNs; Iron/HELiKs for transformer models. Complements [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd-pate) (privacy during training) by providing privacy during inference. Relies on [Homomorphic Encryption](07-homomorphic-functional-encryption.md#homomorphic-encryption-he) and [zkML](17-ai-hardware-physical-security.md#zkllm-verifiable-ai-inference) (for verifiable inference).
+**State of the art:** PEGASUS (2021) for fast ReLU via scheme switching; GAZELLE hybrid approach for practical CNNs; Iron/HELiKs for transformer models. Complements [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd--pate) (privacy during training) by providing privacy during inference. Relies on [Homomorphic Encryption](07-homomorphic-functional-encryption.md#homomorphic-encryption-he) and [zkML](17-ai-hardware-physical-security.md#zkllm--verifiable-ai-inference) (for verifiable inference).
 
 **Production readiness:** Experimental
 Research implementations with practical benchmarks; Microsoft SEAL powers CryptoNets; no mass consumer deployment
@@ -1098,7 +1099,7 @@ Active research area; ICML/CCS/IEEE S&P publications; Microsoft, Zama, Intel inv
 | **AIM (McKenna et al.)** | 2022 | Adaptive marginal selection + DP | Iteratively select and measure marginals; synthesize via graphical models; winner of NIST DP Synthetic Data Competition [[1]](https://arxiv.org/abs/2201.12677) |
 | **PATE-GAN (Jordon et al.)** | 2019 | PATE + GAN discriminator | Use PATE teacher ensemble to label GAN-generated samples; avoids DP-SGD on generator; ICLR 2019 [[1]](https://openreview.net/forum?id=S1zk9iRqF7) |
 
-**State of the art:** AIM (McKenna et al., 2022) leads for tabular/statistical data; DP-MERF avoids GAN instability; PATE-GAN for image-like data. All rely on [Differential Privacy](#differential-privacy) mechanisms and extend [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd-pate) to generative models.
+**State of the art:** AIM (McKenna et al., 2022) leads for tabular/statistical data; DP-MERF avoids GAN instability; PATE-GAN for image-like data. All rely on [Differential Privacy](#differential-privacy) mechanisms and extend [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd--pate) to generative models.
 
 **Production readiness:** Experimental
 AIM won NIST DP Synthetic Data Competition; Tumult and NIST actively exploring; limited production deployments
@@ -1127,7 +1128,7 @@ NIST DP Synthetic Data Competition driving standardization; growing regulatory i
 | **TensorFlow Federated (TFF)** | 2019 | FedAvg + DP + SecAgg | Google's production framework; integrates SecAgg and DP mechanisms; used in Gboard on-device language models [[1]](https://arxiv.org/abs/1902.01046) |
 | **Flower (flwr)** | 2020 | Framework-agnostic FL | Open-source FL framework supporting PyTorch, TF, JAX; heterogeneous clients; pluggable aggregation strategies; widely adopted in research [[1]](https://arxiv.org/abs/2007.14390) |
 
-**State of the art:** TensorFlow Federated (production at Google), Flower (research standard); both support DP and SecAgg. Privacy relies on [Differential Privacy](#differential-privacy), [Secure Aggregation](06-multi-party-computation.md#secure-aggregation-secagg), and [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd-pate).
+**State of the art:** TensorFlow Federated (production at Google), Flower (research standard); both support DP and SecAgg. Privacy relies on [Differential Privacy](#differential-privacy), [Secure Aggregation](06-multi-party-computation.md#secure-aggregation-secagg), and [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd--pate).
 
 **Production readiness:** Production
 TensorFlow Federated deployed for Google Keyboard (Gboard); Flower widely used in research; PySyft for enterprise
@@ -1157,7 +1158,7 @@ Deployed by Google, Apple; Flower and TFF are community standards; active PPML w
 | **Piranha (Watson et al.)** | 2022 | GPU-accelerated 3-party MPC | GPU-friendly secret-sharing for ML; 16–48× speedup over CPU MPC for ResNet inference; USENIX Security 2022 [[1]](https://eprint.iacr.org/2022/892) |
 | **ELSA (Rathee et al.)** | 2023 | Linear secret sharing + OT | Efficient 2-party DNN inference; 2.5× less communication than prior work; IEEE S&P 2023 [[1]](https://eprint.iacr.org/2023/013) |
 
-**State of the art:** CrypTen (Meta, production-oriented 2-party/N-party); Piranha (GPU-accelerated 3PC); ELSA (communication-efficient 2PC inference). Builds on [MPC](06-multi-party-computation.md#multi-party-computation-mpc), [Garbled Circuits](06-multi-party-computation.md#garbled-circuits-expanded), and [OLE/VOLE](06-multi-party-computation.md#oblivious-linear-evaluation-ole-vole). Complements [HE for ML Inference](#homomorphic-encryption-for-ml-inference-cryptonets) (HE-only path) and [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd-pate) (DP path).
+**State of the art:** CrypTen (Meta, production-oriented 2-party/N-party); Piranha (GPU-accelerated 3PC); ELSA (communication-efficient 2PC inference). Builds on [MPC](06-multi-party-computation.md#multi-party-computation-mpc), [Garbled Circuits](06-multi-party-computation.md#garbled-circuits-expanded), and [OLE/VOLE](06-multi-party-computation.md#oblivious-linear-evaluation-ole--vole). Complements [HE for ML Inference](#homomorphic-encryption-for-ml-inference-cryptonets) (HE-only path) and [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd--pate) (DP path).
 
 **Production readiness:** Experimental
 CrypTen open-sourced by Meta; Piranha and ELSA are research prototypes with practical benchmarks
@@ -1259,7 +1260,7 @@ CCS 2016, IEEE S&P 2021; de facto standard for high-throughput PSI; implemented 
 
 ## Privacy-Preserving Disease Surveillance (DP Epidemiology)
 
-**Goal:** Aggregate epidemiological signals — infection counts, contact rates, symptom prevalence — from sensitive health records without exposing individual health status. Formal differential privacy guarantees allow publishing aggregate statistics for public health response while bounding re-identification risk. Complements [Privacy-Preserving Contact Tracing](#privacy-preserving-contact-tracing-gaen-dp-3t) (individual exposure notifications) by operating at the population level.
+**Goal:** Aggregate epidemiological signals — infection counts, contact rates, symptom prevalence — from sensitive health records without exposing individual health status. Formal differential privacy guarantees allow publishing aggregate statistics for public health response while bounding re-identification risk. Complements [Privacy-Preserving Contact Tracing](#privacy-preserving-contact-tracing-gaen--dp-3t) (individual exposure notifications) by operating at the population level.
 
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
@@ -1269,7 +1270,7 @@ CCS 2016, IEEE S&P 2021; de facto standard for high-throughput PSI; implemented 
 | **PGM + DP for Syndromic Surveillance** | 2022 | Graphical models + Laplace | Privately fit probabilistic graphical models to weekly syndromic surveillance data; enables DP release of joint symptom distributions [[1]](https://eprint.iacr.org/2022/1508) |
 | **SMCQL / Shrinkwrap** | 2017/2019 | MPC + oblivious ops | Multi-party SQL over federated clinical databases; Shrinkwrap (2019) adds DP noise in the MPC to suppress cardinality leakage; used in distributed hospital networks [[1]](https://dl.acm.org/doi/10.14778/3137628.3137715) [[2]](https://dl.acm.org/doi/10.14778/3311880.3311883) |
 
-**State of the art:** Tumult Analytics (production DP pipeline) and Shrinkwrap (MPC + DP for federated queries) are the deployed solutions; RAPPOR-based mobile aggregation at population scale. Combines [Differential Privacy](#differential-privacy), [Shuffle Model](#shuffle-model-of-differential-privacy), and [Prio/VDAF](#prio-vdaf-privacy-preserving-aggregation) for verifiable aggregation.
+**State of the art:** Tumult Analytics (production DP pipeline) and Shrinkwrap (MPC + DP for federated queries) are the deployed solutions; RAPPOR-based mobile aggregation at population scale. Combines [Differential Privacy](#differential-privacy), [Shuffle Model](#shuffle-model-of-differential-privacy), and [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation) for verifiable aggregation.
 
 **Production readiness:** Production
 Tumult Analytics deployed by US state health departments; Apple/Google RAPPOR-based surveillance at population scale
@@ -1299,7 +1300,7 @@ COVID-19 accelerated adoption; Tumult used by government agencies; growing regul
 | **Private Heavy Hitters over Streams (PrivKVM)** | 2019 | LDP + key-value stream | Locally differentially private heavy-hitter detection over event streams with memoization; used in Apple iOS analytics [[1]](https://www.usenix.org/conference/usenixsecurity19/presentation/ding) |
 | **DP Histograms over Sliding Windows** | 2022 | Exponential mechanism + streaming | DP frequency estimates over the most-recent w items without storing the full window; Polylog(w) error; DP-FOCS 2022 [[1]](https://arxiv.org/abs/2206.08397) |
 
-**State of the art:** Binary tree / Honaker mechanism for counting queries; PrivKVM (Apple production) for streaming heavy hitters. Distinct from [Private Stream Aggregation](#private-stream-aggregation-psa) (multi-party one-shot) and [Private Heavy Hitters](#private-heavy-hitters-frequency-estimation) (static dataset). Extends [Differential Privacy](#differential-privacy) to the streaming/continual-observation setting fundamental to telemetry and sensor data.
+**State of the art:** Binary tree / Honaker mechanism for counting queries; PrivKVM (Apple production) for streaming heavy hitters. Distinct from [Private Stream Aggregation](#private-stream-aggregation-psa) (multi-party one-shot) and [Private Heavy Hitters](#private-heavy-hitters--frequency-estimation) (static dataset). Extends [Differential Privacy](#differential-privacy) to the streaming/continual-observation setting fundamental to telemetry and sensor data.
 
 **Production readiness:** Production
 PrivKVM deployed in Apple iOS analytics; binary tree mechanism implemented in DP libraries
@@ -1358,7 +1359,7 @@ CCS 2013 (GeoIndistinguishability) widely cited; adopted in location privacy lit
 | **PRV Accountant (Gopi et al.)** | 2021 | Privacy Random Variables | Numeric Fourier accountant: compute tight (ε,δ) via characteristic functions of privacy-loss RVs; 1000× tighter than moments accountant for large ε; ICML 2021 [[1]](https://arxiv.org/abs/2106.08567) |
 | **DP-Sniper (Bichsel et al.)** | 2021 | Neural classifier + likelihood ratio | ML-assisted black-box DP audit: train classifier to distinguish adjacent-input outputs; reports lower bound on ε; USENIX Sec 2021 [[1]](https://www.usenix.org/conference/usenixsecurity21/presentation/bichsel) |
 
-**State of the art:** PRV Accountant (tightest composition, adopted in Opacus/TF-Privacy); DP-Sniper for black-box empirical auditing; StatDP for statistical violation detection. Underpins trust in [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd-pate), [Shuffle Model DP](#shuffle-model-of-differential-privacy), and all deployed [Differential Privacy](#differential-privacy) systems.
+**State of the art:** PRV Accountant (tightest composition, adopted in Opacus/TF-Privacy); DP-Sniper for black-box empirical auditing; StatDP for statistical violation detection. Underpins trust in [DP-SGD/PATE](#differentially-private-machine-learning-dp-sgd--pate), [Shuffle Model DP](#shuffle-model-of-differential-privacy), and all deployed [Differential Privacy](#differential-privacy) systems.
 
 **Production readiness:** Mature
 Autodp and PRV Accountant integrated into Opacus/TF-Privacy; StatDP and DP-Sniper used for empirical testing
@@ -1389,7 +1390,7 @@ PRV Accountant adopted in Opacus/TF-Privacy; USENIX Sec 2021 (DP-Sniper); essent
 | **Express (Eskandarian-Corrigan-Gibbs)** | 2021 | DPF + write-only ORAM | Private anonymous messaging via DPF-based PIR writes; each client writes to a bulletin board using DPF keys; 16x faster than Riposte; USENIX Sec 2021 [[1]](https://eprint.iacr.org/2021/013) |
 | **Duoram (Vadapalli-Storrier-Henry)** | 2023 | DPF + secret-shared memory | 2-server ORAM using DPF for address-private reads and writes; O(sqrt(n)) amortized communication; USENIX Sec 2023 [[1]](https://eprint.iacr.org/2022/1747) |
 
-**State of the art:** Gilboa-Ishai DPF (foundational), Duoram (2023, DPF-based ORAM), Express (DPF for anonymous messaging). DPFs underpin [Private Heavy Hitters](#private-heavy-hitters-frequency-estimation) (Poplar), 2-server [PIR](#private-information-retrieval-pir), and are a core primitive in [Function Secret Sharing](06-multi-party-computation.md#function-secret-sharing-fss-distributed-point-functions-dpf).
+**State of the art:** Gilboa-Ishai DPF (foundational), Duoram (2023, DPF-based ORAM), Express (DPF for anonymous messaging). DPFs underpin [Private Heavy Hitters](#private-heavy-hitters--frequency-estimation) (Poplar), 2-server [PIR](#private-information-retrieval-pir), and are a core primitive in [Function Secret Sharing](06-multi-party-computation.md#function-secret-sharing-fss--distributed-point-functions-dpf).
 
 **Production readiness:** Experimental
 Express and Duoram have research implementations; DPF primitives used in Poplar/VDAF production systems
@@ -1418,7 +1419,7 @@ Foundational work (Gilboa-Ishai 2014); DPFs underpin IETF VDAF standard (Poplar)
 | **Mitra/Orion (Ghareh Chamani et al.)** | 2018 | Red-black tree + ORAM | Dynamic SSE with Type-II backward privacy; sublinear search via encrypted B-tree; NDSS 2018 [[1]](https://eprint.iacr.org/2017/1238) |
 | **SEAL (Demertzis-Papadopoulos-Papamanthou)** | 2020 | Locality-preserving allocation | SSE optimized for I/O efficiency on disk; forward-private with O(1) disk seeks per result; SIGMOD 2020 [[1]](https://dl.acm.org/doi/10.1145/3318464.3380579) |
 
-**State of the art:** AURA (2021) for practical forward+backward privacy; SEAL for disk-optimized SSE. Addresses the primary attack surface (file-injection attacks) of deployed [Searchable Encryption](#searchable-encryption-sse-peks). Complements [Volume-Hiding EMM](#volume-hiding-searchable-encryption-encrypted-multi-maps) for volume leakage suppression.
+**State of the art:** AURA (2021) for practical forward+backward privacy; SEAL for disk-optimized SSE. Addresses the primary attack surface (file-injection attacks) of deployed [Searchable Encryption](#searchable-encryption-sse--peks). Complements [Volume-Hiding EMM](#volume-hiding-searchable-encryption-encrypted-multi-maps) for volume leakage suppression.
 
 **Production readiness:** Experimental
 AURA and SEAL have research implementations; forward privacy concepts influencing commercial encrypted databases
@@ -1445,7 +1446,7 @@ CCS 2016/2017 (Bost et al.) defined the field; NDSS 2021 (AURA); influencing com
 | **PanORAMa (Patel-Persiano-Yeo)** | 2021 | Parallel oblivious sort | Concurrent/parallel ORAM with O(log n) overhead per operation; supports batch access patterns; TCC 2021 [[1]](https://eprint.iacr.org/2021/1413) |
 | **ConcORAMa (Chakraborti-Canetti)** | 2023 | Tree ORAM + concurrency control | Concurrent ORAM with linearizable operations; enables multi-client access without serialization; USENIX Sec 2023 [[1]](https://eprint.iacr.org/2023/257) |
 
-**State of the art:** OptORAMa (2020) is theoretically optimal; Circuit ORAM remains dominant in MPC contexts; ConcORAMa for concurrent multi-client settings. Extends the foundational [ORAM](#oblivious-ram-oram) constructions (Path ORAM) and improves the building block used in [Oblivious SQL](#oblivious-sql-encrypted-database-joins) and [Private Nearest-Neighbor Search](#private-nearest-neighbor-search-private-embedding-retrieval).
+**State of the art:** OptORAMa (2020) is theoretically optimal; Circuit ORAM remains dominant in MPC contexts; ConcORAMa for concurrent multi-client settings. Extends the foundational [ORAM](#oblivious-ram-oram) constructions (Path ORAM) and improves the building block used in [Oblivious SQL](#oblivious-sql--encrypted-database-joins) and [Private Nearest-Neighbor Search](#private-nearest-neighbor-search-private-embedding-retrieval).
 
 **Production readiness:** Research
 Theoretical breakthrough; Path ORAM remains preferred for practical use
@@ -1499,7 +1500,7 @@ Signal deployment is the industry benchmark; Apple integration in iOS; active re
 | **Janus (Cloudflare + Divvi Up)** | 2023 | Rust DAP implementation | Open-source DAP aggregator; serves as both leader and helper; integrates with Daphne (helper) [[1]](https://github.com/divviup/janus) |
 | **Chrome Private Aggregation API** | 2023 | DAP + Attribution Reporting | Chrome integrates DAP for Privacy Sandbox ad measurement; clients send Prio3/Poplar shares to DAP aggregators [[1]](https://developers.google.com/privacy-sandbox/relevance/private-aggregation) |
 
-**State of the art:** DAP (RFC 9746) is the IETF standard; Divvi Up (ISRG) is the largest production deployment. Operationalizes [Prio/VDAF](#prio-vdaf-privacy-preserving-aggregation) theory; complements [Private Heavy Hitters](#private-heavy-hitters-frequency-estimation) (Poplar VDAF) and [Differential Privacy](#differential-privacy) (DP can be added at collector).
+**State of the art:** DAP (RFC 9746) is the IETF standard; Divvi Up (ISRG) is the largest production deployment. Operationalizes [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation) theory; complements [Private Heavy Hitters](#private-heavy-hitters--frequency-estimation) (Poplar VDAF) and [Differential Privacy](#differential-privacy) (DP can be added at collector).
 
 **Production readiness:** Production
 Divvi Up (ISRG) processes millions of measurements for Firefox and Android; Janus deployed as DAP aggregator
@@ -1555,7 +1556,7 @@ IEEE T-IFS publications; ISO/IEC 24745 (biometric template protection); limited 
 | **Count Attack (Cash et al.)** | 2015 | Volume + frequency leakage | Passive attack recovering queries from result-size leakage alone; CCS 2015 [[1]](https://eprint.iacr.org/2016/718) |
 | **File-Injection Attack (Zhang et al.)** | 2016 | Chosen-document attack | Active attacker injects known documents; correlates search tokens with injected files to recover all queries; USENIX Sec 2016 [[1]](https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/zhang) |
 | **SEAL (Demertzis et al.)** | 2020 | I/O-efficient + padding | Locality-preserving SSE with tunable padding to resist volume attacks; SIGMOD 2020 [[1]](https://dl.acm.org/doi/10.1145/3318464.3380579) |
-| **Pancake/Waffle (Frequency Smoothing)** | 2020/2024 | Distribution flattening | Transform access distribution to uniform; defeats frequency analysis; see [Frequency-Smoothing Oblivious Datastores](#frequency-smoothing-oblivious-datastores-pancake-waffle) [[1]](https://eprint.iacr.org/2020/1501) |
+| **Pancake/Waffle (Frequency Smoothing)** | 2020/2024 | Distribution flattening | Transform access distribution to uniform; defeats frequency analysis; see [Frequency-Smoothing Oblivious Datastores](#frequency-smoothing-oblivious-datastores-pancake--waffle) [[1]](https://eprint.iacr.org/2020/1501) |
 
 **State of the art:** IKK/Count/File-Injection attacks demonstrate that minimal leakage is exploitable in practice; SEAL and Pancake/Waffle are the leading countermeasures. Motivates [Volume-Hiding EMM](#volume-hiding-searchable-encryption-encrypted-multi-maps), [Forward-and-Backward-Private SSE](#forward-and-backward-private-dynamic-searchable-encryption), and full [ORAM](#oblivious-ram-oram) for settings requiring zero leakage.
 
@@ -1612,7 +1613,7 @@ USENIX Sec 2021 (Checklist); IETF RFC 9578 (Privacy Pass); Google exploring for 
 | **Private Click Measurement (Apple)** | 2021 | Blinded tokens + unlinkability | Safari's ad attribution: 8-bit campaign ID, 4-bit conversion value; relay-based unlinkability; no cross-site tracking [[1]](https://webkit.org/blog/11529/introducing-private-click-measurement-pcm/) |
 | **Aggregatable Reports (Chrome)** | 2023 | Secret sharing + DAP | Conversion data secret-shared and sent to DAP aggregators; combined with Attribution Reporting for cross-site measurement [[1]](https://developers.google.com/privacy-sandbox/relevance/private-aggregation) |
 
-**State of the art:** IPA (W3C standard track, 3-party MPC) and ARA (Chrome production) are the leading approaches; Apple PCM for minimal-leakage attribution. Relies on [Prio/VDAF](#prio-vdaf-privacy-preserving-aggregation), [DAP](#distributed-aggregation-protocol-dap-divvi-up), and [Differential Privacy](#differential-privacy). Extends [Labeled PSI / PSI-Sum](#labeled-psi-and-private-intersection-sum-psi-sum) for join-and-aggregate patterns.
+**State of the art:** IPA (W3C standard track, 3-party MPC) and ARA (Chrome production) are the leading approaches; Apple PCM for minimal-leakage attribution. Relies on [Prio/VDAF](#prio--vdaf-privacy-preserving-aggregation), [DAP](#distributed-aggregation-protocol-dap--divvi-up), and [Differential Privacy](#differential-privacy). Extends [Labeled PSI / PSI-Sum](#labeled-psi-and-private-intersection-sum-psi-sum) for join-and-aggregate patterns.
 
 **Production readiness:** Production
 ARA deployed in Chrome Privacy Sandbox; Apple Private Click Measurement in Safari; IPA under W3C standardization
@@ -1641,7 +1642,7 @@ W3C PATCG (IPA); Chrome Privacy Sandbox (ARA); Apple WebKit (PCM); industry cons
 | **Privacy Pass with OHTTP** | 2024 | VOPRF + OHTTP | RFC 9576/9577/9578; token issuance via OHTTP relay to prevent linkability between issuance and redemption; deployed in Cloudflare challenge bypass [[1]](https://www.rfc-editor.org/rfc/rfc9576) |
 | **Geolocated OHTTP (Google)** | 2024 | OHTTP + geo-bucketing | Google's IP Protection in Chrome: route third-party requests through OHTTP relays; geo-bucket egress IPs to preserve coarse location for CDNs [[1]](https://developers.google.com/privacy-sandbox/protections/ip-protection) |
 
-**State of the art:** iCloud Private Relay (billions of queries/day), Cloudflare ODoH, and Chrome IP Protection are the major deployments. Extends [Oblivious DNS (ODoH)](#oblivious-dns-odoh) to a broader encrypted-metadata ecosystem; related to [Onion Routing](11-anonymity-credentials.md#onion-routing) and [Privacy Pass](11-anonymity-credentials.md#privacy-pass-anonymous-tokens).
+**State of the art:** iCloud Private Relay (billions of queries/day), Cloudflare ODoH, and Chrome IP Protection are the major deployments. Extends [Oblivious DNS (ODoH)](#oblivious-dns-odoh) to a broader encrypted-metadata ecosystem; related to [Onion Routing](11-anonymity-credentials.md#onion-routing) and [Privacy Pass](11-anonymity-credentials.md#privacy-pass--anonymous-tokens).
 
 **Production readiness:** Production
 iCloud Private Relay handles billions of queries/day; Cloudflare ODoH and Chrome IP Protection in production

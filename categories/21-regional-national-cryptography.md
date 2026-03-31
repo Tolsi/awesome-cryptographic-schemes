@@ -7,22 +7,22 @@ Cross-references to foundational concepts: [Symmetric Encryption](01-foundationa
 <!-- TOC -->
 ## Contents (11 schemes)
 
-**[🇨🇳 China (OSCCA / GM/T)](#china-oscca-gmt)**
-- [SM4 / Chinese National Standard Block Ciphers](#sm4-chinese-national-standard-block-ciphers)
+**[🇨🇳 China (OSCCA / GM/T)](#-china-oscca--gmt)**
+- [SM4 / Chinese National Standard Block Ciphers](#sm4--chinese-national-standard-block-ciphers)
 - [SM3 Hash Function](#sm3-hash-function)
 - [SM2 Digital Signatures (Chinese National Standard)](#sm2-digital-signatures-chinese-national-standard)
 
-**[🇷🇺 Russia (GOST)](#russia-gost)**
-- [GOST R 34.12-2015 Block Ciphers (Grasshopper / Magma)](#gost-r-3412-2015-block-ciphers-grasshopper-magma)
+**[🇷🇺 Russia (GOST)](#-russia-gost)**
+- [GOST R 34.12-2015 Block Ciphers (Grasshopper / Magma)](#gost-r-3412-2015-block-ciphers-grasshopper--magma)
 - [GOST R 34.11-2012 (Streebog) and GOST R 34.10-2012](#gost-r-3411-2012-streebog-and-gost-r-3410-2012)
 - [GOST R 34.10-2012 (Russian Digital Signature Standard)](#gost-r-3410-2012-russian-digital-signature-standard)
 
-**[🇰🇷 South Korea (KISA / NIS)](#south-korea-kisa-nis)**
+**[🇰🇷 South Korea (KISA / NIS)](#-south-korea-kisa--nis)**
 - [ARIA Block Cipher](#aria-block-cipher)
 - [ARIA and SEED (Korean Standard Block Ciphers)](#aria-and-seed-korean-standard-block-ciphers)
 - [LSH (Korean Lightweight Secure Hash)](#lsh-korean-lightweight-secure-hash)
 
-**[🇯🇵 Japan (CRYPTREC)](#japan-cryptrec)**
+**[🇯🇵 Japan (CRYPTREC)](#-japan-cryptrec)**
 - [Camellia-GCM and ARIA-GCM](#camellia-gcm-and-aria-gcm)
 - [CLEFIA and MISTY1 (Japanese Industry Ciphers)](#clefia-and-misty1-japanese-industry-ciphers)
 <!-- /TOC -->
@@ -42,7 +42,7 @@ Cross-references to foundational concepts: [Symmetric Encryption](01-foundationa
 | **SM4** | 2006 | Block cipher (SPN) | 128-bit block, 128-bit key, 32 rounds; Feistel-like with 8×8 S-box; Chinese national standard GB/T 32907-2016; ISO/IEC 18033-3/Amd.1 (2021) [[1]](https://www.rfc-editor.org/rfc/rfc8998) |
 | **SM1** | 2006 | Block cipher | 128-bit block/key; classified algorithm; hardware-only (used in smart cards, IC chips) [[1]](https://en.wikipedia.org/wiki/SM1_(cipher)) |
 | **SSF33 / SM0** | ~2000 | Block cipher | Earlier classified predecessor; used in WLAN WAPI [[1]](https://en.wikipedia.org/wiki/WAPI) |
-| **ZUC (祖冲之)** | 2011 | Stream cipher | 128-bit key; eEA3/eIA3 in LTE/5G; also see [Hardware Stream Ciphers](01-foundational-primitives.md#hardware-oriented-stream-ciphers-estream-3gpp) [[1]](https://www.gsma.com/security/wp-content/uploads/2019/05/ZUC_specification_3.pdf) |
+| **ZUC (祖冲之)** | 2011 | Stream cipher | 128-bit key; eEA3/eIA3 in LTE/5G; also see [Hardware Stream Ciphers](01-foundational-primitives.md#hardware-oriented-stream-ciphers-estream--3gpp) [[1]](https://www.gsma.com/security/wp-content/uploads/2019/05/ZUC_specification_3.pdf) |
 
 **SM4 structure:** 32-round Type-2 Feistel variant; non-linear layer uses a single 8×8 S-box applied four times; linear diffusion via the τ and L transforms. Constant-time implementations exist and TLS 1.3 cipher suites are standardized (RFC 8998).
 
@@ -76,7 +76,7 @@ SM4 is Chinese national standard GB/T 32907-2016 and ISO/IEC 18033-3:2010/Amd.1:
 
 **Used in:** SM2 signature verification (SM3 as the hash), TLS 1.3 cipher suites in China (RFC 8998), Chinese banking (UnionPay), national PKI and e-government. IETF RFC 8998 defines TLS_SM4_GCM_SM3 and TLS_SM4_CCM_SM3 cipher suites.
 
-**State of the art:** GB/T 32905-2016 and ISO/IEC 10118-3:2018; no practical collision or preimage attack known. Widely deployed in Chinese critical infrastructure alongside [SM4 / Chinese National Standard Block Ciphers](#sm4-chinese-national-standard-block-ciphers).
+**State of the art:** GB/T 32905-2016 and ISO/IEC 10118-3:2018; no practical collision or preimage attack known. Widely deployed in Chinese critical infrastructure alongside [SM4 / Chinese National Standard Block Ciphers](#sm4--chinese-national-standard-block-ciphers).
 
 **Production readiness:** Production
 Mandatory in Chinese government, banking (UnionPay), and 5G systems; deployed at scale in Chinese PKI and TLS (RFC 8998).

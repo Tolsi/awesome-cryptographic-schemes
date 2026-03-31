@@ -6,8 +6,8 @@
 
 - [Zero-Knowledge Proofs (ZK)](#zero-knowledge-proofs-zk)
 - [SNARG (Succinct Non-Interactive Arguments without Zero-Knowledge)](#snarg-succinct-non-interactive-arguments-without-zero-knowledge)
-- [Interactive Oracle Proofs (IOP) / PCP](#interactive-oracle-proofs-iop-pcp)
-- [Sigma Protocols / Schnorr Identification](#sigma-protocols-schnorr-identification)
+- [Interactive Oracle Proofs (IOP) / PCP](#interactive-oracle-proofs-iop--pcp)
+- [Sigma Protocols / Schnorr Identification](#sigma-protocols--schnorr-identification)
 - [Groth-Sahai Proofs](#groth-sahai-proofs)
 - [Folding Schemes](#folding-schemes)
 - [Lookup Arguments](#lookup-arguments)
@@ -17,14 +17,14 @@
 - [MPC-in-the-Head (MPCitH)](#mpc-in-the-head-mpcith)
 - [VOLEitH (VOLE-in-the-Head)](#voleith-vole-in-the-head)
 - [Binary-Field Proof Systems](#binary-field-proof-systems)
-- [Distributed / Collaborative SNARKs](#distributed-collaborative-snarks)
+- [Distributed / Collaborative SNARKs](#distributed--collaborative-snarks)
 - [zkML (Zero-Knowledge Machine Learning)](#zkml-zero-knowledge-machine-learning)
 - [Compressed Sigma Protocols](#compressed-sigma-protocols)
 - [Zero-Knowledge Sets](#zero-knowledge-sets)
 - [Witness PRF](#witness-prf)
-- [Malleable Proof Systems / Controlled-Malleable NIZK](#malleable-proof-systems-controlled-malleable-nizk)
+- [Malleable Proof Systems / Controlled-Malleable NIZK](#malleable-proof-systems--controlled-malleable-nizk)
 - [Multi-Prover Interactive Proofs (MIP)](#multi-prover-interactive-proofs-mip)
-- [zkTLS / MPC-TLS](#zktls-mpc-tls)
+- [zkTLS / MPC-TLS](#zktls--mpc-tls)
 - [Sonic](#sonic)
 - [Ligero and Aurora](#ligero-and-aurora)
 - [HyperPlonk](#hyperplonk)
@@ -45,9 +45,9 @@
 - [Bulletproofs Inner-Product Argument](#bulletproofs-inner-product-argument)
 - [STARK Arithmetization: AIR and FRI](#stark-arithmetization-air-and-fri)
 - [VOLE-Based Zero-Knowledge Proofs](#vole-based-zero-knowledge-proofs)
-- [ZK Proofs for Regulatory Compliance (zkKYC / zkAML)](#zk-proofs-for-regulatory-compliance-zkkyc-zkaml)
-- [ZK Proofs for Identity (Proof of Age / Nationality)](#zk-proofs-for-identity-proof-of-age-nationality)
-- [ZK Proofs for Supply Chain (Proof of Origin / Provenance)](#zk-proofs-for-supply-chain-proof-of-origin-provenance)
+- [ZK Proofs for Regulatory Compliance (zkKYC / zkAML)](#zk-proofs-for-regulatory-compliance-zkkyc--zkaml)
+- [ZK Proofs for Identity (Proof of Age / Nationality)](#zk-proofs-for-identity-proof-of-age--nationality)
+- [ZK Proofs for Supply Chain (Proof of Origin / Provenance)](#zk-proofs-for-supply-chain-proof-of-origin--provenance)
 - [IVC vs. PCD vs. Accumulation Schemes (Recursive Composition Taxonomy)](#ivc-vs-pcd-vs-accumulation-schemes-recursive-composition-taxonomy)
 - [Sangria, Arecibo, and Sonobe (Folding Ecosystem)](#sangria-arecibo-and-sonobe-folding-ecosystem)
 - [Gemini (Elastic SNARKs)](#gemini-elastic-snarks)
@@ -61,6 +61,7 @@
 - [Kimchi (Mina Protocol Proof System)](#kimchi-mina-protocol-proof-system)
 - [SP1 Hypercube (Real-Time zkVM Proving)](#sp1-hypercube-real-time-zkvm-proving)
 <!-- /TOC -->
+
 
 ## Zero-Knowledge Proofs (ZK)
 
@@ -233,7 +234,7 @@ Well-respected in the pairing-based cryptography community. Standard tool for ac
 | **Nova** | 2022 | R1CS + Pedersen | First folding scheme; fold two R1CS instances into one; see [ZK Proofs](#zero-knowledge-proofs-zk) [[1]](https://eprint.iacr.org/2021/370) |
 | **SuperNova** | 2022 | Nova + multiple circuits | Non-uniform IVC: different circuits at each step [[1]](https://eprint.iacr.org/2022/1758) |
 | **HyperNova** | 2023 | CCS + multilinear | Fold customizable constraint systems (generalizes R1CS, Plonkish) [[1]](https://eprint.iacr.org/2023/573) |
-| **ProtoStar** | 2023 | Plonkish + accumulation | Non-uniform IVC for PLONK-like systems; see [BARG](16-obfuscation-advanced-hardness.md#batch-arguments-barg-accumulation-schemes) [[1]](https://eprint.iacr.org/2023/620) |
+| **ProtoStar** | 2023 | Plonkish + accumulation | Non-uniform IVC for PLONK-like systems; see [BARG](16-obfuscation-advanced-hardness.md#batch-arguments-barg--accumulation-schemes) [[1]](https://eprint.iacr.org/2023/620) |
 | **Protostar/Protogalaxy** | 2023 | Lattice folding | Fold with logarithmic verifier [[1]](https://eprint.iacr.org/2023/1106) |
 | **Symphony** | 2025 | Lattice + high-arity folding | First PQ folding SNARK; avoids hash embedding in circuits; polylog proof size [[1]](https://eprint.iacr.org/2025/1905) |
 
@@ -299,7 +300,7 @@ Lookup arguments are universally adopted in the ZK community. Plookup and LogUp 
 | **Spartan** | 2020 | Sumcheck + multilinear PCS | Transparent zkSNARK built entirely on sumcheck; no trusted setup [[1]](https://eprint.iacr.org/2019/550) |
 | **Jolt** | 2024 | Sumcheck + Lasso | zkVM using sumcheck + lookup arguments; no custom circuits [[1]](https://eprint.iacr.org/2023/1217) |
 
-**State of the art:** Sumcheck-based SNARKs (Spartan, Jolt, HyperNova) are increasingly dominant due to simplicity and transparency. Closely related to [IOP/PCP](#interactive-oracle-proofs-iop-pcp).
+**State of the art:** Sumcheck-based SNARKs (Spartan, Jolt, HyperNova) are increasingly dominant due to simplicity and transparency. Closely related to [IOP/PCP](#interactive-oracle-proofs-iop--pcp).
 
 **Production readiness:** Production
 Sumcheck is deployed in production via Jolt, Spartan, and Plonky3-based systems. Core protocol in SP1 and other zkVMs.
@@ -394,7 +395,7 @@ Established theoretical foundation (Chiesa-Tromer 2010). Production-validated by
 | **Limbo** | 2021 | N-party MPCitH | Generalized to N parties; tradeoff: more parties → shorter proofs [[1]](https://eprint.iacr.org/2021/215) |
 | **Banquet** | 2021 | MPCitH + algebraic | Optimized for algebraic hash functions; shorter signatures [[1]](https://eprint.iacr.org/2021/068) |
 
-**State of the art:** Picnic/Banquet for PQ signatures (see [Post-Quantum](15-quantum-cryptography.md#post-quantum-cryptography)); MPCitH is a general ZK paradigm alongside [IOPs](#interactive-oracle-proofs-iop-pcp) and [Sigma Protocols](#sigma-protocols-schnorr-identification).
+**State of the art:** Picnic/Banquet for PQ signatures (see [Post-Quantum](15-quantum-cryptography.md#post-quantum-cryptography)); MPCitH is a general ZK paradigm alongside [IOPs](#interactive-oracle-proofs-iop--pcp) and [Sigma Protocols](#sigma-protocols--schnorr-identification).
 
 **Production readiness:** Mature
 Picnic was a NIST PQ signature candidate. Banquet and ZKBoo have working implementations. Used in post-quantum signature research.
@@ -422,7 +423,7 @@ Picnic was a NIST Round 3 alternate candidate. The MPCitH paradigm is well-respe
 | **FAEST Signature** | 2023 | VOLEitH + AES | PQ signature from VOLEitH on AES; security = AES key recovery; NIST Round 2 [[1]](https://faest.info/) |
 | **Appenzeller-to-Brie (A2B)** | 2024 | VOLEitH optimization | Improved VOLEitH with batch verification and smaller proofs [[1]](https://eprint.iacr.org/2024/1075) |
 
-**State of the art:** FAEST (NIST Additional Sigs Round 2); VOLEitH as paradigm alongside [MPCitH](#mpc-in-the-head-mpcith) and [Sigma Protocols](#sigma-protocols-schnorr-identification).
+**State of the art:** FAEST (NIST Additional Sigs Round 2); VOLEitH as paradigm alongside [MPCitH](#mpc-in-the-head-mpcith) and [Sigma Protocols](#sigma-protocols--schnorr-identification).
 
 **Production readiness:** Experimental
 FAEST is in NIST Additional Signatures Round 2. Research implementations exist but no large-scale production deployment yet.
@@ -515,7 +516,7 @@ Active research area with growing interest from privacy-focused blockchain proje
 | **zkPyTorch** | 2025 | Expander proof engine | Auto-generate ZK proofs for standard PyTorch inference; no custom circuits [[1]](https://eprint.iacr.org/2025/535) |
 | **SecFormer** | 2024 | SMPC + segmented polynomials | Privacy-preserving transformer inference via SMPC; Goldschmidt's method for nonlinear ops; ACL 2024 [[1]](https://aclanthology.org/2024.findings-acl.790/) |
 
-**State of the art:** EZKL (practical), zkLLM (2024, billion-parameter models), zkPyTorch (2025, PyTorch-native), SecFormer (2024, SMPC-based), active race between SNARK/STARK/SMPC approaches. Optimistic approaches (opML) trade latency for cost. Extends [ZK Proof Systems](#zero-knowledge-proofs-zk) and [Verifiable AI Inference](17-ai-hardware-physical-security.md#zkllm-verifiable-ai-inference).
+**State of the art:** EZKL (practical), zkLLM (2024, billion-parameter models), zkPyTorch (2025, PyTorch-native), SecFormer (2024, SMPC-based), active race between SNARK/STARK/SMPC approaches. Optimistic approaches (opML) trade latency for cost. Extends [ZK Proof Systems](#zero-knowledge-proofs-zk) and [Verifiable AI Inference](17-ai-hardware-physical-security.md#zkllm--verifiable-ai-inference).
 
 **Production readiness:** Experimental
 EZKL has production-grade tooling for ONNX model verification. Other systems are research prototypes or early-stage products.
@@ -543,7 +544,7 @@ High-profile research area backed by a16z, Modulus Labs, and Polyhedra. No stand
 | **Compressed Σ-Protocols (Attema-Cramer)** | 2020 | Any Sigma + pivot | General framework: compress any Sigma protocol for homomorphic relations [[1]](https://eprint.iacr.org/2020/152) |
 | **Compressed Σ for Lattices** | 2021 | SIS/LWE | Extension to lattice-based Sigma protocols; post-quantum compressed proofs [[1]](https://eprint.iacr.org/2021/307) |
 
-**State of the art:** Attema-Cramer (2020) as general framework; Bulletproofs IPA as most deployed instance. Extends [Sigma Protocols](#sigma-protocols-schnorr-identification) and [Bulletproofs](#zero-knowledge-proofs-zk).
+**State of the art:** Attema-Cramer (2020) as general framework; Bulletproofs IPA as most deployed instance. Extends [Sigma Protocols](#sigma-protocols--schnorr-identification) and [Bulletproofs](#zero-knowledge-proofs-zk).
 
 **Production readiness:** Mature
 Bulletproofs IPA (the primary deployed instance) is in production. The general Attema-Cramer framework has reference implementations.
@@ -596,7 +597,7 @@ Well-studied in theoretical cryptography. Limited practical adoption; most appli
 | **Witness PRF from iO** | 2016 | Indistinguishability obfuscation | Alternative construction from iO; more general [[1]](https://eprint.iacr.org/2016/597) |
 | **Witness PRF Applications** | 2016 | — | Implies multi-party key exchange, secret sharing for NP, more [[1]](https://eprint.iacr.org/2016/597) |
 
-**State of the art:** Theoretical; constructions require [iO](16-obfuscation-advanced-hardness.md#indistinguishability-obfuscation-io) or [Multilinear Maps](16-obfuscation-advanced-hardness.md#multilinear-maps). Implies [Witness Encryption](#witness-prf), [Constrained PRFs](01-foundational-primitives.md#puncturable-constrained-prf), and more.
+**State of the art:** Theoretical; constructions require [iO](16-obfuscation-advanced-hardness.md#indistinguishability-obfuscation-io) or [Multilinear Maps](16-obfuscation-advanced-hardness.md#multilinear-maps). Implies [Witness Encryption](#witness-prf), [Constrained PRFs](01-foundational-primitives.md#puncturable--constrained-prf), and more.
 
 **Production readiness:** Research
 Purely theoretical constructions requiring iO or multilinear maps, neither of which has practical implementations.
@@ -638,11 +639,11 @@ Well-cited in academic cryptography. Primarily used as a building block in theor
 
 ---
 
-> **Witness Indistinguishability (WI) / Witness Hiding** is covered in [Theoretical Foundations — WI / Witness Hiding](19-theoretical-foundations.md#witness-indistinguishability-wi-witness-hiding).
+> **Witness Indistinguishability (WI) / Witness Hiding** is covered in [Theoretical Foundations — WI / Witness Hiding](19-theoretical-foundations.md#witness-indistinguishability-wi--witness-hiding).
 
 ---
 
-> **Non-Black-Box Zero-Knowledge / Concurrent ZK** is covered in [Theoretical Foundations — Non-Black-Box ZK / Concurrent ZK](19-theoretical-foundations.md#non-black-box-zero-knowledge-concurrent-zk).
+> **Non-Black-Box Zero-Knowledge / Concurrent ZK** is covered in [Theoretical Foundations — Non-Black-Box ZK / Concurrent ZK](19-theoretical-foundations.md#non-black-box-zero-knowledge--concurrent-zk).
 
 ---
 
@@ -657,7 +658,7 @@ Well-cited in academic cryptography. Primarily used as a building block in theor
 | **MIP* = RE (Ji et al.)** | 2020 | Quantum entanglement | With entangled provers, all RE languages provable; resolved Connes embedding [[1]](https://arxiv.org/abs/2001.04383) |
 | **Interactive Proofs for Muggles (GKR)** | 2008 | Sumcheck | Practical: verifier delegates computation to untrusted prover [[1]](https://doi.org/10.1145/2699436) |
 
-**State of the art:** MIP* = RE (2020, breakthrough); practical MIP-derived systems via [Sumcheck](#sumcheck-protocol) and [IOP](#interactive-oracle-proofs-iop-pcp). Foundational for proof complexity.
+**State of the art:** MIP* = RE (2020, breakthrough); practical MIP-derived systems via [Sumcheck](#sumcheck-protocol) and [IOP](#interactive-oracle-proofs-iop--pcp). Foundational for proof complexity.
 
 **Production readiness:** Research
 MIPs are a complexity-theoretic concept. Practical systems derived from MIP techniques (GKR, sumcheck) are in production, but MIPs themselves are theoretical.
@@ -743,7 +744,7 @@ Important historically as the first practical universal SNARK. Recognized as the
 
 **Key insight:** Ligero encodes the witness as rows of a Reed-Solomon codeword matrix and uses interleaved tests to verify linear constraints. This gives a zero-knowledge argument whose communication depends on √N field elements rather than N. Aurora replaces the matrix approach with a univariate-sumcheck-based IOP, shrinking proofs to polylogarithmic.
 
-**State of the art:** Aurora and Fractal (2020) are the academic benchmarks; in production, their ideas are subsumed by STARKs and [Orion](#orion-and-brakedown-linear-time-snarks). Ligero's MPC-in-the-head viewpoint connects to [VOLEitH](#voleitH-vole-in-the-head). See [[1]](https://eprint.iacr.org/2018/828).
+**State of the art:** Aurora and Fractal (2020) are the academic benchmarks; in production, their ideas are subsumed by STARKs and [Orion](#orion-and-brakedown-linear-time-snarks). Ligero's MPC-in-the-head viewpoint connects to [VOLEitH](#voleith-vole-in-the-head). See [[1]](https://eprint.iacr.org/2018/828).
 
 **Production readiness:** Mature
 Aurora and Ligero have reference implementations. Their techniques are subsumed by STARKs and Brakedown/Orion in production.
@@ -1331,15 +1332,15 @@ IACR 2018. STARKs are the dominant transparent proof system. Endorsed by StarkWa
 | **Wolverine** | 2021 | Silent VOLE + ZK | ZK for arithmetic circuits from silent VOLE (PCG-based); fast preprocessing; CRYPTO 2021 [[1]](https://eprint.iacr.org/2020/925) |
 | **Mac'n'Cheese** | 2021 | VOLE + Beaver triples | ZK for Boolean/arithmetic with streaming; prover-efficient; S&P 2022 [[1]](https://eprint.iacr.org/2020/1410) |
 | **Limbo (MPC-in-VOLE)** | 2021 | VOLE + MPCitH | Hybrid of VOLE and MPCitH for shorter proofs in public-coin setting [[1]](https://eprint.iacr.org/2021/215) |
-| **VOLEitH / FAEST** | 2023 | VOLE-in-the-Head | Non-interactive VOLE-ZK via "in-the-head" simulation; yields PQ signatures; see [VOLEitH](#voleitH-vole-in-the-head) [[1]](https://eprint.iacr.org/2023/996) |
+| **VOLEitH / FAEST** | 2023 | VOLE-in-the-Head | Non-interactive VOLE-ZK via "in-the-head" simulation; yields PQ signatures; see [VOLEitH](#voleith-vole-in-the-head) [[1]](https://eprint.iacr.org/2023/996) |
 
 **Core idea:** A VOLE correlation gives the verifier a pair (Δ, K) and the prover a pair (x, M) satisfying M = K + x · Δ over a field. This acts as an information-theoretic MAC on the prover's wire value x: the verifier can check authenticity of x at proof time by comparing M − x · Δ = K. The prover encodes each circuit wire as a VOLE-authenticated value, then proves gate satisfiability by sending small "proof polynomials" whose coefficients are linear combinations of VOLE-authenticated wires. The amortized cost is O(1) field multiplications per gate because all MAC checks can be batched into a single polynomial evaluation.
 
 **Preprocessing vs. online phase:** VOLE setup can be done offline (the "preprocessing" or "offline phase") using either OT-extension-based protocols (Wolverine, Mac'n'Cheese) or silent VOLE from PCGs (Pseudorandom Correlation Generators), making the online proving phase very fast. The total communication for QuickSilver over an N-gate circuit is ≈ 2N field elements for the prover — compared to ≈ 44N for Groth16 (in terms of MSM operations) or ≈ 10N for PLONK.
 
-**Relation to VOLEitH:** [VOLEitH](#voleitH-vole-in-the-head) makes VOLE-based ZK non-interactive by simulating the VOLE setup "in the head" (like MPCitH), at the cost of larger proof sizes. Interactive VOLE-ZK (QuickSilver, Wolverine, Mac'n'Cheese) is preferred when interaction is acceptable and proof size matters less than prover speed.
+**Relation to VOLEitH:** [VOLEitH](#voleith-vole-in-the-head) makes VOLE-based ZK non-interactive by simulating the VOLE setup "in the head" (like MPCitH), at the cost of larger proof sizes. Interactive VOLE-ZK (QuickSilver, Wolverine, Mac'n'Cheese) is preferred when interaction is acceptable and proof size matters less than prover speed.
 
-**State of the art:** QuickSilver and Wolverine (2021) are the canonical interactive VOLE-ZK systems; Mac'n'Cheese for streaming/low-memory settings. Silent VOLE from PCGs (see [OLE/VOLE](06-multi-party-computation.md#oblivious-linear-evaluation-ole-vole)) gives practical offline setup. VOLEitH (2023) extends the paradigm to non-interactive proofs. See [[1]](https://eprint.iacr.org/2021/076).
+**State of the art:** QuickSilver and Wolverine (2021) are the canonical interactive VOLE-ZK systems; Mac'n'Cheese for streaming/low-memory settings. Silent VOLE from PCGs (see [OLE/VOLE](06-multi-party-computation.md#oblivious-linear-evaluation-ole--vole)) gives practical offline setup. VOLEitH (2023) extends the paradigm to non-interactive proofs. See [[1]](https://eprint.iacr.org/2021/076).
 
 **Production readiness:** Experimental
 QuickSilver and Wolverine have working implementations with competitive benchmarks. Used in privacy-preserving computation research.
@@ -1374,7 +1375,7 @@ Published at CCS 2021 and CRYPTO 2021. Growing recognition as the most efficient
 
 **Open challenges:** Multi-jurisdiction compliance (different regulatory predicates per country), credential revocation (ZK proofs of non-revocation without leaking revocation status), and sybil resistance (preventing one person from generating many ZK identities).
 
-**State of the art:** Polygon ID (2022) and Holonym (2023) are production systems; zkAML accumulator proposals are academic (2023). The field is converging on W3C Verifiable Credentials as the credential format and Groth16/PLONK as the proof backend. See [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials), [ZK Proofs for Identity](#zk-proofs-for-identity-proof-of-age-nationality).
+**State of the art:** Polygon ID (2022) and Holonym (2023) are production systems; zkAML accumulator proposals are academic (2023). The field is converging on W3C Verifiable Credentials as the credential format and Groth16/PLONK as the proof backend. See [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials), [ZK Proofs for Identity](#zk-proofs-for-identity-proof-of-age--nationality).
 
 **Production readiness:** Experimental
 Polygon ID and Holonym are in production. zkAML accumulator schemes are academic. Active pilots with financial institutions.
@@ -1408,7 +1409,7 @@ Growing regulatory interest (EU eIDAS 2.0, MiCA). Polygon ID is the most deploye
 
 **Linkability and nullifiers:** A critical design issue is preventing the same passport from generating multiple "unique" proofs (sybil attack). Worldcoin uses iris biometrics; passport-based systems use commitment schemes keyed on the passport number (hashed under a nullifier scheme) to detect duplicates without revealing the number itself.
 
-**State of the art:** OpenPassport / zkPassport (2023) and anon-aadhaar (2023) are open-source production systems. World ID (Worldcoin) is deployed at scale. Active research on reducing circuit size (RSA in-circuit is expensive) via precompile support in zkVMs (SP1, RISC Zero). See [zkKYC / zkAML](#zk-proofs-for-regulatory-compliance-zkkyc-zkaml), [zkTLS / MPC-TLS](#zktls-mpc-tls).
+**State of the art:** OpenPassport / zkPassport (2023) and anon-aadhaar (2023) are open-source production systems. World ID (Worldcoin) is deployed at scale. Active research on reducing circuit size (RSA in-circuit is expensive) via precompile support in zkVMs (SP1, RISC Zero). See [zkKYC / zkAML](#zk-proofs-for-regulatory-compliance-zkkyc--zkaml), [zkTLS / MPC-TLS](#zktls--mpc-tls).
 
 **Production readiness:** Experimental
 OpenPassport, anon-aadhaar, and World ID are open-source and actively used. Passport verification circuits are complex (RSA in-circuit) but functional.
@@ -1441,9 +1442,9 @@ Growing adoption. World ID has millions of users. PSE (Ethereum Foundation) back
 
 **Key challenges:** Multi-hop provenance (proving properties of components whose suppliers are themselves composed of sub-suppliers), revocation of certifications without leaking which supplier was revoked, and cross-border regulatory interoperability (different standards per jurisdiction).
 
-**Relation to other primitives:** Proof-of-origin circuits rely on [ZK Sets](#zero-knowledge-sets) for hidden supplier membership, [Accumulators](09-commitments-verifiability.md#accumulators) for revocation, and [Merkle-based ZK Proofs](#zero-knowledge-proofs-zk) for commitment to supply trees. Multi-party supply chains can use [Distributed SNARKs](#distributed-collaborative-snarks) to avoid any single party assembling all supplier data.
+**Relation to other primitives:** Proof-of-origin circuits rely on [ZK Sets](#zero-knowledge-sets) for hidden supplier membership, [Accumulators](09-commitments-verifiability.md#accumulators) for revocation, and [Merkle-based ZK Proofs](#zero-knowledge-proofs-zk) for commitment to supply trees. Multi-party supply chains can use [Distributed SNARKs](#distributed--collaborative-snarks) to avoid any single party assembling all supplier data.
 
-**State of the art:** Primarily academic and pilot deployments (2022–2024); no dominant production system yet. ING's zero-knowledge range proof library (Bulletproofs) is open-source. The EU's Digital Product Passport regulation (2024) is driving commercial interest. See [ZK Proofs for Regulatory Compliance](#zk-proofs-for-regulatory-compliance-zkkyc-zkaml).
+**State of the art:** Primarily academic and pilot deployments (2022–2024); no dominant production system yet. ING's zero-knowledge range proof library (Bulletproofs) is open-source. The EU's Digital Product Passport regulation (2024) is driving commercial interest. See [ZK Proofs for Regulatory Compliance](#zk-proofs-for-regulatory-compliance-zkkyc--zkaml).
 
 **Production readiness:** Research
 Primarily academic and pilot deployments. ING's zkrp library is open-source. No dominant production system yet.
