@@ -958,40 +958,6 @@ CAESAR lightweight winners (2019); superseded by Ascon (NIST SP 800-232) for sta
 
 ---
 
-## Camellia-GCM and ARIA-GCM
-
-**Goal:** GCM-mode AEAD using non-AES 128-bit block ciphers — Camellia (Japanese national standard) and ARIA (Korean national standard) — providing cryptographic diversity, regulatory compliance in Japan and South Korea, and an alternative cipher path in environments where reliance on a single cipher is undesirable.
-
-| Scheme | Year | Basis | Standard | Note |
-|--------|------|-------|----------|------|
-| **Camellia** | 2000 | 128-bit Feistel, 128/192/256-bit keys | ISO/IEC 18033-3, RFC 3713 | Joint NTT/Mitsubishi design; equivalent security margin to AES [[1]](https://info.isl.ntt.co.jp/crypt/camellia/) |
-| **Camellia-GCM (TLS)** | 2012 | Camellia + GHASH | RFC 6367 | TLS 1.2 cipher suites for Camellia-128-GCM and Camellia-256-GCM [[1]](https://www.rfc-editor.org/rfc/rfc6367) |
-| **ARIA** | 2003 | 128-bit SPN, 128/192/256-bit keys | Korean KCMVP, RFC 5794 | Korean national block cipher; AES-like SPN structure [[1]](https://www.rfc-editor.org/rfc/rfc5794) |
-| **ARIA-GCM (TLS)** | 2013 | ARIA + GHASH | RFC 6209 | TLS 1.2 cipher suites for ARIA-128-GCM and ARIA-256-GCM [[1]](https://www.rfc-editor.org/rfc/rfc6209) |
-| **ARIA-CCM (TLS)** | 2013 | ARIA + CBC-MAC | RFC 6209 | ARIA-CCM TLS suites for constrained Korean embedded stacks [[1]](https://www.rfc-editor.org/rfc/rfc6209) |
-
-**Why cipher diversity matters:** A single-cipher ecosystem concentrates cryptanalytic risk: a practical break in AES would compromise virtually all encrypted internet traffic. Camellia and ARIA provide drop-in alternatives with equivalent security margins and independent design lineages, allowing diverse deployment in critical infrastructure. Both are government-approved for national security use in Japan and South Korea respectively.
-
-**GCM compatibility:** GCM's authentication component (GHASH) is cipher-agnostic — it requires only a 128-bit block cipher to derive the authentication subkey H. Camellia-GCM and ARIA-GCM therefore inherit all of GCM's properties (parallelisable CTR encryption, single-pass, associated data support) with an identical API to AES-GCM. All nonce-misuse vulnerabilities of GCM apply equally.
-
-**State of the art:** Camellia-GCM and ARIA-GCM are deployed in TLS 1.2 stacks within Japanese and Korean government, financial, and defense networks. TLS 1.3 did not include Camellia or ARIA cipher suites in its mandatory set (only AES-GCM and ChaCha20-Poly1305), limiting these ciphers to TLS 1.2 and proprietary protocol stacks. OpenSSL ships Camellia support; ARIA is available in NSS and Korean-market TLS libraries.
-
-**Production readiness:** Production
-Deployed in Japanese and Korean government/financial TLS 1.2 stacks; Camellia in OpenSSL, ARIA in NSS.
-
-**Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, Camellia-GCM cipher suites
-- [NSS (Mozilla)](https://hg.mozilla.org/projects/nss) — C, ARIA-GCM cipher suites
-- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, both Camellia and ARIA
-
-**Security status:** Secure
-Both Camellia and ARIA have equivalent security margins to AES; extensively analyzed with no practical attacks.
-
-**Community acceptance:** Standard
-Camellia: ISO 18033-3, RFC 3713, CRYPTREC (Japan). ARIA: KCMVP (Korea), RFC 5794. Not in TLS 1.3 mandatory set.
-
----
-
 ## Ascon-128 / Ascon-128a (NIST LWC Standard)
 
 **Goal:** The NIST Lightweight Cryptography (LWC) standard AEAD for constrained devices — microcontrollers, RFID tags, IoT sensors — providing 128-bit security with a minimal footprint, a single hardware-friendly permutation, and a clean duplex-sponge design that covers both AEAD and hashing under one primitive family.

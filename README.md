@@ -66,6 +66,9 @@
 20. **[Applied & Niche Protocols](categories/20-applied-niche-protocols.md)**
     Specialized real-world protocols that don't fit neatly elsewhere: end-to-end verifiable e-voting, coercion-resistant voting, visual cryptography, linked timestamping (RFC 3161), proof of secure erasure, key-insulated cryptography, client puzzles, incremental cryptography.
 
+21. **[Regional & National Cryptographic Standards](categories/21-regional-national-cryptography.md)**
+    Sovereign cryptographic algorithms mandated by national standardization bodies: SM4/SM3/SM2 (China, OSCCA), GOST R 34.12/34.11/34.10 including Kuznyechik, Magma, and Streebog (Russia), ARIA/SEED/LSH (South Korea, KISA/NIS), Camellia-GCM/ARIA-GCM and CLEFIA/MISTY1 (Japan, CRYPTREC).
+
 See [INDEX.md](INDEX.md) for an alphabetical index of all 1069 schemes.
 
 ---

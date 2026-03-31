@@ -1216,56 +1216,6 @@ STARK-based signatures instantiate the general paradigm: to sign a message m, th
 
 ---
 
-## SM2 Digital Signatures (Chinese National Standard)
-
-**Goal:** Elliptic-curve digital signature scheme standardized by the Chinese government (GB/T 32918.2-2016, ISO/IEC 14888-3:2018). Provides authentication and non-repudiation using a Chinese-designed 256-bit elliptic curve over F_p. Mandated for government and financial systems in China.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **SM2 Signature** | 2010 | ECC (custom 256-bit curve) | Schnorr-like signature using Chinese-standard curve; similar structure to ECDSA but with ZA user identity hash [[1]](https://www.oscca.gov.cn/sca/xxgk/2010-12/17/content_1002386.shtml)[[2]](https://doi.org/10.1007/978-3-319-89339-6_13) |
-| **SM2 in ISO/IEC 14888-3** | 2018 | ECC | International standardization of SM2 signature alongside ECDSA and EdDSA [[1]](https://www.iso.org/standard/76382.html) |
-| **SM2 in TLS 1.3 (RFC 8998)** | 2021 | ECC + SM3 hash | SM2 key exchange and authentication integrated into TLS 1.3; uses SM3 as hash function [[1]](https://datatracker.ietf.org/doc/html/rfc8998) |
-| **SM2 with SM3** | 2010 | ECC + SM3 | Signing uses SM3 (256-bit Chinese hash standard) for message digest; ZA = SM3(ENTLA ‖ IDA ‖ curve params ‖ PK) [[1]](https://datatracker.ietf.org/doc/html/rfc7091) |
-
-SM2 is structurally similar to ECDSA but differs in key ways: (1) the signature includes a user-identity hash ZA mixed into the message digest, binding the signer's distinguished name and public key to each signature; (2) the verification equation differs from ECDSA (it computes t = r + s mod n and checks R = [s]G + [t]PK); (3) the curve is a custom Weierstrass curve over a 256-bit prime field, not a NIST or Brainpool curve. SM2 is widely deployed in Chinese banking (UnionPay), government PKI, and CFCA certificates. OpenSSL 1.1.1+ includes SM2 support. Security analysis shows SM2 is provably secure in the generic group model under standard assumptions, with a reduction comparable to ECDSA.
-
-**State of the art:** Mandated in Chinese government/financial systems (GB/T 32918); ISO-standardized (ISO/IEC 14888-3:2018); supported in OpenSSL, BoringSSL, and GmSSL. Cross-links: [Foundational Signature Schemes](categories/01-foundational-primitives.md#digital-signatures-ecdsa-eddsa-rsa-schnorr).
-
-**Production readiness:** Production
-**Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, SM2 support since 1.1.1
-- [GmSSL](https://github.com/guanzhi/GmSSL) ⭐ 6.0k — C, Chinese crypto library with full SM2 suite
-- [Tongsuo](https://github.com/Tongsuo-Project/Tongsuo) ⭐ 1.4k — C, Alibaba fork of OpenSSL with SM2
-**Security status:** Secure
-**Community acceptance:** Standard
-
----
-
-## GOST R 34.10-2012 (Russian Digital Signature Standard)
-
-**Goal:** Elliptic-curve digital signature scheme standardized by the Russian Federation (GOST R 34.10-2012, RFC 7091). Provides authentication using Russian-designed elliptic curves at 256-bit and 512-bit security levels. Mandated for Russian government communications and e-document systems.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **GOST R 34.10-2001** | 2001 | ECC (256-bit) | Original GOST ECC signature; Schnorr-like structure over a 256-bit curve; replaced RSA-based GOST R 34.10-94 [[1]](https://datatracker.ietf.org/doc/html/rfc5832) |
-| **GOST R 34.10-2012 (256-bit)** | 2012 | ECC (256-bit) | Updated standard with new curve parameters; uses GOST R 34.11-2012 (Streebog) hash [[1]](https://datatracker.ietf.org/doc/html/rfc7091)[[2]](https://datatracker.ietf.org/doc/html/rfc7836) |
-| **GOST R 34.10-2012 (512-bit)** | 2012 | ECC (512-bit) | High-security variant using 512-bit Streebog hash and 512-bit elliptic curve for ~256-bit security [[1]](https://datatracker.ietf.org/doc/html/rfc7091) |
-| **GOST in TLS 1.2 (RFC 9189)** | 2022 | ECC + Streebog | GOST cipher suites for TLS 1.2; uses GOST 34.10-2012 for authentication [[1]](https://datatracker.ietf.org/doc/html/rfc9189) |
-
-GOST R 34.10-2012 uses an elliptic curve over F_p with Russian-specified parameters (id-tc26-gost-3410-2012-256-paramSetA/B/C/D for 256-bit; id-tc26-gost-3410-12-512-paramSetA/B/C for 512-bit). The signing algorithm is: pick random k, compute R = [k]G, set r = x_R mod n, compute s = (rd + ke) mod n where e = hash(m). The unique 512-bit variant provides a higher security margin than any NIST curve. The hash function Streebog (GOST R 34.11-2012) is an independent design. Some western researchers have raised concerns about the design rationale of GOST curves (no "nothing-up-my-sleeve" seed), but no practical attacks are known.
-
-**State of the art:** GOST R 34.10-2012 is mandated in Russian Federation government systems and supported in OpenSSL (via GOST engine), Bouncy Castle, and CryptoPro CSP. The 512-bit variant provides the highest classical security level of any deployed ECC signature scheme. Cross-links: [Foundational Signature Schemes](categories/01-foundational-primitives.md#digital-signatures-ecdsa-eddsa-rsa-schnorr).
-
-**Production readiness:** Production
-**Implementations:**
-- [OpenSSL GOST engine](https://github.com/gost-engine/engine) ⭐ 441 — C, GOST R 34.10-2012 for OpenSSL
-- [BouncyCastle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, GOST signature support
-- [CryptoPro CSP](https://www.cryptopro.ru/) — commercial, Russian government certified
-**Security status:** Caution
-**Community acceptance:** Niche
-
----
-
 ## FROST Threshold Schnorr Signatures
 
 **Goal:** Flexible Round-Optimized Schnorr Threshold signatures. A *t*-of-*n* threshold Schnorr signature scheme requiring only two rounds of communication. The resulting signature is a standard Schnorr signature — verifiers cannot distinguish a FROST-generated signature from one produced by a single signer. Designed for distributed key custody without a trusted dealer.

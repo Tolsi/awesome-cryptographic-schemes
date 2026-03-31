@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a curated reference for cryptographic schemes, protocols, and primitives. Content is organized into 20 thematic category files under `categories/`, with a flat alphabetical index in `INDEX.md` and a categorized table of contents in `README.md`.
+This is a curated reference for cryptographic schemes, protocols, and primitives. Content is organized into 21 thematic category files under `categories/`, with a flat alphabetical index in `INDEX.md` and a categorized table of contents in `README.md`.
 
 ## File Layout
 
@@ -31,6 +31,7 @@ categories/
   18-covert-channels-steganography.md
   19-theoretical-foundations.md
   20-applied-niche-protocols.md
+  21-regional-national-cryptography.md
 ```
 
 ## Scheme Entry Format
@@ -171,3 +172,4 @@ GitHub slugifies anchors by: lowercasing, replacing spaces with hyphens, droppin
 | 18 | covert-channels-steganography | Steganography, digital watermarking/fingerprinting, kleptography/ASA, deniable encryption, deniable authentication |
 | 19 | theoretical-foundations | Leakage-resilient crypto, circular/KDM security, non-malleable codes, WI/witness hiding, non-black-box ZK/concurrent ZK, rational cryptography, human-computable crypto, cryptographic reverse firewalls, lossy encryption/TDF |
 | 20 | applied-niche-protocols | E-voting, visual cryptography, linked timestamping, coercion-resistant voting, PoSE, key-insulated crypto, client puzzles, incremental cryptography |
+| 21 | regional-national-cryptography | SM4/SM3/SM2 (China), GOST R 34.12/34.11/34.10 (Russia), ARIA/SEED/LSH (South Korea), Camellia-GCM/ARIA-GCM, CLEFIA/MISTY1 (Japan) |
