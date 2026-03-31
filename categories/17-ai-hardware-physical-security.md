@@ -63,7 +63,7 @@
 | **zkPyTorch** | 2025 | Expander proof engine | Auto-generate ZK proofs for standard PyTorch inference workloads [[1]](https://eprint.iacr.org/2025/535) |
 | **Lightweight Proof of Inference** | 2026 | Sampling + Merkle | Statistical sampling of inference trace; millisecond proving time [[1]](https://eprint.iacr.org/2026/541) |
 
-**State of the art:** zkLLM (CCS 2024) for full LLM proofs; lightweight sampling (2026) for practical deployment. Extends [zkML](#zkml-zero-knowledge-machine-learning) to production-scale models.
+**State of the art:** zkLLM (CCS 2024) for full LLM proofs; lightweight sampling (2026) for practical deployment. Extends [zkML](04-zero-knowledge-proof-systems.md#zkml-zero-knowledge-machine-learning) to production-scale models.
 
 **Production readiness:** Research
 Academic prototypes only; zkLLM proving time (~15 min for 13B params) precludes production use

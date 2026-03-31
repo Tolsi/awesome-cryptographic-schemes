@@ -254,7 +254,7 @@ Active research area for IoT/sensor networks; no IETF or NIST standardization.
 
 ---
 
-> **ACME Protocol / Automated Certificate Management** is covered in [Secure Communication Protocols — ACME Protocol](12-secure-communication-protocols.md#acme-protocol--automated-certificate-management).
+> **ACME Protocol / Automated Certificate Management** is covered in [Secure Communication Protocols — ACME Protocol](12-secure-communication-protocols.md#acme-protocol-automated-certificate-management).
 
 ---
 
@@ -344,7 +344,7 @@ IETF RFCs 7515-7519; universally adopted in web authentication, OAuth 2.0, and O
 | **SEEMless (Meta)** | 2023 | Verifiable log | WhatsApp key transparency; Auditable Key Directory [[1]](https://engineering.fb.com/2023/04/13/security/whatsapp-key-transparency/) |
 | **Signal Key Transparency** | 2024 | Merkle + monitoring | Detects key substitution in Signal's server [[1]](https://signal.org/blog/key-transparency/) |
 
-**State of the art:** SEEMless (WhatsApp), Signal Key Transparency (2024). Closely related to [Certificate Transparency](#certificate-transparency-ct).
+**State of the art:** SEEMless (WhatsApp), Signal Key Transparency (2024). Closely related to [Certificate Transparency](14-applied-infrastructure-pki.md#certificate-transparency-ct).
 
 **Production readiness:** Production
 Deployed at scale by WhatsApp (SEEMless), Signal, and Apple iMessage for key verification.
@@ -748,7 +748,7 @@ Response: certStatus, thisUpdate, nextUpdate, signature
 | OCSP Stapling | Yes (required for EV) | Yes | Yes |
 | CRLSets/CRLite | CRLSets (curated) | CRLite (all certs) | — |
 
-**State of the art:** OCSP stapling + CRLite/CRLSets is the current industry direction. Google Chrome no longer does live OCSP for DV certs. Short-lived certificates (6–90 day) are the emerging solution — revocation becomes unnecessary when certs expire before the attacker can exploit them. See [Certificate Transparency](#certificate-transparency-ct) and [ACME Protocol](#acme-protocol-automated-certificate-management).
+**State of the art:** OCSP stapling + CRLite/CRLSets is the current industry direction. Google Chrome no longer does live OCSP for DV certs. Short-lived certificates (6–90 day) are the emerging solution — revocation becomes unnecessary when certs expire before the attacker can exploit them. See [Certificate Transparency](14-applied-infrastructure-pki.md#certificate-transparency-ct) and [ACME Protocol](12-secure-communication-protocols.md#acme-protocol-automated-certificate-management).
 
 **Production readiness:** Production
 OCSP and CRLs are deployed across the entire WebPKI; every browser implements some form of revocation checking.
@@ -1140,7 +1140,7 @@ TBSCertificate ::= SEQUENCE {
 
 **Wildcard certificates:** A single `*.example.com` SAN matches one label deep — `foo.example.com` but not `foo.bar.example.com`. Multi-SAN certs list explicit names.
 
-**State of the art:** RFC 5280 (2008) [[1]](https://www.rfc-editor.org/rfc/rfc5280); updated by RFC 8398 (internationalized email in SANs) and RFC 9549 (algorithm agility). Baseline Requirements (CA/Browser Forum) [[2]](https://cabforum.org/baseline-requirements/) constrain what WebPKI CAs may issue. Related to [ACME Protocol](#acme-protocol-automated-certificate-management), [Certificate Transparency](#certificate-transparency-ct), and [DANE](14-applied-infrastructure-pki.md#dane-dns-based-authentication-of-named-entities).
+**State of the art:** RFC 5280 (2008) [[1]](https://www.rfc-editor.org/rfc/rfc5280); updated by RFC 8398 (internationalized email in SANs) and RFC 9549 (algorithm agility). Baseline Requirements (CA/Browser Forum) [[2]](https://cabforum.org/baseline-requirements/) constrain what WebPKI CAs may issue. Related to [ACME Protocol](12-secure-communication-protocols.md#acme-protocol-automated-certificate-management), [Certificate Transparency](14-applied-infrastructure-pki.md#certificate-transparency-ct), and [DANE](14-applied-infrastructure-pki.md#dane-dns-based-authentication-of-named-entities).
 
 **Production readiness:** Production
 X.509 v3 is the foundation of all TLS, S/MIME, code signing, and PKI infrastructure globally.
@@ -1357,7 +1357,7 @@ Each SCEP message is a CMS SignedData wrapping a CMS EnvelopedData (for requests
 - Challenge password transmitted inside EnvelopedData (encrypted to CA key) — not in the clear
 - Self-signed cert used for initial request signature; CA verifies challenge password instead of cert chain
 - RFC 8894 mandates TLS for transport (earlier deployments used plain HTTP)
-- No renewal automation — contrast with [ACME](#acme-protocol-automated-certificate-management)
+- No renewal automation — contrast with [ACME](12-secure-communication-protocols.md#acme-protocol-automated-certificate-management)
 
 | Deployment | Usage |
 |------------|-------|
@@ -1366,7 +1366,7 @@ Each SCEP message is a CMS SignedData wrapping a CMS EnvelopedData (for requests
 | **Apple MDM** | iOS/macOS device certificate provisioning via MDM payload |
 | **strongSwan** | Linux IPsec gateway auto-enrollment |
 
-**State of the art:** RFC 8894 (2020) [[1]](https://www.rfc-editor.org/rfc/rfc8894). Widely deployed in MDM and network device PKI; simpler than [CMP](#cmp-certificate-management-protocol-rfc-42109483) but less feature-rich. Being supplemented by [EST](#est-enrollment-over-secure-transport-rfc-7030) in newer deployments. Related to [ACME Protocol](#acme-protocol-automated-certificate-management) and [PKIX / X.509 v3](#pkix-x509-v3-certificate-profile-rfc-5280).
+**State of the art:** RFC 8894 (2020) [[1]](https://www.rfc-editor.org/rfc/rfc8894). Widely deployed in MDM and network device PKI; simpler than [CMP](#cmp-certificate-management-protocol-rfc-42109483) but less feature-rich. Being supplemented by [EST](#est-enrollment-over-secure-transport-rfc-7030) in newer deployments. Related to [ACME Protocol](12-secure-communication-protocols.md#acme-protocol-automated-certificate-management) and [PKIX / X.509 v3](#pkix-x509-v3-certificate-profile-rfc-5280).
 
 **Production readiness:** Production
 Deployed in Cisco IOS, Microsoft NDES, Apple MDM, and strongSwan for network device certificate enrollment.
@@ -1432,7 +1432,7 @@ before expiry, enabling seamless rotation.
 | Complexity | Low | Medium | High |
 | RFC status | 8894 (2020) | 7030 (2013) | 9483 (2023) |
 
-**State of the art:** RFC 7030 (2013) [[1]](https://www.rfc-editor.org/rfc/rfc7030); updated by RFC 8295 (additional attrs). Widely adopted in industrial IoT (IEC 62351-8), automotive (AUTOSAR), and enterprise MDM. Cisco, Microsoft, and DigiCert all support EST. Related to [SCEP](#scep-simple-certificate-enrollment-protocol-rfc-8894), [CMP](#cmp-certificate-management-protocol-rfc-42109483), and [ACME Protocol](#acme-protocol-automated-certificate-management).
+**State of the art:** RFC 7030 (2013) [[1]](https://www.rfc-editor.org/rfc/rfc7030); updated by RFC 8295 (additional attrs). Widely adopted in industrial IoT (IEC 62351-8), automotive (AUTOSAR), and enterprise MDM. Cisco, Microsoft, and DigiCert all support EST. Related to [SCEP](#scep-simple-certificate-enrollment-protocol-rfc-8894), [CMP](#cmp-certificate-management-protocol-rfc-42109483), and [ACME Protocol](12-secure-communication-protocols.md#acme-protocol-automated-certificate-management).
 
 **Production readiness:** Production
 Adopted in industrial IoT, automotive (AUTOSAR), and enterprise PKI; supported by Cisco, Microsoft, and DigiCert.
@@ -1594,7 +1594,7 @@ openssl pkcs12 -in bundle.p12 -nodes -out combined.pem
 | **.der** | Single object (binary) | Cert-only; embedded devices |
 | **JKS / PKCS#11** | Key store (Java / HSM) | Java apps; hardware tokens |
 
-**State of the art:** RFC 7292 (2014) [[1]](https://www.rfc-editor.org/rfc/rfc7292); PBES2 migration tracked in RFC 9579 (2024) which updates PKCS#12 to mandate PBKDF2 and AES. Supported natively by Windows (CertMgr), macOS Keychain, iOS, Android, Firefox, and all major TLS servers. Related to [PKIX / X.509 v3](#pkix-x509-v3-certificate-profile-rfc-5280), [ACME Protocol](#acme-protocol-automated-certificate-management), and [Key Wrapping / Envelope Encryption](#key-wrapping-envelope-encryption).
+**State of the art:** RFC 7292 (2014) [[1]](https://www.rfc-editor.org/rfc/rfc7292); PBES2 migration tracked in RFC 9579 (2024) which updates PKCS#12 to mandate PBKDF2 and AES. Supported natively by Windows (CertMgr), macOS Keychain, iOS, Android, Firefox, and all major TLS servers. Related to [PKIX / X.509 v3](#pkix-x509-v3-certificate-profile-rfc-5280), [ACME Protocol](12-secure-communication-protocols.md#acme-protocol-automated-certificate-management), and [Key Wrapping / Envelope Encryption](#key-wrapping-envelope-encryption).
 
 **Production readiness:** Production
 Universal interchange format supported by every OS, browser, and TLS server; the standard for key+certificate bundling.
@@ -1965,9 +1965,9 @@ Third-party auditors fetch `SignedTreeHead` values from the server and verify:
 
 **Relation to Certificate Transparency:**
 
-CT (see [Certificate Transparency (CT)](#certificate-transparency-ct)) is an append-only log for X.509 certificates; AKD is an append-only, updatable *map* for user-to-key bindings. CT provides inclusion proofs; AKD additionally provides non-membership proofs and full history proofs for individual users.
+CT (see [Certificate Transparency (CT)](14-applied-infrastructure-pki.md#certificate-transparency-ct)) is an append-only log for X.509 certificates; AKD is an append-only, updatable *map* for user-to-key bindings. CT provides inclusion proofs; AKD additionally provides non-membership proofs and full history proofs for individual users.
 
-**State of the art:** AKD specification (Kaptchuk et al., 2021) [[1]](https://eprint.iacr.org/2020/1488); open-source Rust implementation by Meta [[2]](https://github.com/facebook/akd). Apple and Signal deployments (2024) mark the first mass-scale key transparency for end-to-end encrypted messaging. Related to [Key Transparency / CONIKS](#key-transparency-coniks), [Certificate Transparency (CT)](#certificate-transparency-ct), and [VRF](09-commitments-verifiability.md#verifiable-random-functions-vrf).
+**State of the art:** AKD specification (Kaptchuk et al., 2021) [[1]](https://eprint.iacr.org/2020/1488); open-source Rust implementation by Meta [[2]](https://github.com/facebook/akd). Apple and Signal deployments (2024) mark the first mass-scale key transparency for end-to-end encrypted messaging. Related to [Key Transparency / CONIKS](#key-transparency-coniks), [Certificate Transparency (CT)](14-applied-infrastructure-pki.md#certificate-transparency-ct), and [VRF](09-commitments-verifiability.md#verifiable-random-functions-vrf).
 
 **Production readiness:** Production
 Deployed at scale by WhatsApp (SEEMless), Apple iMessage, and Signal for key verification of billions of users.

@@ -1630,6 +1630,8 @@ Proven secure under bilinear map assumptions; simulation-secure variant (SAC 202
 **Community acceptance:** Niche
 Published at ASIACRYPT 2021 and SAC 2024; extends quadratic FE to multi-client settings; limited to academic community
 
+---
+
 ## FHEW — Fastest Homomorphic Encryption in the West
 
 **Goal:** Evaluate arbitrary Boolean gates on LWE-encrypted bits and bootstrap the result in under one second, making "refresh after every gate" workable for the first time.

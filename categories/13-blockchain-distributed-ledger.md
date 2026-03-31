@@ -164,6 +164,8 @@ Active area of research and development; endorsed by Ethereum researchers; Shutt
 
 **Deployed at:** Ethereum mainnet (merged September 2022); ~$40B staked ETH secured by Casper FFG. Gasper = Casper FFG + LMD-GHOST fork choice. See [Aggregate Signatures (BLS)](#ethereum-bls-aggregate-signatures-bdn-bls12-381), [Threshold Signatures](08-signatures-advanced.md#threshold-signature-schemes-tss).
 
+**State of the art:** Casper FFG is live on Ethereum mainnet since The Merge (September 2022). Single-slot finality (SSF) research aims to reduce finalization time from ~13 minutes to one slot (12 seconds) by combining Casper FFG with BLS aggregate signature optimizations.
+
 **Production readiness:** Production
 Live on Ethereum mainnet since September 2022 (The Merge); secures ~$40B+ staked ETH
 
@@ -258,7 +260,7 @@ No notable open-source implementations available.
 
 **Original paper:** Tom Elvis Jedusor ("Voldemort"), 2016 anonymous whitepaper dropped in the #bitcoin-wizards IRC channel [[1]](https://download.wpsoftware.net/bitcoin/wizardry/mimblewimble.txt). No trusted setup; fully transparent.
 
-**State of the art:** Litecoin MWEB (2022) is the largest production deployment. Grin uses Bulletproofs+ (2021, ~16% smaller range proofs). See [Confidential Transactions](#confidential-transactions-ct), [Range Proofs](#range-proofs).
+**State of the art:** Litecoin MWEB (2022) is the largest production deployment. Grin uses Bulletproofs+ (2021, ~16% smaller range proofs). See [Confidential Transactions](#confidential-transactions-ct), [Range Proofs](09-commitments-verifiability.md#range-proofs).
 
 **Production readiness:** Production
 Grin and Beam mainnets since 2019; Litecoin MWEB extension blocks live since 2022
@@ -288,7 +290,7 @@ Well-studied protocol with academic pedigree; limited adoption beyond Grin, Beam
 | **Bulletproofs CT (Monero)** | 2018 | Bulletproofs range proofs | Replaced Borromean proofs in Monero; 80% size reduction [[1]](https://eprint.iacr.org/2017/1066) |
 | **Liquid CT (Blockstream)** | 2018 | Pedersen + surjection proofs | Bitcoin sidechain with CT + confidential assets (hide asset type too) [[1]](https://blockstream.com/liquid/) |
 
-**State of the art:** Bulletproofs-based CT (Monero); Mimblewimble (Grin/Beam). Combines [Commitment Schemes](09-commitments-verifiability.md#commitment-schemes) and [Range Proofs](#range-proofs).
+**State of the art:** Bulletproofs-based CT (Monero); Mimblewimble (Grin/Beam). Combines [Commitment Schemes](09-commitments-verifiability.md#commitment-schemes) and [Range Proofs](09-commitments-verifiability.md#range-proofs).
 
 **Production readiness:** Production
 Deployed in Monero (default since 2017), Liquid Network (2018), and Grin/Beam (2019)
@@ -1285,7 +1287,7 @@ Each output amount `v` is committed as `C = v·H + r·G` (Pedersen, homomorphic)
 
 **RingCT since 2017:** All Monero transactions use RingCT by default. Default ring size increased: 4 (2017) → 7 (2018) → 11 (2019) → 16 (2022). Seraphis/Jamtis (proposed upgrade, 2023) will replace CLSAG with a more flexible membership proof scheme.
 
-**State of the art:** CLSAG + Bulletproofs deployed on Monero mainnet (October 2020). CLSAG paper (Goodell et al.) [[1]](https://eprint.iacr.org/2019/654); original RingCT (Shen Noether, 2015) [[2]](https://eprint.iacr.org/2015/1098). See [Confidential Transactions](#confidential-transactions-ct), [Range Proofs](#range-proofs), [Ring Signatures](08-signatures-advanced.md#linkable-ring-signatures).
+**State of the art:** CLSAG + Bulletproofs deployed on Monero mainnet (October 2020). CLSAG paper (Goodell et al.) [[1]](https://eprint.iacr.org/2019/654); original RingCT (Shen Noether, 2015) [[2]](https://eprint.iacr.org/2015/1098). See [Confidential Transactions](#confidential-transactions-ct), [Range Proofs](09-commitments-verifiability.md#range-proofs), [Ring Signatures](08-signatures-advanced.md#linkable-ring-signatures).
 
 **Production readiness:** Production
 Default for all Monero transactions since 2017; CLSAG deployed October 2020; ring size 16 since 2022
@@ -1560,6 +1562,8 @@ Because the VDF takes longer than the reveal window, the last revealer cannot co
 
 **Current deployment:** Ethereum PoS uses RANDAO alone (VDF not yet live); VDF integration awaits ASIC hardware development and protocol specification. RANDAO spec [[2]](https://eth2book.info/capella/part2/building_blocks/randomness/). See [Verifiable Delay Functions](09-commitments-verifiability.md#verifiable-delay-functions-vdf), [Secret Leader Election](#secret-leader-election), [Casper FFG](#casper-ffg-ethereum-proof-of-stake-finality).
 
+**State of the art:** RANDAO is deployed on Ethereum mainnet. VDF integration (MinRoot-based) is in active research with ASIC development ongoing. Ethereum Foundation funds VDF hardware R&D; production deployment is pending.
+
 **Production readiness:** Experimental
 RANDAO is live on Ethereum PoS; VDF integration awaits ASIC hardware development and protocol specification
 
@@ -1799,7 +1803,7 @@ A *surjection proof* proves that the asset generator `H_asset` used in each outp
 
 **Limitations:** Confidential transactions are ~3–5× larger than transparent transactions; block capacity is constrained accordingly. The 15-of-15 peg federation is a trust assumption separate from the cryptographic layer — a federation compromise could allow unbacked L-BTC issuance.
 
-**State of the art:** Liquid Network live since October 2018; Bulletproofs integrated 2019; used for institutional OTC settlement, tokenised bonds, Tether USDT on Liquid. Liquid whitepaper [[1]](https://blockstream.com/assets/downloads/pdf/liquid-whitepaper.pdf); Elements CT implementation [[2]](https://github.com/ElementsProject/elements). See [Confidential Transactions](#confidential-transactions-ct), [Range Proofs](#range-proofs), [MimbleWimble](#mimblewimble).
+**State of the art:** Liquid Network live since October 2018; Bulletproofs integrated 2019; used for institutional OTC settlement, tokenised bonds, Tether USDT on Liquid. Liquid whitepaper [[1]](https://blockstream.com/assets/downloads/pdf/liquid-whitepaper.pdf); Elements CT implementation [[2]](https://github.com/ElementsProject/elements). See [Confidential Transactions](#confidential-transactions-ct), [Range Proofs](09-commitments-verifiability.md#range-proofs), [MimbleWimble](#mimblewimble).
 
 **Production readiness:** Production
 Liquid Network live since October 2018; used for institutional OTC settlement, tokenised bonds, Tether USDT on Liquid
@@ -1942,7 +1946,7 @@ Well-received by Monero research community; Triptych published at ESORICS 2021; 
 | Bulletproofs+ | 576 bytes | 640 bytes | 800 bytes |
 | Bulletproofs++ | ~490 bytes | ~550 bytes | ~700 bytes |
 
-**State of the art:** Bulletproofs+ deployed on Monero mainnet (August 2022, hard fork v15). Bulletproofs++ proposed for future Monero upgrade. BP+ paper (Chung et al., 2020) [[1]](https://eprint.iacr.org/2020/735). See [Range Proofs](#range-proofs), [Confidential Transactions](#confidential-transactions-ct), [Monero RingCT](#monero-ringct-ring-signatures-confidential-transactions).
+**State of the art:** Bulletproofs+ deployed on Monero mainnet (August 2022, hard fork v15). Bulletproofs++ proposed for future Monero upgrade. BP+ paper (Chung et al., 2020) [[1]](https://eprint.iacr.org/2020/735). See [Range Proofs](09-commitments-verifiability.md#range-proofs), [Confidential Transactions](#confidential-transactions-ct), [Monero RingCT](#monero-ringct-ring-signatures-confidential-transactions).
 
 **Production readiness:** Production
 Bulletproofs+ deployed on Monero mainnet (August 2022, hard fork v15); Bulletproofs++ proposed for future upgrade

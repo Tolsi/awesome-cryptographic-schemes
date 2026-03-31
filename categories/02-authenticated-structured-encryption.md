@@ -417,6 +417,8 @@ Well-regarded academic concept; limited practical adoption due to difficulty of 
 
 **General framework:** Pandey-Rouselakis (2012) [[1]](https://eprint.iacr.org/2012/141) formalized PPE; Boldyreva-Chenette-O'Neill (2011) [[1]](https://eprint.iacr.org/2011/005) analyzed leakage. **Warning:** all PPE inherently leaks — weaker than semantic security. Use only when the leakage-functionality tradeoff is acceptable.
 
+**State of the art:** PPE is the theoretical umbrella for OPE, deterministic encryption, and HVE. CryptDB (2011) demonstrated practical encrypted SQL using multiple PPE layers. Subsequent inference attacks (Naveed-Kamara-Wright 2015, Grubbs et al. 2017) showed real-world leakage exploitation, tempering enthusiasm for PPE-based encrypted databases.
+
 **Production readiness:** Experimental
 Individual PPE schemes (OPE, deterministic encryption) are deployed in encrypted databases; the unifying PPE framework is academic.
 

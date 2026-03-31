@@ -186,7 +186,7 @@ Nature 2025 publication; first classically verifiable quantum advantage. Growing
 
 ## Post-Quantum Cryptography
 
-Schemes designed to resist attacks from quantum computers (Shor's algorithm breaks RSA, DH, ECC; Grover halves symmetric key security).
+**Goal:** Cryptographic primitives secure against both classical and quantum adversaries. Schemes designed to resist attacks from quantum computers (Shor's algorithm breaks RSA, DH, ECC; Grover halves symmetric key security).
 
 ### PQ Key Encapsulation (KEM) / Encryption
 

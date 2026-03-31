@@ -2003,7 +2003,7 @@ NIST Cybersecurity White Paper 25 documents the operational framework for enterp
 
 **Automotive / IoT (CMP v3, RFC 9480):** CMP version 3 (2023) adds lightweight HTTP transport, CoAP support (for constrained devices), and asymmetric key wrapping improvements — targeting automotive ECUs, industrial controllers, and IoT gateways following UNECE WP.29 R155/R156 (vehicle cybersecurity regulations).
 
-**State of the art:** RFC 5272/5273/5274 (CMC); RFC 7030 (EST); RFC 9480 (CMP v3, 2023); RFC 8894 (SCEP, 2020); NIST CSWP 25 (2023) [[1]](https://csrc.nist.gov/pubs/cswp/25/automating-certificate-management-in-enterprise/final). See [ACME Protocol](03-key-exchange-key-management.md#acme-protocol-automated-certificate-management), [OCSP Stapling and Certificate Revocation](#ocsp-stapling-and-certificate-revocation), and [PKCS#7 / CMS](#pkcs7-cms-cryptographic-message-syntax).
+**State of the art:** RFC 5272/5273/5274 (CMC); RFC 7030 (EST); RFC 9480 (CMP v3, 2023); RFC 8894 (SCEP, 2020); NIST CSWP 25 (2023) [[1]](https://csrc.nist.gov/pubs/cswp/25/automating-certificate-management-in-enterprise/final). See [ACME Protocol](12-secure-communication-protocols.md#acme-protocol-automated-certificate-management), [OCSP Stapling and Certificate Revocation](#ocsp-stapling-and-certificate-revocation), and [PKCS#7 / CMS](#pkcs7-cms-cryptographic-message-syntax).
 
 **Production readiness:** Production
 EST and SCEP widely deployed in enterprise PKI; CMP v3 mandated for automotive (UNECE WP.29); ACME powers Let's Encrypt (400M+ certificates); CMC used in US DoD PKI infrastructure.
@@ -2517,7 +2517,7 @@ Service A (X509-SVID: spiffe://prod/svc-a) ◄─── mTLS ───► Servic
 
 **Deployments:** Kubernetes service meshes (Istio uses SPIFFE IDs natively); HashiCorp Consul Connect; Pinterest, Uber, Bloomberg, ByteDance (production workload identity); CNCF graduated project (2022). Integrates with Envoy Proxy (SDS API serves SVIDs).
 
-**State of the art:** SPIFFE v1.0 (2024 CNCF standard). SPIRE v1.9 (2024); supports nested SPIRE topologies for multi-cluster. Federation allows cross-trust-domain authentication. See [PKCS#11 / Cryptoki](#pkcs11-cryptoki-hsm-c-api), [ACME Protocol](03-key-exchange-key-management.md#acme-protocol-automated-certificate-management).
+**State of the art:** SPIFFE v1.0 (2024 CNCF standard). SPIRE v1.9 (2024); supports nested SPIRE topologies for multi-cluster. Federation allows cross-trust-domain authentication. See [PKCS#11 / Cryptoki](#pkcs11-cryptoki-hsm-c-api), [ACME Protocol](12-secure-communication-protocols.md#acme-protocol-automated-certificate-management).
 
 **Production readiness:** Production
 CNCF Graduated project (2022); deployed in production at Pinterest, Uber, Bloomberg, ByteDance; Istio uses SPIFFE IDs natively for service mesh mTLS.

@@ -169,6 +169,18 @@ Every `##` scheme section MUST exist in exactly one category file. **Never dupli
 > **Scheme Name** is covered in [Category — Scheme Name](NN-filename.md#scheme-name-slug).
 ```
 
+### Pre-commit quality checklist
+
+Before committing changes, verify ALL of the following:
+
+1. **Required fields:** Every `##` section has `**Goal:**`, `**State of the art:**`, `**Production readiness:**`, `**Implementations:**`, `**Security status:**`, `**Community acceptance:**`.
+2. **Field explanations:** Each of Production readiness, Security status, and Community acceptance has a 1-line explanation on the line following the value.
+3. **Section separators:** Every `##` section ends with `---`.
+4. **No duplicates:** No `##` heading appears in more than one category file.
+5. **Valid links:** All internal cross-references point to existing anchors in existing files. Run `python3 scripts/validate_links.py` to check.
+6. **TOC up to date:** The `<!-- TOC -->` block at the top of each modified file lists all `##` sections.
+7. **INDEX.md:** New or renamed sections are reflected in `INDEX.md`.
+
 ## Category Summaries
 
 | # | File | Contents |

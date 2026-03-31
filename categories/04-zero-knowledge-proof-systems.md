@@ -638,11 +638,11 @@ Well-cited in academic cryptography. Primarily used as a building block in theor
 
 ---
 
-> **Witness Indistinguishability (WI) / Witness Hiding** is covered in [Theoretical Foundations — WI / Witness Hiding](19-theoretical-foundations.md#witness-indistinguishability-wi--witness-hiding).
+> **Witness Indistinguishability (WI) / Witness Hiding** is covered in [Theoretical Foundations — WI / Witness Hiding](19-theoretical-foundations.md#witness-indistinguishability-wi-witness-hiding).
 
 ---
 
-> **Non-Black-Box Zero-Knowledge / Concurrent ZK** is covered in [Theoretical Foundations — Non-Black-Box ZK / Concurrent ZK](19-theoretical-foundations.md#non-black-box-zero-knowledge--concurrent-zk).
+> **Non-Black-Box Zero-Knowledge / Concurrent ZK** is covered in [Theoretical Foundations — Non-Black-Box ZK / Concurrent ZK](19-theoretical-foundations.md#non-black-box-zero-knowledge-concurrent-zk).
 
 ---
 

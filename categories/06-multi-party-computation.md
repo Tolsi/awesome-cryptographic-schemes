@@ -1510,6 +1510,8 @@ UC-secure with identifiable aborts; presigning mechanism is proven secure; imple
 **Community acceptance:** Widely trusted
 CGGMP21 is the industry standard for threshold ECDSA in MPC wallets; endorsed by major cryptocurrency custodians.
 
+---
+
 ## SPDZ Protocol Family (Speedz)
 
 **Goal:** Achieve actively secure MPC against a dishonest majority by separating an offline preprocessing phase (generating authenticated Beaver triples) from a fast, lightweight online phase that requires only field additions and multiplications.
@@ -1642,5 +1644,7 @@ Information-theoretically secure in the honest-but-curious 3-party model with no
 
 **Community acceptance:** Widely trusted
 Sharemind is a pioneering deployed MPC platform; used in the first large-scale government MPC deployment (Estonian tax study 2015).
+
+---
 
 ---
