@@ -51,7 +51,7 @@
 | **Laconic PSI** | 2022 | Laconic OT | Private set intersection where one party sends only a short digest [[1]](https://eprint.iacr.org/2022/094) |
 | **Registered FE (Laconic approach)** | 2023 | Laconic + pairings | Connect laconic techniques to registration-based crypto [[1]](https://eprint.iacr.org/2023/398) |
 
-**State of the art:** Laconic OT from hash functions (CDG+ 2017); emerging paradigm connecting to [RBE](#registration-based-encryption-rbe), [PSI](#private-set-intersection-psi).
+**State of the art:** Laconic OT from hash functions (CDG+ 2017); emerging paradigm connecting to [RBE](07-homomorphic-functional-encryption.md#registration-based-encryption-rbe), [PSI](10-privacy-preserving-computation.md#private-set-intersection-psi).
 
 **Production readiness:** Research
 **Implementations:**
@@ -114,7 +114,7 @@ No notable open-source implementations available.
 | **Dual-Mode from LWE** | 2008 | LWE | Lattice instantiation; post-quantum UC-secure OT [[1]](https://eprint.iacr.org/2008/009) |
 | **Dual-Mode Commitments** | 2011 | DDH / LWE | Extension to commitments: perfectly hiding or perfectly binding modes [[1]](https://eprint.iacr.org/2011/010) |
 
-**State of the art:** LWE-based dual-mode (PQ-secure); foundation of UC-secure [OT](#oblivious-transfer-ot) and [Non-Committing Encryption](#non-committing-encryption).
+**State of the art:** LWE-based dual-mode (PQ-secure); foundation of UC-secure [OT](06-multi-party-computation.md#oblivious-transfer-ot) and [Non-Committing Encryption](#witness-encryption).
 
 **Production readiness:** Mature
 **Implementations:**
@@ -134,7 +134,7 @@ No notable open-source implementations available.
 | **Dodis-Halevi-Rothblum-Wichs Spooky Enc** | 2016 | LWE | First spooky encryption; entangle independent ciphertexts; yields 2PC without interaction [[1]](https://eprint.iacr.org/2016/272) |
 | **Spooky Enc for General Functions** | 2016 | LWE + circular security | Extend to any efficiently computable function f [[1]](https://eprint.iacr.org/2016/272) |
 
-**State of the art:** LWE-based spooky encryption (2016); implies non-interactive MPC in a new model. Related to [Multi-Key FHE](#multi-key--threshold-fhe) and [MPC](#multi-party-computation-mpc).
+**State of the art:** LWE-based spooky encryption (2016); implies non-interactive MPC in a new model. Related to [Multi-Key FHE](07-homomorphic-functional-encryption.md#multi-key-threshold-fhe) and [MPC](06-multi-party-computation.md#multi-party-computation-mpc).
 
 **Production readiness:** Research
 **Implementations:**
@@ -177,7 +177,7 @@ No notable open-source implementations available.
 | **VBB Impossibility in idealized models** | 2016 | Asharov, Segev | Extends impossibility to random oracle and generic group models, ruling out black-box proofs of VBB obfuscation [[1]](https://eprint.iacr.org/2015/632.pdf) |
 | **VBB Impossibility with graded encodings** | 2016 | Garg, Gentry, Halevi, Wichs | Shows VBB obfuscation impossible even using ideal constant-degree graded encoding schemes [[1]](https://link.springer.com/chapter/10.1007/978-3-662-49096-9_1) |
 
-**State of the art:** Definitively impossible in general (2001); the impossibility proof is constructive and extends broadly. The field pivoted to [iO](#indistinguishability-obfuscation-io) (indistinguishability obfuscation) and [point function obfuscation](#point-function-obfuscation--digital-locker) as the achievable cases.
+**State of the art:** Definitively impossible in general (2001); the impossibility proof is constructive and extends broadly. The field pivoted to [iO](#indistinguishability-obfuscation-io) (indistinguishability obfuscation) and [point function obfuscation](#point-function-obfuscation-digital-locker) as the achievable cases.
 
 **Production readiness:** Research
 **Implementations:**
@@ -241,7 +241,7 @@ No notable open-source implementations available.
 | **Cryptography from Planted Graphs (Abram et al.)** | 2023 | Constructs PKE and secret sharing from the planted clique conjecture with logarithmic-size messages; first clean PKE from a graph-theoretic average-case assumption [[1]](https://eprint.iacr.org/2023/1929.pdf) |
 | **PKE from Planted Clique and Noisy k-LIN (STOC 2025)** | 2025 | New construction of PKE from the planted clique conjecture combined with noisy k-linearity over expanders; strengthens the case for planted clique as a crypto hardness base [[1]](https://dl.acm.org/doi/10.1145/3717823.3718306) |
 
-**State of the art:** Planted clique is a clean average-case assumption with growing cryptographic applications; hardness is supported by failure of spectral, SDP, and statistical-query algorithms up to clique size O(√n). Complements [theoretical foundations](categories/19-theoretical-foundations.md) on leakage-resilient and circular-security assumptions.
+**State of the art:** Planted clique is a clean average-case assumption with growing cryptographic applications; hardness is supported by failure of spectral, SDP, and statistical-query algorithms up to clique size O(√n). Complements [theoretical foundations](19-theoretical-foundations.md) on leakage-resilient and circular-security assumptions.
 
 **Production readiness:** Research
 **Implementations:**
@@ -262,7 +262,7 @@ No notable open-source implementations available.
 | **FE → iO via garbling (Ananth et al.)** | 2016 | Single-key FE + garbled circuits | Simplify the reduction by combining FE with Yao garbling; FE for NC¹ suffices rather than FE for all circuits [[1]](https://eprint.iacr.org/2015/730) |
 | **When does FE imply iO? (Agrikola et al.)** | 2017 | FE compactness characterizations | Characterize exactly which compactness conditions on FE are necessary and sufficient to bootstrap iO [[1]](https://eprint.iacr.org/2017/943) |
 
-**State of the art:** The FE ↔ iO equivalence is now a cornerstone result: building FE from well-studied assumptions (e.g., LWE, bilinear maps) is the main route to iO, exploited by Jain-Lin-Sahai (2021). Relates to [iO](#indistinguishability-obfuscation-io), [multilinear maps](#multilinear-maps), and [functional encryption](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption-abe--fe).
+**State of the art:** The FE ↔ iO equivalence is now a cornerstone result: building FE from well-studied assumptions (e.g., LWE, bilinear maps) is the main route to iO, exploited by Jain-Lin-Sahai (2021). Relates to [iO](#indistinguishability-obfuscation-io), [multilinear maps](#multilinear-maps), and [functional encryption](07-homomorphic-functional-encryption.md#attribute-based-functional-encryption).
 
 **Production readiness:** Research
 **Implementations:**
@@ -283,7 +283,7 @@ No notable open-source implementations available.
 | **Barak et al. hypersurface obfuscation** | 2014 | Multilinear maps | Extends VBB obfuscation from hyperplanes to bounded-degree algebraic hypersurfaces using graded encoding schemes [[1]](https://eprint.iacr.org/2013/451) |
 | **Obfuscation of evasive algebraic set membership** | 2024 | Pairing-based / DDH | Further generalizes to obfuscating membership in evasive algebraic sets; provides updated constructions and security analysis [[1]](https://www.aimsciences.org//article/doi/10.3934/amc.2024014) |
 
-**State of the art:** Canetti-Rothblum-Varia (2010) remains the canonical VBB construction for hyperplane membership; security relies on a strong DDH variant rather than multilinear maps. Complements [point function obfuscation](#point-function-obfuscation--digital-locker) as the next step in the hierarchy of achievable VBB obfuscation.
+**State of the art:** Canetti-Rothblum-Varia (2010) remains the canonical VBB construction for hyperplane membership; security relies on a strong DDH variant rather than multilinear maps. Complements [point function obfuscation](#point-function-obfuscation-digital-locker) as the next step in the hierarchy of achievable VBB obfuscation.
 
 **Production readiness:** Research
 **Implementations:**
@@ -304,7 +304,7 @@ No notable open-source implementations available.
 | **Null-iO from evasive LWE (Vaikuntanathan et al.)** | 2022 | Evasive LWE | Show that evasive LWE directly implies null-iO and non-trivial witness encryption; cleaner construction than GGH15-based approaches [[1]](https://eprint.iacr.org/2022/1140) |
 | **Quantum null-iO** | 2021 | Quantum iO assumptions | Extends null-iO to quantum circuits; implies WE for QMA, NIZK for QMA, and ABE for BQP [[1]](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ITCS.2022.15) |
 
-**State of the art:** Null-iO is achievable from LWE-based assumptions (evasive LWE, 2022) and from compute-and-compare obfuscation (2017). It serves as a stepping stone between [witness encryption](#witness-encryption) and full [iO](#indistinguishability-obfuscation-io), and is closely linked to [evasive LWE](#evasive-lwe--tensor-lwe) and [point function obfuscation](#point-function-obfuscation--digital-locker).
+**State of the art:** Null-iO is achievable from LWE-based assumptions (evasive LWE, 2022) and from compute-and-compare obfuscation (2017). It serves as a stepping stone between [witness encryption](#witness-encryption) and full [iO](#indistinguishability-obfuscation-io), and is closely linked to [evasive LWE](#evasive-lwe-tensor-lwe) and [point function obfuscation](#point-function-obfuscation-digital-locker).
 
 **Production readiness:** Research
 **Implementations:**
@@ -327,7 +327,7 @@ No notable open-source implementations available.
 | **Return of GGH15 (provable security)** | 2018 | GGH15 | Restricted re-use of GGH15 with provable security against zeroizing attacks under LWE; enables compute-and-compare obfuscation [[1]](https://eprint.iacr.org/2018/511) |
 | **New CLT multilinear map (CLT15)** | 2015 | CLT follow-up | Coron-Lepoint-Tibouchi propose a revised integer-based construction at CRYPTO 2015; also broken by subsequent zeroizing attacks [[1]](https://eprint.iacr.org/2015/975) |
 
-**State of the art:** No multilinear map candidate is considered secure for general use as of 2024; restricted usage (e.g., GGH15 for compute-and-compare under LWE) remains viable. The failure of all candidates directly motivated the [Jain-Lin-Sahai iO](#indistinguishability-obfuscation-io) construction, which avoids graded encodings entirely. See also [multilinear maps](#multilinear-maps) and [evasive LWE](#evasive-lwe--tensor-lwe).
+**State of the art:** No multilinear map candidate is considered secure for general use as of 2024; restricted usage (e.g., GGH15 for compute-and-compare under LWE) remains viable. The failure of all candidates directly motivated the [Jain-Lin-Sahai iO](#indistinguishability-obfuscation-io) construction, which avoids graded encodings entirely. See also [multilinear maps](#multilinear-maps) and [evasive LWE](#evasive-lwe-tensor-lwe).
 
 **Production readiness:** Research
 **Implementations:**
@@ -350,7 +350,7 @@ No notable open-source implementations available.
 | **Lattice CPRF for inner-product (BTVW17)** | 2017 | LWE | Banerjee-Fuchsbauer-Peikert-Pietrzak-Wolf construct CPRFs for inner-product predicates from LWE without iO; first post-quantum CPRF for non-trivial class [[1]](https://eprint.iacr.org/2017/004) |
 | **Constrained VRF (BCKL2023)** | 2023 | Bilinear maps | Constrained verifiable random functions: delegatable PRF with public verifiability of constrained outputs [[1]](https://eprint.iacr.org/2023/119) |
 
-**State of the art:** Punctured PRFs (single-point CPRFs) are constructible from any OWF via GGM; general-circuit CPRFs require iO or are built from LWE for specific function classes (inner product, NC¹). CPRFs underpin [iO](#indistinguishability-obfuscation-io)-based PKE constructions (Sahai-Waters 2014) and puncturable PRF-based proofs throughout [functional encryption](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption-abe--fe).
+**State of the art:** Punctured PRFs (single-point CPRFs) are constructible from any OWF via GGM; general-circuit CPRFs require iO or are built from LWE for specific function classes (inner product, NC¹). CPRFs underpin [iO](#indistinguishability-obfuscation-io)-based PKE constructions (Sahai-Waters 2014) and puncturable PRF-based proofs throughout [functional encryption](07-homomorphic-functional-encryption.md#attribute-based-functional-encryption).
 
 **Production readiness:** Research
 **Implementations:**
@@ -370,10 +370,10 @@ No notable open-source implementations available.
 | **FE for all circuits from iO (Garg et al.)** | 2013 | iO + OWF | First construction of FE for all polynomial-time functions from iO and injective OWF; multi-input variant also shown [[1]](https://eprint.iacr.org/2013/763) |
 | **Sahai-Waters PKE/FE from iO** | 2014 | iO + puncturable PRF | Show iO + punctured PRFs (OWF) → public-key encryption and bounded-collusion FE; the "5-line PKE from iO" proof [[1]](https://eprint.iacr.org/2014/539) |
 | **Multi-input FE from iO (Goldwasser et al.)** | 2014 | iO + OWF | Functional encryption where a single key covers multiple ciphertexts encrypted by different parties; constructed from iO [[1]](https://eprint.iacr.org/2013/727) |
-| **FE → iO equivalence (Bitansky-Vaikuntanathan / Ananth-Jain)** | 2015 | Single-key compact FE | Sub-exp secure single-key compact FE ↔ iO; see [Bootstrapping iO](#bootstrapping-io-functional-encryption--io) [[1]](https://eprint.iacr.org/2015/163) |
+| **FE → iO equivalence (Bitansky-Vaikuntanathan / Ananth-Jain)** | 2015 | Single-key compact FE | Sub-exp secure single-key compact FE ↔ iO; see [Bootstrapping iO](#bootstrapping-io-functional-encryption-io) [[1]](https://eprint.iacr.org/2015/163) |
 | **Unbounded FE from iO (Ananth-Sahai)** | 2016 | iO + LWE | Functional encryption for unbounded-length inputs from iO and LWE; extends prior constructions beyond fixed-size inputs [[1]](https://eprint.iacr.org/2015/163) |
 
-**State of the art:** iO is sufficient for FE for all circuits (2013); the equivalence with compact FE (2015) is now a cornerstone. Practical FE remains limited to specific function classes (inner product, quadratic) from bilinear maps or LWE without iO. See [bootstrapping iO](#bootstrapping-io-functional-encryption--io) and [ABE/FE](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption-abe--fe).
+**State of the art:** iO is sufficient for FE for all circuits (2013); the equivalence with compact FE (2015) is now a cornerstone. Practical FE remains limited to specific function classes (inner product, quadratic) from bilinear maps or LWE without iO. See [bootstrapping iO](#bootstrapping-io-functional-encryption-io) and [ABE/FE](07-homomorphic-functional-encryption.md#attribute-based-functional-encryption).
 
 **Production readiness:** Research
 **Implementations:**
@@ -397,7 +397,7 @@ No notable open-source implementations available.
 | **Alekhnovich encryption** | 2003 | LPN | Public-key encryption whose security reduces to LPN; first LPN-based PKE; ciphertexts are linear-size but message expansion is large [[1]](https://ieeexplore.ieee.org/document/1238197) |
 | **LPN in Jain-Lin-Sahai iO** | 2021 | LPN + LWE + PRG | LPN is one of the three well-studied assumptions underlying the first iO construction from standard-like assumptions [[1]](https://eprint.iacr.org/2020/1003) |
 
-**State of the art:** LPN is a widely trusted assumption with no known sub-exponential classical or quantum algorithms beyond the decoding bound; best attacks (BKW, Blum-Kalai-Wasserman) run in time 2^(n/log n). It is a core building block of lightweight cryptography and iO. Related to [LWE](categories/01-foundational-primitives.md) and [symmetric primitives](categories/01-foundational-primitives.md).
+**State of the art:** LPN is a widely trusted assumption with no known sub-exponential classical or quantum algorithms beyond the decoding bound; best attacks (BKW, Blum-Kalai-Wasserman) run in time 2^(n/log n). It is a core building block of lightweight cryptography and iO. Related to [LWE](01-foundational-primitives.md) and [symmetric primitives](01-foundational-primitives.md).
 
 **Production readiness:** Mature
 **Implementations:**
@@ -421,7 +421,7 @@ No notable open-source implementations available.
 | **DCR-based range proofs (Boudot)** | 2000 | DCR + Paillier | Efficient range proofs using Paillier commitments; widely used in financial privacy protocols [[1]](https://link.springer.com/chapter/10.1007/3-540-45539-6_31) |
 | **TFHE bootstrapping acceleration via DCR** | 2022 | DCR + CKKS | Use Paillier-style arithmetic to speed up certain FHE bootstrapping operations in levelled schemes [[1]](https://eprint.iacr.org/2022/704) |
 
-**State of the art:** DCR is a well-established assumption with security reducing to factoring (under strong forms); Paillier remains the practical standard for additive HE in e-voting (Helios), threshold ECDSA (GG18/20), and privacy-preserving statistics. Related to [PHE / FHE](categories/07-homomorphic-functional-encryption.md) and [threshold cryptography](categories/05-secret-sharing-threshold-cryptography.md).
+**State of the art:** DCR is a well-established assumption with security reducing to factoring (under strong forms); Paillier remains the practical standard for additive HE in e-voting (Helios), threshold ECDSA (GG18/20), and privacy-preserving statistics. Related to [PHE / FHE](07-homomorphic-functional-encryption.md) and [threshold cryptography](05-secret-sharing-threshold-cryptography.md).
 
 **Production readiness:** Production
 **Implementations:**
@@ -445,7 +445,7 @@ No notable open-source implementations available.
 | **GGM PRF from PRG** | 1986 | Goldreich-Goldwasser-Micali show any length-doubling PRG yields a PRF via a binary tree construction; PRF from OWF by composition with HILL [[1]](https://dl.acm.org/doi/10.1145/6490.6503) |
 | **Inaccessible entropy framework (Haitner et al.)** | 2009 | Simplified and modular reproofs of HILL using the inaccessible entropy technique; tighter parameters [[1]](https://eprint.iacr.org/2009/052) |
 
-**State of the art:** OWF → PRG (HILL 1999) is the central result of complexity-based cryptography; the construction is not practical (many rounds of the GL hard-core bit extractor) but the equivalence is foundational. Practical PRGs (AES-CTR, ChaCha20) are built directly from block ciphers. Related to [PRF/PRP and PRG](categories/01-foundational-primitives.md) and [theoretical foundations](categories/19-theoretical-foundations.md).
+**State of the art:** OWF → PRG (HILL 1999) is the central result of complexity-based cryptography; the construction is not practical (many rounds of the GL hard-core bit extractor) but the equivalence is foundational. Practical PRGs (AES-CTR, ChaCha20) are built directly from block ciphers. Related to [PRF/PRP and PRG](01-foundational-primitives.md) and [theoretical foundations](19-theoretical-foundations.md).
 
 **Production readiness:** Production
 **Implementations:**
@@ -470,7 +470,7 @@ No notable open-source implementations available.
 | **Malicious MPC from OWF (Goyal-Jain-Jin-Srinivasan)** | 2022 | OWF | Constant-round maliciously-secure MPC from OWFs in the plain model; completes the equivalence for malicious adversaries [[1]](https://eprint.iacr.org/2022/1194) |
 | **Round-optimal MPC from OWF** | 2020 | OWF + NIZK | Two-round MPC for general functions from OWF (via NIZK in the CRS model); optimal interaction [[1]](https://eprint.iacr.org/2020/1204) |
 
-**State of the art:** OWF ↔ MPC (semi-honest 2013, malicious 2022); the equivalence is now complete. In practice, MPC protocols use OT from DDH or LWE for efficiency. Foundationally related to [OWF → PRG](#pseudorandom-generators-from-one-way-functions), [garbled circuits](categories/06-multi-party-computation.md#garbled-circuits), and [oblivious transfer](categories/06-multi-party-computation.md#oblivious-transfer-ot).
+**State of the art:** OWF ↔ MPC (semi-honest 2013, malicious 2022); the equivalence is now complete. In practice, MPC protocols use OT from DDH or LWE for efficiency. Foundationally related to [OWF → PRG](#pseudorandom-generators-from-one-way-functions), [garbled circuits](06-multi-party-computation.md#garbled-circuits-expanded), and [oblivious transfer](06-multi-party-computation.md#oblivious-transfer-ot).
 
 **Production readiness:** Research
 **Implementations:**
@@ -493,7 +493,7 @@ No notable open-source implementations available.
 | **Laconic FE for Turing machines** | 2023 | Laconic OT + LWE | Succinct ciphertext FE for Turing machines from laconic cryptography and LWE; avoids iO entirely for bounded computation time [[1]](https://eprint.iacr.org/2023/398) |
 | **Succinct FE implies diO (Garg-Gentry-Halevi-Wichs)** | 2014 | Reverse direction | Fully succinct single-key FE for Turing machines implies differing-inputs obfuscation; establishes tight equivalence between the two [[1]](https://link.springer.com/chapter/10.1007/978-3-662-44371-2_29) |
 
-**State of the art:** Succinct FE for Turing machines is achievable from iO (2016); the equivalence with diO (2014) is foundational but diO itself is fragile (see [diO](#differing-inputs-obfuscation-dio)). Practical deployment awaits efficient iO. Relates to [Functional Encryption from iO](#functional-encryption-from-io), [Bootstrapping iO](#bootstrapping-io-functional-encryption--io), [Garbled RAM](categories/06-multi-party-computation.md#garbled-ram), and [Laconic Cryptography](#laconic-cryptography).
+**State of the art:** Succinct FE for Turing machines is achievable from iO (2016); the equivalence with diO (2014) is foundational but diO itself is fragile (see [diO](#differing-inputs-obfuscation-dio)). Practical deployment awaits efficient iO. Relates to [Functional Encryption from iO](#functional-encryption-from-io), [Bootstrapping iO](#bootstrapping-io-functional-encryption-io), [Garbled RAM](06-multi-party-computation.md#garbled-ram), and [Laconic Cryptography](#laconic-cryptography).
 
 **Production readiness:** Research
 **Implementations:**
@@ -515,7 +515,7 @@ No notable open-source implementations available.
 | **Functional encryption → aiO (Ananth-La Placa)** | 2021 | Compact FE | Show that single-key compact FE with a mild approximation in security implies aiO for all circuits; broadens the FE-to-iO bootstrapping landscape [[1]](https://eprint.iacr.org/2020/1003) |
 | **Obfustopia (Brakerski-Döttling-Garg-Malavolta)** | 2020 | LWE + PRG in NC¹ | Construct aiO-style primitives sufficient for witness encryption and ABE from LWE + PRG in NC¹, without assuming full iO; important step toward iO from standard assumptions [[1]](https://eprint.iacr.org/2020/1003) |
 
-**State of the art:** aiO from LWE (with sub-exponential security) is achievable (2016) and implies many iO applications; it is a leading intermediate milestone on the path from LWE to full iO. Relates to [iO](#indistinguishability-obfuscation-io), [VBB Impossibility](#vbb-obfuscation-impossibility), [Differing-Inputs Obfuscation](#differing-inputs-obfuscation-dio), and [Evasive LWE](#evasive-lwe--tensor-lwe).
+**State of the art:** aiO from LWE (with sub-exponential security) is achievable (2016) and implies many iO applications; it is a leading intermediate milestone on the path from LWE to full iO. Relates to [iO](#indistinguishability-obfuscation-io), [VBB Impossibility](#vbb-obfuscation-impossibility), [Differing-Inputs Obfuscation](#differing-inputs-obfuscation-dio), and [Evasive LWE](#evasive-lwe-tensor-lwe).
 
 **Production readiness:** Research
 **Implementations:**
@@ -538,7 +538,7 @@ No notable open-source implementations available.
 | **PE for all circuits from iO (Waters)** | 2015 | iO + OWF | Full-attribute-hiding PE for any circuit predicate constructed from iO and OWF; establishes iO as the sufficient assumption for the strongest PE notion [[1]](https://eprint.iacr.org/2012/315) |
 | **PE from evasive LWE (Wee)** | 2022 | Evasive LWE | Attribute-hiding CP-ABE and PE for NC¹ from evasive LWE without iO; post-quantum and with near-optimal parameter sizes [[1]](https://eprint.iacr.org/2023/906) |
 
-**State of the art:** Attribute-hiding PE for NC¹ from evasive LWE (Wee 2022) is the leading post-quantum construction; full-circuit PE requires iO (2015). The distinction from standard ABE is the hiding of ciphertext attributes, which fundamentally raises the hardness requirements. Cross-references: [Functional Encryption from iO](#functional-encryption-from-io), [Evasive LWE](#evasive-lwe--tensor-lwe), [HVE and ABE/FE](categories/07-homomorphic-functional-encryption.md#hidden-vector-encryption-hve), [Laconic Cryptography](#laconic-cryptography).
+**State of the art:** Attribute-hiding PE for NC¹ from evasive LWE (Wee 2022) is the leading post-quantum construction; full-circuit PE requires iO (2015). The distinction from standard ABE is the hiding of ciphertext attributes, which fundamentally raises the hardness requirements. Cross-references: [Functional Encryption from iO](#functional-encryption-from-io), [Evasive LWE](#evasive-lwe-tensor-lwe), [HVE and ABE/FE](07-homomorphic-functional-encryption.md#hidden-vector-encryption-hve), [Laconic Cryptography](#laconic-cryptography).
 
 **Production readiness:** Experimental
 **Implementations:**
@@ -561,7 +561,7 @@ No notable open-source implementations available.
 | **Watermarking PRFs from LWE (Kim-Wu)** | 2017 | LWE | Construct watermarkable PRFs from LWE without iO; minimal assumption for watermarking structured programs [[1]](https://eprint.iacr.org/2017/641) |
 | **Traceable secret sharing for copy detection** | 2024 | Bilinear maps | Use tracing techniques to identify which copy of a program was used to produce unauthorized decryptions; copyright enforcement for FE keys [[1]](https://eprint.iacr.org/2024/081) |
 
-**State of the art:** Classical (non-quantum) copy-protection requires iO or hardware assumptions; quantum copy-protection (see [Quantum Copy-Protection](categories/15-quantum-cryptography.md#quantum-copy-protection--uncloneable-encryption)) achieves it from the no-cloning theorem. Software watermarking from LWE (2017) is the most practical deployed-oriented construction. Relates to [iO](#indistinguishability-obfuscation-io), [Constrained PRFs](#constrained-pseudorandom-functions-cprf), [Functional Encryption from iO](#functional-encryption-from-io), and [Quantum Copy-Protection](categories/15-quantum-cryptography.md#quantum-copy-protection--uncloneable-encryption).
+**State of the art:** Classical (non-quantum) copy-protection requires iO or hardware assumptions; quantum copy-protection (see [Quantum Copy-Protection](15-quantum-cryptography.md#quantum-copy-protection-uncloneable-encryption)) achieves it from the no-cloning theorem. Software watermarking from LWE (2017) is the most practical deployed-oriented construction. Relates to [iO](#indistinguishability-obfuscation-io), [Constrained PRFs](#constrained-pseudorandom-functions-cprf), [Functional Encryption from iO](#functional-encryption-from-io), and [Quantum Copy-Protection](15-quantum-cryptography.md#quantum-copy-protection-uncloneable-encryption).
 
 **Production readiness:** Research
 **Implementations:**
@@ -610,7 +610,7 @@ No notable open-source implementations available.
 | **q-DBDHI (q-Decision Bilinear DH Inversion)** | 2004 | Bilinear group | Distinguish e(g,g)^{1/x} from random given (g, g^x, …, g^{x^q}); basis of Boneh-Boyen IBE and short group signatures [[1]](https://eprint.iacr.org/2004/171) |
 | **Subgroup Decision (Boneh-Shacham)** | 2002 | Composite-order bilinear group | Distinguish elements of subgroups in composite-order groups; alternative to DLIN in dual-system encryption [[1]](https://eprint.iacr.org/2002/139) |
 
-**State of the art:** SXDH and DLIN are the leading falsifiable assumptions for pairing-based crypto; q-SDH and q-DBDHI enable tight reductions and shortest known constructions. Dual-system encryption (Waters 2009) achieved fully secure IBE/ABE under DLIN/subgroup decision. All pairing assumptions are broken by quantum computers. Cross-references: [DH assumption variants](#diffie-hellman-assumption-variants-cdh-ddh-gdh-q-dh-co-cdh), [predicate encryption](#predicate-encryption-and-attribute-hiding), [functional encryption](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption-abe--fe).
+**State of the art:** SXDH and DLIN are the leading falsifiable assumptions for pairing-based crypto; q-SDH and q-DBDHI enable tight reductions and shortest known constructions. Dual-system encryption (Waters 2009) achieved fully secure IBE/ABE under DLIN/subgroup decision. All pairing assumptions are broken by quantum computers. Cross-references: [DH assumption variants](#diffie-hellman-assumption-variants-cdh-ddh-gdh-q-dh-co-cdh), [predicate encryption](#predicate-encryption-and-attribute-hiding), [functional encryption](07-homomorphic-functional-encryption.md#attribute-based-functional-encryption).
 
 **Production readiness:** Production
 **Implementations:**
@@ -636,7 +636,7 @@ No notable open-source implementations available.
 | **Dynamic accumulator (Camenisch-Lysyanskaya)** | 2002 | Strong RSA | Cryptographic accumulator from Strong RSA: add/delete members and produce constant-size membership witnesses; basis of many anonymous credential systems [[1]](https://eprint.iacr.org/2002/007) |
 | **RSA Full Domain Hash (RSA-FDH)** | 1993 | RSA + random oracle | Hash-then-sign in the random oracle model; tight reduction to RSA; standardized in PKCS#1 and forms the basis of RSASSA-PSS [[1]](https://eprint.iacr.org/1993/001) |
 
-**State of the art:** Strong RSA is the standard-model hardness assumption for practical RSA-based signatures (Cramer-Shoup, Gennaro-Halevi-Rabin) and accumulators; standard RSA underlies deployed PKCS#1/PSS. phi-hiding is used for advanced PIR and niche protocols. All RSA assumptions are broken by quantum computers (Shor). Related to [DCR assumption](#decisional-composite-residuosity-dcr-assumption), [accumulators](categories/09-commitments-verifiability.md#accumulators), and [VRF](categories/09-commitments-verifiability.md#verifiable-random-functions-vrf).
+**State of the art:** Strong RSA is the standard-model hardness assumption for practical RSA-based signatures (Cramer-Shoup, Gennaro-Halevi-Rabin) and accumulators; standard RSA underlies deployed PKCS#1/PSS. phi-hiding is used for advanced PIR and niche protocols. All RSA assumptions are broken by quantum computers (Shor). Related to [DCR assumption](#decisional-composite-residuosity-dcr-assumption), [accumulators](09-commitments-verifiability.md#accumulators), and [VRF](09-commitments-verifiability.md#verifiable-random-functions-vrf).
 
 **Production readiness:** Production
 **Implementations:**
@@ -662,7 +662,7 @@ No notable open-source implementations available.
 | **Arithmetic garbling (Applebaum-Ishai-Kushilevitz)** | 2011 | LWE | Extend garbling to arithmetic circuits over rings; garble additions and multiplications; enables efficient MPC over integers without bit decomposition [[1]](https://eprint.iacr.org/2012/097) |
 | **Free XOR garbling (Kolesnikov-Schneider)** | 2008 | Correlation-robust hash | XOR gates require zero ciphertexts by fixing a global offset delta; reduces total garbling cost by ~40% for typical circuits [[1]](https://link.springer.com/chapter/10.1007/978-3-540-70583-3_40) |
 
-**State of the art:** Half-gates + Free XOR (2015) is the practical gold standard for garbling; AES-NI-accelerated implementations achieve gigabit/second garbling rates. Theoretically, RE in NC¹ from OWF (AIK 2004) is foundational for iO bootstrapping. Related to [iO](#indistinguishability-obfuscation-io), [bootstrapping iO](#bootstrapping-io-functional-encryption--io), [MPC from minimal assumptions](#mpc-from-minimal-assumptions-mpc-from-owf), and [garbled circuits](categories/06-multi-party-computation.md#garbled-circuits).
+**State of the art:** Half-gates + Free XOR (2015) is the practical gold standard for garbling; AES-NI-accelerated implementations achieve gigabit/second garbling rates. Theoretically, RE in NC¹ from OWF (AIK 2004) is foundational for iO bootstrapping. Related to [iO](#indistinguishability-obfuscation-io), [bootstrapping iO](#bootstrapping-io-functional-encryption-io), [MPC from minimal assumptions](#mpc-from-minimal-assumptions-mpc-from-owf), and [garbled circuits](06-multi-party-computation.md#garbled-circuits-expanded).
 
 **Production readiness:** Production
 **Implementations:**
@@ -688,7 +688,7 @@ No notable open-source implementations available.
 | **Arithmetic secret sharing from MSPs (Cramer-Damgård-Maurer)** | 2000 | Finite fields | Use MSPs over finite fields to define linear secret sharing schemes for MPC; share sizes match field elements; basis of CDM arithmetic MPC [[1]](https://link.springer.com/chapter/10.1007/3-540-45539-6_30) |
 | **Optimal broadcast encryption from MSP (Wee)** | 2022 | Evasive LWE | Use structured MSPs over lattices to achieve optimal broadcast encryption and CP-ABE parameter sizes; replaces multilinear maps [[1]](https://eprint.iacr.org/2023/906) |
 
-**State of the art:** MSPs are the standard representation of access policies in practical ABE (e.g., Charm-Crypto, OpenABE). Waters' CP-ABE (2011) from DLIN handles any MSP policy with prime-order groups. Post-quantum MSP-based ABE is an active research direction via evasive LWE (Wee 2022). Related to [predicate encryption](#predicate-encryption-and-attribute-hiding), [functional encryption from iO](#functional-encryption-from-io), [secret sharing](categories/05-secret-sharing-threshold-cryptography.md), and [ABE/FE](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption-abe--fe).
+**State of the art:** MSPs are the standard representation of access policies in practical ABE (e.g., Charm-Crypto, OpenABE). Waters' CP-ABE (2011) from DLIN handles any MSP policy with prime-order groups. Post-quantum MSP-based ABE is an active research direction via evasive LWE (Wee 2022). Related to [predicate encryption](#predicate-encryption-and-attribute-hiding), [functional encryption from iO](#functional-encryption-from-io), [secret sharing](05-secret-sharing-threshold-cryptography.md), and [ABE/FE](07-homomorphic-functional-encryption.md#attribute-based-functional-encryption).
 
 **Production readiness:** Mature
 **Implementations:**
@@ -732,7 +732,7 @@ No notable open-source implementations available.
 | **Lockable encryption from lockable obfuscation** | 2017 | LWE | Construct an encryption scheme where decryption requires both a key and a "lock" input; applications to traitor tracing and functional encryption [[1]](https://eprint.iacr.org/2017/274) |
 | **Lockable obfuscation for ABE (Brakerski et al.)** | 2020 | LWE | Use lockable obfuscation as a building block toward ABE and witness encryption from LWE without multilinear maps [[1]](https://eprint.iacr.org/2020/1003) |
 
-**State of the art:** Lockable obfuscation from LWE (2017) is well-established and practically the strongest obfuscation primitive achievable from standard assumptions. It is a key building block for [compute-and-compare obfuscation](#compute-and-compare-obfuscation), [point function obfuscation](#point-function-obfuscation--digital-locker), traitor tracing, and the path from LWE to [witness encryption](#witness-encryption).
+**State of the art:** Lockable obfuscation from LWE (2017) is well-established and practically the strongest obfuscation primitive achievable from standard assumptions. It is a key building block for [compute-and-compare obfuscation](#compute-and-compare-obfuscation), [point function obfuscation](#point-function-obfuscation-digital-locker), traitor tracing, and the path from LWE to [witness encryption](#witness-encryption).
 
 **Production readiness:** Research
 **Implementations:**
@@ -774,7 +774,7 @@ No notable open-source implementations available.
 | **Succinct garbling for RAM (Gentry-Halevi-Rabin-Vaikuntanathan)** | 2014 | LWE | Garbled RAM: garble a RAM program so evaluation time is proportional to the RAM running time; does not require iO [[1]](https://eprint.iacr.org/2014/179) |
 | **RAM obfuscation with poly overhead (Ananth-Lombardi)** | 2022 | Sub-exp iO + ORAM | Achieve RAM obfuscation with polynomial (rather than super-polynomial) overhead in the security parameter; tightens efficiency bounds [[1]](https://eprint.iacr.org/2022/1003) |
 
-**State of the art:** RAM obfuscation from iO + ORAM (2015) is the foundational result; efficiency improvements (2022) reduce overhead to polynomial. Practical deployment awaits efficient iO. Relates to [iO](#indistinguishability-obfuscation-io), [garbled RAM](categories/06-multi-party-computation.md#garbled-ram), [ORAM](categories/10-privacy-preserving-computation.md#oblivious-ram-oram), and [succinct FE for Turing machines](#succinct-functional-encryption-for-turing-machines).
+**State of the art:** RAM obfuscation from iO + ORAM (2015) is the foundational result; efficiency improvements (2022) reduce overhead to polynomial. Practical deployment awaits efficient iO. Relates to [iO](#indistinguishability-obfuscation-io), [garbled RAM](06-multi-party-computation.md#garbled-ram), [ORAM](10-privacy-preserving-computation.md#oblivious-ram-oram), and [succinct FE for Turing machines](#succinct-functional-encryption-for-turing-machines).
 
 **Production readiness:** Research
 **Implementations:**
@@ -796,7 +796,7 @@ No notable open-source implementations available.
 | **MIFE for quadratic functions (Agrawal-Goyal-Tomida)** | 2021 | Bilinear maps | Extend MIFE beyond inner products to degree-2 polynomials from bilinear maps; first MIFE for non-linear functions without iO [[1]](https://eprint.iacr.org/2021/080) |
 | **Unbounded MIFE from iO (Ananth-Jain-Sahai)** | 2015 | iO + OWF | MIFE for unbounded number of inputs; ciphertext size independent of the number of inputs [[1]](https://eprint.iacr.org/2015/163) |
 
-**State of the art:** MIFE for inner products from DDH/LWE (2018) is practical and deployed in privacy-preserving analytics. General MIFE requires [iO](#indistinguishability-obfuscation-io) (2014). MIFE for quadratic functions from pairings (2021) is the frontier without iO. Relates to [FE from iO](#functional-encryption-from-io), [ABE/FE](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption-abe--fe), and [spooky encryption](#spooky-encryption).
+**State of the art:** MIFE for inner products from DDH/LWE (2018) is practical and deployed in privacy-preserving analytics. General MIFE requires [iO](#indistinguishability-obfuscation-io) (2014). MIFE for quadratic functions from pairings (2021) is the frontier without iO. Relates to [FE from iO](#functional-encryption-from-io), [ABE/FE](07-homomorphic-functional-encryption.md#attribute-based-functional-encryption), and [spooky encryption](#spooky-encryption).
 
 **Production readiness:** Experimental
 **Implementations:**
@@ -819,7 +819,7 @@ No notable open-source implementations available.
 | **Attribute-hiding PE from lattices (Agrawal-Freeman-Vaikuntanathan)** | 2011 | LWE | Post-quantum attribute-hiding inner-product PE from LWE; compact keys and ciphertexts [[1]](https://eprint.iacr.org/2011/457) |
 | **Attribute-hiding for all circuits from iO (Waters)** | 2015 | iO + OWF | Full attribute-hiding PE for any polynomial-size circuit predicate; strongest known notion requires iO [[1]](https://eprint.iacr.org/2012/315) |
 
-**State of the art:** Inner-product attribute-hiding PE is achievable from LWE (post-quantum, 2011) or DLIN (pairing-based, 2012). Full-circuit attribute hiding requires [iO](#indistinguishability-obfuscation-io) (2015). This is the privacy-maximizing variant of [predicate encryption](#predicate-encryption-and-attribute-hiding); relates to [evasive LWE](#evasive-lwe--tensor-lwe) and [HVE](categories/07-homomorphic-functional-encryption.md#hidden-vector-encryption-hve).
+**State of the art:** Inner-product attribute-hiding PE is achievable from LWE (post-quantum, 2011) or DLIN (pairing-based, 2012). Full-circuit attribute hiding requires [iO](#indistinguishability-obfuscation-io) (2015). This is the privacy-maximizing variant of [predicate encryption](#predicate-encryption-and-attribute-hiding); relates to [evasive LWE](#evasive-lwe-tensor-lwe) and [HVE](07-homomorphic-functional-encryption.md#hidden-vector-encryption-hve).
 
 **Production readiness:** Research
 Inner-product attribute-hiding PE has prototype implementations; full-circuit attribute-hiding PE from iO remains theoretical.
@@ -847,7 +847,7 @@ Well-studied in the cryptographic theory community; inner-product variants have 
 | **Multi-bit from lockable obfuscation (Goyal-Koppula-Waters)** | 2017 | LWE | Lockable obfuscation from LWE directly implies VBB-secure MBPF obfuscation; the lock is x and the message is s [[1]](https://eprint.iacr.org/2017/274) |
 | **Composable MBPF obfuscation (Bitansky-Canetti)** | 2010 | Strong assumptions | Composable obfuscation of MBPFs: security holds even when multiple obfuscated MBPFs are combined; needed for complex applications [[1]](https://eprint.iacr.org/2010/248) |
 
-**State of the art:** MBPF obfuscation from LWE via lockable obfuscation (2017) is the strongest standard-assumption construction. The ROM-based approach (hash-and-encrypt) remains the practical standard for password-derived encryption. Relates to [point function obfuscation](#point-function-obfuscation--digital-locker), [lockable obfuscation](#lockable-obfuscation), and [honey encryption](categories/02-authenticated-structured-encryption.md).
+**State of the art:** MBPF obfuscation from LWE via lockable obfuscation (2017) is the strongest standard-assumption construction. The ROM-based approach (hash-and-encrypt) remains the practical standard for password-derived encryption. Relates to [point function obfuscation](#point-function-obfuscation-digital-locker), [lockable obfuscation](#lockable-obfuscation), and [honey encryption](02-authenticated-structured-encryption.md).
 
 **Production readiness:** Research
 ROM-based hash-and-encrypt digital lockers are used in practice; standard-model MBPF constructions remain academic prototypes.
@@ -875,7 +875,7 @@ Theoretically well-understood; the ROM variant is implicitly used in password-ba
 | **PE from tensor LWE (Tsabary)** | 2022 | Tensor LWE | Predicate encryption for constant-arity predicates from tensor LWE; new lattice assumption tailored to PE [[1]](https://eprint.iacr.org/2023/941) |
 | **Lattice ABE for all circuits (Boneh-Gentry-Gorbunov-Halevi-Nikolaenko-Segev-Vaikuntanathan-Vinayagamurthy)** | 2014 | LWE | Key-policy ABE for all circuits from LWE; payload-hiding but not attribute-hiding; foundational for lattice-based access control [[1]](https://eprint.iacr.org/2013/340) |
 
-**State of the art:** Inner-product attribute-hiding PE from LWE (2011) is well-established; attribute-hiding PE for NC1 from evasive LWE (Wee 2022) is the frontier. Full-circuit attribute-hiding PE from lattices alone remains open without evasive/tensor LWE. Relates to [predicate encryption](#predicate-encryption-and-attribute-hiding), [evasive LWE](#evasive-lwe--tensor-lwe), [ABE/FE](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption-abe--fe).
+**State of the art:** Inner-product attribute-hiding PE from LWE (2011) is well-established; attribute-hiding PE for NC1 from evasive LWE (Wee 2022) is the frontier. Full-circuit attribute-hiding PE from lattices alone remains open without evasive/tensor LWE. Relates to [predicate encryption](#predicate-encryption-and-attribute-hiding), [evasive LWE](#evasive-lwe-tensor-lwe), [ABE/FE](07-homomorphic-functional-encryption.md#attribute-based-functional-encryption).
 
 **Production readiness:** Research
 Inner-product lattice PE has prototype implementations; more expressive lattice PE from evasive/tensor LWE remains purely theoretical.
@@ -904,7 +904,7 @@ Active research area with growing interest due to post-quantum properties; evasi
 | **Evasive LWE vs. tensor LWE landscape** | 2023 | Comparison | Study relationships between evasive LWE and tensor LWE; show separations and implications for ABE, PE, and broadcast encryption [[1]](https://eprint.iacr.org/2023/941) |
 | **CP-ABE for NC1 from evasive LWE** | 2022 | Evasive LWE | First post-quantum ciphertext-policy ABE for NC1 circuits with attribute hiding and near-optimal parameters [[1]](https://eprint.iacr.org/2023/906) |
 
-**State of the art:** Public-coin evasive LWE (2022) is the leading post-quantum assumption for advanced primitives between standard LWE and full iO. Private-coin variants face counterexamples (2024). The assumption enables a rich landscape of constructions previously requiring multilinear maps or iO. Relates to [evasive LWE & tensor LWE](#evasive-lwe--tensor-lwe), [null-iO](#null-io-obfuscation-for-always-zero-circuits), [witness encryption](#witness-encryption), and [lattice-based iO](#lattice-based-io-jain-lin-sahai-construction).
+**State of the art:** Public-coin evasive LWE (2022) is the leading post-quantum assumption for advanced primitives between standard LWE and full iO. Private-coin variants face counterexamples (2024). The assumption enables a rich landscape of constructions previously requiring multilinear maps or iO. Relates to [evasive LWE & tensor LWE](#evasive-lwe-tensor-lwe), [null-iO](#null-io-obfuscation-for-always-zero-circuits), [witness encryption](#witness-encryption), and [lattice-based iO](#lattice-based-io-jain-lin-sahai-construction).
 
 **Production readiness:** Research
 All constructions from evasive LWE remain at the academic/prototype stage; no production implementations exist.

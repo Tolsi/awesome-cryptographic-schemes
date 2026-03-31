@@ -42,7 +42,7 @@
 - IATA Travel Pass (airline boarding credentials)
 - Academic credentials (MIT, many universities)
 
-**State of the art:** W3C DID Core v1.0 (2022 W3C Recommendation); VC Data Model 2.0 (2024). EU eIDAS 2.0 mandates DID + SD-JWT + BBS+ for EU digital identity. See [Anonymous Credentials](#anonymous-credentials), [SD-JWT](#anonymous-credentials).
+**State of the art:** W3C DID Core v1.0 (2022 W3C Recommendation); VC Data Model 2.0 (2024). EU eIDAS 2.0 mandates DID + SD-JWT + BBS+ for EU digital identity. See [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials), [SD-JWT](11-anonymity-credentials.md#anonymous-credentials).
 
 **Production readiness:** Production
 Deployed at scale in EU Digital Identity Wallet (eIDAS 2.0, 450M citizens), Apple/Google Wallet mDL, IATA Travel Pass, and academic credentialing systems worldwide.
@@ -148,7 +148,7 @@ IETF RFCs 6698, 7671, 7672; mandated by several European email providers; widely
 - RATS (Remote ATtestation procedureS) — IETF RFC 9334 (2023): architecture framework
 - DICE (Device Identifier Composition Engine) — IETF RFC 9360
 
-**State of the art:** IETF RFC 9334 (2023) defines the RATS architecture. AWS Nitro Attestation and Intel DCAP are production-grade. Widely used in: confidential ML inference, threshold key management (AWS KMS), cross-chain bridges, and TEE-based wallets. See [TEE Signer Architecture](#tee-signer-architecture) and [Proof of Secure Erasure](#proof-of-secure-erasure-pose).
+**State of the art:** IETF RFC 9334 (2023) defines the RATS architecture. AWS Nitro Attestation and Intel DCAP are production-grade. Widely used in: confidential ML inference, threshold key management (AWS KMS), cross-chain bridges, and TEE-based wallets. See [TEE Signer Architecture](#arm-psa-certified-platform-security-architecture) and [Proof of Secure Erasure](20-applied-niche-protocols.md#proof-of-secure-erasure-pose).
 
 **Production readiness:** Production
 Intel DCAP and AWS Nitro Attestation are deployed at scale in cloud confidential computing; Azure Attestation Service and Google Confidential VMs in production.
@@ -197,7 +197,7 @@ Card holds: ICC Private Key (RSA 2048)
 
 **Known attacks:** "Yes cards" (Cambridge 2010) — exploited offline PIN; "No-PIN" contactless (ETH Zurich 2020). EMV v4.3+ mitigates.
 
-**State of the art:** EMV v4.3; transitioning to ECDSA for smaller keys. EMV 3DS v2 (2019) for card-not-present (e-commerce). See [Digital Signatures](#digital-signatures), [ACME/PKI](#acme-protocol--automated-certificate-management).
+**State of the art:** EMV v4.3; transitioning to ECDSA for smaller keys. EMV 3DS v2 (2019) for card-not-present (e-commerce). See [Digital Signatures](01-foundational-primitives.md#digital-signatures), [ACME/PKI](#cmc-protocol-certificate-lifecycle-management).
 
 **Production readiness:** Production
 Deployed on ~10 billion payment cards globally; every chip-and-PIN and contactless (NFC) transaction uses EMV authentication.
@@ -515,7 +515,7 @@ CNCF graduated project; adopted by PyPI, Docker, Kubernetes, and automotive (Upt
 | **SLSA (Supply-chain Levels for Software Artifacts)** | 2021 | Sigstore + attestation | Cryptographic provenance for software builds: source → build → deploy [[1]](https://slsa.dev/) |
 | **Content Credentials (Adobe/Leica)** | 2023 | C2PA + hardware signing | Camera signs image at capture time; edit chain preserved through Adobe tools [[1]](https://contentcredentials.org/) |
 
-**State of the art:** C2PA v2.1 (media), SLSA v1.0 (software); deployed by Adobe, Leica, Google, Microsoft. Related to [Linked Timestamping](#linked-timestamping) and [Digital Signatures](#digital-signatures).
+**State of the art:** C2PA v2.1 (media), SLSA v1.0 (software); deployed by Adobe, Leica, Google, Microsoft. Related to [Linked Timestamping](20-applied-niche-protocols.md#linked-timestamping) and [Digital Signatures](01-foundational-primitives.md#digital-signatures).
 
 **Production readiness:** Production
 C2PA deployed by Adobe (Photoshop, Lightroom), Leica cameras, Microsoft, Google; SLSA adopted by GitHub Actions, Google Cloud Build, and npm.
@@ -583,7 +583,7 @@ For each received BGP prefix announcement:
 
 **Deployment (2024):** >50% of global IPv4 routes and >60% of IPv6 routes covered by ROAs (NIST RPKI Monitor). Major networks deploying ROV: Cloudflare, AT&T, Deutsche Telekom, Amazon, NTT. MANRS initiative tracks ROV deployment.
 
-**State of the art:** RFC 6480 (RPKI architecture), RFC 6482 (ROA format), RFC 6487 (resource certificates), RFC 8210 (RTR v2), RFC 8205 (BGPsec). As of 2024, majority of global routing table is ROA-covered [[1]](https://manrs.org/2024/05/rpki-rov-deployment-reaches-major-milestone/). See [DNSSEC](#dnssec--dns-security-extensions).
+**State of the art:** RFC 6480 (RPKI architecture), RFC 6482 (ROA format), RFC 6487 (resource certificates), RFC 8210 (RTR v2), RFC 8205 (BGPsec). As of 2024, majority of global routing table is ROA-covered [[1]](https://manrs.org/2024/05/rpki-rov-deployment-reaches-major-milestone/). See [DNSSEC](#dnssec-dns-security-extensions).
 
 **Production readiness:** Production
 >50% of global IPv4 routes and >60% of IPv6 routes covered by ROAs; ROV enforced by Cloudflare, AT&T, Deutsche Telekom, Amazon, NTT.
@@ -634,7 +634,7 @@ example.com.  IN  CAA  0  iodef    "mailto:security@example.com"
 
 **Limitations:** CAA is checked at issuance time only; it is not verified by browsers or TLS clients at connection time. It is a CA-side process control, not a client-side enforcement. Adoption remains low (~15% of popular sites as of 2024).
 
-**State of the art:** RFC 8659 (2019, replaces RFC 6844), RFC 8657 (2019, ACME extensions). CA/B Forum mandated CA checking since 2017. Complement to [Certificate Transparency](#certificate-transparency-ct) and [ACME Protocol](#acme-protocol--automated-certificate-management). Best used together with CAA + CT + DANE.
+**State of the art:** RFC 8659 (2019, replaces RFC 6844), RFC 8657 (2019, ACME extensions). CA/B Forum mandated CA checking since 2017. Complement to [Certificate Transparency](#certificate-transparency-ct) and [ACME Protocol](#cmc-protocol-certificate-lifecycle-management). Best used together with CAA + CT + DANE.
 
 **Production readiness:** Production
 Mandatory CA checking since 2017 (CA/Browser Forum Ballot 187); all WebPKI CAs must honor CAA records before issuance.
@@ -688,7 +688,7 @@ IETF RFC 8659; CA/Browser Forum mandated; supported by all major CAs; simple DNS
 
 **Privacy problem with OCSP:** Each client→CA OCSP request reveals which websites the client visits; OCSP stapling eliminates this. Google Chrome removed OCSP checking entirely (2012), relying on CRL Sets instead.
 
-**State of the art:** RFC 6960 (OCSP), RFC 6066 §8 (stapling in TLS), RFC 7633 (Must-Staple), RFC 6961 (multiple stapling). Supported by Apache (2.3.3+), nginx (1.3.7+), IIS (Windows Server 2008+). Short-lived certificates (6-day) are the forward direction for WebPKI revocation. See [DANE](#dane--dns-based-authentication-of-named-entities).
+**State of the art:** RFC 6960 (OCSP), RFC 6066 §8 (stapling in TLS), RFC 7633 (Must-Staple), RFC 6961 (multiple stapling). Supported by Apache (2.3.3+), nginx (1.3.7+), IIS (Windows Server 2008+). Short-lived certificates (6-day) are the forward direction for WebPKI revocation. See [DANE](#dane-dns-based-authentication-of-named-entities).
 
 **Production readiness:** Production
 OCSP stapling widely deployed in Apache, nginx, IIS; CRLite shipped in Firefox; Chrome uses CRL Sets; short-lived certificates emerging via Let's Encrypt.
@@ -849,7 +849,7 @@ TCG TPM 2.0 specification; ISO/IEC 11889:2015; mandatory for Windows 11; IETF RF
 
 **Deployment:** Google, Apple, Microsoft all support passkeys (2022–2023). GitHub, PayPal, Amazon, WhatsApp, 1Password, Dashlane deployed passkeys. FIDO Alliance reports >13 billion FIDO-enabled accounts (2024).
 
-**State of the art:** W3C WebAuthn Level 2 (2021); CTAP 2.1 (2021); passkeys specification (FIDO Alliance, 2022). WebAuthn Level 3 draft (2024) adds hybrid transport, credential management. See [TOTP/FIDO2/WebAuthn](categories/12-secure-communication-protocols.md#totpfido2webauthn) and [TPM 2.0](#tpm-20--trusted-platform-module).
+**State of the art:** W3C WebAuthn Level 2 (2021); CTAP 2.1 (2021); passkeys specification (FIDO Alliance, 2022). WebAuthn Level 3 draft (2024) adds hybrid transport, credential management. See [TOTP/FIDO2/WebAuthn](12-secure-communication-protocols.md#token-based-authentication-totp-fido2-webauthn) and [TPM 2.0](#tpm-20-trusted-platform-module).
 
 **Production readiness:** Production
 >13 billion FIDO-enabled accounts (2024); passkeys deployed by Google, Apple, Microsoft, GitHub, PayPal, Amazon, WhatsApp; all major browsers and OSes support WebAuthn.
@@ -935,7 +935,7 @@ This is how keys migrate between HSMs — always in encrypted form, never as pla
 
 **Common consumers:** OpenSSL (via engine/provider), Java (PKCS#11 JCE provider), NSS (Firefox/Chrome TLS), NGINX (hardware offload), HashiCorp Vault (PKCS#11 seal), Kubernetes (KMS plugin), code signing pipelines.
 
-**State of the art:** OASIS PKCS #11 Specification v3.1 (July 2023) [[1]](https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.1/os/pkcs11-spec-v3.1-os.html); v3.2 draft in progress. Widely used as the integration layer between PKI software and physical HSMs. See [HSM Key Ceremony](#hsm-key-ceremony--split-knowledge--dual-control) and [TUF / The Update Framework](#tuf--the-update-framework).
+**State of the art:** OASIS PKCS #11 Specification v3.1 (July 2023) [[1]](https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.1/os/pkcs11-spec-v3.1-os.html); v3.2 draft in progress. Widely used as the integration layer between PKI software and physical HSMs. See [HSM Key Ceremony](#hsm-key-ceremony-split-knowledge-dual-control) and [TUF / The Update Framework](#tuf-the-update-framework).
 
 **Production readiness:** Production
 Universal HSM integration standard; used by OpenSSL, Java JCE, NSS (Firefox/Chrome), NGINX, HashiCorp Vault, and all major HSM vendors.
@@ -1003,13 +1003,13 @@ OASIS PKCS #11 v3.1 (2023); originally RSA Security standard; universal adoption
 - Ceremony is live-streamed and fully auditable [[1]](https://www.iana.org/dnssec/ceremonies)
 
 **Cryptographic underpinning of share distribution:**
-- **Shamir's Secret Sharing (SSS):** Secret is the constant term of a random polynomial of degree _m−1_ over GF(p); each custodian receives one point on the polynomial. Any _m_ points reconstruct the polynomial via Lagrange interpolation; fewer than _m_ reveal nothing. See [Secret Sharing](#shamir-secret-sharing-sss).
+- **Shamir's Secret Sharing (SSS):** Secret is the constant term of a random polynomial of degree _m−1_ over GF(p); each custodian receives one point on the polynomial. Any _m_ points reconstruct the polynomial via Lagrange interpolation; fewer than _m_ reveal nothing. See [Secret Sharing](05-secret-sharing-threshold-cryptography.md#ramp-secret-sharing).
 - **XOR split (2-of-2):** simpler but only works for exactly 2 parties; share₁ = random, share₂ = secret XOR share₁.
 - **Smart card–based schemes:** Each smart card is a PKCS#11 token holding one share as a non-exportable key.
 
 **FIPS 140-3 requirements:** Level 3+ HSMs must enforce dual control for critical security parameters (CSPs); roles and services must be documented; all operations logged to tamper-evident audit log.
 
-**State of the art:** NIST SP 800-57 Part 1 Rev. 5 (2020) [[1]](https://csrc.nist.gov/publications/detail/sp/800-57-part-1/rev-5/final) defines key management lifecycle including split knowledge. FIPS 140-3 (2019, ISO/IEC 19790) governs HSM security levels. See [PKCS#11 / Cryptoki](#pkcs11--cryptoki--hsm-c-api), [DNSSEC](#dnssec--dns-security-extensions), and [Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#shamir-secret-sharing-sss).
+**State of the art:** NIST SP 800-57 Part 1 Rev. 5 (2020) [[1]](https://csrc.nist.gov/publications/detail/sp/800-57-part-1/rev-5/final) defines key management lifecycle including split knowledge. FIPS 140-3 (2019, ISO/IEC 19790) governs HSM security levels. See [PKCS#11 / Cryptoki](#pkcs11-cryptoki-hsm-c-api), [DNSSEC](#dnssec-dns-security-extensions), and [Secret Sharing](05-secret-sharing-threshold-cryptography.md#secret-sharing-schemes-sss).
 
 **Production readiness:** Production
 Standard operational procedure for all root CA ceremonies (ICANN DNS Root KSK, WebPKI root CAs), DNSSEC key ceremonies, and enterprise HSM deployments.
@@ -1080,7 +1080,7 @@ This produces a certificate chain: Root CA → Layer0 cert → Layer1 cert → A
 - UDS never exposed to software → no firmware exploit can exfiltrate the root secret
 - Works on microcontrollers with as little as 2 kB of ROM
 
-**State of the art:** TCG DICE Architecture v1.0 (2020) [[1]](https://trustedcomputinggroup.org/wp-content/uploads/Device-Identifier-Composition-Engine-Rev69_Public-Review.pdf); TCG Hardware Requirements for DICE v1.0 rev. 0.91 (2024). Open DICE specification [[2]](https://pigweed.googlesource.com/open-dice/+/HEAD/docs/specification.md). Deployed in Android 13+, ChromeOS, Zephyr, Tock. See [TEE Remote Attestation](#tee-remote-attestation) and [TPM 2.0](#tpm-20--trusted-platform-module).
+**State of the art:** TCG DICE Architecture v1.0 (2020) [[1]](https://trustedcomputinggroup.org/wp-content/uploads/Device-Identifier-Composition-Engine-Rev69_Public-Review.pdf); TCG Hardware Requirements for DICE v1.0 rev. 0.91 (2024). Open DICE specification [[2]](https://pigweed.googlesource.com/open-dice/+/HEAD/docs/specification.md). Deployed in Android 13+, ChromeOS, Zephyr, Tock. See [TEE Remote Attestation](#tee-remote-attestation) and [TPM 2.0](#tpm-20-trusted-platform-module).
 
 **Production readiness:** Production
 Deployed in Android 13+ (Remote Key Provisioning), ChromeOS, Zephyr RTOS, and Tock OS; used by Google for hardware attestation at scale.
@@ -1255,7 +1255,7 @@ EnvelopedData ::= SEQUENCE {
 
 **CMS and PKCS#12:** PKCS#12 (PFX) files — the `.p12`/`.pfx` format used to export private key + cert chain — use nested CMS `EncryptedData` and `SafeBag` structures internally.
 
-**State of the art:** RFC 5652 (CMS, 2009); RFC 5083 (AuthEnvelopedData with AEAD); RFC 8933 (2020, updates CMS for SHA-3 and modern algorithms). Implemented in OpenSSL (`openssl cms`), Bouncy Castle, and Microsoft's `System.Security.Cryptography.Pkcs`. Foundation for [S/MIME](#smime--securemultipurpose-internet-mail-extensions), [Code Signing](#code-signing--authenticode-apple-notarization-android-signing), and [RPKI](#rpki--resource-public-key-infrastructure).
+**State of the art:** RFC 5652 (CMS, 2009); RFC 5083 (AuthEnvelopedData with AEAD); RFC 8933 (2020, updates CMS for SHA-3 and modern algorithms). Implemented in OpenSSL (`openssl cms`), Bouncy Castle, and Microsoft's `System.Security.Cryptography.Pkcs`. Foundation for [S/MIME](#smime-securemultipurpose-internet-mail-extensions), [Code Signing](#code-signing-authenticode-apple-notarization-android-signing), and [RPKI](#rpki-resource-public-key-infrastructure).
 
 **Production readiness:** Production
 Foundation of S/MIME, Authenticode, RPKI, PKCS#12; implemented in OpenSSL, Bouncy Castle, Microsoft CryptoAPI, and virtually all PKI software.
@@ -1332,7 +1332,7 @@ Content-Type: application/pkcs7-signature
 
 **Comparison to PGP/OpenPGP:** S/MIME uses X.509 certificates with CA-based trust; OpenPGP uses a web-of-trust model with self-signed keys. S/MIME is better for enterprise (centralized CA); OpenPGP is better for decentralized trust. Both are end-to-end encrypted.
 
-**State of the art:** RFC 8551 (S/MIME v4.0, 2019); CA/B Forum S/MIME Baseline Requirements v1.0 (2022). AES-256-GCM and EdDSA are the recommended algorithms in v4.0. See [PKCS#7 / CMS](#pkcs7--cms--cryptographic-message-syntax), [DNSSEC-Based Key Infrastructure](#dnssec-based-key-infrastructure-sshfp-tlsa-smimea), and [Certificate Transparency](#certificate-transparency-ct).
+**State of the art:** RFC 8551 (S/MIME v4.0, 2019); CA/B Forum S/MIME Baseline Requirements v1.0 (2022). AES-256-GCM and EdDSA are the recommended algorithms in v4.0. See [PKCS#7 / CMS](#pkcs7-cms-cryptographic-message-syntax), [DNSSEC-Based Key Infrastructure](#dnssec-based-key-infrastructure-sshfp-tlsa-smimea), and [Certificate Transparency](#certificate-transparency-ct).
 
 **Production readiness:** Production
 Supported by Outlook, Apple Mail, Thunderbird, iOS Mail; deployed in enterprise environments (healthcare, finance, government) for legally admissible signed email.
@@ -1411,7 +1411,7 @@ Android signing uses developer-held self-signed certs (no CA); the same certific
 
 **Driver signing (Windows KMCS):** Kernel-mode code requires Microsoft cross-signature (pre-2015) or attestation signing via the Windows Hardware Dev Center (WHQL portal). Since Windows 10 1607 (Anniversary Update), new third-party kernel modules must be signed by Microsoft's WHQL attestation service — not just by the developer.
 
-**State of the art:** Authenticode defined in Microsoft PE/COFF specification + RFC 5652; RFC 3161 (TSA). Apple notarization requirements tightened annually (hardened runtime mandatory since 2019). Android APKv3.1 current. Sigstore keyless signing increasingly used for open-source packages (PyPI PEP 740, npm provenance). See [PKCS#7 / CMS](#pkcs7--cms--cryptographic-message-syntax) and [Sigstore / Keyless Code Signing](#sigstore--keyless-code-signing).
+**State of the art:** Authenticode defined in Microsoft PE/COFF specification + RFC 5652; RFC 3161 (TSA). Apple notarization requirements tightened annually (hardened runtime mandatory since 2019). Android APKv3.1 current. Sigstore keyless signing increasingly used for open-source packages (PyPI PEP 740, npm provenance). See [PKCS#7 / CMS](#pkcs7-cms-cryptographic-message-syntax) and [Sigstore / Keyless Code Signing](#sigstore-keyless-code-signing).
 
 **Production readiness:** Production
 Authenticode, Apple code signing, and Android APK signing are deployed on billions of devices; every Windows driver, macOS app, and Android APK is code-signed in production.
@@ -1498,7 +1498,7 @@ This allows any party to verify inclusion without downloading the full log.
 
 **Limitation:** CT detects but does not prevent mis-issuance. A rogue CA can issue a certificate and it will appear in logs — but only after the fact. Domain owners must actively monitor CT logs (via crt.sh, Facebook CT monitor, etc.) to discover unauthorized certificates.
 
-**State of the art:** RFC 9162 (CT v2, 2022); Chrome and Safari enforce CT for all public certificates. Over 10 billion certificates logged (2024). Sigstore Rekor uses a CT-compatible Merkle log for software artifact signatures. See [CAA / Certification Authority Authorization](#caa--certification-authority-authorization), [OCSP Stapling and Certificate Revocation](#ocsp-stapling-and-certificate-revocation), and [Sigstore / Keyless Code Signing](#sigstore--keyless-code-signing).
+**State of the art:** RFC 9162 (CT v2, 2022); Chrome and Safari enforce CT for all public certificates. Over 10 billion certificates logged (2024). Sigstore Rekor uses a CT-compatible Merkle log for software artifact signatures. See [CAA / Certification Authority Authorization](#caa-certification-authority-authorization), [OCSP Stapling and Certificate Revocation](#ocsp-stapling-and-certificate-revocation), and [Sigstore / Keyless Code Signing](#sigstore-keyless-code-signing).
 
 **Production readiness:** Production
 Enforced by Chrome and Safari for all public WebPKI certificates since 2018; over 10 billion certificates logged across production CT logs operated by Google, Cloudflare, DigiCert, and others.
@@ -1605,7 +1605,7 @@ CWT is to COSE as JWT is to JWS — a COSE_Sign1 (or COSE_Mac0) wrapping a CBOR 
 - JWS compact serialization: ~400 bytes (Base64url overhead)
 - COSE_Sign1: ~200 bytes (binary CBOR; no Base64 encoding)
 
-**State of the art:** RFC 9052 (COSE, 2022, replaces RFC 8152); RFC 8392 (CWT, 2018); RFC 9528 (EAT, 2024). Implementations: python-cwt, go-cose, cose-js, Bouncy Castle. Mandatory in ISO 18013-5 (mDL) and EU EUDI Wallet. See [W3C DID and Verifiable Credentials](#w3c-decentralized-identifiers-did-and-verifiable-credentials), [TEE Remote Attestation](#tee-remote-attestation), and [FIDO2 / WebAuthn / Passkeys](#fido2--webauthn--passkeys).
+**State of the art:** RFC 9052 (COSE, 2022, replaces RFC 8152); RFC 8392 (CWT, 2018); RFC 9528 (EAT, 2024). Implementations: python-cwt, go-cose, cose-js, Bouncy Castle. Mandatory in ISO 18013-5 (mDL) and EU EUDI Wallet. See [W3C DID and Verifiable Credentials](#w3c-decentralized-identifiers-did-and-verifiable-credentials), [TEE Remote Attestation](#tee-remote-attestation), and [FIDO2 / WebAuthn / Passkeys](#fido2-webauthn-passkeys).
 
 **Production readiness:** Production
 Mandatory in ISO 18013-5 (mobile driver's license), EU EUDI Wallet, FIDO2/WebAuthn, and CoAP/OSCORE IoT protocols; deployed on billions of devices.
@@ -1694,7 +1694,7 @@ The VCEK is unique to each physical CPU chip and the currently installed TCB ver
 
 **Deployment:** Azure Confidential VMs (DCasv5/ECasv5), Google Cloud Confidential VMs (N2D/C2D), AWS (on AMD Epyc via SEV-SNP preview). Used for confidential ML inference (NVIDIA H100 integrates with SEV-SNP attestation via NVIDIA HOPPER Confidential Computing), key release policies in Azure mHSM, and cryptographic protocol binding for confidential enclaves.
 
-**State of the art:** AMD SEV-SNP ABI specification v1.55 (2023) [[1]](https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/56860.pdf); IETF draft-ietf-rats-sev-snp (2024). See [TEE Remote Attestation](#tee-remote-attestation) and [Azure Confidential Computing](#azure-confidential-computing--sgx--tdx-attestation).
+**State of the art:** AMD SEV-SNP ABI specification v1.55 (2023) [[1]](https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/56860.pdf); IETF draft-ietf-rats-sev-snp (2024). See [TEE Remote Attestation](#tee-remote-attestation) and [Azure Confidential Computing](#azure-confidential-computing-sgx-and-tdx-attestation).
 
 **Production readiness:** Production
 Deployed in Azure Confidential VMs (DCasv5/ECasv5), Google Cloud Confidential VMs, and AWS SEV-SNP preview; used for confidential ML inference with NVIDIA H100 Hopper.
@@ -1792,7 +1792,7 @@ ECDSA Quote structure:
 
 **Key release via mHSM:** Azure Managed HSM supports secure key release (SKR) — an HSM policy rule specifying an MAA attestation claim predicate. Only an attested CVM that presents a valid MAA token matching the policy can receive the unwrapped key; the HSM verifies the MAA JWT's signature (using MAA's JWKS endpoint) and evaluates the Rego policy.
 
-**State of the art:** Azure Confidential Computing GA (2022); TDX support (2023, DCesv5 VMs); AKS Confidential Containers preview (2024). Intel TDX Module 1.5 specification [[1]](https://cdrdv2.intel.com/v1/dl/getContent/733577). IETF draft-ietf-rats-intel-tee-appraisal (2024). See [TEE Remote Attestation](#tee-remote-attestation) and [AMD SEV-SNP](#amd-sev-snp--attestation-report-structure).
+**State of the art:** Azure Confidential Computing GA (2022); TDX support (2023, DCesv5 VMs); AKS Confidential Containers preview (2024). Intel TDX Module 1.5 specification [[1]](https://cdrdv2.intel.com/v1/dl/getContent/733577). IETF draft-ietf-rats-intel-tee-appraisal (2024). See [TEE Remote Attestation](#tee-remote-attestation) and [AMD SEV-SNP](#amd-sev-snp-attestation-report-structure).
 
 **Production readiness:** Production
 Azure Confidential Computing GA since 2022; SGX enclaves (DCsv3), TDX VMs (DCesv5), and AKS Confidential Containers deployed in production; MAA attestation service publicly available.
@@ -1868,7 +1868,7 @@ The combined shared secret is `HKDF(ss_X25519 || ss_ML-KEM)`; a passive quantum 
 
 **Certificate size impact:** A composite ML-DSA-44 + ECDSA-P256 leaf certificate is approximately 4–5 kB vs ~1 kB for a classical ECDSA cert. Intermediate and root certificates are similarly enlarged. TLS handshake fragmentation and DTLS/QUIC implications are active research areas.
 
-**State of the art:** FIPS 203/204/205 (2024) finalized; FIPS 206 (FN-DSA) in final draft (2024). draft-ietf-lamps-pq-composite-sigs-02 (2024); draft-ietf-lamps-cert-binding-for-multi-key-07 (2024). Chrome deployed X25519+ML-KEM hybrid for TLS 1.3 by default (2024). See [Digital Signatures](categories/08-signatures-advanced.md#digital-signatures), [TEE Remote Attestation](#tee-remote-attestation), and [COSE / CWT](#cose--cwt--cbor-object-signing-and-encryption).
+**State of the art:** FIPS 203/204/205 (2024) finalized; FIPS 206 (FN-DSA) in final draft (2024). draft-ietf-lamps-pq-composite-sigs-02 (2024); draft-ietf-lamps-cert-binding-for-multi-key-07 (2024). Chrome deployed X25519+ML-KEM hybrid for TLS 1.3 by default (2024). See [Digital Signatures](08-signatures-advanced.md#updatable-signatures), [TEE Remote Attestation](#tee-remote-attestation), and [COSE / CWT](#cose-cwt-cbor-object-signing-and-encryption).
 
 **Production readiness:** Experimental
 Hybrid TLS key exchange (X25519+ML-KEM) deployed in Chrome and Cloudflare; hybrid X.509 certificates are in IETF draft stage with no production WebPKI deployment yet.
@@ -1956,7 +1956,7 @@ NIST Cybersecurity White Paper 25 documents the operational framework for enterp
 
 **Automotive / IoT (CMP v3, RFC 9480):** CMP version 3 (2023) adds lightweight HTTP transport, CoAP support (for constrained devices), and asymmetric key wrapping improvements — targeting automotive ECUs, industrial controllers, and IoT gateways following UNECE WP.29 R155/R156 (vehicle cybersecurity regulations).
 
-**State of the art:** RFC 5272/5273/5274 (CMC); RFC 7030 (EST); RFC 9480 (CMP v3, 2023); RFC 8894 (SCEP, 2020); NIST CSWP 25 (2023) [[1]](https://csrc.nist.gov/pubs/cswp/25/automating-certificate-management-in-enterprise/final). See [ACME Protocol](categories/03-key-exchange-key-management.md#acme-protocol--automated-certificate-management), [OCSP Stapling and Certificate Revocation](#ocsp-stapling-and-certificate-revocation), and [PKCS#7 / CMS](#pkcs7--cms--cryptographic-message-syntax).
+**State of the art:** RFC 5272/5273/5274 (CMC); RFC 7030 (EST); RFC 9480 (CMP v3, 2023); RFC 8894 (SCEP, 2020); NIST CSWP 25 (2023) [[1]](https://csrc.nist.gov/pubs/cswp/25/automating-certificate-management-in-enterprise/final). See [ACME Protocol](03-key-exchange-key-management.md#acme-protocol-automated-certificate-management), [OCSP Stapling and Certificate Revocation](#ocsp-stapling-and-certificate-revocation), and [PKCS#7 / CMS](#pkcs7-cms-cryptographic-message-syntax).
 
 **Production readiness:** Production
 EST and SCEP widely deployed in enterprise PKI; CMP v3 mandated for automotive (UNECE WP.29); ACME powers Let's Encrypt (400M+ certificates); CMC used in US DoD PKI infrastructure.
@@ -2055,7 +2055,7 @@ Apple's Device Attestation (DeviceCheck) additionally provides a server-API-base
 
 **Remote Key Provisioning (RKP, Android 12+):** Replaces factory-burned attestation root certs with an online provisioning system. Devices generate an ephemeral ECDH key pair in StrongBox, perform a remote key provisioning protocol with Google's backend (using hybrid encryption + CBOR/COSE), and receive fresh attestation certificates signed by Google. This enables certificate rotation without firmware updates and eliminates the need to burn per-device certs at the factory — using DICE-based identity as the provisioning root.
 
-**State of the art:** Android KeyMint 3.0 (Android 14, 2023); StrongBox HAL v4 (Android 14); Google Titan M2 security chip. Apple Secure Enclave Processor (all devices since iPhone 5s, 2013); App Attest API (iOS 14+, 2020); FIDO2 platform authenticator (iOS 16+). See [FIDO2 / WebAuthn / Passkeys](#fido2--webauthn--passkeys), [DICE — Device Identifier Composition Engine](#dice--device-identifier-composition-engine), and [TEE Remote Attestation](#tee-remote-attestation).
+**State of the art:** Android KeyMint 3.0 (Android 14, 2023); StrongBox HAL v4 (Android 14); Google Titan M2 security chip. Apple Secure Enclave Processor (all devices since iPhone 5s, 2013); App Attest API (iOS 14+, 2020); FIDO2 platform authenticator (iOS 16+). See [FIDO2 / WebAuthn / Passkeys](#fido2-webauthn-passkeys), [DICE — Device Identifier Composition Engine](#dice-device-identifier-composition-engine), and [TEE Remote Attestation](#tee-remote-attestation).
 
 **Production readiness:** Production
 Deployed on billions of Android and iOS devices; Android Key Attestation and Apple App Attest are production APIs used by banking, enterprise MDM, and FIDO2 authenticator applications.
@@ -2099,7 +2099,7 @@ CAK (Connectivity Association Key, 128/256 bit)
 
 **Deployments:** Data center east-west traffic (Cisco TrustSec, Juniper MACsec); financial trading floors (mandated by PCI DSS for LAN segments); WAN MACsec over MPLS/dark fiber; cloud provider backbone links (Google, AWS). Linux kernel supports MACsec via `ip macsec` (since kernel 4.6).
 
-**State of the art:** IEEE 802.1AE-2018 (revision with XPN for high-speed links); MKA defined in IEEE 802.1X-2020. Hardware offload in all modern enterprise NICs and switches (Intel E810, Broadcom Memory, Cisco Catalyst, Arista). See [AEAD — Authenticated Encryption](categories/02-authenticated-structured-encryption.md#aead--authenticated-encryption-with-associated-data).
+**State of the art:** IEEE 802.1AE-2018 (revision with XPN for high-speed links); MKA defined in IEEE 802.1X-2020. Hardware offload in all modern enterprise NICs and switches (Intel E810, Broadcom Memory, Cisco Catalyst, Arista). See [AEAD — Authenticated Encryption](02-authenticated-structured-encryption.md#authenticated-encryption-aead).
 
 **Production readiness:** Production
 Deployed in data center east-west traffic, financial trading floors, and cloud provider backbone links; hardware offload in all modern enterprise NICs and switches; Linux kernel support since 4.6.
@@ -2146,7 +2146,7 @@ Signed root hash (RSA/ECDSA)
 ```
 Android Verified Boot (AVB) uses dm-verity for system/vendor partitions; root hash stored in vbmeta signed by OEM key (RSA-4096 or ECDSA P-256). Chrome OS uses dm-verity for the root filesystem with kernel command-line root hash.
 
-**State of the art:** UEFI 2.10 (2022); Microsoft requires Secure Boot for Windows 11; Linux shim bootloader (signed by Microsoft UEFI CA) enables distro chains. Android Verified Boot 2.0 (AVB, AOSP). See [TPM 2.0](#tpm-20--trusted-platform-module), [DICE](#dice--device-identifier-composition-engine).
+**State of the art:** UEFI 2.10 (2022); Microsoft requires Secure Boot for Windows 11; Linux shim bootloader (signed by Microsoft UEFI CA) enables distro chains. Android Verified Boot 2.0 (AVB, AOSP). See [TPM 2.0](#tpm-20-trusted-platform-module), [DICE](#dice-device-identifier-composition-engine).
 
 **Production readiness:** Production
 UEFI Secure Boot mandatory for Windows 11; deployed on virtually all x86 PCs and servers; Android Verified Boot on all Android devices; dm-verity in Chrome OS and Android.
@@ -2202,7 +2202,7 @@ Host → Card: EXTERNAL AUTHENTICATE (host cryptogram + C-MAC)
 
 **Deployments:** SIM cards (GSMA SCP03 mandated for OTA), banking smart cards (EMV GP), government eID cards, eSE in smartphones (Google Titan M, Apple SE), secure elements for NFC payments, FIDO2 security keys (YubiKey uses SCP03 for management).
 
-**State of the art:** GlobalPlatform Card Specification v2.3.1 (2018); SCP03 mandatory. SCP11 (ECDH-based) gaining traction for IoT provisioning. See [eSIM / Remote SIM Provisioning](#gsma-esim--remote-sim-provisioning-rsp), [PKCS#11 / Cryptoki](#pkcs11--cryptoki--hsm-c-api).
+**State of the art:** GlobalPlatform Card Specification v2.3.1 (2018); SCP03 mandatory. SCP11 (ECDH-based) gaining traction for IoT provisioning. See [eSIM / Remote SIM Provisioning](#gsma-esim-remote-sim-provisioning-rsp), [PKCS#11 / Cryptoki](#pkcs11-cryptoki-hsm-c-api).
 
 **Production readiness:** Production
 SCP03 is mandatory for all GlobalPlatform 2.3+ compliant cards; deployed on billions of SIM cards, banking smart cards, government eID cards, and secure elements in smartphones.
@@ -2253,7 +2253,7 @@ Initiator → Responder: ECDSA sig over transcript, initiator NOC cert
 
 **Thread network layer:** IEEE 802.15.4 with AES-128-CCM at link layer; Thread 1.3 uses MLE (Mesh Link Establishment) with ECDH key exchange. Matter runs over Thread, Wi-Fi, or Ethernet — transport-agnostic.
 
-**State of the art:** Matter 1.4 (2024); 3,000+ certified devices. Thread 1.3 (2023). PASE uses SPAKE2+ per NIST submission. See [SPAKE2 / PAKE](categories/03-key-exchange-key-management.md#pake--password-authenticated-key-exchange), [DICE](#dice--device-identifier-composition-engine).
+**State of the art:** Matter 1.4 (2024); 3,000+ certified devices. Thread 1.3 (2023). PASE uses SPAKE2+ per NIST submission. See [SPAKE2 / PAKE](03-key-exchange-key-management.md#password-authenticated-key-exchange-pake), [DICE](#dice-device-identifier-composition-engine).
 
 **Production readiness:** Production
 3,000+ Matter-certified devices from Apple, Google, Amazon, Samsung, and others; Thread 1.3 deployed in commercial smart home products; Matter 1.4 specification released 2024.
@@ -2304,7 +2304,7 @@ Supplicant ←── EAPOL ──► Authenticator (switch/AP) ←── RADIUS 
 
 **Deployments:** Enterprise Wi-Fi (WPA2/WPA3-Enterprise); wired NAC in corporate/government networks; eduroam (global academic roaming uses EAP-TLS/EAP-TTLS + RADIUS federation); 5G (EAP-AKA' for SIM auth, RFC 9048).
 
-**State of the art:** EAP-TLS 1.3 (RFC 9190, 2022) brings TLS 1.3 benefits (encrypted client identity, 0-RTT). WPA3-Enterprise 192-bit mode mandates EAP-TLS with Suite B (CNSA) ciphers. See [DANE](#dane--dns-based-authentication-of-named-entities), [FIDO2 / WebAuthn / Passkeys](#fido2--webauthn--passkeys).
+**State of the art:** EAP-TLS 1.3 (RFC 9190, 2022) brings TLS 1.3 benefits (encrypted client identity, 0-RTT). WPA3-Enterprise 192-bit mode mandates EAP-TLS with Suite B (CNSA) ciphers. See [DANE](#dane-dns-based-authentication-of-named-entities), [FIDO2 / WebAuthn / Passkeys](#fido2-webauthn-passkeys).
 
 **Production readiness:** Production
 Deployed universally in enterprise wired/wireless networks; eduroam serves 100+ countries; WPA2/WPA3-Enterprise with EAP-TLS is the standard for corporate Wi-Fi; 5G uses EAP-AKA' for SIM authentication.
@@ -2358,7 +2358,7 @@ Create → Register → Get → Activate → [Re-key / Re-key Pair] → Deactiva
 
 **Deployments:** Enterprise KMS (Thales CipherTrust, IBM SKLM, Fortanix, Entrust KeyControl); cloud KMS (IBM Cloud Key Protect, Dell PowerProtect); database TDE (Oracle, MongoDB); tape encryption (IBM TS7700); storage encryption (NetApp, Pure Storage). Mandated by FIPS 140-3 CMVP for KMS interop testing.
 
-**State of the art:** KMIP 3.0 (2023) adds PQC key types (ML-KEM, ML-DSA) and JOSE interoperability. OASIS KMIP Profiles define compliance levels (Basic, Symmetric, Asymmetric, Storage). See [PKCS#11 / Cryptoki](#pkcs11--cryptoki--hsm-c-api), [HSM Key Ceremony](#hsm-key-ceremony--split-knowledge--dual-control).
+**State of the art:** KMIP 3.0 (2023) adds PQC key types (ML-KEM, ML-DSA) and JOSE interoperability. OASIS KMIP Profiles define compliance levels (Basic, Symmetric, Asymmetric, Storage). See [PKCS#11 / Cryptoki](#pkcs11-cryptoki-hsm-c-api), [HSM Key Ceremony](#hsm-key-ceremony-split-knowledge-dual-control).
 
 **Production readiness:** Production
 Deployed in enterprise KMS (Thales CipherTrust, IBM SKLM, Fortanix), cloud KMS, database TDE, and storage encryption systems; mandated by FIPS 140-3 CMVP for KMS interoperability.
@@ -2410,7 +2410,7 @@ Name Constraints are the primary mechanism for technically scoping intermediate 
 
 **Common implementation pitfalls:** Hostname mismatch (Subject CN vs. SAN); missing intermediate certificates; improper revocation checking (soft-fail vs. hard-fail OCSP); cross-signed roots causing loop or ambiguous paths.
 
-**State of the art:** RFC 5280 (2008, Internet Standard); RFC 6818 (2013, updates). CA/Browser Forum Baseline Requirements v2.0 (2023) add stricter profile. Google Chrome implements "Chrome Root Program" with independent path validation. See [DANE](#dane--dns-based-authentication-of-named-entities), [Certificate Transparency](#certificate-transparency-ct), [OCSP Stapling](#ocsp-stapling-and-certificate-revocation).
+**State of the art:** RFC 5280 (2008, Internet Standard); RFC 6818 (2013, updates). CA/Browser Forum Baseline Requirements v2.0 (2023) add stricter profile. Google Chrome implements "Chrome Root Program" with independent path validation. See [DANE](#dane-dns-based-authentication-of-named-entities), [Certificate Transparency](#certificate-transparency-ct), [OCSP Stapling](#ocsp-stapling-and-certificate-revocation).
 
 **Production readiness:** Production
 Foundation of all TLS, code signing, S/MIME, and VPN trust decisions; implemented in every browser, operating system, and TLS library; billions of certificate validations per day.
@@ -2470,7 +2470,7 @@ Service A (X509-SVID: spiffe://prod/svc-a) ◄─── mTLS ───► Servic
 
 **Deployments:** Kubernetes service meshes (Istio uses SPIFFE IDs natively); HashiCorp Consul Connect; Pinterest, Uber, Bloomberg, ByteDance (production workload identity); CNCF graduated project (2022). Integrates with Envoy Proxy (SDS API serves SVIDs).
 
-**State of the art:** SPIFFE v1.0 (2024 CNCF standard). SPIRE v1.9 (2024); supports nested SPIRE topologies for multi-cluster. Federation allows cross-trust-domain authentication. See [PKCS#11 / Cryptoki](#pkcs11--cryptoki--hsm-c-api), [ACME Protocol](categories/03-key-exchange-key-management.md#acme-protocol--automated-certificate-management).
+**State of the art:** SPIFFE v1.0 (2024 CNCF standard). SPIRE v1.9 (2024); supports nested SPIRE topologies for multi-cluster. Federation allows cross-trust-domain authentication. See [PKCS#11 / Cryptoki](#pkcs11-cryptoki-hsm-c-api), [ACME Protocol](03-key-exchange-key-management.md#acme-protocol-automated-certificate-management).
 
 **Production readiness:** Production
 CNCF Graduated project (2022); deployed in production at Pinterest, Uber, Bloomberg, ByteDance; Istio uses SPIFFE IDs natively for service mesh mTLS.
@@ -2537,7 +2537,7 @@ Token is COSE_Sign1 (ECDSA P-256 or P-384), verifiable by a remote attestation s
 
 **Deployments:** Nordic Semiconductor (nRF9160, nRF5340), STMicroelectronics (STM32L5, STM32U5), NXP (LPC55S69), Infineon (PSoC 64), Raspberry Pi Pico (RP2350 with Arm TrustZone). Mbed TLS implements the PSA Crypto API. Over 200 PSA Certified products.
 
-**State of the art:** PSA Crypto API 1.2 (2024); PSA Attestation API 1.0; TF-M v2.1 (2024). PSA Certified scheme recognized by ETSI EN 303 645 (European IoT cybersecurity standard). See [DICE](#dice--device-identifier-composition-engine), [TEE Remote Attestation](#tee-remote-attestation), [TPM 2.0](#tpm-20--trusted-platform-module).
+**State of the art:** PSA Crypto API 1.2 (2024); PSA Attestation API 1.0; TF-M v2.1 (2024). PSA Certified scheme recognized by ETSI EN 303 645 (European IoT cybersecurity standard). See [DICE](#dice-device-identifier-composition-engine), [TEE Remote Attestation](#tee-remote-attestation), [TPM 2.0](#tpm-20-trusted-platform-module).
 
 **Production readiness:** Production
 Over 200 PSA Certified products; deployed on Nordic Semiconductor, STMicroelectronics, NXP, Infineon, and Raspberry Pi platforms; TF-M is the reference implementation for Cortex-M TrustZone.

@@ -117,7 +117,7 @@ The PCP theorem is a cornerstone of theoretical computer science. IOPs are the a
 | **AND/OR Composition (CDS)** | 1994 | Any sigma | Compose sigma protocols with AND/OR logic; prove compound statements [[1]](https://link.springer.com/chapter/10.1007/BFb0053443) |
 | **Damgård's Techniques** | 2000 | Any sigma | Formal framework: special soundness + HVZK → Fiat-Shamir secure [[1]](https://www.cs.au.dk/~ivan/Sigma.pdf) |
 
-**State of the art:** Sigma protocols + Fiat-Shamir transform = foundation of Schnorr signatures, DLEQ proofs, and most discrete-log ZK. See [ZK Proofs](#zero-knowledge-proofs-zk), [Digital Signatures](#digital-signatures).
+**State of the art:** Sigma protocols + Fiat-Shamir transform = foundation of Schnorr signatures, DLEQ proofs, and most discrete-log ZK. See [ZK Proofs](#zero-knowledge-proofs-zk), [Digital Signatures](01-foundational-primitives.md#digital-signatures).
 
 **Production readiness:** Production
 Deployed in TLS 1.3, SSH, Tor, Bitcoin (Schnorr/Taproot), and virtually every DLP-based authentication system.
@@ -145,7 +145,7 @@ NIST-standardized (EdDSA/Ed25519), IETF RFC 8032, BIP-340 (Bitcoin Schnorr). Uni
 | **GS Proofs for Linear Equations** | 2008 | Pairings | Special case: linear equations have constant-size proofs [[1]](https://eprint.iacr.org/2007/155) |
 | **Extractable GS** | 2012 | Knowledge assumptions | Proofs of knowledge variant; extractable witnesses [[1]](https://eprint.iacr.org/2012/028) |
 
-**State of the art:** Groth-Sahai (2008); the canonical NIZK for pairing-based constructions. Enables [SPS](#structure-preserving-signatures-sps), group signatures, and anonymous credentials without random oracles.
+**State of the art:** Groth-Sahai (2008); the canonical NIZK for pairing-based constructions. Enables [SPS](08-signatures-advanced.md#structure-preserving-signatures-sps), group signatures, and anonymous credentials without random oracles.
 
 **Production readiness:** Mature
 Well-studied with production-quality implementations, but limited large-scale deployment outside pairing-based credential and signature schemes.
@@ -171,7 +171,7 @@ Well-respected in the pairing-based cryptography community. Standard tool for ac
 | **Nova** | 2022 | R1CS + Pedersen | First folding scheme; fold two R1CS instances into one; see [ZK Proofs](#zero-knowledge-proofs-zk) [[1]](https://eprint.iacr.org/2021/370) |
 | **SuperNova** | 2022 | Nova + multiple circuits | Non-uniform IVC: different circuits at each step [[1]](https://eprint.iacr.org/2022/1758) |
 | **HyperNova** | 2023 | CCS + multilinear | Fold customizable constraint systems (generalizes R1CS, Plonkish) [[1]](https://eprint.iacr.org/2023/573) |
-| **ProtoStar** | 2023 | Plonkish + accumulation | Non-uniform IVC for PLONK-like systems; see [BARG](#batch-arguments-barg--accumulation-schemes) [[1]](https://eprint.iacr.org/2023/620) |
+| **ProtoStar** | 2023 | Plonkish + accumulation | Non-uniform IVC for PLONK-like systems; see [BARG](16-obfuscation-advanced-hardness.md#batch-arguments-barg-accumulation-schemes) [[1]](https://eprint.iacr.org/2023/620) |
 | **Protostar/Protogalaxy** | 2023 | Lattice folding | Fold with logarithmic verifier [[1]](https://eprint.iacr.org/2023/1106) |
 | **Symphony** | 2025 | Lattice + high-arity folding | First PQ folding SNARK; avoids hash embedding in circuits; polylog proof size [[1]](https://eprint.iacr.org/2025/1905) |
 
@@ -237,7 +237,7 @@ Lookup arguments are universally adopted in the ZK community. Plookup and LogUp 
 | **Spartan** | 2020 | Sumcheck + multilinear PCS | Transparent zkSNARK built entirely on sumcheck; no trusted setup [[1]](https://eprint.iacr.org/2019/550) |
 | **Jolt** | 2024 | Sumcheck + Lasso | zkVM using sumcheck + lookup arguments; no custom circuits [[1]](https://eprint.iacr.org/2023/1217) |
 
-**State of the art:** Sumcheck-based SNARKs (Spartan, Jolt, HyperNova) are increasingly dominant due to simplicity and transparency. Closely related to [IOP/PCP](#interactive-oracle-proofs-iop--pcp).
+**State of the art:** Sumcheck-based SNARKs (Spartan, Jolt, HyperNova) are increasingly dominant due to simplicity and transparency. Closely related to [IOP/PCP](#interactive-oracle-proofs-iop-pcp).
 
 **Production readiness:** Production
 Sumcheck is deployed in production via Jolt, Spartan, and Plonky3-based systems. Core protocol in SP1 and other zkVMs.
@@ -332,7 +332,7 @@ Established theoretical foundation (Chiesa-Tromer 2010). Production-validated by
 | **Limbo** | 2021 | N-party MPCitH | Generalized to N parties; tradeoff: more parties → shorter proofs [[1]](https://eprint.iacr.org/2021/215) |
 | **Banquet** | 2021 | MPCitH + algebraic | Optimized for algebraic hash functions; shorter signatures [[1]](https://eprint.iacr.org/2021/068) |
 
-**State of the art:** Picnic/Banquet for PQ signatures (see [Post-Quantum](#post-quantum-cryptography)); MPCitH is a general ZK paradigm alongside [IOPs](#interactive-oracle-proofs-iop--pcp) and [Sigma Protocols](#sigma-protocols--schnorr-identification).
+**State of the art:** Picnic/Banquet for PQ signatures (see [Post-Quantum](15-quantum-cryptography.md#post-quantum-cryptography)); MPCitH is a general ZK paradigm alongside [IOPs](#interactive-oracle-proofs-iop-pcp) and [Sigma Protocols](#sigma-protocols-schnorr-identification).
 
 **Production readiness:** Mature
 Picnic was a NIST PQ signature candidate. Banquet and ZKBoo have working implementations. Used in post-quantum signature research.
@@ -360,7 +360,7 @@ Picnic was a NIST Round 3 alternate candidate. The MPCitH paradigm is well-respe
 | **FAEST Signature** | 2023 | VOLEitH + AES | PQ signature from VOLEitH on AES; security = AES key recovery; NIST Round 2 [[1]](https://faest.info/) |
 | **Appenzeller-to-Brie (A2B)** | 2024 | VOLEitH optimization | Improved VOLEitH with batch verification and smaller proofs [[1]](https://eprint.iacr.org/2024/1075) |
 
-**State of the art:** FAEST (NIST Additional Sigs Round 2); VOLEitH as paradigm alongside [MPCitH](#mpc-in-the-head-mpcith) and [Sigma Protocols](#sigma-protocols--schnorr-identification).
+**State of the art:** FAEST (NIST Additional Sigs Round 2); VOLEitH as paradigm alongside [MPCitH](#mpc-in-the-head-mpcith) and [Sigma Protocols](#sigma-protocols-schnorr-identification).
 
 **Production readiness:** Experimental
 FAEST is in NIST Additional Signatures Round 2. Research implementations exist but no large-scale production deployment yet.
@@ -422,7 +422,7 @@ Rapidly gaining adoption. Stwo and Plonky3 are deployed in major L2 projects. Bi
 
 **Applications:** Privacy-preserving ML inference proof (witness = model weights, inputs private); cross-institutional compliance proof; outsourced proof generation without revealing inputs to cloud provider.
 
-**State of the art:** Pianist (2023) for large-circuit distribution; TACEO co-SNARKs for general MPC-ZK fusion. Active research area; no single dominant production implementation yet. See [MPC](#multi-party-computation-mpc) and [ZK Proofs](#zero-knowledge-proofs-zk).
+**State of the art:** Pianist (2023) for large-circuit distribution; TACEO co-SNARKs for general MPC-ZK fusion. Active research area; no single dominant production implementation yet. See [MPC](06-multi-party-computation.md#multi-party-computation-mpc) and [ZK Proofs](#zero-knowledge-proofs-zk).
 
 **Production readiness:** Research
 Academic prototypes and benchmarks exist. No dominant production implementation yet. TACEO and Pianist have proof-of-concept code.
@@ -478,7 +478,7 @@ High-profile research area backed by a16z, Modulus Labs, and Polyhedra. No stand
 | **Compressed Σ-Protocols (Attema-Cramer)** | 2020 | Any Sigma + pivot | General framework: compress any Sigma protocol for homomorphic relations [[1]](https://eprint.iacr.org/2020/152) |
 | **Compressed Σ for Lattices** | 2021 | SIS/LWE | Extension to lattice-based Sigma protocols; post-quantum compressed proofs [[1]](https://eprint.iacr.org/2021/307) |
 
-**State of the art:** Attema-Cramer (2020) as general framework; Bulletproofs IPA as most deployed instance. Extends [Sigma Protocols](#sigma-protocols--schnorr-identification) and [Bulletproofs](#zero-knowledge-proofs-zk).
+**State of the art:** Attema-Cramer (2020) as general framework; Bulletproofs IPA as most deployed instance. Extends [Sigma Protocols](#sigma-protocols-schnorr-identification) and [Bulletproofs](#zero-knowledge-proofs-zk).
 
 **Production readiness:** Mature
 Bulletproofs IPA (the primary deployed instance) is in production. The general Attema-Cramer framework has reference implementations.
@@ -505,7 +505,7 @@ Bulletproofs IPA is deployed in Monero and Liquid Network. The Attema-Cramer fra
 | **Chase-Healy-Lysyanskaya-Malkin-Reyzin** | 2005 | q-SDH | Efficient ZK sets from bilinear assumptions [[1]](https://eprint.iacr.org/2005/292) |
 | **ZK Elementary Database (ZK-EDB)** | 2003 | Trapdoor commitments | Key-value database with ZK proofs for queries and non-existence [[1]](https://doi.org/10.1109/SFCS.2003.1238200) |
 
-**State of the art:** ZK sets from Merkle trees + trapdoor hashing. Extends [Accumulators](#accumulators) with non-membership proofs and set hiding.
+**State of the art:** ZK sets from Merkle trees + trapdoor hashing. Extends [Accumulators](09-commitments-verifiability.md#accumulators) with non-membership proofs and set hiding.
 
 **Production readiness:** Research
 Primarily theoretical constructions. No widely deployed production implementation; used in academic protocol designs.
@@ -531,7 +531,7 @@ Well-studied in theoretical cryptography. Limited practical adoption; most appli
 | **Witness PRF from iO** | 2016 | Indistinguishability obfuscation | Alternative construction from iO; more general [[1]](https://eprint.iacr.org/2016/597) |
 | **Witness PRF Applications** | 2016 | — | Implies multi-party key exchange, secret sharing for NP, more [[1]](https://eprint.iacr.org/2016/597) |
 
-**State of the art:** Theoretical; constructions require [iO](#indistinguishability-obfuscation-io) or [Multilinear Maps](#multilinear-maps). Implies [Witness Encryption](#witness-encryption), [Constrained PRFs](#puncturable--constrained-prf), and more.
+**State of the art:** Theoretical; constructions require [iO](16-obfuscation-advanced-hardness.md#indistinguishability-obfuscation-io) or [Multilinear Maps](16-obfuscation-advanced-hardness.md#multilinear-maps). Implies [Witness Encryption](#witness-prf), [Constrained PRFs](01-foundational-primitives.md#puncturable-constrained-prf), and more.
 
 **Production readiness:** Research
 Purely theoretical constructions requiring iO or multilinear maps, neither of which has practical implementations.
@@ -557,7 +557,7 @@ Important theoretical primitive studied in the foundations of cryptography. No p
 | **Malleable Signatures (Chase et al.)** | 2012 | SPS + GS | Derive signatures on related messages; enables delegatable credentials [[1]](https://eprint.iacr.org/2012/345) |
 | **cm-NIZK for Circuits** | 2014 | Pairings | Controlled malleability for general circuit satisfiability [[1]](https://eprint.iacr.org/2014/590) |
 
-**State of the art:** cm-NIZK from [Groth-Sahai](#groth-sahai-proofs) proofs; enables delegatable [Anonymous Credentials](#anonymous-credentials) and proof-carrying data without interaction.
+**State of the art:** cm-NIZK from [Groth-Sahai](#groth-sahai-proofs) proofs; enables delegatable [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials) and proof-carrying data without interaction.
 
 **Production readiness:** Research
 Academic constructions built on Groth-Sahai proofs. Used in theoretical designs of delegatable credentials and proof systems.
@@ -583,7 +583,7 @@ Well-cited in academic cryptography. Primarily used as a building block in theor
 | **WI from Sigma Protocols** | 1994 | DLP | Run two Sigma protocols in parallel; WI without ZK [[1]](https://doi.org/10.1007/BFb0053443) |
 | **Resettable WI (Deng-Goyal-Sahai)** | 2009 | One-way functions | WI secure even if verifier can reset prover to initial state [[1]](https://doi.org/10.1109/FOCS.2009.12) |
 
-**State of the art:** WI is the default security notion for many sub-protocols in [MPC](#multi-party-computation-mpc) and credential systems. Composes better than ZK — see [ZK Proofs](#zero-knowledge-proofs-zk), [Sigma Protocols](#sigma-protocols--schnorr-identification).
+**State of the art:** WI is the default security notion for many sub-protocols in [MPC](06-multi-party-computation.md#multi-party-computation-mpc) and credential systems. Composes better than ZK — see [ZK Proofs](#zero-knowledge-proofs-zk), [Sigma Protocols](#sigma-protocols-schnorr-identification).
 
 **Production readiness:** Mature
 WI is a standard security notion used in production protocols (MPC, credential systems) rather than deployed as a standalone primitive.
@@ -637,7 +637,7 @@ Major theoretical breakthrough (Barak 2001). Essential for the foundations of ZK
 | **MIP* = RE (Ji et al.)** | 2020 | Quantum entanglement | With entangled provers, all RE languages provable; resolved Connes embedding [[1]](https://arxiv.org/abs/2001.04383) |
 | **Interactive Proofs for Muggles (GKR)** | 2008 | Sumcheck | Practical: verifier delegates computation to untrusted prover [[1]](https://doi.org/10.1145/2699436) |
 
-**State of the art:** MIP* = RE (2020, breakthrough); practical MIP-derived systems via [Sumcheck](#sumcheck-protocol) and [IOP](#interactive-oracle-proofs-iop--pcp). Foundational for proof complexity.
+**State of the art:** MIP* = RE (2020, breakthrough); practical MIP-derived systems via [Sumcheck](#sumcheck-protocol) and [IOP](#interactive-oracle-proofs-iop-pcp). Foundational for proof complexity.
 
 **Production readiness:** Research
 MIPs are a complexity-theoretic concept. Practical systems derived from MIP techniques (GKR, sumcheck) are in production, but MIPs themselves are theoretical.
@@ -1141,7 +1141,7 @@ Cairo is the standard for StarkNet. Leo is standard for Aleo. Noir is growing ra
 
 **Research impact:** CirC (Ozdemir, Brown, Pearce, Ezueh, Sturton; USENIX Security 2022) demonstrated that ZK and MPC can share a compiler infrastructure, enabling cross-protocol optimisations. It also surfaced a class of *underconstrained circuit bugs* — R1CS constraints that are satisfiable by unintended witnesses — now studied as a security problem in ZK compilers.
 
-**State of the art:** CirC (USENIX Security 2022) remains the primary academic reference for multi-backend ZK/MPC compilation. Production compilers (Noir, Leo) adopt similar IR strategies. See [Circom and SnarkJS](#circom-and-snarkjs), [ZK Circuit DSLs](#zk-circuit-dsls-noir-leo-cairo), [MPC](#multi-party-computation-mpc).
+**State of the art:** CirC (USENIX Security 2022) remains the primary academic reference for multi-backend ZK/MPC compilation. Production compilers (Noir, Leo) adopt similar IR strategies. See [Circom and SnarkJS](#circom-and-snarkjs), [ZK Circuit DSLs](#zk-circuit-dsls-noir-leo-cairo), [MPC](06-multi-party-computation.md#multi-party-computation-mpc).
 
 **Production readiness:** Research
 Academic research compiler (USENIX Security 2022). Used for research and prototyping; production compilers adopt similar IR strategies.
@@ -1319,7 +1319,7 @@ IACR 2018. STARKs are the dominant transparent proof system. Endorsed by StarkWa
 
 **Relation to VOLEitH:** [VOLEitH](#voleitH-vole-in-the-head) makes VOLE-based ZK non-interactive by simulating the VOLE setup "in the head" (like MPCitH), at the cost of larger proof sizes. Interactive VOLE-ZK (QuickSilver, Wolverine, Mac'n'Cheese) is preferred when interaction is acceptable and proof size matters less than prover speed.
 
-**State of the art:** QuickSilver and Wolverine (2021) are the canonical interactive VOLE-ZK systems; Mac'n'Cheese for streaming/low-memory settings. Silent VOLE from PCGs (see [OLE/VOLE](categories/06-multi-party-computation.md#ole--vole)) gives practical offline setup. VOLEitH (2023) extends the paradigm to non-interactive proofs. See [[1]](https://eprint.iacr.org/2021/076).
+**State of the art:** QuickSilver and Wolverine (2021) are the canonical interactive VOLE-ZK systems; Mac'n'Cheese for streaming/low-memory settings. Silent VOLE from PCGs (see [OLE/VOLE](06-multi-party-computation.md#oblivious-linear-evaluation-ole-vole)) gives practical offline setup. VOLEitH (2023) extends the paradigm to non-interactive proofs. See [[1]](https://eprint.iacr.org/2021/076).
 
 **Production readiness:** Experimental
 QuickSilver and Wolverine have working implementations with competitive benchmarks. Used in privacy-preserving computation research.
@@ -1354,7 +1354,7 @@ Published at CCS 2021 and CRYPTO 2021. Growing recognition as the most efficient
 
 **Open challenges:** Multi-jurisdiction compliance (different regulatory predicates per country), credential revocation (ZK proofs of non-revocation without leaking revocation status), and sybil resistance (preventing one person from generating many ZK identities).
 
-**State of the art:** Polygon ID (2022) and Holonym (2023) are production systems; zkAML accumulator proposals are academic (2023). The field is converging on W3C Verifiable Credentials as the credential format and Groth16/PLONK as the proof backend. See [Anonymous Credentials](categories/11-anonymity-credentials.md#anonymous-credentials), [ZK Proofs for Identity](#zk-proofs-for-identity-proof-of-age--nationality).
+**State of the art:** Polygon ID (2022) and Holonym (2023) are production systems; zkAML accumulator proposals are academic (2023). The field is converging on W3C Verifiable Credentials as the credential format and Groth16/PLONK as the proof backend. See [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials), [ZK Proofs for Identity](#zk-proofs-for-identity-proof-of-age-nationality).
 
 **Production readiness:** Experimental
 Polygon ID and Holonym are in production. zkAML accumulator schemes are academic. Active pilots with financial institutions.
@@ -1388,7 +1388,7 @@ Growing regulatory interest (EU eIDAS 2.0, MiCA). Polygon ID is the most deploye
 
 **Linkability and nullifiers:** A critical design issue is preventing the same passport from generating multiple "unique" proofs (sybil attack). Worldcoin uses iris biometrics; passport-based systems use commitment schemes keyed on the passport number (hashed under a nullifier scheme) to detect duplicates without revealing the number itself.
 
-**State of the art:** OpenPassport / zkPassport (2023) and anon-aadhaar (2023) are open-source production systems. World ID (Worldcoin) is deployed at scale. Active research on reducing circuit size (RSA in-circuit is expensive) via precompile support in zkVMs (SP1, RISC Zero). See [zkKYC / zkAML](#zk-proofs-for-regulatory-compliance-zkkyc--zkaml), [zkTLS / MPC-TLS](#zktls--mpc-tls).
+**State of the art:** OpenPassport / zkPassport (2023) and anon-aadhaar (2023) are open-source production systems. World ID (Worldcoin) is deployed at scale. Active research on reducing circuit size (RSA in-circuit is expensive) via precompile support in zkVMs (SP1, RISC Zero). See [zkKYC / zkAML](#zk-proofs-for-regulatory-compliance-zkkyc-zkaml), [zkTLS / MPC-TLS](#zktls-mpc-tls).
 
 **Production readiness:** Experimental
 OpenPassport, anon-aadhaar, and World ID are open-source and actively used. Passport verification circuits are complex (RSA in-circuit) but functional.
@@ -1421,9 +1421,9 @@ Growing adoption. World ID has millions of users. PSE (Ethereum Foundation) back
 
 **Key challenges:** Multi-hop provenance (proving properties of components whose suppliers are themselves composed of sub-suppliers), revocation of certifications without leaking which supplier was revoked, and cross-border regulatory interoperability (different standards per jurisdiction).
 
-**Relation to other primitives:** Proof-of-origin circuits rely on [ZK Sets](#zero-knowledge-sets) for hidden supplier membership, [Accumulators](categories/09-commitments-verifiability.md#accumulators) for revocation, and [Merkle-based ZK Proofs](#zero-knowledge-proofs-zk) for commitment to supply trees. Multi-party supply chains can use [Distributed SNARKs](#distributed--collaborative-snarks) to avoid any single party assembling all supplier data.
+**Relation to other primitives:** Proof-of-origin circuits rely on [ZK Sets](#zero-knowledge-sets) for hidden supplier membership, [Accumulators](09-commitments-verifiability.md#accumulators) for revocation, and [Merkle-based ZK Proofs](#zero-knowledge-proofs-zk) for commitment to supply trees. Multi-party supply chains can use [Distributed SNARKs](#distributed-collaborative-snarks) to avoid any single party assembling all supplier data.
 
-**State of the art:** Primarily academic and pilot deployments (2022–2024); no dominant production system yet. ING's zero-knowledge range proof library (Bulletproofs) is open-source. The EU's Digital Product Passport regulation (2024) is driving commercial interest. See [ZK Proofs for Regulatory Compliance](#zk-proofs-for-regulatory-compliance-zkkyc--zkaml).
+**State of the art:** Primarily academic and pilot deployments (2022–2024); no dominant production system yet. ING's zero-knowledge range proof library (Bulletproofs) is open-source. The EU's Digital Product Passport regulation (2024) is driving commercial interest. See [ZK Proofs for Regulatory Compliance](#zk-proofs-for-regulatory-compliance-zkkyc-zkaml).
 
 **Production readiness:** Research
 Primarily academic and pilot deployments. ING's zkrp library is open-source. No dominant production system yet.

@@ -41,7 +41,7 @@ Active academic community (USENIX EVT/WOTE, E-Vote-ID conferences); no IETF/NIST
 | **Colored Visual Crypto** | 1997 | Color mixing | Extension to color images [[1]](https://doi.org/10.1007/BFb0028175) |
 | **Progressive Visual SS (Jin et al.)** | 2004 | Multi-resolution | Image sharpens progressively as more shares added beyond threshold; partial trust = partial information [[1]](https://www.researchgate.net/publication/332575738) |
 
-**State of the art:** (k,n) visual SS with meaningful shares; applications in physical document security. Pure information-theoretic security — see [OTP](#one-time-pad--information-theoretic-security).
+**State of the art:** (k,n) visual SS with meaningful shares; applications in physical document security. Pure information-theoretic security — see [OTP](01-foundational-primitives.md#one-time-pad-information-theoretic-security).
 
 **Production readiness:** Research
 Academic demonstrations and physical document security prototypes; no widely deployed commercial product.
@@ -124,7 +124,7 @@ Active research area in the voting security community; JCJ model is the referenc
 | **Dziembowski et al. Proofs of Space** | 2015 | Graph pebbling | Formal model connecting erasure proofs to space complexity [[1]](https://eprint.iacr.org/2013/796) |
 | **PoSE for SGX Enclaves** | 2018 | TEE + attestation | Prove enclave data erased using hardware attestation [[1]](https://doi.org/10.1145/3243734.3243745) |
 
-**State of the art:** Memory-filling PoSE for embedded/IoT; SGX-based for cloud. Related to [PoW/PoSpace](#proof-of-work-pow--proof-of-space).
+**State of the art:** Memory-filling PoSE for embedded/IoT; SGX-based for cloud. Related to [PoW/PoSpace](#proof-of-unique-human-worldcoin-proof-of-personhood).
 
 **Production readiness:** Research
 Academic prototypes only; SGX-based PoSE demonstrated in lab settings; no commercial deployment for GDPR compliance verification.
@@ -151,7 +151,7 @@ Academic interest in IoT attestation and GDPR compliance; no standardization; li
 | **Strong Key-Insulation** | 2003 | DLP | Even compromising helper + one period doesn't break other periods [[1]](https://doi.org/10.1007/3-540-39200-9_8) |
 | **Intrusion-Resilient Sigs (Itkis-Reyzin)** | 2002 | DLP | Combines forward security + key-insulation [[1]](https://doi.org/10.1007/3-540-36178-2_33) |
 
-**State of the art:** Key-insulated schemes fill the gap between [Forward-Secure Crypto](#forward-secure-signatures--encryption) (no helper needed) and [Proactive SS](#proactive-secret-sharing) (distributed). Used in smart card + host scenarios.
+**State of the art:** Key-insulated schemes fill the gap between [Forward-Secure Crypto](08-signatures-advanced.md#forward-secure-signatures-encryption) (no helper needed) and [Proactive SS](05-secret-sharing-threshold-cryptography.md#proactive-secret-sharing) (distributed). Used in smart card + host scenarios.
 
 **Production readiness:** Research
 Academic constructions with no widely deployed production systems; smart card + host model has seen limited commercial prototyping.
@@ -178,7 +178,7 @@ Well-studied in academic cryptography; fills a specific gap between forward secu
 | **TLS Client Puzzles (RFC draft)** | 2019 | Hash | Extension to TLS handshake; server issues puzzle during ClientHello [[1]](https://datatracker.ietf.org/doc/draft-nir-tls-puzzles/) |
 | **VDF-based Puzzles** | 2018 | Sequential squaring | Non-parallelizable puzzles; fair regardless of hardware [[1]](https://eprint.iacr.org/2018/601) |
 
-**State of the art:** VDF-based puzzles for fairness; hash-based puzzles for simplicity. Precursor to [PoW](#proof-of-work-pow--proof-of-space). See also [Time-Lock Puzzles](#time-lock-puzzles--timed-release-encryption).
+**State of the art:** VDF-based puzzles for fairness; hash-based puzzles for simplicity. Precursor to [PoW](#proof-of-unique-human-worldcoin-proof-of-personhood). See also [Time-Lock Puzzles](#time-release-cryptography-timed-commitments).
 
 **Production readiness:** Mature
 Hash-based client puzzles deployed in TLS extensions (experimental), anti-spam systems, and Bitcoin PoW; VDF-based puzzles in blockchain research prototypes.
@@ -205,7 +205,7 @@ HashCash concept underlies Bitcoin PoW; client puzzles well-studied since 1999; 
 | **Incremental Signatures (Bellare et al.)** | 1994 | Tree-based | Update signature when document changes; logarithmic cost [[1]](https://doi.org/10.1007/3-540-48329-2_22) |
 | **Authenticated Data Structures (Tamassia)** | 2003 | Merkle + skip lists | Generalized framework: any data structure with authenticated incremental updates [[1]](https://doi.org/10.1007/3-540-39658-0_2) |
 
-**State of the art:** Merkle-based authenticated data structures (widely deployed); incremental hashing in rsync, IPFS, git. See [Accumulators](#accumulators), [Hash Functions](#hash-functions).
+**State of the art:** Merkle-based authenticated data structures (widely deployed); incremental hashing in rsync, IPFS, git. See [Accumulators](09-commitments-verifiability.md#accumulators), [Hash Functions](01-foundational-primitives.md#hash-functions).
 
 **Production readiness:** Production
 Merkle-based authenticated data structures deployed in git, IPFS, Certificate Transparency, and blockchain systems; incremental hashing used in rsync.
@@ -292,7 +292,7 @@ Influential in the E2E voting research community; vVote is a notable real-world 
 
 STAR-Vote was designed in collaboration between Travis County (Austin, TX) election officials, Rice University, and Microsoft Research. The electronic record of all ballots is maintained in an encrypted form under a threshold public key; no individual ballot is decrypted. The homomorphic property allows aggregating all encrypted ballots into an encrypted tally, which is then decrypted once. Individual ballot verifiability is achieved via the Benaloh challenge: voters may ask the terminal to prove its encryption is honest, sacrificing that ballot.
 
-**State of the art:** STAR-Vote was not ultimately deployed in Travis County due to procurement constraints, but its design is widely cited as the state-of-the-art blueprint for in-person E2E verifiable voting. Extends [E2E E-Voting](#end-to-end-verifiable-e-voting) and [Coercion-Resistant Voting](#coercion-resistant-voting--receipt-freeness).
+**State of the art:** STAR-Vote was not ultimately deployed in Travis County due to procurement constraints, but its design is widely cited as the state-of-the-art blueprint for in-person E2E verifiable voting. Extends [E2E E-Voting](#end-to-end-verifiable-e-voting) and [Coercion-Resistant Voting](#coercion-resistant-voting-receipt-freeness).
 
 **Production readiness:** Research
 Design completed but never deployed due to procurement constraints in Travis County; remains a reference architecture for in-person E2E voting.
@@ -352,7 +352,7 @@ Well-regarded in the timestamping and archival communities; not an IETF or ISO s
 
 The core challenge is the "last-revealer problem": in a commit-reveal protocol the last party to reveal can abort if the outcome is unfavorable, biasing the distribution. Solutions include: financial penalties via smart contracts (Bentov-Kumaresan), threshold randomness beacons (no single party controls the outcome), or VRFs combined with a pre-committed seed. Applications include blockchain leader election, provably fair games, and government lotteries.
 
-**State of the art:** VRF-based lotteries (used in Cardano, Algorand, Ethereum RANDAO) for blockchain leader election; Bitcoin-collateral protocols for fully trustless settings. See [VRF](#verifiable-random-function-vrf) and [Randomness Beacons](#randomness-beacons).
+**State of the art:** VRF-based lotteries (used in Cardano, Algorand, Ethereum RANDAO) for blockchain leader election; Bitcoin-collateral protocols for fully trustless settings. See [VRF](#verifiable-delay-functions-vdfs) and [Randomness Beacons](01-foundational-primitives.md#randomness-extractors).
 
 **Production readiness:** Production
 VRF-based leader election deployed in Cardano (Ouroboros), Algorand, and Ethereum (RANDAO); commit-reveal lotteries used in various smart contract platforms.
@@ -441,7 +441,7 @@ Notable as one of few E2E systems used in binding political elections; academic 
 
 The core challenge is that the winner determination and payment rules in Vickrey/VCG auctions require comparing all bids — but revealing bids to a central auctioneer allows bid manipulation. MPC-based solutions remove the trusted auctioneer entirely. HE-based solutions let an auctioneer compute the winner and price on encrypted bids without learning individual values. In the VCG case the Clarke payment for each winner equals the externality they impose on others — computing this requires evaluating the social welfare optimization on all bids, which maps naturally to an MPC circuit or an FHE evaluation.
 
-**State of the art:** HE-based sealed-bid auctions (deployed in procurement and spectrum auctions); MPC-based VCG for settings requiring no trusted auctioneer. Related to [Sealed-Bid Auctions (ORAM/PIR based)](categories/10-privacy-preserving-computation.md#sealed-bid-auctions) and [MPC](#multi-party-computation).
+**State of the art:** HE-based sealed-bid auctions (deployed in procurement and spectrum auctions); MPC-based VCG for settings requiring no trusted auctioneer. Related to [Sealed-Bid Auctions (ORAM/PIR based)](10-privacy-preserving-computation.md#sealed-bid-auction-protocols) and [MPC](06-multi-party-computation.md#multi-party-computation).
 
 **Production readiness:** Mature
 HE-based sealed-bid auctions used in government procurement and spectrum auctions; MPC-based VCG demonstrated in research prototypes; Brandt's fully private auction has working implementations.
@@ -506,7 +506,7 @@ Academic consensus (USENIX Security 2020, National Academies) opposes internet/b
 
 The two core threat models are: (1) **mafia fraud** — an active relay attack where an adversary in the middle relays messages between a distant prover and verifier without either party's awareness (defeated by timing); (2) **terrorist fraud** — where a colluding prover helps an attacker pass distance checks from a distance (requires the prover cannot give the attacker a reusable token). Applications include contactless payment terminals (Visa/Mastercard relay-attack resistance), building access control, and secure ranging in Ultra-Wideband (UWB) as deployed in iPhone U1/Apple CarKey.
 
-**State of the art:** UWB-based distance bounding (Apple CarKey, IEEE 802.15.4z) for automotive and access control; ISO/IEC 23741 for standardization. See [FIDO2/WebAuthn](categories/12-secure-communication-protocols.md#totpfido2webauthn) for proximity authentication and [TEE Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation) for hardware-backed presence claims.
+**State of the art:** UWB-based distance bounding (Apple CarKey, IEEE 802.15.4z) for automotive and access control; ISO/IEC 23741 for standardization. See [FIDO2/WebAuthn](12-secure-communication-protocols.md#token-based-authentication-totp-fido2-webauthn) for proximity authentication and [TEE Attestation](14-applied-infrastructure-pki.md#tee-remote-attestation) for hardware-backed presence claims.
 
 **Production readiness:** Production
 UWB distance bounding deployed in Apple CarKey, Samsung SmartThings, and automotive keyless entry; IEEE 802.15.4z standardized; Visa/Mastercard relay-attack countermeasures in EMV contactless.
@@ -537,7 +537,7 @@ ISO/IEC 23741:2023 published; IEEE 802.15.4z standardized; deployed by Apple, Sa
 
 A v3 .onion address encodes the Ed25519 public key directly — there is no certificate authority, no DNS, and no registrar. The 56-character hostname is the public key. To reach a service, a client asks an HSDir (hash ring of Tor relays) for the encrypted descriptor; the descriptor reveals the service's introduction points; the client builds a circuit to a rendezvous point and passes it to the service via an introduction point; the service completes the circuit, and an end-to-end authenticated Tor circuit is established. The entire scheme relies on Ed25519 signatures, X25519 key agreement, SHA3-256 hashing, and the Tor onion routing layer — no centralized component ever learns both the client and server identity simultaneously.
 
-**State of the art:** v3 hidden services (mandatory since 2021); SecureDrop, Facebook's facebookwkhpilnemxj.onion, and numerous whistleblowing platforms use v3 .onion addresses. See [Onion Routing / Tor](categories/11-anonymity-credentials.md#mixnets--onion-routing) for the underlying anonymity layer.
+**State of the art:** v3 hidden services (mandatory since 2021); SecureDrop, Facebook's facebookwkhpilnemxj.onion, and numerous whistleblowing platforms use v3 .onion addresses. See [Onion Routing / Tor](11-anonymity-credentials.md#onion-routing) for the underlying anonymity layer.
 
 **Production readiness:** Production
 v3 onion services mandatory since October 2021; thousands of production services including SecureDrop, Facebook, DuckDuckGo, ProtonMail, and the New York Times.
@@ -569,7 +569,7 @@ Tor onion services are the de facto standard for anonymous hosting; used by majo
 
 Sealed Sender addresses the "to" metadata but not the "from" metadata: Signal's server always knows which device to deliver to (the recipient), but with Sealed Sender it does not know who sent it. The scheme uses a sender certificate (signed by Signal's server, proving the sender is a registered user without revealing their ID to the server at send time) that is encrypted inside the Double Ratchet ciphertext. The limitation is that the recipient's server still learns message timing and size. Full metadata hiding requires PIR-based approaches like Herd or OMR, which remain expensive but are the active research frontier.
 
-**State of the art:** Signal Sealed Sender v2 (production, ~2022); OMR (research, 2022–present). Related to [PIR](categories/10-privacy-preserving-computation.md#private-information-retrieval-pir), [Double Ratchet](categories/12-secure-communication-protocols.md#double-ratchet--signal-protocol), and [Oblivious Message Retrieval](categories/10-privacy-preserving-computation.md#oblivious-message-retrieval-omr).
+**State of the art:** Signal Sealed Sender v2 (production, ~2022); OMR (research, 2022–present). Related to [PIR](10-privacy-preserving-computation.md#private-information-retrieval-pir), [Double Ratchet](12-secure-communication-protocols.md#double-ratchet-symmetric-ratchet), and [Oblivious Message Retrieval](10-privacy-preserving-computation.md#oblivious-message-retrieval-omr).
 
 **Production readiness:** Production
 Signal Sealed Sender deployed to all Signal users (~2018); Sealed Sender v2 for groups (~2022); PIR-based metadata hiding (Herd, OMR) remains research-stage.
@@ -602,7 +602,7 @@ Signal Sealed Sender is the state of the art for production metadata privacy; en
 
 The key distinction between memory-hard functions and conventional hash-based PoW (SHA-256) is **memory hardness**: the computation requires accessing a large, essentially random memory region, which cannot be easily parallelized without proportional memory per parallel unit. This collapses the advantage of custom hardware. Argon2id (RFC 9106) is the current IETF recommendation for password hashing; scrypt is used in PKCS#8 encrypted private keys and in Litecoin; Equihash is the cryptographic core of Zcash's proof-of-work consensus.
 
-**State of the art:** Argon2id (RFC 9106, recommended by OWASP); yescrypt (Linux default); Equihash (Zcash). Extends [Client Puzzles / Proof of Effort](#client-puzzles--proof-of-effort) and [PoW/PoSpace](categories/13-blockchain-distributed-ledger.md#proof-of-work-pow--proof-of-space).
+**State of the art:** Argon2id (RFC 9106, recommended by OWASP); yescrypt (Linux default); Equihash (Zcash). Extends [Client Puzzles / Proof of Effort](#client-puzzles-proof-of-effort) and [PoW/PoSpace](13-blockchain-distributed-ledger.md#proof-of-work-pow-proof-of-space).
 
 **Production readiness:** Production
 Argon2id is RFC 9106 and OWASP-recommended; yescrypt is the default password hash in Fedora, Debian, and Ubuntu; scrypt used in Litecoin and PKCS#8; Equihash powers Zcash.
@@ -637,7 +637,7 @@ Argon2id is IETF RFC 9106 and OWASP-recommended; yescrypt adopted by major Linux
 
 The central insight unifying these systems is that **a signature on a final artifact is insufficient** — a malicious build system could produce a correctly-signed artifact from tampered source or with a backdoored compiler (a Thompson-attack variant). in-toto closes this gap by requiring signed attestations at each pipeline step and a maintainer-signed layout that defines what steps are required and in what order. SLSA operationalizes this into audit levels that organizations can target incrementally. Sigstore solves the key distribution problem (how does a consumer verify a developer's signing key?) by anchoring signing keys to OIDC identities and recording every signing event in a public transparency log.
 
-**State of the art:** Sigstore/cosign (default for Kubernetes/CNCF ecosystem); npm provenance (default for new npm publishes); TUF (PyPI, Rust crates). See [Sigstore / Certificate Transparency](categories/14-applied-infrastructure-pki.md#sigstore-rekor--software-signing-transparency) and [C2PA/SLSA](categories/14-applied-infrastructure-pki.md#c2pacai-content-provenance--slsa) for related entries in category 14.
+**State of the art:** Sigstore/cosign (default for Kubernetes/CNCF ecosystem); npm provenance (default for new npm publishes); TUF (PyPI, Rust crates). See [Sigstore / Certificate Transparency](14-applied-infrastructure-pki.md#sigstore-keyless-code-signing) and [C2PA/SLSA](14-applied-infrastructure-pki.md#cryptographic-provenance-attestation-c2pa-slsa) for related entries in category 14.
 
 **Production readiness:** Production
 TUF deployed in PyPI, Docker Content Trust, and Rust crates; Sigstore is default for Kubernetes/CNCF; SLSA adopted by Google, npm, GitHub Actions; in-toto integrated into major CI/CD pipelines.
@@ -672,7 +672,7 @@ TUF is a CNCF graduated project; Sigstore is a CNCF project; SLSA is backed by G
 
 The blind signature trick: the user picks a random serial number s, blinds it as b = s · rᵉ mod n (for RSA with exponent e), sends b to the bank, bank signs bᵈ mod n = (s · rᵉ)ᵈ = sᵈ · r mod n, user divides by r to get sᵈ mod n — a valid RSA signature on s the bank has never seen. The practical failure of DigiCash (bankruptcy 1998) was commercial, not cryptographic: merchants were reluctant to adopt, banks delayed integration, and the internet payment landscape moved to credit cards. The double-spend database creates a central bottleneck and a privacy risk if the bank retains serial numbers. Brands' scheme eliminates the online check but requires trust that the identity-revealing mechanism deters cheating.
 
-**State of the art:** Blind-signature e-cash is the cryptographic foundation of [Privacy Pass](categories/11-anonymity-credentials.md#privacy-pass--private-authentication-tokens) (anonymous rate-limiting tokens) and underlies [GNU Taler](#gnu-taler-practical-e-cash). See also [Anonymous Credentials](categories/11-anonymity-credentials.md#anonymous-credentials) and [E-Cash](categories/11-anonymity-credentials.md#e-cash--electronic-cash).
+**State of the art:** Blind-signature e-cash is the cryptographic foundation of [Privacy Pass](11-anonymity-credentials.md#privacy-pass-anonymous-tokens) (anonymous rate-limiting tokens) and underlies [GNU Taler](#gnu-taler-practical-e-cash-with-income-transparency). See also [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials) and [E-Cash](11-anonymity-credentials.md#e-cash-chaumian-digital-cash).
 
 **Production readiness:** Mature
 DigiCash was commercially deployed (1994-1998) but folded; blind signature primitives underlie Privacy Pass (production) and GNU Taler (pilot); Compact E-Cash and Brands schemes are research prototypes.
@@ -701,7 +701,7 @@ Chaum's blind signature e-cash is a foundational contribution (1982); Privacy Pa
 
 The key design asymmetry: payer anonymity is information-theoretic (the exchange signed a blinded coin and cannot link it to redemption), but merchant income transparency is mandatory (the merchant must deposit with their real identity to receive payment). The Refresh protocol solves the "change" problem: in Chaum's original scheme, returning change to the payer would allow the exchange to link the original and refreshed coins. GNU Taler's refresh uses a cut-and-choose protocol where the exchange signs k candidate refresh requests and the payer reveals k−1, forcing honest behavior. The system was piloted by the Swiss canton of Zurich in 2022 as a government digital currency experiment.
 
-**State of the art:** GNU Taler v0.9+ (production-capable); Swiss cantonal pilot (2022). Compare [Chaum DigiCash](#blind-signature-based-e-cash-chaum-digicash) (full payer and payee anonymity) and [Monero / Confidential Transactions](categories/13-blockchain-distributed-ledger.md#confidential-transactions--mimblewimble) (blockchain-based full anonymity with no income transparency).
+**State of the art:** GNU Taler v0.9+ (production-capable); Swiss cantonal pilot (2022). Compare [Chaum DigiCash](#blind-signature-based-e-cash-chaum-digicash) (full payer and payee anonymity) and [Monero / Confidential Transactions](13-blockchain-distributed-ledger.md#confidential-transactions-ct) (blockchain-based full anonymity with no income transparency).
 
 **Production readiness:** Experimental
 Swiss canton of Zurich pilot (2022); production-capable software (v0.9+) but no large-scale commercial deployment yet; EU digital euro discussions reference Taler's design.
@@ -734,7 +734,7 @@ GNU project; Swiss government pilot; referenced in EU CBDC discussions; growing 
 
 The core primitive is a **Merkle hash tree** over ordered log entries, with a **signed tree head (STH)** committing to the tree's root hash and size at each epoch. Consistency proofs between two sizes (n₁ < n₂) demonstrate that the new log is a strict extension of the old one — no entries were removed or reordered. Inclusion proofs (O(log n) hashes) demonstrate that a specific entry is in the log. The key security property — that a server cannot present different log views to different observers — is enforced by **gossip protocols** or **witnesses** that compare STHs. Crosby-Wallach's skip-list design enables efficient queries by time range; Merkle-tree designs (CT, Trillian) prioritize verifiable inclusion proofs.
 
-**State of the art:** Certificate Transparency (mandatory for Chrome/Safari TLS since 2018); Go checksum database (default for `go get`); Sigstore Rekor (software signing). Related to [Linked Timestamping](#linked-timestamping), [OpenTimestamps](#opentimestamps), [Key Transparency](categories/03-key-exchange-key-management.md#key-transparency--whatsapp-key-transparency).
+**State of the art:** Certificate Transparency (mandatory for Chrome/Safari TLS since 2018); Go checksum database (default for `go get`); Sigstore Rekor (software signing). Related to [Linked Timestamping](#linked-timestamping), [OpenTimestamps](#opentimestamps), [Key Transparency](03-key-exchange-key-management.md#key-transparency-coniks).
 
 **Production readiness:** Production
 Certificate Transparency mandatory for Chrome/Safari since 2018; Go checksum database default since Go 1.13; Sigstore Rekor in production for CNCF ecosystem.
@@ -768,7 +768,7 @@ RFC 6962/9162 (CT) is an IETF standard; mandatory in Chrome and Safari; Go check
 
 The ecosystem divides into two design philosophies. **On-device computation** (PAAPI, PCM) moves the sensitive logic — interest group matching, auction, attribution — into the browser or a TEE, so no server ever sees raw behavioral data. **Cryptographic aggregation** (Prio, Poplar) sends only secret-shared or differentially private contributions to servers, which compute only aggregate statistics. The IETF VDAF (Verifiable Distributed Aggregation Function) standard formalizes the Prio approach: clients produce a pair of secret shares, each with a ZK validity proof (using a VOLE-based or Fiat-Shamir argument), sent to two aggregation servers; servers check validity and sum shares; no individual value is ever reconstructed. Firefox Telemetry, ISRG (Let's Encrypt's parent), and the DAP (Distributed Aggregation Protocol) working group deploy Prio3 for privacy-preserving telemetry.
 
-**State of the art:** Chrome PAAPI (GA 2023); Apple PCM (Safari production); DAP/Prio3 (IETF draft, Firefox/ISRG deployment). Related to [Differential Privacy](categories/10-privacy-preserving-computation.md#differential-privacy), [VDAF/Prio](categories/10-privacy-preserving-computation.md#prio--vdaf--private-statistics), and [TEE Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation).
+**State of the art:** Chrome PAAPI (GA 2023); Apple PCM (Safari production); DAP/Prio3 (IETF draft, Firefox/ISRG deployment). Related to [Differential Privacy](10-privacy-preserving-computation.md#differential-privacy), [VDAF/Prio](10-privacy-preserving-computation.md#prio-vdaf-privacy-preserving-aggregation), and [TEE Attestation](14-applied-infrastructure-pki.md#tee-remote-attestation).
 
 **Production readiness:** Production
 Chrome PAAPI generally available (2023); Apple PCM/ITP in Safari production; Prio3/DAP deployed by Firefox Telemetry and ISRG (Let's Encrypt).
@@ -799,7 +799,7 @@ IETF DAP and VDAF drafts in active standardization; Chrome Privacy Sandbox manda
 
 The fundamental challenge is implementing a "shared deck" where no single party controls the card ordering, yet each card can be privately revealed to exactly one player. Commutative encryption (where Enc_A(Enc_B(m)) = Enc_B(Enc_A(m))) enables this: all players jointly encrypt the deck, shuffle it, and then selectively decrypt individual cards. Modern approaches replace commutative ciphers with re-encryption shuffles and ZK shuffle proofs, which are more efficient and have well-understood security.
 
-**State of the art:** Barnett-Smart (practical implementations for online poker); Kaleidoscope (general card games via SNARKs). See [MPC](categories/06-multi-party-computation.md#secure-multi-party-computation-mpc) and [ZK Proofs](categories/04-zero-knowledge-proof-systems.md#zero-knowledge-proofs).
+**State of the art:** Barnett-Smart (practical implementations for online poker); Kaleidoscope (general card games via SNARKs). See [MPC](06-multi-party-computation.md#multi-party-computation-mpc) and [ZK Proofs](04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk).
 
 **Production readiness:** Experimental
 Barnett-Smart has working implementations for online poker; Kaleidoscope demonstrated for general card games; no major commercial deployment.
@@ -828,7 +828,7 @@ Active research area since 1981; libTMCG is the most mature implementation; bloc
 
 Unlike traditional password hashing (bcrypt, Argon2), where the server stores a hash and can mount offline dictionary attacks on its own database, OPAQUE uses an oblivious PRF so the server never processes the raw password. The client evaluates OPRF(password) with the server's OPRF key, receiving a high-entropy key that decrypts the stored envelope containing the client's AKE private key. Even a fully compromised server database is useless without performing an online attack against the OPRF. This makes OPAQUE the strongest known form of password-based authentication.
 
-**State of the art:** IETF CFRG standardization in progress (draft-irtf-cfrg-opaque); implemented in Cloudflare, WhatsApp key backup, and Facebook credential storage. Related to [PAKE](categories/03-key-exchange-key-management.md#password-authenticated-key-exchange-pake--kdf) and [OPRF](categories/10-privacy-preserving-computation.md#oblivious-prf-oprf--voprf).
+**State of the art:** IETF CFRG standardization in progress (draft-irtf-cfrg-opaque); implemented in Cloudflare, WhatsApp key backup, and Facebook credential storage. Related to [PAKE](03-key-exchange-key-management.md#password-authenticated-key-exchange-pake) and [OPRF](10-privacy-preserving-computation.md#oblivious-prf-oprf).
 
 **Production readiness:** Production
 Deployed in Cloudflare (password authentication), WhatsApp (key backup), and Facebook (credential storage); IETF CFRG standardization in progress.
@@ -859,7 +859,7 @@ IETF CFRG draft in active standardization; deployed by Cloudflare, Meta, and Wha
 
 The key property is **sequential hardness**: T sequential squarings cannot be parallelized below T steps (under the repeated-squaring assumption), yet verification takes O(log T) or O(1) exponentiations. Wesolowski's proof is a single group element but relies on the adaptive root assumption; Pietrzak's proof is larger (O(log T) elements) but relies only on the standard sequential squaring assumption. Both require a group of unknown order — either an RSA modulus (trusted setup) or a class group (no setup). The Ethereum research program addresses the "ASIC gap" problem: if one party has a 10x faster squaring chip, they can evaluate the VDF early and gain an unfair advantage.
 
-**State of the art:** Chia Network (class-group VDF in production); Ethereum VDF research ongoing; Wesolowski/Pietrzak are the two standard constructions. Related to [Time-Lock Puzzles](categories/09-commitments-verifiability.md#time-lock-puzzles--timed-release-encryption), [Randomness Beacons](categories/09-commitments-verifiability.md#randomness-beacons), and [Client Puzzles](#client-puzzles--proof-of-effort).
+**State of the art:** Chia Network (class-group VDF in production); Ethereum VDF research ongoing; Wesolowski/Pietrzak are the two standard constructions. Related to [Time-Lock Puzzles](09-commitments-verifiability.md#time-lock-puzzles-timed-release-encryption), [Randomness Beacons](09-commitments-verifiability.md#randomness-beacons-coin-tossing), and [Client Puzzles](#client-puzzles-proof-of-effort).
 
 **Production readiness:** Production
 Chia Network uses class-group VDFs in production for timelord proofs; Ethereum VDF research ongoing with ASIC design; Wesolowski/Pietrzak constructions well-implemented.
@@ -891,7 +891,7 @@ Active research community (VDF Alliance, Ethereum Foundation); Chia deployed in 
 
 The core challenge is preventing "outsourcing attacks" (miner stores data on someone else's disk), "generation attacks" (miner re-derives data from a short seed instead of storing it), and "sybil storage" (claiming N copies but storing only 1). Filecoin's PoRep addresses this by requiring an encoding step that is inherently sequential and miner-specific — each replica is a unique transformation of the original data through a depth-robust graph, meaning the miner must have physically performed the slow encoding. PoSt extends this guarantee over time: the miner must respond to random challenges that require reading specific positions of the encoded replica, proving the data remains stored.
 
-**State of the art:** Filecoin (production since 2020; >20 EiB stored); Chia (proof of space + VDF consensus). Related to [PoW / Proof of Space](categories/13-blockchain-distributed-ledger.md#proof-of-work-pow--proof-of-space) and [Proof of Data Possession / PoR](categories/09-commitments-verifiability.md#proof-of-retrievability-por--proof-of-data-possession-pdp).
+**State of the art:** Filecoin (production since 2020; >20 EiB stored); Chia (proof of space + VDF consensus). Related to [PoW / Proof of Space](13-blockchain-distributed-ledger.md#proof-of-work-pow-proof-of-space) and [Proof of Data Possession / PoR](09-commitments-verifiability.md#proofs-of-retrievability-por-provable-data-possession).
 
 **Production readiness:** Production
 Filecoin in production since 2020 with >20 EiB of verified storage; Chia mainnet since 2021; Compact PoR (Shacham-Waters) widely implemented.
@@ -922,7 +922,7 @@ Filecoin and Chia are major blockchain projects with significant adoption; acade
 
 The motivating threat is **algorithm substitution attacks (ASA)**: a compromised implementation uses subliminal channels in its random-looking outputs (nonces, ciphertexts) to leak secret keys to a passive eavesdropper. The NSA's Dual_EC_DRBG backdoor is the canonical example. A cryptographic reverse firewall sits between the user's compromised machine and the network, re-randomizing every outgoing message. The key property is that the firewall does not need the user's secret key — it only needs the protocol to be algebraically rerandomizable. The firewall maintains functionality (the protocol still works correctly) while destroying any covert channel. The limitation is that the protocol must be designed with rerandomizability in mind.
 
-**State of the art:** Theoretical framework (2015+); practical constructions exist for DH, Schnorr, ElGamal, and OT. Closely related to [Kleptography / ASA](categories/18-covert-channels-steganography.md#kleptography--algorithm-substitution-attacks-asa) (the attack CRFs defend against) and [Cryptographic Reverse Firewalls](categories/19-theoretical-foundations.md#cryptographic-reverse-firewalls) in category 19.
+**State of the art:** Theoretical framework (2015+); practical constructions exist for DH, Schnorr, ElGamal, and OT. Closely related to [Kleptography / ASA](18-covert-channels-steganography.md#kleptography-algorithm-substitution-attacks-asa) (the attack CRFs defend against) and [Cryptographic Reverse Firewalls](19-theoretical-foundations.md#cryptographic-reverse-firewalls) in category 19.
 
 **Production readiness:** Research
 Theoretical framework with constructions for DH, Schnorr, ElGamal, and OT; no production deployment or commercial product.
@@ -952,7 +952,7 @@ Well-cited in the academic kleptography/ASA defense literature; motivated by the
 
 The model captures real-world attacks where an adversary cannot extract the full key but obtains partial information each time the key is used (e.g., differential power analysis on a smart card). The "bounded leakage model" allows up to λ bits of arbitrary leakage of the secret key; the "continual leakage model" allows λ bits per time period with key updates between periods. Constructions typically rely on secret sharing the key internally and refreshing shares, or on algebraic structures (hash proof systems, lattices) where partial key leakage does not break the underlying hardness assumption.
 
-**State of the art:** Continual-leakage model with key refresh (theoretical); lattice-based constructions are most efficient. Related to [Leakage-Resilient Cryptography](categories/19-theoretical-foundations.md#leakage-resilient-cryptography) (foundations) and [Key-Insulated Cryptography](#key-insulated-cryptography) (complementary approach).
+**State of the art:** Continual-leakage model with key refresh (theoretical); lattice-based constructions are most efficient. Related to [Leakage-Resilient Cryptography](19-theoretical-foundations.md#leakage-resilient-cryptography) (foundations) and [Key-Insulated Cryptography](#key-insulated-cryptography) (complementary approach).
 
 **Production readiness:** Research
 Theoretical constructions with proofs of security under leakage; no production-deployed leakage-resilient protocol; smart card countermeasures use related principles informally.
@@ -982,7 +982,7 @@ Active academic research area (CRYPTO, EUROCRYPT publications); informs practica
 
 Two paradigms exist. **Computational time-release** (Rivest-Shamir-Wagner) forces the recipient to perform T sequential squarings — no parallelism helps, but the sender must estimate the recipient's hardware speed. **Beacon-based time-release** (drand) encrypts to a future beacon round; when the beacon fires, the decryption key is publicly available — no computation needed, but the beacon must be trusted (or threshold-distributed). Timed commitments add verifiability: the committer proves the puzzle is well-formed, preventing denial-of-service via unsolvable puzzles. Applications include sealed-bid auctions (bids auto-open at deadline), cryptocurrency fair exchange, and digital wills.
 
-**State of the art:** drand timelock encryption (production, used by Filecoin and Protocol Labs); VDF-based delay encryption (research). Related to [Time-Lock Puzzles](categories/09-commitments-verifiability.md#time-lock-puzzles--timed-release-encryption), [VDFs](#verifiable-delay-functions-vdfs), and [Delay Encryption](categories/09-commitments-verifiability.md#delay-encryption).
+**State of the art:** drand timelock encryption (production, used by Filecoin and Protocol Labs); VDF-based delay encryption (research). Related to [Time-Lock Puzzles](09-commitments-verifiability.md#time-lock-puzzles-timed-release-encryption), [VDFs](#verifiable-delay-functions-vdfs), and [Delay Encryption](09-commitments-verifiability.md#delay-encryption).
 
 **Production readiness:** Mature
 drand timelock encryption used in production by Filecoin and Protocol Labs; RSW time-lock puzzles well-implemented; delay encryption is research-stage.
@@ -1014,7 +1014,7 @@ drand is a production service with multiple operators (Cloudflare, Protocol Labs
 
 A fundamental impossibility result (Chandran et al., 2009) shows that classical secure positioning is impossible against multiple colluding adversaries who can relay messages at the speed of light. Quantum position verification circumvents this using the no-cloning theorem: adversaries cannot copy a quantum challenge to relay it to multiple positions. In practice, GPS/GNSS authentication (Galileo OSNMA) provides "good enough" location verification for civilian use by authenticating navigation signals, preventing spoofing rather than proving exact position.
 
-**State of the art:** Galileo OSNMA (production 2023, first authenticated GNSS); quantum position verification (theoretical); classical schemes require physical assumptions. Related to [Distance-Bounding Protocols](#distance-bounding-protocols) and [Proof of Location](categories/17-ai-hardware-physical-security.md#proof-of-location).
+**State of the art:** Galileo OSNMA (production 2023, first authenticated GNSS); quantum position verification (theoretical); classical schemes require physical assumptions. Related to [Distance-Bounding Protocols](#distance-bounding-protocols) and [Proof of Location](17-ai-hardware-physical-security.md#proof-of-location-spatial-proofs).
 
 **Production readiness:** Production
 Galileo OSNMA operational since 2023 (first authenticated GNSS); classical secure positioning requires physical assumptions; quantum position verification is theoretical.
@@ -1045,7 +1045,7 @@ Galileo OSNMA is the first standardized authenticated GNSS (operational 2023); G
 
 Genomic data is uniquely sensitive: it is immutable (cannot be revoked or changed like a password), identifies relatives, reveals disease predispositions, and is increasingly required for precision medicine. The iDASH competition has driven practical progress since 2014, benchmarking encrypted GWAS, secure genotype imputation, and private machine learning on genomic data. Multi-key HE is particularly natural for genomics: each hospital encrypts under its own key, a cloud computes on the joint ciphertext, and only a threshold of hospitals can decrypt the aggregate result — no party ever sees raw genomes from another institution.
 
-**State of the art:** Multi-key CKKS for multi-institutional GWAS (research prototypes); iDASH competition drives annual benchmarks; Microsoft SEAL and HEAAN used in genomic HE implementations. Related to [FHE](categories/07-homomorphic-functional-encryption.md#fully-homomorphic-encryption-fhe) and [Multi-Key / Threshold FHE](categories/07-homomorphic-functional-encryption.md#multi-key--threshold-fhe).
+**State of the art:** Multi-key CKKS for multi-institutional GWAS (research prototypes); iDASH competition drives annual benchmarks; Microsoft SEAL and HEAAN used in genomic HE implementations. Related to [FHE](07-homomorphic-functional-encryption.md#homomorphic-encryption-he) and [Multi-Key / Threshold FHE](07-homomorphic-functional-encryption.md#multi-key-threshold-fhe).
 
 **Production readiness:** Experimental
 iDASH competition prototypes demonstrate feasibility; Microsoft SEAL and HEAAN used in genomic HE research; no production clinical deployment of encrypted GWAS.
@@ -1078,7 +1078,7 @@ iDASH competition (annual since 2014) drives community progress; growing regulat
 
 Space links face unique constraints: GEO round-trip latency is ~600ms (making interactive key exchange expensive), onboard processors are radiation-hardened but computationally limited, mission lifetimes of 15-30 years require crypto-agility, and the broadcast nature of satellite signals makes eavesdropping trivial. CCSDS SDLS addresses these with pre-positioned keys and frame-level AES-GCM. Satellite QKD (Micius) extends quantum key distribution to intercontinental distances by using free-space optical channels through the atmosphere, avoiding fiber-optic losses over long distances. Post-quantum readiness is critical because satellites launched today may operate beyond the expected timeline for large-scale quantum computers.
 
-**State of the art:** CCSDS SDLS (deployed on ESA/NASA missions); Micius QKD (Chinese Academy of Sciences, 2017+); NIST PQC recommendations for long-lived space missions. Related to [QKD](categories/15-quantum-cryptography.md#quantum-key-distribution-qkd) and [Lightweight Cryptography](categories/01-foundational-primitives.md#lightweight-cryptography).
+**State of the art:** CCSDS SDLS (deployed on ESA/NASA missions); Micius QKD (Chinese Academy of Sciences, 2017+); NIST PQC recommendations for long-lived space missions. Related to [QKD](15-quantum-cryptography.md#quantum-key-distribution-qkd) and [Lightweight Cryptography](01-foundational-primitives.md#lightweight-cryptography-ascon).
 
 **Production readiness:** Production
 CCSDS SDLS deployed on ESA and NASA missions; Micius satellite QKD operational since 2017; Blockstream Satellite broadcasts Bitcoin blockchain via GEO satellites.
@@ -1110,7 +1110,7 @@ CCSDS standards are mandatory for ESA/NASA missions; NIST IR 8270 provides PQC g
 
 The central cryptographic challenge in interbank messaging is **non-repudiation under structured transformation**: a payment message passes through multiple correspondent banks, each of which may add, translate, or truncate fields. XML-DSig's enveloped signature over the full document would break on any modification. The BAH solves this by separating the header (signed, immutable) from the payload (which may be transformed). SWIFT's gpi HMAC chain provides a weaker but transit-compatible integrity guarantee: each processing bank extends the chain, so the originator can verify the full processing path. The Bangladesh Bank heist (2016, $81 M stolen via fraudulent SWIFT messages) drove the industry to mandate two-factor authentication for SWIFT terminals and accelerated gpi adoption.
 
-**State of the art:** SWIFT MX + BAH v2 (mandatory for all high-value cross-border payments from 2025 under SWIFT's migration timeline); gpi Tracker deployed by 4 000+ banks. Related to [DKIM](categories/12-secure-communication-protocols.md#dkim--email-authentication) (similar "sign the header, allow body transformation" pattern) and [PKI](categories/14-applied-infrastructure-pki.md#x509-pki--certificate-authorities).
+**State of the art:** SWIFT MX + BAH v2 (mandatory for all high-value cross-border payments from 2025 under SWIFT's migration timeline); gpi Tracker deployed by 4 000+ banks. Related to [DKIM](12-secure-communication-protocols.md#rpki-bgpsec-route-origin-authentication) (similar "sign the header, allow body transformation" pattern) and [PKI](14-applied-infrastructure-pki.md#x509-certificate-path-validation-rfc-5280).
 
 **Production readiness:** Production
 SWIFT MX + BAH v2 mandatory for cross-border payments from 2025; gpi Tracker deployed by 4,000+ banks; ISO 20022 migration underway globally.
@@ -1142,7 +1142,7 @@ ISO 20022 is an international standard; SWIFT PKI is the de facto standard for i
 
 The core tension is between **credit bureau data monopoly** and **borrower privacy**. Traditional credit scoring requires the bureau to see all raw tradeline data. ZK range proofs let an applicant prove score ≥ T using a bureau-signed commitment to their score — the lender never contacts the bureau. MPC-based approaches eliminate the central bureau entirely: lenders jointly compute a score across distributed data. FHE pilots show feasibility but remain 100–1 000× slower than plaintext evaluation for realistic scoring models. The zkKYC pattern (ZK proofs over signed identity attestations) is seeing regulatory attention in the EU under eIDAS 2.0.
 
-**State of the art:** ZK range proofs (research/pilots, e.g., Sygnum Bank zkKYC); federated scoring (Ant Group, WeBank production); FHE credit scoring (IBM/FICO research 2022). Related to [Bulletproofs](categories/04-zero-knowledge-proof-systems.md#bulletproofs--inner-product-arguments), [ZK SNARKs](categories/04-zero-knowledge-proof-systems.md#zk-snarks), and [MPC](categories/06-multi-party-computation.md#multi-party-computation-mpc--general).
+**State of the art:** ZK range proofs (research/pilots, e.g., Sygnum Bank zkKYC); federated scoring (Ant Group, WeBank production); FHE credit scoring (IBM/FICO research 2022). Related to [Bulletproofs](04-zero-knowledge-proof-systems.md#bulletproofs-inner-product-argument), [ZK SNARKs](04-zero-knowledge-proof-systems.md#circom-and-snarkjs), and [MPC](06-multi-party-computation.md#multi-party-computation-mpc).
 
 **Production readiness:** Experimental
 Federated credit scoring deployed by Ant Group and WeBank; ZK range proofs and zkKYC in pilot (Sygnum Bank); FHE credit scoring is research-stage (100-1000x overhead).
@@ -1177,7 +1177,7 @@ EU eIDAS 2.0 references zkKYC patterns; WeBank/Ant Group deploy federated scorin
 
 The genomic privacy problem is qualitatively harder than general data privacy: a genome is permanent, familially correlated, and re-identifiable even from aggregate statistics. Membership inference attacks on genomic beacons (Homer et al. 2008) showed that with ~1 000 SNPs an attacker can determine whether a target individual is in a GWAS cohort from only summary statistics. PPRL closes the record linkage gap without exposing identifiers; MPC and FHE allow joint computation without a trusted data custodian; DP provides formal bounds on information leakage from aggregate outputs.
 
-**State of the art:** PPRL (deployed in UK Biobank, Australian AIHW); Sharemind MPC (Estonian national health statistics); federated GWAS (UK Biobank + Finngen consortium); DP synthetic data (MIMIC-IV). Related to [Differential Privacy](categories/10-privacy-preserving-computation.md#differential-privacy), [PSI](categories/10-privacy-preserving-computation.md#private-set-intersection-psi), and [PPRL](categories/10-privacy-preserving-computation.md#privacy-preserving-record-linkage-pprl).
+**State of the art:** PPRL (deployed in UK Biobank, Australian AIHW); Sharemind MPC (Estonian national health statistics); federated GWAS (UK Biobank + Finngen consortium); DP synthetic data (MIMIC-IV). Related to [Differential Privacy](10-privacy-preserving-computation.md#differential-privacy), [PSI](10-privacy-preserving-computation.md#private-set-intersection-psi), and [PPRL](10-privacy-preserving-computation.md#privacy-preserving-record-linkage-pprl).
 
 **Production readiness:** Production
 PPRL deployed in UK Biobank and Australian AIHW; Sharemind MPC used for Estonian national health statistics; Owkin federated learning deployed across 20+ cancer research centers.
@@ -1212,7 +1212,7 @@ GA4GH Beacon protocol adopted by major genomic consortia; Sharemind deployed by 
 
 The primary attack vector against NTP is the **off-path time injection**: an attacker who can send spoofed UDP packets causes a client to accept a false timestamp, backdating the client's clock into a window where an expired TLS certificate is still valid (or a not-yet-valid certificate is rejected). RFC 8915 (NTS) eliminates this by deriving per-session keys over TLS and authenticating every packet with a MAC, making replay and injection impossible without the session key. Roughtime (RFC 9714) adds a stronger property: if a server lies about the time, the client obtains a signed proof of the lie that can be published — servers are **accountable**. The multi-server chaining protocol detects inconsistency across Roughtime providers, so an attacker must compromise all servers simultaneously to deceive a client.
 
-**State of the art:** NTS/NTPsec (Cloudflare time.cloudflare.com, deployed 2020; major Linux distributions adopting); Roughtime (Google Roughtime, Cloudflare Roughtime, RFC 9714 published 2024). Related to [TOTP/FIDO2](categories/12-secure-communication-protocols.md#totpfido2webauthn) (time-sensitive authentication), [Linked Timestamping](#linked-timestamping), and [VDF](#verifiable-delay-functions-vdf).
+**State of the art:** NTS/NTPsec (Cloudflare time.cloudflare.com, deployed 2020; major Linux distributions adopting); Roughtime (Google Roughtime, Cloudflare Roughtime, RFC 9714 published 2024). Related to [TOTP/FIDO2](12-secure-communication-protocols.md#token-based-authentication-totp-fido2-webauthn) (time-sensitive authentication), [Linked Timestamping](#linked-timestamping), and [VDF](#verifiable-delay-functions-vdfs).
 
 **Production readiness:** Production
 NTPv4 universally deployed; NTS/NTPsec in production at Cloudflare (time.cloudflare.com) and adopted by major Linux distributions; Roughtime RFC 9714 published 2024; TrueTime powers Google Spanner.
@@ -1246,7 +1246,7 @@ NTPv4 (RFC 5905) is universal; NTS (RFC 8915) is an IETF standard adopted by Clo
 
 The privacy hierarchy from weakest to strongest: unencrypted DNS (on-path attacker and resolver both see everything) → DoT/DoH (on-path attacker sees encrypted traffic, resolver sees client IP and query) → ODoH (resolver sees query but not client IP; proxy sees client IP but not query — neither has both) → ODNS (resolver sees only encrypted query; stub resolver acts as semi-trusted proxy). ODoH's security rests on the assumption that the proxy and resolver do not collude — Cloudflare operates the resolver while Apple, Fastly, or third parties operate the proxy, enforcing organizational separation. The HPKE encryption (RFC 9180) of the query means the proxy is cryptographically prevented from learning the queried name, not merely policy-prevented. ECH addresses the complementary problem: even with ODoH, the TLS Server Name Indication (SNI) in the subsequent connection reveals the destination. ECH + ODoH together provide name privacy at both the DNS and TLS layers.
 
-**State of the art:** DoH (default in Firefox, Chrome, Windows 11 / macOS 13+); ODoH (Cloudflare + Apple production deployment 2021); DoQ (AdGuard, Pi-hole support); ECH (Chrome 117+, Cloudflare production). Related to [Oblivious HTTP (OHTTP)](categories/10-privacy-preserving-computation.md#oblivious-dns-odoh--ohttp), [ECH](categories/12-secure-communication-protocols.md#encrypted-client-hello-ech), and [HPKE](categories/03-key-exchange-key-management.md#key-encapsulation-mechanism-kem--hpke).
+**State of the art:** DoH (default in Firefox, Chrome, Windows 11 / macOS 13+); ODoH (Cloudflare + Apple production deployment 2021); DoQ (AdGuard, Pi-hole support); ECH (Chrome 117+, Cloudflare production). Related to [Oblivious HTTP (OHTTP)](10-privacy-preserving-computation.md#oblivious-dns-odoh), [ECH](12-secure-communication-protocols.md#encrypted-client-hello-ech), and [HPKE](02-authenticated-structured-encryption.md#key-encapsulation-mechanism-kem-dem-paradigm).
 
 **Production readiness:** Production
 DoH default in Firefox, Chrome, Windows 11, macOS 13+; ODoH deployed by Cloudflare + Apple (2021); DoQ supported by AdGuard; ECH in Chrome 117+ and Cloudflare production.
@@ -1280,7 +1280,7 @@ DoT (RFC 7858), DoH (RFC 8484), ODoH (RFC 9230), DoQ (RFC 9250) are all IETF sta
 
 The core tension is **privacy vs. Sybil-resistance**: strong biometric-based systems (Worldcoin) provide high Sybil resistance but require collecting sensitive biometric data and trusting the hardware manufacturer's attestation that the Orb did not retain iris images. Social vouching systems (PoH, BrightID) avoid biometrics but are vulnerable to collusion. Idena's flip ceremonies require synchronized global participation. The Worldcoin approach uses **semaphore** — a ZK membership proof where the user proves knowledge of a secret that hashes to one of the registered iris commitments, without revealing which commitment. The iris code itself is never sent to any server after the Orb ceremony; only a commitment is recorded on-chain. The system provides **nullifier-based anonymity**: the same secret produces the same nullifier for a given context (preventing double-voting) but different nullifiers across contexts (preventing linkage).
 
-**State of the art:** Worldcoin World ID v2 (2024, deployed in 35+ countries); PoH v2 (on Gnosis Chain). Related to [Semaphore / RLN](categories/11-anonymity-credentials.md#semaphore--rate-limiting-nullifier-rln), [Anonymous Credentials](categories/11-anonymity-credentials.md#anonymous-credentials), and [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md).
+**State of the art:** Worldcoin World ID v2 (2024, deployed in 35+ countries); PoH v2 (on Gnosis Chain). Related to [Semaphore / RLN](11-anonymity-credentials.md#semaphore-anonymous-group-signaling-rln), [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials), and [ZK Proof Systems](04-zero-knowledge-proof-systems.md).
 
 **Production readiness:** Experimental
 Worldcoin World ID v2 deployed in 35+ countries (2024) but with ongoing regulatory scrutiny; PoH v2 on Gnosis Chain; BrightID and Idena operational but small-scale.

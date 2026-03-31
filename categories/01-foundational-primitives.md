@@ -198,7 +198,7 @@ AES is NIST FIPS 197; HMAC is NIST FIPS 198-1. GGM and Naor-Reingold are foundat
 |--------|------|-------|------|
 | **Blum-Micali PRG** | 1984 | DLP | First PRG from discrete log; output = hard-core bit of g^x [[1]](https://dl.acm.org/doi/10.1145/800057.808667) |
 | **Blum-Blum-Shub (BBS)** | 1986 | Quadratic residuosity | x_{n+1} = x_n² mod N; provably secure under factoring [[1]](https://link.springer.com/chapter/10.1007/3-540-39799-X_8) |
-| **GGM PRG→PRF** | 1986 | Any PRG | PRG is sufficient to build PRF (tree construction); see [PRF](#pseudorandom-functions-prf--pseudorandom-permutations-prp) [[1]](https://dl.acm.org/doi/10.1145/6490.6503) |
+| **GGM PRG→PRF** | 1986 | Any PRG | PRG is sufficient to build PRF (tree construction); see [PRF](#pseudorandom-functions-prf-pseudorandom-permutations-prp) [[1]](https://dl.acm.org/doi/10.1145/6490.6503) |
 | **AES-CTR as PRG** | 2001 | Block cipher in CTR mode | Practical: AES in counter mode is a fast PRG [[1]](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf) |
 | **ChaCha20 as PRG** | 2008 | Stream cipher | ChaCha20(key, counter) outputs pseudorandom stream; see [Symmetric Encryption](#symmetric-encryption) [[1]](https://cr.yp.to/chacha/chacha-20080128.pdf) |
 
@@ -370,7 +370,7 @@ GHASH is part of NIST SP 800-38D (AES-GCM); Poly1305 is RFC 8439; UMAC is RFC 44
 | **Peikert-Shiehian CI from LWE** | 2019 | LWE | First CI hash for all efficiently searchable relations; Fiat-Shamir for NP [[1]](https://eprint.iacr.org/2018/1004) |
 | **Canetti-Chen-Holmgren-Lombardi-Rothblum-Rothblum** | 2019 | LWE | CI hash for bounded-depth relations; simpler construction [[1]](https://eprint.iacr.org/2018/1003) |
 
-**State of the art:** CI hash from LWE (Peikert-Shiehian 2019); proves Fiat-Shamir sound for NP under standard assumptions. Connects [Sigma Protocols](#sigma-protocols--schnorr-identification) and [NIZK](#zero-knowledge-proofs-zk).
+**State of the art:** CI hash from LWE (Peikert-Shiehian 2019); proves Fiat-Shamir sound for NP under standard assumptions. Connects [Sigma Protocols](04-zero-knowledge-proof-systems.md#sigma-protocols-schnorr-identification) and [NIZK](04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk).
 
 **Production readiness:** Research
 Purely theoretical constructions; no production implementations exist. The results justify practical use of Fiat-Shamir in the random oracle model.
@@ -455,7 +455,7 @@ Keccak/SHA-3 is NIST FIPS 202. The sponge construction is endorsed by the Keccak
 | **PRESENT** | 2007 | SPN block cipher | 64-bit block, 80/128-bit key; ISO/IEC 29192-2 standard [[1]](https://link.springer.com/chapter/10.1007/978-3-540-74735-2_31) |
 | **SIMON / SPECK** | 2013 | Feistel / ARX | NSA designs for IoT; SIMON (hardware), SPECK (software) [[1]](https://eprint.iacr.org/2013/404) |
 
-**State of the art:** ASCON (NIST standard 2023); designed for constrained devices (see also [Sponge Construction](#sponge-construction--duplex) for the underlying paradigm).
+**State of the art:** ASCON (NIST standard 2023); designed for constrained devices (see also [Sponge Construction](#sponge-construction-duplex) for the underlying paradigm).
 
 **Production readiness:** Production
 ASCON is the NIST Lightweight Cryptography standard (2023). PRESENT is ISO-standardized. SIMON/SPECK are deployed in some IoT contexts.
@@ -486,7 +486,7 @@ ASCON is NIST SP 800-232 (2023). PRESENT is ISO/IEC 29192-2. SIMON/SPECK are con
 | **Reinforced Concrete** | 2022 | Lookup-table + algebraic | Combines lookup-based "bricks" with algebraic structure; CCS 2022 [[1]](https://eprint.iacr.org/2021/1038) |
 | **Tip5** | 2023 | Lookup-based (AIR) | Optimized for STARK/AIR proof systems; lookup-table S-box [[1]](https://eprint.iacr.org/2023/107) |
 
-**State of the art:** Poseidon2 (general ZK), Tip5 (STARKs), Reinforced Concrete (R1CS). A new primitive class bridging [Hash Functions](#hash-functions) and [ZK Proofs](#zero-knowledge-proofs-zk).
+**State of the art:** Poseidon2 (general ZK), Tip5 (STARKs), Reinforced Concrete (R1CS). A new primitive class bridging [Hash Functions](#hash-functions) and [ZK Proofs](04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk).
 
 **Production readiness:** Experimental
 Poseidon is deployed in Filecoin, Zcash (Orchard), and many ZK rollups. Poseidon2, Anemoi, and Tip5 are newer with growing adoption.
@@ -676,7 +676,7 @@ Repeat for r rounds, then swap the final halves. Decryption uses the same struct
 | **Twofish** | 1998 | 16 | AES finalist; 128-bit block, 128/192/256-bit key; MDS matrix mixing [[1]](https://www.schneier.com/academic/twofish/) |
 | **Luby-Rackoff (abstract)** | 1988 | 3–4 | Theoretical foundation: PRF → PRP (3 rounds) / SPRP (4 rounds) [[1]](https://dl.acm.org/doi/10.1145/12130.12162) |
 
-**State of the art:** AES (SPN) has displaced Feistel ciphers in new designs, but Feistel construction remains theoretically important via the Luby-Rackoff theorem and is widely deployed (3DES legacy, Blowfish in bcrypt). See [Pseudorandom Functions (PRF)](#pseudorandom-functions-prf--pseudorandom-permutations-prp).
+**State of the art:** AES (SPN) has displaced Feistel ciphers in new designs, but Feistel construction remains theoretically important via the Luby-Rackoff theorem and is widely deployed (3DES legacy, Blowfish in bcrypt). See [Pseudorandom Functions (PRF)](#pseudorandom-functions-prf-pseudorandom-permutations-prp).
 
 **Production readiness:** Deprecated
 DES is retired; 3DES is deprecated (NIST 2023). Blowfish survives in bcrypt. Twofish is available but rarely chosen over AES. The Luby-Rackoff theorem remains theoretically foundational.
@@ -719,7 +719,7 @@ The Luby-Rackoff theorem is a foundational result. DES was NIST FIPS 46 (withdra
 | **AES-GCM-SIV** | 2017 | SIV + POLYVAL | Nonce-misuse resistant; RFC 8452; safe if nonce repeated [[1]](https://www.rfc-editor.org/rfc/rfc8452) |
 | **XTS-AES** | 2010 | Tweakable block cipher | NIST SP 800-38E; disk/storage encryption (FileVault, BitLocker) [[1]](https://csrc.nist.gov/pubs/sp/800/38/e/final) |
 
-**State of the art:** AES-GCM (internet, TLS 1.3, most cloud APIs); CCM (embedded/IoT); XTS-AES (disk encryption); AES-GCM-SIV for nonce-misuse-resistant settings. CTR underlies most stream-cipher-style use of AES. See [Symmetric Encryption](#symmetric-encryption) and [Sponge Construction](#sponge-construction--duplex) for alternative approaches.
+**State of the art:** AES-GCM (internet, TLS 1.3, most cloud APIs); CCM (embedded/IoT); XTS-AES (disk encryption); AES-GCM-SIV for nonce-misuse-resistant settings. CTR underlies most stream-cipher-style use of AES. See [Symmetric Encryption](#symmetric-encryption) and [Sponge Construction](#sponge-construction-duplex) for alternative approaches.
 
 **Production readiness:** Production
 AES-GCM is the dominant AEAD in TLS 1.3, cloud APIs, and networking. XTS-AES is in BitLocker, FileVault, and LUKS. CBC is ubiquitous in legacy systems.
@@ -753,7 +753,7 @@ NIST SP 800-38A (confidentiality modes), SP 800-38D (GCM), SP 800-38C (CCM), SP 
 
 **Security note:** Davies-Meyer allows computation of fixed points (H such that E_H(h) ⊕ h = h), but no practical attack exploits this.
 
-**State of the art:** Davies-Meyer + Merkle-Damgård is the backbone of SHA-2 (SHA-256/512). Miyaguchi-Preneel underlies Whirlpool. For new designs the sponge construction (see [Sponge Construction](#sponge-construction--duplex)) is preferred over block-cipher-based compression.
+**State of the art:** Davies-Meyer + Merkle-Damgård is the backbone of SHA-2 (SHA-256/512). Miyaguchi-Preneel underlies Whirlpool. For new designs the sponge construction (see [Sponge Construction](#sponge-construction-duplex)) is preferred over block-cipher-based compression.
 
 **Production readiness:** Production
 Davies-Meyer is inside SHA-1, SHA-256, and SHA-512 — deployed in billions of devices. Miyaguchi-Preneel is in Whirlpool (ISO standard).
@@ -787,7 +787,7 @@ Davies-Meyer is the implicit standard via SHA-2 (NIST FIPS 180-4). The Preneel-G
 
 **Parameters (Argon2id recommended defaults):** memory ≥ 19 MiB, iterations ≥ 2, parallelism = 1. OWASP 2023 guidance: 64 MiB / 3 iterations / 4 threads.
 
-**State of the art:** Argon2id (RFC 9106, PHC winner) is the current recommendation for new systems. bcrypt and PBKDF2 remain dominant in legacy deployments. See [Key Exchange & KDFs](categories/03-key-exchange-key-management.md) for general-purpose KDFs.
+**State of the art:** Argon2id (RFC 9106, PHC winner) is the current recommendation for new systems. bcrypt and PBKDF2 remain dominant in legacy deployments. See [Key Exchange & KDFs](03-key-exchange-key-management.md) for general-purpose KDFs.
 
 **Production readiness:** Production
 Argon2id, bcrypt, and PBKDF2 are deployed at massive scale in authentication systems worldwide. scrypt is used in Litecoin and Tarsnap.
@@ -890,7 +890,7 @@ SNOW 3G and ZUC are 3GPP TS 35.201/35.221 standards, mandatory in all LTE/5G dep
 | **Ed25519 Batch Verification** | 2012 | Curve25519 | Batch Schnorr verification; ~3x speedup for 64 signatures [[1]](https://ed25519.cr.yp.to/ed25519-20110926.pdf) |
 | **Bulletproofs Batch Verification** | 2018 | Inner product | Batch-verify n range proofs; marginal cost per additional proof [[1]](https://eprint.iacr.org/2017/1066) |
 
-**State of the art:** Random linear combination technique (universal); BLS batch verification in Ethereum consensus. See [Aggregate Signatures](#aggregate-signatures-bls-aggregate), [Digital Signatures](#digital-signatures).
+**State of the art:** Random linear combination technique (universal); BLS batch verification in Ethereum consensus. See [Aggregate Signatures](08-signatures-advanced.md#aggregate-signatures-bls-aggregate), [Digital Signatures](#digital-signatures).
 
 **Production readiness:** Production
 Ed25519 batch verification is in libsodium and ed25519-dalek. BLS batch verification is in Ethereum 2.0 consensus clients.
@@ -1023,7 +1023,7 @@ De-facto industry standard for keyed hash tables; endorsed by major language run
 
 **Deployed instances:** SHA-1, SHA-256, SHA-512, MD5 — all use basic Merkle-Damgård with Davies-Meyer compression (see [Block-Cipher-Based Hash Compression Functions](#block-cipher-based-hash-compression-functions)). SHA-512/256 uses a wide-pipe variant.
 
-**State of the art:** Merkle-Damgård is the structural backbone of SHA-2, but modern designs prefer the [Sponge Construction](#sponge-construction--duplex) (SHA-3, BLAKE3) which avoids length-extension and supports variable output natively.
+**State of the art:** Merkle-Damgård is the structural backbone of SHA-2, but modern designs prefer the [Sponge Construction](#sponge-construction-duplex) (SHA-3, BLAKE3) which avoids length-extension and supports variable output natively.
 
 **Production readiness:** Production
 Underlies SHA-1, SHA-256, SHA-512, and MD5 — deployed in virtually every cryptographic system worldwide.
@@ -1147,7 +1147,7 @@ Poly1305 is IETF RFC 8439; GMAC is NIST SP 800-38D; UMAC is IETF RFC 4418. Wegma
 
 **ParallelHash detail:** Partitions the message into B-byte blocks (B is a parameter), applies cSHAKE independently to each block (parallelizable across cores), then applies a final cSHAKE to the outputs. Enables throughput scaling on multi-core CPUs and streaming hardware.
 
-**State of the art:** NIST SP 800-185 (2016); all four functions are unbroken and safe for production use. TupleHash is increasingly used in ZK protocol transcripts and commitment schemes where domain separation is critical. See [Sponge Construction](#sponge-construction--duplex) for the underlying Keccak permutation.
+**State of the art:** NIST SP 800-185 (2016); all four functions are unbroken and safe for production use. TupleHash is increasingly used in ZK protocol transcripts and commitment schemes where domain separation is critical. See [Sponge Construction](#sponge-construction-duplex) for the underlying Keccak permutation.
 
 **Production readiness:** Mature
 NIST-standardized (SP 800-185) with production-quality implementations; adoption growing but less ubiquitous than SHA-3/SHAKE.
@@ -1276,13 +1276,13 @@ Industry standard for non-cryptographic use cases. xxHash and MurmurHash are ubi
 | **Nonce-Misuse-Resistant (NMR-AEAD)** | Graceful — only reveals whether two plaintexts were identical | AES-GCM-SIV (RFC 8452), AES-SIV (RFC 5297), Deoxys-II | Rogaway-Shrimpton 2006 definition; SIV construction [[1]](https://eprint.iacr.org/2006/221) |
 | **Nonce-Misuse-Resilient** | Partial — ciphertext indistinguishability lost but integrity preserved | SCT, CAEAD variants | Weaker than NMR; confidentiality leakage bounded [[1]](https://eprint.iacr.org/2015/189) |
 | **Online AEAD (OAE2)** | Catastrophic with reuse | STREAM, most streaming AEAD | Supports online processing without buffering; Hoang-Reyhanitabar-Rogaway-Vizár model [[1]](https://eprint.iacr.org/2015/189) |
-| **Committing AEAD (CMT)** | — | AES-GCM-SIV, AEGIS with binding | Ciphertext uniquely commits to the key; prevents partition oracle attacks; see [Key-Committing AEAD](categories/02-authenticated-structured-encryption.md#key-committing-aead) [[1]](https://eprint.iacr.org/2020/1153) |
+| **Committing AEAD (CMT)** | — | AES-GCM-SIV, AEGIS with binding | Ciphertext uniquely commits to the key; prevents partition oracle attacks; see [Key-Committing AEAD](02-authenticated-structured-encryption.md#key-committing-aead) [[1]](https://eprint.iacr.org/2020/1153) |
 
 **The SIV (Synthetic IV) construction (Rogaway-Shrimpton 2006):** Generates the nonce/IV synthetically as a PRF of the plaintext and associated data, then encrypts under that IV. If the same plaintext is encrypted twice, the ciphertexts are identical (revealing equality), but confidentiality is otherwise maintained even under nonce reuse. AES-SIV (RFC 5297) and AES-GCM-SIV (RFC 8452) are the deployed instances.
 
 **Nonce reuse disasters:** AES-GCM nonce reuse leaks the authentication key (GHASH key H = E_K(0)), enabling universal forgery. For ChaCha20-Poly1305, nonce reuse similarly leaks the Poly1305 one-time key. A single reuse under the same (key, nonce) pair is catastrophic for all NR-AEAD schemes.
 
-**State of the art:** AES-GCM (NR-AEAD) dominates deployed systems; use AES-GCM-SIV (RFC 8452) or AES-SIV (RFC 5297) when nonce management is unreliable. AEGIS offers NR-AEAD with superior performance. See [Block Cipher Modes of Operation](#block-cipher-modes-of-operation) and [Key-Committing AEAD](categories/02-authenticated-structured-encryption.md#key-committing-aead).
+**State of the art:** AES-GCM (NR-AEAD) dominates deployed systems; use AES-GCM-SIV (RFC 8452) or AES-SIV (RFC 5297) when nonce management is unreliable. AEGIS offers NR-AEAD with superior performance. See [Block Cipher Modes of Operation](#block-cipher-modes-of-operation) and [Key-Committing AEAD](02-authenticated-structured-encryption.md#key-committing-aead).
 
 **Production readiness:** Production
 NR-AEAD (AES-GCM, ChaCha20-Poly1305) deployed in TLS 1.3, WireGuard. NMR-AEAD (AES-GCM-SIV) deployed in Google Tink and Android.
@@ -1329,7 +1329,7 @@ AES-GCM is NIST SP 800-38D; AES-SIV is RFC 5297; AES-GCM-SIV is RFC 8452; the SI
 
 **Best known attacks:** Differential and algebraic attacks on reduced-round Keccak reach 7–8 of 24 rounds for collision finding (Song-Liao-Guo 2017 MILP-based). No practical attack on full 24-round Keccak-f[1600]. Best attack on 12-round Keccak-p[1600] reaches 6 rounds.
 
-**State of the art:** Keccak-f[1600] (FIPS 202, 2015) is the definitive standard permutation; Keccak-p[1600, 12] enables KangarooTwelve's ~4× throughput advantage over SHA-3. See [Sponge Construction / Duplex](#sponge-construction--duplex) for how the permutation composes into a hash or AEAD, and [Hash Functions](#hash-functions) for the standardized SHA-3 outputs.
+**State of the art:** Keccak-f[1600] (FIPS 202, 2015) is the definitive standard permutation; Keccak-p[1600, 12] enables KangarooTwelve's ~4× throughput advantage over SHA-3. See [Sponge Construction / Duplex](#sponge-construction-duplex) for how the permutation composes into a hash or AEAD, and [Hash Functions](#hash-functions) for the standardized SHA-3 outputs.
 
 **Production readiness:** Production
 Core of SHA-3 (FIPS 202), SHAKE, KMAC, and KangarooTwelve — deployed in every SHA-3 implementation worldwide.
@@ -1412,7 +1412,7 @@ IETF RFC 7693; widely trusted by the cryptographic community. Used in Argon2 (PH
 
 **Homomorphic property:** EC-ElGamal is additively homomorphic over the message exponent: Enc(m₁) + Enc(m₂) = Enc(m₁ + m₂) (pointwise group operation on ciphertext pairs). This enables tallying encrypted votes without decryption — a core primitive in e-voting and secure aggregation. Decryption requires solving a discrete log on the result, limiting plaintext space to small integers.
 
-**State of the art:** EC-ElGamal over Ristretto255 or BN254 is the canonical additively homomorphic primitive in ZK and e-voting systems (see [Paillier Cryptosystem](#paillier-cryptosystem-additive-homomorphic-encryption) for integer-based additive HE). Twisted ElGamal is used in Bulletproofs-based confidential transactions (see [Confidential Transactions](categories/13-blockchain-distributed-ledger.md)).
+**State of the art:** EC-ElGamal over Ristretto255 or BN254 is the canonical additively homomorphic primitive in ZK and e-voting systems (see [Paillier Cryptosystem](#paillier-cryptosystem-additive-homomorphic-encryption) for integer-based additive HE). Twisted ElGamal is used in Bulletproofs-based confidential transactions (see [Confidential Transactions](13-blockchain-distributed-ledger.md)).
 
 **Production readiness:** Production
 EC-ElGamal is deployed in e-voting systems (Helios, Belenios) and confidential transaction schemes; Twisted ElGamal is in Solana's Token-2022.
@@ -1448,7 +1448,7 @@ Foundational public-key encryption scheme; universally taught and deployed. No f
 
 **Used in:** Private set intersection cardinality, federated learning secure aggregation (Google's secure aggregation protocol), e-voting tallying (Helios, Belenios), CKKS bootstrapping comparisons, MPC protocols (e.g., SPDZ uses Paillier for offline preprocessing).
 
-**State of the art:** Paillier with 2048-bit modulus (112-bit security) is the standard deployment. Threshold Paillier (Damgård-Jurik-Nielsen 2010) is used in production threshold ECDSA (e.g., GG20, CGGMP21). For post-quantum additive HE, see [Homomorphic Encryption](categories/07-homomorphic-functional-encryption.md) (BFV/BGV/CKKS).
+**State of the art:** Paillier with 2048-bit modulus (112-bit security) is the standard deployment. Threshold Paillier (Damgård-Jurik-Nielsen 2010) is used in production threshold ECDSA (e.g., GG20, CGGMP21). For post-quantum additive HE, see [Homomorphic Encryption](07-homomorphic-functional-encryption.md) (BFV/BGV/CKKS).
 
 **Production readiness:** Production
 Used in threshold ECDSA (GG20, CGGMP21), e-voting (Helios, Belenios), and federated learning secure aggregation.
@@ -1513,7 +1513,7 @@ ISO/IEC 18033-3; historically important but fully superseded by AES. IDEA patent
 
 **Security note:** Multi-prime RSA with 3+ factors requires larger total modulus for equivalent security — NIST SP 800-131A recommends at least 2048-bit n regardless of prime count. The Bellcore attack (Boneh-DeMillo-Lipton 1996) is a seminal result: a single bit flip during CRT computation enables full private key recovery via GCD with the valid signature. All implementations must verify signatures before returning them.
 
-**State of the art:** RSA-CRT is universally implemented in OpenSSL, NSS, and hardware security modules. PKCS#1 v2.2 (RFC 8017) specifies the multi-prime variant. For new deployments, ECDSA/Ed25519 or ML-DSA offer better performance with smaller keys. See [Asymmetric Encryption](#asymmetric-public-key-encryption) and [Trapdoor Functions](#trapdoor-functions--trapdoor-permutations).
+**State of the art:** RSA-CRT is universally implemented in OpenSSL, NSS, and hardware security modules. PKCS#1 v2.2 (RFC 8017) specifies the multi-prime variant. For new deployments, ECDSA/Ed25519 or ML-DSA offer better performance with smaller keys. See [Asymmetric Encryption](#asymmetric-public-key-encryption) and [Trapdoor Functions](#trapdoor-functions-trapdoor-permutations).
 
 **Production readiness:** Production
 RSA-CRT is the universal RSA implementation in all major libraries and HSMs. Multi-prime RSA is supported in PKCS#1 v2.2.
@@ -1550,7 +1550,7 @@ PKCS#1 v2.2 (RFC 8017); universally implemented. RSA-CRT is the default RSA mode
 
 **Used in:** ML-KEM (SHAKE128/256 for key generation and encapsulation), ML-DSA (SHAKE256 throughout), Kyber/Dilithium (SHAKE), ZK proof transcript generation (Fiat-Shamir via SHAKE), KDF in HPKE (LabeledExpand via SHAKE), libsodium `crypto_stream_xchacha20` analog via BLAKE3.
 
-**State of the art:** SHAKE128/256 (FIPS 202) are the standardized XOFs; KangarooTwelve (RFC 9560) is the performance champion. BLAKE3's unlimited output is the fastest XOF on modern CPUs with SIMD. All NIST PQC standards (ML-KEM, ML-DSA, SLH-DSA) rely on SHAKE as their core XOF. See [Sponge Construction / Duplex](#sponge-construction--duplex) and [Hash Functions](#hash-functions).
+**State of the art:** SHAKE128/256 (FIPS 202) are the standardized XOFs; KangarooTwelve (RFC 9560) is the performance champion. BLAKE3's unlimited output is the fastest XOF on modern CPUs with SIMD. All NIST PQC standards (ML-KEM, ML-DSA, SLH-DSA) rely on SHAKE as their core XOF. See [Sponge Construction / Duplex](#sponge-construction-duplex) and [Hash Functions](#hash-functions).
 
 **Production readiness:** Production
 SHAKE128/256 are in all NIST PQC standards (ML-KEM, ML-DSA, SLH-DSA); KangarooTwelve is RFC 9560; BLAKE3 XOF is widely deployed.
@@ -1659,7 +1659,7 @@ Constant-time implementation is a universal requirement in production cryptograp
 
 **Double PRF protection:** If F₁ and F₂ are independently keyed PRFs, then G(K₁∥K₂, x) = F₁(K₁, F₂(K₂, x)) is secure in the RKA model even if one of the PRFs leaks under RKA — the independent key prevents correlated attacks. Key wrapping (NIST SP 800-38F, AES-KW) uses a similar two-key philosophy.
 
-**State of the art:** AES-128 is preferred over AES-256 in RKA-sensitive contexts (AES-128 has no known RKA weakness). HMAC's two-key derivation remains standard. Double PRF (independent keys) is the practical mitigation for protocols needing RKA resistance; see [Puncturable / Constrained PRF](#puncturable--constrained-prf) for key delegation, and [Key Exchange & KDFs](categories/03-key-exchange-key-management.md) for key derivation patterns.
+**State of the art:** AES-128 is preferred over AES-256 in RKA-sensitive contexts (AES-128 has no known RKA weakness). HMAC's two-key derivation remains standard. Double PRF (independent keys) is the practical mitigation for protocols needing RKA resistance; see [Puncturable / Constrained PRF](#puncturable-constrained-prf) for key delegation, and [Key Exchange & KDFs](03-key-exchange-key-management.md) for key derivation patterns.
 
 **Production readiness:** Mature
 Double PRF concepts are embedded in HMAC and key wrapping (AES-KW), though rarely deployed as a standalone primitive. RKA-secure PRF is primarily theoretical.
@@ -1686,7 +1686,7 @@ RKA resistance is a well-studied theoretical concept; practically addressed thro
 | **Ascon-Hash / Ascon-XOF** | 2014 | Hash / XOF | 256-bit hash output; sponge-based; NIST SP 800-232 (2025) [[1]](https://csrc.nist.gov/pubs/sp/800/232/final) |
 | **Ascon permutation** | 2014 | Permutation | 5-round (p_a=12, p_b=6/8) SPN on 5x64-bit state; designed for efficient bitsliced and 32-bit implementations [[1]](https://eprint.iacr.org/2021/1574) |
 
-**State of the art:** NIST selected Ascon as the winner of the Lightweight Cryptography Standardization Process in February 2023, published as NIST SP 800-232. Best cryptanalysis reaches 7 of 12 rounds on the permutation. Hardware implementations achieve <3000 GE. See [Lightweight Symmetric Primitives](#lightweight-symmetric-primitives) and [Authenticated Encryption (AEAD)](categories/02-authenticated-structured-encryption.md#authenticated-encryption-aead).
+**State of the art:** NIST selected Ascon as the winner of the Lightweight Cryptography Standardization Process in February 2023, published as NIST SP 800-232. Best cryptanalysis reaches 7 of 12 rounds on the permutation. Hardware implementations achieve <3000 GE. See [Lightweight Symmetric Primitives](#symmetric-encryption) and [Authenticated Encryption (AEAD)](02-authenticated-structured-encryption.md#authenticated-encryption-aead).
 
 **Production readiness:** Experimental
 NIST SP 800-232 published in 2025; adoption is beginning in IoT and embedded systems but not yet at scale.
@@ -1715,7 +1715,7 @@ NIST SP 800-232 (2025); winner of the NIST Lightweight Cryptography Standardizat
 | **SKINNY** | 2016 | Tweakable block cipher | 64/128-bit block; lightweight tweakable cipher based on TWEAKEY framework; designed as a "competition for SIMON" [[1]](https://eprint.iacr.org/2016/660) |
 | **Midori** | 2015 | Block cipher | 64/128-bit block; optimized for low energy consumption (not just area); uses almost-MDS matrices [[1]](https://eprint.iacr.org/2015/1142) |
 
-**State of the art:** PRESENT is the ISO standard for lightweight block ciphers. GIFT-COFB was a NIST LWC finalist (lost to Ascon). SKINNY is widely used in academic constructions and as a building block for MACs and AEAD modes (e.g., Romulus, another NIST LWC finalist). See [Lightweight Symmetric Primitives](#lightweight-symmetric-primitives).
+**State of the art:** PRESENT is the ISO standard for lightweight block ciphers. GIFT-COFB was a NIST LWC finalist (lost to Ascon). SKINNY is widely used in academic constructions and as a building block for MACs and AEAD modes (e.g., Romulus, another NIST LWC finalist). See [Lightweight Symmetric Primitives](#symmetric-encryption).
 
 **Production readiness:** Mature
 PRESENT is ISO-standardized and deployed in constrained hardware. SKINNY and GIFT are used in academic AEAD constructions; GIFT-COFB and Romulus were NIST LWC finalists.

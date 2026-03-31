@@ -297,7 +297,7 @@ IEEE 1363 includes signcryption; not widely adopted as a standalone primitive �
 | **Adaptively Secure NCE (Choi et al.)** | 2009 | DDH | Non-committing encryption secure against adaptive corruption [[1]](https://eprint.iacr.org/2009/035) |
 | **Non-Committing Authenticated Enc** | 2017 | AEAD + NCE | Combine authenticity with non-committing property for UC channels [[1]](https://eprint.iacr.org/2017/332) |
 
-**State of the art:** DDH-based NCE (Choi et al.); essential for UC-secure [Secure Channels](#secure-channels--protocol-constructions) and [MPC](#multi-party-computation-mpc) in the adaptive corruption model.
+**State of the art:** DDH-based NCE (Choi et al.); essential for UC-secure [Secure Channels](12-secure-communication-protocols.md#secure-channels-protocol-constructions) and [MPC](06-multi-party-computation.md#multi-party-computation-mpc) in the adaptive corruption model.
 
 **Production readiness:** Research
 Academic primitive; used as a building block in UC-secure protocol proofs but not deployed as a standalone scheme.
@@ -346,11 +346,11 @@ Well-regarded academic concept; limited practical adoption due to difficulty of 
 
 | Property | Scheme | Note |
 |----------|--------|------|
-| **Equality** | [Deterministic Encryption](#deterministic-encryption--convergent-encryption) | Same plaintext → same ciphertext; enables dedup and equality search |
-| **Order** | [OPE / ORE](#order-preserving--order-revealing-encryption-ope--ore) | Ciphertext preserves numerical order; enables range queries |
-| **Orthogonality** | [Inner-Product FE](#attribute-based--functional-encryption) | Decrypt iff inner product = 0; enables subset queries |
-| **Pattern match** | [HVE](#hidden-vector-encryption-hve) | Decrypt iff attributes match pattern with wildcards |
-| **Keyword** | [Searchable Encryption](#searchable-encryption-sse--peks) | Search encrypted data by keyword |
+| **Equality** | [Deterministic Encryption](#deterministic-encryption-convergent-encryption) | Same plaintext → same ciphertext; enables dedup and equality search |
+| **Order** | [OPE / ORE](#order-preserving-order-revealing-encryption-ope-ore) | Ciphertext preserves numerical order; enables range queries |
+| **Orthogonality** | [Inner-Product FE](#puncturable-encryption) | Decrypt iff inner product = 0; enables subset queries |
+| **Pattern match** | [HVE](#puncturable-encryption) | Decrypt iff attributes match pattern with wildcards |
+| **Keyword** | [Searchable Encryption](#updatable-encryption) | Search encrypted data by keyword |
 
 **General framework:** Pandey-Rouselakis (2012) [[1]](https://eprint.iacr.org/2012/141) formalized PPE; Boldyreva-Chenette-O'Neill (2011) [[1]](https://eprint.iacr.org/2011/005) analyzed leakage. **Warning:** all PPE inherently leaks — weaker than semantic security. Use only when the leakage-functionality tradeoff is acceptable.
 
@@ -401,11 +401,11 @@ Active research area; influences TLS 0-RTT anti-replay design but no IETF or NIS
 
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
-| **Douceur et al. Convergent Encryption** | 2002 | H(plaintext) as key | Deterministic encryption for dedup; see [Deterministic Encryption](#deterministic-encryption--convergent-encryption) [[1]](https://doi.org/10.1145/514236.514243) |
+| **Douceur et al. Convergent Encryption** | 2002 | H(plaintext) as key | Deterministic encryption for dedup; see [Deterministic Encryption](#deterministic-encryption-convergent-encryption) [[1]](https://doi.org/10.1145/514236.514243) |
 | **Bellare-Keelveedhi-Ristenpart (DupLESS)** | 2013 | Server-aided MLE | Server-aided message-locked encryption; key from OPRF prevents offline brute-force [[1]](https://eprint.iacr.org/2013/429) |
 | **Secure Dedup with PoW (Halevi et al.)** | 2011 | Proof of ownership | Client proves it owns file before server deduplicates [[1]](https://eprint.iacr.org/2011/277) |
 
-**State of the art:** DupLESS (server-aided OPRF-based dedup); extends [Deterministic Encryption](#deterministic-encryption--convergent-encryption) with formal security and [OPRF](#oblivious-prf-oprf).
+**State of the art:** DupLESS (server-aided OPRF-based dedup); extends [Deterministic Encryption](#deterministic-encryption-convergent-encryption) with formal security and [OPRF](10-privacy-preserving-computation.md#oblivious-prf-oprf).
 
 **Production readiness:** Experimental
 DupLESS is a research prototype; convergent encryption concepts are used in production cloud storage (e.g., Tahoe-LAFS) but without formal security guarantees.
@@ -982,7 +982,7 @@ Initialization: state ← Ascon-p^12(IV ‖ Key ‖ Nonce). Processing: each 64-
 
 **Hardware footprint:** ~1 400–2 006 gate equivalents for ASIC depending on implementation style; 320-bit state fits in a compact SRAM cell array. On 64-bit CPUs, the five 64-bit word state maps naturally to registers, giving good software performance.
 
-**Deployments:** Nordic Semiconductor nRF9160 SDK; RIOT-OS; Zephyr RTOS; ARM Cortex-M reference implementation in NIST SP 800-232. See also [SpongeWrap / Duplex-Based AEAD](#spongwrap--duplex-based-aead) and [CAESAR Lightweight Winners](#caesar-lightweight-winners-acorn-gift-cofb).
+**Deployments:** Nordic Semiconductor nRF9160 SDK; RIOT-OS; Zephyr RTOS; ARM Cortex-M reference implementation in NIST SP 800-232. See also [SpongeWrap / Duplex-Based AEAD](#spongewrap-duplex-based-aead) and [CAESAR Lightweight Winners](#caesar-lightweight-winners-acorn-gift-cofb).
 
 **State of the art:** NIST SP 800-232 (2025) designates Ascon-128 as the primary AEAD for constrained devices, with Ascon-128a as an approved faster alternative. Ascon-80pq is recommended where 128-bit post-quantum key security is required. The Ascon family supersedes ad-hoc lightweight AEAD constructions for new IoT designs.
 
@@ -1061,7 +1061,7 @@ Historical significance as a patent-free AEAD proposal; never standardized by NI
 
 **Deployments:** PKCS #7 / CMS EnvelopedData key transport; XML Encryption; JWE; KMIP (Key Management Interoperability Protocol); ANSI X9.73; every PKCS#11-compliant HSM (`C_WrapKey` / `C_UnwrapKey` mechanisms). OpenSSL implements KW as `AES_wrap_key` / `AES_unwrap_key`.
 
-**State of the art:** AES-KWP (RFC 5649) is the current standard for symmetric key transport. AES-KW (RFC 3394) is deprecated for inputs not a multiple of 8 bytes — use KWP. For public-key key transport see [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem--dem-paradigm) and [Hybrid Public Key Encryption (HPKE)](#hybrid-public-key-encryption-hpke).
+**State of the art:** AES-KWP (RFC 5649) is the current standard for symmetric key transport. AES-KW (RFC 3394) is deprecated for inputs not a multiple of 8 bytes — use KWP. For public-key key transport see [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem-dem-paradigm) and [Hybrid Public Key Encryption (HPKE)](#hybrid-public-key-encryption-hpke).
 
 **Production readiness:** Production
 Deployed in PKCS#11 HSMs, CMS/PKCS#7, XML Encryption, JWE, and KMIP key management systems worldwide.
@@ -1182,7 +1182,7 @@ PKCS#7 is RFC 5652; CBC is NIST SP 800-38A. Universally understood but deprecate
 - Romulus-M: MRAE — nonce reuse leaks only plaintext equality for repeated (nonce, AD, message) triples; authentication remains intact.
 - Romulus-T: Extends Romulus-N with provable leakage resilience in the "leveled implementation" model — suitable for implementations where power/EM side channels are a threat.
 
-**NIST LWC competition:** Romulus was one of ten finalists in the NIST Lightweight Cryptography competition (2019–2023). It was not selected as the winner (Ascon was chosen); however, NIST noted Romulus-M's unique combination of misuse resistance and formal leakage security as a distinguishing strength. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
+**NIST LWC competition:** Romulus was one of ten finalists in the NIST Lightweight Cryptography competition (2019–2023). It was not selected as the winner (Ascon was chosen); however, NIST noted Romulus-M's unique combination of misuse resistance and formal leakage security as a distinguishing strength. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128-ascon-128a-nist-lwc-standard).
 
 **State of the art:** Romulus implementations are available in the NIST LWC test framework and supercop. Romulus-T remains the most formally rigorous leakage-resilient lightweight AEAD as of 2026. For new constrained-device designs without side-channel requirements, Ascon-128 (NIST SP 800-232) is the standardized choice; Romulus-T is the research reference when leakage resilience is required.
 
@@ -1235,7 +1235,7 @@ Squeeze(128 bits)    // authentication tag
 
 **Hardware advantage over Keccak:** Xoodoo's 384-bit state is 4× smaller than Keccak-f[1600]'s 1600-bit state, and its 32-bit lane structure fits on 32-bit MCUs without the 64-bit register overhead Keccak incurs. Gate count for Xoodyak is approximately 2 400–3 000 GE — competitive with Ascon-128.
 
-**NIST LWC context:** Xoodyak was a NIST LWC finalist (2019–2023), ultimately losing to Ascon. It is designed by overlapping authorship with Keccak/SHA-3 (Daemen, Van Assche, Van Keer), lending it strong design heritage and cryptanalytic credibility. See [SpongeWrap / Duplex-Based AEAD](#spongwrap--duplex-based-aead).
+**NIST LWC context:** Xoodyak was a NIST LWC finalist (2019–2023), ultimately losing to Ascon. It is designed by overlapping authorship with Keccak/SHA-3 (Daemen, Van Assche, Van Keer), lending it strong design heritage and cryptanalytic credibility. See [SpongeWrap / Duplex-Based AEAD](#spongewrap-duplex-based-aead).
 
 **State of the art:** Xoodyak is not standardized. Reference implementations are in the NIST LWC repository and the Keccak team's GitHub. Xoofff (the Farfalle construction over Xoodoo) provides high-throughput modes for non-constrained settings. For standardized use, Ascon-128 is preferred; Xoodyak remains a clean research reference and is well-suited to hardware co-design studies.
 
@@ -1336,7 +1336,7 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 
 **Throughput tradeoff:** The 32-bit rate means 8 permutation calls per 32 bytes of plaintext — significantly slower than Ascon-128a (128-bit rate, 1 call per 16 bytes). The [128] variant closes this gap at the cost of a larger area footprint. For applications where latency matters more than area, Ascon-128 is preferred.
 
-**NIST LWC context:** Photon-Beetle was a NIST LWC finalist (2019–2023). NIST noted its extremely compact hardware footprint as its primary distinguishing feature. It was not selected (Ascon won), but its hardware area record is referenced in NIST's post-competition analysis. See [SpongeWrap / Duplex-Based AEAD](#spongwrap--duplex-based-aead) and [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
+**NIST LWC context:** Photon-Beetle was a NIST LWC finalist (2019–2023). NIST noted its extremely compact hardware footprint as its primary distinguishing feature. It was not selected (Ascon won), but its hardware area record is referenced in NIST's post-competition analysis. See [SpongeWrap / Duplex-Based AEAD](#spongewrap-duplex-based-aead) and [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128-ascon-128a-nist-lwc-standard).
 
 **State of the art:** Photon-Beetle is not standardized. It is the reference design for sub-1000 GE authenticated encryption as of 2026. For standard compliance, Ascon-128 is mandated by NIST SP 800-232; Photon-Beetle remains relevant for ultra-constrained custom silicon designs.
 
@@ -1514,9 +1514,9 @@ AES-SIV is IETF RFC 5297; Deoxys-II is a CAESAR defense-in-depth winner. ANYDAE 
 
 **Wide-block cipher vs. AEAD:** Wide-block ciphers are *not* authenticated encryption — they provide no authentication tag. They are pseudorandom permutations over a large domain (a sector, a record). Their security guarantee is that they behave like a random permutation on the entire input block, meaning single-bit plaintext changes affect the entire ciphertext. Combined with encode-then-encipher (redundancy checking), they can provide implicit authentication.
 
-**Relation to disk encryption:** XTS-AES (the NIST standard for disk encryption, see [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers)) is *not* a wide-block cipher — it processes each 16-byte AES block independently within a sector. EME/XCB/HCH/TET treat the entire sector as a single block, providing stronger diffusion across sector boundaries. The tradeoff is complexity and cost.
+**Relation to disk encryption:** XTS-AES (the NIST standard for disk encryption, see [Disk Encryption / Tweakable Block Ciphers](#disk-encryption-tweakable-block-ciphers)) is *not* a wide-block cipher — it processes each 16-byte AES block independently within a sector. EME/XCB/HCH/TET treat the entire sector as a single block, providing stronger diffusion across sector boundaries. The tradeoff is complexity and cost.
 
-**State of the art:** No wide-block cipher has been standardized by NIST or IETF; all remain research proposals. AES-HCTR2 (deployed in Android for file-based encryption) is the closest to a practical wide-block-inspired mode in production, though it is based on a hash-counter structure rather than a full Feistel or EME construction. See [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers).
+**State of the art:** No wide-block cipher has been standardized by NIST or IETF; all remain research proposals. AES-HCTR2 (deployed in Android for file-based encryption) is the closest to a practical wide-block-inspired mode in production, though it is based on a hash-counter structure rather than a full Feistel or EME construction. See [Disk Encryption / Tweakable Block Ciphers](#disk-encryption-tweakable-block-ciphers).
 
 **Production readiness:** Research
 No wide-block cipher has been standardized; EME/XCB/HCH/TET remain academic proposals. AES-HCTR2 (deployed in Android) is the closest practical descendant.
@@ -1545,7 +1545,7 @@ Academic research; no NIST or IETF standardization. AES-HCTR2 (Google) is the cl
 | **SAEP+ (Boneh)** | 2001 | RSA + single hash | Simplified OAEP+; one hash call; tight IND-CCA2 from RSA in ROM [[1]](https://crypto.stanford.edu/~dabo/papers/saep.pdf) |
 | **Fujisaki-Okamoto (FO) transform** | 1999 | Any IND-CPA + hash | Generic ROM transform; canonical path to KEM IND-CCA2; used in PQ KEMs (Kyber, NTRU) [[1]](https://eprint.iacr.org/1999/033) |
 
-**Why "robust KEM+DEM":** The Shoup KEM/DEM paradigm (see [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem--dem-paradigm)) achieves IND-CCA2 if the KEM is IND-CCA2. REACT provides a clean path from any IND-CPA PKE to an IND-CCA2 hybrid encryption scheme using a message authentication code: the session key is authenticated along with the ciphertext so that any ciphertext modification fails MAC verification before decryption. The security reduction is tight — no quadratic loss — unlike OAEP's original proof.
+**Why "robust KEM+DEM":** The Shoup KEM/DEM paradigm (see [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem-dem-paradigm)) achieves IND-CCA2 if the KEM is IND-CCA2. REACT provides a clean path from any IND-CPA PKE to an IND-CCA2 hybrid encryption scheme using a message authentication code: the session key is authenticated along with the ciphertext so that any ciphertext modification fails MAC verification before decryption. The security reduction is tight — no quadratic loss — unlike OAEP's original proof.
 
 **OAEP vs. OAEP+:** Bellare and Rogaway's original OAEP proof had a gap identified by Shoup (2001): the reduction was not tight for partial-domain one-wayness of RSA. OAEP+ repairs this with an additional hash application, achieving a tight reduction from the RSA assumption. In practice, RSA-OAEP (PKCS#1 v2.1, RFC 8017) remains the deployed standard; OAEP+ is the theoretically preferred variant.
 
@@ -1685,7 +1685,7 @@ Robustness is a design principle adopted in TLS 1.3 and discussed at NIST Block 
 | **COLM0** | 2016 | AES-128 dual-layer | Primary variant for general-purpose AEAD; single-pass parallelizable; CAESAR defense-in-depth winner [[1]](https://link.springer.com/article/10.1007/s00145-024-09492-8) |
 | **COLMt** | 2016 | AES-128 dual-layer + intermediate tags | Variant with periodic intermediate tag verification for constrained devices and streaming applications [[1]](https://link.springer.com/article/10.1007/s00145-024-09492-8) |
 
-**State of the art:** COLM was selected as one of the two defense-in-depth winners of the CAESAR competition (2019) alongside Deoxys-II. Its nonce-misuse resistance makes it suitable for environments where nonce uniqueness cannot be guaranteed. For new deployments, AES-GCM-SIV (RFC 8452) or Deoxys-II are more commonly adopted, but COLM remains a strong academic reference for dual-layer AEAD design. See [Deterministic AEAD with Any Nonce (DAEAD / ANYDAE)](#deterministic-aead-with-any-nonce-daead--anydae).
+**State of the art:** COLM was selected as one of the two defense-in-depth winners of the CAESAR competition (2019) alongside Deoxys-II. Its nonce-misuse resistance makes it suitable for environments where nonce uniqueness cannot be guaranteed. For new deployments, AES-GCM-SIV (RFC 8452) or Deoxys-II are more commonly adopted, but COLM remains a strong academic reference for dual-layer AEAD design. See [Deterministic AEAD with Any Nonce (DAEAD / ANYDAE)](#deterministic-aead-with-any-nonce-daead-anydae).
 
 **Production readiness:** Experimental
 CAESAR defense-in-depth winner with reference implementations; no standardization or significant production deployment.
@@ -1738,7 +1738,7 @@ CAESAR third-round finalist; not selected due to cryptanalytic weakness. Academi
 | **NORX v3.0** | 2014 | Parallel monkeyDuplex sponge | Configurable parallelism degree D; 2.51 cpb serial on Haswell; CAESAR Round 3 [[1]](https://link.springer.com/chapter/10.1007/978-3-319-11212-1_2) |
 | **NORX-8 / NORX-16** | 2015 | 8/16-bit word NORX | Lightweight variants targeting 8-bit and 16-bit microcontrollers [[1]](https://eprint.iacr.org/2015/1154) |
 
-**State of the art:** NORX was eliminated after CAESAR Round 3 following a state-recovery attack on NORX v2.0 by Chaigneau and Gilbert (Journal of Cryptology, 2019) [[1]](https://link.springer.com/article/10.1007/s00145-018-9297-9). The v3.0 specification addressed this attack, but the design was not selected for the final portfolio. NORX's parallel sponge approach influenced later permutation-based AEAD designs. See [SpongeWrap / Duplex-Based AEAD](#spongewrap--duplex-based-aead).
+**State of the art:** NORX was eliminated after CAESAR Round 3 following a state-recovery attack on NORX v2.0 by Chaigneau and Gilbert (Journal of Cryptology, 2019) [[1]](https://link.springer.com/article/10.1007/s00145-018-9297-9). The v3.0 specification addressed this attack, but the design was not selected for the final portfolio. NORX's parallel sponge approach influenced later permutation-based AEAD designs. See [SpongeWrap / Duplex-Based AEAD](#spongewrap-duplex-based-aead).
 
 **Production readiness:** Deprecated
 CAESAR Round 3 candidate; eliminated after state-recovery attack on v2.0. Not selected for final portfolio; no production use.
@@ -1765,7 +1765,7 @@ CAESAR Round 3 candidate; eliminated due to cryptanalysis. Historical interest f
 | **Jumbo** | 2019 | Spongent-pi[176] + LFSR mask | 176-bit permutation; slightly larger state for better throughput [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/elephant-spec-final.pdf) |
 | **Delirium** | 2019 | Keccak-f[200] + LFSR mask | 200-bit Keccak permutation; fastest Elephant variant in software [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/elephant-spec-final.pdf) |
 
-**State of the art:** Elephant was one of ten NIST LWC finalists (2021) but was not selected as the winner — Ascon was chosen instead (2023). Elephant's key distinguishing feature is its parallelizable mode of operation (the only finalist offering this), making it attractive for high-throughput hardware implementations. Dumbo and Jumbo use the well-analyzed Spongent permutation family, while Delirium leverages the Keccak permutation. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
+**State of the art:** Elephant was one of ten NIST LWC finalists (2021) but was not selected as the winner — Ascon was chosen instead (2023). Elephant's key distinguishing feature is its parallelizable mode of operation (the only finalist offering this), making it attractive for high-throughput hardware implementations. Dumbo and Jumbo use the well-analyzed Spongent permutation family, while Delirium leverages the Keccak permutation. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128-ascon-128a-nist-lwc-standard).
 
 **Production readiness:** Experimental
 NIST LWC finalist with reference implementations; not selected as the standard. Research reference for parallelizable lightweight AEAD.
@@ -1792,7 +1792,7 @@ NIST LWC finalist (2023); recognized for parallelizable mode. Not standardized; 
 | **TinyJAMBU-192** | 2019 | 128-bit keyed permutation, 192-bit key | Same structure with 192-bit key for higher security margin [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/tinyjambu-spec-final.pdf) |
 | **TinyJAMBU-256** | 2019 | 128-bit keyed permutation, 256-bit key | 256-bit key variant; highest security margin [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/tinyjambu-spec-final.pdf) |
 
-**State of the art:** TinyJAMBU was a NIST LWC finalist but was not selected as the winner. Its keyed-permutation approach (as opposed to unkeyed permutation + sponge) gives it an unusually small state, but the 64-bit tag limits forgery resistance compared to Ascon's 128-bit tag. Post-competition analysis revealed beyond-full-round integral distinguishers [[1]](https://eprint.iacr.org/2023/960), though these do not directly break the full cipher. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
+**State of the art:** TinyJAMBU was a NIST LWC finalist but was not selected as the winner. Its keyed-permutation approach (as opposed to unkeyed permutation + sponge) gives it an unusually small state, but the 64-bit tag limits forgery resistance compared to Ascon's 128-bit tag. Post-competition analysis revealed beyond-full-round integral distinguishers [[1]](https://eprint.iacr.org/2023/960), though these do not directly break the full cipher. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128-ascon-128a-nist-lwc-standard).
 
 **Production readiness:** Experimental
 NIST LWC finalist with reference implementations; not selected as the standard. Ultra-compact design for most constrained IoT devices.
@@ -1820,7 +1820,7 @@ NIST LWC finalist (2023); smallest state among finalists. Not standardized; supe
 | **Schwaemm128-128** | 2019 | Sparkle256 permutation + Beetle mode | Smallest variant; 128-bit key/tag; minimal state [[1]](https://sparkle-lwc.github.io/) |
 | **Schwaemm256-256** | 2019 | Sparkle512 permutation + Beetle mode | Highest security; 256-bit key and tag [[1]](https://sparkle-lwc.github.io/) |
 
-**State of the art:** Schwaemm was a NIST LWC finalist (2021) but lost to Ascon. On ARM Cortex-M3/M4 microcontrollers, Schwaemm256-128 is roughly 5x faster than AES-GCM and 2x faster than Ascon, making it the fastest software AEAD among the finalists on these platforms. The underlying Sparkle permutation family uses only ARX operations, enabling efficient constant-time software implementations without needing lookup tables or hardware accelerators. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
+**State of the art:** Schwaemm was a NIST LWC finalist (2021) but lost to Ascon. On ARM Cortex-M3/M4 microcontrollers, Schwaemm256-128 is roughly 5x faster than AES-GCM and 2x faster than Ascon, making it the fastest software AEAD among the finalists on these platforms. The underlying Sparkle permutation family uses only ARX operations, enabling efficient constant-time software implementations without needing lookup tables or hardware accelerators. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128-ascon-128a-nist-lwc-standard).
 
 **Production readiness:** Experimental
 NIST LWC finalist with reference implementations; not selected as the standard. Fastest software AEAD on ARM Cortex-M among finalists.
@@ -1928,7 +1928,7 @@ NIST LWC Round 2 candidate; innovative short-tweak design. Not advanced to final
 | **CCX / HFC** | 2022 | Generic transform | Succinctly-committing: commitment fits in the existing tag (no ciphertext expansion) [[1]](https://csrc.nist.gov/csrc/media/Events/2023/third-workshop-on-block-cipher-modes-of-operation/documents/accepted-papers/The%20Landscape%20of%20Committing%20Authenticated%20Encryption.pdf) |
 | **Flexible PBE** | 2023 | Password-based encryption | Provably resists partitioning oracle attacks in cloud storage setting [[1]](https://www.researchgate.net/publication/370120732_Flexible_Password-Based_Encryption_Securing_Cloud_Storage_and_Provably_Resisting_Partitioning-Oracle_Attacks) |
 
-**State of the art:** Partitioning oracle attacks (Len, Grubbs, Ristenpart; USENIX Security 2021) demonstrated that non-committing AEAD is a practical vulnerability, not just a theoretical concern — particularly in password-based encryption and anonymous messaging. The Bellare-Hoang line of work (Eurocrypt 2022, Crypto 2024) provides efficient generic transforms (CTX, CCX) that add key commitment to any AEAD with minimal overhead. The NIST Block Cipher Modes Workshop (2023) discussed standardizing committing AEAD modes. See [Key-Committing AEAD](#key-committing-aead) and [Robust Authenticated Encryption (RAE / Beyond INT-CTXT)](#robust-authenticated-encryption-rae--beyond-int-ctxt).
+**State of the art:** Partitioning oracle attacks (Len, Grubbs, Ristenpart; USENIX Security 2021) demonstrated that non-committing AEAD is a practical vulnerability, not just a theoretical concern — particularly in password-based encryption and anonymous messaging. The Bellare-Hoang line of work (Eurocrypt 2022, Crypto 2024) provides efficient generic transforms (CTX, CCX) that add key commitment to any AEAD with minimal overhead. The NIST Block Cipher Modes Workshop (2023) discussed standardizing committing AEAD modes. See [Key-Committing AEAD](#key-committing-aead) and [Robust Authenticated Encryption (RAE / Beyond INT-CTXT)](#robust-authenticated-encryption-rae-beyond-int-ctxt).
 
 **Production readiness:** Experimental
 CTX and CCX transforms are implementable over any AEAD; adoption in Signal and cloud backup systems is underway. No standalone NIST standard yet.

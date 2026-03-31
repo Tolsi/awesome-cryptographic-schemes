@@ -2,7 +2,7 @@
 
 Several nations have developed sovereign cryptographic algorithms — independent designs mandated for government, financial, and critical-infrastructure use within their jurisdictions. These standards serve dual purposes: reducing dependence on foreign-origin algorithms and providing cryptographic diversity against single-point-of-failure risk. This category collects block ciphers, hash functions, digital signatures, and AEAD modes that originate from national standardization bodies (OSCCA/China, GOST/Russia, KISA-NIS/South Korea, CRYPTREC/Japan).
 
-Cross-references to foundational concepts: [Symmetric Encryption](01-foundational-primitives.md#symmetric-encryption), [Hash Functions](01-foundational-primitives.md#hash-functions), [Digital Signatures](01-foundational-primitives.md#digital-signatures-ecdsa-eddsa-rsa-schnorr), [AEAD](02-authenticated-structured-encryption.md#aead-schemes).
+Cross-references to foundational concepts: [Symmetric Encryption](01-foundational-primitives.md#symmetric-encryption), [Hash Functions](01-foundational-primitives.md#hash-functions), [Digital Signatures](01-foundational-primitives.md#digital-signatures), [AEAD](04-zero-knowledge-proof-systems.md#folding-schemes).
 
 ---
 
@@ -19,7 +19,7 @@ Cross-references to foundational concepts: [Symmetric Encryption](01-foundationa
 | **SM4** | 2006 | Block cipher (SPN) | 128-bit block, 128-bit key, 32 rounds; Feistel-like with 8×8 S-box; Chinese national standard GB/T 32907-2016; ISO/IEC 18033-3/Amd.1 (2021) [[1]](https://www.rfc-editor.org/rfc/rfc8998) |
 | **SM1** | 2006 | Block cipher | 128-bit block/key; classified algorithm; hardware-only (used in smart cards, IC chips) [[1]](https://en.wikipedia.org/wiki/SM1_(cipher)) |
 | **SSF33 / SM0** | ~2000 | Block cipher | Earlier classified predecessor; used in WLAN WAPI [[1]](https://en.wikipedia.org/wiki/WAPI) |
-| **ZUC (祖冲之)** | 2011 | Stream cipher | 128-bit key; eEA3/eIA3 in LTE/5G; also see [Hardware Stream Ciphers](#hardware-oriented-stream-ciphers-estream--3gpp) [[1]](https://www.gsma.com/security/wp-content/uploads/2019/05/ZUC_specification_3.pdf) |
+| **ZUC (祖冲之)** | 2011 | Stream cipher | 128-bit key; eEA3/eIA3 in LTE/5G; also see [Hardware Stream Ciphers](01-foundational-primitives.md#hardware-oriented-stream-ciphers-estream-3gpp) [[1]](https://www.gsma.com/security/wp-content/uploads/2019/05/ZUC_specification_3.pdf) |
 
 **SM4 structure:** 32-round Type-2 Feistel variant; non-linear layer uses a single 8×8 S-box applied four times; linear diffusion via the τ and L transforms. Constant-time implementations exist and TLS 1.3 cipher suites are standardized (RFC 8998).
 
@@ -53,7 +53,7 @@ SM4 is Chinese national standard GB/T 32907-2016 and ISO/IEC 18033-3:2010/Amd.1:
 
 **Used in:** SM2 signature verification (SM3 as the hash), TLS 1.3 cipher suites in China (RFC 8998), Chinese banking (UnionPay), national PKI and e-government. IETF RFC 8998 defines TLS_SM4_GCM_SM3 and TLS_SM4_CCM_SM3 cipher suites.
 
-**State of the art:** GB/T 32905-2016 and ISO/IEC 10118-3:2018; no practical collision or preimage attack known. Widely deployed in Chinese critical infrastructure alongside [SM4 / Chinese National Standard Block Ciphers](#sm4--chinese-national-standard-block-ciphers).
+**State of the art:** GB/T 32905-2016 and ISO/IEC 10118-3:2018; no practical collision or preimage attack known. Widely deployed in Chinese critical infrastructure alongside [SM4 / Chinese National Standard Block Ciphers](#sm4-chinese-national-standard-block-ciphers).
 
 **Production readiness:** Production
 Mandatory in Chinese government, banking (UnionPay), and 5G systems; deployed at scale in Chinese PKI and TLS (RFC 8998).
@@ -84,7 +84,7 @@ Chinese national standard GB/T 32905-2016; ISO/IEC 10118-3:2018; IETF RFC 8998. 
 
 SM2 is structurally similar to ECDSA but differs in key ways: (1) the signature includes a user-identity hash ZA mixed into the message digest, binding the signer's distinguished name and public key to each signature; (2) the verification equation differs from ECDSA (it computes t = r + s mod n and checks R = [s]G + [t]PK); (3) the curve is a custom Weierstrass curve over a 256-bit prime field, not a NIST or Brainpool curve. SM2 is widely deployed in Chinese banking (UnionPay), government PKI, and CFCA certificates. OpenSSL 1.1.1+ includes SM2 support. Security analysis shows SM2 is provably secure in the generic group model under standard assumptions, with a reduction comparable to ECDSA.
 
-**State of the art:** Mandated in Chinese government/financial systems (GB/T 32918); ISO-standardized (ISO/IEC 14888-3:2018); supported in OpenSSL, BoringSSL, and GmSSL. Cross-links: [Foundational Signature Schemes](01-foundational-primitives.md#digital-signatures-ecdsa-eddsa-rsa-schnorr).
+**State of the art:** Mandated in Chinese government/financial systems (GB/T 32918); ISO-standardized (ISO/IEC 14888-3:2018); supported in OpenSSL, BoringSSL, and GmSSL. Cross-links: [Foundational Signature Schemes](01-foundational-primitives.md#digital-signatures).
 
 **Production readiness:** Production
 **Implementations:**
@@ -176,7 +176,7 @@ Russian national standard (GOST R 34.11-2012, GOST R 34.10-2012); IETF RFCs 6986
 
 GOST R 34.10-2012 uses an elliptic curve over F_p with Russian-specified parameters (id-tc26-gost-3410-2012-256-paramSetA/B/C/D for 256-bit; id-tc26-gost-3410-12-512-paramSetA/B/C for 512-bit). The signing algorithm is: pick random k, compute R = [k]G, set r = x_R mod n, compute s = (rd + ke) mod n where e = hash(m). The unique 512-bit variant provides a higher security margin than any NIST curve. The hash function Streebog (GOST R 34.11-2012) is an independent design. Some western researchers have raised concerns about the design rationale of GOST curves (no "nothing-up-my-sleeve" seed), but no practical attacks are known.
 
-**State of the art:** GOST R 34.10-2012 is mandated in Russian Federation government systems and supported in OpenSSL (via GOST engine), Bouncy Castle, and CryptoPro CSP. The 512-bit variant provides the highest classical security level of any deployed ECC signature scheme. Cross-links: [Foundational Signature Schemes](01-foundational-primitives.md#digital-signatures-ecdsa-eddsa-rsa-schnorr).
+**State of the art:** GOST R 34.10-2012 is mandated in Russian Federation government systems and supported in OpenSSL (via GOST engine), Bouncy Castle, and CryptoPro CSP. The 512-bit variant provides the highest classical security level of any deployed ECC signature scheme. Cross-links: [Foundational Signature Schemes](01-foundational-primitives.md#digital-signatures).
 
 **Production readiness:** Production
 **Implementations:**
@@ -322,7 +322,7 @@ Camellia: ISO 18033-3, RFC 3713, CRYPTREC (Japan). ARIA: KCMVP (Korea), RFC 5794
 | **CLEFIA** | 2007 | Block cipher | Sony; 128-bit block, 128/192/256-bit keys; generalized Feistel with diffusion switching mechanism; ISO/IEC 29192-2 lightweight standard [[1]](https://www.sony.net/Products/cryptography/clefia/) |
 | **MISTY1** | 1997 | Block cipher | Mitsubishi; 64-bit block, 128-bit key; recursive Feistel structure; provable security against differential/linear attacks; NESSIE selected, RFC 2994 [[1]](https://www.rfc-editor.org/rfc/rfc2994) |
 
-**State of the art:** MISTY1 was integral-attacked on the full 8 rounds by Todo (2015) using division property, a landmark result that spurred new cryptanalytic techniques [[1]](https://eprint.iacr.org/2015/767). CLEFIA remains unbroken on full rounds and is used in lightweight IoT contexts. See [Lightweight Symmetric Primitives](01-foundational-primitives.md#lightweight-symmetric-primitives).
+**State of the art:** MISTY1 was integral-attacked on the full 8 rounds by Todo (2015) using division property, a landmark result that spurred new cryptanalytic techniques [[1]](https://eprint.iacr.org/2015/767). CLEFIA remains unbroken on full rounds and is used in lightweight IoT contexts. See [Lightweight Symmetric Primitives](01-foundational-primitives.md#symmetric-encryption).
 
 **Production readiness:** Mature
 CLEFIA is used in lightweight IoT contexts and is ISO-standardized. MISTY1 is legacy due to the full-round integral attack.

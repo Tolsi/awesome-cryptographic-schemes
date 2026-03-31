@@ -91,7 +91,7 @@ Well-established in TCC/CRYPTO/EUROCRYPT theory community; limited awareness out
 | **WI from Sigma Protocols** | 1994 | DLP | Run two Sigma protocols in parallel; WI without ZK [[1]](https://doi.org/10.1007/BFb0053443) |
 | **Resettable WI (Deng-Goyal-Sahai)** | 2009 | One-way functions | WI secure even if verifier can reset prover to initial state [[1]](https://doi.org/10.1109/FOCS.2009.12) |
 
-**State of the art:** WI is the default security notion for many sub-protocols in [MPC](#multi-party-computation-mpc) and credential systems. Composes better than ZK — see [ZK Proofs](#zero-knowledge-proofs-zk), [Sigma Protocols](#sigma-protocols--schnorr-identification).
+**State of the art:** WI is the default security notion for many sub-protocols in [MPC](06-multi-party-computation.md#multi-party-computation-mpc) and credential systems. Composes better than ZK — see [ZK Proofs](04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk), [Sigma Protocols](04-zero-knowledge-proof-systems.md#sigma-protocols-schnorr-identification).
 
 **Production readiness:** Mature
 WI is used as a building block inside deployed protocols (e.g., parallel Sigma protocols in credential systems) rather than as a standalone primitive.
@@ -118,7 +118,7 @@ Standard security notion in cryptographic protocol design since Feige-Shamir (19
 | **Resettable ZK (Canetti et al.)** | 2000 | Non-black-box | ZK secure even if verifier can rewind/reset prover [[1]](https://doi.org/10.1145/335305.335311) |
 | **Constant-Round Concurrent ZK (Goyal)** | 2013 | Non-black-box + commitments | O(1) rounds concurrent ZK; improved Barak's technique [[1]](https://eprint.iacr.org/2012/563) |
 
-**State of the art:** Constant-round concurrent ZK (Goyal 2013); essential for real-world protocols with parallel sessions. Extends [ZK Proofs](#zero-knowledge-proofs-zk).
+**State of the art:** Constant-round concurrent ZK (Goyal 2013); essential for real-world protocols with parallel sessions. Extends [ZK Proofs](04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk).
 
 **Production readiness:** Research
 Concurrent ZK techniques are primarily theoretical; practical protocols avoid the problem via the Fiat-Shamir heuristic or UC-secure designs rather than deploying non-black-box simulators directly.
@@ -144,7 +144,7 @@ Foundational in complexity-theoretic cryptography; Barak's 2001 result is a land
 | **Abraham-Dolev-Gonen-Halpern** | 2006 | Rational MPC | Distributed computing with rational players; equilibrium-based security [[1]](https://doi.org/10.1007/11818175_1) |
 | **Groce-Katz Rational Protocol Design** | 2012 | Mechanism design + MPC | Fair MPC via utility alignment; punishment strategies enforce cooperation [[1]](https://eprint.iacr.org/2012/029) |
 
-**State of the art:** Rational protocol design (2012); active in blockchain mechanism design. Bridges [MPC](#multi-party-computation-mpc) and economic incentive theory.
+**State of the art:** Rational protocol design (2012); active in blockchain mechanism design. Bridges [MPC](06-multi-party-computation.md#multi-party-computation-mpc) and economic incentive theory.
 
 **Production readiness:** Research
 Rational cryptography concepts influence blockchain mechanism design (staking penalties, slashing) but no standalone rational crypto protocol is deployed as a product.
@@ -223,7 +223,7 @@ Well-regarded in the post-Snowden subversion-resistance research community; publ
 | **Lossy TDF from Lattices** | 2008 | LWE | Peikert-Waters LWE instantiation; post-quantum lossy TDF [[1]](https://eprint.iacr.org/2007/279) |
 | **All-But-One TDF** | 2008 | DDH / LWE | Lossy on one branch, injective on all others; CCA from CHF [[1]](https://eprint.iacr.org/2007/279) |
 
-**State of the art:** Lossy TDFs from LWE (PQ-secure); foundational for [KEM/DEM](#key-encapsulation-mechanism-kem--dem-paradigm) security proofs and [Dual-Mode Cryptosystems](#dual-mode-cryptosystems).
+**State of the art:** Lossy TDFs from LWE (PQ-secure); foundational for [KEM/DEM](#game-based-vs-simulation-based-security-paradigms) security proofs and [Dual-Mode Cryptosystems](16-obfuscation-advanced-hardness.md#dual-mode-cryptosystems).
 
 **Production readiness:** Research
 Lossy TDFs are a proof technique and theoretical primitive; they are not deployed as standalone products but underlie security proofs of deployed schemes.
@@ -310,7 +310,7 @@ IND-CCA2 is mandated by NIST, IETF, and ISO for all public-key encryption and KE
 | **UC journal version** | 2020 | Canetti | Definitive JACM version; consolidates all prior revisions; introduces global subroutines and global functionalities [[1]](https://dl.acm.org/doi/10.1145/3402457) |
 | **EasyUC** | 2019 | Canetti–Stoughton–Varia | Machine-checked UC proofs using the EasyCrypt proof assistant [[1]](https://eprint.iacr.org/2019/582) |
 
-**State of the art:** UC is the canonical composition framework for [MPC](categories/06-multi-party-computation.md#multi-party-computation-mpc), [CGKA/MLS](categories/12-secure-communication-protocols.md#cgkamls), and [OT](categories/06-multi-party-computation.md#oblivious-transfer-ot). Simulation-based security is the language of the UC model; game-based definitions (IND-CPA, etc.) remain preferred for standalone primitives.
+**State of the art:** UC is the canonical composition framework for [MPC](06-multi-party-computation.md#multi-party-computation-mpc), [CGKA/MLS](12-secure-communication-protocols.md#continuous-group-key-agreement-cgka-mls), and [OT](06-multi-party-computation.md#oblivious-transfer-ot). Simulation-based security is the language of the UC model; game-based definitions (IND-CPA, etc.) remain preferred for standalone primitives.
 
 **Production readiness:** Mature
 UC is the standard security framework for MPC, MLS, and threshold protocols; all serious protocol designs invoke UC security. EasyUC provides machine-checked proofs.
@@ -365,7 +365,7 @@ Impagliazzo's five worlds and the HILL theorem are cornerstones of cryptographic
 | **OWF ↛ key agreement** | 1989 | Impagliazzo–Rudich | Oracle world where OWFs exist but no key exchange protocol is secure; foundational separation result [[1]](https://doi.org/10.1145/73007.73012) |
 | **OWP ↛ collision-resistant hash** | 1998 | Simon | One-way permutations do not black-box imply collision-resistant hash functions [[1]](https://link.springer.com/chapter/10.1007/3-540-68339-9_23) |
 | **RTV framework** | 2004 | Reingold–Trevisan–Vadhan | Unified framework classifying black-box reductions: fully / semi / non-black-box; systematic catalogue of separations [[1]](https://eprint.iacr.org/2004/049) |
-| **Non-black-box techniques** | 2001 | Barak | Non-black-box simulation circumvents some separations for ZK; demonstrates limits of oracle-based lower bounds (see [Non-Black-Box ZK](#non-black-box-zero-knowledge--concurrent-zk)) [[1]](https://doi.org/10.1109/SFCS.2001.959902) |
+| **Non-black-box techniques** | 2001 | Barak | Non-black-box simulation circumvents some separations for ZK; demonstrates limits of oracle-based lower bounds (see [Non-Black-Box ZK](#non-black-box-zero-knowledge-concurrent-zk)) [[1]](https://doi.org/10.1109/SFCS.2001.959902) |
 | **BB-uselessness composability** | 2021 | Couteau–Hartmann | Black-box uselessness composes: two BB-useless primitives cannot be combined to yield a useful one [[1]](https://eprint.iacr.org/2021/016) |
 
 **State of the art:** The Impagliazzo-Rudich oracle argument and the RTV taxonomy (2004) remain the standard tools. Non-black-box constructions (Barak, Bitansky-Paneth) partially circumvent these barriers for specific tasks (ZK, SNARGs) but not for key exchange or OT. Active area: non-black-box separations for PKE from OWF.
@@ -541,7 +541,7 @@ GGM (Shoup 1997) is universally cited for DLog parameter justification. AGM (201
 | **Impossibility of tight reductions** | 2015 | Bader–Jager–Li–Schäge | For certain signature schemes with tight security, proved tight black-box reductions from standard assumptions are impossible; separation between tight and loose security [[1]](https://eprint.iacr.org/2015/374) |
 | **Almost-tight security** | 2014 | Chen–Wee | "Almost-tight" reductions (loss at most linear in security parameter) for IBE and PKE; achieves near-optimal concrete security in the standard model [[1]](https://eprint.iacr.org/2013/134) |
 
-**State of the art:** Concrete security analysis is mandatory for standards work — NIST PQC submissions were evaluated in part on tightness of their security reductions. Almost-tight reductions are the practical goal when perfectly tight ones are impossible. See [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa--ind-cca-security) and [Random Oracle Model](#random-oracle-model-rom-vs-standard-model).
+**State of the art:** Concrete security analysis is mandatory for standards work — NIST PQC submissions were evaluated in part on tightness of their security reductions. Almost-tight reductions are the practical goal when perfectly tight ones are impossible. See [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa-ind-cca-security) and [Random Oracle Model](#random-oracle-model-rom-vs-standard-model).
 
 **Production readiness:** Production
 Concrete security analysis directly determines parameter sizes in all deployed standards (AES key lengths, NIST PQC parameters, TLS cipher suite recommendations).
@@ -571,7 +571,7 @@ Concrete security analysis is mandatory in NIST, IETF, and ISO standardization p
 | **Signal / Double Ratchet PFS** | 2016 | Diffie-Hellman ratchet | Per-message ephemeral DH updates provide forward secrecy and break-in recovery; strongest deployed PFS [[1]](https://signal.org/docs/specifications/doubleratchet/) |
 | **Puncturable encryption / fine-grained PFS** | 2015 | Green–Miers | Receiver can "puncture" a secret key so it no longer decrypts a specific ciphertext; enables message-level PFS without re-keying the full session [[1]](https://eprint.iacr.org/2015/1189) |
 
-**State of the art:** ECDHE in TLS 1.3 (X25519 / P-256) is the universal deployment standard. The Double Ratchet's per-message PFS goes further — see [Secure Channels](categories/12-secure-communication-protocols.md#double-ratchet-algorithm) and [Key Exchange](categories/03-key-exchange-key-management.md#diffie-hellman--ecdh--x25519). Puncturable encryption generalises PFS to the ciphertext level.
+**State of the art:** ECDHE in TLS 1.3 (X25519 / P-256) is the universal deployment standard. The Double Ratchet's per-message PFS goes further — see [Secure Channels](12-secure-communication-protocols.md#double-ratchet-symmetric-ratchet) and [Key Exchange](03-key-exchange-key-management.md#triple-diffie-hellman-3dh-x3dh). Puncturable encryption generalises PFS to the ciphertext level.
 
 **Production readiness:** Production
 PFS via ECDHE is mandatory in TLS 1.3 (RFC 8446) and deployed on every major browser and server. The Signal Double Ratchet provides per-message PFS for billions of users.
@@ -718,7 +718,7 @@ Universally accepted; Raz's parallel repetition theorem (1998) is one of the mos
 | **Ideal functionality paradigm (UC)** | 2001 | Canetti | Formalised real/ideal world comparison as universal composition; every UC-secure protocol is SIM-secure in the strongest sense [[1]](https://eprint.iacr.org/2000/067) |
 | **IND ↛ SIM for PKE under adaptive corruptions** | 2011 | Nielsen–Wichs | Separation: IND-CCA2-secure PKE does not achieve SIM-based security when the receiver can be adaptively corrupted; non-committing encryption is necessary [[1]](https://eprint.iacr.org/2011/215) |
 
-**State of the art:** IND-CPA/IND-CCA2 remain the standard for standalone primitives (PKE, KEM, signatures). SIM-based / UC security is required for protocols that must compose — [MPC](categories/06-multi-party-computation.md#multi-party-computation-mpc), [CGKA/MLS](categories/12-secure-communication-protocols.md#cgkamls), [OT](categories/06-multi-party-computation.md#oblivious-transfer-ot). Non-committing encryption bridges the gap when adaptive corruptions are needed under SIM. See [Universal Composability (UC) Framework](#universal-composability-uc-framework) and [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa--ind-cca-security).
+**State of the art:** IND-CPA/IND-CCA2 remain the standard for standalone primitives (PKE, KEM, signatures). SIM-based / UC security is required for protocols that must compose — [MPC](06-multi-party-computation.md#multi-party-computation-mpc), [CGKA/MLS](12-secure-communication-protocols.md#continuous-group-key-agreement-cgka-mls), [OT](06-multi-party-computation.md#oblivious-transfer-ot). Non-committing encryption bridges the gap when adaptive corruptions are needed under SIM. See [Universal Composability (UC) Framework](#universal-composability-uc-framework) and [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa-ind-cca-security).
 
 **Production readiness:** Production
 Both paradigms are used in the security analysis of all deployed protocols: IND for standalone primitives, SIM for composed protocols (MPC, MLS, OT).
@@ -748,7 +748,7 @@ Both paradigms are universally accepted; IND-CCA2 dominates for standalone primi
 | **Adaptively secure garbled circuits** | 2014 | Lindell–Oxman–Pinkas | Garbled circuits achieving adaptive security without erasures via re-garbling techniques; O(1)-round adaptively secure 2PC [[1]](https://eprint.iacr.org/2013/167) |
 | **YOSO model (adaptive roles)** | 2021 | Gentry–Halevi–Krawczyk–Rabin–Simon–Srinivasan–Woodruff | You Only Speak Once: adversary adaptively corrupts parties only after they have broadcast; avoids NCE at the cost of one-shot communication [[1]](https://eprint.iacr.org/2021/210) |
 
-**State of the art:** Adaptive security is the correct model for internet-scale protocols. Non-committing encryption (NCE) is unavoidable in the no-erasure setting; practical NCE constructions from lattices (Döttling et al. 2020) are now available. The YOSO model offers an alternative architectural approach used in blockchain leader election. See [MPC](categories/06-multi-party-computation.md#multi-party-computation-mpc) and [Universal Composability (UC) Framework](#universal-composability-uc-framework).
+**State of the art:** Adaptive security is the correct model for internet-scale protocols. Non-committing encryption (NCE) is unavoidable in the no-erasure setting; practical NCE constructions from lattices (Döttling et al. 2020) are now available. The YOSO model offers an alternative architectural approach used in blockchain leader election. See [MPC](06-multi-party-computation.md#multi-party-computation-mpc) and [Universal Composability (UC) Framework](#universal-composability-uc-framework).
 
 **Production readiness:** Mature
 Adaptive security is the target for MLS (IETF RFC 9420), Signal, and advanced MPC frameworks. YOSO is deployed in blockchain secret leader election research.
@@ -1040,7 +1040,7 @@ Well-known in the provable security community; Fischlin et al. (2010) and Fukumi
 | **Poly1305-AES** | 2005 | Polynomial universal hash + AES | Bernstein's WCS instantiation with strong concrete security; used in ChaCha20-Poly1305 [[1]](https://cr.yp.to/mac/poly1305-20050329.pdf) |
 | **GHASH / GCM** | 2005 | GF(2^128) polynomial hash + AES-CTR | GCM instantiates WCS with GHASH; dominant in TLS 1.3; birthday-bound limited [[1]](https://csrc.nist.gov/publications/detail/sp/800-38d/final) |
 
-**State of the art:** Poly1305-AES / ChaCha20-Poly1305 is the dominant high-performance MAC in modern protocols (TLS 1.3, WireGuard). Both Poly1305 and GHASH/GCM are WCS instantiations. See [Foundational Primitives](categories/01-foundational-primitives.md).
+**State of the art:** Poly1305-AES / ChaCha20-Poly1305 is the dominant high-performance MAC in modern protocols (TLS 1.3, WireGuard). Both Poly1305 and GHASH/GCM are WCS instantiations. See [Foundational Primitives](01-foundational-primitives.md).
 
 **Production readiness:** Production
 ChaCha20-Poly1305 and AES-GCM (both WCS instantiations) are deployed in TLS 1.3, WireGuard, SSH, and IPsec on billions of devices.
@@ -1127,7 +1127,7 @@ Multi-user security is a mandatory consideration in NIST PQC evaluations and is 
 | **Selective-to-full via complexity leveraging** | 2007 | Boneh–Waters | Generic compiler from selective to full security at sub-exponential loss [[1]](https://eprint.iacr.org/2007/033) |
 | **Fully secure ABE (Lewko-Waters)** | 2011 | Bilinear maps | First fully secure large-universe ABE using dual-system techniques [[1]](https://eprint.iacr.org/2010/351) |
 
-**State of the art:** Dual-system encryption (Waters 2009) is the canonical technique for full IBE/ABE security in the standard model. See [Homomorphic and Functional Encryption](categories/07-homomorphic-functional-encryption.md) and [Concrete Security and Reduction Tightness](#concrete-security-and-reduction-tightness).
+**State of the art:** Dual-system encryption (Waters 2009) is the canonical technique for full IBE/ABE security in the standard model. See [Homomorphic and Functional Encryption](07-homomorphic-functional-encryption.md) and [Concrete Security and Reduction Tightness](#concrete-security-and-reduction-tightness).
 
 **Production readiness:** Mature
 Dual-system encryption is the standard proof technique for all modern ABE/IBE constructions; fully secure ABE libraries exist in research-grade implementations.
@@ -1212,7 +1212,7 @@ BBB security is an active design criterion in NIST and IETF; AES-GCM-SIV is stan
 | **Ω(log n) lower bound (all models)** | 2021 | Larsen–Nielsen | Tight Ω(log n) lower bound for all ORAM schemes (not only balls-and-bins); closes the model gap [[1]](https://eprint.iacr.org/2020/1132) |
 | **OptORAMa (optimal ORAM)** | 2021 | Asharov–Komargodski–Lin et al. | First O(log n) worst-case ORAM; matches the lower bound; uses AKS sorting network [[1]](https://dl.acm.org/doi/10.1145/3566049) |
 
-**State of the art:** PathORAM (O(log n) amortized) is the standard practical ORAM used in SGX-based systems and MPC frameworks. OptORAMa (2021) is theoretically optimal but has large constants. See [Oblivious RAM](categories/10-privacy-preserving-computation.md#oblivious-ram-oram).
+**State of the art:** PathORAM (O(log n) amortized) is the standard practical ORAM used in SGX-based systems and MPC frameworks. OptORAMa (2021) is theoretically optimal but has large constants. See [Oblivious RAM](10-privacy-preserving-computation.md#oblivious-ram-oram).
 
 **Production readiness:** Mature
 PathORAM is implemented in SGX-based systems and MPC frameworks; OptORAMa is theoretically optimal but not yet practical due to large constants.
@@ -1242,7 +1242,7 @@ PathORAM is the de facto standard ORAM in implementations; the Larsen-Nielsen (2
 | **Ring-LWE reduction** | 2010 | Lyubashevsky–Peikert–Regev | Worst-case hardness on ideal lattices; enables efficient Ring-LWE crypto [[1]](https://eprint.iacr.org/2012/230) |
 | **Module-LWE reduction** | 2012 | Langlois–Stehlé | Generalises SIS/LWE to module lattices; underpins ML-KEM (Kyber) [[1]](https://eprint.iacr.org/2012/090) |
 
-**State of the art:** Module-LWE/SIS reductions (Langlois-Stehlé 2012) underpin NIST PQC standards ML-KEM and ML-DSA. Ring-LWE remains efficient but with narrower worst-case guarantees. See [Foundational Primitives](categories/01-foundational-primitives.md), [Quantum Cryptography](categories/15-quantum-cryptography.md).
+**State of the art:** Module-LWE/SIS reductions (Langlois-Stehlé 2012) underpin NIST PQC standards ML-KEM and ML-DSA. Ring-LWE remains efficient but with narrower worst-case guarantees. See [Foundational Primitives](01-foundational-primitives.md), [Quantum Cryptography](15-quantum-cryptography.md).
 
 **Production readiness:** Production
 Worst-case/average-case reductions are the theoretical foundation of ML-KEM (FIPS 203) and ML-DSA (FIPS 204), deployed in TLS, Chrome, and Signal.
@@ -1270,7 +1270,7 @@ These reductions are the primary reason NIST selected lattice-based schemes for 
 | **General forking lemma** | 2006 | Bellare–Neven | Generalises to multi-signatures and arbitrary interactive proofs; tighter bounds [[1]](https://doi.org/10.1145/1180405.1180453) |
 | **High-moment forking lemma** | 2023 | Diemert–Gellert–Jager–Lyu | Explicit high-moment bounds; tight multi-signature security for Schnorr [[1]](https://cic.iacr.org/p/1/2/2) |
 
-**State of the art:** The general forking lemma (Bellare-Neven 2006) is the standard tool for ROM security proofs of discrete-log-based signatures. High-moment variants (2023) close tightness gaps for multi-signatures. See [Signatures (Advanced)](categories/08-signatures-advanced.md).
+**State of the art:** The general forking lemma (Bellare-Neven 2006) is the standard tool for ROM security proofs of discrete-log-based signatures. High-moment variants (2023) close tightness gaps for multi-signatures. See [Signatures (Advanced)](08-signatures-advanced.md).
 
 **Production readiness:** Production
 The forking lemma is the proof technique behind the security of Schnorr, ECDSA, EdDSA, and all Fiat-Shamir-based signature schemes deployed in TLS, SSH, and blockchains.
@@ -1299,7 +1299,7 @@ The Pointcheval-Stern (1996) and Bellare-Neven (2006) forking lemmas are univers
 | **CryptoVerif** | 2006 | Blanchet | Automated tool that mechanises game-based proofs in the computational model [[1]](https://doi.org/10.1007/11967668_14) |
 | **EasyCrypt** | 2011 | Barthe et al. | Machine-checked game-based proofs using relational Hoare logic [[1]](https://doi.org/10.1007/978-3-642-22792-9_23) |
 
-**State of the art:** Game-playing is the dominant proof methodology in symmetric and public-key cryptography. EasyCrypt and CryptoVerif provide machine-checked assurance. See [Automated Protocol Verification](categories/19-theoretical-foundations.md#automated-protocol-verification-proverif-tamarin-easycrypt).
+**State of the art:** Game-playing is the dominant proof methodology in symmetric and public-key cryptography. EasyCrypt and CryptoVerif provide machine-checked assurance. See [Automated Protocol Verification](19-theoretical-foundations.md#automated-protocol-verification-proverif-tamarin-easycrypt).
 
 **Production readiness:** Production
 Game-playing proofs are the standard methodology for all deployed cryptographic schemes; EasyCrypt and CryptoVerif provide machine-checked verification.
@@ -1327,7 +1327,7 @@ Game-playing is the dominant proof style in applied cryptography; Shoup's sequen
 | **Measure-and-reprogram** | 2019 | Don–Fehr–Majenz–Schaffner | General QROM proof technique: measure one query, reprogram oracle; proves Fiat-Shamir secure in QROM [[1]](https://eprint.iacr.org/2019/498) |
 | **Compressed oracle technique** | 2019 | Zhandry | Models quantum oracle access via compressed databases; simplifies QROM proofs [[1]](https://eprint.iacr.org/2018/544) |
 
-**State of the art:** QROM proofs are now required for post-quantum confidence; NIST PQC standards (ML-KEM, ML-DSA) have QROM analyses. Measure-and-reprogram and compressed oracles are the main techniques. See [Random Oracle Model vs. Standard Model](#random-oracle-model-rom-vs-standard-model), [Quantum Cryptography](categories/15-quantum-cryptography.md).
+**State of the art:** QROM proofs are now required for post-quantum confidence; NIST PQC standards (ML-KEM, ML-DSA) have QROM analyses. Measure-and-reprogram and compressed oracles are the main techniques. See [Random Oracle Model vs. Standard Model](#random-oracle-model-rom-vs-standard-model), [Quantum Cryptography](15-quantum-cryptography.md).
 
 **Production readiness:** Production
 QROM proofs are required for all NIST PQC standards (ML-KEM, ML-DSA, SLH-DSA); the Fujisaki-Okamoto transform's QROM analysis directly determines deployed key sizes.
@@ -1407,7 +1407,7 @@ Liu-Pass (2020) is a landmark result in theoretical cryptography, published at F
 | **PCG from Ring-LPN** | 2020 | Boyle–Couteau–Gilboa–Ishai–Kohl–Scholl | Extends to VOLE and Beaver triples over large fields via Ring-LPN [[1]](https://eprint.iacr.org/2022/1035) |
 | **PCG for any finite field** | 2025 | Bombar–Couteau–Ducros–Servan-Schreiber | PCGs for Beaver triples over arbitrary finite fields including F2 [[1]](https://eprint.iacr.org/2025/169) |
 
-**State of the art:** PCGs based on Ring-LPN are the leading approach to silent MPC preprocessing. Actively deployed in VOLE-based ZK and MPC frameworks. See [Silent OT / PCG](categories/06-multi-party-computation.md#silent-ot--pseudorandom-correlation-generators-pcg), [OLE / VOLE](categories/06-multi-party-computation.md#oblivious-linear-evaluation-ole--vole).
+**State of the art:** PCGs based on Ring-LPN are the leading approach to silent MPC preprocessing. Actively deployed in VOLE-based ZK and MPC frameworks. See [Silent OT / PCG](06-multi-party-computation.md#silent-ot-pseudorandom-correlation-generators-pcg), [OLE / VOLE](06-multi-party-computation.md#oblivious-linear-evaluation-ole-vole).
 
 **Production readiness:** Experimental
 PCGs are implemented in research MPC frameworks (libOTe, MP-SPDZ); actively transitioning from research to production use in VOLE-based ZK systems.
@@ -1435,7 +1435,7 @@ PCGs are a rapidly growing area with strong adoption in the MPC research communi
 | **Gentry-Wichs is tight** | 2021 | Waters–Wu | Constructs a non-adaptively sound SNARG from falsifiable assumptions, showing the barrier is tight [[1]](https://eprint.iacr.org/2019/1386) |
 | **Impossibility with preprocessing** | 2022 | Campanelli–Fiore–Querol | Extends impossibility to the preprocessing model; black-box extraction also impossible for adaptive SNARGs [[1]](https://eprint.iacr.org/2022/638) |
 
-**State of the art:** The Gentry-Wichs barrier (2011) remains the central theoretical explanation for why practical SNARKs (Groth16, Plonk, etc.) rely on knowledge assumptions or the ROM. Waters-Wu (2021) shows the bound is essentially tight. See [Knowledge-Soundness, Extractability](categories/19-theoretical-foundations.md#knowledge-soundness-extractability-and-simulation-extractability), [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md).
+**State of the art:** The Gentry-Wichs barrier (2011) remains the central theoretical explanation for why practical SNARKs (Groth16, Plonk, etc.) rely on knowledge assumptions or the ROM. Waters-Wu (2021) shows the bound is essentially tight. See [Knowledge-Soundness, Extractability](19-theoretical-foundations.md#knowledge-soundness-extractability-and-simulation-extractability), [ZK Proof Systems](04-zero-knowledge-proof-systems.md).
 
 **Production readiness:** Research
 The Gentry-Wichs barrier is an impossibility result; it explains why deployed SNARKs must use non-falsifiable assumptions or the ROM but is not itself deployed.
@@ -1462,7 +1462,7 @@ Gentry-Wichs (2011) is universally cited when justifying the use of knowledge as
 | **Randomness and communication lower bounds** | 2016 | Data–Prabhakaran–Prabhakaran | Unified framework: joint lower bounds on communication and correlated randomness for IT-secure MPC [[1]](https://ieeexplore.ieee.org/document/7469867/) |
 | **OT complexity of MPC** | 2017 | Agrawal–Prabhakaran–Prabhakaran | Connects OT-hybrid communication cost to combinatorial properties of the function [[1]](https://link.springer.com/chapter/10.1007/978-3-319-63688-7_14) |
 
-**State of the art:** Information-theoretic lower bounds (2014-2017) using residual information and distribution switching provide the tightest known results. Active area connecting information theory and MPC. See [Multi-Party Computation](categories/06-multi-party-computation.md).
+**State of the art:** Information-theoretic lower bounds (2014-2017) using residual information and distribution switching provide the tightest known results. Active area connecting information theory and MPC. See [Multi-Party Computation](06-multi-party-computation.md).
 
 **Production readiness:** Research
 Communication complexity lower bounds are theoretical results; they guide MPC protocol design but are not deployed as software.

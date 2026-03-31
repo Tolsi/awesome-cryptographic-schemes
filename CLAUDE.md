@@ -131,14 +131,26 @@ Field value definitions:
 Sections cross-reference each other using Markdown anchor links of the form:
 
 ```markdown
-[Section Name](#section-name-slug)
+[Section Name](#scheme-name)
 ```
 
-GitHub slugifies anchors by: lowercasing, replacing spaces with hyphens, dropping characters that are not alphanumeric, hyphens, or underscores. For links across files:
+GitHub slugifies anchors by: lowercasing, replacing spaces with hyphens, dropping characters that are not alphanumeric, hyphens, or underscores. Parentheses and slashes are removed (not replaced with hyphens), so `## Foo (Bar) / Baz` becomes `#foo-bar-baz` (single hyphens, not double). For links across files:
 
 ```markdown
-[Section Name](categories/NN-filename.md#section-name-slug)
+[Section Name](NN-filename.md#section-name-slug)
 ```
+
+Note: files inside `categories/` link to sibling files using just the filename (e.g. `07-homomorphic-functional-encryption.md#section`), NOT `categories/07-...`. Files at the repo root (README.md, INDEX.md) use the full path `categories/NN-filename.md#section`.
+
+### Link validation
+
+All internal cross-reference links MUST point to valid anchors in existing files. Before committing changes that add, move, or rename `##` sections:
+
+1. Verify that all links pointing TO the changed section are updated.
+2. Verify that all links FROM the changed section still resolve.
+3. When moving a section to another file, update all cross-references across the repo.
+
+A validation script can be run with: `python3 scripts/validate_links.py` (if available).
 
 ## Adding a New Scheme
 
