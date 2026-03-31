@@ -19,10 +19,10 @@
 Deployed at scale in TLS 1.3, WireGuard, IPsec, disk encryption, and virtually all modern encrypted communications.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES-GCM and ChaCha20-Poly1305 with hardware acceleration
-- [libsodium](https://github.com/jedisct1/libsodium) — C, XChaCha20-Poly1305 and AES-256-GCM
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-GCM and ChaCha20-Poly1305 with hardware acceleration
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, XChaCha20-Poly1305 and AES-256-GCM
 - [BoringSSL](https://boringssl.googlesource.com/boringssl/) — C, Google's OpenSSL fork with AES-GCM-SIV
-- [liboqs-ascon](https://github.com/ascon/ascon-c) — C, reference Ascon implementation
+- [liboqs-ascon](https://github.com/ascon/ascon-c) ⭐ 276 — C, reference Ascon implementation
 
 **Security status:** Secure
 All listed schemes are secure at recommended parameters; AES-GCM requires unique nonces (nonce reuse is catastrophic).
@@ -52,9 +52,8 @@ AES-GCM and ChaCha20-Poly1305 are NIST/IETF standards; AES-GCM-SIV is RFC 8452; 
 Active adoption in messaging protocols (Signal, Matrix) and cloud backup; no standalone NIST standard yet.
 
 **Implementations:**
-- [libsignal](https://github.com/signalapp/libsignal) — Rust, key-committing AEAD in Signal protocol
-- [miscreant](https://github.com/miscreant/miscreant.rb) — Ruby/JS/Rust, AES-SIV (partially committing)
-- [committing-ae](https://github.com/AlessandroZanatta/committing-aead) — Python, research implementations of HtE and CMT transforms
+- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust, key-committing AEAD in Signal protocol
+- [miscreant](https://github.com/miscreant/miscreant.rb) ⭐ 22 — Ruby/JS/Rust, AES-SIV (partially committing)
 
 **Security status:** Secure
 Provably secure transforms; HtE and CMT-4 add minimal overhead to base AEAD with formal proofs.
@@ -81,9 +80,9 @@ Active standardization discussion at NIST Block Cipher Modes Workshop (2023); ad
 KEM/DEM is the foundation of HPKE (RFC 9180), ML-KEM (FIPS 203), and all modern hybrid encryption deployed in TLS, MLS, and QUIC.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, RSA-KEM, DHKEM, ML-KEM support
-- [hpke](https://github.com/cisco/go-hpke) — Go, HPKE implementation with DHKEM
-- [aws-lc](https://github.com/aws/aws-lc) — C, ML-KEM (Kyber) in production at AWS
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RSA-KEM, DHKEM, ML-KEM support
+- [hpke](https://github.com/cisco/go-hpke) ⭐ 30 — Go, HPKE implementation with DHKEM
+- [aws-lc](https://github.com/aws/aws-lc) ⭐ 731 — C, ML-KEM (Kyber) in production at AWS
 
 **Security status:** Secure
 The KEM/DEM paradigm has clean, well-understood security reductions; IND-CCA2 KEM + IND-CPA DEM = IND-CCA2 hybrid.
@@ -109,10 +108,10 @@ NIST FIPS 203 (ML-KEM), IETF RFC 9180 (HPKE), ISO 18033-2; the universal paradig
 Deployed in PCI-DSS tokenization systems, payment processing, and legacy database encryption at major enterprises.
 
 **Implementations:**
-- [pyffx](https://github.com/emulbreh/pyffx) — Python, FF1 implementation
-- [format-preserving-encryption](https://github.com/capitalone/fpe) — Go, FF1 implementation by Capital One
-- [Mysto FPE](https://github.com/mysto/java-fpe) — Java, FF1 and FF3-1 implementations
-- [OpenSSL](https://github.com/openssl/openssl) — C, FF1 support (via EVP API)
+- [pyffx](https://github.com/emulbreh/pyffx) ⭐ 55 — Python, FF1 implementation
+- [format-preserving-encryption](https://github.com/capitalone/fpe) ⭐ 208 — Go, FF1 implementation by Capital One
+- [Mysto FPE](https://github.com/mysto/java-fpe) ⭐ 75 — Java, FF1 and FF3-1 implementations
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, FF1 support (via EVP API)
 
 **Security status:** Caution
 FF1 and FF3-1 are secure for sufficiently large domains; small-domain FPE has inherent leakage. FF3 (original) is broken and must not be used.
@@ -140,7 +139,7 @@ XTS-AES is deployed in BitLocker, FileVault, LUKS, and Android FBE on billions o
 
 **Implementations:**
 - [Linux kernel dm-crypt](https://gitlab.com/cryptsetup/cryptsetup) — C, XTS-AES, Adiantum, AES-HCTR2 in kernel
-- [OpenSSL](https://github.com/openssl/openssl) — C, XTS-AES mode
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, XTS-AES mode
 - [Adiantum (Android)](https://android.googlesource.com/kernel/common/+/refs/heads/android-mainline/crypto/adiantum.c) — C, kernel implementation by Google
 
 **Security status:** Secure
@@ -167,9 +166,8 @@ IEEE 1619 (XTS-AES); NIST approved for storage encryption; Adiantum and HCTR2 de
 Used in encrypted database research (CryptDB-like systems); limited real-world deployment due to inherent leakage.
 
 **Implementations:**
-- [ore.rs](https://github.com/nicola/ore-rs) — Rust, Lewi-Wu ORE implementation
-- [CryptDB](https://github.com/CryptDB/CryptDB) — C++, OPE used in encrypted database queries
-- [pyope](https://github.com/tonyo/pyope) — Python, Boldyreva OPE implementation
+- [CryptDB](https://github.com/CryptDB/CryptDB) ⭐ 521 — C++, OPE used in encrypted database queries
+- [pyope](https://github.com/tonyo/pyope) ⭐ 103 — Python, Boldyreva OPE implementation
 
 **Security status:** Caution
 All OPE/ORE inherently leaks order (and sometimes distance); inference attacks can reconstruct plaintext distributions from ciphertext order.
@@ -195,9 +193,9 @@ No standardization; used in academic encrypted database research. Widely critici
 AES-SIV is deployed in cloud storage, key wrapping, and encrypted databases; convergent encryption is used in deduplication systems.
 
 **Implementations:**
-- [miscreant](https://github.com/miscreant/miscreant.rb) — Ruby/JS/Rust/Go, AES-SIV (RFC 5297)
-- [Tink](https://github.com/tink-crypto/tink) — Java/Go/C++/Python, AES-SIV (deterministic AEAD)
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES-SIV support
+- [miscreant](https://github.com/miscreant/miscreant.rb) ⭐ 22 — Ruby/JS/Rust/Go, AES-SIV (RFC 5297)
+- [Tink](https://github.com/tink-crypto/tink) ⭐ 13k — Java/Go/C++/Python, AES-SIV (deterministic AEAD)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-SIV support
 
 **Security status:** Caution
 AES-SIV is secure but deterministic (leaks plaintext equality). Convergent encryption is vulnerable to offline brute-force on low-entropy data.
@@ -223,8 +221,7 @@ AES-SIV is IETF RFC 5297; MLE is a well-studied framework. Convergent encryption
 Academic constructions; no widely deployed production system uses formal updatable encryption schemes.
 
 **Implementations:**
-- [updatable-encryption](https://github.com/nicola/updatable-encryption) — Rust, research prototype of BLMR-style updatable encryption
-- [Recrypt](https://github.com/nicola/recrypt-rs) — Rust, proxy re-encryption (related primitive)
+No notable open-source implementations available.
 
 **Security status:** Secure
 Klooß-Lehmann-Rupp provides forward and post-compromise security; formal proofs in standard model.
@@ -251,8 +248,8 @@ ElGamal rerandomization is deployed in mixnets and e-voting systems; RCCA scheme
 
 **Implementations:**
 - [Verificatum](https://www.verificatum.org/) — Java, ElGamal-based mixnet for e-voting
-- [libsodium](https://github.com/jedisct1/libsodium) — C, ElGamal primitives (via Ristretto255)
-- [Helios](https://github.com/benadida/helios-server) — Python, rerandomizable ElGamal in e-voting
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, ElGamal primitives (via Ristretto255)
+- [Helios](https://github.com/benadida/helios-server) ⭐ 888 — Python, rerandomizable ElGamal in e-voting
 
 **Security status:** Secure
 ElGamal rerandomization is secure under DDH; Groth RCCA has formal proofs under pairing assumptions.
@@ -332,8 +329,7 @@ Essential in UC-security theory; understood by the MPC/secure-channels research 
 Academic proposals and prototypes; no mainstream production deployment beyond research password vault experiments.
 
 **Implementations:**
-- [honey-encryption](https://github.com/AlessandroZanatta/honey-encryption) — Python, research implementation of Juels-Ristenpart HE
-- [honeywords](https://github.com/rreichel3/honeywords) — Python, related honeyword generation for password databases
+No notable open-source implementations available.
 
 **Security status:** Caution
 Security depends entirely on the quality of the DTE (distribution-transforming encoder); poor DTEs provide no meaningful protection.
@@ -361,7 +357,7 @@ Well-regarded academic concept; limited practical adoption due to difficulty of 
 Individual PPE schemes (OPE, deterministic encryption) are deployed in encrypted databases; the unifying PPE framework is academic.
 
 **Implementations:**
-- [CryptDB](https://github.com/CryptDB/CryptDB) — C++, uses multiple PPE schemes for encrypted SQL queries
+- [CryptDB](https://github.com/CryptDB/CryptDB) ⭐ 521 — C++, uses multiple PPE schemes for encrypted SQL queries
 - [Arx](https://github.com/ArkDB) — research encrypted database using PPE primitives
 
 **Security status:** Caution
@@ -388,7 +384,6 @@ Academic framework; individual PPE schemes are used in encrypted database resear
 Academic constructions; 0-RTT puncturable encryption concepts influence TLS design but no standalone deployment.
 
 **Implementations:**
-- [punc-enc](https://github.com/AlessandroZanatta/puncturable-encryption) — research prototype implementations
 - No production-quality standalone libraries; concepts integrated into TLS 1.3 anti-replay research.
 
 **Security status:** Secure
@@ -415,8 +410,7 @@ Active research area; influences TLS 0-RTT anti-replay design but no IETF or NIS
 DupLESS is a research prototype; convergent encryption concepts are used in production cloud storage (e.g., Tahoe-LAFS) but without formal security guarantees.
 
 **Implementations:**
-- [DupLESS](https://github.com/srinathsetty/dupless) — research prototype
-- [Tahoe-LAFS](https://github.com/tahoe-lafs/tahoe-lafs) — Python, convergent encryption for distributed storage
+- [Tahoe-LAFS](https://github.com/tahoe-lafs/tahoe-lafs) ⭐ 1.4k — Python, convergent encryption for distributed storage
 
 **Security status:** Caution
 Convergent encryption is vulnerable to offline brute-force on predictable files; DupLESS mitigates this via server-aided OPRF.
@@ -442,7 +436,7 @@ Academic research; convergent encryption is deployed in some cloud storage but s
 Deployed in commercial DRM and mobile payment SDKs (e.g., Apple Pay, content protection) despite lack of provable security.
 
 **Implementations:**
-- [SideChannelMarvels/Deadpool](https://github.com/SideChannelMarvels/Deadpool) — C/Python, white-box AES attack tools and challenge implementations
+- [SideChannelMarvels/Deadpool](https://github.com/SideChannelMarvels/Deadpool) ⭐ 677 — C/Python, white-box AES attack tools and challenge implementations
 - [WhibOx](https://www.whiteboxcrypto.com/) — competition platform with reference white-box implementations
 
 **Security status:** Broken
@@ -475,8 +469,8 @@ CCM design tradeoffs versus GCM:
 Mandatory in WPA2, Bluetooth LE, and available in TLS 1.2/1.3; deployed on billions of wireless devices.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES-CCM cipher suites
-- [mbedTLS](https://github.com/Mbed-TLS/mbedtls) — C, AES-CCM for embedded/IoT
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-CCM cipher suites
+- [mbedTLS](https://github.com/Mbed-TLS/mbedtls) ⭐ 6.6k — C, AES-CCM for embedded/IoT
 - [wpa_supplicant](https://w1.fi/wpa_supplicant/) — C, CCMP implementation for Wi-Fi
 - [Linux kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git) — C, AES-CCM in wireless and Bluetooth subsystems
 
@@ -520,9 +514,9 @@ Tag    = Tag_N ⊕ Tag_H ⊕ Tag_C
 Widely implemented in cryptographic libraries; used in some IoT and embedded stacks but not a primary NIST standard.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES-EAX (via EVP)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-EAX (via EVP)
 - [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, EAX mode
-- [Crypto++](https://github.com/weidai11/cryptopp) — C++, EAX mode implementation
+- [Crypto++](https://github.com/weidai11/cryptopp) ⭐ 5.4k — C++, EAX mode implementation
 
 **Security status:** Secure
 Provably secure (IND-CCA2 + INT-CTXT) under standard block-cipher assumptions; patent-free.
@@ -561,10 +555,10 @@ Not a NIST standard but well-studied, patent-free, and implemented in all major 
 Deployed in TLS Encrypted Client Hello (ECH), Oblivious HTTP, MLS, and Privacy Preserving Measurement protocols.
 
 **Implementations:**
-- [hpke (Cloudflare)](https://github.com/cloudflare/circl) — Go, HPKE in CIRCL library
-- [rust-hpke](https://github.com/rozbb/rust-hpke) — Rust, HPKE RFC 9180 implementation
+- [hpke (Cloudflare)](https://github.com/cloudflare/circl) ⭐ 1.6k — Go, HPKE in CIRCL library
+- [rust-hpke](https://github.com/rozbb/rust-hpke) ⭐ 86 — Rust, HPKE RFC 9180 implementation
 - [BoringSSL](https://boringssl.googlesource.com/boringssl/) — C, HPKE for ECH in Chrome
-- [OpenSSL](https://github.com/openssl/openssl) — C, HPKE support (3.2+)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, HPKE support (3.2+)
 
 **Security status:** Secure
 Formally verified security proofs; modular composition of well-studied KEM, KDF, and AEAD components.
@@ -604,8 +598,8 @@ The capacity portion (not XOR'd with input) acts as the secret state providing a
 Ascon (the primary duplex AEAD) is NIST-standardized; Keccak sponge construction underlies SHA-3 deployed everywhere.
 
 **Implementations:**
-- [ascon-c](https://github.com/ascon/ascon-c) — C, reference Ascon implementation
-- [Keccak Team XKCP](https://github.com/XKCP/XKCP) — C/assembly, extended Keccak code package including SpongeWrap
+- [ascon-c](https://github.com/ascon/ascon-c) ⭐ 276 — C, reference Ascon implementation
+- [Keccak Team XKCP](https://github.com/XKCP/XKCP) ⭐ 643 — C/assembly, extended Keccak code package including SpongeWrap
 - [Keyak](https://keccak.team/keyak.html) — reference implementation by Keccak team
 
 **Security status:** Secure
@@ -648,8 +642,8 @@ AES-SIV and AES-GCM-SIV are deployed in Google infrastructure, TLS, and cloud ke
 
 **Implementations:**
 - [BoringSSL](https://boringssl.googlesource.com/boringssl/) — C, AES-GCM-SIV (used in Google production)
-- [Tink](https://github.com/tink-crypto/tink) — Java/Go/C++, AES-GCM-SIV and AES-SIV
-- [miscreant](https://github.com/miscreant/miscreant.rb) — Ruby/JS/Rust, AES-SIV
+- [Tink](https://github.com/tink-crypto/tink) ⭐ 13k — Java/Go/C++, AES-GCM-SIV and AES-SIV
+- [miscreant](https://github.com/miscreant/miscreant.rb) ⭐ 22 — Ruby/JS/Rust, AES-SIV
 
 **Security status:** Secure
 AES-SIV and AES-GCM-SIV are provably MRAE-secure; nonce reuse leaks only plaintext equality, not authenticity.
@@ -687,9 +681,9 @@ Tag = E_K(Checksum ⊕ Δ_final ⊕ L_$) ⊕ HASH_K(AD)
 Patent-free since 2021; implemented in major libraries but limited deployment compared to AES-GCM due to late patent resolution.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, OCB mode (EVP_aes_*_ocb)
-- [libsodium](https://github.com/jedisct1/libsodium) — C, AES-256-OCB
-- [Botan](https://github.com/randombit/botan) — C++, OCB mode
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, OCB mode (EVP_aes_*_ocb)
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, AES-256-OCB
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, OCB mode
 - [ocb-ref](https://www.cs.ucdavis.edu/~rogaway/ocb/code.htm) — C, reference implementation by Rogaway
 
 **Security status:** Caution
@@ -731,9 +725,9 @@ Ciphertext block = M_i ⊕ (S1 ⊕ S4 ⊕ (S2 & S3))
 CAESAR winner; IETF CFRG draft in progress; adopted in high-throughput TLS and storage systems but not yet an RFC.
 
 **Implementations:**
-- [libsodium](https://github.com/jedisct1/libsodium) — C, AEGIS-128L and AEGIS-256
-- [libaegis](https://github.com/jedisct1/libaegis) — C, dedicated AEGIS library with AVX-512/VAES support
-- [rust-aegis](https://github.com/jedisct1/rust-aegis) — Rust, AEGIS bindings
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, AEGIS-128L and AEGIS-256
+- [libaegis](https://github.com/jedisct1/libaegis) ⭐ 129 — C, dedicated AEGIS library with AVX-512/VAES support
+- [rust-aegis](https://github.com/jedisct1/rust-aegis) ⭐ 40 — Rust, AEGIS bindings
 
 **Security status:** Secure
 128/256-bit security; minor linear biases found (Minaud, 2018) do not break the scheme. Nonce misuse is catastrophic.
@@ -770,7 +764,6 @@ CAESAR high-performance winner; IETF CFRG draft progressing toward RFC; endorsed
 Research proposal from Ericsson/Lund University; hardware prototypes exist but no formal standardization or production deployment.
 
 **Implementations:**
-- [SNOW-V reference](https://github.com/ArikaChen/snow-v) — C, reference implementation
 - [Ericsson SNOW-V](https://eprint.iacr.org/2018/1143) — paper includes reference code
 
 **Security status:** Secure
@@ -848,9 +841,8 @@ IETF informational draft; research candidate for 6G. No 3GPP or NIST standardiza
 Deployed in TLS 1.2, S/MIME, OpenPGP, Ethereum (eciesjs), Apple/Google payment systems, and HSMs worldwide.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, ECIES via EVP_PKEY_derive
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, ECIES via EVP_PKEY_derive
 - [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, ECIES (ANSI X9.63 and ISO 18033-2)
-- [eciesjs](https://github.com/nicola/eciesjs) — JavaScript, ECIES for Ethereum and Web3
 
 **Security status:** Superseded
 Technically secure (IND-CCA2 under CDH) but fragmented across incompatible variants. HPKE (RFC 9180) is the recommended successor.
@@ -883,10 +875,10 @@ ANSI X9.63, IEEE 1363a, ISO 18033-2; widely standardized but superseded by HPKE 
 XChaCha20-Poly1305 is the default AEAD in libsodium (used by Signal, Wireguard-related tools, age encryption); XSalsa20 in NaCl.
 
 **Implementations:**
-- [libsodium](https://github.com/jedisct1/libsodium) — C, XChaCha20-Poly1305 (crypto_aead) and XSalsa20-Poly1305 (crypto_secretbox)
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, XChaCha20-Poly1305 (crypto_aead) and XSalsa20-Poly1305 (crypto_secretbox)
 - [NaCl](https://nacl.cr.yp.to/) — C, original XSalsa20-Poly1305 by Bernstein
-- [OpenSSL](https://github.com/openssl/openssl) — C, XChaCha20-Poly1305 (3.x)
-- [Tink](https://github.com/tink-crypto/tink) — Java/Go/C++, XChaCha20-Poly1305
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, XChaCha20-Poly1305 (3.x)
+- [Tink](https://github.com/tink-crypto/tink) ⭐ 13k — Java/Go/C++, XChaCha20-Poly1305
 
 **Security status:** Secure
 256-bit key, 192-bit nonce eliminates birthday-bound nonce collision risk; secure under standard PRF assumptions.
@@ -917,9 +909,9 @@ IRTF CFRG draft (not yet RFC); de facto standard via libsodium adoption; endorse
 Mandatory in IEEE 802.15.4, ZigBee, Thread, and Matter; implemented in hardware on billions of IoT radio chips.
 
 **Implementations:**
-- [Zephyr RTOS](https://github.com/zephyrproject-rtos/zephyr) — C, AES-CCM* in IEEE 802.15.4 subsystem
-- [RIOT-OS](https://github.com/RIOT-OS/RIOT) — C, AES-CCM* for 802.15.4
-- [Nordic nRF SDK](https://github.com/nrfconnect/sdk-nrf) — C, hardware-accelerated CCM* on nRF52/nRF53
+- [Zephyr RTOS](https://github.com/zephyrproject-rtos/zephyr) ⭐ 14k — C, AES-CCM* in IEEE 802.15.4 subsystem
+- [RIOT-OS](https://github.com/RIOT-OS/RIOT) ⭐ 5.7k — C, AES-CCM* for 802.15.4
+- [Nordic nRF SDK](https://github.com/nrfconnect/sdk-nrf) ⭐ 1.3k — C, hardware-accelerated CCM* on nRF52/nRF53
 
 **Security status:** Caution
 Secure when used with authentication (security levels 5-7); encryption-only mode (level 4) provides no integrity and must not be used.
@@ -986,7 +978,7 @@ CAESAR lightweight winners (2019); superseded by Ascon (NIST SP 800-232) for sta
 Deployed in Japanese and Korean government/financial TLS 1.2 stacks; Camellia in OpenSSL, ARIA in NSS.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, Camellia-GCM cipher suites
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, Camellia-GCM cipher suites
 - [NSS (Mozilla)](https://hg.mozilla.org/projects/nss) — C, ARIA-GCM cipher suites
 - [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, both Camellia and ARIA
 
@@ -1030,10 +1022,10 @@ Initialization: state ← Ascon-p^12(IV ‖ Key ‖ Nonce). Processing: each 64-
 NIST SP 800-232 (2025); deployed in Nordic nRF9160, RIOT-OS, Zephyr RTOS, and ARM Cortex-M reference implementations.
 
 **Implementations:**
-- [ascon-c](https://github.com/ascon/ascon-c) — C, official reference implementation
-- [ascon-python](https://github.com/meichlseder/pyascon) — Python, reference implementation by designers
-- [RIOT-OS](https://github.com/RIOT-OS/RIOT) — C, Ascon in constrained-device RTOS
-- [Zephyr RTOS](https://github.com/zephyrproject-rtos/zephyr) — C, Ascon crypto subsystem
+- [ascon-c](https://github.com/ascon/ascon-c) ⭐ 276 — C, official reference implementation
+- [ascon-python](https://github.com/meichlseder/pyascon) ⭐ 84 — Python, reference implementation by designers
+- [RIOT-OS](https://github.com/RIOT-OS/RIOT) ⭐ 5.7k — C, Ascon in constrained-device RTOS
+- [Zephyr RTOS](https://github.com/zephyrproject-rtos/zephyr) ⭐ 14k — C, Ascon crypto subsystem
 
 **Security status:** Secure
 128-bit security; no known shortcut attacks on full 12-round initialization; extensive NIST LWC competition cryptanalysis.
@@ -1107,7 +1099,7 @@ Historical significance as a patent-free AEAD proposal; never standardized by NI
 Deployed in PKCS#11 HSMs, CMS/PKCS#7, XML Encryption, JWE, and KMIP key management systems worldwide.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES_wrap_key / AES_unwrap_key
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES_wrap_key / AES_unwrap_key
 - [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, AES Key Wrap (RFC 3394 and RFC 5649)
 - [Go stdlib](https://pkg.go.dev/crypto/cipher) — Go, AES Key Wrap support
 
@@ -1149,7 +1141,7 @@ Decryption reverses the process: the receiver reconstructs the zero-padded P_n f
 Deployed in Kerberos (RFC 3962, RFC 8009) and XTS-AES disk encryption on all major operating systems.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES-CBC-CTS via EVP API
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-CBC-CTS via EVP API
 - [Linux kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git) — C, CTS in dm-crypt and fscrypt subsystems
 - [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, CBC-CTS mode
 
@@ -1189,7 +1181,7 @@ NIST SP 800-38A Addendum (CS3); RFC 3962 and RFC 8009 (Kerberos); IEEE 1619 (XTS
 CBC + PKCS#7 padding is legacy; TLS 1.3 removed all CBC cipher suites. Remains in TLS 1.2 legacy deployments.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES-CBC with PKCS#7 padding (legacy support)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-CBC with PKCS#7 padding (legacy support)
 - [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, CBC padding modes
 
 **Security status:** Broken
@@ -1283,7 +1275,7 @@ Squeeze(128 bits)    // authentication tag
 NIST LWC finalist with reference implementations; not selected as the standard. Research reference for unified permutation-based crypto.
 
 **Implementations:**
-- [XKCP](https://github.com/XKCP/XKCP) — C/assembly, Xoodoo permutation and Xoodyak by the Keccak team
+- [XKCP](https://github.com/XKCP/XKCP) ⭐ 643 — C/assembly, Xoodoo permutation and Xoodyak by the Keccak team
 - [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, Xoodyak benchmarking implementations
 
 **Security status:** Secure
@@ -1422,8 +1414,8 @@ NIST LWC finalist (2023); recognized for smallest hardware footprint. Not standa
 EtM is deployed in TLS 1.2 (RFC 7366), SSH, and IPsec but superseded by integrated AEAD modes. MtE and E&M are deprecated.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, EtM cipher suites for TLS 1.2
-- [OpenSSH](https://github.com/openssh/openssh-portable) — C, EtM MAC modes (RFC 6668)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, EtM cipher suites for TLS 1.2
+- [OpenSSH](https://github.com/openssh/openssh-portable) ⭐ 3.8k — C, EtM MAC modes (RFC 6668)
 
 **Security status:** Caution
 Only EtM is provably IND-CCA2 + INT-CTXT; MtE and E&M are generically insecure. All compositions are superseded by integrated AEAD.
@@ -1459,7 +1451,7 @@ EtM is well-established (RFC 7366, IPsec ESP); MtE/E&M are understood as insecur
 The STREAM segmentation pattern is deployed in TLS 1.3, QUIC, and MLS record layers, though not as a standalone named primitive.
 
 **Implementations:**
-- [Tink](https://github.com/tink-crypto/tink) — Java/Go/C++, streaming AEAD API implementing STREAM-like segmentation
+- [Tink](https://github.com/tink-crypto/tink) ⭐ 13k — Java/Go/C++, streaming AEAD API implementing STREAM-like segmentation
 - TLS 1.3, QUIC, and MLS implementations embed STREAM-style record-layer segmentation internally.
 
 **Security status:** Secure
@@ -1526,8 +1518,8 @@ Research primitive; NIST LWC candidate. Influential concept but no standardizati
 AES-SIV (RFC 5297) is deployed in production; Deoxys-II is a CAESAR winner with implementations. ANYDAE is a theoretical framework.
 
 **Implementations:**
-- [Tink](https://github.com/tink-crypto/tink) — Java/Go/C++, AES-SIV (deterministic AEAD)
-- [miscreant](https://github.com/miscreant/miscreant.rb) — Ruby/JS/Rust, AES-SIV
+- [Tink](https://github.com/tink-crypto/tink) ⭐ 13k — Java/Go/C++, AES-SIV (deterministic AEAD)
+- [miscreant](https://github.com/miscreant/miscreant.rb) ⭐ 22 — Ruby/JS/Rust, AES-SIV
 - [Deoxys reference](https://sites.google.com/view/deoxyscipher) — C, Deoxys-II reference implementation
 
 **Security status:** Secure
@@ -1597,9 +1589,9 @@ Academic research; no NIST or IETF standardization. AES-HCTR2 (Google) is the cl
 RSA-OAEP (RFC 8017) is deployed everywhere; the FO transform underpins ML-KEM (FIPS 203). REACT and OAEP+ are theoretical references.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, RSA-OAEP (PKCS#1 v2.1)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RSA-OAEP (PKCS#1 v2.1)
 - [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, RSA-OAEP and OAEP+
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, ML-KEM (FO transform applied to Kyber)
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-KEM (FO transform applied to Kyber)
 
 **Security status:** Secure
 RSA-OAEP is provably IND-CCA2 in ROM; OAEP+ has a tight reduction. FO transform is provably CCA2-secure from CPA-secure KEMs.
@@ -1707,7 +1699,6 @@ Robustness principles are adopted in TLS 1.3 and key-committing AEAD; no standal
 
 **Implementations:**
 - Robust AE principles are embedded in TLS 1.3 implementations (constant-time verification, no partial plaintext release).
-- [committing-ae](https://github.com/AlessandroZanatta/committing-aead) — Python, key-committing AEAD transforms (related)
 
 **Security status:** Secure
 Formal robustness definitions are well-established; achieving robustness requires constant-time verification, key commitment, and nonce hiding.
@@ -1975,8 +1966,7 @@ NIST LWC Round 2 candidate; innovative short-tweak design. Not advanced to final
 CTX and CCX transforms are implementable over any AEAD; adoption in Signal and cloud backup systems is underway. No standalone NIST standard yet.
 
 **Implementations:**
-- [committing-ae](https://github.com/AlessandroZanatta/committing-aead) — Python, research implementations of CTX and committing AEAD transforms
-- [libsignal](https://github.com/signalapp/libsignal) — Rust, key-committing AEAD adopted in Signal protocol (related)
+- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust, key-committing AEAD adopted in Signal protocol (related)
 
 **Security status:** Secure
 CTX and CCX transforms are provably secure with minimal overhead; partitioning oracle attacks are fully mitigated by key-committing AEAD.

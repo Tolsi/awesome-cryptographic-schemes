@@ -48,11 +48,10 @@
 Deployed at scale in EU Digital Identity Wallet (eIDAS 2.0, 450M citizens), Apple/Google Wallet mDL, IATA Travel Pass, and academic credentialing systems worldwide.
 
 **Implementations:**
-- [SpruceID DIDKit](https://github.com/spruceid/didkit) — Rust, cross-platform DID/VC toolkit
-- [Walt.id SSI Kit](https://github.com/walt-id/waltid-ssikit) — Kotlin, enterprise SSI library
-- [Veramo](https://github.com/decentralized-identity/veramo) — TypeScript, DIF-maintained DID framework
-- [Hyperledger Aries](https://github.com/hyperledger/aries-framework-go) — Go, enterprise agent framework
-- [Microsoft ION](https://github.com/nicktaras/ion) — TypeScript, Sidetree-based DID on Bitcoin
+- [SpruceID DIDKit](https://github.com/spruceid/didkit) ⭐ 318 — Rust, cross-platform DID/VC toolkit
+- [Walt.id SSI Kit](https://github.com/walt-id/waltid-ssikit) ⭐ 112 — Kotlin, enterprise SSI library
+- [Veramo](https://github.com/decentralized-identity/veramo) ⭐ 533 — TypeScript, DIF-maintained DID framework
+- [Hyperledger Aries](https://github.com/hyperledger/aries-framework-go) ⭐ 240 — Go, enterprise agent framework
 
 **Security status:** Caution
 Core cryptography is sound (Ed25519, BBS+, ECDSA), but security depends heavily on the DID method chosen; `did:web` inherits DNS/TLS risks, and BBS+ implementations are still maturing.
@@ -101,11 +100,10 @@ _443._tcp.example.com. IN TLSA <usage> <selector> <matching-type> <cert-data>
 Production-grade for SMTP (Postfix, Exim, major email providers); limited browser support for HTTPS DANE due to low DNSSEC deployment (~35% of domains).
 
 **Implementations:**
-- [Unbound](https://github.com/NLnetLabs/unbound) — C, DNSSEC-validating resolver with DANE support
-- [Postfix](https://github.com/vdukhovni/postfix) — C, SMTP server with built-in DANE-TLS (RFC 7672)
-- [LDNS](https://github.com/NLnetLabs/ldns) — C, DNS library with DANE/TLSA utilities
+- [Unbound](https://github.com/NLnetLabs/unbound) ⭐ 4.4k — C, DNSSEC-validating resolver with DANE support
+- [Postfix](https://github.com/vdukhovni/postfix) ⭐ 530 — C, SMTP server with built-in DANE-TLS (RFC 7672)
+- [LDNS](https://github.com/NLnetLabs/ldns) ⭐ 348 — C, DNS library with DANE/TLSA utilities
 - [GnuTLS](https://gitlab.com/gnutls/gnutls) — C, TLS library with DANE verification API
-- [dane.sys4.de](https://github.com/sys4/dane-monitoring) — Python, DANE monitoring tools
 
 **Security status:** Secure
 Cryptographically sound when backed by DNSSEC; DANE-EE (usage 3) bypasses CA ecosystem entirely. Without DNSSEC, TLSA records are spoofable.
@@ -155,11 +153,10 @@ IETF RFCs 6698, 7671, 7672; mandated by several European email providers; widely
 Intel DCAP and AWS Nitro Attestation are deployed at scale in cloud confidential computing; Azure Attestation Service and Google Confidential VMs in production.
 
 **Implementations:**
-- [Intel SGX DCAP](https://github.com/intel/SGXDataCenterAttestationPrimitives) — C/C++, data center attestation primitives
-- [aws-nitro-enclaves-sdk](https://github.com/aws/aws-nitro-enclaves-sdk-c) — C, AWS Nitro Enclaves attestation SDK
-- [Keylime](https://github.com/keylime/keylime) — Python, CNCF remote attestation framework for TPM/TEE
-- [virtee/sev](https://github.com/virtee/sev) — Rust, AMD SEV-SNP attestation library
-- [Microsoft Azure Attestation](https://github.com/Azure/azure-dcap-client) — C, Azure DCAP client library
+- [Intel SGX DCAP](https://github.com/intel/SGXDataCenterAttestationPrimitives) ⭐ 321 — C/C++, data center attestation primitives
+- [aws-nitro-enclaves-sdk](https://github.com/aws/aws-nitro-enclaves-sdk-c) ⭐ 113 — C, AWS Nitro Enclaves attestation SDK
+- [Keylime](https://github.com/keylime/keylime) ⭐ 522 — Python, CNCF remote attestation framework for TPM/TEE
+- [virtee/sev](https://github.com/virtee/sev) ⭐ 138 — Rust, AMD SEV-SNP attestation library
 
 **Security status:** Caution
 Attestation protocols are cryptographically sound, but TEE vulnerabilities (SGX side-channels, microcode bugs) require continuous patching; security depends on vendor TCB update discipline.
@@ -205,9 +202,8 @@ Deployed on ~10 billion payment cards globally; every chip-and-PIN and contactle
 
 **Implementations:**
 - [EMVCo specifications](https://www.emvco.com/emv-technologies/contact/) — official specifications (proprietary)
-- [GlobalPlatformPro](https://github.com/martinpaljak/GlobalPlatformPro) — Java, smart card management tool with EMV support
-- [javacard-emv](https://github.com/pkirkaas/javacard-emv) — Java, EMV JavaCard applet reference
-- [Cardpeek](https://github.com/L1L1/cardpeek) — C, smart card analysis tool supporting EMV
+- [GlobalPlatformPro](https://github.com/martinpaljak/GlobalPlatformPro) ⭐ 873 — Java, smart card management tool with EMV support
+- [Cardpeek](https://github.com/L1L1/cardpeek) ⭐ 512 — C, smart card analysis tool supporting EMV
 
 **Security status:** Caution
 DDA/CDA are cryptographically sound (RSA-2048); legacy SDA is broken (replay attacks). Known attack classes ("Yes card," contactless relay) mitigated in EMV v4.3+; transitioning to ECDSA.
@@ -278,10 +274,10 @@ Ticket = {
 Core enterprise authentication protocol; every Windows Active Directory domain uses Kerberos; deployed across Hadoop, PostgreSQL, NFS v4, SSH (GSSAPI), and SAML backends.
 
 **Implementations:**
-- [MIT Kerberos](https://github.com/krb5/krb5) — C, reference implementation for Linux/macOS
-- [Heimdal](https://github.com/heimdal/heimdal) — C, alternative implementation used in BSD/macOS
-- [Apache Kerby](https://github.com/apache/directory-kerby) — Java, Apache Directory Kerberos implementation
-- [Samba](https://github.com/samba-team/samba) — C, includes Kerberos KDC for Active Directory emulation
+- [MIT Kerberos](https://github.com/krb5/krb5) ⭐ 592 — C, reference implementation for Linux/macOS
+- [Heimdal](https://github.com/heimdal/heimdal) ⭐ 364 — C, alternative implementation used in BSD/macOS
+- [Apache Kerby](https://github.com/apache/directory-kerby) ⭐ 116 — Java, Apache Directory Kerberos implementation
+- [Samba](https://github.com/samba-team/samba) ⭐ 1.1k — C, includes Kerberos KDC for Active Directory emulation
 
 **Security status:** Caution
 Secure with modern etypes (AES-256-CTS-HMAC-SHA384-192, RFC 8009); legacy RC4-HMAC and DES are broken. Operational attacks (Kerberoasting, Golden Ticket, AS-REP Roasting) exploit weak passwords and stolen keys, not protocol flaws.
@@ -339,11 +335,11 @@ example.com zone → DNSKEY → signs A, MX, TXT, etc.
 ~35% of TLDs and second-level domains DNSSEC-signed; required by all gTLDs under ICANN; all major recursive resolvers validate by default.
 
 **Implementations:**
-- [BIND 9](https://github.com/isc-projects/bind9) — C, ISC reference DNS server with full DNSSEC support
-- [Knot DNS](https://github.com/CZ-NIC/knot) — C, authoritative DNS with automated DNSSEC key management
-- [PowerDNS](https://github.com/PowerDNS/pdns) — C++, authoritative DNS with DNSSEC signing
-- [Unbound](https://github.com/NLnetLabs/unbound) — C, validating recursive resolver
-- [dnspython](https://github.com/rthalley/dnspython) — Python, DNS toolkit with DNSSEC validation
+- [BIND 9](https://github.com/isc-projects/bind9) ⭐ 737 — C, ISC reference DNS server with full DNSSEC support
+- [Knot DNS](https://github.com/CZ-NIC/knot) ⭐ 293 — C, authoritative DNS with automated DNSSEC key management
+- [PowerDNS](https://github.com/PowerDNS/pdns) ⭐ 4.3k — C++, authoritative DNS with DNSSEC signing
+- [Unbound](https://github.com/NLnetLabs/unbound) ⭐ 4.4k — C, validating recursive resolver
+- [dnspython](https://github.com/rthalley/dnspython) ⭐ 2.6k — Python, DNS toolkit with DNSSEC validation
 
 **Security status:** Secure
 Cryptographically sound with modern algorithms (ECDSA P-256, Ed25519); amplification attack vector exists due to larger response sizes; NSEC3 mitigates zone enumeration but not offline dictionary attacks.
@@ -378,10 +374,10 @@ IETF RFCs 4033-4035, RFC 9364; ICANN requires DNSSEC for gTLDs; root zone signed
 Production-grade for SMTP DANE (Postfix, Exim); SSHFP supported by OpenSSH; SMIMEA and OPENPGPKEY have limited deployment due to DNSSEC adoption gaps.
 
 **Implementations:**
-- [OpenSSH](https://github.com/openssh/openssh-portable) — C, native SSHFP verification via `VerifyHostKeyDNS`
-- [Postfix](https://github.com/vdukhovni/postfix) — C, SMTP with DANE TLSA support
-- [hash-slinger](https://github.com/letoams/hash-slinger) — Python, tools for generating SSHFP, TLSA, and OPENPGPKEY records
-- [Unbound](https://github.com/NLnetLabs/unbound) — C, DNSSEC-validating resolver underpinning all DANE lookups
+- [OpenSSH](https://github.com/openssh/openssh-portable) ⭐ 3.8k — C, native SSHFP verification via `VerifyHostKeyDNS`
+- [Postfix](https://github.com/vdukhovni/postfix) ⭐ 530 — C, SMTP with DANE TLSA support
+- [hash-slinger](https://github.com/letoams/hash-slinger) ⭐ 55 — Python, tools for generating SSHFP, TLSA, and OPENPGPKEY records
+- [Unbound](https://github.com/NLnetLabs/unbound) ⭐ 4.4k — C, DNSSEC-validating resolver underpinning all DANE lookups
 
 **Security status:** Secure
 Inherits DNSSEC security guarantees; cryptographically binds keys to DNS names. Dependent on DNSSEC deployment and correct zone signing.
@@ -434,11 +430,11 @@ Fetches signed entry from Rekor, verifies Merkle inclusion proof, checks certifi
 Used by npm (provenance), PyPI (PEP 740 attestations), Kubernetes release signing, GitHub attestation verification, and millions of container images.
 
 **Implementations:**
-- [cosign](https://github.com/sigstore/cosign) — Go, CLI for signing and verifying OCI container images
-- [Fulcio](https://github.com/sigstore/fulcio) — Go, OIDC-backed code-signing certificate authority
-- [Rekor](https://github.com/sigstore/rekor) — Go, append-only transparency log for signing events
-- [sigstore-python](https://github.com/sigstore/sigstore-python) — Python, Sigstore client library
-- [sigstore-js](https://github.com/sigstore/sigstore-js) — TypeScript, Sigstore client for npm ecosystem
+- [cosign](https://github.com/sigstore/cosign) ⭐ 5.8k — Go, CLI for signing and verifying OCI container images
+- [Fulcio](https://github.com/sigstore/fulcio) ⭐ 816 — Go, OIDC-backed code-signing certificate authority
+- [Rekor](https://github.com/sigstore/rekor) ⭐ 1.1k — Go, append-only transparency log for signing events
+- [sigstore-python](https://github.com/sigstore/sigstore-python) ⭐ 316 — Python, Sigstore client library
+- [sigstore-js](https://github.com/sigstore/sigstore-js) ⭐ 178 — TypeScript, Sigstore client for npm ecosystem
 
 **Security status:** Secure
 Cryptographically sound design: ephemeral keys eliminate long-lived key compromise risk; Merkle-tree transparency log provides public auditability; OIDC identity binding is well-understood.
@@ -493,11 +489,11 @@ root.json ─── delegates to ──► targets.json ─── delegates to �
 Deployed in PyPI (PEP 458), Docker Content Trust (Notary v1), Kubernetes release artifacts, and CNCF Harbor registry.
 
 **Implementations:**
-- [python-tuf](https://github.com/theupdateframework/python-tuf) — Python, reference TUF implementation
-- [go-tuf](https://github.com/theupdateframework/go-tuf) — Go, TUF client and repository library
-- [Notary v2 (notation)](https://github.com/notaryproject/notation) — Go, OCI-native signing with TUF-style metadata
-- [rust-tuf](https://github.com/heartsucker/rust-tuf) — Rust, TUF client library
-- [Uptane](https://github.com/uptane/uptane-standard) — TUF variant for automotive OTA updates
+- [python-tuf](https://github.com/theupdateframework/python-tuf) ⭐ 1.7k — Python, reference TUF implementation
+- [go-tuf](https://github.com/theupdateframework/go-tuf) ⭐ 698 — Go, TUF client and repository library
+- [Notary v2 (notation)](https://github.com/notaryproject/notation) ⭐ 472 — Go, OCI-native signing with TUF-style metadata
+- [rust-tuf](https://github.com/heartsucker/rust-tuf) ⭐ 188 — Rust, TUF client library
+- [Uptane](https://github.com/uptane/uptane-standard) ⭐ 43 — TUF variant for automotive OTA updates
 
 **Security status:** Secure
 Designed to be secure even against a fully compromised repository server; role separation and threshold signatures prevent single-key compromise; formal security analysis published.
@@ -523,10 +519,10 @@ CNCF graduated project; adopted by PyPI, Docker, Kubernetes, and automotive (Upt
 C2PA deployed by Adobe (Photoshop, Lightroom), Leica cameras, Microsoft, Google; SLSA adopted by GitHub Actions, Google Cloud Build, and npm.
 
 **Implementations:**
-- [c2pa-rs](https://github.com/contentauth/c2pa-rs) — Rust, C2PA reference implementation by Adobe CAI
-- [c2pa-js](https://github.com/contentauth/c2pa-js) — JavaScript, C2PA verification for web
-- [slsa-verifier](https://github.com/slsa-framework/slsa-verifier) — Go, SLSA provenance verification tool
-- [slsa-github-generator](https://github.com/slsa-framework/slsa-github-generator) — Go, GitHub Actions SLSA provenance generator
+- [c2pa-rs](https://github.com/contentauth/c2pa-rs) ⭐ 311 — Rust, C2PA reference implementation by Adobe CAI
+- [c2pa-js](https://github.com/contentauth/c2pa-js) ⭐ 16 — JavaScript, C2PA verification for web
+- [slsa-verifier](https://github.com/slsa-framework/slsa-verifier) ⭐ 318 — Go, SLSA provenance verification tool
+- [slsa-github-generator](https://github.com/slsa-framework/slsa-github-generator) ⭐ 558 — Go, GitHub Actions SLSA provenance generator
 
 **Security status:** Secure
 Based on standard X.509/COSE signatures with well-understood cryptography; provenance chain integrity depends on correct implementation of manifest embedding and signature verification.
@@ -591,11 +587,11 @@ For each received BGP prefix announcement:
 >50% of global IPv4 routes and >60% of IPv6 routes covered by ROAs; ROV enforced by Cloudflare, AT&T, Deutsche Telekom, Amazon, NTT.
 
 **Implementations:**
-- [Routinator](https://github.com/NLnetLabs/routinator) — Rust, RPKI relying party software (NLnet Labs)
-- [rpki-client](https://github.com/rpki-client/rpki-client-portable) — C, OpenBSD RPKI validator (portable)
-- [OctoRPKI](https://github.com/cloudflare/cfrpki) — Go, Cloudflare RPKI validator
-- [Krill](https://github.com/NLnetLabs/krill) — Rust, RPKI Certificate Authority daemon
-- [FORT Validator](https://github.com/NICMx/FORT-validator) — C, RPKI relying party by LACNIC/NIC Mexico
+- [Routinator](https://github.com/NLnetLabs/routinator) ⭐ 556 — Rust, RPKI relying party software (NLnet Labs)
+- [rpki-client](https://github.com/rpki-client/rpki-client-portable) ⭐ 67 — C, OpenBSD RPKI validator (portable)
+- [OctoRPKI](https://github.com/cloudflare/cfrpki) ⭐ 178 — Go, Cloudflare RPKI validator
+- [Krill](https://github.com/NLnetLabs/krill) ⭐ 357 — Rust, RPKI Certificate Authority daemon
+- [FORT Validator](https://github.com/NICMx/FORT-validator) ⭐ 60 — C, RPKI relying party by LACNIC/NIC Mexico
 
 **Security status:** Secure
 X.509-based resource certificates with CMS-signed ROAs; cryptographically sound. Trust anchor distribution via TALs (Trust Anchor Locators) from five RIRs.
@@ -642,11 +638,10 @@ example.com.  IN  CAA  0  iodef    "mailto:security@example.com"
 Mandatory CA checking since 2017 (CA/Browser Forum Ballot 187); all WebPKI CAs must honor CAA records before issuance.
 
 **Implementations:**
-- [BIND 9](https://github.com/isc-projects/bind9) — C, DNS server supporting CAA record types
-- [Knot DNS](https://github.com/CZ-NIC/knot) — C, authoritative DNS with CAA support
-- [PowerDNS](https://github.com/PowerDNS/pdns) — C++, DNS server with CAA record handling
-- [certbot](https://github.com/certbot/certbot) — Python, Let's Encrypt client that respects CAA policies
-- [SSLMate CAA Generator](https://github.com/SSLMate/caa-gen) — web tool for generating CAA records
+- [BIND 9](https://github.com/isc-projects/bind9) ⭐ 737 — C, DNS server supporting CAA record types
+- [Knot DNS](https://github.com/CZ-NIC/knot) ⭐ 293 — C, authoritative DNS with CAA support
+- [PowerDNS](https://github.com/PowerDNS/pdns) ⭐ 4.3k — C++, DNS server with CAA record handling
+- [certbot](https://github.com/certbot/certbot) ⭐ 32k — Python, Let's Encrypt client that respects CAA policies
 
 **Security status:** Caution
 Effective as a pre-issuance control but not verified by browsers at connection time; spoofable without DNSSEC; adoption remains low (~15% of popular sites).
@@ -697,11 +692,11 @@ IETF RFC 8659; CA/Browser Forum mandated; supported by all major CAs; simple DNS
 OCSP stapling widely deployed in Apache, nginx, IIS; CRLite shipped in Firefox; Chrome uses CRL Sets; short-lived certificates emerging via Let's Encrypt.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, full OCSP client/responder and stapling support
-- [mod_ssl (Apache)](https://github.com/apache/httpd) — C, OCSP stapling in Apache HTTP Server
-- [nginx](https://github.com/nginx/nginx) — C, built-in OCSP stapling support
-- [CRLite (Mozilla)](https://github.com/mozilla/crlite) — Rust/Python, compressed certificate revocation for Firefox
-- [Boulder](https://github.com/letsencrypt/boulder) — Go, Let's Encrypt CA software with OCSP responder
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, full OCSP client/responder and stapling support
+- [mod_ssl (Apache)](https://github.com/apache/httpd) ⭐ 3.9k — C, OCSP stapling in Apache HTTP Server
+- [nginx](https://github.com/nginx/nginx) ⭐ 29k — C, built-in OCSP stapling support
+- [CRLite (Mozilla)](https://github.com/mozilla/crlite) ⭐ 150 — Rust/Python, compressed certificate revocation for Firefox
+- [Boulder](https://github.com/letsencrypt/boulder) ⭐ 5.7k — Go, Let's Encrypt CA software with OCSP responder
 
 **Security status:** Caution
 OCSP stapling is cryptographically sound; plain OCSP has privacy concerns (CA sees client requests); soft-fail OCSP checking allows bypass; short-lived certificates eliminate revocation concerns entirely.
@@ -772,11 +767,11 @@ Used to prove an AK is co-resident with a known EK on the same TPM. A CA encrypt
 Mandatory in Windows 11; present in virtually all modern PCs, servers, and enterprise devices; used for BitLocker, Secure Boot, FIDO2 platform authenticators, and remote attestation.
 
 **Implementations:**
-- [tpm2-tss](https://github.com/tpm2-software/tpm2-tss) — C, TCG TPM2 Software Stack reference implementation
-- [tpm2-tools](https://github.com/tpm2-software/tpm2-tools) — C, command-line TPM 2.0 utilities
-- [go-tpm](https://github.com/google/go-tpm) — Go, Google TPM 2.0 client library
-- [wolfTPM](https://github.com/wolfSSL/wolfTPM) — C, portable TPM 2.0 library for embedded systems
-- [swtpm](https://github.com/stefanberger/swtpm) — C, software TPM 2.0 emulator for testing
+- [tpm2-tss](https://github.com/tpm2-software/tpm2-tss) ⭐ 863 — C, TCG TPM2 Software Stack reference implementation
+- [tpm2-tools](https://github.com/tpm2-software/tpm2-tools) ⭐ 844 — C, command-line TPM 2.0 utilities
+- [go-tpm](https://github.com/google/go-tpm) ⭐ 646 — Go, Google TPM 2.0 client library
+- [wolfTPM](https://github.com/wolfSSL/wolfTPM) ⭐ 311 — C, portable TPM 2.0 library for embedded systems
+- [swtpm](https://github.com/stefanberger/swtpm) ⭐ 772 — C, software TPM 2.0 emulator for testing
 
 **Security status:** Secure
 Hardware-isolated key storage with tamper resistance; ECDSA P-256 and RSA-2048 attestation keys; credential activation protocol prevents AK forgery. Side-channel attacks on some discrete TPMs documented but impractical at scale.
@@ -858,11 +853,11 @@ TCG TPM 2.0 specification; ISO/IEC 11889:2015; mandatory for Windows 11; IETF RF
 >13 billion FIDO-enabled accounts (2024); passkeys deployed by Google, Apple, Microsoft, GitHub, PayPal, Amazon, WhatsApp; all major browsers and OSes support WebAuthn.
 
 **Implementations:**
-- [libfido2](https://github.com/Yubico/libfido2) — C, Yubico FIDO2 client library (USB/NFC/BLE)
-- [py_webauthn](https://github.com/duo-labs/py_webauthn) — Python, WebAuthn server-side library
-- [java-webauthn-server](https://github.com/Yubico/java-webauthn-server) — Java, Yubico WebAuthn server library
-- [SimpleWebAuthn](https://github.com/MasterKale/SimpleWebAuthn) — TypeScript, WebAuthn server + browser library
-- [webauthn-rs](https://github.com/kanidm/webauthn-rs) — Rust, WebAuthn server implementation
+- [libfido2](https://github.com/Yubico/libfido2) ⭐ 697 — C, Yubico FIDO2 client library (USB/NFC/BLE)
+- [py_webauthn](https://github.com/duo-labs/py_webauthn) ⭐ 1.0k — Python, WebAuthn server-side library
+- [java-webauthn-server](https://github.com/Yubico/java-webauthn-server) ⭐ 544 — Java, Yubico WebAuthn server library
+- [SimpleWebAuthn](https://github.com/MasterKale/SimpleWebAuthn) ⭐ 2.2k — TypeScript, WebAuthn server + browser library
+- [webauthn-rs](https://github.com/kanidm/webauthn-rs) ⭐ 642 — Rust, WebAuthn server implementation
 
 **Security status:** Secure
 Phishing-resistant by design (origin binding via rpIdHash signed by hardware); private keys never leave secure element/TPM; synced passkeys introduce cloud backup risk but remain strong against credential theft.
@@ -944,11 +939,11 @@ This is how keys migrate between HSMs — always in encrypted form, never as pla
 Universal HSM integration standard; used by OpenSSL, Java JCE, NSS (Firefox/Chrome), NGINX, HashiCorp Vault, and all major HSM vendors.
 
 **Implementations:**
-- [SoftHSMv2](https://github.com/opendnssec/SoftHSMv2) — C++, software-only PKCS#11 HSM for development/testing
-- [OpenSC](https://github.com/OpenSC/OpenSC) — C, PKCS#11 middleware for smart cards and tokens
-- [p11-kit](https://github.com/p11-glue/p11-kit) — C, PKCS#11 module management and trust policy framework
-- [pkcs11-provider (OpenSSL 3.x)](https://github.com/latchset/pkcs11-provider) — C, OpenSSL 3.x provider for PKCS#11 tokens
-- [Yubico PIV tool](https://github.com/Yubico/yubico-piv-tool) — C, PKCS#11 module for YubiKey PIV
+- [SoftHSMv2](https://github.com/opendnssec/SoftHSMv2) ⭐ 993 — C++, software-only PKCS#11 HSM for development/testing
+- [OpenSC](https://github.com/OpenSC/OpenSC) ⭐ 3.0k — C, PKCS#11 middleware for smart cards and tokens
+- [p11-kit](https://github.com/p11-glue/p11-kit) ⭐ 184 — C, PKCS#11 module management and trust policy framework
+- [pkcs11-provider (OpenSSL 3.x)](https://github.com/latchset/pkcs11-provider) ⭐ 115 — C, OpenSSL 3.x provider for PKCS#11 tokens
+- [Yubico PIV tool](https://github.com/Yubico/yubico-piv-tool) ⭐ 344 — C, PKCS#11 module for YubiKey PIV
 
 **Security status:** Secure
 API design enforces non-exportable key semantics (CKA_SENSITIVE + CKA_EXTRACTABLE=FALSE); security depends on the underlying HSM hardware achieving FIPS 140-3 certification.
@@ -1018,10 +1013,10 @@ OASIS PKCS #11 v3.1 (2023); originally RSA Security standard; universal adoption
 Standard operational procedure for all root CA ceremonies (ICANN DNS Root KSK, WebPKI root CAs), DNSSEC key ceremonies, and enterprise HSM deployments.
 
 **Implementations:**
-- [ICANN KSK Ceremony scripts](https://github.com/iana-org/dnssec-keytools) — Python/Shell, ICANN DNS root KSK ceremony tools
-- [OpenDNSSEC](https://github.com/opendnssec/opendnssec) — C, automated DNSSEC key management with HSM support
-- [HashiCorp Vault](https://github.com/hashicorp/vault) — Go, secrets management with Shamir unseal and HSM auto-unseal
-- [SoftHSMv2](https://github.com/opendnssec/SoftHSMv2) — C++, software HSM for ceremony testing
+- [ICANN KSK Ceremony scripts](https://github.com/iana-org/dnssec-keytools) ⭐ 4 — Python/Shell, ICANN DNS root KSK ceremony tools
+- [OpenDNSSEC](https://github.com/opendnssec/opendnssec) ⭐ 118 — C, automated DNSSEC key management with HSM support
+- [HashiCorp Vault](https://github.com/hashicorp/vault) ⭐ 35k — Go, secrets management with Shamir unseal and HSM auto-unseal
+- [SoftHSMv2](https://github.com/opendnssec/SoftHSMv2) ⭐ 993 — C++, software HSM for ceremony testing
 
 **Security status:** Secure
 Based on well-established Shamir Secret Sharing and physically witnessed procedures; FIPS 140-3 Level 3+ HSMs enforce dual control; auditable and tamper-evident.
@@ -1091,8 +1086,8 @@ Deployed in Android 13+ (Remote Key Provisioning), ChromeOS, Zephyr RTOS, and To
 **Implementations:**
 - [Open DICE (Google/Pigweed)](https://pigweed.googlesource.com/open-dice/) — C, Google's open-source DICE implementation
 - [Android Open DICE](https://android.googlesource.com/platform/external/open-dice/) — C, DICE in Android platform
-- [Tock DICE](https://github.com/tock/tock) — Rust, DICE support in Tock embedded OS
-- [Zephyr RTOS DICE](https://github.com/zephyrproject-rtos/zephyr) — C, DICE integration in Zephyr
+- [Tock DICE](https://github.com/tock/tock) ⭐ 6.3k — Rust, DICE support in Tock embedded OS
+- [Zephyr RTOS DICE](https://github.com/zephyrproject-rtos/zephyr) ⭐ 14k — C, DICE integration in Zephyr
 
 **Security status:** Secure
 UDS never exposed to software; any firmware change produces a different CDI; works on microcontrollers with as little as 2 kB ROM. Security analysis by Microsoft Research and TCG.
@@ -1177,10 +1172,10 @@ The GSMA operates a GSMA Certificate Issuer (CI) and issues Sub-CI certificates 
 Over 2.5 billion eSIM-capable devices shipped by 2024; Apple removed physical SIM in US iPhone 14; deployed in smartphones, connected cars, smart meters, and industrial M2M.
 
 **Implementations:**
-- [lpac](https://github.com/estkme-group/lpac) — C, open-source local profile assistant for eSIM management
+- [lpac](https://github.com/estkme-group/lpac) ⭐ 599 — C, open-source local profile assistant for eSIM management
 - [OpenEUICC](https://gitea.angry.im/PeterCxy/OpenEUICC) — Kotlin, open-source eSIM management app for Android
-- [GlobalPlatformPro](https://github.com/martinpaljak/GlobalPlatformPro) — Java, smart card management with SCP03 support
-- [pySIM](https://github.com/osmocom/pysim) — Python, SIM/USIM/ISIM card provisioning tool
+- [GlobalPlatformPro](https://github.com/martinpaljak/GlobalPlatformPro) ⭐ 873 — Java, smart card management with SCP03 support
+- [pySIM](https://github.com/osmocom/pysim) ⭐ 514 — Python, SIM/USIM/ISIM card provisioning tool
 
 **Security status:** Secure
 ECDSA P-256/brainpoolP256r1 mutual authentication; SCP03t (AES-128-CBC + CMAC) profile encryption; Common Criteria EAL4+ certified eUICC hardware. Post-quantum migration research active.
@@ -1264,10 +1259,10 @@ EnvelopedData ::= SEQUENCE {
 Foundation of S/MIME, Authenticode, RPKI, PKCS#12; implemented in OpenSSL, Bouncy Castle, Microsoft CryptoAPI, and virtually all PKI software.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, `openssl cms` command and libcrypto CMS API
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, comprehensive CMS/PKCS#7 implementation
-- [pyca/cryptography](https://github.com/pyca/cryptography) — Python, CMS parsing and generation
-- [cms (Go)](https://github.com/github/smimesign) — Go, GitHub S/MIME signing tool using CMS
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, `openssl cms` command and libcrypto CMS API
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, comprehensive CMS/PKCS#7 implementation
+- [pyca/cryptography](https://github.com/pyca/cryptography) ⭐ 7.5k — Python, CMS parsing and generation
+- [cms (Go)](https://github.com/github/smimesign) ⭐ 646 — Go, GitHub S/MIME signing tool using CMS
 
 **Security status:** Secure
 Modern CMS uses AES-GCM (RFC 5084) for authenticated encryption and SHA-256+ digests; legacy CBC modes remain available but superseded. RSA-OAEP and ECDH key transport are well-studied.
@@ -1341,10 +1336,10 @@ Content-Type: application/pkcs7-signature
 Supported by Outlook, Apple Mail, Thunderbird, iOS Mail; deployed in enterprise environments (healthcare, finance, government) for legally admissible signed email.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, S/MIME signing and encryption via `openssl smime`/`openssl cms`
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, full S/MIME support
-- [python-gnupg](https://github.com/vsajip/python-gnupg) — Python, GPG/S/MIME email operations
-- [smimesign](https://github.com/github/smimesign) — Go, GitHub S/MIME signing tool for Git commits
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, S/MIME signing and encryption via `openssl smime`/`openssl cms`
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, full S/MIME support
+- [python-gnupg](https://github.com/vsajip/python-gnupg) ⭐ 144 — Python, GPG/S/MIME email operations
+- [smimesign](https://github.com/github/smimesign) ⭐ 646 — Go, GitHub S/MIME signing tool for Git commits
 
 **Security status:** Secure
 S/MIME v4.0 mandates AES-256-GCM and modern digests; cryptographically sound with proper certificate management. Key distribution remains a challenge (requires prior certificate exchange or SMIMEA/LDAP lookup).
@@ -1420,10 +1415,10 @@ Android signing uses developer-held self-signed certs (no CA); the same certific
 Authenticode, Apple code signing, and Android APK signing are deployed on billions of devices; every Windows driver, macOS app, and Android APK is code-signed in production.
 
 **Implementations:**
-- [osslsigncode](https://github.com/mtrojnar/osslsigncode) — C, open-source Authenticode signing/verification tool
+- [osslsigncode](https://github.com/mtrojnar/osslsigncode) ⭐ 1.0k — C, open-source Authenticode signing/verification tool
 - [apksigner](https://developer.android.com/tools/apksigner) — Java, official Android APK signing tool (part of Android SDK)
-- [sigstore/cosign](https://github.com/sigstore/cosign) — Go, keyless code signing for containers and artifacts
-- [Apple codesign (rcodesign)](https://github.com/indygreg/apple-platform-rs) — Rust, open-source Apple code signing
+- [sigstore/cosign](https://github.com/sigstore/cosign) ⭐ 5.8k — Go, keyless code signing for containers and artifacts
+- [Apple codesign (rcodesign)](https://github.com/indygreg/apple-platform-rs) ⭐ 788 — Rust, open-source Apple code signing
 - [SignTool](https://learn.microsoft.com/en-us/windows/win32/seccrypto/signtool) — C++, Microsoft SDK Authenticode signing tool
 
 **Security status:** Secure
@@ -1507,11 +1502,11 @@ This allows any party to verify inclusion without downloading the full log.
 Enforced by Chrome and Safari for all public WebPKI certificates since 2018; over 10 billion certificates logged across production CT logs operated by Google, Cloudflare, DigiCert, and others.
 
 **Implementations:**
-- [Google Trillian](https://github.com/google/trillian) — Go, general-purpose Merkle log framework powering CT logs
-- [certificate-transparency-go](https://github.com/google/certificate-transparency-go) — Go, CT log server and client libraries
-- [certspotter](https://github.com/SSLMate/certspotter) — Go, CT log monitor for detecting mis-issued certificates
+- [Google Trillian](https://github.com/google/trillian) ⭐ 3.7k — Go, general-purpose Merkle log framework powering CT logs
+- [certificate-transparency-go](https://github.com/google/certificate-transparency-go) ⭐ 1.1k — Go, CT log server and client libraries
+- [certspotter](https://github.com/SSLMate/certspotter) ⭐ 1.1k — Go, CT log monitor for detecting mis-issued certificates
 - [crt.sh](https://crt.sh/) — PostgreSQL/Web, Sectigo-operated public CT search engine
-- [Sigstore Rekor](https://github.com/sigstore/rekor) — Go, CT-compatible transparency log for software artifacts
+- [Sigstore Rekor](https://github.com/sigstore/rekor) ⭐ 1.1k — Go, CT-compatible transparency log for software artifacts
 
 **Security status:** Secure
 Merkle tree construction with SHA-256 and ECDSA-signed tree heads is cryptographically sound; CT detects but does not prevent mis-issuance — domain owners must actively monitor logs.
@@ -1614,11 +1609,10 @@ CWT is to COSE as JWT is to JWS — a COSE_Sign1 (or COSE_Mac0) wrapping a CBOR 
 Mandatory in ISO 18013-5 (mobile driver's license), EU EUDI Wallet, FIDO2/WebAuthn, and CoAP/OSCORE IoT protocols; deployed on billions of devices.
 
 **Implementations:**
-- [go-cose](https://github.com/veraison/go-cose) — Go, IETF COSE implementation
-- [python-cwt](https://github.com/dajiaji/python-cwt) — Python, CWT/COSE library
-- [cose-js](https://github.com/nicktaras/cose-js) — JavaScript, COSE signing and encryption
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, comprehensive crypto library with COSE/CWT support
-- [COSE-C](https://github.com/cose-wg/COSE-C) — C, reference COSE implementation from the IETF working group
+- [go-cose](https://github.com/veraison/go-cose) ⭐ 62 — Go, IETF COSE implementation
+- [python-cwt](https://github.com/dajiaji/python-cwt) ⭐ 29 — Python, CWT/COSE library
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, comprehensive crypto library with COSE/CWT support
+- [COSE-C](https://github.com/cose-wg/COSE-C) ⭐ 31 — C, reference COSE implementation from the IETF working group
 
 **Security status:** Secure
 Built on well-established algorithms (ECDSA P-256, EdDSA, AES-GCM, HMAC-SHA-256); binary CBOR encoding avoids JSON canonicalization vulnerabilities present in JOSE.
@@ -1703,11 +1697,10 @@ The VCEK is unique to each physical CPU chip and the currently installed TCB ver
 Deployed in Azure Confidential VMs (DCasv5/ECasv5), Google Cloud Confidential VMs, and AWS SEV-SNP preview; used for confidential ML inference with NVIDIA H100 Hopper.
 
 **Implementations:**
-- [virtee/sev](https://github.com/virtee/sev) — Rust, AMD SEV-SNP attestation and guest management library
-- [AMD SEV Tool](https://github.com/AMDESE/sev-tool) — C++, AMD SEV platform management utilities
-- [sev-snp-measure](https://github.com/virtee/sev-snp-measure) — Python, pre-compute expected SEV-SNP guest measurements
-- [Azure DCAP Client](https://github.com/Azure/azure-dcap-client) — C, Azure attestation client supporting SEV-SNP
-- [coconut-svsm](https://github.com/coconut-svsm/svsm) — Rust, Secure VM Service Module for SEV-SNP guests
+- [virtee/sev](https://github.com/virtee/sev) ⭐ 138 — Rust, AMD SEV-SNP attestation and guest management library
+- [AMD SEV Tool](https://github.com/AMDESE/sev-tool) ⭐ 87 — C++, AMD SEV platform management utilities
+- [sev-snp-measure](https://github.com/virtee/sev-snp-measure) ⭐ 74 — Python, pre-compute expected SEV-SNP guest measurements
+- [coconut-svsm](https://github.com/coconut-svsm/svsm) ⭐ 210 — Rust, Secure VM Service Module for SEV-SNP guests
 
 **Security status:** Caution
 ECDSA P-384 attestation cryptography is sound; security depends on AMD PSP firmware integrity and timely TCB updates; side-channel attacks on earlier SEV generations (CacheWarp, 2023) have been mitigated in SNP but require vigilance.
@@ -1801,10 +1794,9 @@ ECDSA Quote structure:
 Azure Confidential Computing GA since 2022; SGX enclaves (DCsv3), TDX VMs (DCesv5), and AKS Confidential Containers deployed in production; MAA attestation service publicly available.
 
 **Implementations:**
-- [Azure DCAP Client](https://github.com/Azure/azure-dcap-client) — C, Intel DCAP client for Azure attestation
-- [Intel SGX DCAP](https://github.com/intel/SGXDataCenterAttestationPrimitives) — C/C++, data center attestation primitives
-- [Open Enclave SDK](https://github.com/openenclave/openenclave) — C/C++, cross-platform TEE SDK (SGX + TrustZone)
-- [Gramine](https://github.com/gramineproject/gramine) — C, library OS for running unmodified Linux apps in SGX enclaves
+- [Intel SGX DCAP](https://github.com/intel/SGXDataCenterAttestationPrimitives) ⭐ 321 — C/C++, data center attestation primitives
+- [Open Enclave SDK](https://github.com/openenclave/openenclave) ⭐ 1.2k — C/C++, cross-platform TEE SDK (SGX + TrustZone)
+- [Gramine](https://github.com/gramineproject/gramine) ⭐ 755 — C, library OS for running unmodified Linux apps in SGX enclaves
 - [Confidential Containers](https://github.com/confidential-containers) — Go/Rust, CNCF project for Kata + TDX/SNP container isolation
 
 **Security status:** Caution
@@ -1877,11 +1869,11 @@ The combined shared secret is `HKDF(ss_X25519 || ss_ML-KEM)`; a passive quantum 
 Hybrid TLS key exchange (X25519+ML-KEM) deployed in Chrome and Cloudflare; hybrid X.509 certificates are in IETF draft stage with no production WebPKI deployment yet.
 
 **Implementations:**
-- [Open Quantum Safe (liboqs)](https://github.com/open-quantum-safe/liboqs) — C, PQ algorithm library with hybrid certificate support
-- [oqs-provider](https://github.com/open-quantum-safe/oqs-provider) — C, OpenSSL 3 provider for PQ/hybrid algorithms
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, ML-KEM/ML-DSA and composite certificate support
-- [rustls](https://github.com/rustls/rustls) — Rust, TLS library with X25519+ML-KEM hybrid key exchange
-- [wolfSSL](https://github.com/wolfSSL/wolfssl) — C, embedded TLS with FIPS 203/204/205 support
+- [Open Quantum Safe (liboqs)](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, PQ algorithm library with hybrid certificate support
+- [oqs-provider](https://github.com/open-quantum-safe/oqs-provider) ⭐ 460 — C, OpenSSL 3 provider for PQ/hybrid algorithms
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, ML-KEM/ML-DSA and composite certificate support
+- [rustls](https://github.com/rustls/rustls) ⭐ 7.3k — Rust, TLS library with X25519+ML-KEM hybrid key exchange
+- [wolfSSL](https://github.com/wolfSSL/wolfssl) ⭐ 2.8k — C, embedded TLS with FIPS 203/204/205 support
 
 **Security status:** Caution
 Underlying PQ algorithms (ML-KEM, ML-DSA) are NIST-standardized and considered secure; hybrid schemes provide defense-in-depth, but composite certificate formats are not yet finalized and interoperability is limited.
@@ -1965,11 +1957,11 @@ NIST Cybersecurity White Paper 25 documents the operational framework for enterp
 EST and SCEP widely deployed in enterprise PKI; CMP v3 mandated for automotive (UNECE WP.29); ACME powers Let's Encrypt (400M+ certificates); CMC used in US DoD PKI infrastructure.
 
 **Implementations:**
-- [EJBCA](https://github.com/Keyfactor/ejbca-ce) — Java, enterprise CA with CMC/EST/CMP/SCEP support
-- [Dogtag PKI](https://github.com/dogtagpki/pki) — Java, Red Hat PKI server with CMC support
-- [libest](https://github.com/cisco/libest) — C, Cisco EST client/server library
-- [HashiCorp Vault PKI](https://github.com/hashicorp/vault) — Go, PKI secrets engine with auto-renewal
-- [openxpki](https://github.com/openxpki/openxpki) — Perl, enterprise PKI with SCEP and EST
+- [EJBCA](https://github.com/Keyfactor/ejbca-ce) ⭐ 896 — Java, enterprise CA with CMC/EST/CMP/SCEP support
+- [Dogtag PKI](https://github.com/dogtagpki/pki) ⭐ 483 — Java, Red Hat PKI server with CMC support
+- [libest](https://github.com/cisco/libest) ⭐ 106 — C, Cisco EST client/server library
+- [HashiCorp Vault PKI](https://github.com/hashicorp/vault) ⭐ 35k — Go, PKI secrets engine with auto-renewal
+- [openxpki](https://github.com/openxpki/openxpki) ⭐ 672 — Perl, enterprise PKI with SCEP and EST
 
 **Security status:** Secure
 Protocols use CMS/PKCS#7 signed requests over TLS; security depends on proper CA configuration and authentication method (certificate-based mutual TLS preferred over HTTP Basic).
@@ -2066,9 +2058,7 @@ Deployed on billions of Android and iOS devices; Android Key Attestation and App
 **Implementations:**
 - [Android Keystore API](https://developer.android.com/training/articles/keystore) — Java/Kotlin, Android platform key management and attestation
 - [Apple CryptoKit / Security framework](https://developer.apple.com/documentation/cryptokit) — Swift, Secure Enclave key operations and App Attest
-- [KeyAttestation (Android)](https://github.com/nicktaras/key-attestation) — Java, Android key attestation verification sample
 - [Google Titan M2](https://security.googleblog.com/2022/10/google-pixel-7-titan-m2.html) — Hardware, Google's discrete security chip for StrongBox
-- [apple-device-check](https://github.com/nicktaras/device-check) — Swift, Apple DeviceCheck and App Attest server-side verification
 
 **Security status:** Secure
 Keys generated and stored in dedicated secure hardware (StrongBox / Secure Enclave); attestation chains root in Google and Apple CAs; ECDSA P-256 cryptography is sound.
@@ -2111,10 +2101,9 @@ Deployed in data center east-west traffic, financial trading floors, and cloud p
 
 **Implementations:**
 - [Linux MACsec (ip macsec)](https://man7.org/linux/man-pages/man8/ip-macsec.8.html) — C, Linux kernel MACsec subsystem (since kernel 4.6)
-- [wpa_supplicant](https://github.com/nicktaras/hostap) — C, MKA (MACsec Key Agreement) supplicant for Linux
-- [Open vSwitch](https://github.com/openvswitch/ovs) — C, software switch with MACsec offload support
+- [Open vSwitch](https://github.com/openvswitch/ovs) ⭐ 3.9k — C, software switch with MACsec offload support
 - [Cisco TrustSec](https://www.cisco.com/c/en/us/solutions/enterprise-networks/trustsec/index.html) — Proprietary, Cisco MACsec implementation across Catalyst/Nexus
-- [strongSwan](https://github.com/strongswan/strongswan) — C, IPsec/IKEv2 with MACsec integration capabilities
+- [strongSwan](https://github.com/strongswan/strongswan) ⭐ 2.8k — C, IPsec/IKEv2 with MACsec integration capabilities
 
 **Security status:** Secure
 GCM-AES-128/256 with replay protection is cryptographically sound; XPN extension prevents packet number exhaustion on high-speed (100G+) links; security requires physical control of endpoints.
@@ -2158,8 +2147,8 @@ Android Verified Boot (AVB) uses dm-verity for system/vendor partitions; root ha
 UEFI Secure Boot mandatory for Windows 11; deployed on virtually all x86 PCs and servers; Android Verified Boot on all Android devices; dm-verity in Chrome OS and Android.
 
 **Implementations:**
-- [shim](https://github.com/rhboot/shim) — C, UEFI first-stage bootloader signed by Microsoft CA for Linux distros
-- [systemd-boot](https://github.com/systemd/systemd) — C, UEFI boot manager with Secure Boot support
+- [shim](https://github.com/rhboot/shim) ⭐ 1.1k — C, UEFI first-stage bootloader signed by Microsoft CA for Linux distros
+- [systemd-boot](https://github.com/systemd/systemd) ⭐ 16k — C, UEFI boot manager with Secure Boot support
 - [GRUB2](https://git.savannah.gnu.org/cgit/grub.git) — C, bootloader with UEFI Secure Boot chain verification
 - [Android Verified Boot (AVB)](https://android.googlesource.com/platform/external/avb/) — C, Android dm-verity and vbmeta signing
 - [dm-verity (Linux kernel)](https://www.kernel.org/doc/html/latest/admin-guide/device-mapper/verity.html) — C, kernel block-level integrity verification via Merkle trees
@@ -2214,11 +2203,9 @@ Host → Card: EXTERNAL AUTHENTICATE (host cryptogram + C-MAC)
 SCP03 is mandatory for all GlobalPlatform 2.3+ compliant cards; deployed on billions of SIM cards, banking smart cards, government eID cards, and secure elements in smartphones.
 
 **Implementations:**
-- [GlobalPlatformPro](https://github.com/nicktaras/globalplatformpro) — Java, open-source GlobalPlatform card management tool
-- [OpenSC](https://github.com/OpenSC/OpenSC) — C, smart card middleware with GlobalPlatform support
-- [JCAlgTest](https://github.com/nicktaras/JCAlgTest) — Java, JavaCard cryptographic algorithm testing tool
-- [YubiKey Manager](https://github.com/Yubico/yubikey-manager) — Python, YubiKey configuration (uses SCP03 for management)
-- [pyscard](https://github.com/LudovicRousseau/pyscard) — Python, PC/SC smart card library for SCP03 communication
+- [OpenSC](https://github.com/OpenSC/OpenSC) ⭐ 3.0k — C, smart card middleware with GlobalPlatform support
+- [YubiKey Manager](https://github.com/Yubico/yubikey-manager) ⭐ 1.1k — Python, YubiKey configuration (uses SCP03 for management)
+- [pyscard](https://github.com/LudovicRousseau/pyscard) ⭐ 458 — Python, PC/SC smart card library for SCP03 communication
 
 **Security status:** Secure
 AES-128/256-CBC + CMAC is cryptographically sound; mutual authentication prevents unauthorized card management; SCP03 replaces legacy SCP02 (3DES) with modern symmetric primitives.
@@ -2265,10 +2252,10 @@ Initiator → Responder: ECDSA sig over transcript, initiator NOC cert
 3,000+ Matter-certified devices from Apple, Google, Amazon, Samsung, and others; Thread 1.3 deployed in commercial smart home products; Matter 1.4 specification released 2024.
 
 **Implementations:**
-- [connectedhomeip](https://github.com/project-chip/connectedhomeip) — C++, official Matter SDK (Connectivity Standards Alliance)
-- [OpenThread](https://github.com/openthread/openthread) — C, open-source Thread networking stack (Google)
-- [ESP-IDF Matter](https://github.com/espressif/esp-matter) — C, Espressif Matter SDK for ESP32 microcontrollers
-- [matter.js](https://github.com/project-chip/matter.js) — TypeScript, Matter protocol implementation for Node.js
+- [connectedhomeip](https://github.com/project-chip/connectedhomeip) ⭐ 8.7k — C++, official Matter SDK (Connectivity Standards Alliance)
+- [OpenThread](https://github.com/openthread/openthread) ⭐ 3.9k — C, open-source Thread networking stack (Google)
+- [ESP-IDF Matter](https://github.com/espressif/esp-matter) ⭐ 979 — C, Espressif Matter SDK for ESP32 microcontrollers
+- [matter.js](https://github.com/project-chip/matter.js) ⭐ 762 — TypeScript, Matter protocol implementation for Node.js
 - [Apple Home](https://developer.apple.com/homekit/) — Swift, Apple's Matter controller implementation
 
 **Security status:** Secure
@@ -2317,10 +2304,10 @@ Deployed universally in enterprise wired/wireless networks; eduroam serves 100+ 
 
 **Implementations:**
 - [wpa_supplicant](https://w1.fi/wpa_supplicant/) — C, reference 802.1X supplicant for Linux/BSD/Windows
-- [FreeRADIUS](https://github.com/FreeRADIUS/freeradius-server) — C, most widely deployed RADIUS server with full EAP support
+- [FreeRADIUS](https://github.com/FreeRADIUS/freeradius-server) ⭐ 2.5k — C, most widely deployed RADIUS server with full EAP support
 - [hostapd](https://w1.fi/hostapd/) — C, IEEE 802.1X authenticator for access points
 - [Radiator](https://www.open.com.au/radiator/) — Perl, commercial RADIUS server with EAP-TLS/TTLS/PEAP
-- [NetworkManager](https://github.com/NetworkManager/NetworkManager) — C, Linux network manager with 802.1X/EAP configuration
+- [NetworkManager](https://github.com/NetworkManager/NetworkManager) ⭐ 484 — C, Linux network manager with 802.1X/EAP configuration
 
 **Security status:** Secure
 EAP-TLS 1.3 provides mutual certificate authentication with forward secrecy; encrypted client identity prevents tracking; EAP-TTLS/PEAP with inner password methods are less secure but adequate with strong passwords.
@@ -2370,11 +2357,11 @@ Create → Register → Get → Activate → [Re-key / Re-key Pair] → Deactiva
 Deployed in enterprise KMS (Thales CipherTrust, IBM SKLM, Fortanix), cloud KMS, database TDE, and storage encryption systems; mandated by FIPS 140-3 CMVP for KMS interoperability.
 
 **Implementations:**
-- [PyKMIP](https://github.com/OpenKMIP/PyKMIP) — Python, reference KMIP client/server library
-- [Barbican](https://github.com/openstack/barbican) — Python, OpenStack key management service with KMIP backend
+- [PyKMIP](https://github.com/OpenKMIP/PyKMIP) ⭐ 299 — Python, reference KMIP client/server library
+- [Barbican](https://github.com/openstack/barbican) ⭐ 248 — Python, OpenStack key management service with KMIP backend
 - [HashiCorp Vault KMIP](https://www.vaultproject.io/docs/secrets/kmip) — Go, Vault secrets engine exposing KMIP interface
 - [Thales CipherTrust Manager](https://cpl.thalesgroup.com/encryption/ciphertrust-manager) — Commercial, enterprise KMS with KMIP 2.1 compliance
-- [libkmip](https://github.com/OpenKMIP/libkmip) — C, lightweight KMIP encoding library
+- [libkmip](https://github.com/OpenKMIP/libkmip) ⭐ 44 — C, lightweight KMIP encoding library
 
 **Security status:** Secure
 KMIP itself is a management protocol; security depends on the underlying KMS/HSM implementation and TLS transport; KMIP 3.0 adds PQC key types for quantum readiness.
@@ -2422,11 +2409,10 @@ Name Constraints are the primary mechanism for technically scoping intermediate 
 Foundation of all TLS, code signing, S/MIME, and VPN trust decisions; implemented in every browser, operating system, and TLS library; billions of certificate validations per day.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, X.509 path validation in `X509_verify_cert()`
-- [rustls/webpki](https://github.com/rustls/webpki) — Rust, memory-safe X.509 path validation library
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, X.509 path validation in `X509_verify_cert()`
+- [rustls/webpki](https://github.com/rustls/webpki) ⭐ 142 — Rust, memory-safe X.509 path validation library
 - [Go x509](https://pkg.go.dev/crypto/x509) — Go, standard library X.509 certificate verification
-- [NSS (Network Security Services)](https://github.com/nicktaras/nss) — C, Mozilla's crypto library used by Firefox for path validation
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, comprehensive X.509 path building and validation
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, comprehensive X.509 path building and validation
 
 **Security status:** Caution
 Algorithm is well-defined (Internet Standard since 2008); security depends on correct implementation — common pitfalls include hostname mismatch, soft-fail OCSP, and missing intermediate certificates.
@@ -2482,11 +2468,11 @@ Service A (X509-SVID: spiffe://prod/svc-a) ◄─── mTLS ───► Servic
 CNCF Graduated project (2022); deployed in production at Pinterest, Uber, Bloomberg, ByteDance; Istio uses SPIFFE IDs natively for service mesh mTLS.
 
 **Implementations:**
-- [SPIRE](https://github.com/spiffe/spire) — Go, reference SPIFFE runtime environment (CNCF Graduated)
-- [spiffe-helper](https://github.com/spiffe/spiffe-helper) — Go, sidecar for fetching and rotating SVIDs
-- [go-spiffe](https://github.com/spiffe/go-spiffe) — Go, SPIFFE client library for workload API
-- [java-spiffe](https://github.com/spiffe/java-spiffe) — Java, SPIFFE workload API client library
-- [Istio](https://github.com/istio/istio) — Go, service mesh with native SPIFFE identity integration
+- [SPIRE](https://github.com/spiffe/spire) ⭐ 2.3k — Go, reference SPIFFE runtime environment (CNCF Graduated)
+- [spiffe-helper](https://github.com/spiffe/spiffe-helper) ⭐ 71 — Go, sidecar for fetching and rotating SVIDs
+- [go-spiffe](https://github.com/spiffe/go-spiffe) ⭐ 189 — Go, SPIFFE client library for workload API
+- [java-spiffe](https://github.com/spiffe/java-spiffe) ⭐ 43 — Java, SPIFFE workload API client library
+- [Istio](https://github.com/istio/istio) ⭐ 38k — Go, service mesh with native SPIFFE identity integration
 
 **Security status:** Secure
 X509-SVIDs use standard ECDSA P-256 certificates with short lifetimes (1h default, auto-rotated); node and workload attestation provide defense-in-depth; no known cryptographic weaknesses.
@@ -2549,11 +2535,8 @@ Token is COSE_Sign1 (ECDSA P-256 or P-384), verifiable by a remote attestation s
 Over 200 PSA Certified products; deployed on Nordic Semiconductor, STMicroelectronics, NXP, Infineon, and Raspberry Pi platforms; TF-M is the reference implementation for Cortex-M TrustZone.
 
 **Implementations:**
-- [TF-M (Trusted Firmware-M)](https://github.com/nicktaras/trusted-firmware-m) — C, Arm reference secure firmware for Cortex-M
-- [Mbed TLS](https://github.com/Mbed-TLS/mbedtls) — C, implements PSA Crypto API as primary interface
-- [TF-M Tests](https://github.com/nicktaras/tf-m-tests) — C, PSA API compliance test suite
-- [PSA Arch Tests](https://github.com/nicktaras/psa-arch-tests) — C, Arm PSA architecture compliance test suite
-- [Zephyr RTOS](https://github.com/zephyrproject-rtos/zephyr) — C, RTOS with PSA Crypto API and TF-M integration
+- [Mbed TLS](https://github.com/Mbed-TLS/mbedtls) ⭐ 6.6k — C, implements PSA Crypto API as primary interface
+- [Zephyr RTOS](https://github.com/zephyrproject-rtos/zephyr) ⭐ 14k — C, RTOS with PSA Crypto API and TF-M integration
 
 **Security status:** Secure
 PSA Crypto API wraps well-established algorithms (ECDSA P-256, AES-GCM, SHA-256) with hardware-backed key isolation; PSA Certified Level 3 requires resistance to hardware side-channel and fault injection attacks.
@@ -2604,10 +2587,10 @@ IETF PLANTS WG active draft; Google (original proposal by David Benjamin) and Cl
 Majority of global routing table is ROA-covered; enforced by Cloudflare, AT&T, and European ISPs; all five Regional Internet Registries operate RPKI trust anchors.
 
 **Implementations:**
-- [Routinator](https://github.com/NLnetLabs/routinator) — Rust, RPKI relying party software (NLnet Labs)
-- [Fort Validator](https://github.com/NICMx/FORT-validator) — C, RPKI validation tool (LACNIC)
-- [rpki-client](https://github.com/rpki-client/rpki-client-portable) — C, OpenBSD RPKI validator
-- [Krill](https://github.com/NLnetLabs/krill) — Rust, RPKI Certificate Authority daemon
+- [Routinator](https://github.com/NLnetLabs/routinator) ⭐ 556 — Rust, RPKI relying party software (NLnet Labs)
+- [Fort Validator](https://github.com/NICMx/FORT-validator) ⭐ 60 — C, RPKI validation tool (LACNIC)
+- [rpki-client](https://github.com/rpki-client/rpki-client-portable) ⭐ 67 — C, OpenBSD RPKI validator
+- [Krill](https://github.com/NLnetLabs/krill) ⭐ 357 — Rust, RPKI Certificate Authority daemon
 - [RIPE NCC RPKI Dashboard](https://rpki.ripe.net/) — Web, RPKI monitoring and ROA management
 
 **Security status:** Secure
@@ -2634,10 +2617,10 @@ IETF RFCs 6480, 6482, 6487, 8210, 8205; MANRS (Mutually Agreed Norms for Routing
 CMP v3 (RFC 9480) deployed in automotive (UNECE WP.29), telecom, and industrial PKI; Lightweight CMP (RFC 9483) targets constrained IoT devices; PQ support via RFC 9810.
 
 **Implementations:**
-- [EJBCA](https://github.com/Keyfactor/ejbca-ce) — Java, enterprise CA with full CMP v3 support
-- [openxpki](https://github.com/openxpki/openxpki) — Perl, enterprise PKI with CMP enrollment
-- [CMPforOpenSSL](https://github.com/mpeylo/cmpossl) — C, CMP client/server implementation for OpenSSL
-- [Siemens LightweightCMP](https://github.com/siemens/LightweightCmpRa) — Java, Lightweight CMP Registration Authority
+- [EJBCA](https://github.com/Keyfactor/ejbca-ce) ⭐ 896 — Java, enterprise CA with full CMP v3 support
+- [openxpki](https://github.com/openxpki/openxpki) ⭐ 672 — Perl, enterprise PKI with CMP enrollment
+- [CMPforOpenSSL](https://github.com/mpeylo/cmpossl) ⭐ 38 — C, CMP client/server implementation for OpenSSL
+- [Siemens LightweightCMP](https://github.com/siemens/LightweightCmpRa) ⭐ 11 — Java, Lightweight CMP Registration Authority
 - [cryptlib](https://www.cs.auckland.ac.nz/~pgut001/cryptlib/) — C, portable crypto library with CMP support
 
 **Security status:** Secure

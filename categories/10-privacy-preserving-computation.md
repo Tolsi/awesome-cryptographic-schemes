@@ -19,9 +19,9 @@
 Deployed in Signal private contact discovery, Google Private Join and Compute, Apple iMessage contact suggestions
 
 **Implementations:**
-- [microsoft/APSI](https://github.com/microsoft/APSI) — C++, asymmetric/unbalanced PSI from Microsoft Research
-- [osu-crypto/libPSI](https://github.com/osu-crypto/libPSI) — C++, comprehensive PSI library (KKRT, RR17, OPRF-based)
-- [OpenMined/PSI](https://github.com/OpenMined/PSI) — C++/Python, OPRF-based PSI by OpenMined
+- [microsoft/APSI](https://github.com/microsoft/APSI) ⭐ 208 — C++, asymmetric/unbalanced PSI from Microsoft Research
+- [osu-crypto/libPSI](https://github.com/osu-crypto/libPSI) ⭐ 186 — C++, comprehensive PSI library (KKRT, RR17, OPRF-based)
+- [OpenMined/PSI](https://github.com/OpenMined/PSI) ⭐ 151 — C++/Python, OPRF-based PSI by OpenMined
 
 **Security status:** Secure
 OPRF-based and OT-based protocols proven secure under standard assumptions (DDH, ROM); malicious-security variants available
@@ -46,8 +46,8 @@ Extensive peer review; deployed by Signal, Google, Apple; active standardization
 Academic prototypes only; no known large-scale production deployments
 
 **Implementations:**
-- [osu-crypto/libPSI](https://github.com/osu-crypto/libPSI) — C++, includes PSU building blocks
-- [dujiajun/PSU](https://github.com/dujiajun/PSU) — C++, AHE-based PSU implementation
+- [osu-crypto/libPSI](https://github.com/osu-crypto/libPSI) ⭐ 186 — C++, includes PSU building blocks
+- [dujiajun/PSU](https://github.com/dujiajun/PSU) ⭐ 15 — C++, AHE-based PSU implementation
 
 **Security status:** Secure
 Proven secure under standard assumptions (DDH, Paillier); less studied than PSI but no known attacks
@@ -72,7 +72,7 @@ Well-studied in academic literature but limited adoption; fewer implementations 
 Academic constructions only; no production deployments known
 
 **Implementations:**
-- [encryptogroup/ABY](https://github.com/encryptogroup/ABY) — C++, general MPC framework supporting set operations
+- [encryptogroup/ABY](https://github.com/encryptogroup/ABY) ⭐ 493 — C++, general MPC framework supporting set operations
 
 **Security status:** Secure
 Based on Paillier encryption; provably secure under standard assumptions
@@ -99,8 +99,8 @@ Foundational academic work (CRYPTO 2005) but limited follow-up; most practitione
 Path ORAM widely implemented; used as building block in Signal SGX contact discovery and research systems
 
 **Implementations:**
-- [osu-crypto/libOTe](https://github.com/osu-crypto/libOTe) — C++, includes ORAM primitives for MPC
-- [emp-toolkit/emp-ag2pc](https://github.com/emp-toolkit/emp-ag2pc) — C++, Circuit ORAM integration for 2PC
+- [osu-crypto/libOTe](https://github.com/osu-crypto/libOTe) ⭐ 492 — C++, includes ORAM primitives for MPC
+- [emp-toolkit/emp-ag2pc](https://github.com/emp-toolkit/emp-ag2pc) ⭐ 33 — C++, Circuit ORAM integration for 2PC
 - [ObliVM](https://oblivm.com/) — Java, oblivious computation framework with ORAM support
 
 **Security status:** Secure
@@ -126,7 +126,7 @@ Extensively studied since 1996; Path ORAM widely cited (3000+ citations); founda
 Research prototypes with benchmarks on real workloads; not yet deployed in production
 
 **Implementations:**
-- [psu-paws/pancake](https://github.com/psu-paws/pancake) — C++, PANCAKE prototype from USENIX Security 2020
+No notable open-source implementations available.
 
 **Security status:** Caution
 Weaker threat model than full ORAM (passive persistent adversary only); secure within stated assumptions but not against active query injection
@@ -155,10 +155,10 @@ USENIX Security Distinguished Paper (PANCAKE); growing interest as practical alt
 SimplePIR/DoublePIR and Spiral have working implementations; Checklist deployed for private Safe Browsing research
 
 **Implementations:**
-- [menonsamir/spiral-rs](https://github.com/menonsamir/spiral-rs) — Rust, Spiral PIR implementation
-- [microsoft/SealPIR](https://github.com/microsoft/SealPIR) — C++, BFV-based single-server PIR
-- [ahenzinger/simplepir](https://github.com/ahenzinger/simplepir) — Go, SimplePIR/DoublePIR implementation
-- [dimakogan/checklist](https://github.com/dimakogan/checklist) — Go, 2-server PIR with client hints
+- [menonsamir/spiral-rs](https://github.com/menonsamir/spiral-rs) ⭐ 15 — Rust, Spiral PIR implementation
+- [microsoft/SealPIR](https://github.com/microsoft/SealPIR) ⭐ 156 — C++, BFV-based single-server PIR
+- [ahenzinger/simplepir](https://github.com/ahenzinger/simplepir) ⭐ 100 — Go, SimplePIR/DoublePIR implementation
+- [dimakogan/checklist](https://github.com/dimakogan/checklist) ⭐ 23 — Go, 2-server PIR with client hints
 
 **Security status:** Secure
 Computational PIR based on LWE/RLWE; information-theoretic PIR unconditionally secure with non-colluding servers
@@ -186,8 +186,8 @@ Active research area since 1995; SimplePIR/Spiral represent breakthrough practic
 CryptDB deployed in academic and research settings; commercial encrypted database products incorporate SSE ideas
 
 **Implementations:**
-- [OpenSSE/opensse-schemes](https://github.com/OpenSSE/opensse-schemes) — C++, reference SSE implementations (Diana, Janus, Sophos)
-- [CryptDB/CryptDB](https://github.com/CryptDB/CryptDB) — C++, encrypted SQL proxy with SSE
+- [OpenSSE/opensse-schemes](https://github.com/OpenSSE/opensse-schemes) ⭐ 99 — C++, reference SSE implementations (Diana, Janus, Sophos)
+- [CryptDB/CryptDB](https://github.com/CryptDB/CryptDB) ⭐ 521 — C++, encrypted SQL proxy with SSE
 
 **Security status:** Caution
 Inherent leakage profiles (access pattern, volume) exploitable via IKK/Count attacks; forward/backward privacy mitigates but does not eliminate risk
@@ -213,9 +213,9 @@ Extensive peer review since 2000; well-understood leakage tradeoffs; MongoDB and
 VOPRF standardized as RFC 9497; deployed in Privacy Pass (Cloudflare), OPAQUE password protocol, and PSI systems
 
 **Implementations:**
-- [cloudflare/voprf-ts](https://github.com/cloudflare/voprf-ts) — TypeScript, Cloudflare VOPRF implementation
-- [cfrg/draft-irtf-cfrg-voprf](https://github.com/cfrg/draft-irtf-cfrg-voprf) — Reference implementation for RFC 9497
-- [facebook/opaque-ke](https://github.com/facebook/opaque-ke) — Rust, OPRF as part of OPAQUE protocol
+- [cloudflare/voprf-ts](https://github.com/cloudflare/voprf-ts) ⭐ 38 — TypeScript, Cloudflare VOPRF implementation
+- [cfrg/draft-irtf-cfrg-voprf](https://github.com/cfrg/draft-irtf-cfrg-voprf) ⭐ 39 — Reference implementation for RFC 9497
+- [facebook/opaque-ke](https://github.com/facebook/opaque-ke) ⭐ 386 — Rust, OPRF as part of OPAQUE protocol
 
 **Security status:** Secure
 VOPRF proven secure under DDH/Ristretto255; verifiability via DLEQ proofs; RFC 9497 specifies secure parameters
@@ -242,8 +242,8 @@ IETF RFC 9497 (CFRG); used in RFC 9578 (Privacy Pass); endorsed by Cloudflare, A
 Used as internal building block in PSI research implementations; no standalone production deployment
 
 **Implementations:**
-- [osu-crypto/libOTe](https://github.com/osu-crypto/libOTe) — C++, includes RB-OKVS implementation for PSI
-- [Visa-Research/volepsi](https://github.com/Visa-Research/volepsi) — C++, VOLE-based PSI using OKVS
+- [osu-crypto/libOTe](https://github.com/osu-crypto/libOTe) ⭐ 492 — C++, includes RB-OKVS implementation for PSI
+- [Visa-Research/volepsi](https://github.com/Visa-Research/volepsi) ⭐ 135 — C++, VOLE-based PSI using OKVS
 
 **Security status:** Secure
 Provably secure encoding; queries on non-programmed keys return random noise; security reduces to underlying PRF
@@ -271,9 +271,9 @@ Rapidly adopted in PSI research; RB-OKVS (2022) is the de facto data structure f
 Bitonic sort widely implemented in MPC frameworks; oblivious bucket sort used in research systems
 
 **Implementations:**
-- [emp-toolkit/emp-sh2pc](https://github.com/emp-toolkit/emp-sh2pc) — C++, includes oblivious sorting for 2PC
-- [samee/obliv-c](https://github.com/samee/obliv-c) — C, oblivious C compiler with sorting primitives
-- [encryptogroup/MOTION](https://github.com/encryptogroup/MOTION) — C++, MPC framework with oblivious sorting support
+- [emp-toolkit/emp-sh2pc](https://github.com/emp-toolkit/emp-sh2pc) ⭐ 81 — C++, includes oblivious sorting for 2PC
+- [samee/obliv-c](https://github.com/samee/obliv-c) ⭐ 184 — C, oblivious C compiler with sorting primitives
+- [encryptogroup/MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, MPC framework with oblivious sorting support
 
 **Security status:** Secure
 Bitonic sort data-independent by construction; bucket sort proven oblivious with negligible failure probability
@@ -299,7 +299,7 @@ Bitonic sort used since 1968; foundational building block in all major MPC frame
 Academic prototypes only; no known production deployments due to high overhead of universal circuits
 
 **Implementations:**
-- [encryptogroup/ABY](https://github.com/encryptogroup/ABY) — C++, general MPC framework usable for PFE
+- [encryptogroup/ABY](https://github.com/encryptogroup/ABY) ⭐ 493 — C++, general MPC framework usable for PFE
 
 **Security status:** Secure
 Provably secure under standard MPC assumptions; security of universal circuit approach well-established
@@ -325,7 +325,7 @@ Well-studied theoretical area; practical deployments limited by O(n log n) overh
 Academic prototypes; proposed for private messaging systems but no production deployment yet
 
 **Implementations:**
-- [microsoft/SEAL](https://github.com/microsoft/SEAL) — C++, BFV FHE library used as backend for OMR constructions
+- [microsoft/SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, BFV FHE library used as backend for OMR constructions
 
 **Security status:** Secure
 Based on BFV FHE; security inherits from underlying lattice assumptions (RLWE)
@@ -351,8 +351,7 @@ Active research area since 2021; strong interest from private messaging communit
 Deployed by Cloudflare (1.1.1.1 ODoH), Apple iCloud Private Relay, and Firefox; OHTTP generalized to arbitrary HTTP
 
 **Implementations:**
-- [cloudflare/odoh-rs](https://github.com/nicholaspai/odoh-rs) — Rust, ODoH implementation
-- [nicholaspai/odoh-client-go](https://github.com/nicholaspai/odoh-client-go) — Go, ODoH client
+No notable open-source implementations available.
 
 **Security status:** Secure
 Based on HPKE (RFC 9180); security relies on non-collusion between proxy and resolver; formally analyzed
@@ -377,7 +376,7 @@ IETF RFC 9230 (ODoH), RFC 9458 (OHTTP); deployed by Cloudflare, Apple, Google; i
 Academic prototypes; no production deployments yet
 
 **Implementations:**
-- [osu-crypto/libPSI](https://github.com/osu-crypto/libPSI) — C++, PSI library with fuzzy matching extensions
+- [osu-crypto/libPSI](https://github.com/osu-crypto/libPSI) ⭐ 186 — C++, PSI library with fuzzy matching extensions
 
 **Security status:** Secure
 Reduces to standard PSI and VOLE security; LSH-based approaches proven in the random oracle model
@@ -403,7 +402,7 @@ Growing interest driven by PPRL and biometric matching applications; VOLE-based 
 Used in COVID-19 exposure notification research; no standalone commercial deployment
 
 **Implementations:**
-- [nicholaspai/private-proximity](https://github.com/nicholaspai/private-proximity) — Research prototypes tied to specific papers
+No notable open-source implementations available.
 
 **Security status:** Caution
 Grid-based approaches leak coarse location information; rogue-resistant variants needed for malicious settings
@@ -430,8 +429,7 @@ Academic interest primarily driven by COVID-19; limited adoption outside contact
 RAPPOR deployed in Chrome; Poplar/Prio3 in Firefox and Apple telemetry; Mastic in development
 
 **Implementations:**
-- [nicholaspai/rappor](https://github.com/nicholaspai/rappor) — Python, Google RAPPOR reference implementation
-- [nicholaspai/libprio-rs](https://github.com/nicholaspai/libprio-rs) — Rust, Prio3/VDAF with Poplar support
+No notable open-source implementations available.
 
 **Security status:** Secure
 Formal differential privacy guarantees; Prio3/VDAF provides verifiable aggregation preventing malicious client input
@@ -457,7 +455,7 @@ IETF VDAF standard (draft-irtf-cfrg-vdaf); deployed by Google, Mozilla, Apple; s
 Academic prototypes; no known production deployments
 
 **Implementations:**
-- [nicholaspai/psa-research](https://github.com/nicholaspai/psa-research) — Research prototypes from individual papers
+No notable open-source implementations available.
 
 **Security status:** Secure
 DIPSAUCE based on LWE; PPSA on lattice assumptions; both include differential privacy noise
@@ -483,7 +481,7 @@ Specialized area between SecAgg and FHE; limited but growing interest for IoT an
 MainSEL deployed in German hospitals; Bloom filter PPRL used in medical research linkage projects
 
 **Implementations:**
-- [medicalinformatics/SecureEpilinker](https://github.com/medicalinformatics/SecureEpilinker) — C++, production MPC-based record linkage (MainSEL)
+- [medicalinformatics/SecureEpilinker](https://github.com/medicalinformatics/SecureEpilinker) ⭐ 11 — C++, production MPC-based record linkage (MainSEL)
 
 **Security status:** Caution
 Bloom filter PPRL vulnerable to frequency attacks on common names; MPC-based variants (MainSEL) stronger but costlier
@@ -510,9 +508,9 @@ Well-established in medical informatics; used by national health registries; les
 Deployed by Apple (iOS/macOS telemetry), Google (RAPPOR, Chrome), US Census Bureau (2020 Census), Microsoft, and Meta
 
 **Implementations:**
-- [google/differential-privacy](https://github.com/google/differential-privacy) — C++/Java/Go, Google DP library
-- [opendp/opendp](https://github.com/opendp/opendp) — Rust/Python, OpenDP framework from Harvard
-- [pytorch/opacus](https://github.com/pytorch/opacus) — Python, DP-SGD for PyTorch by Meta
+- [google/differential-privacy](https://github.com/google/differential-privacy) ⭐ 3.3k — C++/Java/Go, Google DP library
+- [opendp/opendp](https://github.com/opendp/opendp) ⭐ 412 — Rust/Python, OpenDP framework from Harvard
+- [pytorch/opacus](https://github.com/pytorch/opacus) ⭐ 1.9k — Python, DP-SGD for PyTorch by Meta
 - [tumult-labs/tumult-analytics](https://gitlab.com/tumult-labs/analytics) — Python, DP analytics platform
 
 **Security status:** Secure
@@ -540,8 +538,7 @@ NIST guidelines reference DP; adopted by US Census Bureau, Apple, Google; de fac
 Prio deployed by ISRG (Divvi Up) for Firefox and Android telemetry; Prio3/VDAF standardized by IETF
 
 **Implementations:**
-- [divviup/libprio-rs](https://github.com/nicholaspai/libprio-rs) — Rust, ISRG Prio3/VDAF implementation
-- [divviup/janus](https://github.com/divviup/janus) — Rust, DAP aggregator by Divvi Up/Cloudflare
+- [divviup/janus](https://github.com/divviup/janus) ⭐ 65 — Rust, DAP aggregator by Divvi Up/Cloudflare
 
 **Security status:** Secure
 Secret-sharing-based; security requires non-collusion of aggregation servers; client input validation via SNIPs/FLP
@@ -568,7 +565,7 @@ IETF RFC 9746 (DAP); draft-irtf-cfrg-vdaf; deployed by ISRG, Mozilla, Google, Ap
 Danish sugar beet auction (2009) is the landmark real-world MPC deployment; MEV auctions actively explored in blockchain
 
 **Implementations:**
-- [aicis/fresco](https://github.com/aicis/fresco) — Java, MPC framework used in the Danish auction
+- [aicis/fresco](https://github.com/aicis/fresco) ⭐ 141 — Java, MPC framework used in the Danish auction
 - [partisia](https://partisia.com/) — Commercial MPC platform for auctions (Partisia Blockchain)
 
 **Security status:** Secure
@@ -595,7 +592,7 @@ Danish sugar beet auction is the most cited real-world MPC success; MEV auction 
 Used as building block in PSI and OPRF constructions; no standalone deployment
 
 **Implementations:**
-- [osu-crypto/libOTe](https://github.com/osu-crypto/libOTe) — C++, includes VOLE-based batch OPE
+- [osu-crypto/libOTe](https://github.com/osu-crypto/libOTe) ⭐ 492 — C++, includes VOLE-based batch OPE
 
 **Security status:** Secure
 Provably secure under OT and homomorphic encryption assumptions
@@ -620,7 +617,7 @@ Important building block but rarely deployed independently; academic focus on ef
 Proposed for Zcash but not yet deployed; academic prototypes only
 
 **Implementations:**
-- [zcash/librustzcash](https://github.com/zcash/librustzcash) — Rust, Zcash library exploring FMD integration
+- [zcash/librustzcash](https://github.com/zcash/librustzcash) ⭐ 387 — Rust, Zcash library exploring FMD integration
 
 **Security status:** Secure
 Based on DDH/pairings; privacy degrades gracefully with tunable false-positive rate
@@ -646,7 +643,7 @@ Active interest from Zcash and privacy-coin communities; novel privacy/bandwidth
 Academic prototypes; no production encrypted graph database deployments
 
 **Implementations:**
-- [OpenSSE/opensse-schemes](https://github.com/OpenSSE/opensse-schemes) — C++, includes structured encryption primitives for graphs
+- [OpenSSE/opensse-schemes](https://github.com/OpenSSE/opensse-schemes) ⭐ 99 — C++, includes structured encryption primitives for graphs
 
 **Security status:** Caution
 Inherits SSE leakage concerns; graph structure leakage possible through query patterns
@@ -672,8 +669,8 @@ Active research area; extends SSE to graph-structured data; limited practical ad
 Academic prototypes for private pattern matching; no commercial deployment
 
 **Implementations:**
-- [emp-toolkit/emp-sh2pc](https://github.com/emp-toolkit/emp-sh2pc) — C++, garbled circuit framework supporting DFA evaluation
-- [samee/obliv-c](https://github.com/samee/obliv-c) — C, oblivious C compiler supporting branching programs
+- [emp-toolkit/emp-sh2pc](https://github.com/emp-toolkit/emp-sh2pc) ⭐ 81 — C++, garbled circuit framework supporting DFA evaluation
+- [samee/obliv-c](https://github.com/samee/obliv-c) ⭐ 184 — C, oblivious C compiler supporting branching programs
 
 **Security status:** Secure
 Based on garbled circuits and HE; provably secure under standard assumptions
@@ -699,8 +696,8 @@ Limited to specialized applications (private DNA search, virus scanning); well-s
 CryptDB deployed in research settings; Opaque demonstrated with Spark; ObliDB is a research prototype
 
 **Implementations:**
-- [CryptDB/CryptDB](https://github.com/CryptDB/CryptDB) — C++, encrypted SQL proxy
-- [mc2-project/opaque](https://github.com/mc2-project/opaque) — Scala/C++, SGX-based encrypted SQL on Spark
+- [CryptDB/CryptDB](https://github.com/CryptDB/CryptDB) ⭐ 521 — C++, encrypted SQL proxy
+- [mc2-project/opaque](https://github.com/mc2-project/opaque) ⭐ 189 — Scala/C++, SGX-based encrypted SQL on Spark
 
 **Security status:** Caution
 CryptDB layered encryption leaks equality and order; ObliDB full obliviousness is stronger but slower; OPE layer deprecated
@@ -727,8 +724,8 @@ CryptDB highly cited (3000+ citations); influenced MongoDB Queryable Encryption;
 PSI-Sum deployed in Google ad measurement; Labeled PSI prototypes available
 
 **Implementations:**
-- [google/private-join-and-compute](https://github.com/google/private-join-and-compute) — C++, Google PSI-Sum implementation
-- [microsoft/APSI](https://github.com/microsoft/APSI) — C++, labeled PSI from Microsoft Research
+- [google/private-join-and-compute](https://github.com/google/private-join-and-compute) ⭐ 850 — C++, Google PSI-Sum implementation
+- [microsoft/APSI](https://github.com/microsoft/APSI) ⭐ 208 — C++, labeled PSI from Microsoft Research
 
 **Security status:** Secure
 Proven secure under standard assumptions (Paillier, BFV); malicious-security variants available (Ghosh-Lepoint 2021)
@@ -754,7 +751,7 @@ Deployed by Google for ad attribution; Microsoft APSI actively maintained; stron
 Academic prototypes; not yet integrated into production encrypted database systems
 
 **Implementations:**
-- [OpenSSE/opensse-schemes](https://github.com/OpenSSE/opensse-schemes) — C++, SSE research implementations
+- [OpenSSE/opensse-schemes](https://github.com/OpenSSE/opensse-schemes) ⭐ 99 — C++, SSE research implementations
 
 **Security status:** Secure
 XorMM provably hides volume leakage; security reduces to PRF assumptions
@@ -781,7 +778,7 @@ CCS 2022 (XorMM); addresses critical leakage-abuse attack surface; expected to i
 Prochlo deployed at Google; shuffle-model amplification used in Apple and Google telemetry pipelines
 
 **Implementations:**
-- [google/differential-privacy](https://github.com/google/differential-privacy) — C++/Java/Go, includes shuffle-model utilities
+- [google/differential-privacy](https://github.com/google/differential-privacy) ⭐ 3.3k — C++/Java/Go, includes shuffle-model utilities
 
 **Security status:** Secure
 Rigorous amplification bounds (Privacy Blanket, Feldman et al.); security requires honest-but-curious shuffler
@@ -808,9 +805,9 @@ EUROCRYPT/CRYPTO publications; adopted by Google and Apple; bridges local and ce
 DP-SGD via Opacus (Meta) and TF-Privacy (Google) widely used in industry; Gboard on-device models trained with DP-SGD
 
 **Implementations:**
-- [pytorch/opacus](https://github.com/pytorch/opacus) — Python, Meta production DP-SGD for PyTorch
-- [tensorflow/privacy](https://github.com/tensorflow/privacy) — Python, Google DP-SGD for TensorFlow
-- [lxuechen/private-transformers](https://github.com/lxuechen/private-transformers) — Python, DP fine-tuning for transformers
+- [pytorch/opacus](https://github.com/pytorch/opacus) ⭐ 1.9k — Python, Meta production DP-SGD for PyTorch
+- [tensorflow/privacy](https://github.com/tensorflow/privacy) ⭐ 2.0k — Python, Google DP-SGD for TensorFlow
+- [lxuechen/private-transformers](https://github.com/lxuechen/private-transformers) ⭐ 185 — Python, DP fine-tuning for transformers
 
 **Security status:** Secure
 Formal (epsilon, delta)-DP guarantees via moments/Renyi accountant; requires correct gradient clipping and noise calibration
@@ -836,7 +833,7 @@ CCS 2016 (DP-SGD), ICLR 2017 (PATE); Opacus and TF-Privacy are industry standard
 Spiral has a live demo (spiralwiki.com); research implementations available; not yet in production systems
 
 **Implementations:**
-- [menonsamir/spiral-rs](https://github.com/menonsamir/spiral-rs) — Rust, Spiral PIR implementation
+- [menonsamir/spiral-rs](https://github.com/menonsamir/spiral-rs) ⭐ 15 — Rust, Spiral PIR implementation
 
 **Security status:** Secure
 Based on RLWE/GSW lattice assumptions; same security foundation as standard FHE
@@ -863,7 +860,7 @@ IEEE S&P 2022 (Spiral), CCS 2021 (OnionPIR); represents the practical frontier o
 Theoretical building block; no standalone deployment
 
 **Implementations:**
-- [emp-toolkit/emp-sh2pc](https://github.com/emp-toolkit/emp-sh2pc) — C++, MPC framework that can implement CDS protocols
+- [emp-toolkit/emp-sh2pc](https://github.com/emp-toolkit/emp-sh2pc) ⭐ 81 — C++, MPC framework that can implement CDS protocols
 
 **Security status:** Secure
 Provably secure under DDH and LWE; well-established theoretical foundations
@@ -890,9 +887,9 @@ Important theoretical primitive; connections to secret sharing and OT well-studi
 GAEN deployed on 3B+ devices in 60+ countries; DP-3T implemented in multiple national apps
 
 **Implementations:**
-- [google/exposure-notifications-android](https://github.com/google/exposure-notifications-android) — Java, Google Exposure Notifications reference
-- [DP-3T/dp3t-sdk-android](https://github.com/DP-3T/dp3t-sdk-android) — Kotlin, DP-3T Android SDK
-- [DP-3T/dp3t-sdk-ios](https://github.com/DP-3T/dp3t-sdk-ios) — Swift, DP-3T iOS SDK
+- [google/exposure-notifications-android](https://github.com/google/exposure-notifications-android) ⭐ 529 — Java, Google Exposure Notifications reference
+- [DP-3T/dp3t-sdk-android](https://github.com/DP-3T/dp3t-sdk-android) ⭐ 239 — Kotlin, DP-3T Android SDK
+- [DP-3T/dp3t-sdk-ios](https://github.com/DP-3T/dp3t-sdk-ios) ⭐ 150 — Swift, DP-3T iOS SDK
 
 **Security status:** Secure
 Rolling Proximity Identifiers derived via HKDF; relay attacks mitigated by time windows; no central contact graph
@@ -919,7 +916,7 @@ Apple/Google OS-level integration; EPFL/ETH Zurich design; largest privacy-prese
 Theoretical constructions; no production implementations
 
 **Implementations:**
-- [emp-toolkit/emp-ot](https://github.com/emp-toolkit/emp-ot) — C++, OT framework (standard OT; laconic OT not yet in major libraries)
+- [emp-toolkit/emp-ot](https://github.com/emp-toolkit/emp-ot) ⭐ 183 — C++, OT framework (standard OT; laconic OT not yet in major libraries)
 
 **Security status:** Secure
 Proven secure under CDH in the random oracle model; well-established theoretical foundations
@@ -946,7 +943,7 @@ Important theoretical contribution (CRYPTO 2017); enables 2-round MPC; limited p
 Piano has research implementation; OKVS-based keyword PIR demonstrated; exploring use for private DNS
 
 **Implementations:**
-- [microsoft/SealPIR](https://github.com/microsoft/SealPIR) — C++, base PIR used in keyword PIR constructions
+- [microsoft/SealPIR](https://github.com/microsoft/SealPIR) ⭐ 156 — C++, base PIR used in keyword PIR constructions
 
 **Security status:** Secure
 Security reduces to underlying PIR and OKVS schemes; LWE-based (Piano)
@@ -973,8 +970,8 @@ IEEE S&P 2024 (Piano); active research for private DNS resolution and PKI lookup
 Signal private contact discovery deployed at scale; Apple PSI for iMessage in production
 
 **Implementations:**
-- [microsoft/APSI](https://github.com/microsoft/APSI) — C++, asymmetric/unbalanced PSI from Microsoft
-- [signalapp/ContactDiscoveryService](https://github.com/signalapp/ContactDiscoveryService) — Java, Signal SGX-based contact discovery
+- [microsoft/APSI](https://github.com/microsoft/APSI) ⭐ 208 — C++, asymmetric/unbalanced PSI from Microsoft
+- [signalapp/ContactDiscoveryService](https://github.com/signalapp/ContactDiscoveryService) ⭐ 282 — Java, Signal SGX-based contact discovery
 
 **Security status:** Secure
 FHE-based variants proven under RLWE; SGX-based variants rely on hardware trust assumptions
@@ -1002,9 +999,9 @@ Signal deployment is the gold standard; Microsoft APSI actively maintained; CCS 
 Research implementations with practical benchmarks; Microsoft SEAL powers CryptoNets; no mass consumer deployment
 
 **Implementations:**
-- [microsoft/SEAL](https://github.com/microsoft/SEAL) — C++, Microsoft SEAL HE library (BFV/CKKS)
-- [openfheorg/openfhe-development](https://github.com/openfheorg/openfhe-development) — C++, OpenFHE with CKKS/FHEW for ML
-- [zama-ai/concrete-ml](https://github.com/zama-ai/concrete-ml) — Python, ML on encrypted data using Zama FHE compiler
+- [microsoft/SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, Microsoft SEAL HE library (BFV/CKKS)
+- [openfheorg/openfhe-development](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, OpenFHE with CKKS/FHEW for ML
+- [zama-ai/concrete-ml](https://github.com/zama-ai/concrete-ml) ⭐ 1.4k — Python, ML on encrypted data using Zama FHE compiler
 
 **Security status:** Secure
 Based on RLWE/LWE (CKKS, BFV, FHEW); security inherits from well-studied lattice assumptions
@@ -1032,8 +1029,8 @@ Active research area; ICML/CCS/IEEE S&P publications; Microsoft, Zama, Intel inv
 AIM won NIST DP Synthetic Data Competition; Tumult and NIST actively exploring; limited production deployments
 
 **Implementations:**
-- [ryan112358/private-pgm](https://github.com/ryan112358/private-pgm) — Python, AIM/Private-PGM for DP synthetic data
-- [opendp/smartnoise-sdk](https://github.com/opendp/smartnoise-sdk) — Python, SmartNoise SDK including DP synthetic data
+- [ryan112358/private-pgm](https://github.com/ryan112358/private-pgm) ⭐ 113 — Python, AIM/Private-PGM for DP synthetic data
+- [opendp/smartnoise-sdk](https://github.com/opendp/smartnoise-sdk) ⭐ 296 — Python, SmartNoise SDK including DP synthetic data
 
 **Security status:** Secure
 Formal (epsilon, delta)-DP guarantees; privacy depends on correct noise calibration and accounting
@@ -1061,9 +1058,9 @@ NIST DP Synthetic Data Competition driving standardization; growing regulatory i
 TensorFlow Federated deployed for Google Keyboard (Gboard); Flower widely used in research; PySyft for enterprise
 
 **Implementations:**
-- [tensorflow/federated](https://github.com/tensorflow/federated) — Python, Google TensorFlow Federated
-- [adap/flower](https://github.com/adap/flower) — Python, framework-agnostic federated learning
-- [OpenMined/PySyft](https://github.com/OpenMined/PySyft) — Python, privacy-preserving ML with MPC/HE
+- [tensorflow/federated](https://github.com/tensorflow/federated) ⭐ 2.4k — Python, Google TensorFlow Federated
+- [adap/flower](https://github.com/adap/flower) ⭐ 6.8k — Python, framework-agnostic federated learning
+- [OpenMined/PySyft](https://github.com/OpenMined/PySyft) ⭐ 9.9k — Python, privacy-preserving ML with MPC/HE
 
 **Security status:** Caution
 Gradient inversion attacks possible without DP/SecAgg; secure when combined with DP-SGD and secure aggregation
@@ -1091,8 +1088,8 @@ Deployed by Google, Apple; Flower and TFF are community standards; active PPML w
 CrypTen open-sourced by Meta; Piranha and ELSA are research prototypes with practical benchmarks
 
 **Implementations:**
-- [facebookresearch/CrypTen](https://github.com/facebookresearch/CrypTen) — Python, Meta MPC framework for ML
-- [encryptogroup/MOTION](https://github.com/encryptogroup/MOTION) — C++, MOTION2NX MPC framework
+- [facebookresearch/CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.6k — Python, Meta MPC framework for ML
+- [encryptogroup/MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, MOTION2NX MPC framework
 
 **Security status:** Secure
 Based on secret sharing (SPDZ) and garbled circuits; provably secure under standard MPC assumptions
@@ -1119,7 +1116,7 @@ Meta (CrypTen), USENIX Security (Piranha), IEEE S&P (ELSA); growing adoption but
 Academic prototypes; driven by demand for private RAG and biometric matching but no production deployments
 
 **Implementations:**
-- [menonsamir/spiral-rs](https://github.com/menonsamir/spiral-rs) — Rust, Spiral PIR used as building block for ANN-PIR
+- [menonsamir/spiral-rs](https://github.com/menonsamir/spiral-rs) ⭐ 15 — Rust, Spiral PIR used as building block for ANN-PIR
 
 **Security status:** Secure
 HADES provides full obliviousness via ORAM; NN-PIR provides query privacy only; security depends on chosen primitive
@@ -1146,8 +1143,8 @@ CCS 2024 (HADES); driven by private retrieval-augmented generation (RAG) demand;
 Used as building block in threshold signature protocols (SPRINT) and PSI; batch PET from VOLE in research systems
 
 **Implementations:**
-- [osu-crypto/libOTe](https://github.com/osu-crypto/libOTe) — C++, VOLE framework supporting batch PET
-- [emp-toolkit/emp-ot](https://github.com/emp-toolkit/emp-ot) — C++, OT-based equality testing primitives
+- [osu-crypto/libOTe](https://github.com/osu-crypto/libOTe) ⭐ 492 — C++, VOLE framework supporting batch PET
+- [emp-toolkit/emp-ot](https://github.com/emp-toolkit/emp-ot) ⭐ 183 — C++, OT-based equality testing primitives
 
 **Security status:** Secure
 DH-based PET secure under DDH; UC-secure PET (Jarecki-Liu) in the universal composability framework
@@ -1174,8 +1171,8 @@ Foundational primitive since 1986; used in CCS 2023 (SPRINT threshold ECDSA); we
 Implemented in major PSI libraries; used for billion-scale PSI in research and industry benchmarks
 
 **Implementations:**
-- [osu-crypto/libPSI](https://github.com/osu-crypto/libPSI) — C++, includes KKRT16 and RR21 implementations
-- [Visa-Research/volepsi](https://github.com/Visa-Research/volepsi) — C++, VOLE-based PSI (builds on RR21)
+- [osu-crypto/libPSI](https://github.com/osu-crypto/libPSI) ⭐ 186 — C++, includes KKRT16 and RR21 implementations
+- [Visa-Research/volepsi](https://github.com/Visa-Research/volepsi) ⭐ 135 — C++, VOLE-based PSI (builds on RR21)
 
 **Security status:** Secure
 Semi-honest security; provably secure under random oracle model; combine with IKNP/ALSZ for malicious security
@@ -1204,8 +1201,8 @@ Tumult Analytics deployed by US state health departments; Apple/Google RAPPOR-ba
 
 **Implementations:**
 - [tumult-labs/tumult-analytics](https://gitlab.com/tumult-labs/analytics) — Python, production DP analytics for public health
-- [smcql/smcql](https://github.com/smcql/smcql) — Java, multi-party SQL for federated clinical databases
-- [google/differential-privacy](https://github.com/google/differential-privacy) — C++/Java/Go, general DP library used in surveillance
+- [smcql/smcql](https://github.com/smcql/smcql) ⭐ 57 — Java, multi-party SQL for federated clinical databases
+- [google/differential-privacy](https://github.com/google/differential-privacy) ⭐ 3.3k — C++/Java/Go, general DP library used in surveillance
 
 **Security status:** Secure
 Formal (epsilon, delta)-DP guarantees; MPC-based variants (Shrinkwrap) add access-pattern protection
@@ -1233,8 +1230,8 @@ COVID-19 accelerated adoption; Tumult used by government agencies; growing regul
 PrivKVM deployed in Apple iOS analytics; binary tree mechanism implemented in DP libraries
 
 **Implementations:**
-- [google/differential-privacy](https://github.com/google/differential-privacy) — C++/Java/Go, includes streaming DP mechanisms
-- [opendp/opendp](https://github.com/opendp/opendp) — Rust/Python, OpenDP framework with streaming support
+- [google/differential-privacy](https://github.com/google/differential-privacy) ⭐ 3.3k — C++/Java/Go, includes streaming DP mechanisms
+- [opendp/opendp](https://github.com/opendp/opendp) ⭐ 412 — Rust/Python, OpenDP framework with streaming support
 
 **Security status:** Secure
 Formal DP guarantees over T time steps; error O(log^2 T) via binary tree mechanism
@@ -1263,7 +1260,7 @@ STOC 2010 foundational; Apple production deployment (PrivKVM); well-studied comp
 GeoIndistinguishability implemented in research and mobile apps; DP trajectory publishing used in urban planning
 
 **Implementations:**
-- [google/differential-privacy](https://github.com/google/differential-privacy) — C++/Java/Go, general DP library applicable to location
+- [google/differential-privacy](https://github.com/google/differential-privacy) ⭐ 3.3k — C++/Java/Go, general DP library applicable to location
 
 **Security status:** Caution
 GeoIndistinguishability provides formal DP for location; k-anonymity (Casper) alone insufficient; trajectory correlation attacks possible
@@ -1292,10 +1289,9 @@ CCS 2013 (GeoIndistinguishability) widely cited; adopted in location privacy lit
 Autodp and PRV Accountant integrated into Opacus/TF-Privacy; StatDP and DP-Sniper used for empirical testing
 
 **Implementations:**
-- [yuxiangw/autodp](https://github.com/yuxiangw/autodp) — Python, automated DP composition accounting
-- [microsoft/prv_accountant](https://github.com/microsoft/prv_accountant) — Python, PRV Accountant for tight (epsilon, delta) bounds
-- [cmla/statdp](https://github.com/cmla/statdp) — Python, statistical DP violation detection
-- [eth-sri/dp-sniper](https://github.com/eth-sri/dp-sniper) — Python, ML-based black-box DP auditing
+- [yuxiangw/autodp](https://github.com/yuxiangw/autodp) ⭐ 279 — Python, automated DP composition accounting
+- [microsoft/prv_accountant](https://github.com/microsoft/prv_accountant) ⭐ 76 — Python, PRV Accountant for tight (epsilon, delta) bounds
+- [eth-sri/dp-sniper](https://github.com/eth-sri/dp-sniper) ⭐ 23 — Python, ML-based black-box DP auditing
 
 **Security status:** Secure
 Auditing tools are verification aids; PRV Accountant provides provably tight composition bounds
@@ -1323,8 +1319,8 @@ PRV Accountant adopted in Opacus/TF-Privacy; USENIX Sec 2021 (DP-Sniper); essent
 Express and Duoram have research implementations; DPF primitives used in Poplar/VDAF production systems
 
 **Implementations:**
-- [sachaservan/vdpf](https://github.com/sachaservan/vdpf) — Go, verifiable DPF implementation
-- [dimakogan/checklist](https://github.com/dimakogan/checklist) — Go, 2-server PIR using DPF
+- [sachaservan/vdpf](https://github.com/sachaservan/vdpf) ⭐ 3 — Go, verifiable DPF implementation
+- [dimakogan/checklist](https://github.com/dimakogan/checklist) ⭐ 23 — Go, 2-server PIR using DPF
 
 **Security status:** Secure
 DPF security based on PRG; 2-server PIR secure if servers do not collude; well-established theoretical foundations
@@ -1352,7 +1348,7 @@ Foundational work (Gilboa-Ishai 2014); DPFs underpin IETF VDAF standard (Poplar)
 AURA and SEAL have research implementations; forward privacy concepts influencing commercial encrypted databases
 
 **Implementations:**
-- [OpenSSE/opensse-schemes](https://github.com/OpenSSE/opensse-schemes) — C++, includes Sophos (forward-private SSE) and Diana
+- [OpenSSE/opensse-schemes](https://github.com/OpenSSE/opensse-schemes) ⭐ 99 — C++, includes Sophos (forward-private SSE) and Diana
 
 **Security status:** Secure
 Forward privacy prevents file-injection attacks; backward privacy (Type-I) reveals nothing about deleted entries
@@ -1406,7 +1402,7 @@ EUROCRYPT 2020 (OptORAMa); important theoretical result but practical deployment
 Signal CDS v2 deployed at scale serving hundreds of millions of users; Apple PSI for iMessage in production
 
 **Implementations:**
-- [signalapp/ContactDiscoveryService](https://github.com/signalapp/ContactDiscoveryService) — Java, Signal SGX-based contact discovery
+- [signalapp/ContactDiscoveryService](https://github.com/signalapp/ContactDiscoveryService) ⭐ 282 — Java, Signal SGX-based contact discovery
 
 **Security status:** Caution
 SGX-based variants depend on hardware trust (vulnerable to side-channel attacks); pure-crypto alternatives slower but stronger
@@ -1433,8 +1429,8 @@ Signal deployment is the industry benchmark; Apple integration in iOS; active re
 Divvi Up (ISRG) processes millions of measurements for Firefox and Android; Janus deployed as DAP aggregator
 
 **Implementations:**
-- [divviup/janus](https://github.com/divviup/janus) — Rust, production DAP aggregator by ISRG/Cloudflare
-- [cloudflare/daphne](https://github.com/cloudflare/daphne) — Rust, Cloudflare DAP helper implementation
+- [divviup/janus](https://github.com/divviup/janus) ⭐ 65 — Rust, production DAP aggregator by ISRG/Cloudflare
+- [cloudflare/daphne](https://github.com/cloudflare/daphne) ⭐ 143 — Rust, Cloudflare DAP helper implementation
 
 **Security status:** Secure
 Secret-sharing-based; requires non-collusion of leader and helper aggregators; client inputs verified via VDAF proofs
@@ -1462,8 +1458,8 @@ IETF RFC 9746; ISRG (Let's Encrypt organization) operates Divvi Up; Chrome and F
 Fuzzy Vault and BioHashing studied for biometric passports; HE-based iris matching demonstrated at practical speeds
 
 **Implementations:**
-- [encryptogroup/ABY](https://github.com/encryptogroup/ABY) — C++, MPC framework for privacy-preserving biometric matching
-- [microsoft/SEAL](https://github.com/microsoft/SEAL) — C++, HE library for encrypted biometric comparison
+- [encryptogroup/ABY](https://github.com/encryptogroup/ABY) ⭐ 493 — C++, MPC framework for privacy-preserving biometric matching
+- [microsoft/SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, HE library for encrypted biometric comparison
 
 **Security status:** Caution
 BioHashing requires secrecy of random projection matrix; Fuzzy Vault vulnerable to correlation attacks if not properly parameterized
@@ -1491,8 +1487,7 @@ IEEE T-IFS publications; ISO/IEC 24745 (biometric template protection); limited 
 Attacks well-documented; SEAL and PANCAKE/Waffle countermeasures implemented; informing production encrypted database design
 
 **Implementations:**
-- [psu-paws/pancake](https://github.com/psu-paws/pancake) — C++, PANCAKE frequency smoothing
-- [OpenSSE/opensse-schemes](https://github.com/OpenSSE/opensse-schemes) — C++, SSE implementations with leakage analysis
+- [OpenSSE/opensse-schemes](https://github.com/OpenSSE/opensse-schemes) ⭐ 99 — C++, SSE implementations with leakage analysis
 
 **Security status:** Caution
 Attacks demonstrate that minimal leakage is exploitable; countermeasures mitigate but full protection requires ORAM-level overhead
@@ -1519,8 +1514,8 @@ NDSS 2012 (IKK), CCS 2015 (Count), USENIX Sec 2016 (file injection); these attac
 Checklist demonstrated for private Safe Browsing; OPRF-based membership used in Privacy Pass ecosystem
 
 **Implementations:**
-- [dimakogan/checklist](https://github.com/dimakogan/checklist) — Go, 2-server PIR for private Safe Browsing
-- [microsoft/SealPIR](https://github.com/microsoft/SealPIR) — C++, base PIR for batch membership queries
+- [dimakogan/checklist](https://github.com/dimakogan/checklist) ⭐ 23 — Go, 2-server PIR for private Safe Browsing
+- [microsoft/SealPIR](https://github.com/microsoft/SealPIR) ⭐ 156 — C++, base PIR for batch membership queries
 
 **Security status:** Secure
 PIR-based approaches inherit LWE/RLWE security; OPRF-based approaches secure under DDH; 2-server requires non-collusion
@@ -1576,8 +1571,7 @@ W3C PATCG (IPA); Chrome Privacy Sandbox (ARA); Apple WebKit (PCM); industry cons
 iCloud Private Relay handles billions of queries/day; Cloudflare ODoH and Chrome IP Protection in production
 
 **Implementations:**
-- [nicholaspai/odoh-go](https://github.com/nicholaspai/odoh-go) — Go, ODoH implementation
-- [nicholaspai/ohttp-rs](https://github.com/nicholaspai/ohttp-rs) — Rust, OHTTP implementation
+No notable open-source implementations available.
 
 **Security status:** Secure
 HPKE (RFC 9180) provides encryption; privacy requires non-collusion between relay and gateway; formally analyzed
@@ -1602,8 +1596,8 @@ IETF RFC 9230 (ODoH), RFC 9458 (OHTTP), RFC 9576-9578 (Privacy Pass); deployed b
 Spiral live demo at spiralwiki.com; SimplePIR/DoublePIR achieve near-memory-bandwidth throughput; Google exploring for private lookups
 
 **Implementations:**
-- [menonsamir/spiral-rs](https://github.com/menonsamir/spiral-rs) — Rust, Spiral PIR implementation
-- [ahenzinger/simplepir](https://github.com/ahenzinger/simplepir) — Go, SimplePIR/DoublePIR implementation
+- [menonsamir/spiral-rs](https://github.com/menonsamir/spiral-rs) ⭐ 15 — Rust, Spiral PIR implementation
+- [ahenzinger/simplepir](https://github.com/ahenzinger/simplepir) ⭐ 100 — Go, SimplePIR/DoublePIR implementation
 
 **Security status:** Secure
 Based on LWE (SimplePIR/DoublePIR) and RLWE+GSW (Spiral); well-studied lattice assumptions
@@ -1628,8 +1622,8 @@ IEEE S&P 2022 (Spiral), USENIX Security 2023 (SimplePIR); breakthrough practical
 Research implementations available; explored for ad conversion measurement and federated ML
 
 **Implementations:**
-- [osu-crypto/libPSI](https://github.com/osu-crypto/libPSI) — C++, includes circuit-PSI implementations
-- [Visa-Research/volepsi](https://github.com/Visa-Research/volepsi) — C++, VOLE-based PSI with secret-shared output
+- [osu-crypto/libPSI](https://github.com/osu-crypto/libPSI) ⭐ 186 — C++, includes circuit-PSI implementations
+- [Visa-Research/volepsi](https://github.com/Visa-Research/volepsi) ⭐ 135 — C++, VOLE-based PSI with secret-shared output
 
 **Security status:** Secure
 Provably secure under standard assumptions; semi-honest security; output reveals nothing about intersection to either party
@@ -1654,7 +1648,7 @@ EUROCRYPT 2019, PoPETS 2022; key enabler for downstream MPC on intersection data
 Google Private Join and Compute deployed for online-to-offline ad attribution
 
 **Implementations:**
-- [google/private-join-and-compute](https://github.com/google/private-join-and-compute) — C++, Google open-source PSI-Sum
+- [google/private-join-and-compute](https://github.com/google/private-join-and-compute) ⭐ 850 — C++, Google open-source PSI-Sum
 
 **Security status:** Secure
 Based on additively homomorphic encryption + commutative encryption; provably secure under standard assumptions
@@ -1678,7 +1672,7 @@ Deployed at Google; open-sourced; peer-reviewed; used as reference for privacy-p
 Deployed by Brave browser serving 100M+ downloads for privacy-preserving telemetry
 
 **Implementations:**
-- [nicholaspai/star-prot](https://github.com/nicholaspai/star-prot) — Rust, STAR protocol implementation
+No notable open-source implementations available.
 
 **Security status:** Secure
 OPRF-based threshold key recovery; cryptographically enforced k-anonymity; single-server (no non-collusion assumption)
@@ -1703,9 +1697,9 @@ CCS 2022 Distinguished Paper; IETF Internet Draft submitted; deployed by Brave; 
 GAEN deployed on 3B+ devices across 40+ national apps; largest privacy-preserving public health deployment
 
 **Implementations:**
-- [google/exposure-notifications-android](https://github.com/google/exposure-notifications-android) — Java, Google GAEN reference implementation
-- [DP-3T/dp3t-sdk-android](https://github.com/DP-3T/dp3t-sdk-android) — Kotlin, DP-3T Android SDK
-- [DP-3T/dp3t-sdk-ios](https://github.com/DP-3T/dp3t-sdk-ios) — Swift, DP-3T iOS SDK
+- [google/exposure-notifications-android](https://github.com/google/exposure-notifications-android) ⭐ 529 — Java, Google GAEN reference implementation
+- [DP-3T/dp3t-sdk-android](https://github.com/DP-3T/dp3t-sdk-android) ⭐ 239 — Kotlin, DP-3T Android SDK
+- [DP-3T/dp3t-sdk-ios](https://github.com/DP-3T/dp3t-sdk-ios) ⭐ 150 — Swift, DP-3T iOS SDK
 
 **Security status:** Secure
 PRF-based rolling IDs; local matching prevents server from learning contact graph; relay attacks mitigated by time windows

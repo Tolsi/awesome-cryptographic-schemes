@@ -16,9 +16,8 @@
 Prouff-Rivain masking is deployed in commercial smart cards (NXP, Infineon); theoretical LR frameworks inform design but are not standalone deployments.
 
 **Implementations:**
-- [jasmin-lang/jasmin](https://github.com/jasmin-lang/jasmin) — assembly-level verified implementations with masking support
-- [REASSURE project](https://github.com/nicola-orlando/reassure) — C, reference implementations for leakage-resilient primitives
-- [Coron's higher-order masking](https://github.com/coron/htable) — C, reference implementation of higher-order Boolean masking
+- [jasmin-lang/jasmin](https://github.com/jasmin-lang/jasmin) ⭐ 337 — assembly-level verified implementations with masking support
+- [Coron's higher-order masking](https://github.com/coron/htable) ⭐ 24 — C, reference implementation of higher-order Boolean masking
 
 **Security status:** Secure
 No known attacks at recommended masking orders (≥2); practical side-channel security depends on correct implementation and sufficient noise assumptions.
@@ -44,8 +43,8 @@ Masking is mandated by Common Criteria (ISO 15408) for smart card certifications
 KDM security is a proof-level property used in FHE security arguments; no standalone deployed KDM-secure encryption product exists.
 
 **Implementations:**
-- [Microsoft SEAL](https://github.com/microsoft/SEAL) — C++, FHE library whose bootstrapping security relies on KDM arguments
-- [OpenFHE](https://github.com/openfheorg/openfhe-development) — C++, FHE library with KDM-relevant security proofs
+- [Microsoft SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, FHE library whose bootstrapping security relies on KDM arguments
+- [OpenFHE](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, FHE library with KDM-relevant security proofs
 
 **Security status:** Secure
 No known attacks on the underlying LWE/DDH-based KDM constructions at recommended parameters.
@@ -72,8 +71,7 @@ KDM security is a specialized theoretical notion; well-studied in the academic c
 Non-malleable codes are primarily a theoretical tool; no widely deployed standalone NMC product exists, though the concepts inform tamper-resilient hardware design.
 
 **Implementations:**
-- [NMC reference implementation (Dziembowski lab)](https://github.com/tkomacek/Non-Malleable-Codes) — Python, academic reference for split-state NMC
-- [libotr](https://github.com/off-the-record/libotr) — C, uses NMC-related techniques in tamper-resilient key storage
+- [libotr](https://github.com/off-the-record/libotr) ⭐ 64 — C, uses NMC-related techniques in tamper-resilient key storage
 
 **Security status:** Secure
 Information-theoretic security in the split-state model; computational variants secure under standard assumptions.
@@ -99,8 +97,7 @@ Well-established in TCC/CRYPTO/EUROCRYPT theory community; limited awareness out
 WI is used as a building block inside deployed protocols (e.g., parallel Sigma protocols in credential systems) rather than as a standalone primitive.
 
 **Implementations:**
-- [arkworks-rs/crypto-primitives](https://github.com/arkworks-rs/crypto-primitives) — Rust, includes Sigma protocol implementations usable in WI mode
-- [maurer](https://github.com/ArekPiekworker/maurer) — Rust, composable Sigma protocols with WI composition
+- [arkworks-rs/crypto-primitives](https://github.com/arkworks-rs/crypto-primitives) ⭐ 241 — Rust, includes Sigma protocol implementations usable in WI mode
 
 **Security status:** Secure
 WI is a well-founded security notion; no attacks on the paradigm itself. Security of instantiations depends on the underlying hard problem.
@@ -153,7 +150,7 @@ Foundational in complexity-theoretic cryptography; Barak's 2001 result is a land
 Rational cryptography concepts influence blockchain mechanism design (staking penalties, slashing) but no standalone rational crypto protocol is deployed as a product.
 
 **Implementations:**
-- No dedicated open-source libraries; concepts are embedded in blockchain protocol implementations such as [Ethereum consensus specs](https://github.com/ethereum/consensus-specs) (slashing/incentive logic).
+- No dedicated open-source libraries; concepts are embedded in blockchain protocol implementations such as [Ethereum consensus specs](https://github.com/ethereum/consensus-specs) ⭐ 3.9k (slashing/incentive logic).
 
 **Security status:** Secure
 Game-theoretic security guarantees hold under the assumed rationality model; security degrades if adversaries are irrational (willing to lose money to attack).
@@ -232,8 +229,8 @@ Well-regarded in the post-Snowden subversion-resistance research community; publ
 Lossy TDFs are a proof technique and theoretical primitive; they are not deployed as standalone products but underlie security proofs of deployed schemes.
 
 **Implementations:**
-- [lattigo](https://github.com/tuneinsight/lattigo) — Go, lattice-based crypto library whose security arguments use lossy-mode techniques
-- [OpenFHE](https://github.com/openfheorg/openfhe-development) — C++, FHE library with LWE-based constructions whose proofs leverage lossy TDFs
+- [lattigo](https://github.com/tuneinsight/lattigo) ⭐ 1.4k — Go, lattice-based crypto library whose security arguments use lossy-mode techniques
+- [OpenFHE](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, FHE library with LWE-based constructions whose proofs leverage lossy TDFs
 
 **Security status:** Secure
 Secure under DDH or LWE assumptions; the lossy/injective mode indistinguishability is the core security property.
@@ -263,7 +260,7 @@ The ROM is the dominant proof model for virtually all deployed cryptographic pro
 **Implementations:**
 - Every cryptographic library implicitly relies on ROM proofs; the model itself is a proof framework, not a software artifact.
 - [CryptoVerif](https://bblanche.gitlabpages.inria.fr/CryptoVerif/) — OCaml, automated game-based proof tool supporting ROM arguments
-- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) — OCaml, formal verification framework with ROM proof support
+- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, formal verification framework with ROM proof support
 
 **Security status:** Caution
 ROM proofs do not unconditionally imply real-world security (CGH 1998 separation); however, no deployed ROM-proven scheme has been broken due to oracle instantiation failure.
@@ -292,7 +289,6 @@ IND-CPA/IND-CCA2 are the mandatory security targets for all deployed encryption 
 
 **Implementations:**
 - These are definitional frameworks, not implementations. Every compliant encryption library targets these notions.
-- [Cramer-Shoup reference](https://github.com/AaronFeickert/cramer-shoup) — Rust, reference implementation of the first standard-model IND-CCA2 PKE
 
 **Security status:** Secure
 The definitional hierarchy (OW-CPA through IND-CCA2) is well-established and universally accepted.
@@ -320,7 +316,7 @@ IND-CCA2 is mandated by NIST, IETF, and ISO for all public-key encryption and KE
 UC is the standard security framework for MPC, MLS, and threshold protocols; all serious protocol designs invoke UC security. EasyUC provides machine-checked proofs.
 
 **Implementations:**
-- [EasyUC](https://github.com/easyuc/EasyUC) — OCaml/EasyCrypt, machine-checked UC proofs
+- [EasyUC](https://github.com/easyuc/EasyUC) ⭐ 45 — OCaml/EasyCrypt, machine-checked UC proofs
 - [GNUC](https://eprint.iacr.org/2011/471) — formal model (no standalone software; used in paper proofs)
 
 **Security status:** Secure
@@ -461,9 +457,8 @@ HILL pseudoentropy is the standard computational entropy notion; Yao's next-bit 
 Groth-Sahai proofs are implemented in research-grade libraries; simulation-sound NIZK is a building block in deployed SNARK systems.
 
 **Implementations:**
-- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) — Rust, production-quality Groth16 (which achieves simulation-extractability)
-- [zkcrypto/bellman](https://github.com/zkcrypto/bellman) — Rust, Zcash's Groth16 implementation with extractability
-- [Groth-Sahai reference](https://github.com/music-dapp/groth-sahai) — Python, academic reference for Groth-Sahai pairing-based NIZK
+- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) ⭐ 339 — Rust, production-quality Groth16 (which achieves simulation-extractability)
+- [zkcrypto/bellman](https://github.com/zkcrypto/bellman) ⭐ 1.1k — Rust, Zcash's Groth16 implementation with extractability
 
 **Security status:** Secure
 Groth-Sahai proofs are proven secure under DLIN/SXDH assumptions; simulation-extractable SNARKs secure under q-PKE/AGM.
@@ -492,8 +487,8 @@ KEA assumptions underlie Groth16, which is deployed in Zcash, Tornado Cash, and 
 
 **Implementations:**
 - KEA is an assumption, not a software artifact. Implementations of Groth16 rely on KEA:
-- [zkcrypto/bellman](https://github.com/zkcrypto/bellman) — Rust, Zcash's Groth16 (security depends on q-PKE/KEA)
-- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) — Rust, general-purpose Groth16
+- [zkcrypto/bellman](https://github.com/zkcrypto/bellman) ⭐ 1.1k — Rust, Zcash's Groth16 (security depends on q-PKE/KEA)
+- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) ⭐ 339 — Rust, general-purpose Groth16
 
 **Security status:** Caution
 KEA is non-falsifiable (Naor 2011; Gentry-Wichs 2011 shows this is inherent for SNARGs). No known attacks, but the assumption cannot be tested or refuted efficiently.
@@ -522,7 +517,7 @@ GGM lower bounds justify DLog parameter sizes used in all deployed elliptic curv
 
 **Implementations:**
 - GGM/AGM are proof models, not software. Libraries whose security relies on GGM/AGM analysis:
-- [blst](https://github.com/supranational/blst) — C/assembly, BLS12-381 (AGM-proven tight security)
+- [blst](https://github.com/supranational/blst) ⭐ 554 — C/assembly, BLS12-381 (AGM-proven tight security)
 - [arkworks-rs](https://github.com/arkworks-rs) — Rust, pairing-based crypto with AGM-validated parameters
 
 **Security status:** Secure
@@ -553,7 +548,7 @@ Concrete security analysis directly determines parameter sizes in all deployed s
 **Implementations:**
 - Concrete security is an analysis framework, not standalone software. Tools that support concrete security analysis:
 - [CryptoVerif](https://bblanche.gitlabpages.inria.fr/CryptoVerif/) — OCaml, automated tool producing concrete security bounds
-- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) — OCaml, formal verification with concrete bound tracking
+- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, formal verification with concrete bound tracking
 
 **Security status:** Secure
 The concrete security framework itself is sound; its outputs directly determine whether deployed parameters provide the claimed security level.
@@ -581,9 +576,9 @@ Concrete security analysis is mandatory in NIST, IETF, and ISO standardization p
 PFS via ECDHE is mandatory in TLS 1.3 (RFC 8446) and deployed on every major browser and server. The Signal Double Ratchet provides per-message PFS for billions of users.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, TLS 1.3 with mandatory ECDHE PFS
-- [libsignal](https://github.com/signalapp/libsignal) — Rust/Java/Swift, Double Ratchet with per-message PFS
-- [rustls](https://github.com/rustls/rustls) — Rust, TLS 1.3 with ECDHE-only handshake
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, TLS 1.3 with mandatory ECDHE PFS
+- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift, Double Ratchet with per-message PFS
+- [rustls](https://github.com/rustls/rustls) ⭐ 7.3k — Rust, TLS 1.3 with ECDHE-only handshake
 
 **Security status:** Secure
 PFS is a proven property of ephemeral key exchange; no attacks on the PFS guarantee itself at recommended parameters.
@@ -611,8 +606,8 @@ PFS is mandated by TLS 1.3 (IETF RFC 8446), required by NIST SP 800-52r2, and un
 The LHL underlies HKDF (RFC 5869), used in TLS 1.3, Signal, and WireGuard. Privacy amplification via the LHL is deployed in commercial QKD systems.
 
 **Implementations:**
-- [HKDF in libsodium](https://github.com/jedisct1/libsodium) — C, HKDF-based key derivation using hash-based extraction
-- [rust-hkdf](https://github.com/RustCrypto/KDFs/tree/master/hkdf) — Rust, HKDF implementation
+- [HKDF in libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, HKDF-based key derivation using hash-based extraction
+- [rust-hkdf](https://github.com/RustCrypto/KDFs/tree/master/hkdf) ⭐ 91 — Rust, HKDF implementation
 - QKD systems (ID Quantique, Toshiba) implement LHL-based privacy amplification internally.
 
 **Security status:** Secure
@@ -641,7 +636,7 @@ The LHL is universally accepted and cited in thousands of papers. HKDF (its prac
 The hybrid argument is a proof technique used in the security analysis of every deployed cryptographic scheme; it is not a software artifact.
 
 **Implementations:**
-- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) — OCaml, formal verification tool that mechanizes hybrid arguments
+- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, formal verification tool that mechanizes hybrid arguments
 - [CryptoVerif](https://bblanche.gitlabpages.inria.fr/CryptoVerif/) — OCaml, automated game-hopping proofs
 
 **Security status:** Secure
@@ -699,7 +694,7 @@ Security amplification is implicit in all deployed systems that use repeated tri
 
 **Implementations:**
 - Security amplification is a proof technique; no standalone software. It is implicit in:
-- [libsecp256k1](https://github.com/bitcoin-core/secp256k1) — C, batch verification uses direct product theorem arguments
+- [libsecp256k1](https://github.com/bitcoin-core/secp256k1) ⭐ 2.4k — C, batch verification uses direct product theorem arguments
 - Protocol implementations using parallel Sigma protocols for soundness amplification
 
 **Security status:** Secure
@@ -729,8 +724,7 @@ Both paradigms are used in the security analysis of all deployed protocols: IND 
 
 **Implementations:**
 - These are definitional frameworks, not software. Tools for formalizing proofs in both paradigms:
-- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) — OCaml, supports both game-based (IND) and simulation-based proofs
-- [CryptHOL](https://github.com/lochbihl/CryptHOL) — Isabelle/HOL, game-based security proofs
+- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, supports both game-based (IND) and simulation-based proofs
 
 **Security status:** Secure
 Both paradigms are mathematically well-defined; their relationship (IND does not imply SIM under adaptive corruptions) is precisely characterized.
@@ -759,9 +753,9 @@ Both paradigms are universally accepted; IND-CCA2 dominates for standalone primi
 Adaptive security is the target for MLS (IETF RFC 9420), Signal, and advanced MPC frameworks. YOSO is deployed in blockchain secret leader election research.
 
 **Implementations:**
-- [openmls](https://github.com/openmls/openmls) — Rust, MLS implementation targeting adaptive security
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++/Python, MPC framework with adaptive security options
-- [libsignal](https://github.com/signalapp/libsignal) — Rust, achieves adaptive security via secure erasure of ephemeral keys
+- [openmls](https://github.com/openmls/openmls) ⭐ 905 — Rust, MLS implementation targeting adaptive security
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++/Python, MPC framework with adaptive security options
+- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust, achieves adaptive security via secure erasure of ephemeral keys
 
 **Security status:** Secure
 Adaptive security is achievable via NCE (without erasures) or secure erasure; both approaches are proven sound.
@@ -790,8 +784,8 @@ Indifferentiability proofs justify SHA-3 (Keccak), HMAC, and all sponge-based co
 
 **Implementations:**
 - Indifferentiability is a proof framework, not standalone software. Constructions validated by indifferentiability analysis:
-- [XKCP (Keccak Code Package)](https://github.com/XKCP/XKCP) — C/assembly, reference SHA-3/Keccak implementation (sponge indifferentiability)
-- [OpenSSL](https://github.com/openssl/openssl) — C, HMAC implementation whose security relies on indifferentiability arguments
+- [XKCP (Keccak Code Package)](https://github.com/XKCP/XKCP) ⭐ 643 — C/assembly, reference SHA-3/Keccak implementation (sponge indifferentiability)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, HMAC implementation whose security relies on indifferentiability arguments
 
 **Security status:** Secure
 Indifferentiability proofs are mathematically rigorous; the sponge construction's indifferentiability from a random oracle is proven under the random permutation model.
@@ -821,7 +815,7 @@ The Dolev-Yao symbolic model is the basis for all automated protocol verificatio
 **Implementations:**
 - [ProVerif](https://bblanche.gitlabpages.inria.fr/proverif/) — OCaml, automated symbolic protocol verifier
 - [Tamarin](https://tamarin-prover.com) — Haskell, symbolic model checker for security protocols
-- [DY*](https://github.com/reprosec/dolev-yao-star) — F*, verified protocol implementation in the Dolev-Yao model
+- [DY*](https://github.com/reprosec/dolev-yao-star) ⭐ 19 — F*, verified protocol implementation in the Dolev-Yao model
 
 **Security status:** Caution
 Symbolic proofs are computationally sound only for specific primitives (CCA2 encryption, MACs); the gap between symbolic and computational models remains open for hash functions and signatures.
@@ -852,9 +846,8 @@ ProVerif and Tamarin are routinely used by IETF working groups and influenced th
 **Implementations:**
 - [ProVerif](https://bblanche.gitlabpages.inria.fr/proverif/) — OCaml, automated symbolic protocol verifier
 - [Tamarin](https://tamarin-prover.com) — Haskell, stateful symbolic model checker
-- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) — OCaml, computational proof assistant
-- [CryptHOL](https://github.com/lochbihl/CryptHOL) — Isabelle/HOL, game-based proof framework
-- [DY*](https://github.com/reprosec/dolev-yao-star) — F*, verified protocol implementation
+- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, computational proof assistant
+- [DY*](https://github.com/reprosec/dolev-yao-star) ⭐ 19 — F*, verified protocol implementation
 
 **Security status:** Secure
 The tools themselves are sound within their respective models; Tamarin and ProVerif have been extensively validated against known protocol attacks.
@@ -883,9 +876,9 @@ ProVerif and Tamarin are the de facto standard for IETF protocol analysis. EasyC
 Knowledge-soundness and simulation-extractability underlie all deployed SNARK systems (Groth16 in Zcash, Plonk in Ethereum L2s) and Fiat-Shamir-based signature schemes.
 
 **Implementations:**
-- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) — Rust, simulation-extractable SNARK
-- [zkcrypto/bellman](https://github.com/zkcrypto/bellman) — Rust, Zcash's Groth16 with extractability
-- [halo2](https://github.com/zcash/halo2) — Rust, Plonk-based proving system with knowledge-soundness in ROM
+- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) ⭐ 339 — Rust, simulation-extractable SNARK
+- [zkcrypto/bellman](https://github.com/zkcrypto/bellman) ⭐ 1.1k — Rust, Zcash's Groth16 with extractability
+- [halo2](https://github.com/zcash/halo2) ⭐ 895 — Rust, Plonk-based proving system with knowledge-soundness in ROM
 
 **Security status:** Secure
 The hierarchy (knowledge-soundness ⊂ extractability ⊂ simulation-extractability) is well-established; each level is proven sound under its respective assumptions.
@@ -914,8 +907,8 @@ Simulation-extractability is the accepted security target for SNARK-based protoc
 Min-entropy assessment is mandated by NIST SP 800-90B for all hardware RNG certifications; entropy source models directly determine DRBG seeding requirements.
 
 **Implementations:**
-- [NIST SP 800-90B test suite](https://github.com/usnistgov/SP800-90B_EntropyAssessment) — Python/C++, official min-entropy estimation tools
-- [jitterentropy-library](https://github.com/smuellerDD/jitterentropy-library) — C, CPU jitter entropy source with min-entropy justification
+- [NIST SP 800-90B test suite](https://github.com/usnistgov/SP800-90B_EntropyAssessment) ⭐ 244 — Python/C++, official min-entropy estimation tools
+- [jitterentropy-library](https://github.com/smuellerDD/jitterentropy-library) ⭐ 141 — C, CPU jitter entropy source with min-entropy justification
 
 **Security status:** Secure
 Entropy source models are information-theoretic; their correctness depends on accurate modeling of the physical source, not computational assumptions.
@@ -944,7 +937,7 @@ Bit-security definitions directly determine parameter sizes for all NIST PQC sta
 
 **Implementations:**
 - Bit security is a definitional framework; no standalone software. Parameter estimation tools:
-- [lattice-estimator](https://github.com/malb/lattice-estimator) — Python, estimates bit-security of lattice-based schemes using Micciancio-Walter normalization
+- [lattice-estimator](https://github.com/malb/lattice-estimator) ⭐ 351 — Python, estimates bit-security of lattice-based schemes using Micciancio-Walter normalization
 - [keylength.com](https://www.keylength.com) — web tool, compares bit-security recommendations across standards bodies
 
 **Security status:** Secure
@@ -973,7 +966,7 @@ Micciancio-Walter (2018) is now the accepted standard for rigorous bit-security 
 GNUC, IITM, and GUC are used in rigorous academic protocol analyses; the IITM model is preferred for foundational correctness in MPC and threshold protocol proofs.
 
 **Implementations:**
-- [EasyUC](https://github.com/easyuc/EasyUC) — OCaml/EasyCrypt, machine-checked UC/GNUC proofs
+- [EasyUC](https://github.com/easyuc/EasyUC) ⭐ 45 — OCaml/EasyCrypt, machine-checked UC/GNUC proofs
 - No standalone IITM or GNUC software; the models are used in paper proofs and formalized in proof assistants.
 
 **Security status:** Secure
@@ -1052,9 +1045,9 @@ Well-known in the provable security community; Fischlin et al. (2010) and Fukumi
 ChaCha20-Poly1305 and AES-GCM (both WCS instantiations) are deployed in TLS 1.3, WireGuard, SSH, and IPsec on billions of devices.
 
 **Implementations:**
-- [libsodium](https://github.com/jedisct1/libsodium) — C, ChaCha20-Poly1305 (WCS instantiation)
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES-GCM with GHASH (WCS instantiation)
-- [ring](https://github.com/briansmith/ring) — Rust, ChaCha20-Poly1305 and AES-GCM
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, ChaCha20-Poly1305 (WCS instantiation)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-GCM with GHASH (WCS instantiation)
+- [ring](https://github.com/briansmith/ring) ⭐ 4.1k — Rust, ChaCha20-Poly1305 and AES-GCM
 
 **Security status:** Secure
 Information-theoretically secure per-nonce (Wegman-Carter); computationally secure under PRF assumption (WCS). Nonce reuse breaks security — nonce-misuse resistance requires SIV modes.
@@ -1081,8 +1074,8 @@ RKA analysis is standard in block cipher evaluation (AES, NIST Lightweight Crypt
 
 **Implementations:**
 - RKA security is an analysis property, not standalone software. Ciphers evaluated for RKA resistance:
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES implementation (AES-128 is RKA-resistant; AES-256 has known RKA weaknesses at reduced rounds)
-- [tiny-AES-c](https://github.com/kokke/tiny-AES-c) — C, compact AES for embedded systems (key schedule is RKA-relevant)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES implementation (AES-128 is RKA-resistant; AES-256 has known RKA weaknesses at reduced rounds)
+- [tiny-AES-c](https://github.com/kokke/tiny-AES-c) ⭐ 4.9k — C, compact AES for embedded systems (key schedule is RKA-relevant)
 
 **Security status:** Caution
 AES-128 resists known RKA attacks; AES-256 has related-key distinguishers at 9 of 14 rounds (Biryukov-Khovratovich 2010). Practical impact is limited when keys are properly derived.
@@ -1110,8 +1103,8 @@ Multi-user security bounds directly influence TLS cipher suite parameters, NIST 
 
 **Implementations:**
 - Multi-user security is an analysis framework, not standalone software. It affects parameter choices in:
-- [OpenSSL](https://github.com/openssl/openssl) — C, TLS implementation where multi-user AES-GCM bounds apply
-- [pqcrypto](https://github.com/pqclean/pqclean) — C, PQC implementations with multi-user/multi-challenge security analyses
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, TLS implementation where multi-user AES-GCM bounds apply
+- [pqcrypto](https://github.com/pqclean/pqclean) ⭐ 893 — C, PQC implementations with multi-user/multi-challenge security analyses
 
 **Security status:** Secure
 Multi-user security degradation is well-characterized (logarithmic in the number of users); tight multi-user analyses exist for ML-KEM and BLS.
@@ -1139,9 +1132,9 @@ Multi-user security is a mandatory consideration in NIST PQC evaluations and is 
 Dual-system encryption is the standard proof technique for all modern ABE/IBE constructions; fully secure ABE libraries exist in research-grade implementations.
 
 **Implementations:**
-- [CHARM](https://github.com/JHUISI/charm) — Python, pairing-based crypto library with selective and fully secure IBE/ABE schemes
-- [OpenABE](https://github.com/zeutro/openabe) — C++, ABE library implementing Waters' fully secure constructions
-- [rabe](https://github.com/Fraunhofer-AISEC/rabe) — Rust, ABE library with dual-system-based schemes
+- [CHARM](https://github.com/JHUISI/charm) ⭐ 633 — Python, pairing-based crypto library with selective and fully secure IBE/ABE schemes
+- [OpenABE](https://github.com/zeutro/openabe) ⭐ 274 — C++, ABE library implementing Waters' fully secure constructions
+- [rabe](https://github.com/Fraunhofer-AISEC/rabe) ⭐ 93 — Rust, ABE library with dual-system-based schemes
 
 **Security status:** Secure
 Dual-system encryption proofs are sound under DLIN/SXDH assumptions; selective-to-full compilers via complexity leveraging require sub-exponential hardness.
@@ -1195,9 +1188,8 @@ Coron's meta-reduction (2002) and Kakvi-Kiltz's correction (2012) are standard r
 AES-GCM-SIV is deployed in BoringSSL and Chrome; BBB MAC constructions are used in high-throughput TLS deployments where 2^64 block limits are reachable.
 
 **Implementations:**
-- [BoringSSL](https://github.com/niceboygithub/AES-GCM-SIV) — C, AES-GCM-SIV with BBB multi-key security
-- [ring](https://github.com/briansmith/ring) — Rust, AES-GCM implementation (birthday-bound limited; motivates BBB alternatives)
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES-GCM (users must respect birthday-bound query limits)
+- [ring](https://github.com/briansmith/ring) ⭐ 4.1k — Rust, AES-GCM implementation (birthday-bound limited; motivates BBB alternatives)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-GCM (users must respect birthday-bound query limits)
 
 **Security status:** Secure
 BBB constructions (XORP, SoP, EWCDM) are proven secure up to nearly 2^n queries; AES-GCM-SIV achieves nonce-misuse resistance with BBB-like multi-key bounds.
@@ -1224,9 +1216,8 @@ BBB security is an active design criterion in NIST and IETF; AES-GCM-SIV is stan
 PathORAM is implemented in SGX-based systems and MPC frameworks; OptORAMa is theoretically optimal but not yet practical due to large constants.
 
 **Implementations:**
-- [PathORAM](https://github.com/nicola/pathoram) — Python, reference PathORAM implementation
-- [ZeroTrace](https://github.com/sshsshy/ZeroTrace) — C++, PathORAM for Intel SGX
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++/Python, MPC framework using ORAM for RAM-model computation
+- [ZeroTrace](https://github.com/sshsshy/ZeroTrace) ⭐ 50 — C++, PathORAM for Intel SGX
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++/Python, MPC framework using ORAM for RAM-model computation
 
 **Security status:** Secure
 Goldreich-Ostrovsky Omega(log n) lower bound is proven; PathORAM and OptORAMa meet it (amortized and worst-case respectively). No attacks below the proven bounds.
@@ -1255,7 +1246,7 @@ Worst-case/average-case reductions are the theoretical foundation of ML-KEM (FIP
 
 **Implementations:**
 - These are proof techniques, not standalone software. Schemes whose security relies on these reductions:
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, ML-KEM and ML-DSA (security from Module-LWE/SIS reductions)
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-KEM and ML-DSA (security from Module-LWE/SIS reductions)
 - [pq-crystals](https://github.com/pq-crystals) — C, reference Kyber/Dilithium implementations
 
 **Security status:** Secure
@@ -1283,8 +1274,8 @@ The forking lemma is the proof technique behind the security of Schnorr, ECDSA, 
 
 **Implementations:**
 - The forking lemma is a proof technique, not standalone software. Signature schemes whose security proofs rely on it:
-- [libsecp256k1](https://github.com/bitcoin-core/secp256k1) — C, ECDSA/Schnorr (security via forking lemma)
-- [ed25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) — Rust, EdDSA (security via forking lemma)
+- [libsecp256k1](https://github.com/bitcoin-core/secp256k1) ⭐ 2.4k — C, ECDSA/Schnorr (security via forking lemma)
+- [ed25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, EdDSA (security via forking lemma)
 
 **Security status:** Secure
 The forking lemma is a proven mathematical result; its tightness bounds are well-characterized (Bellare-Neven 2006, Diemert et al. 2023).
@@ -1311,9 +1302,8 @@ The Pointcheval-Stern (1996) and Bellare-Neven (2006) forking lemmas are univers
 Game-playing proofs are the standard methodology for all deployed cryptographic schemes; EasyCrypt and CryptoVerif provide machine-checked verification.
 
 **Implementations:**
-- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) — OCaml, machine-checked game-based proofs
+- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, machine-checked game-based proofs
 - [CryptoVerif](https://bblanche.gitlabpages.inria.fr/CryptoVerif/) — OCaml, automated game-hopping proofs
-- [CryptHOL](https://github.com/lochbihl/CryptHOL) — Isabelle/HOL, game-based proofs in a proof assistant
 
 **Security status:** Secure
 Game-playing is a proof methodology; its validity is unconditional. The Bellare-Rogaway and Shoup formalizations are mathematically rigorous.
@@ -1341,7 +1331,7 @@ QROM proofs are required for all NIST PQC standards (ML-KEM, ML-DSA, SLH-DSA); t
 
 **Implementations:**
 - QROM is a proof model, not software. Schemes with QROM security analyses:
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, ML-KEM/ML-DSA with QROM-validated parameters
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-KEM/ML-DSA with QROM-validated parameters
 - [pq-crystals](https://github.com/pq-crystals) — C, Kyber/Dilithium reference implementations with QROM proofs
 
 **Security status:** Caution
@@ -1420,8 +1410,8 @@ Liu-Pass (2020) is a landmark result in theoretical cryptography, published at F
 PCGs are implemented in research MPC frameworks (libOTe, MP-SPDZ); actively transitioning from research to production use in VOLE-based ZK systems.
 
 **Implementations:**
-- [libOTe](https://github.com/osu-crypto/libOTe) — C++, silent OT extension via PCGs from LPN
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++/Python, MPC framework with PCG-based preprocessing
+- [libOTe](https://github.com/osu-crypto/libOTe) ⭐ 492 — C++, silent OT extension via PCGs from LPN
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++/Python, MPC framework with PCG-based preprocessing
 - [EMP-toolkit](https://github.com/emp-toolkit) — C++, MPC toolkit with silent OT support
 
 **Security status:** Secure
@@ -1499,7 +1489,7 @@ Well-established in the information-theoretic MPC community; Data-Prabhakaran-Pr
 UC security is the standard framework for MPC, MLS (IETF RFC 9420), and threshold protocols; all serious protocol designs invoke UC security.
 
 **Implementations:**
-- [EasyUC](https://github.com/easyuc/EasyUC) — OCaml/EasyCrypt, machine-checked UC proofs
+- [EasyUC](https://github.com/easyuc/EasyUC) ⭐ 45 — OCaml/EasyCrypt, machine-checked UC proofs
 - UC is a proof framework; every UC-secure MPC library (MP-SPDZ, libsignal, openmls) implicitly relies on it.
 
 **Security status:** Secure
@@ -1526,8 +1516,7 @@ Both paradigms are used in the security analysis of all deployed protocols: game
 
 **Implementations:**
 - These are definitional frameworks, not software. Tools supporting both paradigms:
-- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) — OCaml, supports both game-based and simulation-based proofs
-- [CryptHOL](https://github.com/lochbihl/CryptHOL) — Isabelle/HOL, game-based security proofs
+- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, supports both game-based and simulation-based proofs
 
 **Security status:** Secure
 Both paradigms are mathematically well-defined; their relationship is precisely characterized (IND does not imply SIM under adaptive corruptions).
@@ -1552,7 +1541,7 @@ AGM proofs validate BLS signatures (Ethereum 2.0) and Groth16 (Zcash); AGM-deriv
 
 **Implementations:**
 - AGM is a proof model, not software. Libraries whose security relies on AGM analysis:
-- [blst](https://github.com/supranational/blst) — C/assembly, BLS12-381 (AGM-proven tight security)
+- [blst](https://github.com/supranational/blst) ⭐ 554 — C/assembly, BLS12-381 (AGM-proven tight security)
 - [arkworks-rs](https://github.com/arkworks-rs) — Rust, pairing-based crypto with AGM-validated parameters
 
 **Security status:** Secure
@@ -1578,7 +1567,7 @@ QROM analysis is mandatory for all NIST PQC standards; the Fujisaki-Okamoto tran
 
 **Implementations:**
 - QROM is a proof model, not software. Schemes requiring QROM security:
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, ML-KEM/ML-DSA with QROM-validated parameters
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-KEM/ML-DSA with QROM-validated parameters
 - [pq-crystals](https://github.com/pq-crystals) — C, reference implementations with QROM security proofs
 
 **Security status:** Caution
@@ -1605,9 +1594,9 @@ QROM is an explicit NIST PQC evaluation criterion; all standardized PQC schemes 
 Argon2id (RFC 9106) is the NIST-recommended password hashing standard; scrypt is deployed in cryptocurrency (Litecoin) and backup systems (Tarsnap).
 
 **Implementations:**
-- [argon2](https://github.com/P-H-C/phc-winner-argon2) — C, reference Argon2 implementation (PHC winner)
-- [scrypt](https://github.com/Tarsnap/scrypt) — C, reference scrypt implementation
-- [libsodium](https://github.com/jedisct1/libsodium) — C, includes Argon2id for password hashing
+- [argon2](https://github.com/P-H-C/phc-winner-argon2) ⭐ 5.2k — C, reference Argon2 implementation (PHC winner)
+- [scrypt](https://github.com/Tarsnap/scrypt) ⭐ 509 — C, reference scrypt implementation
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, includes Argon2id for password hashing
 
 **Security status:** Secure
 Argon2id is provably memory-hard under the pebbling model (Alwen-Serbinenko); no known attacks below the proven time-space bounds at recommended parameters.

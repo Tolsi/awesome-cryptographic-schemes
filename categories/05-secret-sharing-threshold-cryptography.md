@@ -20,11 +20,10 @@
 Shamir's SS is deployed in HashiCorp Vault, SLIP-39 wallets, and countless key management systems; Feldman VSS is used in production DKG protocols.
 
 **Implementations:**
-- [hashicorp/vault](https://github.com/hashicorp/vault) — Go, Shamir sharing for unsealing
-- [dsprenkels/sss](https://github.com/dsprenkels/sss) — C, Shamir over GF(2^8)
-- [iancoleman/shamir](https://github.com/iancoleman/shamir) — Go, Shamir library
-- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) — Python, SLIP-39 implementation
-- [snipsco/rust-threshold-secret-sharing](https://github.com/nickg/rust-threshold-secret-sharing) — Rust, packed and Shamir SS
+- [hashicorp/vault](https://github.com/hashicorp/vault) ⭐ 35k — Go, Shamir sharing for unsealing
+- [dsprenkels/sss](https://github.com/dsprenkels/sss) ⭐ 399 — C, Shamir over GF(2^8)
+- [iancoleman/shamir](https://github.com/iancoleman/shamir) ⭐ 259 — Go, Shamir library
+- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) ⭐ 198 — Python, SLIP-39 implementation
 
 **Security status:** Secure
 Information-theoretically secure (Shamir, Blakley); Feldman/Pedersen VSS are computationally secure under DLP/DL assumptions with no known attacks.
@@ -52,10 +51,8 @@ Shamir's SS is universally accepted; Feldman VSS is the de facto standard for ve
 Threshold ElGamal is deployed in e-voting systems; TPKE is used in Ethereum DVT and Dusk Network; Pilvi is research-stage.
 
 **Implementations:**
-- [ArteMisc/libsodium](https://github.com/ArteMisc/libsodium) — C, threshold ElGamal primitives
-- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) — Rust, threshold BLS encryption/decryption
-- [AIT-DKMS/dfinity-threshold-dkg](https://github.com/AIT-DKMS/dfinity-threshold-dkg) — Rust, NIDKG with threshold decryption for Internet Computer
-- [tpke (Nucypher)](https://github.com/nucypher/ferveo) — Rust, threshold PKE for blockchain
+- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) ⭐ 201 — Rust, threshold BLS encryption/decryption
+- [tpke (Nucypher)](https://github.com/nucypher/ferveo) ⭐ 5 — Rust, threshold PKE for blockchain
 
 **Security status:** Secure
 Threshold ElGamal secure under DDH; TPKE secure under pairing assumptions; Pilvi secure under LWE (post-quantum).
@@ -81,10 +78,9 @@ Threshold ElGamal is a textbook construction; TPKE is deployed in major blockcha
 Schoenmakers PVSS is deployed in multiple systems; Aggregatable PVSS is used in drand and Ethereum randomness protocols.
 
 **Implementations:**
-- [anoma/ferveo](https://github.com/anoma/ferveo) — Rust, aggregatable PVSS for threshold decryption
-- [a16z/scrape-pvss](https://github.com/nickg/scrape-pvss) — Rust, SCRAPE PVSS
-- [drand/kyber](https://github.com/drand/kyber) — Go, PVSS primitives for drand
-- [KZen-networks/curv](https://github.com/ZenGo-X/curv) — Rust, Feldman/Schoenmakers VSS
+- [anoma/ferveo](https://github.com/anoma/ferveo) ⭐ 84 — Rust, aggregatable PVSS for threshold decryption
+- [drand/kyber](https://github.com/drand/kyber) ⭐ 10 — Go, PVSS primitives for drand
+- [KZen-networks/curv](https://github.com/ZenGo-X/curv) ⭐ 272 — Rust, Feldman/Schoenmakers VSS
 
 **Security status:** Secure
 Schoenmakers PVSS secure under DLP; Aggregatable PVSS secure under pairing/KZG assumptions; no known attacks.
@@ -111,10 +107,10 @@ Schoenmakers is a textbook PVSS; Aggregatable PVSS is endorsed by the Ethereum r
 Pedersen DKG and GJKR are deployed in drand, Ethereum DVT, and threshold wallet systems; FROST DKG is in production via Zcash and Safe.
 
 **Implementations:**
-- [drand/kyber](https://github.com/drand/kyber) — Go, Pedersen and GJKR DKG for drand beacon
-- [ZcashFoundation/frost](https://github.com/ZcashFoundation/frost) — Rust, FROST DKG
-- [celo-org/celo-threshold-bls-rs](https://github.com/celo-org/celo-threshold-bls-rs) — Rust, aggregatable DKG for Celo
-- [dfinity/ic](https://github.com/dfinity/ic) — Rust, NIDKG for Internet Computer
+- [drand/kyber](https://github.com/drand/kyber) ⭐ 10 — Go, Pedersen and GJKR DKG for drand beacon
+- [ZcashFoundation/frost](https://github.com/ZcashFoundation/frost) ⭐ 250 — Rust, FROST DKG
+- [celo-org/celo-threshold-bls-rs](https://github.com/celo-org/celo-threshold-bls-rs) ⭐ 81 — Rust, aggregatable DKG for Celo
+- [dfinity/ic](https://github.com/dfinity/ic) ⭐ 1.7k — Rust, NIDKG for Internet Computer
 
 **Security status:** Secure
 GJKR DKG is provably secure against malicious adversaries; Pedersen DKG is secure against passive adversaries but vulnerable to rushing attacks; FROST DKG secure under DL.
@@ -141,9 +137,8 @@ FROST DKG is part of IETF RFC 9591; Pedersen/GJKR are textbook constructions; Ag
 CHURP is implemented as a research prototype; proactive BLS refresh is used in Ethereum validator key management but not yet widely standardized.
 
 **Implementations:**
-- [oasisprotocol/oasis-core](https://github.com/oasisprotocol/oasis-core) — Go/Rust, CHURP implementation for Oasis Network
-- [AIT-DKMS/proactive-refresh](https://github.com/AIT-DKMS/proactive-refresh) — Rust, proactive share refresh
-- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) — Rust, share refresh primitives
+- [oasisprotocol/oasis-core](https://github.com/oasisprotocol/oasis-core) ⭐ 369 — Go/Rust, CHURP implementation for Oasis Network
+- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) ⭐ 201 — Rust, share refresh primitives
 
 **Security status:** Secure
 CHURP is provably secure under bivariate polynomial assumptions with Byzantine tolerance; proactive SS is information-theoretically secure assuming honest majority per epoch.
@@ -169,8 +164,7 @@ CHURP is well-cited in the blockchain research community; proactive BLS refresh 
 Packed SS is used in research MPC frameworks; Turbopack is an academic prototype with no standalone production deployment.
 
 **Implementations:**
-- [mc2-project/cerebro](https://github.com/mc2-project/cerebro) — Rust, MPC framework using packed secret sharing
-- [snipsco/rust-threshold-secret-sharing](https://github.com/nickg/rust-threshold-secret-sharing) — Rust, packed Shamir implementation
+- [mc2-project/cerebro](https://github.com/mc2-project/cerebro) ⭐ 24 — Rust, MPC framework using packed secret sharing
 
 **Security status:** Secure
 Information-theoretically secure; inherits Shamir's security guarantees with the same threshold parameters.
@@ -196,9 +190,9 @@ Well-known in the MPC research community as a core optimization technique; limit
 Robust reconstruction is built into production MPC frameworks and DKG protocols that handle malicious adversaries.
 
 **Implementations:**
-- [KZen-networks/curv](https://github.com/ZenGo-X/curv) — Rust, VSS with error detection
-- [drand/kyber](https://github.com/drand/kyber) — Go, robust share verification in DKG
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, robust secret sharing in malicious-secure MPC
+- [KZen-networks/curv](https://github.com/ZenGo-X/curv) ⭐ 272 — Rust, VSS with error detection
+- [drand/kyber](https://github.com/drand/kyber) ⭐ 10 — Go, robust share verification in DKG
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, robust secret sharing in malicious-secure MPC
 
 **Security status:** Secure
 Information-theoretically secure for t_c < n/3 corruptions; no known attacks on standard constructions.
@@ -224,8 +218,7 @@ Core building block in malicious-secure MPC and DKG; well-studied with optimal b
 Ramp schemes are used in distributed storage and MPC frameworks where share size reduction is critical.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, ramp sharing for amortized MPC
-- [snipsco/rust-threshold-secret-sharing](https://github.com/nickg/rust-threshold-secret-sharing) — Rust, ramp/packed SS
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, ramp sharing for amortized MPC
 
 **Security status:** Caution
 Information-theoretically secure but by design leaks partial information for coalitions between t and t+g; correct parameter selection is essential.
@@ -252,8 +245,8 @@ Well-understood in the MPC and information theory communities; less familiar out
 General access structure SS remains primarily theoretical due to exponential worst-case share sizes; LSSS-based constructions are used in ABE implementations.
 
 **Implementations:**
-- [sagrawal87/ABE](https://github.com/sagrawal87/ABE) — Python, LSSS-based access structures for ABE
-- [zeutro/openabe](https://github.com/zeutro/openabe) — C++, LSSS access policies in attribute-based encryption
+- [sagrawal87/ABE](https://github.com/sagrawal87/ABE) ⭐ 206 — Python, LSSS-based access structures for ABE
+- [zeutro/openabe](https://github.com/zeutro/openabe) ⭐ 274 — C++, LSSS access policies in attribute-based encryption
 
 **Security status:** Secure
 Information-theoretically secure; share size lower bounds are the constraint, not security.
@@ -280,9 +273,8 @@ LSSS is the standard formulation for access structures in ABE and MPC; general a
 CKPS AVSS is used in async DKG prototypes; KZG-based AVSS is implemented in research systems; Haven is a recent research prototype.
 
 **Implementations:**
-- [sourav1547/vss](https://github.com/sourav1547/vss) — Rust, high-throughput AVSS (Haven)
-- [ISTA-SPiDerS/dpss](https://github.com/ISTA-SPiDerS/dpss) — Go, async VSS and DKG protocols
-- [consensusnetworks/dumbo](https://github.com/tyurek/hbACSS) — Python, async complete secret sharing (hbACSS)
+- [sourav1547/vss](https://github.com/sourav1547/vss) ⭐ 5 — Rust, high-throughput AVSS (Haven)
+- [consensusnetworks/dumbo](https://github.com/tyurek/hbACSS) ⭐ 5 — Python, async complete secret sharing (hbACSS)
 
 **Security status:** Secure
 Information-theoretically or computationally secure (depending on variant) for t < n/3; no known attacks on standard constructions.
@@ -308,9 +300,9 @@ KZG-based AVSS is gaining attention in the async BFT and blockchain communities;
 Groth-Shoup NIDKG is deployed in the Internet Computer (DFINITY) mainnet; Gurkan et al. is deployed in Celo blockchain.
 
 **Implementations:**
-- [dfinity/ic](https://github.com/dfinity/ic) — Rust, Groth-Shoup NIDKG for Internet Computer
-- [celo-org/celo-threshold-bls-rs](https://github.com/celo-org/celo-threshold-bls-rs) — Rust, aggregatable NIDKG for Celo
-- [kobigurk/aggregatable-dkg](https://github.com/kobigurk/aggregatable-dkg) — Rust, Gurkan et al. NIDKG
+- [dfinity/ic](https://github.com/dfinity/ic) ⭐ 1.7k — Rust, Groth-Shoup NIDKG for Internet Computer
+- [celo-org/celo-threshold-bls-rs](https://github.com/celo-org/celo-threshold-bls-rs) ⭐ 81 — Rust, aggregatable NIDKG for Celo
+- [kobigurk/aggregatable-dkg](https://github.com/kobigurk/aggregatable-dkg) ⭐ 49 — Rust, Gurkan et al. NIDKG
 
 **Security status:** Secure
 Groth-Shoup NIDKG is provably secure under pairing and forward-secure encryption assumptions; Gurkan et al. secure under KZG assumptions.
@@ -336,7 +328,7 @@ Deployed in two major blockchain platforms; gaining broader recognition as the s
 Universal thresholdizer via FHE is a theoretical construction; no production deployments exist due to FHE overhead.
 
 **Implementations:**
-- [zama-ai/tfhe-rs](https://github.com/zama-ai/tfhe-rs) — Rust, TFHE library that could serve as a building block for universal thresholdizer
+- [zama-ai/tfhe-rs](https://github.com/zama-ai/tfhe-rs) ⭐ 1.6k — Rust, TFHE library that could serve as a building block for universal thresholdizer
 - No standalone open-source implementation of the Boneh-Komlo universal thresholdizer exists yet.
 
 **Security status:** Secure
@@ -469,8 +461,8 @@ Theoretically elegant solution to unbounded-participant sharing; limited practic
 Cheater detection is integrated into production MPC frameworks (SPDZ, MP-SPDZ) via MAC-based verification.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, MAC-based cheater detection in malicious-secure MPC
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, cheater detection via information-theoretic MACs
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, MAC-based cheater detection in malicious-secure MPC
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, cheater detection via information-theoretic MACs
 
 **Security status:** Secure
 Information-theoretically secure cheater detection; optimal share size bounds are well-established.
@@ -497,9 +489,9 @@ Core component of malicious-secure MPC protocols; MAC-based approach is the de f
 EigenDA VID is deployed on Ethereum mainnet; DispersedLedger concepts are used in multiple blockchain DA layers.
 
 **Implementations:**
-- [Layr-Labs/eigenda](https://github.com/Layr-Labs/eigenda) — Go, KZG-based VID for Ethereum data availability
-- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) — Python, danksharding VID specifications
-- [avail-project/avail](https://github.com/availproject/avail) — Rust, VID-based data availability layer
+- [Layr-Labs/eigenda](https://github.com/Layr-Labs/eigenda) ⭐ 261 — Go, KZG-based VID for Ethereum data availability
+- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) ⭐ 3.9k — Python, danksharding VID specifications
+- [avail-project/avail](https://github.com/availproject/avail) ⭐ 796 — Rust, VID-based data availability layer
 
 **Security status:** Secure
 KZG-based VID is secure under pairing assumptions; erasure coding provides information-theoretic fault tolerance.
@@ -551,8 +543,7 @@ New area with limited but growing interest; published at IEEE TIFS (top-tier ven
 Asmuth-Bloom is implemented in several libraries; used in hardware security modules where modular arithmetic is natively supported.
 
 **Implementations:**
-- [mikeivanov/pysss](https://github.com/mikeivanov/pysss) — Python, Shamir and CRT-based secret sharing
-- [dsprenkels/sss](https://github.com/dsprenkels/sss) — C, includes notes on CRT-based alternatives
+- [dsprenkels/sss](https://github.com/dsprenkels/sss) ⭐ 399 — C, includes notes on CRT-based alternatives
 
 **Security status:** Caution
 Asmuth-Bloom is information-theoretically secure (perfect); Mignotte is not perfect (partial leakage below threshold). Parameter selection for CRT sequences requires care.
@@ -578,8 +569,8 @@ Well-known in the secret sharing literature; less commonly deployed than Shamir 
 Krawczyk's SSMS is the basis for TAHOE-LAFS and other distributed storage systems; widely deployed for large-file sharing.
 
 **Implementations:**
-- [tahoe-lafs/tahoe-lafs](https://github.com/tahoe-lafs/tahoe-lafs) — Python, distributed storage using computational SS (IDA + encryption)
-- [codahale/shamir](https://github.com/codahale/shamir) — Java, Shamir with short shares for key sharing
+- [tahoe-lafs/tahoe-lafs](https://github.com/tahoe-lafs/tahoe-lafs) ⭐ 1.4k — Python, distributed storage using computational SS (IDA + encryption)
+- [codahale/shamir](https://github.com/codahale/shamir) ⭐ 217 — Java, Shamir with short shares for key sharing
 
 **Security status:** Secure
 Computationally secure under standard symmetric encryption assumptions (IND-CPA); well-analyzed since 1993.
@@ -607,7 +598,7 @@ Multi-secret sharing concepts are used in key management systems and password ma
 
 **Implementations:**
 - No widely-adopted standalone open-source multi-SS libraries; concepts are embedded in key management frameworks.
-- [hashicorp/vault](https://github.com/hashicorp/vault) — Go, manages multiple secrets with threshold unsealing (related concept)
+- [hashicorp/vault](https://github.com/hashicorp/vault) ⭐ 35k — Go, manages multiple secrets with threshold unsealing (related concept)
 
 **Security status:** Secure
 Information-theoretically or computationally secure depending on variant; well-established lower bounds on share sizes.
@@ -634,9 +625,9 @@ Well-studied in the secret sharing theory community; practical use cases in key 
 Regenerating codes are deployed in Azure LRC, Facebook f4, and Hadoop HDFS-EC for repair-efficient distributed storage.
 
 **Implementations:**
-- [apache/hadoop](https://github.com/apache/hadoop) — Java, HDFS erasure coding with regenerating code principles
-- [ceph/ceph](https://github.com/ceph/ceph) — C++, erasure coding plugins including LRC
-- [tahoe-lafs/zfec](https://github.com/tahoe-lafs/zfec) — Python/C, erasure coding library
+- [apache/hadoop](https://github.com/apache/hadoop) ⭐ 15k — Java, HDFS erasure coding with regenerating code principles
+- [ceph/ceph](https://github.com/ceph/ceph) ⭐ 16k — C++, erasure coding plugins including LRC
+- [tahoe-lafs/zfec](https://github.com/tahoe-lafs/zfec) ⭐ 423 — Python/C, erasure coding library
 
 **Security status:** Secure
 Information-theoretically secure against eavesdroppers when combined with secret sharing; coding-theoretic guarantees are well-established.
@@ -663,9 +654,9 @@ Deployed at hyperscale by Microsoft, Meta, and Apache; foundational in distribut
 Multiplicative Shamir sharing is the core of BGW/SPDZ-style MPC frameworks deployed in production.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, multiplicative Shamir sharing in SPDZ/BGW protocols
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, multiplicative SS for malicious MPC
-- [TNO-MPC/mpyc](https://github.com/lschoe/mpyc) — Python, BGW-style MPC with multiplicative Shamir
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, multiplicative Shamir sharing in SPDZ/BGW protocols
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, multiplicative SS for malicious MPC
+- [TNO-MPC/mpyc](https://github.com/lschoe/mpyc) ⭐ 415 — Python, BGW-style MPC with multiplicative Shamir
 
 **Security status:** Secure
 Information-theoretically secure; degree-reduction protocols are well-analyzed.
@@ -693,10 +684,8 @@ Foundational building block of all Shamir-based MPC; universally accepted in the
 FROST is standardized (IETF RFC 9591) and deployed in Zcash (ZIP 312), Safe smart accounts, and multiple threshold wallet implementations.
 
 **Implementations:**
-- [ZcashFoundation/frost](https://github.com/ZcashFoundation/frost) — Rust, reference implementation of RFC 9591 with multiple ciphersuites
-- [LIT-Protocol/frost-ts](https://github.com/nickg/frost-dalek) — Rust, FROST on Ristretto255
-- [cryspen/frost](https://github.com/nickg/frost-ed25519) — Rust, FROST for Ed25519
-- [jesseposner/FROST-BIP340](https://github.com/jesseposner/FROST-BIP340) — C, FROST for Bitcoin Schnorr (BIP-340)
+- [ZcashFoundation/frost](https://github.com/ZcashFoundation/frost) ⭐ 250 — Rust, reference implementation of RFC 9591 with multiple ciphersuites
+- [jesseposner/FROST-BIP340](https://github.com/jesseposner/FROST-BIP340) ⭐ 49 — C, FROST for Bitcoin Schnorr (BIP-340)
 
 **Security status:** Secure
 Provably secure under DL assumption; FROST3 (CRYPTO 2023) provides a proof without the AGM; RFC 9591 specifies secure ciphersuites.
@@ -723,10 +712,10 @@ IETF RFC 9591 (June 2024); endorsed by CFRG; deployed by Zcash Foundation and in
 GF(2^8) Shamir is deployed in HashiCorp Vault, SLIP-39, and numerous secret sharing libraries; industry default.
 
 **Implementations:**
-- [jcushman/libgfshare](https://github.com/jcushman/libgfshare) — C, GF(2^8) Shamir (libgfshare)
-- [dsprenkels/sss](https://github.com/dsprenkels/sss) — C, Shamir over GF(2^8) with hazmat API
-- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) — Python, SLIP-39 over GF(2^10)
-- [hashicorp/vault](https://github.com/hashicorp/vault) — Go, GF(2^8) Shamir for vault unsealing
+- [jcushman/libgfshare](https://github.com/jcushman/libgfshare) ⭐ 12 — C, GF(2^8) Shamir (libgfshare)
+- [dsprenkels/sss](https://github.com/dsprenkels/sss) ⭐ 399 — C, Shamir over GF(2^8) with hazmat API
+- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) ⭐ 198 — Python, SLIP-39 over GF(2^10)
+- [hashicorp/vault](https://github.com/hashicorp/vault) ⭐ 35k — Go, GF(2^8) Shamir for vault unsealing
 
 **Security status:** Secure
 Information-theoretically perfect secrecy; GF(2^8) arithmetic is well-understood and constant-time implementable.
@@ -751,9 +740,7 @@ GF(2^8) Shamir is the universal default for byte-oriented secret sharing; deploy
 DKLS23 is deployed in Vultisig and Silence Laboratories (audited by Trail of Bits 2025); DKLs18 is used in multiple 2-party wallet systems.
 
 **Implementations:**
-- [silence-laboratories/dkls23](https://github.com/nickg/multi-party-ecdsa) — Rust, multi-party ECDSA including DKLS variants
-- [ZenGo-X/multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) — Rust, threshold ECDSA (GG18/GG20 and DKLs-style)
-- [vultisig/vultisig](https://github.com/nickg/tss-lib) — Go, TSS library with DKLS support
+- [ZenGo-X/multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, threshold ECDSA (GG18/GG20 and DKLs-style)
 
 **Security status:** Secure
 Provably secure against malicious adversaries under standard assumptions (OT security); CRYPTO 2023 full proof.
@@ -806,7 +793,7 @@ Published at EUROCRYPT 2024 (top venue); ML-DSA variant targets FIPS 204 compati
 Hierarchical SS concepts are deployed in corporate key management and multi-tier credential systems; Tassa's scheme has reference implementations.
 
 **Implementations:**
-- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) — Python, SLIP-39 group threshold (two-level hierarchical)
+- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) ⭐ 198 — Python, SLIP-39 group threshold (two-level hierarchical)
 - No standalone open-source implementation of Tassa's Birkhoff-based hierarchical SS; concepts are embedded in enterprise key management tools.
 
 **Security status:** Secure
@@ -835,9 +822,9 @@ Well-studied in theoretical secret sharing; practical adoption primarily through
 LSSS is the backbone of all CP-ABE and KP-ABE implementations; deployed in attribute-based access control systems.
 
 **Implementations:**
-- [zeutro/openabe](https://github.com/zeutro/openabe) — C++, LSSS-based access policies in ABE
-- [sagrawal87/ABE](https://github.com/sagrawal87/ABE) — Python, LSSS for ABE schemes
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, LSSS as arithmetic sharing in MPC
+- [zeutro/openabe](https://github.com/zeutro/openabe) ⭐ 274 — C++, LSSS-based access policies in ABE
+- [sagrawal87/ABE](https://github.com/sagrawal87/ABE) ⭐ 206 — Python, LSSS for ABE schemes
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, LSSS as arithmetic sharing in MPC
 
 **Security status:** Secure
 Information-theoretically secure; LSSS is a mathematical framework — security depends on the specific instantiation.
@@ -864,9 +851,7 @@ Monotone span programs / LSSS are the universally accepted formulation for acces
 SCRAPE is deployed in HydRand randomness beacon and Nimiq Albatross consensus; used in multiple blockchain PVSS systems.
 
 **Implementations:**
-- [nickg/scrape-pvss](https://github.com/nickg/scrape-pvss) — Rust, SCRAPE PVSS implementation
-- [AIT-DKMS/scrape](https://github.com/nickg/scrape-pvss) — Rust, SCRAPE for DKG
-- [nimiq/core-rs-albatross](https://github.com/nickg/nimiq-core-rs-albatross) — Rust, SCRAPE in Albatross consensus
+No notable open-source implementations available.
 
 **Security status:** Secure
 Information-theoretically secure under DL assumption; O(n) total verification cost is provably optimal for PVSS.
@@ -894,7 +879,6 @@ Research prototypes exist; SPRINT has benchmark results but no production deploy
 
 **Implementations:**
 - No widely-adopted standalone open-source implementations; the SPRINT paper (USENIX Security 2022) includes evaluation code.
-- [AIT-DKMS/threshold-rsa](https://github.com/nickg/threshold-rsa) — research prototype for threshold RSA key generation
 
 **Security status:** Secure
 Provably secure under RSA and factoring assumptions; SPRINT achieves near-linear communication complexity.
@@ -922,10 +906,9 @@ Foundational result (Boneh-Franklin 1997) is widely cited; practical adoption li
 Threshold BLS DKG is deployed in drand (League of Entropy) and Ethereum DVT; production-grade implementations exist.
 
 **Implementations:**
-- [drand/drand](https://github.com/drand/drand) — Go, threshold BLS randomness beacon with DKG
-- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) — Rust, threshold BLS keygen and signing
-- [AIT-DKMS/dfinity-threshold-dkg](https://github.com/nickg/dfinity-threshold-dkg) — Rust, threshold BLS DKG for Internet Computer
-- [Obol-Network/charon](https://github.com/ObolNetwork/charon) — Go, Ethereum DVT with threshold BLS
+- [drand/drand](https://github.com/drand/drand) ⭐ 813 — Go, threshold BLS randomness beacon with DKG
+- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) ⭐ 201 — Rust, threshold BLS keygen and signing
+- [Obol-Network/charon](https://github.com/ObolNetwork/charon) ⭐ 219 — Go, Ethereum DVT with threshold BLS
 
 **Security status:** Secure
 Secure under pairing assumptions (BLS12-381); Aggregatable DKG provides public verifiability; drand has been audited.
@@ -952,9 +935,9 @@ drand is operated by the League of Entropy (Cloudflare, EPFL, Protocol Labs); Et
 PRSS/PRZS is implemented in all major information-theoretically secure MPC frameworks (MP-SPDZ, MPyC).
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, PRSS/PRZS for BGW-style MPC
-- [lschoe/mpyc](https://github.com/lschoe/mpyc) — Python, PRSS in honest-majority MPC
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, PRSS for preprocessing
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, PRSS/PRZS for BGW-style MPC
+- [lschoe/mpyc](https://github.com/lschoe/mpyc) ⭐ 415 — Python, PRSS in honest-majority MPC
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, PRSS for preprocessing
 
 **Security status:** Secure
 Computationally secure under PRF assumptions; PRZS sums to zero with overwhelming probability.
@@ -982,7 +965,7 @@ Fair SS constructions are primarily theoretical; VDF-based fairness is experimen
 
 **Implementations:**
 - No standalone open-source implementations of fair secret sharing; VDF libraries can serve as building blocks.
-- [ethereum/research](https://github.com/ethereum/research) — Python, VDF research code applicable to fair SS
+- [ethereum/research](https://github.com/ethereum/research) ⭐ 1.9k — Python, VDF research code applicable to fair SS
 
 **Security status:** Secure
 Impossibility result for unconditional fairness with dishonest majority is well-established; computational fairness constructions are provably secure under their assumptions.
@@ -1010,10 +993,10 @@ Theoretically important (Gordon et al. 2008 is highly cited); limited practical 
 ABY framework is widely used in MPC research and private ML; share conversion is deployed in CrypTen, SecureNN, and similar systems.
 
 **Implementations:**
-- [encryptogroup/ABY](https://github.com/encryptogroup/ABY) — C++, ABY framework with A2B/B2A conversion
-- [encryptogroup/ABY3](https://github.com/ladnir/aby3) — C++, 3-party ABY with share conversion
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, edabit-based and mixed-protocol conversion
-- [facebookresearch/CrypTen](https://github.com/facebookresearch/CrypTen) — Python, share conversion for private ML
+- [encryptogroup/ABY](https://github.com/encryptogroup/ABY) ⭐ 493 — C++, ABY framework with A2B/B2A conversion
+- [encryptogroup/ABY3](https://github.com/ladnir/aby3) ⭐ 212 — C++, 3-party ABY with share conversion
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, edabit-based and mixed-protocol conversion
+- [facebookresearch/CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.6k — Python, share conversion for private ML
 
 **Security status:** Secure
 Provably secure under OT/LPN assumptions (edabits) or in the honest-majority model; well-analyzed protocols.
@@ -1041,9 +1024,9 @@ ABY is the standard mixed-protocol MPC framework; share conversion is a well-stu
 Threshold BLS VRF is deployed in drand v2, Filecoin, and Algorand for randomness generation and leader election.
 
 **Implementations:**
-- [drand/drand](https://github.com/drand/drand) — Go, threshold BLS VRF in production randomness beacon
-- [algorand/go-algorand](https://github.com/algorand/go-algorand) — Go, threshold VRF for PoS leader election
-- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) — Rust, threshold BLS as VRF
+- [drand/drand](https://github.com/drand/drand) ⭐ 813 — Go, threshold BLS VRF in production randomness beacon
+- [algorand/go-algorand](https://github.com/algorand/go-algorand) ⭐ 1.4k — Go, threshold VRF for PoS leader election
+- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) ⭐ 201 — Rust, threshold BLS as VRF
 
 **Security status:** Secure
 Secure under pairing assumptions; VRF uniqueness and pseudorandomness are provable under DLIN/co-CDH.
@@ -1071,9 +1054,9 @@ drand is endorsed by the League of Entropy (Cloudflare, EPFL, Protocol Labs); Al
 Offline/online decomposition is used in all production threshold signing systems (FROST, GG18/GG20, DKLS23).
 
 **Implementations:**
-- [ZcashFoundation/frost](https://github.com/ZcashFoundation/frost) — Rust, FROST with offline nonce precomputation
-- [ZenGo-X/multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) — Rust, GG18/GG20 offline/online ECDSA
-- [bnb-chain/tss-lib](https://github.com/bnb-chain/tss-lib) — Go, threshold signing with offline preprocessing
+- [ZcashFoundation/frost](https://github.com/ZcashFoundation/frost) ⭐ 250 — Rust, FROST with offline nonce precomputation
+- [ZenGo-X/multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, GG18/GG20 offline/online ECDSA
+- [bnb-chain/tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, threshold signing with offline preprocessing
 
 **Security status:** Secure
 Security of offline/online decomposition is established by the underlying threshold signing protocol proofs; no additional assumptions required.
@@ -1101,7 +1084,6 @@ Blakley's scheme is implemented in educational and reference libraries; Shamir d
 
 **Implementations:**
 - No widely-adopted standalone Blakley implementations; the scheme is included in educational cryptography toolkits.
-- [crepererum/ssss](https://github.com/crepererum/ssss) — C, Shamir's Secret Sharing Scheme (includes geometric perspective)
 
 **Security status:** Secure
 Information-theoretically perfect secrecy; equivalent security to Shamir.
@@ -1129,8 +1111,8 @@ Historically important as an independent invention; primarily of theoretical and
 Quantum SS requires quantum hardware; experimental demonstrations exist (graph-state QSS) but no production deployment.
 
 **Implementations:**
-- [quantumlib/Cirq](https://github.com/quantumlib/Cirq) — Python, quantum circuit framework for implementing QSS protocols
-- [qiskit/qiskit](https://github.com/Qiskit/qiskit) — Python, quantum computing SDK with stabilizer/graph-state support
+- [quantumlib/Cirq](https://github.com/quantumlib/Cirq) ⭐ 4.9k — Python, quantum circuit framework for implementing QSS protocols
+- [qiskit/qiskit](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, quantum computing SDK with stabilizer/graph-state support
 
 **Security status:** Secure
 Information-theoretically secure; quantum Singleton bound provides tight characterization of achievable parameters.
@@ -1157,9 +1139,9 @@ Foundational in quantum information theory (Cleve-Gottesman-Lo is highly cited);
 Reed-Solomon decoding (Berlekamp-Welch/Gao) is deployed in every RS implementation; foundational to QR codes, CD/DVD, and distributed storage.
 
 **Implementations:**
-- [backblaze/JavaReedSolomon](https://github.com/Backblaze/JavaReedSolomon) — Java, Reed-Solomon with error correction
-- [klauspost/reedsolomon](https://github.com/klauspost/reedsolomon) — Go, high-performance RS encoding/decoding
-- [tahoe-lafs/zfec](https://github.com/tahoe-lafs/zfec) — Python/C, RS erasure coding
+- [backblaze/JavaReedSolomon](https://github.com/Backblaze/JavaReedSolomon) ⭐ 818 — Java, Reed-Solomon with error correction
+- [klauspost/reedsolomon](https://github.com/klauspost/reedsolomon) ⭐ 2.1k — Go, high-performance RS encoding/decoding
+- [tahoe-lafs/zfec](https://github.com/tahoe-lafs/zfec) ⭐ 423 — Python/C, RS erasure coding
 
 **Security status:** Secure
 Deterministic algebraic algorithm; correctness is mathematically proven. Error correction capacity 2e + t <= n + 1 is tight.
@@ -1213,9 +1195,8 @@ Theoretically groundbreaking (GGHSW 2013 is highly cited); practical security of
 SLIP-39 is deployed in Trezor Model T firmware and multiple wallet tools; SSKR is deployed in the Gordian ecosystem.
 
 **Implementations:**
-- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) — Python, reference SLIP-39 implementation
-- [AshKyd/slip39-js](https://github.com/nickg/slip39-js) — JavaScript, SLIP-39 for web wallets
-- [BlockchainCommons/bc-sskr](https://github.com/BlockchainCommons/bc-sskr) — C, SSKR (Sharded Secret Key Reconstruction)
+- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) ⭐ 198 — Python, reference SLIP-39 implementation
+- [BlockchainCommons/bc-sskr](https://github.com/BlockchainCommons/bc-sskr) ⭐ 22 — C, SSKR (Sharded Secret Key Reconstruction)
 - [AshKyd/iancoleman-slip39](https://iancoleman.io/slip39/) — Web tool, SLIP-39 share generation
 
 **Security status:** Secure
@@ -1325,8 +1306,7 @@ Of interest to algebraic cryptography and post-quantum researchers; no mainstrea
 Visual SS is deployed in anti-counterfeiting, physical key ceremonies, and educational demonstrations; multiple tools available.
 
 **Implementations:**
-- [4rtemi5/VisualCrypto](https://github.com/4rtemi5/VisualCrypto) — Python, visual cryptography implementation
-- [javl/image-splitter](https://github.com/javl/image-splitter) — Python, Naor-Shamir visual secret sharing
+No notable open-source implementations available.
 
 **Security status:** Secure
 Information-theoretically perfect secrecy; security is unconditional and does not rely on computational assumptions.
@@ -1353,8 +1333,8 @@ Well-known in cryptography education and anti-counterfeiting; unique property of
 AONT-RS is deployed in IBM Cloud Object Storage (formerly Cleversafe) and academic secure storage systems.
 
 **Implementations:**
-- [tahoe-lafs/tahoe-lafs](https://github.com/tahoe-lafs/tahoe-lafs) — Python, distributed storage with IDA/AONT concepts
-- [klauspost/reedsolomon](https://github.com/klauspost/reedsolomon) — Go, RS coding component for AONT-RS
+- [tahoe-lafs/tahoe-lafs](https://github.com/tahoe-lafs/tahoe-lafs) ⭐ 1.4k — Python, distributed storage with IDA/AONT concepts
+- [klauspost/reedsolomon](https://github.com/klauspost/reedsolomon) ⭐ 2.1k — Go, RS coding component for AONT-RS
 
 **Security status:** Secure
 Confidentiality from AONT (computationally secure under block cipher assumption); fault tolerance from RS coding (information-theoretic).
@@ -1435,8 +1415,7 @@ Well-cited in the multi-secret sharing literature; practical adoption in key esc
 CHURP has working prototypes deployed in Oasis Network; Desmedt-Jajodia enrollment is implemented in research systems; no widely standardized dynamic SS protocol exists.
 
 **Implementations:**
-- [oasisprotocol/oasis-core](https://github.com/oasisprotocol/oasis-core) — Go/Rust, CHURP with dynamic committee enrollment
-- [ISTA-SPiDerS/dpss](https://github.com/ISTA-SPiDerS/dpss) — Go, dynamic proactive secret sharing
+- [oasisprotocol/oasis-core](https://github.com/oasisprotocol/oasis-core) ⭐ 369 — Go/Rust, CHURP with dynamic committee enrollment
 
 **Security status:** Secure
 CHURP is provably secure under bivariate polynomial assumptions with Byzantine tolerance; redistribution-based enrollment inherits VSS security.
@@ -1463,9 +1442,9 @@ CHURP is well-cited in the blockchain research community; dynamic SS is gaining 
 DPF (2-party FSS for point functions) is deployed in Prio/VDAF for privacy-preserving telemetry (Apple, Google, Mozilla); multi-party FSS is experimental.
 
 **Implementations:**
-- [google/distributed_point_functions](https://github.com/google/distributed_point_functions) — C++, DPF library for private analytics
-- [divviup/libprio-rs](https://github.com/divviup/libprio-rs) — Rust, Prio/VDAF with FSS-based aggregation
-- [henrycg/prio](https://github.com/henrycg/prio) — Go, original Prio implementation using FSS
+- [google/distributed_point_functions](https://github.com/google/distributed_point_functions) ⭐ 79 — C++, DPF library for private analytics
+- [divviup/libprio-rs](https://github.com/divviup/libprio-rs) ⭐ 117 — Rust, Prio/VDAF with FSS-based aggregation
+- [henrycg/prio](https://github.com/henrycg/prio) ⭐ 64 — Go, original Prio implementation using FSS
 
 **Security status:** Secure
 Computationally secure under PRG assumptions; DPF correctness and privacy are well-established.
@@ -1489,7 +1468,7 @@ DPF is deployed at scale by Apple, Google, and Mozilla for privacy-preserving te
 Blakley's scheme is implemented in educational and reference libraries; Shamir dominates in production but Blakley is available as an alternative.
 
 **Implementations:**
-- [crepererum/ssss](https://github.com/crepererum/ssss) — C, Shamir's Secret Sharing Scheme (includes geometric perspective)
+No notable open-source implementations available.
 
 **Security status:** Secure
 Information-theoretically perfect secrecy; equivalent security to Shamir.
@@ -1514,8 +1493,7 @@ Historically important as an independent invention of threshold secret sharing; 
 Asmuth-Bloom is implemented in several libraries; used in hardware security modules where modular arithmetic is natively supported.
 
 **Implementations:**
-- [mikeivanov/pysss](https://github.com/mikeivanov/pysss) — Python, Shamir and CRT-based secret sharing
-- [dsprenkels/sss](https://github.com/dsprenkels/sss) — C, includes notes on CRT-based alternatives
+- [dsprenkels/sss](https://github.com/dsprenkels/sss) ⭐ 399 — C, includes notes on CRT-based alternatives
 
 **Security status:** Caution
 Asmuth-Bloom is information-theoretically secure (perfect); Mignotte is not perfect (partial leakage below threshold). Parameter selection for CRT sequences requires care.
@@ -1540,8 +1518,7 @@ Well-known in the secret sharing literature; less commonly deployed than Shamir 
 Visual SS is deployed in anti-counterfeiting, physical key ceremonies, and educational demonstrations; multiple tools available.
 
 **Implementations:**
-- [4rtemi5/VisualCrypto](https://github.com/4rtemi5/VisualCrypto) — Python, visual cryptography implementation
-- [javl/image-splitter](https://github.com/javl/image-splitter) — Python, Naor-Shamir visual secret sharing
+No notable open-source implementations available.
 
 **Security status:** Secure
 Information-theoretically perfect secrecy; security is unconditional and does not rely on computational assumptions.
@@ -1565,8 +1542,8 @@ Well-known in cryptography education and anti-counterfeiting; unique property of
 Krawczyk's SSMS is the basis for TAHOE-LAFS and other distributed storage systems; widely deployed for large-file sharing.
 
 **Implementations:**
-- [tahoe-lafs/tahoe-lafs](https://github.com/tahoe-lafs/tahoe-lafs) — Python, distributed storage using computational SS (IDA + encryption)
-- [codahale/shamir](https://github.com/codahale/shamir) — Java, Shamir with short shares for key sharing
+- [tahoe-lafs/tahoe-lafs](https://github.com/tahoe-lafs/tahoe-lafs) ⭐ 1.4k — Python, distributed storage using computational SS (IDA + encryption)
+- [codahale/shamir](https://github.com/codahale/shamir) ⭐ 217 — Java, Shamir with short shares for key sharing
 
 **Security status:** Secure
 Computationally secure under standard symmetric encryption assumptions (IND-CPA); well-analyzed since 1993.
@@ -1590,7 +1567,7 @@ Krawczyk's construction is a textbook result; deployed in production distributed
 Hierarchical SS concepts are deployed in corporate key management and multi-tier credential systems; Tassa's scheme has reference implementations.
 
 **Implementations:**
-- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) — Python, SLIP-39 group threshold (two-level hierarchical)
+- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) ⭐ 198 — Python, SLIP-39 group threshold (two-level hierarchical)
 
 **Security status:** Secure
 Information-theoretically secure; ideal share size (share = secret size) for supported weight distributions.
@@ -1614,8 +1591,7 @@ Well-studied in theoretical secret sharing; practical adoption primarily through
 VSR concepts are used in threshold key rotation systems; no standalone production-quality implementation exists.
 
 **Implementations:**
-- [AIT-DKMS/proactive-refresh](https://github.com/AIT-DKMS/proactive-refresh) — Rust, proactive share refresh with redistribution support
-- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) — Rust, share redistribution primitives
+- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) ⭐ 201 — Rust, share redistribution primitives
 
 **Security status:** Secure
 Provably secure under Feldman VSS assumptions; new shareholders can verify share validity without trusting departing members.

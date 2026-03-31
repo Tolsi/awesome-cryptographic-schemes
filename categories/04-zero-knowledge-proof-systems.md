@@ -35,11 +35,11 @@
 PLONK, Groth16, and STARKs are deployed in production blockchains (Zcash, Ethereum L2s, StarkNet) serving billions of dollars in value.
 
 **Implementations:**
-- [snarkjs](https://github.com/iden3/snarkjs) — JavaScript — Groth16/PLONK prover/verifier
-- [bellman](https://github.com/zkcrypto/bellman) — Rust — Groth16 implementation (Zcash)
-- [gnark](https://github.com/Consensys/gnark) — Go — Groth16/PLONK with optimized MSM
+- [snarkjs](https://github.com/iden3/snarkjs) ⭐ 2.0k — JavaScript — Groth16/PLONK prover/verifier
+- [bellman](https://github.com/zkcrypto/bellman) ⭐ 1.1k — Rust — Groth16 implementation (Zcash)
+- [gnark](https://github.com/Consensys/gnark) ⭐ 1.7k — Go — Groth16/PLONK with optimized MSM
 - [arkworks](https://github.com/arkworks-rs) — Rust — modular SNARK framework (Groth16, Marlin, PLONK)
-- [halo2](https://github.com/zcash/halo2) — Rust — PLONK+IPA proving system (Zcash Orchard)
+- [halo2](https://github.com/zcash/halo2) ⭐ 895 — Rust — PLONK+IPA proving system (Zcash Orchard)
 
 **Security status:** Secure
 Groth16, PLONK, and STARKs have no known practical attacks at recommended parameters. Trusted setup ceremonies (for Groth16/PLONK) require careful execution.
@@ -65,8 +65,8 @@ Groth16 and PLONK are peer-reviewed and deployed across major blockchain ecosyst
 Standalone SNARGs are primarily theoretical constructs; in practice, zk-SNARKs (which include zero-knowledge) are used instead.
 
 **Implementations:**
-- [arkworks (SNARG modes)](https://github.com/arkworks-rs/snark) — Rust — generic SNARG trait and implementations
-- [libiop](https://github.com/scipr-lab/libiop) — C++ — IOP-based proof system library
+- [arkworks (SNARG modes)](https://github.com/arkworks-rs/snark) ⭐ 898 — Rust — generic SNARG trait and implementations
+- [libiop](https://github.com/scipr-lab/libiop) ⭐ 178 — C++ — IOP-based proof system library
 
 **Security status:** Secure
 Theoretical constructions are provably secure under standard assumptions (LWE for lattice-based SNARGs). Practical instantiations inherit security of underlying SNARKs.
@@ -93,9 +93,9 @@ Primarily of theoretical interest in the cryptography research community. Practi
 IOPs are a foundational abstraction compiled into production proof systems (STARKs, PLONK). The IOP framework itself is not deployed directly but underlies all modern ZK systems.
 
 **Implementations:**
-- [libiop](https://github.com/scipr-lab/libiop) — C++ — reference IOP implementations (Aurora, Ligero)
-- [winterfell](https://github.com/facebook/winterfell) — Rust — STARK prover/verifier built on IOP/FRI
-- [ethSTARK](https://github.com/starkware-libs/ethSTARK) — C++ — StarkWare's STARK reference implementation
+- [libiop](https://github.com/scipr-lab/libiop) ⭐ 178 — C++ — reference IOP implementations (Aurora, Ligero)
+- [winterfell](https://github.com/facebook/winterfell) ⭐ 888 — Rust — STARK prover/verifier built on IOP/FRI
+- [ethSTARK](https://github.com/starkware-libs/ethSTARK) ⭐ 236 — C++ — StarkWare's STARK reference implementation
 
 **Security status:** Secure
 IOPs and PCPs are information-theoretically secure. Compiled proof systems inherit security of the IOP plus the commitment scheme.
@@ -123,9 +123,9 @@ The PCP theorem is a cornerstone of theoretical computer science. IOPs are the a
 Deployed in TLS 1.3, SSH, Tor, Bitcoin (Schnorr/Taproot), and virtually every DLP-based authentication system.
 
 **Implementations:**
-- [libsodium (crypto_sign)](https://github.com/jedisct1/libsodium) — C — Ed25519/Schnorr signatures
-- [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) — Rust — Schnorr proofs and DLEQ
-- [secp256k1 (Bitcoin)](https://github.com/bitcoin-core/secp256k1) — C — Schnorr signatures for Bitcoin Taproot
+- [libsodium (crypto_sign)](https://github.com/jedisct1/libsodium) ⭐ 13k — C — Ed25519/Schnorr signatures
+- [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust — Schnorr proofs and DLEQ
+- [secp256k1 (Bitcoin)](https://github.com/bitcoin-core/secp256k1) ⭐ 2.4k — C — Schnorr signatures for Bitcoin Taproot
 
 **Security status:** Secure
 Sigma protocols are provably secure under the discrete logarithm assumption. Fiat-Shamir transform is secure in the random oracle model.
@@ -151,8 +151,8 @@ NIST-standardized (EdDSA/Ed25519), IETF RFC 8032, BIP-340 (Bitcoin Schnorr). Uni
 Well-studied with production-quality implementations, but limited large-scale deployment outside pairing-based credential and signature schemes.
 
 **Implementations:**
-- [relic-toolkit](https://github.com/relic-toolkit/relic) — C — pairing-based cryptography including GS proofs
-- [charm-crypto](https://github.com/JHUISI/charm) — Python — prototyping library with GS proof support
+- [relic-toolkit](https://github.com/relic-toolkit/relic) ⭐ 508 — C — pairing-based cryptography including GS proofs
+- [charm-crypto](https://github.com/JHUISI/charm) ⭐ 633 — Python — prototyping library with GS proof support
 
 **Security status:** Secure
 Secure under DLIN or SXDH assumptions in bilinear groups. No known attacks at standard parameter sizes.
@@ -181,10 +181,10 @@ Well-respected in the pairing-based cryptography community. Standard tool for ac
 Nova has working implementations and is used in zkVM prototypes (Nexus). HyperNova and ProtoStar are in active development. No large-scale production deployment yet.
 
 **Implementations:**
-- [Nova (Microsoft Research)](https://github.com/microsoft/Nova) — Rust — original Nova implementation
-- [sonobe](https://github.com/privacy-scaling-explorations/sonobe) — Rust — modular folding library (Nova, HyperNova, ProtoGalaxy)
-- [arecibo](https://github.com/argumentcomputer/arecibo) — Rust — SuperNova/Nova implementation
-- [nexus-zkvm](https://github.com/nexus-xyz/nexus-zkvm) — Rust — Nova-based zkVM
+- [Nova (Microsoft Research)](https://github.com/microsoft/Nova) ⭐ 837 — Rust — original Nova implementation
+- [sonobe](https://github.com/privacy-scaling-explorations/sonobe) ⭐ 265 — Rust — modular folding library (Nova, HyperNova, ProtoGalaxy)
+- [arecibo](https://github.com/argumentcomputer/arecibo) ⭐ 89 — Rust — SuperNova/Nova implementation
+- [nexus-zkvm](https://github.com/nexus-xyz/nexus-zkvm) ⭐ 2.6k — Rust — Nova-based zkVM
 
 **Security status:** Secure
 Nova is provably secure under the discrete logarithm assumption. Newer schemes (HyperNova, ProtoStar) have formal security proofs but less implementation maturity.
@@ -214,9 +214,9 @@ Rapidly growing adoption in ZK research. Nova (Microsoft Research) is widely cit
 Plookup and LogUp are deployed in production zkEVMs (Polygon, Scroll) and zkVMs (SP1, RISC Zero). Core building block of all modern ZK systems.
 
 **Implementations:**
-- [halo2 (lookup gates)](https://github.com/zcash/halo2) — Rust — Plookup-style lookups in Halo2
-- [Plonky3](https://github.com/Plonky3/Plonky3) — Rust — LogUp-GKR lookups
-- [gnark](https://github.com/Consensys/gnark) — Go — lookup argument support in PLONK
+- [halo2 (lookup gates)](https://github.com/zcash/halo2) ⭐ 895 — Rust — Plookup-style lookups in Halo2
+- [Plonky3](https://github.com/Plonky3/Plonky3) ⭐ 772 — Rust — LogUp-GKR lookups
+- [gnark](https://github.com/Consensys/gnark) ⭐ 1.7k — Go — lookup argument support in PLONK
 
 **Security status:** Secure
 Plookup, LogUp, and Lasso have formal security proofs. Caulk/Caulk+ are secure under knowledge-of-exponent assumptions.
@@ -243,10 +243,10 @@ Lookup arguments are universally adopted in the ZK community. Plookup and LogUp 
 Sumcheck is deployed in production via Jolt, Spartan, and Plonky3-based systems. Core protocol in SP1 and other zkVMs.
 
 **Implementations:**
-- [arkworks (sumcheck)](https://github.com/arkworks-rs/sumcheck) — Rust — sumcheck protocol implementation
-- [Plonky3](https://github.com/Plonky3/Plonky3) — Rust — sumcheck-based proving
-- [Jolt](https://github.com/a16z/jolt) — Rust — sumcheck+Lasso zkVM
-- [microsoft/Spartan](https://github.com/microsoft/Spartan) — Rust — sumcheck-based transparent SNARK
+- [arkworks (sumcheck)](https://github.com/arkworks-rs/sumcheck) ⭐ 88 — Rust — sumcheck protocol implementation
+- [Plonky3](https://github.com/Plonky3/Plonky3) ⭐ 772 — Rust — sumcheck-based proving
+- [Jolt](https://github.com/a16z/jolt) ⭐ 966 — Rust — sumcheck+Lasso zkVM
+- [microsoft/Spartan](https://github.com/microsoft/Spartan) ⭐ 849 — Rust — sumcheck-based transparent SNARK
 
 **Security status:** Secure
 The sumcheck protocol has information-theoretic soundness. No known attacks; security is unconditional given honest random challenges.
@@ -278,12 +278,12 @@ A cornerstone of interactive proof theory since 1992. Increasingly adopted in pr
 SP1 and RISC Zero are deployed in Ethereum L2 rollups and ZK coprocessors. Cairo VM powers StarkNet mainnet.
 
 **Implementations:**
-- [SP1](https://github.com/succinctlabs/sp1) — Rust — RISC-V zkVM (Succinct Labs)
-- [risc0](https://github.com/risc0/risc0) — Rust — RISC-V zkVM (RISC Zero)
-- [Jolt](https://github.com/a16z/jolt) — Rust — lookup-based RISC-V zkVM (a16z)
-- [nexus-zkvm](https://github.com/nexus-xyz/nexus-zkvm) — Rust — Nova-based zkVM
-- [cairo](https://github.com/starkware-libs/cairo) — Rust — Cairo VM and compiler (StarkWare)
-- [valida](https://github.com/valida-xyz/valida) — Rust — custom-ISA zkVM
+- [SP1](https://github.com/succinctlabs/sp1) ⭐ 1.6k — Rust — RISC-V zkVM (Succinct Labs)
+- [risc0](https://github.com/risc0/risc0) ⭐ 2.1k — Rust — RISC-V zkVM (RISC Zero)
+- [Jolt](https://github.com/a16z/jolt) ⭐ 966 — Rust — lookup-based RISC-V zkVM (a16z)
+- [nexus-zkvm](https://github.com/nexus-xyz/nexus-zkvm) ⭐ 2.6k — Rust — Nova-based zkVM
+- [cairo](https://github.com/starkware-libs/cairo) ⭐ 1.9k — Rust — Cairo VM and compiler (StarkWare)
+- [valida](https://github.com/valida-xyz/valida) ⭐ 342 — Rust — custom-ISA zkVM
 
 **Security status:** Caution
 Underlying proof systems (STARKs, PLONK) are secure, but zkVM implementations are complex and still undergoing audits. Bugs in circuit constraints can compromise soundness.
@@ -309,8 +309,8 @@ Rapidly growing adoption in the Ethereum ecosystem. SP1 and RISC Zero are backed
 Deployed in Mina Protocol (Pickles/Kimchi) which maintains a constant-size blockchain proof. Also used in recursive SNARK aggregation layers.
 
 **Implementations:**
-- [Pickles/Kimchi (Mina)](https://github.com/MinaProtocol/mina) — OCaml/Rust — PCD framework powering Mina blockchain
-- [Nova (Microsoft)](https://github.com/microsoft/Nova) — Rust — IVC (sequential PCD)
+- [Pickles/Kimchi (Mina)](https://github.com/MinaProtocol/mina) ⭐ 2.1k — OCaml/Rust — PCD framework powering Mina blockchain
+- [Nova (Microsoft)](https://github.com/microsoft/Nova) ⭐ 837 — Rust — IVC (sequential PCD)
 
 **Security status:** Secure
 Recursive SNARK composition on cycles of curves is provably secure. Pickles has been in production since Mina mainnet (2021) with no known attacks.
@@ -338,9 +338,7 @@ Established theoretical foundation (Chiesa-Tromer 2010). Production-validated by
 Picnic was a NIST PQ signature candidate. Banquet and ZKBoo have working implementations. Used in post-quantum signature research.
 
 **Implementations:**
-- [Picnic](https://github.com/microsoft/Picnic) — C — NIST PQ signature candidate (Microsoft)
-- [ZKBoo](https://github.com/AarhusCrypto/ZKBoo) — C — practical MPCitH implementation
-- [Banquet](https://github.com/nicola-2/banquet) — C — MPCitH with algebraic hashes
+- [Picnic](https://github.com/microsoft/Picnic) ⭐ 168 — C — NIST PQ signature candidate (Microsoft)
 
 **Security status:** Secure
 Security reduces to the underlying symmetric primitives (AES, LowMC). Post-quantum secure when using appropriate hash functions.
@@ -366,8 +364,8 @@ Picnic was a NIST Round 3 alternate candidate. The MPCitH paradigm is well-respe
 FAEST is in NIST Additional Signatures Round 2. Research implementations exist but no large-scale production deployment yet.
 
 **Implementations:**
-- [FAEST](https://github.com/faest-sign/faest-ref) — C — FAEST reference implementation (NIST candidate)
-- [VOLEitH reference](https://github.com/faest-sign/faest-avx) — C — AVX2-optimized FAEST implementation
+- [FAEST](https://github.com/faest-sign/faest-ref) ⭐ 19 — C — FAEST reference implementation (NIST candidate)
+- [VOLEitH reference](https://github.com/faest-sign/faest-avx) ⭐ 5 — C — AVX2-optimized FAEST implementation
 
 **Security status:** Secure
 FAEST security reduces to AES key recovery hardness. VOLEitH proofs have formal security proofs under standard assumptions.
@@ -396,9 +394,9 @@ FAEST is advancing through NIST standardization. VOLEitH is gaining recognition 
 Circle STARKs + Stwo are in production at StarkWare. Plonky3 (with small-field support) powers SP1 and Polygon CDK.
 
 **Implementations:**
-- [Binius](https://github.com/IrreducibleOSS/binius) — Rust — binary tower field proof system (Irreducible)
-- [Stwo](https://github.com/starkware-libs/stwo) — Rust — Circle STARK prover (StarkWare)
-- [Plonky3](https://github.com/Plonky3/Plonky3) — Rust — modular prover framework (Goldilocks/M31/BabyBear)
+- [Binius](https://github.com/IrreducibleOSS/binius) ⭐ 133 — Rust — binary tower field proof system (Irreducible)
+- [Stwo](https://github.com/starkware-libs/stwo) ⭐ 481 — Rust — Circle STARK prover (StarkWare)
+- [Plonky3](https://github.com/Plonky3/Plonky3) ⭐ 772 — Rust — modular prover framework (Goldilocks/M31/BabyBear)
 
 **Security status:** Secure
 Security relies on standard hash function assumptions (for FRI/STARK) or coding-theoretic assumptions. No known attacks at recommended parameters.
@@ -428,8 +426,7 @@ Rapidly gaining adoption. Stwo and Plonky3 are deployed in major L2 projects. Bi
 Academic prototypes and benchmarks exist. No dominant production implementation yet. TACEO and Pianist have proof-of-concept code.
 
 **Implementations:**
-- [TACEO co-SNARK](https://github.com/TaceoLabs/collaborative-circom) — Rust — collaborative Circom proving via MPC
-- [collaborative-groth16](https://github.com/pps-lab/collaborative-groth16) — Rust — secret-shared Groth16 prover
+- [TACEO co-SNARK](https://github.com/TaceoLabs/collaborative-circom) ⭐ 217 — Rust — collaborative Circom proving via MPC
 
 **Security status:** Secure
 Security inherits from underlying SNARK (Groth16, PLONK) plus MPC protocol security. Formal UC-security proofs exist for some constructions.
@@ -458,8 +455,8 @@ Active research area with growing interest from privacy-focused blockchain proje
 EZKL has production-grade tooling for ONNX model verification. Other systems are research prototypes or early-stage products.
 
 **Implementations:**
-- [EZKL](https://github.com/zkonduit/ezkl) — Rust — prove ONNX model inference in ZK
-- [Giza/Orion](https://github.com/gizatechxyz/orion) — Cairo — ONNX to STARK-provable execution
+- [EZKL](https://github.com/zkonduit/ezkl) ⭐ 1.2k — Rust — prove ONNX model inference in ZK
+- [Giza/Orion](https://github.com/gizatechxyz/orion) ⭐ 174 — Cairo — ONNX to STARK-provable execution
 
 **Security status:** Caution
 Underlying proof systems are secure, but fixed-point arithmetic approximations in ML circuits may introduce precision-related soundness gaps. Active area of security analysis.
@@ -485,8 +482,8 @@ High-profile research area backed by a16z, Modulus Labs, and Polyhedra. No stand
 Bulletproofs IPA (the primary deployed instance) is in production. The general Attema-Cramer framework has reference implementations.
 
 **Implementations:**
-- [dalek-bulletproofs](https://github.com/dalek-cryptography/bulletproofs) — Rust — Bulletproofs IPA implementation
-- [secp256k1-zkp (Bulletproofs)](https://github.com/ElementsProject/secp256k1-zkp) — C — Bulletproofs for Liquid Network
+- [dalek-bulletproofs](https://github.com/dalek-cryptography/bulletproofs) ⭐ 1.1k — Rust — Bulletproofs IPA implementation
+- [secp256k1-zkp (Bulletproofs)](https://github.com/ElementsProject/secp256k1-zkp) ⭐ 419 — C — Bulletproofs for Liquid Network
 
 **Security status:** Secure
 Secure under the discrete logarithm assumption. Lattice extensions are secure under SIS/LWE.
@@ -512,7 +509,7 @@ Bulletproofs IPA is deployed in Monero and Liquid Network. The Attema-Cramer fra
 Primarily theoretical constructions. No widely deployed production implementation; used in academic protocol designs.
 
 **Implementations:**
-- [libiop (set primitives)](https://github.com/scipr-lab/libiop) — C++ — IOP library with set-related proof primitives
+- [libiop (set primitives)](https://github.com/scipr-lab/libiop) ⭐ 178 — C++ — IOP library with set-related proof primitives
 
 **Security status:** Secure
 Provably secure under standard assumptions (trapdoor hash functions, q-SDH). No known attacks.
@@ -564,7 +561,7 @@ Important theoretical primitive studied in the foundations of cryptography. No p
 Academic constructions built on Groth-Sahai proofs. Used in theoretical designs of delegatable credentials and proof systems.
 
 **Implementations:**
-- [relic-toolkit (GS proofs)](https://github.com/relic-toolkit/relic) — C — pairing library supporting GS-based constructions
+- [relic-toolkit (GS proofs)](https://github.com/relic-toolkit/relic) ⭐ 508 — C — pairing library supporting GS-based constructions
 
 **Security status:** Secure
 Provably secure under DLIN/SXDH assumptions (inherited from Groth-Sahai). The controlled malleability property is formally defined and proven.
@@ -590,7 +587,7 @@ Well-cited in academic cryptography. Primarily used as a building block in theor
 WI is a standard security notion used in production protocols (MPC, credential systems) rather than deployed as a standalone primitive.
 
 **Implementations:**
-- [libsnark](https://github.com/scipr-lab/libsnark) — C++ — SNARK library with WI proof modes
+- [libsnark](https://github.com/scipr-lab/libsnark) ⭐ 1.9k — C++ — SNARK library with WI proof modes
 
 **Security status:** Secure
 WI is a well-defined security property with formal proofs. Composes under parallel composition (unlike ZK), making it robust for concurrent protocols.
@@ -644,7 +641,7 @@ Major theoretical breakthrough (Barak 2001). Essential for the foundations of ZK
 MIPs are a complexity-theoretic concept. Practical systems derived from MIP techniques (GKR, sumcheck) are in production, but MIPs themselves are theoretical.
 
 **Implementations:**
-- [GKR implementations (via Spartan/Jolt)](https://github.com/microsoft/Spartan) — Rust — GKR-derived sumcheck proofs
+- [GKR implementations (via Spartan/Jolt)](https://github.com/microsoft/Spartan) ⭐ 849 — Rust — GKR-derived sumcheck proofs
 
 **Security status:** Secure
 MIPs have information-theoretic security (unconditional soundness given non-communicating provers). MIP* = RE is a landmark result.
@@ -672,9 +669,9 @@ Foundational in computational complexity theory. MIP = NEXP (1991) and MIP* = RE
 TLSNotary is open-source and actively used. DECO and Reclaim Protocol have working implementations. Main bottleneck is MPC overhead for TLS.
 
 **Implementations:**
-- [TLSNotary](https://github.com/tlsnotary/tlsn) — Rust — MPC-TLS prover/verifier
-- [zk-email](https://github.com/zkemail/zk-email-verify) — TypeScript/Circom — DKIM-based email proofs
-- [zkp2p](https://github.com/zkp2p/zk-p2p) — TypeScript/Circom — ZK proofs over TLS payment data
+- [TLSNotary](https://github.com/tlsnotary/tlsn) ⭐ 407 — Rust — MPC-TLS prover/verifier
+- [zk-email](https://github.com/zkemail/zk-email-verify) ⭐ 422 — TypeScript/Circom — DKIM-based email proofs
+- [zkp2p](https://github.com/zkp2p/zk-p2p) ⭐ 335 — TypeScript/Circom — ZK proofs over TLS payment data
 
 **Security status:** Caution
 TLS session splitting introduces a trust assumption on the MPC co-signer/notary. Security proofs exist (DECO is UC-secure) but implementations are still maturing.
@@ -701,7 +698,7 @@ Growing adoption in DeFi and oracle protocols. TLSNotary is widely cited. Active
 Superseded by PLONK and Marlin (2019), which offer better prover efficiency. Sonic is no longer actively developed.
 
 **Implementations:**
-- [sonic (reference)](https://github.com/matterinc/sonic) — Rust — reference implementation by Matter Labs
+No notable open-source implementations available.
 
 **Security status:** Secure
 Provably secure under the algebraic group model + random oracle model. No known attacks, but superseded by more efficient systems.
@@ -730,8 +727,8 @@ Important historically as the first practical universal SNARK. Recognized as the
 Aurora and Ligero have reference implementations. Their techniques are subsumed by STARKs and Brakedown/Orion in production.
 
 **Implementations:**
-- [libiop (Aurora/Ligero)](https://github.com/scipr-lab/libiop) — C++ — reference IOP implementations
-- [winterfell (STARK-based successors)](https://github.com/facebook/winterfell) — Rust — STARK prover inheriting IOP ideas from Aurora
+- [libiop (Aurora/Ligero)](https://github.com/scipr-lab/libiop) ⭐ 178 — C++ — reference IOP implementations
+- [winterfell (STARK-based successors)](https://github.com/facebook/winterfell) ⭐ 888 — Rust — STARK prover inheriting IOP ideas from Aurora
 
 **Security status:** Secure
 Transparent and plausibly post-quantum. Security relies only on collision-resistant hash functions. No known attacks.
@@ -758,7 +755,7 @@ Academically well-regarded. Aurora and Ligero are foundational references for tr
 Reference implementation exists. Used as the IOP layer in research SNARK stacks but not yet a standalone production system.
 
 **Implementations:**
-- [hyperplonk (reference)](https://github.com/EspressoSystems/hyperplonk) — Rust — HyperPlonk reference implementation (Espresso Systems)
+- [hyperplonk (reference)](https://github.com/EspressoSystems/hyperplonk) ⭐ 340 — Rust — HyperPlonk reference implementation (Espresso Systems)
 
 **Security status:** Secure
 Provably secure with formal proofs (EUROCRYPT 2023). No known attacks at recommended parameters.
@@ -788,8 +785,7 @@ Published at EUROCRYPT 2023. Recognized as the state-of-the-art Plonkish system 
 Working implementations exist with competitive benchmarks. Used as PCS components in research SNARK stacks. Orion+ (2024) fixes a soundness issue in the original.
 
 **Implementations:**
-- [Brakedown (reference)](https://github.com/conroi/brakedown) — Rust — Brakedown polynomial commitment implementation
-- [Orion](https://github.com/sunblaze-ucb/orion) — Rust — linear-time SNARK prover
+- [Orion](https://github.com/sunblaze-ucb/orion) ⭐ 31 — Rust — linear-time SNARK prover
 
 **Security status:** Caution
 Brakedown (CRYPTO 2023) has clean security proofs. Original Orion had a soundness issue fixed in Orion+ (2024). Use the corrected version.
@@ -817,7 +813,7 @@ Published at top cryptography venues (CRYPTO 2022/2023). Recognized as theoretic
 The LPC framework is the theoretical basis of Plonky2 and Polygon's prover stack. RedShift itself has reference implementations.
 
 **Implementations:**
-- [redshift (reference)](https://github.com/matter-labs/redshift) — Rust — reference implementation (Matter Labs)
+No notable open-source implementations available.
 
 **Security status:** Secure
 Transparent; relies on FRI soundness and collision-resistant hashing. No known attacks.
@@ -849,10 +845,10 @@ Published at CCS 2022. Recognized as the formal foundation of the PLONK-over-FRI
 Deployed in Zcash Sapling, Tornado Cash, Filecoin, and Ethereum's zkSNARK precompile (EIP-197). The most widely deployed pairing-based SNARK.
 
 **Implementations:**
-- [snarkjs (Groth16)](https://github.com/iden3/snarkjs) — JavaScript — browser/Node.js Groth16 prover/verifier
-- [bellman](https://github.com/zkcrypto/bellman) — Rust — Groth16 implementation (Zcash)
-- [gnark (Groth16)](https://github.com/Consensys/gnark) — Go — optimized Groth16 with GPU MSM support
-- [arkworks-groth16](https://github.com/arkworks-rs/groth16) — Rust — Groth16 in the arkworks framework
+- [snarkjs (Groth16)](https://github.com/iden3/snarkjs) ⭐ 2.0k — JavaScript — browser/Node.js Groth16 prover/verifier
+- [bellman](https://github.com/zkcrypto/bellman) ⭐ 1.1k — Rust — Groth16 implementation (Zcash)
+- [gnark (Groth16)](https://github.com/Consensys/gnark) ⭐ 1.7k — Go — optimized Groth16 with GPU MSM support
+- [arkworks-groth16](https://github.com/arkworks-rs/groth16) ⭐ 339 — Rust — Groth16 in the arkworks framework
 - [circom + snarkjs](https://docs.circom.io/) — DSL + JS — most common Groth16 circuit development toolchain
 
 **Security status:** Secure
@@ -883,9 +879,9 @@ Gold standard for smallest proof size. EUROCRYPT 2016. Universally adopted in th
 Halo2 is deployed in Zcash Orchard (mainnet since 2022) and numerous zkEVM projects (Scroll, Polygon Hermez, PSE).
 
 **Implementations:**
-- [halo2 (ECC/Zcash)](https://github.com/zcash/halo2) — Rust — production Halo2 proving system
-- [halo2 (PSE fork)](https://github.com/privacy-scaling-explorations/halo2) — Rust — PSE fork used in Scroll and other zkEVMs
-- [halo2-lib](https://github.com/axiom-crypto/halo2-lib) — Rust — high-level Halo2 circuit development library (Axiom)
+- [halo2 (ECC/Zcash)](https://github.com/zcash/halo2) ⭐ 895 — Rust — production Halo2 proving system
+- [halo2 (PSE fork)](https://github.com/privacy-scaling-explorations/halo2) ⭐ 244 — Rust — PSE fork used in Scroll and other zkEVMs
+- [halo2-lib](https://github.com/axiom-crypto/halo2-lib) ⭐ 309 — Rust — high-level Halo2 circuit development library (Axiom)
 
 **Security status:** Secure
 Secure under the discrete logarithm assumption over ordinary elliptic curves. No trusted setup required. Accumulation scheme has formal security proofs.
@@ -918,8 +914,8 @@ Deployed by Zcash (ECC) since 2022. PSE fork is the backend for multiple Ethereu
 Deployed in Polygon Zero's ZK proving infrastructure. Plonky3 (successor) powers SP1 and Polygon CDK.
 
 **Implementations:**
-- [plonky2](https://github.com/0xPolygonZero/plonky2) — Rust — Polygon Zero's recursive SNARK
-- [Plonky3](https://github.com/Plonky3/Plonky3) — Rust — modular successor framework (SP1, Polygon CDK)
+- [plonky2](https://github.com/0xPolygonZero/plonky2) ⭐ 856 — Rust — Polygon Zero's recursive SNARK
+- [Plonky3](https://github.com/Plonky3/Plonky3) ⭐ 772 — Rust — modular successor framework (SP1, Polygon CDK)
 
 **Security status:** Secure
 Security relies on FRI soundness over the Goldilocks field and collision-resistant hashing. No trusted setup. No known attacks.
@@ -948,9 +944,9 @@ Developed by Polygon Zero. Plonky3 is the IOP backend for SP1 (Succinct) and Pol
 DEEP-FRI is the soundness backbone of all production STARK provers (StarkWare, RISC Zero, SP1). Deployed at scale since StarkNet mainnet.
 
 **Implementations:**
-- [ethSTARK (DEEP-FRI)](https://github.com/starkware-libs/ethSTARK) — C++ — StarkWare's STARK prover with DEEP-FRI
-- [winterfell](https://github.com/facebook/winterfell) — Rust — STARK library with DEEP-FRI
-- [risc0 (DEEP-FRI)](https://github.com/risc0/risc0) — Rust — RISC Zero's STARK prover uses DEEP-FRI
+- [ethSTARK (DEEP-FRI)](https://github.com/starkware-libs/ethSTARK) ⭐ 236 — C++ — StarkWare's STARK prover with DEEP-FRI
+- [winterfell](https://github.com/facebook/winterfell) ⭐ 888 — Rust — STARK library with DEEP-FRI
+- [risc0 (DEEP-FRI)](https://github.com/risc0/risc0) ⭐ 2.1k — Rust — RISC Zero's STARK prover uses DEEP-FRI
 
 **Security status:** Secure
 Formal soundness proofs (ITCS 2020). DEEP sampling boosts security per round to nearly 1, reducing proof size. No known attacks.
@@ -988,10 +984,10 @@ Universally adopted in the STARK ecosystem. Published at ITCS 2020 by the StarkW
 Scroll (Type 2), Polygon zkEVM (Type 2.5), and Taiko (Type 1) are on Ethereum mainnet. zkSync Era (Type 4) has been live since 2023.
 
 **Implementations:**
-- [scroll-zkevm](https://github.com/scroll-tech/scroll-zkevm) — Rust/Go — Scroll's Type 2 zkEVM circuits
-- [polygon-zkevm](https://github.com/0xPolygonHermez/zkevm-prover) — C++ — Polygon zkEVM prover
-- [zksync-era](https://github.com/matter-labs/zksync-era) — Rust — zkSync Era node and prover
-- [taiko-mono](https://github.com/taikoxyz/taiko-mono) — TypeScript/Solidity — Taiko Type 1 zkEVM
+- [scroll-zkevm](https://github.com/scroll-tech/scroll-zkevm) ⭐ 684 — Rust/Go — Scroll's Type 2 zkEVM circuits
+- [polygon-zkevm](https://github.com/0xPolygonHermez/zkevm-prover) ⭐ 243 — C++ — Polygon zkEVM prover
+- [zksync-era](https://github.com/matter-labs/zksync-era) ⭐ 3.2k — Rust — zkSync Era node and prover
+- [taiko-mono](https://github.com/taikoxyz/taiko-mono) ⭐ 4.6k — TypeScript/Solidity — Taiko Type 1 zkEVM
 
 **Security status:** Caution
 Underlying proof systems are secure, but zkEVM implementations are complex (millions of constraints). Ongoing audits and bug bounties. EVM edge cases may cause soundness issues.
@@ -1020,7 +1016,7 @@ Vitalik Buterin's 2022 taxonomy is the accepted classification framework. Multip
 Published at CCS 2024. Reference implementation exists but no production deployment yet.
 
 **Implementations:**
-- [Ligerito (reference)](https://github.com/nkn-nguyen/ligerito) — Rust — reference implementation
+No notable open-source implementations available.
 
 **Security status:** Secure
 Transparent; relies on collision-resistant hashing. Formally proven secure at CCS 2024. No known attacks.
@@ -1050,8 +1046,8 @@ Published at CCS 2024. First practically efficient small-field SNARK. Complement
 Deployed in Plonky3 and StarkWare's Stwo prover. Powers lookup arguments in SP1 and Polygon CDK v2.
 
 **Implementations:**
-- [Plonky3 (LogUp-GKR)](https://github.com/Plonky3/Plonky3) — Rust — LogUp-GKR lookup backend
-- [Stwo (LogUp-GKR)](https://github.com/starkware-libs/stwo) — Rust — StarkWare's Circle STARK prover with LogUp-GKR
+- [Plonky3 (LogUp-GKR)](https://github.com/Plonky3/Plonky3) ⭐ 772 — Rust — LogUp-GKR lookup backend
+- [Stwo (LogUp-GKR)](https://github.com/starkware-libs/stwo) ⭐ 481 — Rust — StarkWare's Circle STARK prover with LogUp-GKR
 
 **Security status:** Secure
 Security inherits from GKR sumcheck soundness and LogUp's logarithmic derivative reduction. No known attacks.
@@ -1082,9 +1078,9 @@ Adopted by StarkWare and Succinct Labs as the default lookup mechanism. Supersed
 The most widely deployed ZK toolchain. Powers Tornado Cash, Semaphore, Dark Forest, zk-Email, and hundreds of other applications.
 
 **Implementations:**
-- [circom](https://github.com/iden3/circom) — Rust — circuit compiler
-- [snarkjs](https://github.com/iden3/snarkjs) — JavaScript — Groth16/PLONK/Fflonk prover/verifier
-- [circomlib](https://github.com/iden3/circomlib) — Circom — standard circuit library (Poseidon, ECDSA, Merkle)
+- [circom](https://github.com/iden3/circom) ⭐ 1.6k — Rust — circuit compiler
+- [snarkjs](https://github.com/iden3/snarkjs) ⭐ 2.0k — JavaScript — Groth16/PLONK/Fflonk prover/verifier
+- [circomlib](https://github.com/iden3/circomlib) ⭐ 735 — Circom — standard circuit library (Poseidon, ECDSA, Merkle)
 
 **Security status:** Caution
 Underlying proof systems (Groth16, PLONK) are secure. However, Circom's low-level circuit writing is error-prone; underconstrained circuit bugs are a known class of vulnerabilities.
@@ -1116,9 +1112,9 @@ De facto standard for ZK application development since 2020. Maintained by iden3
 Cairo 1.0 powers all StarkNet smart contracts (mainnet 2023). Leo is deployed on Aleo mainnet. Noir is in rapid development for Aztec.
 
 **Implementations:**
-- [Noir](https://github.com/noir-lang/noir) — Rust — ZK DSL with ACIR backend (Aztec)
-- [Leo](https://github.com/ProvableHQ/leo) — Rust — ZK DSL for Aleo blockchain
-- [Cairo](https://github.com/starkware-libs/cairo) — Rust — ZK DSL for StarkNet
+- [Noir](https://github.com/noir-lang/noir) ⭐ 1.3k — Rust — ZK DSL with ACIR backend (Aztec)
+- [Leo](https://github.com/ProvableHQ/leo) ⭐ 4.8k — Rust — ZK DSL for Aleo blockchain
+- [Cairo](https://github.com/starkware-libs/cairo) ⭐ 1.9k — Rust — ZK DSL for StarkNet
 
 **Security status:** Caution
 Language-level security depends on compiler correctness. Cairo's Sierra IR provides provable safety guarantees. Noir and Leo are still maturing with ongoing audits.
@@ -1148,8 +1144,8 @@ Cairo is the standard for StarkNet. Leo is standard for Aleo. Noir is growing ra
 Academic research compiler (USENIX Security 2022). Used for research and prototyping; production compilers adopt similar IR strategies.
 
 **Implementations:**
-- [CirC](https://github.com/circify/circ) — Rust — multi-backend ZK/MPC compiler
-- [ZoKrates](https://github.com/Zokrates/ZoKrates) — Rust — high-level ZK language and toolbox
+- [CirC](https://github.com/circify/circ) ⭐ 313 — Rust — multi-backend ZK/MPC compiler
+- [ZoKrates](https://github.com/Zokrates/ZoKrates) ⭐ 1.9k — Rust — high-level ZK language and toolbox
 
 **Security status:** Caution
 CirC research revealed underconstrained circuit bugs as a vulnerability class. The compiler itself is research-grade and not audited for production use.
@@ -1179,8 +1175,8 @@ Published at USENIX Security 2022. Influential in ZK compiler research. ZoKrates
 Reference implementation by Microsoft Research with competitive benchmarks. Core ideas power HyperNova, Jolt, and other production systems.
 
 **Implementations:**
-- [Spartan (Microsoft)](https://github.com/microsoft/Spartan) — Rust — original Spartan implementation
-- [Spartan2 (Microsoft)](https://github.com/microsoft/Spartan2) — Rust — updated Spartan with improved API
+- [Spartan (Microsoft)](https://github.com/microsoft/Spartan) ⭐ 849 — Rust — original Spartan implementation
+- [Spartan2 (Microsoft)](https://github.com/microsoft/Spartan2) ⭐ 129 — Rust — updated Spartan with improved API
 
 **Security status:** Secure
 Transparent; no trusted setup. Provably secure under the discrete logarithm assumption (with Hyrax PCS) or hash-based assumptions (with Brakedown PCS).
@@ -1211,8 +1207,8 @@ CRYPTO 2020. Developed by Microsoft Research (Srinath Setty). Foundational refer
 Marlin is deployed in the Aleo blockchain (mainnet). Leo language compiles to Marlin R1CS.
 
 **Implementations:**
-- [arkworks-marlin](https://github.com/arkworks-rs/marlin) — Rust — Marlin implementation in arkworks
-- [Aleo (snarkVM)](https://github.com/ProvableHQ/snarkVM) — Rust — Marlin-based VM for Aleo blockchain
+- [arkworks-marlin](https://github.com/arkworks-rs/marlin) ⭐ 323 — Rust — Marlin implementation in arkworks
+- [Aleo (snarkVM)](https://github.com/ProvableHQ/snarkVM) ⭐ 1.2k — Rust — Marlin-based VM for Aleo blockchain
 
 **Security status:** Secure
 Universal updatable SRS under 1-of-N trust assumption. Provably secure under the algebraic group model. No known attacks.
@@ -1246,9 +1242,9 @@ EUROCRYPT 2020. Deployed in Aleo. The AHP framework is a standard reference for 
 Deployed in Monero (2018 hard fork), Liquid Network, and Grin/MimbleWimble. Widely used for confidential transaction range proofs.
 
 **Implementations:**
-- [dalek-bulletproofs](https://github.com/dalek-cryptography/bulletproofs) — Rust — Bulletproofs library
-- [secp256k1-zkp](https://github.com/ElementsProject/secp256k1-zkp) — C — Bulletproofs for Liquid Network/Elements
-- [monero (Bulletproofs)](https://github.com/monero-project/monero) — C++ — Monero's Bulletproofs integration
+- [dalek-bulletproofs](https://github.com/dalek-cryptography/bulletproofs) ⭐ 1.1k — Rust — Bulletproofs library
+- [secp256k1-zkp](https://github.com/ElementsProject/secp256k1-zkp) ⭐ 419 — C — Bulletproofs for Liquid Network/Elements
+- [monero (Bulletproofs)](https://github.com/monero-project/monero) ⭐ 10k — C++ — Monero's Bulletproofs integration
 
 **Security status:** Secure
 Secure under the discrete logarithm assumption. No trusted setup. Bulletproofs+ (2020) improves prover efficiency. No known attacks.
@@ -1288,11 +1284,11 @@ IEEE S&P 2018. Deployed in major privacy cryptocurrencies. Endorsed by leading c
 AIR + FRI is the arithmetization powering StarkNet, RISC Zero, SP1, and all production STARK systems.
 
 **Implementations:**
-- [ethSTARK](https://github.com/starkware-libs/ethSTARK) — C++ — StarkWare STARK reference
-- [winterfell](https://github.com/facebook/winterfell) — Rust — Meta/Polygon STARK library
-- [Stwo](https://github.com/starkware-libs/stwo) — Rust — StarkWare's Circle STARK prover
-- [risc0](https://github.com/risc0/risc0) — Rust — RISC Zero STARK prover
-- [ministark](https://github.com/andrewmilson/ministark) — Rust — minimal educational STARK implementation
+- [ethSTARK](https://github.com/starkware-libs/ethSTARK) ⭐ 236 — C++ — StarkWare STARK reference
+- [winterfell](https://github.com/facebook/winterfell) ⭐ 888 — Rust — Meta/Polygon STARK library
+- [Stwo](https://github.com/starkware-libs/stwo) ⭐ 481 — Rust — StarkWare's Circle STARK prover
+- [risc0](https://github.com/risc0/risc0) ⭐ 2.1k — Rust — RISC Zero STARK prover
+- [ministark](https://github.com/andrewmilson/ministark) ⭐ 377 — Rust — minimal educational STARK implementation
 
 **Security status:** Secure
 Transparent and plausibly post-quantum. Security relies on collision-resistant hashing. DEEP-FRI provides strong per-round soundness. No known attacks.
@@ -1326,8 +1322,8 @@ IACR 2018. STARKs are the dominant transparent proof system. Endorsed by StarkWa
 QuickSilver and Wolverine have working implementations with competitive benchmarks. Used in privacy-preserving computation research.
 
 **Implementations:**
-- [EMP-toolkit (VOLE-ZK)](https://github.com/emp-toolkit/emp-zk) — C++ — VOLE-based ZK proof library
-- [swanky (Mac'n'Cheese)](https://github.com/GaloisInc/swanky) — Rust — Galois MPC toolkit including Mac'n'Cheese
+- [EMP-toolkit (VOLE-ZK)](https://github.com/emp-toolkit/emp-zk) ⭐ 106 — C++ — VOLE-based ZK proof library
+- [swanky (Mac'n'Cheese)](https://github.com/GaloisInc/swanky) ⭐ 344 — Rust — Galois MPC toolkit including Mac'n'Cheese
 
 **Security status:** Secure
 Information-theoretically secure MAC-based approach. Amortized O(1) cost per gate with formal security proofs. No known attacks.
@@ -1362,7 +1358,7 @@ Polygon ID and Holonym are in production. zkAML accumulator schemes are academic
 
 **Implementations:**
 - [Polygon ID](https://github.com/0xPolygonID) — Go/JS — privacy-preserving identity framework
-- [Semaphore](https://github.com/semaphore-protocol/semaphore) — TypeScript/Circom — anonymous signaling for group membership
+- [Semaphore](https://github.com/semaphore-protocol/semaphore) ⭐ 1.1k — TypeScript/Circom — anonymous signaling for group membership
 - [Holonym](https://github.com/holonym-foundation) — TypeScript/Circom — ZK identity proofs from government IDs
 
 **Security status:** Caution
@@ -1395,9 +1391,9 @@ Growing regulatory interest (EU eIDAS 2.0, MiCA). Polygon ID is the most deploye
 OpenPassport, anon-aadhaar, and World ID are open-source and actively used. Passport verification circuits are complex (RSA in-circuit) but functional.
 
 **Implementations:**
-- [OpenPassport](https://github.com/zk-passport/openpassport) — TypeScript/Circom — e-passport attribute proofs
-- [anon-aadhaar](https://github.com/privacy-scaling-explorations/anon-aadhaar) — TypeScript/Circom — Aadhaar identity proofs (PSE)
-- [worldcoin](https://github.com/worldcoin/semaphore-rs) — Rust — World ID Semaphore implementation
+- [OpenPassport](https://github.com/zk-passport/openpassport) ⭐ 1.2k — TypeScript/Circom — e-passport attribute proofs
+- [anon-aadhaar](https://github.com/privacy-scaling-explorations/anon-aadhaar) ⭐ 244 — TypeScript/Circom — Aadhaar identity proofs (PSE)
+- [worldcoin](https://github.com/worldcoin/semaphore-rs) ⭐ 187 — Rust — World ID Semaphore implementation
 
 **Security status:** Caution
 ZK proofs are sound, but passport chip authentication has known limitations (cloned chips, expired certificates). Sybil resistance depends on nullifier design.
@@ -1430,8 +1426,7 @@ Growing adoption. World ID has millions of users. PSE (Ethereum Foundation) back
 Primarily academic and pilot deployments. ING's zkrp library is open-source. No dominant production system yet.
 
 **Implementations:**
-- [zkrp (ING)](https://github.com/ing-bank/zkrp) — Go — zero-knowledge range proofs for trade finance
-- [Baseline Protocol](https://github.com/eea-oasis/baseline) — TypeScript — enterprise ZK coordination protocol
+- [Baseline Protocol](https://github.com/eea-oasis/baseline) ⭐ 574 — TypeScript — enterprise ZK coordination protocol
 
 **Security status:** Secure
 Underlying ZK proofs (Bulletproofs, PLONK) are secure. Supply chain attestation security depends on the trust model for certifying authorities.
@@ -1470,9 +1465,9 @@ Academic research with growing enterprise interest. EU Digital Product Passport 
 IVC (Nova) and PCD (Pickles/Mina) are in production. Accumulation schemes (ProtoStar, ProtoGalaxy) are in active research/development.
 
 **Implementations:**
-- [Nova (Microsoft)](https://github.com/microsoft/Nova) — Rust — IVC via folding
-- [Mina/Pickles](https://github.com/MinaProtocol/mina) — OCaml — PCD for constant-size blockchain
-- [sonobe](https://github.com/privacy-scaling-explorations/sonobe) — Rust — modular IVC/folding library
+- [Nova (Microsoft)](https://github.com/microsoft/Nova) ⭐ 837 — Rust — IVC via folding
+- [Mina/Pickles](https://github.com/MinaProtocol/mina) ⭐ 2.1k — OCaml — PCD for constant-size blockchain
+- [sonobe](https://github.com/privacy-scaling-explorations/sonobe) ⭐ 265 — Rust — modular IVC/folding library
 
 **Security status:** Secure
 Each paradigm has formal security proofs. IVC (Nova) under DL assumption. PCD requires cycle-of-curves security. Accumulation under knowledge assumptions.
@@ -1508,9 +1503,9 @@ Foundational taxonomy established by Valiant (2008), Chiesa-Tromer (2010), and B
 Sonobe (2024) provides a practical entry point for folding-based ZK. CycleFold is used in Nexus zkVM. Sangria and Arecibo are research prototypes.
 
 **Implementations:**
-- [sonobe](https://github.com/privacy-scaling-explorations/sonobe) — Rust — modular folding library (Nova, HyperNova, ProtoGalaxy)
-- [arecibo](https://github.com/argumentcomputer/arecibo) — Rust — SuperNova implementation
-- [CycleFold](https://github.com/nexus-xyz/nexus-zkvm) — Rust — CycleFold integrated in Nexus zkVM
+- [sonobe](https://github.com/privacy-scaling-explorations/sonobe) ⭐ 265 — Rust — modular folding library (Nova, HyperNova, ProtoGalaxy)
+- [arecibo](https://github.com/argumentcomputer/arecibo) ⭐ 89 — Rust — SuperNova implementation
+- [CycleFold](https://github.com/nexus-xyz/nexus-zkvm) ⭐ 2.6k — Rust — CycleFold integrated in Nexus zkVM
 
 **Security status:** Secure
 Folding schemes have formal security proofs under DL assumptions. CycleFold's two-curve trick is provably secure on curve cycles (Pallas/Vesta, BN254/Grumpkin).
@@ -1534,7 +1529,7 @@ Active development by PSE (Ethereum Foundation), 0xPARC, and Geometry Research. 
 Reference implementation demonstrates proof generation for circuits with 2^34+ constraints. Not yet widely deployed in production.
 
 **Implementations:**
-- [arkworks-gemini](https://github.com/arkworks-rs/gemini) — Rust — Gemini elastic SNARK implementation
+- [arkworks-gemini](https://github.com/arkworks-rs/gemini) ⭐ 85 — Rust — Gemini elastic SNARK implementation
 
 **Security status:** Secure
 Provably secure; no trusted setup. FFT-free design. Formal proofs at EUROCRYPT 2022. No known attacks.
@@ -1559,8 +1554,8 @@ EUROCRYPT 2022. Important for resource-constrained proving scenarios. Recognized
 Powers zkSync Era mainnet (live since 2023). Processes millions of transactions with STARK proofs wrapped in pairing-based SNARKs.
 
 **Implementations:**
-- [era-boojum](https://github.com/matter-labs/era-boojum) — Rust — Boojum proving system
-- [era-boojum-cuda](https://github.com/matter-labs/era-boojum-cuda) — CUDA/Rust — GPU-accelerated Boojum backend
+- [era-boojum](https://github.com/matter-labs/era-boojum) ⭐ 303 — Rust — Boojum proving system
+- [era-boojum-cuda](https://github.com/matter-labs/era-boojum-cuda) ⭐ 25 — CUDA/Rust — GPU-accelerated Boojum backend
 
 **Security status:** Caution
 STARK backend is secure. Boojum wraps STARKs into pairing-based SNARKs for on-chain verification; the composition is sound but complex. Ongoing audits.
@@ -1586,7 +1581,7 @@ Developed by Matter Labs. Powers one of the largest Ethereum L2s (zkSync Era). O
 Academic publications (2024-2025) with reference implementations. No production deployment yet. First post-quantum folding schemes.
 
 **Implementations:**
-- [latticefold (reference)](https://github.com/NethermindEth/latticefold) — Rust — LatticeFold reference implementation
+- [latticefold (reference)](https://github.com/NethermindEth/latticefold) ⭐ 126 — Rust — LatticeFold reference implementation
 
 **Security status:** Secure
 Secure under Module-SIS (LatticeFold) and standard LWE/SIS (Lova) assumptions. Post-quantum secure. No known attacks.
@@ -1611,8 +1606,8 @@ Published by Dan Boneh and collaborators (2024). First post-quantum folding sche
 Open-source with competitive benchmarks. Powers zkBridge and zkPyTorch. Rapidly developing with CUDA support.
 
 **Implementations:**
-- [Expander](https://github.com/PolyhedraZK/Expander) — Rust — GKR-based proof system with CUDA support
-- [ExpanderCompilerCollection](https://github.com/PolyhedraZK/ExpanderCompilerCollection) — Rust — compiler frontend for Expander
+- [Expander](https://github.com/PolyhedraZK/Expander) ⭐ 145 — Rust — GKR-based proof system with CUDA support
+- [ExpanderCompilerCollection](https://github.com/PolyhedraZK/ExpanderCompilerCollection) ⭐ 42 — Rust — compiler frontend for Expander
 
 **Security status:** Secure
 Based on GKR sumcheck (information-theoretically secure) and expander-code PCS. Transparent; no trusted setup. No known attacks.
@@ -1638,8 +1633,8 @@ Developed by Polyhedra Network. Claims fastest single-machine prover. Growing ad
 Reference implementations with academic benchmarks. Ideas underpin production systems (Expander, Ceno, Plonky3 GKR backend).
 
 **Implementations:**
-- [Virgo](https://github.com/sunblaze-ucb/Virgo) — C++ — transparent GKR-based SNARK
-- [Libra](https://github.com/sunblaze-ucb/Libra) — C++ — optimal-prover GKR SNARK
+- [Virgo](https://github.com/sunblaze-ucb/Virgo) ⭐ 61 — C++ — transparent GKR-based SNARK
+- [Libra](https://github.com/sunblaze-ucb/Libra) ⭐ 55 — C++ — optimal-prover GKR SNARK
 
 **Security status:** Secure
 Virgo is transparent and plausibly post-quantum (hash-based PCS). Libra uses a one-time trusted setup for the PCS. Both are formally proven secure.
@@ -1663,7 +1658,7 @@ Published at CRYPTO 2019 (Libra) and IEEE S&P 2020 (Virgo). Developed by Yupeng 
 Research prototype developed by Scroll and Missouri S&T. Used by Scroll for next-generation proving research.
 
 **Implementations:**
-- [ceno](https://github.com/scroll-tech/ceno) — Rust — GKR-based zkVM (Scroll)
+- [ceno](https://github.com/scroll-tech/ceno) ⭐ 140 — Rust — GKR-based zkVM (Scroll)
 
 **Security status:** Secure
 Based on GKR sumcheck with formal security proofs. Segment-parallel proving preserves soundness. No known attacks.
@@ -1688,7 +1683,7 @@ Published in Journal of Cryptology 2024. Backed by Scroll (major Ethereum L2). D
 Published at CRYPTO 2024 with reference implementation. Not yet integrated into production proof systems.
 
 **Implementations:**
-- [basefold (reference)](https://github.com/hadasz/basefold_implementation) — Rust — BaseFold reference implementation
+No notable open-source implementations available.
 
 **Security status:** Secure
 Provably secure under standard coding-theoretic assumptions. Field-agnostic design removes FFT-friendly field restrictions. No known attacks.
@@ -1712,7 +1707,7 @@ CRYPTO 2024. Addresses a fundamental limitation of FRI (field restriction). Grow
 Reference implementation exists. Enables multilinear proof systems to reuse existing KZG trusted setups.
 
 **Implementations:**
-- [zeromorph](https://github.com/HungryCatsStudio/zeromorph) — Rust — Zeromorph PCS implementation
+No notable open-source implementations available.
 
 **Security status:** Secure
 Provably secure under the same assumptions as KZG (algebraic group model). Adds only n+5 G1 operations for zero-knowledge. No known attacks.
@@ -1737,8 +1732,8 @@ Journal of Cryptology 2024. Bridges univariate KZG and multilinear proof systems
 Deployed in Mina Protocol mainnet since the Berkeley upgrade (2023). Powers the only constant-size blockchain (~22 KB chain proof).
 
 **Implementations:**
-- [Kimchi](https://github.com/o1-labs/proof-systems) — Rust/OCaml — Kimchi proof system (O1 Labs)
-- [Mina](https://github.com/MinaProtocol/mina) — OCaml — Mina Protocol with Pickles PCD framework
+- [Kimchi](https://github.com/o1-labs/proof-systems) ⭐ 458 — Rust/OCaml — Kimchi proof system (O1 Labs)
+- [Mina](https://github.com/MinaProtocol/mina) ⭐ 2.1k — OCaml — Mina Protocol with Pickles PCD framework
 
 **Security status:** Secure
 Based on PLONK with IPA (no trusted setup). Recursive composition via Pickles on Pasta curves is provably secure. No known attacks.
@@ -1762,7 +1757,7 @@ Production-validated since Mina mainnet (2021). Developed by O1 Labs. Endorsed b
 Announced in 2025 with benchmark results (sub-12s for Ethereum L1 blocks). Requires 16x RTX 5090 GPUs. Not yet widely deployed.
 
 **Implementations:**
-- [SP1](https://github.com/succinctlabs/sp1) — Rust — SP1 zkVM (Hypercube builds on SP1 + Plonky3)
+- [SP1](https://github.com/succinctlabs/sp1) ⭐ 1.6k — Rust — SP1 zkVM (Hypercube builds on SP1 + Plonky3)
 
 **Security status:** Secure
 Inherits STARK/FRI security from Plonky3 backend. GPU parallelism does not affect cryptographic security. No known attacks on the proof system.

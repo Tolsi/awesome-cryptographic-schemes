@@ -19,11 +19,11 @@
 Deployed in TLS 1.3, Signal, WireGuard, and all major browsers and VPNs.
 
 **Implementations:**
-- [libsodium](https://github.com/jedisct1/libsodium) — C, X25519 and key exchange primitives
-- [BoringSSL](https://github.com/google/boringssl) — C++, X25519/X448 in TLS
-- [OpenSSL](https://github.com/openssl/openssl) — C, full DH/ECDH/X25519/X448 support
-- [opaque-ke](https://github.com/facebook/opaque-ke) — Rust, OPAQUE implementation
-- [noise-protocol](https://github.com/mcginty/snow) — Rust, Noise framework implementation
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, X25519 and key exchange primitives
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C++, X25519/X448 in TLS
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, full DH/ECDH/X25519/X448 support
+- [opaque-ke](https://github.com/facebook/opaque-ke) ⭐ 386 — Rust, OPAQUE implementation
+- [noise-protocol](https://github.com/mcginty/snow) ⭐ 1.1k — Rust, Noise framework implementation
 
 **Security status:** Secure
 No known practical attacks on X25519, X448, or OPAQUE at recommended parameters.
@@ -63,11 +63,11 @@ X25519 standardized in RFC 7748; ECDH in NIST SP 800-56A; OPAQUE in IETF draft (
 Argon2id is the PHC winner and default in most modern frameworks; OPAQUE is nearing IETF standardization with production implementations.
 
 **Implementations:**
-- [argon2](https://github.com/P-H-C/phc-winner-argon2) — C, reference Argon2 implementation
-- [libsodium](https://github.com/jedisct1/libsodium) — C, Argon2id built-in
-- [bcrypt (OpenBSD)](https://github.com/openbsd/src/blob/master/lib/libc/crypt/bcrypt.c) — C, original bcrypt
-- [opaque-ke](https://github.com/facebook/opaque-ke) — Rust, OPAQUE protocol
-- [scrypt (tarsnap)](https://github.com/Tarsnap/scrypt) — C, reference scrypt
+- [argon2](https://github.com/P-H-C/phc-winner-argon2) ⭐ 5.2k — C, reference Argon2 implementation
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, Argon2id built-in
+- [bcrypt (OpenBSD)](https://github.com/openbsd/src/blob/master/lib/libc/crypt/bcrypt.c) ⭐ 3.7k — C, original bcrypt
+- [opaque-ke](https://github.com/facebook/opaque-ke) ⭐ 386 — Rust, OPAQUE protocol
+- [scrypt (tarsnap)](https://github.com/Tarsnap/scrypt) ⭐ 509 — C, reference scrypt
 
 **Security status:** Secure
 Argon2id and OPAQUE are secure at recommended parameters; bcrypt and scrypt remain safe with adequate cost factors.
@@ -93,11 +93,10 @@ Argon2id is RFC 9106; HKDF is RFC 5869; scrypt is RFC 7914; OPAQUE is an IETF CF
 BIP32/44 is deployed in every major cryptocurrency wallet; billions of dollars secured.
 
 **Implementations:**
-- [bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib) — JavaScript, BIP32/44 HD wallet derivation
-- [python-bip32](https://github.com/darosior/python-bip32) — Python, BIP32 key derivation
-- [rust-bitcoin](https://github.com/rust-bitcoin/rust-bitcoin) — Rust, BIP32 support
-- [go-hdwallet](https://github.com/btcsuite/btcutil/tree/master/hdkeychain) — Go, BIP32 HD key chains
-- [slip10](https://github.com/nicola/slip10) — JavaScript, SLIP-10 key derivation
+- [bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib) ⭐ 6.0k — JavaScript, BIP32/44 HD wallet derivation
+- [python-bip32](https://github.com/darosior/python-bip32) ⭐ 51 — Python, BIP32 key derivation
+- [rust-bitcoin](https://github.com/rust-bitcoin/rust-bitcoin) ⭐ 2.6k — Rust, BIP32 support
+- [go-hdwallet](https://github.com/btcsuite/btcutil/tree/master/hdkeychain) ⭐ 483 — Go, BIP32 HD key chains
 
 **Security status:** Secure
 No known attacks on the HD derivation scheme; hardened derivation prevents child key compromise from revealing parent keys.
@@ -124,11 +123,11 @@ BIP32/44 are Bitcoin Improvement Proposals adopted universally; SLIP-10 is a Sat
 AES-KW is deployed in every major HSM and cloud KMS; envelope encryption is the standard pattern in AWS KMS, GCP CMEK, and Azure Key Vault.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES-KW and AES-KWP support
-- [BoringSSL](https://github.com/google/boringssl) — C++, AES key wrap
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, AES-KW/KWP and SIV
-- [AWS Encryption SDK](https://github.com/aws/aws-encryption-sdk-java) — Java/Python, envelope encryption
-- [Tink](https://github.com/tink-crypto/tink) — Java/Go/C++/Python, key wrapping primitives
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-KW and AES-KWP support
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C++, AES key wrap
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, AES-KW/KWP and SIV
+- [AWS Encryption SDK](https://github.com/aws/aws-encryption-sdk-java) ⭐ 237 — Java/Python, envelope encryption
+- [Tink](https://github.com/tink-crypto/tink) ⭐ 13k — Java/Go/C++/Python, key wrapping primitives
 
 **Security status:** Secure
 AES-KW is NIST-approved (SP 800-38F) with no known practical attacks; AES-SIV provides misuse resistance.
@@ -154,9 +153,7 @@ AES-KW is NIST SP 800-38F and RFC 3394/5649; envelope encryption is an industry-
 Static DH is production, but true NIKE protocols (FHKP, CSIDH) remain academic; CSIDH performance is impractical for most use cases.
 
 **Implementations:**
-- [libcsidh](https://github.com/CSIDH-team/csidh) — C, reference CSIDH implementation
-- [sibc](https://github.com/JJChiDgu662009/sibc) — Python, CSIDH and isogeny-based crypto
-- [OpenSSL](https://github.com/openssl/openssl) — C, static ECDH
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, static ECDH
 
 **Security status:** Caution
 Static DH is secure but lacks forward secrecy; CSIDH security is still actively studied with ongoing cryptanalytic improvements.
@@ -182,8 +179,8 @@ Static DH is standard; CSIDH and formal NIKE constructions are of primarily acad
 Primarily academic; no large-scale production deployments outside IoT research prototypes.
 
 **Implementations:**
-- [RELIC](https://github.com/relic-toolkit/relic) — C, pairing-based crypto toolkit supporting CL-PKE building blocks
-- [Charm](https://github.com/JHUISI/charm) — Python, prototyping framework for pairing-based schemes
+- [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing-based crypto toolkit supporting CL-PKE building blocks
+- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, prototyping framework for pairing-based schemes
 
 **Security status:** Caution
 Pairing-based CL-PKE schemes are provably secure under standard assumptions, but implementations require careful pairing parameter selection; not post-quantum secure.
@@ -209,10 +206,10 @@ Active research area for IoT/sensor networks; no IETF or NIST standardization.
 Certificate Transparency is mandatory for all publicly trusted TLS certificates in Chrome and Safari; billions of certificates logged.
 
 **Implementations:**
-- [Trillian](https://github.com/google/trillian) — Go, Google's verifiable data structure server (CT log backend)
-- [certificate-transparency-go](https://github.com/google/certificate-transparency-go) — Go, CT log tools and libraries
-- [ct-woodpecker](https://github.com/letsencrypt/ct-woodpecker) — Go, CT log monitor by Let's Encrypt
-- [sigstore/rekor](https://github.com/sigstore/rekor) — Go, transparency log inspired by CT
+- [Trillian](https://github.com/google/trillian) ⭐ 3.7k — Go, Google's verifiable data structure server (CT log backend)
+- [certificate-transparency-go](https://github.com/google/certificate-transparency-go) ⭐ 1.1k — Go, CT log tools and libraries
+- [ct-woodpecker](https://github.com/letsencrypt/ct-woodpecker) ⭐ 190 — Go, CT log monitor by Let's Encrypt
+- [sigstore/rekor](https://github.com/sigstore/rekor) ⭐ 1.1k — Go, transparency log inspired by CT
 
 **Security status:** Secure
 CT relies on Merkle trees and digital signatures; no known attacks on the cryptographic components.
@@ -254,11 +251,11 @@ RFC 6962 (CT v1) and RFC 9162 (CT v2); mandatory in Chrome since 2018; all major
 Let's Encrypt has issued 600M+ certificates; ACME is the dominant automated certificate management protocol.
 
 **Implementations:**
-- [certbot](https://github.com/certbot/certbot) — Python, reference ACME client by EFF
-- [acme.sh](https://github.com/acmesh-official/acme.sh) — Shell, pure-shell ACME client
-- [lego](https://github.com/go-acme/lego) — Go, ACME client library and CLI
-- [Caddy](https://github.com/caddyserver/caddy) — Go, web server with built-in ACME
-- [boulder](https://github.com/letsencrypt/boulder) — Go, Let's Encrypt's ACME CA server
+- [certbot](https://github.com/certbot/certbot) ⭐ 32k — Python, reference ACME client by EFF
+- [acme.sh](https://github.com/acmesh-official/acme.sh) ⭐ 46k — Shell, pure-shell ACME client
+- [lego](https://github.com/go-acme/lego) ⭐ 9.4k — Go, ACME client library and CLI
+- [Caddy](https://github.com/caddyserver/caddy) ⭐ 71k — Go, web server with built-in ACME
+- [boulder](https://github.com/letsencrypt/boulder) ⭐ 5.7k — Go, Let's Encrypt's ACME CA server
 
 **Security status:** Secure
 RFC 8555 with nonce replay prevention and account key binding; no known cryptographic vulnerabilities.
@@ -331,9 +328,9 @@ JOSE/JWT is the foundation of OAuth 2.0, OIDC, and ACME; used by every major clo
 **Implementations:**
 - [jose4j](https://bitbucket.org/b_c/jose4j) — Java, full JOSE implementation
 - [nimbus-jose-jwt](https://connect2id.com/products/nimbus-jose-jwt) — Java, comprehensive JOSE/JWT library
-- [go-jose](https://github.com/go-jose/go-jose) — Go, JOSE implementation (formerly Square)
-- [python-jose](https://github.com/mpdavis/python-jose) — Python, JWS/JWE/JWT
-- [jose (Node.js)](https://github.com/panva/jose) — JavaScript/TypeScript, universal JOSE implementation
+- [go-jose](https://github.com/go-jose/go-jose) ⭐ 492 — Go, JOSE implementation (formerly Square)
+- [python-jose](https://github.com/mpdavis/python-jose) ⭐ 1.7k — Python, JWS/JWE/JWT
+- [jose (Node.js)](https://github.com/panva/jose) ⭐ 7.5k — JavaScript/TypeScript, universal JOSE implementation
 
 **Security status:** Caution
 Cryptographically sound when using recommended algorithms (ES256, EdDSA), but `alg:none`, algorithm confusion, and JWK injection attacks are common implementation pitfalls.
@@ -360,8 +357,8 @@ IETF RFCs 7515-7519; universally adopted in web authentication, OAuth 2.0, and O
 Deployed at scale by WhatsApp (SEEMless), Signal, and Apple iMessage for key verification.
 
 **Implementations:**
-- [google/keytransparency](https://github.com/google/keytransparency) — Go, Google's open-source key transparency server
-- [facebook/akd](https://github.com/facebook/akd) — Rust, Auditable Key Directory (WhatsApp backend)
+- [google/keytransparency](https://github.com/google/keytransparency) ⭐ 1.6k — Go, Google's open-source key transparency server
+- [facebook/akd](https://github.com/facebook/akd) ⭐ 314 — Rust, Auditable Key Directory (WhatsApp backend)
 
 **Security status:** Secure
 VRF-based sparse Merkle trees with append-only consistency proofs; no known attacks on the cryptographic primitives.
@@ -388,9 +385,9 @@ Google, Meta, Signal, and Apple have independent deployments; IETF Key Transpare
 Ethereum KZG ceremony (141k participants) is used in production for EIP-4844 proto-danksharding; Zcash Sapling ceremony is live.
 
 **Implementations:**
-- [ethereum/kzg-ceremony](https://github.com/ethereum/kzg-ceremony) — TypeScript/Rust, Ethereum KZG trusted setup
-- [zcash/librustzcash](https://github.com/zcash/librustzcash) — Rust, Powers of Tau for Zcash Sapling
-- [arkworks-rs/poly-commit](https://github.com/arkworks-rs/poly-commit) — Rust, KZG polynomial commitment with SRS support
+- [ethereum/kzg-ceremony](https://github.com/ethereum/kzg-ceremony) ⭐ 829 — TypeScript/Rust, Ethereum KZG trusted setup
+- [zcash/librustzcash](https://github.com/zcash/librustzcash) ⭐ 387 — Rust, Powers of Tau for Zcash Sapling
+- [arkworks-rs/poly-commit](https://github.com/arkworks-rs/poly-commit) ⭐ 424 — Rust, KZG polynomial commitment with SRS support
 
 **Security status:** Secure
 Security holds as long as at least one ceremony participant was honest and destroyed their toxic waste; no known breaks.
@@ -416,9 +413,7 @@ Ethereum and Zcash ceremonies are community-driven with public participation; KZ
 Deployed by Virgil Security in their PHE service; limited adoption beyond that.
 
 **Implementations:**
-- [virgil-phe-go](https://github.com/VirgilSecurity/virgil-phe-go) — Go, Virgil Security PHE implementation
-- [virgil-phe-php](https://github.com/VirgilSecurity/virgil-phe-php) — PHP, PHE client SDK
-- [pythia](https://github.com/nickcole/pythia) — Python, Pythia PRF reference
+- [virgil-phe-go](https://github.com/VirgilSecurity/virgil-phe-go) ⭐ 16 — Go, Virgil Security PHE implementation
 
 **Security status:** Secure
 Based on OPRF with standard elliptic-curve assumptions; no known practical attacks at recommended parameters.
@@ -462,9 +457,8 @@ Recovery: 2 shares from Group 1 + Group 2's share
 Deployed on Trezor hardware wallets (Model T, Safe 3, Safe 5); limited support in other wallet ecosystems.
 
 **Implementations:**
-- [python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) — Python, SatoshiLabs SLIP-39 reference implementation
-- [trezor-firmware](https://github.com/trezor/trezor-firmware) — C/Python, SLIP-39 in Trezor firmware
-- [slip39-js](https://github.com/nicola/slip39-js) — JavaScript, SLIP-39 library
+- [python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) ⭐ 198 — Python, SatoshiLabs SLIP-39 reference implementation
+- [trezor-firmware](https://github.com/trezor/trezor-firmware) ⭐ 1.7k — C/Python, SLIP-39 in Trezor firmware
 
 **Security status:** Secure
 Information-theoretic security from Shamir SSS; passphrase protection via PBKDF2; no known attacks.
@@ -512,9 +506,9 @@ where K = KDF(g^xy). Bob's certificate and signature arrive encrypted; Alice's i
 SIGMA is the cryptographic core of IKEv2 and conceptual ancestor of TLS 1.3; deployed in every IPsec VPN and TLS connection.
 
 **Implementations:**
-- [strongSwan](https://github.com/strongswan/strongswan) — C, IKEv2 implementation using SIGMA-I
-- [OpenSSL](https://github.com/openssl/openssl) — C, TLS 1.3 handshake (SIGMA-inspired)
-- [isakmpd (OpenBSD)](https://github.com/openbsd/src/tree/master/sbin/isakmpd) — C, IKEv1 SIGMA-based auth
+- [strongSwan](https://github.com/strongswan/strongswan) ⭐ 2.8k — C, IKEv2 implementation using SIGMA-I
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, TLS 1.3 handshake (SIGMA-inspired)
+- [isakmpd (OpenBSD)](https://github.com/openbsd/src/tree/master/sbin/isakmpd) ⭐ 3.7k — C, IKEv1 SIGMA-based auth
 
 **Security status:** Secure
 Provably secure in the BR and UC models; no known attacks on the construction.
@@ -572,9 +566,9 @@ DH1 + DH2 give mutual authentication; DH3 gives forward secrecy on the SPK rotat
 X3DH is the session initiation protocol for Signal, WhatsApp, and Facebook Messenger; billions of users.
 
 **Implementations:**
-- [libsignal](https://github.com/signalapp/libsignal) — Rust/Java/Swift, Signal Protocol including X3DH
-- [libsignal-protocol-java](https://github.com/signalapp/libsignal-protocol-java) — Java, Signal X3DH + Double Ratchet
-- [vodozemac](https://github.com/matrix-org/vodozemac) — Rust, Matrix Olm/Megolm (X3DH-inspired)
+- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift, Signal Protocol including X3DH
+- [libsignal-protocol-java](https://github.com/signalapp/libsignal-protocol-java) ⭐ 1.9k — Java, Signal X3DH + Double Ratchet
+- [vodozemac](https://github.com/matrix-org/vodozemac) ⭐ 347 — Rust, Matrix Olm/Megolm (X3DH-inspired)
 
 **Security status:** Secure
 Provably secure under DDH; no known practical attacks; provides forward secrecy and deniability.
@@ -634,11 +628,10 @@ Noise, designed by Trevor Perrin (2016), defines a small algebra of handshake *p
 Deployed in WireGuard, Lightning Network, WhatsApp media transport, and many other systems.
 
 **Implementations:**
-- [snow](https://github.com/mcginty/snow) — Rust, Noise Protocol Framework implementation
-- [noise-java](https://github.com/rweather/noise-java) — Java, Noise protocol library
-- [NoiseSocket](https://github.com/pq-crypto/noisesocket) — Go, length-prefixed Noise over TCP
-- [wireguard-go](https://github.com/WireGuard/wireguard-go) — Go, Noise_IKpsk2 in WireGuard
-- [noise-c](https://github.com/rweather/noise-c) — C, portable Noise implementation
+- [snow](https://github.com/mcginty/snow) ⭐ 1.1k — Rust, Noise Protocol Framework implementation
+- [noise-java](https://github.com/rweather/noise-java) ⭐ 143 — Java, Noise protocol library
+- [wireguard-go](https://github.com/WireGuard/wireguard-go) ⭐ 4.1k — Go, Noise_IKpsk2 in WireGuard
+- [noise-c](https://github.com/rweather/noise-c) ⭐ 364 — C, portable Noise implementation
 
 **Security status:** Secure
 Formally verified in ProVerif and Tamarin; no known attacks on the framework at recommended parameters.
@@ -703,8 +696,7 @@ Mandatory in all Wi-Fi 6/6E certified devices; deployed in billions of consumer 
 
 **Implementations:**
 - [hostapd](https://w1.fi/cgit/hostap/tree/src/common/sae.c) — C, SAE/Dragonfly in hostapd/wpa_supplicant
-- [iwd (Intel)](https://github.com/nicman23/iwd) — C, SAE support in Intel Wireless Daemon
-- [OpenSSL](https://github.com/openssl/openssl) — C, EAP-pwd/Dragonfly support
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, EAP-pwd/Dragonfly support
 
 **Security status:** Caution
 Dragonfly is secure against offline dictionary attacks but side-channel attacks (Dragonblood, 2019) demonstrated timing leaks in hash-to-curve; mitigations applied in updated implementations.
@@ -767,10 +759,10 @@ Response: certStatus, thisUpdate, nextUpdate, signature
 OCSP and CRLs are deployed across the entire WebPKI; every browser implements some form of revocation checking.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, OCSP client/responder and CRL support
-- [cfssl](https://github.com/cloudflare/cfssl) — Go, Cloudflare's PKI toolkit with OCSP responder
-- [Boulder](https://github.com/letsencrypt/boulder) — Go, Let's Encrypt CA with OCSP responder
-- [crlite](https://github.com/mozilla/crlite) — Rust/Python, Mozilla's CRLite filter generation
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, OCSP client/responder and CRL support
+- [cfssl](https://github.com/cloudflare/cfssl) ⭐ 9.4k — Go, Cloudflare's PKI toolkit with OCSP responder
+- [Boulder](https://github.com/letsencrypt/boulder) ⭐ 5.7k — Go, Let's Encrypt CA with OCSP responder
+- [crlite](https://github.com/mozilla/crlite) ⭐ 150 — Rust/Python, Mozilla's CRLite filter generation
 
 **Security status:** Caution
 OCSP soft-fail in most browsers means a network attacker can suppress revocation responses; OCSP Must-Staple and CRLite mitigate this.
@@ -809,9 +801,9 @@ where s is a hash of the password. Both sides must then confirm K with a key-con
 Deployed in Firefox Sync (early versions), Google Nest/Thread IoT devices; available in major crypto libraries.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, J-PAKE support (contrib)
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, J-PAKE implementation
-- [mbed TLS](https://github.com/Mbed-TLS/mbedtls) — C, EC-J-PAKE for IoT
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, J-PAKE support (contrib)
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, J-PAKE implementation
+- [mbed TLS](https://github.com/Mbed-TLS/mbedtls) ⭐ 6.6k — C, EC-J-PAKE for IoT
 
 **Security status:** Secure
 Provably secure under DDH assumption (RFC 8236); no known practical attacks.
@@ -857,8 +849,8 @@ Key confirmation: optional MAC exchange
 Superseded by SPAKE2 and CPace in new designs; retained in IEEE P1363.2 and ISO/IEC 11770-4 for legacy interoperability.
 
 **Implementations:**
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, SPEKE variants
-- [OpenSSL (contrib)](https://github.com/openssl/openssl) — C, experimental SPEKE support
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, SPEKE variants
+- [OpenSSL (contrib)](https://github.com/openssl/openssl) ⭐ 29k — C, experimental SPEKE support
 
 **Security status:** Caution
 2014 impersonation and KCI attacks identified; mitigations require session IDs and explicit key confirmation; informal security proof only until 2015.
@@ -912,8 +904,8 @@ where ē(R) = (x_R mod 2^⌈log₂n/2⌉) + 2^⌈log₂n/2⌉ (the "implicit" co
 NIST-approved in SP 800-56A Rev 3; available in SSH (RFC 5656); removed from NSA Suite B due to patent concerns.
 
 **Implementations:**
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, ECMQV and HMQV implementations
-- [OpenSSL](https://github.com/openssl/openssl) — C, ECMQV support via EC key agreement
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, ECMQV and HMQV implementations
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, ECMQV support via EC key agreement
 - [libgcrypt](https://dev.gnupg.org/source/libgcrypt.git/) — C, ECMQV primitives
 
 **Security status:** Caution
@@ -971,11 +963,11 @@ The "tls13 " prefix domain-separates TLS 1.3 outputs from any other HKDF use of 
 Deployed in every major TLS 1.3 implementation; handles the majority of HTTPS traffic globally.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, full TLS 1.3 key schedule
-- [BoringSSL](https://github.com/google/boringssl) — C++, TLS 1.3 key schedule (Chrome, Android)
-- [rustls](https://github.com/rustls/rustls) — Rust, TLS 1.3 key schedule
-- [s2n-tls](https://github.com/aws/s2n-tls) — C, AWS TLS 1.3 implementation
-- [Go crypto/tls](https://github.com/golang/go/tree/master/src/crypto/tls) — Go, standard library TLS 1.3
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, full TLS 1.3 key schedule
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C++, TLS 1.3 key schedule (Chrome, Android)
+- [rustls](https://github.com/rustls/rustls) ⭐ 7.3k — Rust, TLS 1.3 key schedule
+- [s2n-tls](https://github.com/aws/s2n-tls) ⭐ 4.7k — C, AWS TLS 1.3 implementation
+- [Go crypto/tls](https://github.com/golang/go/tree/master/src/crypto/tls) ⭐ 133k — Go, standard library TLS 1.3
 
 **Security status:** Secure
 Full security proof in the multi-stage key exchange model; no known attacks on the key schedule construction.
@@ -1019,10 +1011,9 @@ The Logjam attack (2015) demonstrated that 512-bit and 768-bit DH groups used in
 Registered as IANA TLS NamedGroup codepoints; supported in all major TLS libraries for legacy DHE use.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, RFC 7919 named FFDHE groups
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RFC 7919 named FFDHE groups
 - [GnuTLS](https://gitlab.com/gnutls/gnutls) — C, FFDHE group support
-- [NSS](https://github.com/nicman23/nss) — C, Mozilla's TLS library with FFDHE
-- [BoringSSL](https://github.com/google/boringssl) — C++, FFDHE support in TLS
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C++, FFDHE support in TLS
 
 **Security status:** Secure
 Nothing-up-my-sleeve primes derived from digits of e; 2048-bit minimum provides 112-bit security; eliminates Logjam-style weak-group attacks.
@@ -1082,10 +1073,10 @@ The handshake chaining state h absorbs every message field; the final HKDF outpu
 Merged into Linux kernel 5.6 (2020); available on Windows, macOS, iOS, Android; widely deployed in commercial VPN services.
 
 **Implementations:**
-- [wireguard-linux](https://github.com/WireGuard/wireguard-linux) — C, Linux kernel module
-- [wireguard-go](https://github.com/WireGuard/wireguard-go) — Go, userspace WireGuard implementation
-- [wireguard-windows](https://github.com/WireGuard/wireguard-windows) — Go/C, Windows WireGuard client
-- [boringtun](https://github.com/cloudflare/boringtun) — Rust, Cloudflare's userspace WireGuard
+- [wireguard-linux](https://github.com/WireGuard/wireguard-linux) ⭐ 1.8k — C, Linux kernel module
+- [wireguard-go](https://github.com/WireGuard/wireguard-go) ⭐ 4.1k — Go, userspace WireGuard implementation
+- [wireguard-windows](https://github.com/WireGuard/wireguard-windows) ⭐ 2.4k — Go/C, Windows WireGuard client
+- [boringtun](https://github.com/cloudflare/boringtun) ⭐ 7.0k — Rust, Cloudflare's userspace WireGuard
 
 **Security status:** Secure
 Formally verified in ProVerif and Tamarin; fixed cipher suite eliminates downgrade attacks; no known practical vulnerabilities.
@@ -1159,11 +1150,11 @@ TBSCertificate ::= SEQUENCE {
 X.509 v3 is the foundation of all TLS, S/MIME, code signing, and PKI infrastructure globally.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, X.509 parsing, validation, and path building
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, X.509 parsing, validation, and path building
 - [GnuTLS](https://gitlab.com/gnutls/gnutls) — C, X.509 certificate handling
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, comprehensive X.509 support
-- [x509-parser (Rust)](https://github.com/rusticata/x509-parser) — Rust, X.509 certificate parsing
-- [cfssl](https://github.com/cloudflare/cfssl) — Go, Cloudflare PKI toolkit
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, comprehensive X.509 support
+- [x509-parser (Rust)](https://github.com/rusticata/x509-parser) ⭐ 265 — Rust, X.509 certificate parsing
+- [cfssl](https://github.com/cloudflare/cfssl) ⭐ 9.4k — Go, Cloudflare PKI toolkit
 
 **Security status:** Caution
 The format itself is secure, but complex ASN.1 parsing has historically led to implementation vulnerabilities; path validation edge cases require careful implementation.
@@ -1215,8 +1206,8 @@ Each signature covers both DH values in order, binding the key exchange to the a
 Superseded by SIGMA in IKEv2 and TLS 1.3; historically used in SSH-1 and IKEv1.
 
 **Implementations:**
-- [OpenSSH (legacy)](https://github.com/openssh/openssh-portable) — C, STS-derived authentication in SSH-1 (deprecated)
-- [strongSwan](https://github.com/strongswan/strongswan) — C, IKEv1 main mode (STS-inspired)
+- [OpenSSH (legacy)](https://github.com/openssh/openssh-portable) ⭐ 3.8k — C, STS-derived authentication in SSH-1 (deprecated)
+- [strongSwan](https://github.com/strongswan/strongswan) ⭐ 2.8k — C, IKEv1 main mode (STS-inspired)
 
 **Security status:** Superseded
 Identity misbinding attack identified by Krawczyk (2003); fixed by SIGMA's MAC_K(identity) addition.
@@ -1313,10 +1304,10 @@ SK_e* = encryption, SK_a* = integrity (MAC), SK_d = child SA derivation, SK_p* =
 IKEv2 is deployed in every enterprise IPsec VPN; IKEv1 is legacy but still operational in older equipment.
 
 **Implementations:**
-- [strongSwan](https://github.com/strongswan/strongswan) — C, full IKEv1/IKEv2 implementation
-- [Libreswan](https://github.com/libreswan/libreswan) — C, IKEv1/IKEv2 for Linux
-- [isakmpd (OpenBSD)](https://github.com/openbsd/src/tree/master/sbin/isakmpd) — C, IKEv1
-- [charon (strongSwan)](https://github.com/strongswan/strongswan/tree/master/src/libcharon) — C, modern IKEv2 daemon
+- [strongSwan](https://github.com/strongswan/strongswan) ⭐ 2.8k — C, full IKEv1/IKEv2 implementation
+- [Libreswan](https://github.com/libreswan/libreswan) ⭐ 935 — C, IKEv1/IKEv2 for Linux
+- [isakmpd (OpenBSD)](https://github.com/openbsd/src/tree/master/sbin/isakmpd) ⭐ 3.7k — C, IKEv1
+- [charon (strongSwan)](https://github.com/strongswan/strongswan/tree/master/src/libcharon) ⭐ 2.8k — C, modern IKEv2 daemon
 
 **Security status:** Secure
 IKEv2 uses SIGMA-I construction with full security proof; IKEv1 Aggressive Mode PSK is vulnerable to offline dictionary attacks.
@@ -1385,9 +1376,9 @@ Each SCEP message is a CMS SignedData wrapping a CMS EnvelopedData (for requests
 Deployed in Cisco IOS, Microsoft NDES, Apple MDM, and strongSwan for network device certificate enrollment.
 
 **Implementations:**
-- [sscep](https://github.com/certnanny/sscep) — C, open-source SCEP client
-- [micromdm/scep](https://github.com/micromdm/scep) — Go, SCEP server and client library
-- [jscep](https://github.com/jscep/jscep) — Java, SCEP client library
+- [sscep](https://github.com/certnanny/sscep) ⭐ 196 — C, open-source SCEP client
+- [micromdm/scep](https://github.com/micromdm/scep) ⭐ 373 — Go, SCEP server and client library
+- [jscep](https://github.com/jscep/jscep) ⭐ 130 — Java, SCEP client library
 
 **Security status:** Caution
 Challenge passwords must be protected; early deployments used plain HTTP (now RFC 8894 mandates TLS); no automated renewal.
@@ -1451,9 +1442,9 @@ before expiry, enabling seamless rotation.
 Adopted in industrial IoT, automotive (AUTOSAR), and enterprise PKI; supported by Cisco, Microsoft, and DigiCert.
 
 **Implementations:**
-- [libest](https://github.com/cisco/libest) — C, Cisco's EST client/server library
-- [est (Go)](https://github.com/globalsign/est) — Go, GlobalSign EST client/server
-- [EJBCA](https://github.com/Keyfactor/ejbca-ce) — Java, open-source CA with EST support
+- [libest](https://github.com/cisco/libest) ⭐ 106 — C, Cisco's EST client/server library
+- [est (Go)](https://github.com/globalsign/est) ⭐ 65 — Go, GlobalSign EST client/server
+- [EJBCA](https://github.com/Keyfactor/ejbca-ce) ⭐ 896 — Java, open-source CA with EST support
 
 **Security status:** Secure
 Runs over TLS with mutual authentication; automatic re-enrollment eliminates manual certificate handling risks.
@@ -1530,9 +1521,8 @@ Proof-of-possession (POP) is cryptographic: for signing keys, the CSR itself is 
 Deployed in high-assurance government PKI, automotive (Siemens, BMW V2X), and industrial control systems.
 
 **Implementations:**
-- [OpenSSL 3.x (openssl-cmp)](https://github.com/openssl/openssl) — C, CMP client built into OpenSSL 3.x
-- [EJBCA](https://github.com/Keyfactor/ejbca-ce) — Java, open-source CA with full CMP support
-- [cryptlib](https://github.com/nicman23/cryptlib) — C, CMP implementation by Peter Gutmann
+- [OpenSSL 3.x (openssl-cmp)](https://github.com/openssl/openssl) ⭐ 29k — C, CMP client built into OpenSSL 3.x
+- [EJBCA](https://github.com/Keyfactor/ejbca-ce) ⭐ 896 — Java, open-source CA with full CMP support
 
 **Security status:** Secure
 Supports signature-based and MAC-based protection; proof-of-possession for all key types; comprehensive lifecycle management.
@@ -1613,10 +1603,9 @@ openssl pkcs12 -in bundle.p12 -nodes -out combined.pem
 Universal interchange format supported by every OS, browser, and TLS server; the standard for key+certificate bundling.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, PKCS#12 creation and parsing
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, comprehensive PKCS#12 support
-- [NSS](https://github.com/nicman23/nss) — C, Mozilla's PKCS#12 handling
-- [Go x/crypto/pkcs12](https://github.com/golang/crypto) — Go, PKCS#12 parsing
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, PKCS#12 creation and parsing
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, comprehensive PKCS#12 support
+- [Go x/crypto/pkcs12](https://github.com/golang/crypto) ⭐ 3.3k — Go, PKCS#12 parsing
 
 **Security status:** Caution
 Legacy PKCS#12-KDF and RC2/3DES encryption are weak; RFC 9579 mandates PBES2 with PBKDF2-SHA256 + AES-256; use long random passwords.
@@ -1682,11 +1671,11 @@ dk = hashlib.pbkdf2_hmac('sha256', b'password', salt, iterations=600_000, dklen=
 PBKDF2 is deployed in WPA2-PSK, iOS Data Protection, PKCS#12/PBES2, Django, Spring, and FIPS 140-3 environments globally.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, PBKDF2 with HMAC-SHA-256/512
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, PBKDF2 with HMAC-SHA-256/512
 - [Python hashlib](https://docs.python.org/3/library/hashlib.html) — Python, built-in `pbkdf2_hmac`
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, PBKDF2 implementation
-- [Go x/crypto/pbkdf2](https://github.com/golang/crypto) — Go, PBKDF2 package
-- [libsodium](https://github.com/jedisct1/libsodium) — C, PBKDF2 support (Argon2id preferred)
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, PBKDF2 implementation
+- [Go x/crypto/pbkdf2](https://github.com/golang/crypto) ⭐ 3.3k — Go, PBKDF2 package
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, PBKDF2 support (Argon2id preferred)
 
 **Security status:** Caution
 Secure at high iteration counts (600k+) but not memory-hard; vulnerable to GPU/ASIC parallelization; prefer Argon2id for new designs.
@@ -1747,11 +1736,11 @@ All four functions deliberately introduce work to slow brute-force attacks, but 
 All four KDFs are deployed at scale; Argon2id is the PHC winner and modern default; PBKDF2 dominates FIPS environments; bcrypt is ubiquitous in web frameworks.
 
 **Implementations:**
-- [argon2](https://github.com/P-H-C/phc-winner-argon2) — C, reference Argon2 implementation
-- [libsodium](https://github.com/jedisct1/libsodium) — C, Argon2id built-in
-- [bcrypt (OpenBSD)](https://github.com/openbsd/src/blob/master/lib/libc/crypt/bcrypt.c) — C, original bcrypt
-- [scrypt (tarsnap)](https://github.com/Tarsnap/scrypt) — C, reference scrypt
-- [OpenSSL](https://github.com/openssl/openssl) — C, PBKDF2 with HMAC-SHA-256/512
+- [argon2](https://github.com/P-H-C/phc-winner-argon2) ⭐ 5.2k — C, reference Argon2 implementation
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, Argon2id built-in
+- [bcrypt (OpenBSD)](https://github.com/openbsd/src/blob/master/lib/libc/crypt/bcrypt.c) ⭐ 3.7k — C, original bcrypt
+- [scrypt (tarsnap)](https://github.com/Tarsnap/scrypt) ⭐ 509 — C, reference scrypt
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, PBKDF2 with HMAC-SHA-256/512
 
 **Security status:** Secure
 Argon2id is the strongest general-purpose password KDF; all four are secure at OWASP-recommended parameters; PBKDF2 lacks memory-hardness.
@@ -1842,11 +1831,11 @@ Authorization servers publish public keys at `/.well-known/jwks.json`; resource 
 OAuth 2.0 and OpenID Connect are deployed by every major cloud provider, identity platform, and web application globally.
 
 **Implementations:**
-- [IdentityServer](https://github.com/DuendeSoftware/IdentityServer) — C#, OpenID Connect and OAuth 2.0 framework
-- [Keycloak](https://github.com/keycloak/keycloak) — Java, open-source identity and access management with OAuth 2.0/OIDC
-- [node-oidc-provider](https://github.com/panva/node-oidc-provider) — JavaScript, certified OpenID Connect provider
-- [authlib](https://github.com/lepture/authlib) — Python, OAuth 2.0 / OIDC client and server
-- [fosite](https://github.com/ory/fosite) — Go, extensible OAuth 2.0 / OIDC SDK
+- [IdentityServer](https://github.com/DuendeSoftware/IdentityServer) ⭐ 1.6k — C#, OpenID Connect and OAuth 2.0 framework
+- [Keycloak](https://github.com/keycloak/keycloak) ⭐ 33k — Java, open-source identity and access management with OAuth 2.0/OIDC
+- [node-oidc-provider](https://github.com/panva/node-oidc-provider) ⭐ 3.7k — JavaScript, certified OpenID Connect provider
+- [authlib](https://github.com/lepture/authlib) ⭐ 5.3k — Python, OAuth 2.0 / OIDC client and server
+- [fosite](https://github.com/ory/fosite) ⭐ 2.5k — Go, extensible OAuth 2.0 / OIDC SDK
 
 **Security status:** Caution
 Cryptographically sound when using PKCE, DPoP, and recommended JWT algorithms; bearer tokens without sender-constraining remain vulnerable to theft and replay.
@@ -1917,11 +1906,11 @@ Signal's PQXDH (2023) replaces X3DH's initial DH with a hybrid: X25519 + Kyber-1
 X25519Kyber768 deployed in Chrome 116+ and Cloudflare; Signal uses PQXDH with Kyber-1024 in production.
 
 **Implementations:**
-- [BoringSSL](https://github.com/google/boringssl) — C++, X25519Kyber768 hybrid in TLS 1.3
-- [AWS-LC](https://github.com/aws/aws-lc) — C, hybrid KEM support for TLS
-- [rustls](https://github.com/rustls/rustls) — Rust, hybrid key exchange support
-- [libsignal](https://github.com/signalapp/libsignal) — Rust/Java/Swift, PQXDH with Kyber-1024
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, ML-KEM and hybrid KEM implementations
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C++, X25519Kyber768 hybrid in TLS 1.3
+- [AWS-LC](https://github.com/aws/aws-lc) ⭐ 731 — C, hybrid KEM support for TLS
+- [rustls](https://github.com/rustls/rustls) ⭐ 7.3k — Rust, hybrid key exchange support
+- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift, PQXDH with Kyber-1024
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-KEM and hybrid KEM implementations
 
 **Security status:** Secure
 Hybrid construction ensures security if either classical or PQ component holds; no known attacks on deployed combinations.
@@ -1986,8 +1975,8 @@ CT (see [Certificate Transparency (CT)](#certificate-transparency-ct)) is an app
 Deployed at scale by WhatsApp (SEEMless), Apple iMessage, and Signal for key verification of billions of users.
 
 **Implementations:**
-- [facebook/akd](https://github.com/facebook/akd) — Rust, Auditable Key Directory (WhatsApp backend)
-- [google/keytransparency](https://github.com/google/keytransparency) — Go, Google's key transparency server
+- [facebook/akd](https://github.com/facebook/akd) ⭐ 314 — Rust, Auditable Key Directory (WhatsApp backend)
+- [google/keytransparency](https://github.com/google/keytransparency) ⭐ 1.6k — Go, Google's key transparency server
 
 **Security status:** Secure
 VRF-based sparse Merkle trees with append-only consistency proofs; no known attacks on the cryptographic primitives.
@@ -2045,9 +2034,8 @@ Shared secret:   Z = h · cofactor · d_e · (Q_s + ē(Q_s) · d_s)
 Deployed in CMS/S/MIME key agreement (RFC 5753) and NIST-approved key establishment in federal systems.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, one-pass ECDH for CMS EnvelopedData
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, SP 800-56A key agreement schemes
-- [NSS](https://github.com/nicman23/nss) — C, CMS ECDH key agreement
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, one-pass ECDH for CMS EnvelopedData
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, SP 800-56A key agreement schemes
 
 **Security status:** Caution
 Secure for its intended use cases but provides only responder-side authentication; no forward secrecy from the initiator's side.
@@ -2099,7 +2087,7 @@ The MTI family separates known-key security (past sessions remain secret after l
 Historically important but not directly deployed; MTI analysis influenced MQV, HMQV, and SIGMA which are the deployed descendants.
 
 **Implementations:**
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, MQV/HMQV implementations (MTI descendants)
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, MQV/HMQV implementations (MTI descendants)
 - No standalone MTI implementations in production use
 
 **Security status:** Superseded
@@ -2153,7 +2141,7 @@ The original PAKE; superseded by SPAKE2, CPace, and OPAQUE in all new designs du
 
 **Implementations:**
 - No maintained standalone EKE implementations; the protocol is studied via academic prototypes
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, implements modern PAKE descendants (SPAKE2)
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, implements modern PAKE descendants (SPAKE2)
 
 **Security status:** Superseded
 Subtle issues in the password-encryption step (Boyko et al., 1999); RSA-EKE leaks via Jacobi symbol; replaced by provably secure PAKEs.
@@ -2219,8 +2207,7 @@ All parties compute the same key K, which is the product of all adjacent DH pair
 BD and TGDH are foundational but largely superseded by MLS (RFC 9420) for production group key agreement.
 
 **Implementations:**
-- [openmls](https://github.com/openmls/openmls) — Rust, MLS group key agreement (modern successor)
-- [mls-rs](https://github.com/nicman23/mls-rs) — Rust, MLS protocol library
+- [openmls](https://github.com/openmls/openmls) ⭐ 905 — Rust, MLS group key agreement (modern successor)
 - No maintained standalone BD implementations; academic prototypes only
 
 **Security status:** Secure
@@ -2274,9 +2261,8 @@ ISO/IEC 11770-3 mechanisms overlap with NIST SP 800-56A schemes, but use slightl
 ISO/IEC 11770 is the normative reference in Common Criteria evaluations, BSI, ANSSI, and government procurement standards worldwide.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, implements mechanisms covered by ISO/IEC 11770-3 (ECDH, ECMQV)
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, key agreement schemes aligned with ISO/IEC 11770-3
-- [cryptlib](https://github.com/nicman23/cryptlib) — C, ISO-referenced key establishment mechanisms
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, implements mechanisms covered by ISO/IEC 11770-3 (ECDH, ECMQV)
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, key agreement schemes aligned with ISO/IEC 11770-3
 
 **Security status:** Secure
 Normative standard covering well-analyzed mechanisms (ECDH, ECMQV, PAKE); security depends on correct parameter selection per each part.
@@ -2342,9 +2328,9 @@ NIST SP 800-227 (Initial Public Draft, 2024) endorses the dual-PRF approach: the
 X-Wing and dual-PRF combiners are deployed in Chrome and BoringSSL hybrid KEMs; formal combiner theory is mature but standardization is in progress.
 
 **Implementations:**
-- [BoringSSL](https://github.com/google/boringssl) — C++, X25519Kyber768 with dual-PRF combiner
-- [AWS-LC](https://github.com/aws/aws-lc) — C, hybrid KEM combiner implementations
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, hybrid KEM support with configurable combiners
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C++, X25519Kyber768 with dual-PRF combiner
+- [AWS-LC](https://github.com/aws/aws-lc) ⭐ 731 — C, hybrid KEM combiner implementations
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, hybrid KEM support with configurable combiners
 
 **Security status:** Secure
 Dual-PRF combiner is provably IND-CCA2 if either component KEM is IND-CCA2; X-Wing has a tight security proof.
@@ -2413,9 +2399,9 @@ This "healing" step means that after a state compromise, once both parties excha
 Deployed in Signal, WhatsApp, Facebook Messenger, and Google Messages; billions of users.
 
 **Implementations:**
-- [libsignal](https://github.com/signalapp/libsignal) — Rust/Java/Swift, Signal Protocol Double Ratchet
-- [libsignal-protocol-java](https://github.com/signalapp/libsignal-protocol-java) — Java, Signal Double Ratchet
-- [vodozemac](https://github.com/matrix-org/vodozemac) — Rust, Matrix Olm/Megolm ratchet (Double Ratchet-inspired)
+- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift, Signal Protocol Double Ratchet
+- [libsignal-protocol-java](https://github.com/signalapp/libsignal-protocol-java) ⭐ 1.9k — Java, Signal Double Ratchet
+- [vodozemac](https://github.com/matrix-org/vodozemac) ⭐ 347 — Rust, Matrix Olm/Megolm ratchet (Double Ratchet-inspired)
 
 **Security status:** Secure
 Provably secure with forward secrecy and post-compromise security; formally analyzed by multiple independent teams; no known attacks.
@@ -2497,11 +2483,10 @@ The implicit rejection (`z` is a random value in the secret key) ensures that a 
 FIPS 203 standardized (August 2024); deployed in Chrome (BoringSSL), AWS-LC, Go 1.23+, and Signal (via Kyber-1024).
 
 **Implementations:**
-- [BoringSSL](https://github.com/google/boringssl) — C++, ML-KEM in TLS 1.3
-- [AWS-LC](https://github.com/aws/aws-lc) — C, FIPS 203 ML-KEM
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, ML-KEM-512/768/1024
-- [Go crypto/mlkem](https://github.com/golang/go/tree/master/src/crypto/mlkem) — Go, standard library ML-KEM (Go 1.23+)
-- [pqcrypto](https://github.com/nicman23/pqcrypto) — Rust, ML-KEM implementations
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C++, ML-KEM in TLS 1.3
+- [AWS-LC](https://github.com/aws/aws-lc) ⭐ 731 — C, FIPS 203 ML-KEM
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-KEM-512/768/1024
+- [Go crypto/mlkem](https://github.com/golang/go/tree/master/src/crypto/mlkem) ⭐ 133k — Go, standard library ML-KEM (Go 1.23+)
 
 **Security status:** Secure
 NIST-standardized (FIPS 203); extensive cryptanalysis over 7+ years; no known practical attacks on MLWE at recommended parameters.
@@ -2528,11 +2513,11 @@ NIST FIPS 203 (August 2024); IANA-registered TLS codepoints; deployed by Google,
 HPKE is deployed in TLS ECH (Chrome, Firefox), Oblivious HTTP (RFC 9458), MLS (RFC 9420), and ODoH.
 
 **Implementations:**
-- [BoringSSL](https://github.com/google/boringssl) — C++, HPKE for TLS ECH
-- [hpke (Rust)](https://github.com/rozbb/rust-hpke) — Rust, full HPKE implementation
-- [hpke (Go)](https://github.com/cisco/go-hpke) — Go, Cisco's HPKE library
-- [OpenSSL 3.x](https://github.com/openssl/openssl) — C, HPKE support
-- [MLS libraries](https://github.com/openmls/openmls) — Rust, HPKE as MLS substrate
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C++, HPKE for TLS ECH
+- [hpke (Rust)](https://github.com/rozbb/rust-hpke) ⭐ 86 — Rust, full HPKE implementation
+- [hpke (Go)](https://github.com/cisco/go-hpke) ⭐ 30 — Go, Cisco's HPKE library
+- [OpenSSL 3.x](https://github.com/openssl/openssl) ⭐ 29k — C, HPKE support
+- [MLS libraries](https://github.com/openmls/openmls) ⭐ 905 — Rust, HPKE as MLS substrate
 
 **Security status:** Secure
 RFC 9180 with formal security analysis; no known attacks on the construction at recommended parameters.
@@ -2586,9 +2571,9 @@ IETF RFC 6189 (Informational); used in niche secure VoIP applications; largely s
 RFC 9528 published March 2024; implementations exist but large-scale production deployment is nascent in IoT networks.
 
 **Implementations:**
-- [lakers](https://github.com/lake-rs/lakers) — Rust, EDHOC implementation for constrained devices
-- [libedhoc](https://github.com/eriptic/uoscore-uedhoc) — C, EDHOC + OSCORE for embedded systems
-- [californium-edhoc](https://github.com/rikard-sics/californium) — Java, EDHOC for CoAP
+- [lakers](https://github.com/lake-rs/lakers) ⭐ 31 — Rust, EDHOC implementation for constrained devices
+- [libedhoc](https://github.com/eriptic/uoscore-uedhoc) ⭐ 26 — C, EDHOC + OSCORE for embedded systems
+- [californium-edhoc](https://github.com/rikard-sics/californium) ⭐ 5 — Java, EDHOC for CoAP
 
 **Security status:** Secure
 Formal analysis by IETF LAKE WG; SIGMA-inspired construction with mutual authentication and forward secrecy; no known attacks.
@@ -2614,8 +2599,8 @@ IETF RFC 9528 (2024); designed for 6TiSCH, LoRaWAN, and constrained IoT; gaining
 Selected by NIST (March 2025) but draft standard expected ~2027; reference implementations available but no production deployment yet.
 
 **Implementations:**
-- [pqc-hqc](https://github.com/pqc-hqc/hqc) — C, reference HQC implementation
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, HQC-128/192/256 implementations
+- [pqc-hqc](https://github.com/pqc-hqc/hqc) ⭐ 0 — C, reference HQC implementation
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, HQC-128/192/256 implementations
 
 **Security status:** Secure
 Based on the QCSD problem with decades of cryptanalysis; no known practical attacks; selected by NIST for standardization.
@@ -2641,8 +2626,7 @@ Selected by NIST as the fifth PQ standard (March 2025); provides algorithmic div
 Not NIST-standardized but endorsed by BSI, ANSSI, and NLNCSA/AIVD; undergoing ISO standardization; Microsoft research implementation.
 
 **Implementations:**
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, FrodoKEM-640/976/1344
-- [PQCrypto-LWEKE](https://github.com/nicman23/PQCrypto-LWEKE) — C, FrodoKEM reference implementation (Microsoft)
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, FrodoKEM-640/976/1344
 - [frodo-kem-rs](https://crates.io/crates/frodo-kem) — Rust, FrodoKEM implementation
 
 **Security status:** Secure
@@ -2672,7 +2656,7 @@ NIST Round 4 candidate; reference implementations available but very large publi
 
 **Implementations:**
 - [classic.mceliece.org](https://classic.mceliece.org/) — C, reference implementation
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, Classic McEliece implementations
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, Classic McEliece implementations
 - [pqcrypto](https://crates.io/crates/pqcrypto-classicmceliece) — Rust, Classic McEliece bindings
 
 **Security status:** Secure
@@ -2700,7 +2684,7 @@ Broken by Castryck-Decru attack (July 2022); NIST withdrew SIKE; must not be use
 
 **Implementations:**
 - [sike.org](https://sike.org/) — C, reference SIKE implementation (archived, broken)
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, SIKE removed after break
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, SIKE removed after break
 
 **Security status:** Broken
 Castryck-Decru attack (2022) recovers the secret isogeny in polynomial time; all SIKE/SIDH parameters are broken.
@@ -2727,10 +2711,8 @@ Withdrawn from NIST PQ competition; retained as a cautionary historical referenc
 Used in SOPS, chezmoi, and infrastructure automation; audited implementations in Go and Rust; growing adoption as GPG replacement.
 
 **Implementations:**
-- [age](https://github.com/FiloSottile/age) — Go, reference implementation by Filippo Valsorda
-- [rage](https://github.com/str4d/rage) — Rust, age-compatible implementation
-- [jagged](https://github.com/nicman23/jagged) — Java, age implementation
-- [pyage](https://github.com/nicman23/pyage) — Python, age implementation
+- [age](https://github.com/FiloSottile/age) ⭐ 21k — Go, reference implementation by Filippo Valsorda
+- [rage](https://github.com/str4d/rage) ⭐ 3.4k — Rust, age-compatible implementation
 
 **Security status:** Secure
 X25519 + HKDF + ChaCha20-Poly1305; no algorithm negotiation eliminates downgrade attacks; no known vulnerabilities.
@@ -2756,9 +2738,7 @@ Growing adoption in DevOps and infrastructure tooling; no IETF RFC but well-spec
 Deployed in Cisco Webex and WebRTC-based conferencing platforms for end-to-end encrypted group video calls.
 
 **Implementations:**
-- [sframe (Cisco)](https://github.com/cisco/sframe) — C++, Cisco reference SFrame implementation
-- [sframe-rs](https://github.com/nicman23/sframe-rs) — Rust, SFrame implementation
-- [libsframe](https://github.com/nicman23/libsframe) — C, SFrame library
+- [sframe (Cisco)](https://github.com/cisco/sframe) ⭐ 8 — C++, Cisco reference SFrame implementation
 
 **Security status:** Secure
 AEAD-based per-frame encryption with HKDF-derived keys; no known attacks; forward secrecy when combined with MLS ratcheting.
@@ -2784,9 +2764,7 @@ IETF RFC 9605 (August 2024); designed to pair with MLS (RFC 9420); deployed in C
 Deployed by Google Safe Browsing, Apple Private Relay, and Mozilla Firefox in production.
 
 **Implementations:**
-- [ohttp (Cloudflare)](https://github.com/nicman23/ohttp) — Rust, OHTTP relay and gateway
-- [ohttp-go](https://github.com/nicman23/ohttp-go) — Go, OHTTP implementation
-- [Firefox NSS](https://github.com/nicman23/nss) — C, OHTTP support in Firefox
+No notable open-source implementations available.
 
 **Security status:** Secure
 HPKE-based encapsulation with relay-gateway separation; no known attacks; formal privacy analysis by Cloudflare.

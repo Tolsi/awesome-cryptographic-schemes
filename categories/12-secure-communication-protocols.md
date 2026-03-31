@@ -19,10 +19,10 @@
 Deployed across billions of devices: TLS 1.3 in all major browsers, Signal Protocol in WhatsApp/Signal, WireGuard in Linux kernel, MLS in Cisco Webex.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C; reference TLS 1.3 implementation
-- [libsignal](https://github.com/signalapp/libsignal) — Rust/Java/Swift; Signal Protocol (Double Ratchet + X3DH)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C; reference TLS 1.3 implementation
+- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift; Signal Protocol (Double Ratchet + X3DH)
 - [WireGuard](https://git.zx2c4.com/wireguard-linux) — C; Linux kernel VPN module
-- [OpenMLS](https://github.com/openmls/openmls) — Rust; MLS (RFC 9420) implementation
+- [OpenMLS](https://github.com/openmls/openmls) ⭐ 905 — Rust; MLS (RFC 9420) implementation
 
 **Security status:** Secure
 All listed protocols are considered secure at recommended parameters with no known practical attacks.
@@ -49,8 +49,8 @@ TLS 1.3 (RFC 8446), MLS (RFC 9420), WireGuard (IETF RFC pending), ECH (RFC 9849)
 Deployed in WhatsApp (~3B users), Signal, Google Messages, Facebook Messenger, and Matrix (Megolm).
 
 **Implementations:**
-- [libsignal](https://github.com/signalapp/libsignal) — Rust/Java/Swift; canonical Double Ratchet implementation
-- [vodozemac](https://github.com/matrix-org/vodozemac) — Rust; Matrix Olm/Megolm implementation (formally verified via Hax)
+- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift; canonical Double Ratchet implementation
+- [vodozemac](https://github.com/matrix-org/vodozemac) ⭐ 347 — Rust; Matrix Olm/Megolm implementation (formally verified via Hax)
 - [olm](https://gitlab.matrix.org/matrix-org/olm) — C/C++; original Matrix Double Ratchet (deprecated in favour of vodozemac)
 
 **Security status:** Secure
@@ -78,10 +78,10 @@ Widely trusted and peer-reviewed. Signal Protocol is the de facto standard for p
 RFC 9420 finalized in 2023; deployed in Cisco Webex, Wire, and under adoption in Matrix.
 
 **Implementations:**
-- [OpenMLS](https://github.com/openmls/openmls) — Rust; modular MLS implementation
-- [mls-rs](https://github.com/awslabs/mls-rs) — Rust; AWS-backed MLS library
-- [go-mls](https://github.com/cisco/go-mls) — Go; Cisco's MLS implementation
-- [MLSpp](https://github.com/cisco/mlspp) — C++; Cisco reference implementation
+- [OpenMLS](https://github.com/openmls/openmls) ⭐ 905 — Rust; modular MLS implementation
+- [mls-rs](https://github.com/awslabs/mls-rs) ⭐ 213 — Rust; AWS-backed MLS library
+- [go-mls](https://github.com/cisco/go-mls) ⭐ 59 — Go; Cisco's MLS implementation
+- [MLSpp](https://github.com/cisco/mlspp) ⭐ 138 — C++; Cisco reference implementation
 
 **Security status:** Secure
 Formally analysed; no known practical attacks at recommended parameters. TreeKEM provides efficient forward secrecy and post-compromise security for groups.
@@ -122,8 +122,8 @@ IETF RFC 9420 (2023). Adopted by major messaging platforms; endorsed by the IETF
 X3DH deployed in Signal, WhatsApp (~3B users), Facebook Messenger. PQXDH deployed in Signal since 2023.
 
 **Implementations:**
-- [libsignal](https://github.com/signalapp/libsignal) — Rust/Java/Swift; canonical X3DH and PQXDH implementation
-- [vodozemac](https://github.com/matrix-org/vodozemac) — Rust; X3DH for Matrix/Olm sessions
+- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift; canonical X3DH and PQXDH implementation
+- [vodozemac](https://github.com/matrix-org/vodozemac) ⭐ 347 — Rust; X3DH for Matrix/Olm sessions
 
 **Security status:** Secure
 X3DH is well-analysed with formal proofs. PQXDH adds post-quantum resistance via ML-KEM-1024 hybrid; no known attacks.
@@ -168,10 +168,10 @@ Not an IETF RFC but universally adopted in the messaging industry. Peer-reviewed
 DTLS 1.2 widely deployed in WebRTC, IoT (CoAP), and enterprise VPN. DTLS 1.3 supported in major TLS libraries since 2024.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C; DTLS 1.2 and 1.3 support (3.2+)
-- [wolfSSL](https://github.com/wolfSSL/wolfssl) — C; embedded-focused DTLS
-- [mbedTLS](https://github.com/Mbed-TLS/mbedtls) — C; ARM-backed; DTLS for constrained devices
-- [tinydtls](https://github.com/eclipse/tinydtls) — C; minimal DTLS for IoT
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C; DTLS 1.2 and 1.3 support (3.2+)
+- [wolfSSL](https://github.com/wolfSSL/wolfssl) ⭐ 2.8k — C; embedded-focused DTLS
+- [mbedTLS](https://github.com/Mbed-TLS/mbedtls) ⭐ 6.6k — C; ARM-backed; DTLS for constrained devices
+- [tinydtls](https://github.com/eclipse/tinydtls) ⭐ 118 — C; minimal DTLS for IoT
 
 **Security status:** Secure
 DTLS 1.3 mirrors TLS 1.3 security properties. DTLS 1.2 is secure at recommended parameters; DTLS 1.0 is deprecated.
@@ -222,9 +222,9 @@ IETF RFC 9147 (DTLS 1.3), RFC 6347 (DTLS 1.2). Mandated by WebRTC (RFC 8827) for
 Deployed in every major enterprise VPN appliance, carrier-grade infrastructure, and built into iOS/Android native VPN stacks.
 
 **Implementations:**
-- [strongSwan](https://github.com/strongswan/strongswan) — C; full IKEv2/IPsec; Linux, Android, macOS, Windows
-- [Libreswan](https://github.com/libreswan/libreswan) — C; IKEv2 implementation for Linux; FIPS-certified builds available
-- [isakmpd/iked](https://github.com/openbsd/src/tree/master/sbin/iked) — C; OpenBSD native IKEv2 daemon
+- [strongSwan](https://github.com/strongswan/strongswan) ⭐ 2.8k — C; full IKEv2/IPsec; Linux, Android, macOS, Windows
+- [Libreswan](https://github.com/libreswan/libreswan) ⭐ 935 — C; IKEv2 implementation for Linux; FIPS-certified builds available
+- [isakmpd/iked](https://github.com/openbsd/src/tree/master/sbin/iked) ⭐ 3.7k — C; OpenBSD native IKEv2 daemon
 
 **Security status:** Secure
 IKEv2 with AEAD (AES-256-GCM) and PFS (ECDH) is considered secure. Legacy configurations (IKEv1, 3DES, DH group 1) are deprecated.
@@ -268,8 +268,8 @@ Deployed for decades in email encryption, software signing, and developer workfl
 **Implementations:**
 - [GnuPG](https://gnupg.org/) — C; the dominant OpenPGP implementation; v2.4+ supports RFC 9580
 - [Sequoia-PGP](https://gitlab.com/sequoia-pgp/sequoia) — Rust; modern, memory-safe OpenPGP library
-- [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) — JavaScript; used by Proton Mail
-- [GopenPGP](https://github.com/ProtonMail/gopenpgp) — Go; Proton Mail's Go OpenPGP wrapper
+- [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) ⭐ 5.9k — JavaScript; used by Proton Mail
+- [GopenPGP](https://github.com/ProtonMail/gopenpgp) ⭐ 1.2k — Go; Proton Mail's Go OpenPGP wrapper
 
 **Security status:** Caution
 RFC 9580 with v6 keys (Ed25519, AEAD) is secure. Legacy RFC 4880 configurations using SHA-1 fingerprints and CFB mode without AEAD require migration. SHA-1 collision attacks make old fingerprints unsafe.
@@ -315,10 +315,10 @@ IETF RFC 9580 (2024). Long-established standard for encrypted email and file sig
 Carries ~30% of global web traffic (2024). Deployed in all major browsers and CDNs.
 
 **Implementations:**
-- [quiche](https://github.com/cloudflare/quiche) — Rust; Cloudflare's QUIC + HTTP/3 implementation
-- [ngtcp2](https://github.com/ngtcp2/ngtcp2) — C; QUIC library used in curl
-- [MsQuic](https://github.com/microsoft/msquic) — C; Microsoft's cross-platform QUIC
-- [quic-go](https://github.com/quic-go/quic-go) — Go; used in Caddy and other Go projects
+- [quiche](https://github.com/cloudflare/quiche) ⭐ 11k — Rust; Cloudflare's QUIC + HTTP/3 implementation
+- [ngtcp2](https://github.com/ngtcp2/ngtcp2) ⭐ 1.4k — C; QUIC library used in curl
+- [MsQuic](https://github.com/microsoft/msquic) ⭐ 4.7k — C; Microsoft's cross-platform QUIC
+- [quic-go](https://github.com/quic-go/quic-go) ⭐ 11k — Go; used in Caddy and other Go projects
 
 **Security status:** Secure
 Inherits TLS 1.3 security properties. Header protection and AEAD payload protection are well-analysed.
@@ -351,8 +351,8 @@ IETF RFC 9000 (transport), RFC 9001 (crypto), RFC 9002 (congestion). HTTP/3 mand
 Deployed in Bitcoin Core 26.0+ (2023); majority of Bitcoin nodes running V2 transport by 2025.
 
 **Implementations:**
-- [Bitcoin Core](https://github.com/bitcoin/bitcoin) — C++; reference implementation of BIP 324 V2 P2P transport
-- [rust-bitcoin (bip324)](https://github.com/rust-bitcoin/bip324) — Rust; BIP 324 library for Rust Bitcoin ecosystem
+- [Bitcoin Core](https://github.com/bitcoin/bitcoin) ⭐ 88k — C++; reference implementation of BIP 324 V2 P2P transport
+- [rust-bitcoin (bip324)](https://github.com/rust-bitcoin/bip324) ⭐ 29 — Rust; BIP 324 library for Rust Bitcoin ecosystem
 
 **Security status:** Secure
 Uses well-studied primitives (X25519 + ChaCha20-Poly1305 + Elligator2). Opportunistic encryption without authentication; MITM possible without manual SAS verification.
@@ -426,8 +426,7 @@ Proprietary Apple protocol; not an open standard. Formally analysed and well-rec
 Academic proposal with experimental implementations; not deployed in production. Targets the next phase of PQ TLS migration.
 
 **Implementations:**
-- [KEMTLS experiment (rustls fork)](https://github.com/nicola-2/kemtls-experiment) — Rust; experimental KEMTLS in rustls
-- [Open Quantum Safe (liboqs)](https://github.com/open-quantum-safe/liboqs) — C; PQ KEM library used in KEMTLS prototypes
+- [Open Quantum Safe (liboqs)](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C; PQ KEM library used in KEMTLS prototypes
 
 **Security status:** Secure
 Formally analysed (Schwabe-Stebila-Wiggers 2020). No known attacks; relies on the security of ML-KEM and the KEMTLS proof.
@@ -453,7 +452,6 @@ Deployed in Chrome, Firefox, and Cloudflare since 2024. RFC 9849 finalized.
 
 **Implementations:**
 - [BoringSSL](https://boringssl.googlesource.com/boringssl/) — C; Google's TLS library; ECH support in Chrome
-- [NSS](https://github.com/nicola-2/nss) — C; Mozilla's TLS library; ECH support in Firefox
 - [Cloudflare ECH](https://blog.cloudflare.com/encrypted-client-hello/) — deployed on Cloudflare edge
 
 **Security status:** Secure
@@ -491,7 +489,7 @@ WPA3 SAE is mandatory on all Wi-Fi 6 devices (~5B devices by 2025). EAP-PWD depl
 
 **Implementations:**
 - [hostapd / wpa_supplicant](https://w1.fi/cgit/) — C; reference Wi-Fi authentication; SAE and EAP-PWD support
-- [FreeRADIUS](https://github.com/FreeRADIUS/freeradius-server) — C; enterprise RADIUS server; EAP-PWD module
+- [FreeRADIUS](https://github.com/FreeRADIUS/freeradius-server) ⭐ 2.5k — C; enterprise RADIUS server; EAP-PWD module
 
 **Security status:** Caution
 Dragonfly (RFC 7664) is secure at recommended parameters. Side-channel attacks on SAE (Dragonblood, 2019) required patches; all major implementations patched.
@@ -545,9 +543,9 @@ Deployed by Meta but not an open standard. Academic interest in abuse-reporting-
 TreeKEM/MLS deployed in Cisco Webex, Wire. Burmester-Desmedt is classical; mostly of academic interest.
 
 **Implementations:**
-- [OpenMLS](https://github.com/openmls/openmls) — Rust; TreeKEM/MLS group key agreement
-- [mls-rs](https://github.com/awslabs/mls-rs) — Rust; AWS MLS implementation
-- [MLSpp](https://github.com/cisco/mlspp) — C++; Cisco MLS implementation
+- [OpenMLS](https://github.com/openmls/openmls) ⭐ 905 — Rust; TreeKEM/MLS group key agreement
+- [mls-rs](https://github.com/awslabs/mls-rs) ⭐ 213 — Rust; AWS MLS implementation
+- [MLSpp](https://github.com/cisco/mlspp) ⭐ 138 — C++; Cisco MLS implementation
 
 **Security status:** Secure
 MLS/TreeKEM formally analysed; no known practical attacks. Burmester-Desmedt is secure under DDH assumption.
@@ -574,10 +572,10 @@ MLS is IETF RFC 9420. Burmester-Desmedt is a classic textbook protocol. TreeKEM 
 TOTP supported by virtually all major services. FIDO2/WebAuthn supported by Apple, Google, Microsoft. Passkeys deployed across platforms.
 
 **Implementations:**
-- [libfido2](https://github.com/Yubico/libfido2) — C; FIDO2/CTAP library by Yubico
-- [py_webauthn](https://github.com/duo-labs/py_webauthn) — Python; WebAuthn server library
-- [java-webauthn-server](https://github.com/Yubico/java-webauthn-server) — Java; Yubico's WebAuthn server
-- [Google Authenticator (TOTP)](https://github.com/google/google-authenticator-libpam) — C; PAM module for TOTP
+- [libfido2](https://github.com/Yubico/libfido2) ⭐ 697 — C; FIDO2/CTAP library by Yubico
+- [py_webauthn](https://github.com/duo-labs/py_webauthn) ⭐ 1.0k — Python; WebAuthn server library
+- [java-webauthn-server](https://github.com/Yubico/java-webauthn-server) ⭐ 544 — Java; Yubico's WebAuthn server
+- [Google Authenticator (TOTP)](https://github.com/google/google-authenticator-libpam) ⭐ 2.0k — C; PAM module for TOTP
 
 **Security status:** Secure
 FIDO2/WebAuthn is phishing-resistant by design. TOTP is secure but susceptible to real-time phishing (code relay). FIDO2 is the recommended upgrade path.
@@ -633,11 +631,11 @@ FIDO2/WebAuthn is a W3C standard and FIDO Alliance specification. TOTP is IETF R
 OpenSSH is the dominant SSH implementation; installed on virtually every Linux/macOS/BSD server.
 
 **Implementations:**
-- [OpenSSH](https://github.com/openssh/openssh-portable) — C; reference SSH implementation; PQ hybrid KEX in 10.0
+- [OpenSSH](https://github.com/openssh/openssh-portable) ⭐ 3.8k — C; reference SSH implementation; PQ hybrid KEX in 10.0
 - [libssh](https://www.libssh.org/) — C; SSH client/server library
-- [libssh2](https://github.com/libssh2/libssh2) — C; client-side SSH library (used by curl)
-- [Paramiko](https://github.com/paramiko/paramiko) — Python; SSH2 protocol library
-- [russh](https://github.com/warp-tech/russh) — Rust; async SSH client/server library
+- [libssh2](https://github.com/libssh2/libssh2) ⭐ 1.5k — C; client-side SSH library (used by curl)
+- [Paramiko](https://github.com/paramiko/paramiko) ⭐ 9.7k — Python; SSH2 protocol library
+- [russh](https://github.com/warp-tech/russh) ⭐ 1.6k — Rust; async SSH client/server library
 
 **Security status:** Secure
 With recommended algorithms (Ed25519, X25519, ChaCha20-Poly1305, AEAD). Terrapin attack (CVE-2023-48795) patched via strict KEX in OpenSSH 9.6+. Legacy algorithms (DH group1, hmac-md5) deprecated.
@@ -693,7 +691,7 @@ SRTP does not specify its own key management; instead DTLS-SRTP is the mandatory
 Deployed in all WebRTC implementations, SIP VoIP systems, and video conferencing platforms.
 
 **Implementations:**
-- [libsrtp](https://github.com/cisco/libsrtp) — C; Cisco's reference SRTP library; used in Chrome and Firefox WebRTC
+- [libsrtp](https://github.com/cisco/libsrtp) ⭐ 1.4k — C; Cisco's reference SRTP library; used in Chrome and Firefox WebRTC
 - [oRTP](https://gitlab.linphone.org/BC/public/ortp) — C; Belledonne Communications; used in Linphone
 
 **Security status:** Secure
@@ -754,8 +752,8 @@ ContentInfo
 Built into Microsoft Outlook, Apple Mail, iOS, Thunderbird. Widely deployed in government and enterprise email.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C; CMS/PKCS#7 and S/MIME operations
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java; comprehensive CMS/S/MIME support
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C; CMS/PKCS#7 and S/MIME operations
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java; comprehensive CMS/S/MIME support
 - [Thunderbird](https://hg.mozilla.org/comm-central/) — built-in S/MIME support via NSS
 
 **Security status:** Secure
@@ -806,10 +804,10 @@ Alice (2 devices) → Bob (3 devices)
 Deployed in all major XMPP clients; OMEMO 2 is the current version in active use.
 
 **Implementations:**
-- [libomemo-c](https://github.com/dino/libomemo-c) — C; OMEMO library for Dino XMPP client
-- [Smack OMEMO](https://github.com/igniterealtime/Smack) — Java; XMPP library with OMEMO support
+- [libomemo-c](https://github.com/dino/libomemo-c) ⭐ 13 — C; OMEMO library for Dino XMPP client
+- [Smack OMEMO](https://github.com/igniterealtime/Smack) ⭐ 2.4k — Java; XMPP library with OMEMO support
 - [Conversations](https://codeberg.org/iNPUTmice/Conversations) — Java/Android; popular XMPP client with OMEMO built-in
-- [python-omemo](https://github.com/Syndace/python-omemo) — Python; OMEMO library for Python XMPP clients
+- [python-omemo](https://github.com/Syndace/python-omemo) ⭐ 45 — Python; OMEMO library for Python XMPP clients
 
 **Security status:** Secure
 Inherits Signal Protocol's security properties (forward secrecy, post-compromise security). Well-analysed Double Ratchet + X3DH construction.
@@ -867,8 +865,8 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 Deployed by ~95% of major email providers. Required by Google/Yahoo bulk sender requirements (Feb 2024).
 
 **Implementations:**
-- [OpenDKIM](https://github.com/trusteddomainproject/OpenDKIM) — C; milter-based DKIM signing/verification
-- [rspamd](https://github.com/rspamd/rspamd) — C; spam filter with DKIM/DMARC/ARC support
+- [OpenDKIM](https://github.com/trusteddomainproject/OpenDKIM) ⭐ 111 — C; milter-based DKIM signing/verification
+- [rspamd](https://github.com/rspamd/rspamd) ⭐ 2.4k — C; spam filter with DKIM/DMARC/ARC support
 - [dkimpy](https://launchpad.net/dkimpy) — Python; DKIM signing and verification library
 
 **Security status:** Secure
@@ -915,7 +913,7 @@ Deployed in Linphone and Jitsi Desktop. Largely superseded by DTLS-SRTP for WebR
 
 **Implementations:**
 - [oRTP / oZRTP (bZRTP)](https://gitlab.linphone.org/BC/public/bzrtp) — C; Linphone's ZRTP implementation; actively maintained
-- [GNU ZRTP4J](https://github.com/wernerd/ZRTP4J) — Java; used in Jitsi Desktop
+- [GNU ZRTP4J](https://github.com/wernerd/ZRTP4J) ⭐ 27 — Java; used in Jitsi Desktop
 
 **Security status:** Secure
 Secure at recommended parameters (ECDH P-256+, AES-256). SAS-based MITM detection is effective when users perform voice verification. No known practical attacks.
@@ -951,6 +949,7 @@ IETF Informational RFC 6189. Superseded by DTLS-SRTP in WebRTC contexts. Remains
 | Standardization | IETF draft only; not an RFC | RFC 4033–4035; widely mandated |
 
 **Implementations:** djbdns/dnscache (Bernstein's reference resolver), CurveDNS (authoritative proxy by Jan Mojžíš), dqcache.
+No notable open-source implementations available.
 
 **State of the art:** DNSCurve was never standardized as an IETF RFC. DNS-over-TLS (RFC 7858) and DNS-over-HTTPS (RFC 8484) have since addressed the confidentiality gap on the stub-resolver-to-recursive-resolver leg, while DNSSEC covers end-to-end integrity. DNSCurve's Curve25519 + NaCl design was influential — it popularized `crypto_box` for link-layer encryption and prefigured WireGuard's approach. See [Secure Channels](#secure-channels--protocol-constructions), [Applied Infrastructure PKI](categories/14-applied-infrastructure-pki.md#dnssec).
 
@@ -958,7 +957,7 @@ IETF Informational RFC 6189. Superseded by DTLS-SRTP in WebRTC contexts. Remains
 Never standardized as an RFC. Superseded by DoT (RFC 7858) and DoH (RFC 8484) for DNS confidentiality.
 
 **Implementations:**
-- [CurveDNS](https://github.com/curvedns/curvedns) — C; authoritative DNSCurve proxy
+- [CurveDNS](https://github.com/curvedns/curvedns) ⭐ 58 — C; authoritative DNSCurve proxy
 - [dqcache](https://mojzis.com/software/dqcache/) — C; DNSCurve-enabled caching resolver
 
 **Security status:** Superseded
@@ -1050,9 +1049,9 @@ Open specification; well-regarded in the privacy/activist community. Not standar
 Multiple working clients exist but no formal security audit of the protocol. Not recommended for high-threat-model use.
 
 **Implementations:**
-- [c-toxcore](https://github.com/TokTok/c-toxcore) — C; reference Tox protocol implementation
-- [qTox](https://github.com/qTox/qTox) — C++; desktop Tox client
-- [Toxic](https://github.com/JFreegman/toxic) — C; CLI Tox client
+- [c-toxcore](https://github.com/TokTok/c-toxcore) ⭐ 2.6k — C; reference Tox protocol implementation
+- [qTox](https://github.com/qTox/qTox) ⭐ 5.0k — C++; desktop Tox client
+- [Toxic](https://github.com/JFreegman/toxic) ⭐ 1.3k — C; CLI Tox client
 
 **Security status:** Caution
 NaCl/libsodium primitives (X25519 + XSalsa20-Poly1305) are secure. Protocol itself lacks formal audit; DHT design leaks metadata about online status. Not recommended without independent review.
@@ -1101,9 +1100,9 @@ Olm is a pairwise Double Ratchet protocol. Each pair of Matrix devices establish
 Deployed in all major Matrix clients (Element, FluffyChat, Nheko, Cinny). Used by German and French governments.
 
 **Implementations:**
-- [vodozemac](https://github.com/matrix-org/vodozemac) — Rust; formally verified via Hax; current reference implementation
+- [vodozemac](https://github.com/matrix-org/vodozemac) ⭐ 347 — Rust; formally verified via Hax; current reference implementation
 - [libolm](https://gitlab.matrix.org/matrix-org/olm) — C/C++; original Olm/Megolm library (deprecated in favour of vodozemac)
-- [matrix-rust-sdk](https://github.com/matrix-org/matrix-rust-sdk) — Rust; full Matrix SDK with Olm/Megolm via vodozemac
+- [matrix-rust-sdk](https://github.com/matrix-org/matrix-rust-sdk) ⭐ 2.0k — Rust; full Matrix SDK with Olm/Megolm via vodozemac
 
 **Security status:** Secure
 Double Ratchet + X3DH construction is well-analysed. vodozemac is formally verified. Cross-signing provides strong device verification.
@@ -1157,7 +1156,7 @@ In Linux kernel since 5.6 (2020). Deployed on Windows, macOS, iOS, Android, Free
 **Implementations:**
 - [wireguard-linux](https://git.zx2c4.com/wireguard-linux) — C; Linux kernel module
 - [wireguard-go](https://git.zx2c4.com/wireguard-go) — Go; userspace implementation for all platforms
-- [boringtun](https://github.com/cloudflare/boringtun) — Rust; Cloudflare's userspace WireGuard
+- [boringtun](https://github.com/cloudflare/boringtun) ⭐ 7.0k — Rust; Cloudflare's userspace WireGuard
 - [wireguard-nt](https://git.zx2c4.com/wireguard-nt) — C; native Windows kernel driver
 
 **Security status:** Secure
@@ -1215,10 +1214,10 @@ A simpler alternative: TLS wraps the entire connection from the first byte (no S
 Universally deployed in SMTP, IMAP, POP3, LDAP. MTA-STS and DANE harden the security model.
 
 **Implementations:**
-- [Postfix](https://github.com/vdukhovni/postfix) — C; MTA with STARTTLS, DANE, MTA-STS support
-- [OpenSSL](https://github.com/openssl/openssl) — C; TLS library underlying most STARTTLS implementations
-- [Exim](https://github.com/Exim/exim) — C; MTA with STARTTLS and DANE support
-- [Dovecot](https://github.com/dovecot/core) — C; IMAP/POP3 server with STARTTLS
+- [Postfix](https://github.com/vdukhovni/postfix) ⭐ 530 — C; MTA with STARTTLS, DANE, MTA-STS support
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C; TLS library underlying most STARTTLS implementations
+- [Exim](https://github.com/Exim/exim) ⭐ 780 — C; MTA with STARTTLS and DANE support
+- [Dovecot](https://github.com/dovecot/core) ⭐ 1.2k — C; IMAP/POP3 server with STARTTLS
 
 **Security status:** Caution
 Opportunistic STARTTLS is vulnerable to stripping attacks (active MITM can remove the STARTTLS capability). MTA-STS and DANE mitigate this. Implicit TLS (port 465) preferred for new deployments.
@@ -1280,8 +1279,6 @@ Gateway knows: Request content + Relay IP (never learns Client IP)
 Deployed at scale by Apple (iCloud Private Relay), Cloudflare, Google, and Meta.
 
 **Implementations:**
-- [ohttp-rs](https://github.com/nicola-2/ohttp-rs) — Rust; OHTTP library
-- [ohttp (Cloudflare)](https://github.com/nicola-2/ohttp) — Rust; Cloudflare OHTTP client/relay/gateway
 - [Fastly OHTTP relay](https://www.fastly.com/documentation/reference/api/) — production relay service
 
 **Security status:** Secure
@@ -1345,11 +1342,11 @@ Allows the CA to signal the optimal renewal window to clients, enabling mass-ren
 Let's Encrypt issues ~6 million certificates per day. Used by all major hosting providers and CDNs.
 
 **Implementations:**
-- [Certbot](https://github.com/certbot/certbot) — Python; EFF's ACME client; the most widely used
-- [acme.sh](https://github.com/acmesh-official/acme.sh) — Shell; pure POSIX shell ACME client
-- [Caddy](https://github.com/caddyserver/caddy) — Go; web server with built-in ACME
-- [Lego](https://github.com/go-acme/lego) — Go; ACME client library and CLI
-- [Boulder](https://github.com/letsencrypt/boulder) — Go; Let's Encrypt's ACME CA server
+- [Certbot](https://github.com/certbot/certbot) ⭐ 32k — Python; EFF's ACME client; the most widely used
+- [acme.sh](https://github.com/acmesh-official/acme.sh) ⭐ 46k — Shell; pure POSIX shell ACME client
+- [Caddy](https://github.com/caddyserver/caddy) ⭐ 71k — Go; web server with built-in ACME
+- [Lego](https://github.com/go-acme/lego) ⭐ 9.4k — Go; ACME client library and CLI
+- [Boulder](https://github.com/letsencrypt/boulder) ⭐ 5.7k — Go; Let's Encrypt's ACME CA server
 
 **Security status:** Secure
 Domain validation via HTTP-01/DNS-01/TLS-ALPN-01 is well-studied. JWS-signed requests prevent unauthorized issuance. Channel binding via nonces prevents replay.
@@ -1405,8 +1402,7 @@ IETF RFC 8555 (2019), RFC 9730 (ARI, 2024). Let's Encrypt has issued billions of
 Deployed by WhatsApp (2023) for ~2 billion users. Google Key Transparency operational for internal services.
 
 **Implementations:**
-- [akd (Meta)](https://github.com/facebook/akd) — Rust; Auditable Key Directory library (open-source)
-- [key-transparency (Google)](https://github.com/nicola-2/keytransparency) — Go; Google's key transparency server
+- [akd (Meta)](https://github.com/facebook/akd) ⭐ 314 — Rust; Auditable Key Directory library (open-source)
 
 **Security status:** Secure
 Merkle tree + VRF construction is well-analysed. Provides verifiable key consistency without revealing the user directory.
@@ -1475,9 +1471,9 @@ A network adversary who captures a client's 0-RTT flight can replay it to a diff
 Enabled by major CDNs (Cloudflare, Google, Fastly) for HTTP GET requests. Supported in OpenSSL 1.1.1+, BoringSSL, NSS.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C; TLS 1.3 with 0-RTT support (1.1.1+)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C; TLS 1.3 with 0-RTT support (1.1.1+)
 - [BoringSSL](https://boringssl.googlesource.com/boringssl/) — C; Google's TLS library with 0-RTT in Chrome
-- [rustls](https://github.com/rustls/rustls) — Rust; TLS library with 0-RTT support
+- [rustls](https://github.com/rustls/rustls) ⭐ 7.3k — Rust; TLS library with 0-RTT support
 
 **Security status:** Caution
 0-RTT data lacks forward secrecy and is replayable. Safe only for idempotent operations (HTTP GET). Applications must explicitly opt in and handle replay risk. 1-RTT TLS 1.3 is fully secure.
@@ -1541,9 +1537,9 @@ Result: observers on the new path see a different CID → cannot correlate with 
 Supported by all major QUIC implementations. Used in production by Chrome, Safari, curl, and Apple's FaceTime/iMessage stacks.
 
 **Implementations:**
-- [quiche](https://github.com/cloudflare/quiche) — Rust; Cloudflare QUIC with connection migration
-- [MsQuic](https://github.com/microsoft/msquic) — C; Microsoft QUIC with migration support
-- [quic-go](https://github.com/quic-go/quic-go) — Go; QUIC with connection migration
+- [quiche](https://github.com/cloudflare/quiche) ⭐ 11k — Rust; Cloudflare QUIC with connection migration
+- [MsQuic](https://github.com/microsoft/msquic) ⭐ 4.7k — C; Microsoft QUIC with migration support
+- [quic-go](https://github.com/quic-go/quic-go) ⭐ 11k — Go; QUIC with connection migration
 
 **Security status:** Secure
 Path validation (PATH_CHALLENGE/PATH_RESPONSE) prevents hijacking. CID rotation prevents linkability. Anti-amplification limits mitigate forged migration attacks.
@@ -1617,10 +1613,10 @@ RPKI secures route *origin*; BGPsec extends this to the entire AS path:
 RPKI origin validation at ~50% global prefix coverage (2024). BGPsec standardized but <1% deployed.
 
 **Implementations:**
-- [Routinator](https://github.com/NLnetLabs/routinator) — Rust; RPKI relying party software by NLnet Labs
-- [Fort Validator](https://github.com/NICMx/FORT-validator) — C; RPKI validator
+- [Routinator](https://github.com/NLnetLabs/routinator) ⭐ 556 — Rust; RPKI relying party software by NLnet Labs
+- [Fort Validator](https://github.com/NICMx/FORT-validator) ⭐ 60 — C; RPKI validator
 - [rpki-client](https://www.rpki-client.org/) — C; OpenBSD RPKI validator
-- [Krill](https://github.com/NLnetLabs/krill) — Rust; RPKI CA/publication server by NLnet Labs
+- [Krill](https://github.com/NLnetLabs/krill) ⭐ 357 — Rust; RPKI CA/publication server by NLnet Labs
 
 **Security status:** Secure
 RPKI origin validation is well-designed. ROA signature verification via X.509 and ECDSA P-256. BGPsec adds path authentication but with high deployment overhead.
@@ -1698,8 +1694,8 @@ Capsule Type (varint) | Capsule Length (varint) | Capsule Data
 Deployed by Apple (iCloud Private Relay), Cloudflare WARP, and Google QUIC proxying infrastructure.
 
 **Implementations:**
-- [quiche](https://github.com/cloudflare/quiche) — Rust; Cloudflare QUIC/HTTP3 with MASQUE CONNECT-UDP support
-- [MsQuic](https://github.com/microsoft/msquic) — C; Microsoft QUIC with CONNECT-UDP
+- [quiche](https://github.com/cloudflare/quiche) ⭐ 11k — Rust; Cloudflare QUIC/HTTP3 with MASQUE CONNECT-UDP support
+- [MsQuic](https://github.com/microsoft/msquic) ⭐ 4.7k — C; Microsoft QUIC with CONNECT-UDP
 - [Apple Network.framework](https://developer.apple.com/documentation/network) — Swift/ObjC; iCloud Private Relay uses MASQUE internally
 
 **Security status:** Secure
@@ -1765,10 +1761,9 @@ GET is also defined (query Base64url-encoded in URL parameter `?dns=`); POST is 
 Deployed by all major DNS resolvers (Cloudflare, Google, Quad9). Firefox defaults to DoH. Android 9+ supports DoT natively. Windows 11 supports DoH.
 
 **Implementations:**
-- [Unbound](https://github.com/NLnetLabs/unbound) — C; recursive resolver with DoT and DoH support
-- [CoreDNS](https://github.com/coredns/coredns) — Go; DNS server with DoT and DoH plugins
-- [dnscrypt-proxy](https://github.com/DNSCrypt/dnscrypt-proxy) — Go; DNS proxy supporting DoH, DoT, DNSCrypt, ODoH
-- [dns-over-https (Facebook)](https://github.com/nicola-2/doh-proxy) — Python/Go; DoH proxy implementations
+- [Unbound](https://github.com/NLnetLabs/unbound) ⭐ 4.4k — C; recursive resolver with DoT and DoH support
+- [CoreDNS](https://github.com/coredns/coredns) ⭐ 13k — Go; DNS server with DoT and DoH plugins
+- [dnscrypt-proxy](https://github.com/DNSCrypt/dnscrypt-proxy) ⭐ 13k — Go; DNS proxy supporting DoH, DoT, DNSCrypt, ODoH
 
 **Security status:** Secure
 Encrypts DNS queries via TLS 1.3. DoH is indistinguishable from HTTPS traffic. Resolver still learns all queries; ODoH (RFC 9230) addresses this.
@@ -1838,9 +1833,7 @@ The modern I2P session layer replaces the legacy ElGamal+AES-256-CBC+SessionTag 
 ~50,000 active routers (2024). Stable for file sharing, eepsite hosting, and anonymous IRC. Niche user base compared to Tor.
 
 **Implementations:**
-- [I2P (Java)](https://github.com/nicola-2/i2p.i2p) — Java; original reference router implementation
-- [i2pd](https://github.com/PurpleI2P/i2pd) — C++; lightweight I2P router; actively maintained
-- [ire (i2p-rs)](https://github.com/nicola-2/ire) — Rust; experimental I2P router
+- [i2pd](https://github.com/PurpleI2P/i2pd) ⭐ 4.0k — C++; lightweight I2P router; actively maintained
 
 **Security status:** Secure
 ECIES-X25519-AEAD-Ratchet (2020) provides forward secrecy with modern primitives. NTCP2 uses Noise XK + ChaCha20-Poly1305. Legacy ElGamal/AES-CBC deprecated.
@@ -1904,9 +1897,9 @@ Server responds with:
 
 **Implementations:**
 - [BoringSSL](https://boringssl.googlesource.com/boringssl/) — C; X25519MLKEM768 in Chrome and Google services
-- [OpenSSL](https://github.com/openssl/openssl) — C; X25519MLKEM768 support in 3.5+
-- [rustls](https://github.com/rustls/rustls) — Rust; hybrid PQ key exchange via aws-lc-rs
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C; Open Quantum Safe ML-KEM library
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C; X25519MLKEM768 support in 3.5+
+- [rustls](https://github.com/rustls/rustls) ⭐ 7.3k — Rust; hybrid PQ key exchange via aws-lc-rs
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C; Open Quantum Safe ML-KEM library
 
 **Security status:** Secure
 Hybrid construction: breaking the session requires breaking both X25519 (ECDH) and ML-KEM-768 (lattice). NIST-standardized (FIPS 203). No known attacks.
@@ -1974,10 +1967,10 @@ ciphertext = ChaCha20-Poly1305(chacha_key, chacha_nonce, padded_plaintext)
 Multiple clients deployed; ~1500 public relays (2024). Protocol is stable but DM encryption lacks forward secrecy.
 
 **Implementations:**
-- [nostr-tools](https://github.com/nbd-wtf/nostr-tools) — TypeScript; reference client library
-- [rust-nostr](https://github.com/rust-nostr/nostr) — Rust; Nostr protocol library and SDK
-- [Damus](https://github.com/damus-io/damus) — Swift; iOS Nostr client
-- [Amethyst](https://github.com/vitorpamplona/amethyst) — Kotlin; Android Nostr client
+- [nostr-tools](https://github.com/nbd-wtf/nostr-tools) ⭐ 839 — TypeScript; reference client library
+- [rust-nostr](https://github.com/rust-nostr/nostr) ⭐ 616 — Rust; Nostr protocol library and SDK
+- [Damus](https://github.com/damus-io/damus) ⭐ 2.1k — Swift; iOS Nostr client
+- [Amethyst](https://github.com/vitorpamplona/amethyst) ⭐ 1.5k — Kotlin; Android Nostr client
 
 **Security status:** Caution
 Events are self-authenticating via secp256k1 Schnorr signatures (BIP-340). NIP-44 DMs use ChaCha20-Poly1305 (secure primitives) but lack forward secrecy — a leaked key exposes all past DMs. No post-compromise security.
@@ -2053,9 +2046,9 @@ Both are deployed with active user bases but smaller scale than mainstream messe
 
 **Implementations:**
 - [Cwtch](https://git.openprivacy.ca/cwtch.im/cwtch) — Go; reference Cwtch protocol library
-- [Session Android](https://github.com/oxen-io/session-android) — Kotlin; Session messenger for Android
-- [Session Desktop](https://github.com/oxen-io/session-desktop) — TypeScript; Session desktop client
-- [Session iOS](https://github.com/oxen-io/session-ios) — Swift; Session messenger for iOS
+- [Session Android](https://github.com/oxen-io/session-android) ⭐ 1.9k — Kotlin; Session messenger for Android
+- [Session Desktop](https://github.com/oxen-io/session-desktop) ⭐ 1.6k — TypeScript; Session desktop client
+- [Session iOS](https://github.com/oxen-io/session-ios) ⭐ 429 — Swift; Session messenger for iOS
 
 **Security status:** Caution
 Cwtch leverages Tor's mature anonymity network; crypto primitives are sound. Session uses well-audited Double Ratchet but its OXEN onion routing network is smaller and less battle-tested than Tor. Both provide stronger metadata resistance than Signal.
@@ -2081,7 +2074,7 @@ Privacy-focused communities. Cwtch developed by Open Privacy Research Society. S
 IETF draft stage; no production deployments yet. Driven by EU DMA regulatory requirements.
 
 **Implementations:**
-- No production implementations yet; IETF drafts reference [OpenMLS](https://github.com/openmls/openmls) and [mls-rs](https://github.com/awslabs/mls-rs) for the underlying MLS layer
+- No production implementations yet; IETF drafts reference [OpenMLS](https://github.com/openmls/openmls) ⭐ 905 and [mls-rs](https://github.com/awslabs/mls-rs) for the underlying MLS layer
 
 **Security status:** Secure
 Built on MLS (RFC 9420); E2E encryption properties are inherited. Interoperability-specific security challenges (cross-provider key discovery, identity federation) are under active analysis.
@@ -2113,8 +2106,7 @@ Active IETF MIMI working group (draft-05, 2025). Driven by EU DMA mandate. Major
 Deployed in Cisco Webex for E2E encrypted group video. RFC 9605 finalized September 2024.
 
 **Implementations:**
-- [sframe (Cisco)](https://github.com/cisco/sframe) — C++; reference SFrame implementation
-- [AmazonChime SFrame](https://github.com/nicola-2/sframe) — open-source SFrame for conferencing
+- [sframe (Cisco)](https://github.com/cisco/sframe) ⭐ 8 — C++; reference SFrame implementation
 
 **Security status:** Secure
 Uses standard AEAD cipher suites (AES-GCM, AES-CTR + HMAC). Per-sender keys with counter-based nonces. Well-analysed in the IETF process.
@@ -2144,7 +2136,7 @@ IETF RFC 9605 (2024). Designed for E2E encrypted conferencing. Complements MLS (
 Working daemon packaged for Arch Linux and NixOS; integrated into NetBird mesh VPN. Not yet widely deployed.
 
 **Implementations:**
-- [Rosenpass](https://github.com/rosenpass/rosenpass) — Rust; PQ key exchange daemon for WireGuard
+- [Rosenpass](https://github.com/rosenpass/rosenpass) ⭐ 1.3k — Rust; PQ key exchange daemon for WireGuard
 
 **Security status:** Secure
 Formally verified with ProVerif. Uses Classic McEliece (conservative code-based KEM) + ML-KEM-512 (lattice). Both KEMs are well-studied.
@@ -2168,6 +2160,7 @@ Funded by NLnet/NGI. Formally verified. Growing interest in the WireGuard/VPN co
 - **Payload:** file key encrypts payload via HKDF-SHA-256 -> ChaCha20-Poly1305; split into 64 KiB chunks, each independently authenticated; final chunk flagged to detect truncation
 
 **Implementations:** Go (reference, `filippo.io/age`), Rust (`rage` by str4d), TypeScript (`typage`), Java (`jagged`). Plugin system for hardware tokens (age-plugin-yubikey).
+No notable open-source implementations available.
 
 **State of the art:** age v1.2+ (2024); specification maintained at C2SP [[1]](https://github.com/C2SP/C2SP/blob/main/age.md). Adopted by SOPS, chezmoi, and infrastructure tooling. Not a protocol for interactive communication — strictly offline file encryption. See [OpenPGP](#openpgp-rfc-9580).
 
@@ -2175,10 +2168,9 @@ Funded by NLnet/NGI. Formally verified. Growing interest in the WireGuard/VPN co
 Widely adopted in DevOps and infrastructure tooling (SOPS, chezmoi). Stable specification with multiple interoperable implementations.
 
 **Implementations:**
-- [age](https://github.com/FiloSottile/age) — Go; reference implementation by Filippo Valsorda
-- [rage](https://github.com/str4d/rage) — Rust; compatible age implementation
-- [typage](https://github.com/nicola-2/typage) — TypeScript; age in the browser
-- [age-plugin-yubikey](https://github.com/str4d/age-plugin-yubikey) — Rust; YubiKey hardware token plugin
+- [age](https://github.com/FiloSottile/age) ⭐ 21k — Go; reference implementation by Filippo Valsorda
+- [rage](https://github.com/str4d/rage) ⭐ 3.4k — Rust; compatible age implementation
+- [age-plugin-yubikey](https://github.com/str4d/age-plugin-yubikey) ⭐ 860 — Rust; YubiKey hardware token plugin
 
 **Security status:** Secure
 Uses X25519 + HKDF-SHA-256 + ChaCha20-Poly1305. Per-chunk AEAD with truncation detection. Minimal, well-studied design with no configuration knobs.
@@ -2211,9 +2203,7 @@ C2SP specification. Designed by Filippo Valsorda (Go team). Widely adopted in in
 Deployed in Keybase Chat and Keybase filesystem. Spec is open but Keybase product is in maintenance mode (Zoom acquisition, 2020).
 
 **Implementations:**
-- [saltpack (Go)](https://github.com/keybase/saltpack) — Go; Keybase reference implementation
-- [saltpack (Python)](https://github.com/nicola-2/python-saltpack) — Python; community Saltpack library
-- [keys.pub saltpack](https://github.com/nicola-2/keys-ext) — Go; alternative Saltpack client
+- [saltpack (Go)](https://github.com/keybase/saltpack) ⭐ 1.0k — Go; Keybase reference implementation
 
 **Security status:** Secure
 Built on NaCl primitives (X25519 + XSalsa20-Poly1305 + Ed25519). Chunk-based streaming with truncation detection and splice prevention. Well-designed.
@@ -2244,8 +2234,8 @@ Deployed by Cloudflare, Netnod, and other time service providers. Supported in m
 
 **Implementations:**
 - [Chrony](https://gitlab.com/chrony/chrony) — C; NTP client/server with NTS support
-- [NTPsec](https://github.com/ntpsec/ntpsec) — C; hardened NTP with NTS
-- [ntpd-rs](https://github.com/pendulum-project/ntpd-rs) — Rust; NTP daemon with NTS support
+- [NTPsec](https://github.com/ntpsec/ntpsec) ⭐ 277 — C; hardened NTP with NTS
+- [ntpd-rs](https://github.com/pendulum-project/ntpd-rs) ⭐ 1.0k — Rust; NTP daemon with NTS support
 
 **Security status:** Secure
 TLS 1.3 for key establishment; AES-SIV for per-packet authentication. Stateless server design via opaque cookies. Forward secrecy from TLS handshake.
@@ -2275,9 +2265,8 @@ IETF RFC 8915 (2020). Deployed by major time service providers. Growing adoption
 Public servers operated by Google and Cloudflare. IETF draft (not yet RFC). Limited client integration.
 
 **Implementations:**
-- [roughenough](https://github.com/int08h/roughenough) — Rust; Roughtime server and client
+- [roughenough](https://github.com/int08h/roughenough) ⭐ 142 — Rust; Roughtime server and client
 - [roughtime (Google)](https://roughtime.googlesource.com/roughtime/) — Go/C++; Google's reference implementation
-- [cloudflare-roughtime](https://github.com/nicola-2/roughtime) — Go; Cloudflare Roughtime server
 
 **Security status:** Secure
 Ed25519 signatures on time responses. Merkle tree batching for efficiency. Ecosystem auditing enables detection of misbehaving servers.
@@ -2311,8 +2300,8 @@ IETF draft-19 (2025); not yet an RFC. Operated by Google and Cloudflare. Designe
 Default authentication in PostgreSQL 10+, MongoDB 4.0+, CockroachDB. Supported in XMPP, IMAP, SMTP.
 
 **Implementations:**
-- [PostgreSQL](https://github.com/postgres/postgres) — C; SCRAM-SHA-256 as default authentication
-- [Cyrus SASL](https://github.com/cyrusimap/cyrus-sasl) — C; SASL library with SCRAM support
+- [PostgreSQL](https://github.com/postgres/postgres) ⭐ 20k — C; SCRAM-SHA-256 as default authentication
+- [Cyrus SASL](https://github.com/cyrusimap/cyrus-sasl) ⭐ 155 — C; SASL library with SCRAM support
 - [GNU SASL (gsasl)](https://www.gnu.org/software/gsasl/) — C; SCRAM-SHA-256 and -PLUS variants
 
 **Security status:** Secure
@@ -2345,7 +2334,7 @@ IETF RFC 5802 (SCRAM-SHA-1), RFC 7677 (SCRAM-SHA-256). Default in major database
 Linux kernel prototype exists. Limited adoption due to middlebox interference and competition from TLS-everywhere.
 
 **Implementations:**
-- [tcpcrypt (reference)](https://github.com/scslab/tcpcrypt) — C; Linux kernel module and userspace prototype
+- [tcpcrypt (reference)](https://github.com/scslab/tcpcrypt) ⭐ 214 — C; Linux kernel module and userspace prototype
 - [TCP-ENO spec](https://datatracker.ietf.org/doc/html/rfc8547) — framework specification (implementations integrated into tcpcrypt)
 
 **Security status:** Caution

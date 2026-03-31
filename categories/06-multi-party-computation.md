@@ -19,10 +19,10 @@
 Deployed in production via MP-SPDZ, SCALE-MAMBA, Sharemind, and Carbyne Stack across finance, healthcare, and government.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, implements 30+ MPC protocols including SPDZ, SPDZ2k, ABY3, and replicated SS
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, actively secure SPDZ with MAMBA scripting language
-- [ABY](https://github.com/encryptogroup/ABY) — C++, mixed Arithmetic/Boolean/Yao 2PC framework
-- [MOTION](https://github.com/encryptogroup/MOTION) — C++, GMW and BMR with mixed-protocol support
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, implements 30+ MPC protocols including SPDZ, SPDZ2k, ABY3, and replicated SS
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, actively secure SPDZ with MAMBA scripting language
+- [ABY](https://github.com/encryptogroup/ABY) ⭐ 493 — C++, mixed Arithmetic/Boolean/Yao 2PC framework
+- [MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, GMW and BMR with mixed-protocol support
 
 **Security status:** Secure
 SPDZ and ABY3 have rigorous security proofs under standard assumptions; parameter choices are well-understood.
@@ -51,9 +51,9 @@ Foundational protocols (GMW, BGW, SPDZ) are cornerstones of the MPC field with d
 OT extension is deployed in all major MPC frameworks (EMP, MP-SPDZ, MOTION) and is the primary communication primitive for 2PC/MPC.
 
 **Implementations:**
-- [emp-ot](https://github.com/emp-toolkit/emp-ot) — C++, optimized IKNP and SoftSpokenOT with hardware AES
-- [libOTe](https://github.com/osu-crypto/libOTe) — C++, comprehensive OT library (base OT, IKNP, Silent OT, SoftSpokenOT)
-- [MP-SPDZ OT](https://github.com/data61/MP-SPDZ) — C++, integrated OT extension for all MP-SPDZ protocols
+- [emp-ot](https://github.com/emp-toolkit/emp-ot) ⭐ 183 — C++, optimized IKNP and SoftSpokenOT with hardware AES
+- [libOTe](https://github.com/osu-crypto/libOTe) ⭐ 492 — C++, comprehensive OT library (base OT, IKNP, Silent OT, SoftSpokenOT)
+- [MP-SPDZ OT](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, integrated OT extension for all MP-SPDZ protocols
 
 **Security status:** Secure
 Base OT security relies on well-studied assumptions (DDH, ECDH); OT extension adds only symmetric-key assumptions.
@@ -84,9 +84,9 @@ Garbled circuits are deployed in production 2PC systems including EMP Toolkit, O
 
 **Implementations:**
 - [emp-toolkit](https://github.com/emp-toolkit) — C++, high-performance garbled circuit evaluation with half-gates and free-XOR
-- [ABY](https://github.com/encryptogroup/ABY) — C++, Yao's garbled circuits as one of three sharing types
-- [Obliv-C](https://github.com/samee/obliv-c) — C extension, compiles C programs to garbled circuits
-- [Fancy Garbling](https://github.com/GaloisInc/swanky/tree/master/fancy-garbling) — Rust, garbled circuit library in Galois swanky suite
+- [ABY](https://github.com/encryptogroup/ABY) ⭐ 493 — C++, Yao's garbled circuits as one of three sharing types
+- [Obliv-C](https://github.com/samee/obliv-c) ⭐ 184 — C extension, compiles C programs to garbled circuits
+- [Fancy Garbling](https://github.com/GaloisInc/swanky/tree/master/fancy-garbling) ⭐ 344 — Rust, garbled circuit library in Galois swanky suite
 
 **Security status:** Secure
 Half-gates achieve optimal 2-ciphertext AND gates with rigorous proofs; free-XOR is proven secure under circular correlation robustness.
@@ -113,9 +113,9 @@ Garbled circuits are the standard approach for constant-round 2PC; decades of op
 SecAgg is deployed in Google's Gboard federated learning and Apple's on-device learning pipelines at scale serving billions of users.
 
 **Implementations:**
-- [TensorFlow Federated](https://github.com/google-parfait/tensorflow-federated) — Python, includes SecAgg and SecAgg+ implementations
-- [PySyft](https://github.com/OpenMined/PySyft) — Python, secure aggregation for federated learning
-- [FATE](https://github.com/FederatedAI/FATE) — Python, federated AI platform with secure aggregation
+- [TensorFlow Federated](https://github.com/google-parfait/tensorflow-federated) ⭐ 2.4k — Python, includes SecAgg and SecAgg+ implementations
+- [PySyft](https://github.com/OpenMined/PySyft) ⭐ 9.9k — Python, secure aggregation for federated learning
+- [FATE](https://github.com/FederatedAI/FATE) ⭐ 6.1k — Python, federated AI platform with secure aggregation
 
 **Security status:** Secure
 SecAgg+ is proven secure against semi-honest adversaries with dropout tolerance; LWE-based FLAME provides post-quantum security.
@@ -141,9 +141,7 @@ SecAgg is the de facto standard for privacy-preserving federated learning; deplo
 DPF is used in Brave's STAR protocol and Google's Privacy Sandbox for private analytics, but broader deployment is still emerging.
 
 **Implementations:**
-- [libfss](https://github.com/google/distributed_point_functions) — C++, Google's DPF library used in Privacy Sandbox
-- [STAR](https://github.com/nicola/star) — Rust, Brave's STAR protocol using DPF for private aggregation
-- [fss-rs](https://github.com/pps-lab/fss) — Rust, function secret sharing library
+- [libfss](https://github.com/google/distributed_point_functions) ⭐ 79 — C++, Google's DPF library used in Privacy Sandbox
 
 **Security status:** Secure
 DPF security relies on standard PRG assumptions; well-studied with tight security reductions.
@@ -169,8 +167,8 @@ DPF is gaining traction in private analytics (Brave, Google); FSS for richer fun
 HSS remains primarily an academic construction; no production-quality implementations are widely deployed.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, includes experimental HSS-based protocols
-- [HSS implementation (BGI)](https://github.com/schoppmp/distributed-vector-ole) — C++, distributed vector OLE related to HSS constructions
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes experimental HSS-based protocols
+- [HSS implementation (BGI)](https://github.com/schoppmp/distributed-vector-ole) ⭐ 31 — C++, distributed vector OLE related to HSS constructions
 
 **Security status:** Secure
 DDH-based HSS is secure under standard assumptions; LWE-based HSS provides post-quantum security.
@@ -197,9 +195,9 @@ HSS is well-studied theoretically but has limited practical adoption; primarily 
 VOLE is integrated into research frameworks (EMP-VOLE, MP-SPDZ) and used as a building block for VOLE-ZK proofs, but standalone deployment is limited.
 
 **Implementations:**
-- [emp-zk (EMP-VOLE)](https://github.com/emp-toolkit/emp-zk) — C++, VOLE-based zero-knowledge proofs (Wolverine, QuickSilver)
-- [libOTe](https://github.com/osu-crypto/libOTe) — C++, includes VOLE generation via Silent OT
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, VOLE-based preprocessing for SPDZ protocols
+- [emp-zk (EMP-VOLE)](https://github.com/emp-toolkit/emp-zk) ⭐ 106 — C++, VOLE-based zero-knowledge proofs (Wolverine, QuickSilver)
+- [libOTe](https://github.com/osu-crypto/libOTe) ⭐ 492 — C++, includes VOLE generation via Silent OT
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, VOLE-based preprocessing for SPDZ protocols
 
 **Security status:** Secure
 VOLE security is based on well-studied LPN/LWE assumptions; PCG-based generation has rigorous security proofs.
@@ -226,9 +224,9 @@ VOLE is rapidly becoming the preferred correlation for modern MPC preprocessing 
 Silent OT is implemented in research libraries and integrated into MP-SPDZ; production deployment is beginning but not yet widespread.
 
 **Implementations:**
-- [libOTe](https://github.com/osu-crypto/libOTe) — C++, includes Silent OT (BCGI+) and Silver implementations
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, PCG-based preprocessing for SPDZ and SPDZ2k
-- [emp-ot](https://github.com/emp-toolkit/emp-ot) — C++, Silent OT support
+- [libOTe](https://github.com/osu-crypto/libOTe) ⭐ 492 — C++, includes Silent OT (BCGI+) and Silver implementations
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, PCG-based preprocessing for SPDZ and SPDZ2k
+- [emp-ot](https://github.com/emp-toolkit/emp-ot) ⭐ 183 — C++, Silent OT support
 
 **Security status:** Secure
 Security relies on LPN and Ring-LPN assumptions, which are well-studied; concrete parameter selection is maturing.
@@ -255,8 +253,8 @@ PCG/Silent OT is recognized as transformative for MPC communication efficiency; 
 Covert security and publicly auditable MPC remain primarily academic; no major production deployments exist.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, includes covert security protocol variants
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, supports covert security settings
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes covert security protocol variants
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, supports covert security settings
 
 **Security status:** Secure
 Covert security provides well-defined detection guarantees (probability epsilon); publicly auditable MPC adds post-hoc verification.
@@ -284,9 +282,9 @@ Covert security is well-understood theoretically but rarely chosen in practice �
 Async BFT protocols (DAG-Rider variants) are deployed in production blockchains including Aptos (Jolteon/Diem BFT) and Sui (Narwhal-Bullshark).
 
 **Implementations:**
-- [HoneyBadgerBFT](https://github.com/initc3/HoneyBadgerBFT-Python) — Python, reference implementation of async BFT
-- [Narwhal-Tusk](https://github.com/MystenLabs/narwhal) — Rust, DAG-based mempool and consensus (Mysten Labs/Sui)
-- [aptos-core](https://github.com/aptos-labs/aptos-core) — Rust, includes DAG-based consensus implementation
+- [HoneyBadgerBFT](https://github.com/initc3/HoneyBadgerBFT-Python) ⭐ 143 — Python, reference implementation of async BFT
+- [Narwhal-Tusk](https://github.com/MystenLabs/narwhal) ⭐ 179 — Rust, DAG-based mempool and consensus (Mysten Labs/Sui)
+- [aptos-core](https://github.com/aptos-labs/aptos-core) ⭐ 6.4k — Rust, includes DAG-based consensus implementation
 
 **Security status:** Secure
 Async BFT protocols have rigorous proofs for t < n/3 Byzantine tolerance; DAG-based variants maintain these guarantees.
@@ -363,8 +361,8 @@ YOSO is an active research area with interest from the blockchain community for 
 Secret-shared shuffle protocols are recent (2020-2025); implementations exist in research codebases but are not deployed at scale.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, includes secret-shared shuffle implementations
-- [ABY3](https://github.com/ladnir/aby3) — C++, includes shuffle protocols for 3-party setting
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes secret-shared shuffle implementations
+- [ABY3](https://github.com/ladnir/aby3) ⭐ 212 — C++, includes shuffle protocols for 3-party setting
 
 **Security status:** Secure
 Recent protocols (SLIDE 2025) achieve unconditional security under honest majority; malicious-secure variants have rigorous proofs.
@@ -391,7 +389,7 @@ Garbled RAM remains primarily theoretical with prototype implementations; not de
 
 **Implementations:**
 - [emp-toolkit](https://github.com/emp-toolkit) — C++, includes research implementations related to garbled circuit + ORAM
-- [Obliv-C FLORAM](https://github.com/samee/obliv-c) — C, practical ORAM in garbled circuit setting
+- [Obliv-C FLORAM](https://github.com/samee/obliv-c) ⭐ 184 — C, practical ORAM in garbled circuit setting
 
 **Security status:** Secure
 Security follows from garbled circuit and ORAM security; polylogarithmic overhead per memory access is proven.
@@ -417,9 +415,8 @@ Garbled RAM is well-studied theoretically but practical overhead remains high; s
 DPRF and TOPRF are deployed in threshold password authentication systems and distributed key management services.
 
 **Implementations:**
-- [VOPRF (Cloudflare)](https://github.com/cloudflare/circl) — Go, includes OPRF/VOPRF/TOPRF in CIRCL library
-- [threshold-bbs-plus](https://github.com/nicola/threshold-bbs-plus) — Rust, threshold PRF for BBS+ credentials
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, DPRF protocol implementations
+- [VOPRF (Cloudflare)](https://github.com/cloudflare/circl) ⭐ 1.6k — Go, includes OPRF/VOPRF/TOPRF in CIRCL library
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, DPRF protocol implementations
 
 **Security status:** Secure
 DDH-based DPRF and pairing-based DVRF have well-studied security reductions; TOPRF inherits OPRF security with threshold guarantees.
@@ -472,9 +469,9 @@ Streaming secure computation is a recognized theoretical contribution but remain
 Beaver triples are the core preprocessing primitive in virtually every deployed arithmetic MPC system (SPDZ, ABY, MOTION, MP-SPDZ).
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, multiple triple generation methods (MASCOT, Overdrive, PCG)
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, authenticated triple generation for SPDZ
-- [MOTION](https://github.com/encryptogroup/MOTION) — C++, Beaver triple-based multiplication for GMW/BMR
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, multiple triple generation methods (MASCOT, Overdrive, PCG)
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, authenticated triple generation for SPDZ
+- [MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, Beaver triple-based multiplication for GMW/BMR
 
 **Security status:** Secure
 Beaver's technique is information-theoretically secure given correct triple generation; authenticated variants (SPDZ MACs) provide malicious security.
@@ -500,9 +497,9 @@ Beaver triples are universally accepted as the standard technique for secure mul
 BMR is implemented in MOTION and MP-SPDZ; used in research benchmarks and some production deployments for high-latency networks.
 
 **Implementations:**
-- [MOTION](https://github.com/encryptogroup/MOTION) — C++, implements BMR with mixed-protocol support for n-party semi-honest
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, BMR protocol variants including BMR+SPDZ for malicious security
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, BMR with actively secure preprocessing
+- [MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, implements BMR with mixed-protocol support for n-party semi-honest
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, BMR protocol variants including BMR+SPDZ for malicious security
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, BMR with actively secure preprocessing
 
 **Security status:** Secure
 BMR with SPDZ preprocessing provides full malicious security; the original semi-honest construction is proven under standard assumptions.
@@ -528,9 +525,9 @@ BMR is a foundational constant-round MPC protocol with broad acceptance in the c
 MASCOT is the default preprocessing method in MP-SPDZ and is deployed in production MPC systems for malicious-security workloads.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, reference MASCOT implementation with optimizations
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, MASCOT-compatible preprocessing
-- [Carbyne Stack (Klyshko)](https://github.com/carbynestack/klyshko) — Java/Kotlin, cloud-native MASCOT triple generation
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, reference MASCOT implementation with optimizations
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, MASCOT-compatible preprocessing
+- [Carbyne Stack (Klyshko)](https://github.com/carbynestack/klyshko) ⭐ 4 — Java/Kotlin, cloud-native MASCOT triple generation
 
 **Security status:** Secure
 MASCOT provides full malicious security with rigorous proofs; 200x faster than original SPDZ FHE-based preprocessing.
@@ -557,9 +554,9 @@ MASCOT is the standard choice for OT-based malicious-secure preprocessing; widel
 Cut-and-choose techniques are implemented in research frameworks; largely superseded by authenticated garbling (WRK) in new deployments.
 
 **Implementations:**
-- [emp-ag2pc](https://github.com/emp-toolkit/emp-ag2pc) — C++, implements authenticated garbling (WRK) which supersedes cut-and-choose
-- [JustGarble](https://github.com/irdan/justGarble) — C, early garbled circuit implementation supporting cut-and-choose
-- [Obliv-C](https://github.com/samee/obliv-c) — C, supports malicious-secure 2PC via cut-and-choose
+- [emp-ag2pc](https://github.com/emp-toolkit/emp-ag2pc) ⭐ 33 — C++, implements authenticated garbling (WRK) which supersedes cut-and-choose
+- [JustGarble](https://github.com/irdan/justGarble) ⭐ 15 — C, early garbled circuit implementation supporting cut-and-choose
+- [Obliv-C](https://github.com/samee/obliv-c) ⭐ 184 — C, supports malicious-secure 2PC via cut-and-choose
 
 **Security status:** Superseded
 Cut-and-choose is technically secure but authenticated garbling (WRK 2017) achieves malicious 2PC more efficiently with a single garbled circuit.
@@ -586,10 +583,10 @@ Cut-and-choose is a well-established technique with decades of study; WRK authen
 CrypTen and ABY3 have working implementations for private ML inference/training; production deployment is limited to specific use cases.
 
 **Implementations:**
-- [CrypTen](https://github.com/facebookresearch/CrypTen) — Python/PyTorch, Facebook's MPC framework for private ML
-- [ABY3](https://github.com/ladnir/aby3) — C++, 3-party ML inference and training
-- [Piranha](https://github.com/ucbrise/piranha) — C++/CUDA, GPU-accelerated secure ML training
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, supports ML workloads across multiple MPC protocols
+- [CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.6k — Python/PyTorch, Facebook's MPC framework for private ML
+- [ABY3](https://github.com/ladnir/aby3) ⭐ 212 — C++, 3-party ML inference and training
+- [Piranha](https://github.com/ucbrise/piranha) ⭐ 104 — C++/CUDA, GPU-accelerated secure ML training
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, supports ML workloads across multiple MPC protocols
 
 **Security status:** Secure
 Protocols have rigorous security proofs; fixed-point arithmetic introduces small approximation errors but no security degradation.
@@ -615,9 +612,7 @@ MPC-based ML is an active research area with growing industry interest; CrypTen 
 Mental poker protocols are implemented in blockchain-based card game platforms; traditional (non-blockchain) implementations are rare.
 
 **Implementations:**
-- [mental-poker](https://github.com/nicola/mental-poker) — JavaScript, implementation of Barnett-Smart mental poker
-- [zkPoker](https://github.com/nicola/zkpoker) — Rust, zero-knowledge poker using ZK proofs
-- [ROYALE](https://github.com/perun-network/ROYALE) — Go, blockchain-based card game framework
+No notable open-source implementations available.
 
 **Security status:** Secure
 Barnett-Smart protocol is proven secure under DDH; blockchain variants inherit smart contract security assumptions.
@@ -643,8 +638,8 @@ Mental poker is historically significant but has limited deployment; blockchain 
 TinyOT is implemented in research frameworks and serves as the foundation for MASCOT; not typically deployed standalone.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, includes TinyOT-based protocols
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, TinyOT-inspired preprocessing
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes TinyOT-based protocols
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, TinyOT-inspired preprocessing
 - [emp-toolkit](https://github.com/emp-toolkit) — C++, OT-MAC-based protocols descended from TinyOT
 
 **Security status:** Secure
@@ -672,7 +667,7 @@ Sharemind is commercially deployed by Cybernetica for Estonian government statis
 
 **Implementations:**
 - [Sharemind MPC](https://sharemind.cyber.ee/) — Commercial platform by Cybernetica; 3-party additive secret sharing
-- [SecreC](https://github.com/sharemind-sdk/secrec) — Domain-specific language for Sharemind programs
+- [SecreC](https://github.com/sharemind-sdk/secrec) ⭐ 6 — Domain-specific language for Sharemind programs
 - [Sharemind SDK](https://github.com/sharemind-sdk) — Open-source components of the Sharemind development kit
 
 **Security status:** Secure
@@ -699,8 +694,8 @@ Sharemind is one of the oldest and most trusted deployed MPC platforms; used in 
 SCALE-MAMBA is the reference academic MPC framework at KU Leuven; used extensively in research but less in production than MP-SPDZ.
 
 **Implementations:**
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, full SPDZ framework with MAMBA scripting language
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, successor framework with broader protocol support
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, full SPDZ framework with MAMBA scripting language
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, successor framework with broader protocol support
 
 **Security status:** Secure
 Actively secure with rigorous proofs for dishonest and honest majority settings; includes actively secure distributed key setup.
@@ -726,9 +721,9 @@ SCALE-MAMBA is a well-established academic framework; widely cited in MPC resear
 Carbyne Stack is open-source and used by Bosch Research for cross-organization analytics; early-stage production deployment.
 
 **Implementations:**
-- [Carbyne Stack](https://github.com/carbynestack/carbynestack) — Java/Kotlin, cloud-native MPC platform on Kubernetes
-- [Klyshko](https://github.com/carbynestack/klyshko) — Kotlin, correlated randomness generation operator
-- [Ephemeral](https://github.com/carbynestack/ephemeral) — Go, serverless MPC compute on Knative
+- [Carbyne Stack](https://github.com/carbynestack/carbynestack) ⭐ 91 — Java/Kotlin, cloud-native MPC platform on Kubernetes
+- [Klyshko](https://github.com/carbynestack/klyshko) ⭐ 4 — Kotlin, correlated randomness generation operator
+- [Ephemeral](https://github.com/carbynestack/ephemeral) ⭐ 13 — Go, serverless MPC compute on Knative
 
 **Security status:** Secure
 Inherits SPDZ2k security properties via MP-SPDZ backend; cloud deployment adds operational security considerations.
@@ -782,9 +777,9 @@ EMP is one of the most widely used MPC research libraries; production-grade code
 
 **Implementations:**
 - [emp-toolkit](https://github.com/emp-toolkit) — C++, modular MPC library suite
-- [emp-ot](https://github.com/emp-toolkit/emp-ot) — C++, optimized OT extension
-- [emp-ag2pc](https://github.com/emp-toolkit/emp-ag2pc) — C++, authenticated garbling 2PC
-- [emp-zk](https://github.com/emp-toolkit/emp-zk) — C++, VOLE-based zero-knowledge
+- [emp-ot](https://github.com/emp-toolkit/emp-ot) ⭐ 183 — C++, optimized OT extension
+- [emp-ag2pc](https://github.com/emp-toolkit/emp-ag2pc) ⭐ 33 — C++, authenticated garbling 2PC
+- [emp-zk](https://github.com/emp-toolkit/emp-zk) ⭐ 106 — C++, VOLE-based zero-knowledge
 
 **Security status:** Secure
 Implements well-studied protocols (WRK authenticated garbling, IKNP OT, Wolverine/QuickSilver) with rigorous security proofs.
@@ -812,9 +807,8 @@ EMP is the standard benchmarking library for garbled circuits and VOLE-ZK in aca
 DKLS19 and GG20 are deployed in production MPC wallets (Fireblocks, ZenGo, Coinbase) and hardware security modules for cryptocurrency custody.
 
 **Implementations:**
-- [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) — Rust, GG18/GG20 threshold ECDSA (ZenGo)
-- [tss-lib](https://github.com/bnb-chain/tss-lib) — Go, threshold ECDSA/EdDSA library (Binance)
-- [DKLS](https://github.com/nicola/dkls) — Rust, DKLS18/19 2PC ECDSA implementation
+- [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, GG18/GG20 threshold ECDSA (ZenGo)
+- [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, threshold ECDSA/EdDSA library (Binance)
 
 **Security status:** Secure
 GG20 and DKLS19 have UC-secure proofs; deployed implementations are audited by professional security firms.
@@ -842,8 +836,7 @@ Threshold ECDSA (GG20, DKLS) is the industry standard for MPC-based cryptocurren
 Blockchain-enforced fairness is deployed in atomic swap protocols; purely cryptographic fairness via gradual release is rarely used in practice.
 
 **Implementations:**
-- [FairSwap](https://github.com/nicola/fairswap) — Solidity, fair exchange via smart contracts
-- [Bitcoin-based fair 2PC](https://github.com/nicola/fair-2pc-bitcoin) — Python, Bentov-Kumaresan style fair MPC on Bitcoin
+No notable open-source implementations available.
 
 **Security status:** Secure
 Gradual release provides provable fairness guarantees; blockchain-enforced fairness assumes rational adversaries and smart contract correctness.
@@ -870,8 +863,8 @@ Fair MPC is well-studied theoretically; blockchain-based approaches are practica
 Robust MPC techniques are used in DKG ceremonies and threshold decryption services where abort is unacceptable.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, includes robust MPC protocols with cheater identification
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, supports honest-majority robust protocols
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes robust MPC protocols with cheater identification
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, supports honest-majority robust protocols
 
 **Security status:** Secure
 Robust MPC with cheater identification has rigorous proofs for t < n/3 (IT) and t < n/2 (computational); dispute-control techniques are well-established.
@@ -899,9 +892,9 @@ Robust MPC is essential for long-running distributed protocols; the identify-the
 Lattice-based preprocessing (Overdrive) is implemented in MP-SPDZ and SCALE-MAMBA; post-quantum PCG is still research-stage.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, includes Overdrive (LWE-based) preprocessing for SPDZ
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, BGV/BFV-based triple generation
-- [Lattigo](https://github.com/tuneinsight/lattigo) — Go, lattice-based cryptography library usable for MPC preprocessing
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes Overdrive (LWE-based) preprocessing for SPDZ
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, BGV/BFV-based triple generation
+- [Lattigo](https://github.com/tuneinsight/lattigo) ⭐ 1.4k — Go, lattice-based cryptography library usable for MPC preprocessing
 
 **Security status:** Secure
 Security relies on well-studied LWE/RLWE assumptions; provides post-quantum security when appropriately parameterized.
@@ -928,9 +921,9 @@ Lattice-based MPC is an active research frontier; Overdrive is practically deplo
 GMW is implemented in production frameworks (MOTION, ABY, MP-SPDZ); superseded by SPDZ/ABY3 for most practical deployments.
 
 **Implementations:**
-- [MOTION](https://github.com/encryptogroup/MOTION) — C++, production GMW implementation with hardware-accelerated OT
-- [ABY](https://github.com/encryptogroup/ABY) — C++, GMW (Boolean) as one of three sharing types
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, semi-honest GMW and malicious variants
+- [MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, production GMW implementation with hardware-accelerated OT
+- [ABY](https://github.com/encryptogroup/ABY) ⭐ 493 — C++, GMW (Boolean) as one of three sharing types
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, semi-honest GMW and malicious variants
 
 **Security status:** Secure
 GMW is proven secure in the semi-honest model; the ZK compiler upgrade to malicious security is proven but impractical.
@@ -958,9 +951,9 @@ GMW is a foundational MPC protocol taught in every cryptography course; the MOTI
 Both models are deployed in production: honest-majority (ABY3, Sharemind) and dishonest-majority (SPDZ, MASCOT) across industry.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, supports both honest and dishonest majority protocols under one API
-- [ABY3](https://github.com/ladnir/aby3) — C++, honest-majority 3PC
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, both security models
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, supports both honest and dishonest majority protocols under one API
+- [ABY3](https://github.com/ladnir/aby3) ⭐ 212 — C++, honest-majority 3PC
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, both security models
 
 **Security status:** Secure
 Both models have rigorous security definitions and proofs; the trade-offs between them are well-characterized.
@@ -988,9 +981,9 @@ The honest/dishonest majority distinction is fundamental to MPC theory and pract
 Oblivious matrix operations are implemented in MOTION and used in private ML inference systems, but standalone deployment is limited.
 
 **Implementations:**
-- [MOTION](https://github.com/encryptogroup/MOTION) — C++, SIMD-packed secret-shared matrix multiply
-- [CrypTen](https://github.com/facebookresearch/CrypTen) — Python/PyTorch, includes secure matrix operations for ML
-- [Piranha](https://github.com/ucbrise/piranha) — C++/CUDA, GPU-accelerated secure matrix operations
+- [MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, SIMD-packed secret-shared matrix multiply
+- [CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.6k — Python/PyTorch, includes secure matrix operations for ML
+- [Piranha](https://github.com/ucbrise/piranha) ⭐ 104 — C++/CUDA, GPU-accelerated secure matrix operations
 
 **Security status:** Secure
 Security follows from underlying MPC protocol security; fixed-point approximations introduce small numerical errors but no security loss.
@@ -1018,8 +1011,7 @@ Oblivious linear algebra is a key building block for private ML; growing adoptio
 Private graph algorithms remain expensive and are limited to academic prototypes; no production deployments exist.
 
 **Implementations:**
-- [GraphSC](https://github.com/nicola/graphsc) — C++, oblivious graph computation framework
-- [Obliv-C](https://github.com/samee/obliv-c) — C, can express graph algorithms as 2PC programs
+- [Obliv-C](https://github.com/samee/obliv-c) ⭐ 184 — C, can express graph algorithms as 2PC programs
 
 **Security status:** Secure
 Security follows from underlying MPC/ORAM security; data-dependent access patterns are hidden by ORAM at significant cost.
@@ -1047,10 +1039,9 @@ Private graph algorithms are theoretically well-studied but practical overhead l
 Cheetah, BOLT, and SecureNN have working implementations; deployed in research settings but not yet at production scale.
 
 **Implementations:**
-- [SecureNN](https://github.com/snwagh/securenn-public) — C++, 3-party private neural network inference
-- [Cheetah](https://github.com/Alibaba-Gemini-Lab/OpenCheetah) — C++, fast 2-party private inference (Alibaba)
-- [CrypTen](https://github.com/facebookresearch/CrypTen) — Python, private inference and training framework
-- [Iron](https://github.com/nicola/iron) — C++, private transformer inference
+- [SecureNN](https://github.com/snwagh/securenn-public) ⭐ 131 — C++, 3-party private neural network inference
+- [Cheetah](https://github.com/Alibaba-Gemini-Lab/OpenCheetah) ⭐ 215 — C++, fast 2-party private inference (Alibaba)
+- [CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.6k — Python, private inference and training framework
 
 **Security status:** Secure
 Protocols have rigorous security proofs; non-linear layer approximations introduce accuracy loss but no security degradation.
@@ -1078,10 +1069,10 @@ Private neural network inference is a rapidly growing field; Cheetah and BOLT re
 VOLE-PSI and KKRT are deployed in real-world PSI applications; circuit-PSI is used in production MPC pipelines.
 
 **Implementations:**
-- [VOLE-PSI](https://github.com/Visa-Research/volepsi) — C++, Visa Research's VOLE-based PSI implementation
-- [libPSI](https://github.com/osu-crypto/libPSI) — C++, comprehensive PSI library (KKRT, OPRF-based, circuit-PSI)
+- [VOLE-PSI](https://github.com/Visa-Research/volepsi) ⭐ 135 — C++, Visa Research's VOLE-based PSI implementation
+- [libPSI](https://github.com/osu-crypto/libPSI) ⭐ 186 — C++, comprehensive PSI library (KKRT, OPRF-based, circuit-PSI)
 - [emp-toolkit](https://github.com/emp-toolkit) — C++, garbled-circuit-based PSI
-- [PSI (OpenMined)](https://github.com/OpenMined/PSI) — C++/Python, private set intersection library
+- [PSI (OpenMined)](https://github.com/OpenMined/PSI) ⭐ 151 — C++/Python, private set intersection library
 
 **Security status:** Secure
 Semi-honest PSI (KKRT, VOLE-PSI) and malicious variants have rigorous security proofs; concrete parameters are well-studied.
@@ -1109,9 +1100,9 @@ PSI is one of the most practically deployed MPC primitives; KKRT and VOLE-PSI ar
 Private decision tree evaluation is implemented in research frameworks; production deployment is limited to specific healthcare/finance use cases.
 
 **Implementations:**
-- [ABY3](https://github.com/ladnir/aby3) — C++, includes private random forest evaluation
-- [CrypTen](https://github.com/facebookresearch/CrypTen) — Python, supports decision tree inference
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, can express decision tree evaluation
+- [ABY3](https://github.com/ladnir/aby3) ⭐ 212 — C++, includes private random forest evaluation
+- [CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.6k — Python, supports decision tree inference
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, can express decision tree evaluation
 
 **Security status:** Secure
 Protocols are proven secure; the main challenge is efficiency of data-dependent tree traversal, not security.
@@ -1139,9 +1130,7 @@ Private decision trees are well-studied in the PPML literature; practical for sp
 Belenios is deployed in real elections (French universities, IACR elections); Helios has been used for organizational voting.
 
 **Implementations:**
-- [Belenios](https://github.com/belenios/belenios) — OCaml, verifiable voting system with threshold decryption
-- [Helios](https://github.com/benadida/helios-server) — Python, web-based verifiable voting
-- [Civitas](https://github.com/nicola/civitas) — Java, coercion-resistant e-voting prototype
+- [Helios](https://github.com/benadida/helios-server) ⭐ 888 — Python, web-based verifiable voting
 
 **Security status:** Caution
 Voting systems are secure under their threat models but require careful operational deployment; coercion resistance remains challenging in practice.
@@ -1169,9 +1158,9 @@ Belenios and Helios are the standard academic e-voting systems; used in real ele
 FATE and PySyft have real enterprise customers; full MPC-based fraud detection (vs FL+DP) is in early deployment.
 
 **Implementations:**
-- [FATE](https://github.com/FederatedAI/FATE) — Python, WeBank's federated AI platform with secure aggregation
-- [PySyft](https://github.com/OpenMined/PySyft) — Python, MPC+FL library for privacy-preserving analytics
-- [CrypTen](https://github.com/facebookresearch/CrypTen) — Python, demonstrated cross-institution fraud classification
+- [FATE](https://github.com/FederatedAI/FATE) ⭐ 6.1k — Python, WeBank's federated AI platform with secure aggregation
+- [PySyft](https://github.com/OpenMined/PySyft) ⭐ 9.9k — Python, MPC+FL library for privacy-preserving analytics
+- [CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.6k — Python, demonstrated cross-institution fraud classification
 
 **Security status:** Secure
 Underlying MPC/FL protocols are proven secure; DP output perturbation provides additional privacy guarantees.
@@ -1199,8 +1188,8 @@ Privacy-preserving fraud detection is an active industry application; FATE and P
 Async MPC techniques are used in DKG ceremonies and DeFi threshold services; standalone async MPC frameworks are less common.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, includes async-compatible protocol variants
-- [HoneyBadgerMPC](https://github.com/initc3/HoneyBadgerMPC) — Python, async MPC framework building on HoneyBadgerBFT
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes async-compatible protocol variants
+- [HoneyBadgerMPC](https://github.com/initc3/HoneyBadgerMPC) ⭐ 137 — Python, async MPC framework building on HoneyBadgerBFT
 
 **Security status:** Secure
 Async MPC achieves t < n/3 (IT) and t < n/2 (computational) with rigorous proofs; the async model is well-formalized.
@@ -1226,9 +1215,9 @@ Async MPC is fundamental to distributed systems that cannot assume synchrony; de
 Replicated SS 3PC is deployed in ABY3 and MP-SPDZ's replicated backends; used in privacy-preserving ML services.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, replicated secret sharing backends (semi-honest and malicious)
-- [ABY3](https://github.com/ladnir/aby3) — C++, replicated SS for 3-party ML workloads
-- [MOTION](https://github.com/encryptogroup/MOTION) — C++, includes replicated SS protocols
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, replicated secret sharing backends (semi-honest and malicious)
+- [ABY3](https://github.com/ladnir/aby3) ⭐ 212 — C++, replicated SS for 3-party ML workloads
+- [MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, includes replicated SS protocols
 
 **Security status:** Secure
 Information-theoretically secure in the semi-honest model; Furukawa et al. achieves malicious security with post-execution verification.
@@ -1255,9 +1244,8 @@ Replicated SS 3PC is the fastest known semi-honest MPC protocol; widely adopted 
 MPCitH is used in the Picnic post-quantum signature scheme (NIST alternate candidate); SDitH is a NIST PQC candidate.
 
 **Implementations:**
-- [Picnic](https://github.com/microsoft/Picnic) — C, Microsoft's MPCitH-based post-quantum signature
-- [SDitH](https://github.com/sdith/sdith) — C, Syndrome Decoding in the Head signature scheme
-- [Limbo](https://github.com/nicola/limbo) — C++, MPCitH ZK proof system
+- [Picnic](https://github.com/microsoft/Picnic) ⭐ 168 — C, Microsoft's MPCitH-based post-quantum signature
+- [SDitH](https://github.com/sdith/sdith) ⭐ 5 — C, Syndrome Decoding in the Head signature scheme
 
 **Security status:** Secure
 MPCitH has rigorous security reductions from MPC privacy to ZK soundness; SDitH security relies on well-studied code-based assumptions.
@@ -1284,8 +1272,7 @@ MPCitH is a recognized paradigm for post-quantum ZK; SDitH is under NIST PQC eva
 SWIFT and Fantastic Four are implemented in MP-SPDZ; used in PPML research benchmarks but not yet widely deployed in production.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, includes SWIFT (3PC) and Fantastic Four (4PC) protocols
-- [SWIFT](https://github.com/rishimaas/swift) — C++, robust 3PC PPML framework
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes SWIFT (3PC) and Fantastic Four (4PC) protocols
 
 **Security status:** Secure
 Both protocols provide full malicious security with guaranteed output delivery under honest majority; rigorous proofs at USENIX Security 2021.
@@ -1312,10 +1299,8 @@ SWIFT and Fantastic Four are well-received in the PPML community; the 4-party mo
 LowMC is used in Picnic (NIST PQC alternate candidate); MiMC and Poseidon are deployed in ZK-SNARK circuits on Ethereum and other blockchains.
 
 **Implementations:**
-- [Picnic](https://github.com/microsoft/Picnic) — C, uses LowMC as the underlying block cipher
-- [MiMC-Feistel](https://github.com/nicola/mimc-feistel) — Solidity, MiMC for Ethereum smart contracts
-- [Ciminion reference](https://github.com/nicola/ciminion) — Sage, reference implementation of Ciminion
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, includes MPC-friendly cipher evaluations
+- [Picnic](https://github.com/microsoft/Picnic) ⭐ 168 — C, uses LowMC as the underlying block cipher
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes MPC-friendly cipher evaluations
 
 **Security status:** Caution
 LowMC and MiMC have been subject to algebraic attacks; parameter recommendations have been updated. Newer designs (Ciminion) are less studied.
@@ -1341,9 +1326,8 @@ MPC-friendly ciphers are a recognized design category; LowMC (Picnic) and MiMC (
 Conclave has been demonstrated with Sharemind for real analytics; Senate and Secrecy are academic prototypes.
 
 **Implementations:**
-- [Conclave](https://github.com/multiparty/conclave) — Python, hybrid cleartext/MPC query compiler for relational analytics
-- [Secrecy](https://github.com/multiparty/secrecy) — C, secret-shared relational algebra engine
-- [Senate](https://github.com/nicola/senate) — C++, maliciously secure SQL analytics
+- [Conclave](https://github.com/multiparty/conclave) ⭐ 100 — Python, hybrid cleartext/MPC query compiler for relational analytics
+- [Secrecy](https://github.com/multiparty/secrecy) ⭐ 0 — C, secret-shared relational algebra engine
 
 **Security status:** Secure
 Hybrid execution is proven secure: cleartext portions see only public data, MPC portions use standard secret sharing security.
@@ -1369,9 +1353,7 @@ Conclave and Secrecy are well-cited in the MPC-for-analytics literature; the hyb
 Obliv-C is a well-maintained research tool used in numerous academic papers; production use is limited due to GC overhead.
 
 **Implementations:**
-- [Obliv-C](https://github.com/samee/obliv-c) — C extension, compiles annotated C to garbled circuits
-- [ObliVM](https://github.com/nicola/oblivm) — Java, alternative MPC programming framework with automatic ORAM
-- [FLORAM](https://github.com/nicola/floram) — C, FSS-based ORAM built on Obliv-C
+- [Obliv-C](https://github.com/samee/obliv-c) ⭐ 184 — C extension, compiles annotated C to garbled circuits
 
 **Security status:** Secure
 The type system enforces that secret data cannot leak through control flow; compiled protocols inherit garbled circuit security.
@@ -1397,9 +1379,8 @@ Obliv-C pioneered the MPC compiler approach; influential in the design of subseq
 Delphi and CrypTFlow2 are academic prototypes with working implementations; not deployed at production scale.
 
 **Implementations:**
-- [Delphi](https://github.com/mc2-project/delphi) — Rust, preprocessing-model private inference with architecture co-design
-- [CrypTFlow2](https://github.com/mpc-msri/EzPC) — C++, end-to-end TensorFlow-to-MPC compiler (Microsoft Research)
-- [Gazelle](https://github.com/chiraag/gazelle_demo) — C++, RLWE+GC hybrid private inference
+- [Delphi](https://github.com/mc2-project/delphi) ⭐ 132 — Rust, preprocessing-model private inference with architecture co-design
+- [CrypTFlow2](https://github.com/mpc-msri/EzPC) ⭐ 444 — C++, end-to-end TensorFlow-to-MPC compiler (Microsoft Research)
 
 **Security status:** Secure
 Protocols have rigorous 2PC security proofs; the ReLU-to-polynomial approximation affects accuracy but not security.
@@ -1425,8 +1406,8 @@ Delphi and CrypTFlow2 are well-cited in the PPML literature; the preprocessing-m
 Multipars (2024) is a recent advance; MHz2k is implemented in research codebases but not deployed in production.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, includes ring-based preprocessing variants (Overdrive2k, SPDZ2k)
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, supports ring-based MPC protocols
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes ring-based preprocessing variants (Overdrive2k, SPDZ2k)
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, supports ring-based MPC protocols
 
 **Security status:** Secure
 Security builds on well-studied BGV/BFV lattice assumptions; ring operations preserve SPDZ2k security guarantees.
@@ -1452,9 +1433,9 @@ Ring-based preprocessing is recognized as important for practical ML workloads; 
 CGGMP21 is deployed in production MPC wallets (Fireblocks MPC-CMP, ZenGo, Entropy Network) for cryptocurrency custody.
 
 **Implementations:**
-- [Synedrion](https://github.com/entropyxyz/synedrion) — Rust, audited CGGMP21 implementation (Entropy Network)
-- [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) — Rust, includes CGGMP21 (ZenGo)
-- [tss-lib](https://github.com/bnb-chain/tss-lib) — Go, threshold ECDSA including CGGMP-style protocols
+- [Synedrion](https://github.com/entropyxyz/synedrion) ⭐ 85 — Rust, audited CGGMP21 implementation (Entropy Network)
+- [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, includes CGGMP21 (ZenGo)
+- [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, threshold ECDSA including CGGMP-style protocols
 
 **Security status:** Secure
 UC-secure with identifiable aborts; presigning mechanism is proven secure; implementations are professionally audited.
@@ -1479,9 +1460,9 @@ CGGMP21 is the industry standard for threshold ECDSA in MPC wallets; endorsed by
 SPDZ is the industry-standard MPC protocol family; deployed via MP-SPDZ, SCALE-MAMBA, and Carbyne Stack in production systems.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, reference implementation of 30+ SPDZ variants
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, actively secure SPDZ with MAMBA scripting
-- [Carbyne Stack](https://github.com/carbynestack/carbynestack) — Java/Kotlin, cloud-native SPDZ2k deployment
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, reference implementation of 30+ SPDZ variants
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, actively secure SPDZ with MAMBA scripting
+- [Carbyne Stack](https://github.com/carbynestack/carbynestack) ⭐ 91 — Java/Kotlin, cloud-native SPDZ2k deployment
 
 **Security status:** Secure
 SPDZ has rigorous active security proofs under standard assumptions; MAC-based online phase provides information-theoretic verification.
@@ -1506,9 +1487,9 @@ SPDZ is the de facto standard for dishonest-majority MPC; universally referenced
 ABY3 is deployed in privacy-preserving ML services and integrated into commercial analytics products.
 
 **Implementations:**
-- [ABY](https://github.com/encryptogroup/ABY) — C++, mixed A/B/Y 2PC framework (TU Darmstadt)
-- [ABY3](https://github.com/ladnir/aby3) — C++, 3-party mixed-protocol framework
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, implements ABY3 and related mixed-protocol variants
+- [ABY](https://github.com/encryptogroup/ABY) ⭐ 493 — C++, mixed A/B/Y 2PC framework (TU Darmstadt)
+- [ABY3](https://github.com/ladnir/aby3) ⭐ 212 — C++, 3-party mixed-protocol framework
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, implements ABY3 and related mixed-protocol variants
 
 **Security status:** Secure
 ABY has rigorous security proofs for share conversion protocols; ABY3 extends to honest-majority 3PC with well-studied guarantees.
@@ -1533,7 +1514,7 @@ ABY/ABY3 are standard references for mixed-protocol MPC; ABY3 is the leading fra
 TinyOT is implemented in MP-SPDZ and forms the basis of MASCOT; not typically deployed standalone but underpins production systems.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, TinyOT protocol and MASCOT (arithmetic extension)
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, TinyOT protocol and MASCOT (arithmetic extension)
 - [emp-toolkit](https://github.com/emp-toolkit) — C++, OT-MAC protocols inspired by TinyOT
 
 **Security status:** Secure
@@ -1559,8 +1540,8 @@ TinyOT is a foundational protocol in the OT-based active-security lineage; direc
 BMR is implemented in MOTION and MP-SPDZ; used for constant-round MPC in high-latency network settings.
 
 **Implementations:**
-- [MOTION](https://github.com/encryptogroup/MOTION) — C++, BMR with mixed-protocol support
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, BMR + SPDZ for malicious-secure constant-round MPC
+- [MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, BMR with mixed-protocol support
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, BMR + SPDZ for malicious-secure constant-round MPC
 
 **Security status:** Secure
 BMR with SPDZ preprocessing provides malicious security; original protocol proven under standard assumptions.
@@ -1587,7 +1568,7 @@ Sharemind is commercially deployed by Cybernetica for Estonian government privac
 **Implementations:**
 - [Sharemind MPC](https://sharemind.cyber.ee/) — Commercial platform by Cybernetica
 - [Sharemind SDK](https://github.com/sharemind-sdk) — Open-source SDK components
-- [SecreC](https://github.com/sharemind-sdk/secrec) — Domain-specific language for Sharemind
+- [SecreC](https://github.com/sharemind-sdk/secrec) ⭐ 6 — Domain-specific language for Sharemind
 
 **Security status:** Secure
 Information-theoretically secure in the honest-but-curious 3-party model with non-colluding servers.

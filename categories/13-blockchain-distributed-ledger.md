@@ -17,9 +17,9 @@
 Bitcoin PoW secures >$1T in assets; Chia Proof of Space mainnet since 2021
 
 **Implementations:**
-- [Bitcoin Core](https://github.com/bitcoin/bitcoin) — C++, reference Bitcoin PoW implementation
-- [Chia Blockchain](https://github.com/Chia-Network/chia-blockchain) — Python, Proof of Space and Time implementation
-- [zcashd](https://github.com/zcash/zcash) — C++, Equihash PoW for Zcash
+- [Bitcoin Core](https://github.com/bitcoin/bitcoin) ⭐ 88k — C++, reference Bitcoin PoW implementation
+- [Chia Blockchain](https://github.com/Chia-Network/chia-blockchain) ⭐ 10k — Python, Proof of Space and Time implementation
+- [zcashd](https://github.com/zcash/zcash) ⭐ 5.4k — C++, Equihash PoW for Zcash
 
 **Security status:** Secure
 SHA-256 PoW is secure at current difficulty; Equihash memory-hardness limits ASIC advantage
@@ -45,9 +45,9 @@ Bitcoin PoW is the longest-running and most battle-tested consensus mechanism; P
 EIP-4844 (proto-danksharding with KZG) is live on Ethereum; full DAS with 2D sampling is under development
 
 **Implementations:**
-- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) — Python, Ethereum DAS specification
-- [celestia-node](https://github.com/celestiaorg/celestia-node) — Go, FRI-based DAS for Celestia
-- [availproject/avail](https://github.com/availproject/avail) — Rust, KZG-based DAS for Avail
+- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) ⭐ 3.9k — Python, Ethereum DAS specification
+- [celestia-node](https://github.com/celestiaorg/celestia-node) ⭐ 996 — Go, FRI-based DAS for Celestia
+- [availproject/avail](https://github.com/availproject/avail) ⭐ 796 — Rust, KZG-based DAS for Avail
 
 **Security status:** Secure
 Information-theoretic guarantees from Reed-Solomon erasure coding; KZG requires trusted setup (performed for Ethereum); FRI is transparent
@@ -74,9 +74,9 @@ Core component of Ethereum's scaling roadmap (Danksharding); Celestia and Avail 
 Shutter Network deployed on Gnosis Chain; Penumbra mainnet launched 2024; most systems are in testnet or early production
 
 **Implementations:**
-- [shutter-network/shutter](https://github.com/shutter-network/shutter) — Go, threshold encryption for MEV prevention
-- [anoma/ferveo](https://github.com/anoma/ferveo) — Rust, threshold DKG for Penumbra flow encryption
-- [penumbra-zone/penumbra](https://github.com/penumbra-zone/penumbra) — Rust, private DEX with threshold-encrypted mempools
+- [shutter-network/shutter](https://github.com/shutter-network/shutter) ⭐ 69 — Go, threshold encryption for MEV prevention
+- [anoma/ferveo](https://github.com/anoma/ferveo) ⭐ 84 — Rust, threshold DKG for Penumbra flow encryption
+- [penumbra-zone/penumbra](https://github.com/penumbra-zone/penumbra) ⭐ 476 — Rust, private DEX with threshold-encrypted mempools
 
 **Security status:** Caution
 Security depends on threshold committee liveness and honest majority; timing side-channels may leak ordering information
@@ -116,10 +116,10 @@ Active area of research and development; endorsed by Ethereum researchers; Shutt
 Live on Ethereum mainnet since September 2022 (The Merge); secures ~$40B+ staked ETH
 
 **Implementations:**
-- [prysmaticlabs/prysm](https://github.com/prysmaticlabs/prysm) — Go, Ethereum consensus client implementing Casper FFG
-- [sigp/lighthouse](https://github.com/sigp/lighthouse) — Rust, Ethereum consensus client
-- [ChainSafe/lodestar](https://github.com/ChainSafe/lodestar) — TypeScript, Ethereum consensus client
-- [status-im/nimbus-eth2](https://github.com/status-im/nimbus-eth2) — Nim, Ethereum consensus client
+- [prysmaticlabs/prysm](https://github.com/prysmaticlabs/prysm) ⭐ 3.7k — Go, Ethereum consensus client implementing Casper FFG
+- [sigp/lighthouse](https://github.com/sigp/lighthouse) ⭐ 3.4k — Rust, Ethereum consensus client
+- [ChainSafe/lodestar](https://github.com/ChainSafe/lodestar) ⭐ 1.4k — TypeScript, Ethereum consensus client
+- [status-im/nimbus-eth2](https://github.com/status-im/nimbus-eth2) ⭐ 648 — Nim, Ethereum consensus client
 
 **Security status:** Secure
 Reverting a finalized block requires burning >= 1/3 of staked ETH (~$15B+); quadratic slashing punishes coordinated attacks
@@ -162,9 +162,9 @@ Core Ethereum consensus protocol; reviewed by hundreds of researchers; formalise
 Activated on Bitcoin mainnet November 2021 (block 709,632); ~65% of transactions use Taproot by 2025
 
 **Implementations:**
-- [bitcoin/bitcoin](https://github.com/bitcoin/bitcoin) — C++, reference implementation with BIP 340/341/342 support
-- [bitcoin-core/secp256k1](https://github.com/bitcoin-core/secp256k1) — C, optimised Schnorr signature library (BIP 340)
-- [btcsuite/btcd](https://github.com/btcsuite/btcd) — Go, alternative Bitcoin full node with Taproot
+- [bitcoin/bitcoin](https://github.com/bitcoin/bitcoin) ⭐ 88k — C++, reference implementation with BIP 340/341/342 support
+- [bitcoin-core/secp256k1](https://github.com/bitcoin-core/secp256k1) ⭐ 2.4k — C, optimised Schnorr signature library (BIP 340)
+- [btcsuite/btcd](https://github.com/btcsuite/btcd) ⭐ 6.7k — Go, alternative Bitcoin full node with Taproot
 
 **Security status:** Secure
 BIP 340 Schnorr signatures are provably secure under the discrete log assumption on secp256k1; deterministic nonce generation with auxiliary randomness protects against fault attacks
@@ -196,6 +196,7 @@ Bitcoin consensus-activated soft fork (BIP 340/341/342); widely adopted by walle
 | Diffie-Hellman (ECDH) | Share blinding factors between sender/receiver |
 
 **Implementations:**
+No notable open-source implementations available.
 
 | Project | Year | Note |
 |---------|------|------|
@@ -211,9 +212,9 @@ Bitcoin consensus-activated soft fork (BIP 340/341/342); widely adopted by walle
 Grin and Beam mainnets since 2019; Litecoin MWEB extension blocks live since 2022
 
 **Implementations:**
-- [mimblewimble/grin](https://github.com/mimblewimble/grin) — Rust, pure MimbleWimble blockchain
-- [BeamMW/beam](https://github.com/BeamMW/beam) — C++, MimbleWimble with Lelantus extensions
-- [litecoin-project/litecoin](https://github.com/litecoin-project/litecoin) — C++, Litecoin with MWEB extension blocks
+- [mimblewimble/grin](https://github.com/mimblewimble/grin) ⭐ 5.1k — Rust, pure MimbleWimble blockchain
+- [BeamMW/beam](https://github.com/BeamMW/beam) ⭐ 723 — C++, MimbleWimble with Lelantus extensions
+- [litecoin-project/litecoin](https://github.com/litecoin-project/litecoin) ⭐ 4.6k — C++, Litecoin with MWEB extension blocks
 
 **Security status:** Caution
 Cryptographically sound (Pedersen commitments + Bulletproofs); however, transaction graph privacy is weakened by active sniffer attacks that link senders and receivers before cut-through
@@ -241,9 +242,9 @@ Well-studied protocol with academic pedigree; limited adoption beyond Grin, Beam
 Deployed in Monero (default since 2017), Liquid Network (2018), and Grin/Beam (2019)
 
 **Implementations:**
-- [monero-project/monero](https://github.com/monero-project/monero) — C++, RingCT with Bulletproofs range proofs
-- [ElementsProject/elements](https://github.com/ElementsProject/elements) — C++, Liquid CT with Confidential Assets
-- [mimblewimble/grin](https://github.com/mimblewimble/grin) — Rust, MimbleWimble CT-native protocol
+- [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, RingCT with Bulletproofs range proofs
+- [ElementsProject/elements](https://github.com/ElementsProject/elements) ⭐ 1.1k — C++, Liquid CT with Confidential Assets
+- [mimblewimble/grin](https://github.com/mimblewimble/grin) ⭐ 5.1k — Rust, MimbleWimble CT-native protocol
 
 **Security status:** Secure
 Pedersen commitment hiding relies on discrete log hardness; homomorphic balance check is information-theoretically sound; range proofs prevent inflation
@@ -271,9 +272,9 @@ Well-established in privacy-coin ecosystem; reviewed by leading cryptographers; 
 Bulletproofs deployed in Monero and Liquid; Bulletproofs+ in Monero since 2022; SNARK-embedded range checks in ZK rollups
 
 **Implementations:**
-- [dalek-cryptography/bulletproofs](https://github.com/dalek-cryptography/bulletproofs) — Rust, Bulletproofs implementation using Ristretto
-- [monero-project/monero](https://github.com/monero-project/monero) — C++, Bulletproofs+ range proofs in production
-- [ElementsProject/secp256k1-zkp](https://github.com/ElementsProject/secp256k1-zkp) — C, Bulletproofs for Liquid Network
+- [dalek-cryptography/bulletproofs](https://github.com/dalek-cryptography/bulletproofs) ⭐ 1.1k — Rust, Bulletproofs implementation using Ristretto
+- [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, Bulletproofs+ range proofs in production
+- [ElementsProject/secp256k1-zkp](https://github.com/ElementsProject/secp256k1-zkp) ⭐ 419 — C, Bulletproofs for Liquid Network
 
 **Security status:** Secure
 Bulletproofs security relies on the discrete log assumption; no trusted setup required; well-studied with formal proofs
@@ -300,9 +301,9 @@ Bulletproofs are the standard range proof in production privacy systems; publish
 HTLCs deployed in Lightning Network and cross-chain atomic swap tools; adaptor signature swaps in development
 
 **Implementations:**
-- [lightningnetwork/lnd](https://github.com/lightningnetwork/lnd) — Go, Lightning Network daemon with HTLC support
-- [ElementsProject/lightning](https://github.com/ElementsProject/lightning) — C, Core Lightning with HTLC and submarine swaps
-- [comit-network/xmr-btc-swap](https://github.com/comit-network/xmr-btc-swap) — Rust, BTC-XMR atomic swap using adaptor signatures
+- [lightningnetwork/lnd](https://github.com/lightningnetwork/lnd) ⭐ 8.1k — Go, Lightning Network daemon with HTLC support
+- [ElementsProject/lightning](https://github.com/ElementsProject/lightning) ⭐ 3.0k — C, Core Lightning with HTLC and submarine swaps
+- [comit-network/xmr-btc-swap](https://github.com/comit-network/xmr-btc-swap) ⭐ 714 — Rust, BTC-XMR atomic swap using adaptor signatures
 
 **Security status:** Secure
 HTLC security reduces to hash preimage resistance and timelock enforcement; adaptor signatures rely on discrete log assumptions
@@ -373,10 +374,10 @@ SendPacket → CommitPacket (store hash in state)
 115+ chains in Cosmos IBC network (2024); ~$1B+ daily volume; production since 2021
 
 **Implementations:**
-- [cosmos/ibc-go](https://github.com/cosmos/ibc-go) — Go, canonical IBC implementation for Cosmos SDK
-- [cosmos/ibc-rs](https://github.com/cosmos/ibc-rs) — Rust, IBC implementation for non-Go chains
-- [composablefi/composable-ibc](https://github.com/ComposableFi/composable-ibc) — Rust, IBC for Polkadot/Substrate and beyond
-- [informalsystems/hermes](https://github.com/informalsystems/hermes) — Rust, IBC relayer
+- [cosmos/ibc-go](https://github.com/cosmos/ibc-go) ⭐ 635 — Go, canonical IBC implementation for Cosmos SDK
+- [cosmos/ibc-rs](https://github.com/cosmos/ibc-rs) ⭐ 223 — Rust, IBC implementation for non-Go chains
+- [composablefi/composable-ibc](https://github.com/ComposableFi/composable-ibc) ⭐ 94 — Rust, IBC for Polkadot/Substrate and beyond
+- [informalsystems/hermes](https://github.com/informalsystems/hermes) ⭐ 491 — Rust, IBC relayer
 
 **Security status:** Secure
 Security reduces to light client verification of counterparty chain consensus; no trusted intermediary; no known exploits
@@ -445,10 +446,10 @@ sigHash = keccak256(
 Finalized on Ethereum (2021); used by every major DeFi protocol, wallet, and dApp for off-chain signing
 
 **Implementations:**
-- [MetaMask](https://github.com/MetaMask/metamask-extension) — JavaScript, wallet implementing EIP-712 `eth_signTypedData`
-- [ethers-rs](https://github.com/gakonst/ethers-rs) — Rust, Ethereum library with EIP-712 support
-- [ethers.js](https://github.com/ethers-io/ethers.js) — JavaScript/TypeScript, EIP-712 typed data signing
-- [OpenZeppelin/openzeppelin-contracts](https://github.com/OpenZeppelin/openzeppelin-contracts) — Solidity, EIP-712 base contracts
+- [MetaMask](https://github.com/MetaMask/metamask-extension) ⭐ 13k — JavaScript, wallet implementing EIP-712 `eth_signTypedData`
+- [ethers-rs](https://github.com/gakonst/ethers-rs) ⭐ 2.5k — Rust, Ethereum library with EIP-712 support
+- [ethers.js](https://github.com/ethers-io/ethers.js) ⭐ 8.7k — JavaScript/TypeScript, EIP-712 typed data signing
+- [OpenZeppelin/openzeppelin-contracts](https://github.com/OpenZeppelin/openzeppelin-contracts) ⭐ 27k — Solidity, EIP-712 base contracts
 
 **Security status:** Secure
 Domain separator with chainId and verifyingContract prevents replay; `\x19\x01` prefix prevents confusion with transaction hashes; well-audited implementations
@@ -486,9 +487,9 @@ Ethereum EIP standard (finalized); universally adopted by wallets (MetaMask, Led
 Tendermint powers 270+ Cosmos chains; HotStuff derivatives power Aptos and Sui mainnets
 
 **Implementations:**
-- [cometbft/cometbft](https://github.com/cometbft/cometbft) — Go, Tendermint/CometBFT consensus engine
-- [aptos-labs/aptos-core](https://github.com/aptos-labs/aptos-core) — Rust, Jolteon/DiemBFT v4 (HotStuff derivative)
-- [MystenLabs/sui](https://github.com/MystenLabs/sui) — Rust, Narwhal-Bullshark consensus (HotStuff-inspired)
+- [cometbft/cometbft](https://github.com/cometbft/cometbft) ⭐ 874 — Go, Tendermint/CometBFT consensus engine
+- [aptos-labs/aptos-core](https://github.com/aptos-labs/aptos-core) ⭐ 6.4k — Rust, Jolteon/DiemBFT v4 (HotStuff derivative)
+- [MystenLabs/sui](https://github.com/MystenLabs/sui) ⭐ 7.6k — Rust, Narwhal-Bullshark consensus (HotStuff-inspired)
 
 **Security status:** Secure
 Safety under <= floor((n-1)/3) Byzantine faults; liveness under partial synchrony; threshold-BLS aggregation secure under co-CDH
@@ -514,8 +515,8 @@ HotStuff published at PODC 2019; Tendermint is the most deployed BFT engine; bot
 Algorand sortition is in production; Whisk is proposed for Ethereum but not yet deployed
 
 **Implementations:**
-- [algorand/go-algorand](https://github.com/algorand/go-algorand) — Go, VRF-based cryptographic sortition in production
-- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) — Python, Whisk SSLE specification (proposed)
+- [algorand/go-algorand](https://github.com/algorand/go-algorand) ⭐ 1.4k — Go, VRF-based cryptographic sortition in production
+- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) ⭐ 3.9k — Python, Whisk SSLE specification (proposed)
 
 **Security status:** Secure
 VRF-based selection is provably unpredictable; Whisk shuffle provides stronger privacy but adds protocol complexity
@@ -541,8 +542,7 @@ Algorand sortition is well-reviewed and deployed; Whisk is under active Ethereum
 Academic proposals (Aequitas, Themis); no large-scale mainnet deployment; BEAT-MEV accepted at USENIX Security 2025
 
 **Implementations:**
-- [initc3/Aequitas](https://github.com/initc3/aequitas) — Research prototype for order-fair consensus
-- [shutter-network/shutter](https://github.com/shutter-network/shutter) — Go, MEV prevention infrastructure (related)
+- [shutter-network/shutter](https://github.com/shutter-network/shutter) ⭐ 69 — Go, MEV prevention infrastructure (related)
 
 **Security status:** Caution
 Fairness guarantees depend on network synchrony assumptions; weaker under asynchronous conditions; active area of formal analysis
@@ -591,10 +591,10 @@ Sapling uses two circuits: Spend (proves ownership + nullifier) and Output (prov
 Deployed in Zcash Sapling (2018), Filecoin (2020), Semaphore, Tornado Cash; billions of proofs generated
 
 **Implementations:**
-- [zcash/librustzcash](https://github.com/zcash/librustzcash) — Rust, Zcash Sapling Groth16 prover/verifier
-- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) — Rust, generic Groth16 implementation
-- [iden3/snarkjs](https://github.com/iden3/snarkjs) — JavaScript, Groth16 prover/verifier for browser and Node.js
-- [filecoin-project/bellperson](https://github.com/filecoin-project/bellperson) — Rust, GPU-accelerated Groth16 for Filecoin
+- [zcash/librustzcash](https://github.com/zcash/librustzcash) ⭐ 387 — Rust, Zcash Sapling Groth16 prover/verifier
+- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) ⭐ 339 — Rust, generic Groth16 implementation
+- [iden3/snarkjs](https://github.com/iden3/snarkjs) ⭐ 2.0k — JavaScript, Groth16 prover/verifier for browser and Node.js
+- [filecoin-project/bellperson](https://github.com/filecoin-project/bellperson) ⭐ 202 — Rust, GPU-accelerated Groth16 for Filecoin
 
 **Security status:** Secure
 Provably sound under the generic group model and q-type assumptions on BLS12-381; requires trusted setup (circuit-specific SRS); setup MPC ceremonies mitigate toxic waste risk
@@ -642,10 +642,10 @@ Each commitment transaction is asymmetric — Alice's version of state N makes h
 ~5,000 BTC capacity, ~15,000 nodes (2025); Taproot channels rolling out via LND and CLN
 
 **Implementations:**
-- [lightningnetwork/lnd](https://github.com/lightningnetwork/lnd) — Go, Lightning Network Daemon by Lightning Labs
-- [ElementsProject/lightning](https://github.com/ElementsProject/lightning) — C, Core Lightning (CLN) by Blockstream
-- [ACINQ/eclair](https://github.com/ACINQ/eclair) — Scala, Lightning implementation by ACINQ
-- [lightningdevkit/rust-lightning](https://github.com/lightningdevkit/rust-lightning) — Rust, Lightning Development Kit (LDK)
+- [lightningnetwork/lnd](https://github.com/lightningnetwork/lnd) ⭐ 8.1k — Go, Lightning Network Daemon by Lightning Labs
+- [ElementsProject/lightning](https://github.com/ElementsProject/lightning) ⭐ 3.0k — C, Core Lightning (CLN) by Blockstream
+- [ACINQ/eclair](https://github.com/ACINQ/eclair) ⭐ 1.3k — Scala, Lightning implementation by ACINQ
+- [lightningdevkit/rust-lightning](https://github.com/lightningdevkit/rust-lightning) ⭐ 1.3k — Rust, Lightning Development Kit (LDK)
 
 **Security status:** Caution
 Penalty mechanism is game-theoretically secure; requires watchtower or online presence to detect cheating; Eltoo (LN-Symmetry) awaits BIP 118 activation for improved security model
@@ -693,11 +693,11 @@ Sequencer posts state root + compressed calldata on L1. During the 7-day challen
 Optimism and Arbitrum hold ~$10B+ TVL (2025); zkSync Era and Starknet are leading ZK rollups in production
 
 **Implementations:**
-- [ethereum-optimism/optimism](https://github.com/ethereum-optimism/optimism) — Go/Solidity, OP Stack optimistic rollup
-- [OffchainLabs/nitro](https://github.com/OffchainLabs/nitro) — Go/Rust, Arbitrum Nitro optimistic rollup
-- [matter-labs/zksync-era](https://github.com/matter-labs/zksync-era) — Rust, zkSync Era ZK rollup
-- [starkware-libs/cairo](https://github.com/starkware-libs/cairo) — Rust, Cairo language for Starknet ZK rollup
-- [scroll-tech/scroll](https://github.com/scroll-tech/scroll) — Go/Rust, Scroll zkEVM rollup
+- [ethereum-optimism/optimism](https://github.com/ethereum-optimism/optimism) ⭐ 6.4k — Go/Solidity, OP Stack optimistic rollup
+- [OffchainLabs/nitro](https://github.com/OffchainLabs/nitro) ⭐ 906 — Go/Rust, Arbitrum Nitro optimistic rollup
+- [matter-labs/zksync-era](https://github.com/matter-labs/zksync-era) ⭐ 3.2k — Rust, zkSync Era ZK rollup
+- [starkware-libs/cairo](https://github.com/starkware-libs/cairo) ⭐ 1.9k — Rust, Cairo language for Starknet ZK rollup
+- [scroll-tech/scroll](https://github.com/scroll-tech/scroll) ⭐ 746 — Go/Rust, Scroll zkEVM rollup
 
 **Security status:** Caution
 ZK rollups inherit Ethereum security via validity proofs; optimistic rollups rely on fraud-proof windows (7 days) and at least one honest watcher; sequencer centralisation is a current concern across all rollups
@@ -746,9 +746,9 @@ No local state needed — witness carries all necessary proofs
 Devnet testing ongoing (2024-2025); full Ethereum mainnet deployment expected post-Pectra upgrade
 
 **Implementations:**
-- [gballet/go-verkle](https://github.com/gballet/go-verkle) — Go, Verkle tree library for Ethereum
-- [crate-crypto/go-ipa](https://github.com/crate-crypto/go-ipa) — Go, Inner Product Argument for Verkle proofs
-- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) — Python, Ethereum Verkle tree specification
+- [gballet/go-verkle](https://github.com/gballet/go-verkle) ⭐ 236 — Go, Verkle tree library for Ethereum
+- [crate-crypto/go-ipa](https://github.com/crate-crypto/go-ipa) ⭐ 37 — Go, Inner Product Argument for Verkle proofs
+- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) ⭐ 3.9k — Python, Ethereum Verkle tree specification
 
 **Security status:** Secure
 Pedersen vector commitments over Bandersnatch curve; no trusted setup; security relies on discrete log assumption; formally analysed
@@ -807,9 +807,9 @@ Both PoSt variants are also Groth16 SNARKs, compressing large Merkle proofs to ~
 Filecoin mainnet since October 2020; ~1.7 EiB stored; ~2,000 storage providers running continuous PoSt proofs
 
 **Implementations:**
-- [filecoin-project/rust-fil-proofs](https://github.com/filecoin-project/rust-fil-proofs) — Rust, Filecoin proof system (PoRep/PoSt)
-- [filecoin-project/bellperson](https://github.com/filecoin-project/bellperson) — Rust, GPU-accelerated Groth16 prover for Filecoin
-- [filecoin-project/lotus](https://github.com/filecoin-project/lotus) — Go, Filecoin full node with proof generation
+- [filecoin-project/rust-fil-proofs](https://github.com/filecoin-project/rust-fil-proofs) ⭐ 503 — Rust, Filecoin proof system (PoRep/PoSt)
+- [filecoin-project/bellperson](https://github.com/filecoin-project/bellperson) ⭐ 202 — Rust, GPU-accelerated Groth16 prover for Filecoin
+- [filecoin-project/lotus](https://github.com/filecoin-project/lotus) ⭐ 3.0k — Go, Filecoin full node with proof generation
 
 **Security status:** Secure
 SDR encoding is intentionally sequential (O(n log n) hashes); Groth16 proofs are computationally sound; Poseidon hash is SNARK-optimised with conservative parameters
@@ -876,10 +876,10 @@ Rollup submits blob transaction
 Live on Ethereum mainnet since Cancun-Deneb upgrade, March 13 2024; reduced rollup fees 5-10x
 
 **Implementations:**
-- [ethereum/c-kzg-4844](https://github.com/ethereum/c-kzg-4844) — C, KZG library for EIP-4844 blob verification
-- [crate-crypto/kzg](https://github.com/crate-crypto/go-kzg-4844) — Go, KZG implementation for EIP-4844
-- [prysmaticlabs/prysm](https://github.com/prysmaticlabs/prysm) — Go, Ethereum consensus client with blob support
-- [sigp/lighthouse](https://github.com/sigp/lighthouse) — Rust, Ethereum consensus client with blob support
+- [ethereum/c-kzg-4844](https://github.com/ethereum/c-kzg-4844) ⭐ 167 — C, KZG library for EIP-4844 blob verification
+- [crate-crypto/kzg](https://github.com/crate-crypto/go-kzg-4844) ⭐ 12 — Go, KZG implementation for EIP-4844
+- [prysmaticlabs/prysm](https://github.com/prysmaticlabs/prysm) ⭐ 3.7k — Go, Ethereum consensus client with blob support
+- [sigp/lighthouse](https://github.com/sigp/lighthouse) ⭐ 3.4k — Rust, Ethereum consensus client with blob support
 
 **Security status:** Secure
 KZG commitment security relies on q-SDH assumption on BLS12-381; trusted setup ceremony had 141,416 participants (sound if >= 1 honest); blob data pruned after ~18 days
@@ -922,9 +922,8 @@ Recursive SNARKs require verifying one proof inside the circuit of another. This
 Mina mainnet launched March 2021; Kimchi proof system replaced Groth16 in 2022; zkApps live
 
 **Implementations:**
-- [o1-labs/mina](https://github.com/o1-labs/mina) — OCaml, Mina Protocol node with Pickles recursive proofs
-- [o1-labs/proof-systems](https://github.com/o1-labs/proof-systems) — Rust, Kimchi proof system and Pasta curves
-- [o1-labs/snarkyjs](https://github.com/o1-labs/o1js) — TypeScript, o1js SDK for zkApp development
+- [o1-labs/proof-systems](https://github.com/o1-labs/proof-systems) ⭐ 458 — Rust, Kimchi proof system and Pasta curves
+- [o1-labs/snarkyjs](https://github.com/o1-labs/o1js) ⭐ 602 — TypeScript, o1js SDK for zkApp development
 
 **Security status:** Secure
 IPA commitment scheme over Pasta curves has no trusted setup; Kimchi (PLONK variant) security under algebraic group model; recursive accumulation is formally analysed
@@ -968,8 +967,8 @@ Every ~400,000 iterations (~400 ms), the current `(count, stateₙ)` is checkpoi
 Deployed on Solana mainnet since March 2020; ~50,000 TPS; one of the highest-throughput L1s
 
 **Implementations:**
-- [solana-labs/solana](https://github.com/solana-labs/solana) — Rust, Solana validator with PoH implementation
-- [anza-xyz/agave](https://github.com/anza-xyz/agave) — Rust, Anza validator client (Solana fork)
+- [solana-labs/solana](https://github.com/solana-labs/solana) ⭐ 14k — Rust, Solana validator with PoH implementation
+- [anza-xyz/agave](https://github.com/anza-xyz/agave) ⭐ 1.7k — Rust, Anza validator client (Solana fork)
 
 **Security status:** Caution
 PoH provides verifiable ordering but not consensus safety alone (Tower BFT provides that); SHA-256 sequential hash chain is secure but leader can censor/reorder within their slot
@@ -1027,9 +1026,7 @@ Key property: GRANDPA finalizes entire chain prefixes in one message round — i
 Polkadot mainnet since May 2020; BEEFY finality gadget deployed for bridges (2023); powers 50+ parachains
 
 **Implementations:**
-- [nickvdS/polkadot-sdk](https://github.com/nickvdS/polkadot-sdk) — Rust, Polkadot SDK with BABE/GRANDPA/BEEFY
-- [nickvdS/polkadot-sdk (Substrate)](https://github.com/nickvdS/polkadot-sdk/tree/master/substrate) — Rust, Substrate framework with pluggable consensus
-- [nickvdS/finality-grandpa](https://github.com/nickvdS/finality-grandpa) — Rust, GRANDPA finality gadget implementation
+No notable open-source implementations available.
 
 **Security status:** Secure
 Safe under <= 1/3 Byzantine stake for both BABE and GRANDPA; GRANDPA tolerates <= 1/5 Byzantine nodes under asynchrony; VRF-based slot assignment prevents targeted DoS
@@ -1086,10 +1083,10 @@ Verification:         e(σ, G₂) == e(H(m), PK)   [one pairing product check]
 Live on Ethereum mainnet since Altair (October 2021); ~500,000 validators producing aggregate signatures every epoch
 
 **Implementations:**
-- [supranational/blst](https://github.com/supranational/blst) — C/Assembly, high-performance BLS12-381 library used by most Ethereum clients
-- [prysmaticlabs/prysm](https://github.com/prysmaticlabs/prysm) — Go, Ethereum consensus client with BLS aggregation
-- [herumi/bls](https://github.com/herumi/bls) — C++, BLS signature library
-- [sigp/lighthouse](https://github.com/sigp/lighthouse) — Rust, Ethereum consensus client with BLS aggregation
+- [supranational/blst](https://github.com/supranational/blst) ⭐ 554 — C/Assembly, high-performance BLS12-381 library used by most Ethereum clients
+- [prysmaticlabs/prysm](https://github.com/prysmaticlabs/prysm) ⭐ 3.7k — Go, Ethereum consensus client with BLS aggregation
+- [herumi/bls](https://github.com/herumi/bls) ⭐ 319 — C++, BLS signature library
+- [sigp/lighthouse](https://github.com/sigp/lighthouse) ⭐ 3.4k — Rust, Ethereum consensus client with BLS aggregation
 
 **Security status:** Secure
 BDN scheme is provably secure against rogue-key attacks under co-CDH on BLS12-381; Ethereum uses proof-of-possession at validator deposit; 128-bit security level
@@ -1137,9 +1134,9 @@ Wrapping the sync-committee BLS verification in a SNARK converts Helios's output
 Helios (Rust) in production for Ethereum RPC verification; Telepathy deployed on EVM chains (2023); SP1-Helios (2024)
 
 **Implementations:**
-- [a16z/helios](https://github.com/a16z/helios) — Rust, trustless Ethereum light client
-- [succinctlabs/telepathy-contracts](https://github.com/succinctlabs/telepathy-contracts) — Solidity, on-chain SNARK-verified Ethereum state proofs
-- [succinctlabs/sp1-helios](https://github.com/succinctlabs/sp1-helios) — Rust, RISC-V zkVM wrapped Helios
+- [a16z/helios](https://github.com/a16z/helios) ⭐ 2.1k — Rust, trustless Ethereum light client
+- [succinctlabs/telepathy-contracts](https://github.com/succinctlabs/telepathy-contracts) ⭐ 80 — Solidity, on-chain SNARK-verified Ethereum state proofs
+- [succinctlabs/sp1-helios](https://github.com/succinctlabs/sp1-helios) ⭐ 81 — Rust, RISC-V zkVM wrapped Helios
 
 **Security status:** Caution
 Trust reduces to sync committee assumption (>= 2/3 of 512-member committee honest); weaker than full consensus but sufficient for most cross-chain applications
@@ -1201,9 +1198,9 @@ BLS12-381 pairing arithmetic is expensive inside most SNARK arithmetizations bec
 Succinct Telepathy deployed on mainnet (2023); other systems (Polymer, Union) in early production or testnet
 
 **Implementations:**
-- [succinctlabs/telepathy-contracts](https://github.com/succinctlabs/telepathy-contracts) — Solidity, zkBridge contracts for Ethereum state proofs
-- [polymerdevs/monomer](https://github.com/polymerdao/monomer) — Go, IBC + ZK proofs for Ethereum-Cosmos bridging
-- [unionlabs/union](https://github.com/unionlabs/union) — Rust, CometBLS + SNARK bridge for Cosmos-Ethereum
+- [succinctlabs/telepathy-contracts](https://github.com/succinctlabs/telepathy-contracts) ⭐ 80 — Solidity, zkBridge contracts for Ethereum state proofs
+- [polymerdevs/monomer](https://github.com/polymerdao/monomer) ⭐ 30 — Go, IBC + ZK proofs for Ethereum-Cosmos bridging
+- [unionlabs/union](https://github.com/unionlabs/union) ⭐ 74k — Rust, CometBLS + SNARK bridge for Cosmos-Ethereum
 
 **Security status:** Secure
 Trust reduced to SNARK soundness + source chain consensus; no multisig, no oracle, no bribable committee; strongest bridge trust model
@@ -1265,9 +1262,7 @@ Each output amount `v` is committed as `C = v·H + r·G` (Pedersen, homomorphic)
 Default for all Monero transactions since 2017; CLSAG deployed October 2020; ring size 16 since 2022
 
 **Implementations:**
-- [monero-project/monero](https://github.com/monero-project/monero) — C++, full Monero node with CLSAG + Bulletproofs
-- [ArcticProtocol/Monero-RCT-Library](https://github.com/ArcticProtocol/ring-signatures) — Reference ring signature implementations
-- [monerujo/xmrto](https://github.com/ArcticProtocol/ring-signatures) — Various language implementations of Monero primitives
+- [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, full Monero node with CLSAG + Bulletproofs
 
 **Security status:** Caution
 CLSAG ring signatures hide sender among 16 decoys; anonymity set limited by ring size; statistical analysis and heuristics can reduce effective anonymity; Bulletproofs range proofs are secure
@@ -1326,10 +1321,10 @@ Orchard replaces Sapling's Spend/Output circuits (Groth16 over BLS12-381) with H
 Deployed in Zcash Orchard (NU5, May 2022); halo2 library used by Scroll, Polygon zkEVM, and Axiom
 
 **Implementations:**
-- [zcash/halo2](https://github.com/zcash/halo2) — Rust, Zcash's halo2 proof system (IPA backend)
-- [privacy-scaling-explorations/halo2](https://github.com/privacy-scaling-explorations/halo2) — Rust, PSE fork with KZG backend for Ethereum zkEVMs
-- [scroll-tech/halo2](https://github.com/scroll-tech/halo2) — Rust, Scroll's halo2 fork for zkEVM circuits
-- [zcash/librustzcash](https://github.com/zcash/librustzcash) — Rust, Zcash Orchard shielded pool using halo2
+- [zcash/halo2](https://github.com/zcash/halo2) ⭐ 895 — Rust, Zcash's halo2 proof system (IPA backend)
+- [privacy-scaling-explorations/halo2](https://github.com/privacy-scaling-explorations/halo2) ⭐ 244 — Rust, PSE fork with KZG backend for Ethereum zkEVMs
+- [scroll-tech/halo2](https://github.com/scroll-tech/halo2) ⭐ 46 — Rust, Scroll's halo2 fork for zkEVM circuits
+- [zcash/librustzcash](https://github.com/zcash/librustzcash) ⭐ 387 — Rust, Zcash Orchard shielded pool using halo2
 
 **Security status:** Secure
 IPA commitment scheme requires no trusted setup; accumulation-based recursion is formally analysed; PLONKish arithmetization is well-studied; Zcash Orchard has been audited
@@ -1380,9 +1375,9 @@ Ethereum Beacon chain finalises the block
 MEV-Boost (Flashbots, 2022) runs on >90% of Ethereum blocks; ePBS (EIP-7732) under research for future fork
 
 **Implementations:**
-- [flashbots/mev-boost](https://github.com/flashbots/mev-boost) — Go, MEV-Boost relay software for Ethereum validators
-- [flashbots/mev-boost-relay](https://github.com/flashbots/mev-boost-relay) — Go, relay infrastructure for PBS
-- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) — Python, ePBS (EIP-7732) specification
+- [flashbots/mev-boost](https://github.com/flashbots/mev-boost) ⭐ 1.4k — Go, MEV-Boost relay software for Ethereum validators
+- [flashbots/mev-boost-relay](https://github.com/flashbots/mev-boost-relay) ⭐ 492 — Go, relay infrastructure for PBS
+- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) ⭐ 3.9k — Python, ePBS (EIP-7732) specification
 
 **Security status:** Caution
 MEV-Boost requires trusting the relay not to equivocate; ePBS (EIP-7732) will eliminate relay trust via on-chain commitment; inclusion lists restore censorship resistance
@@ -1437,9 +1432,9 @@ Block submitted to target chain (Ethereum, Polygon, …)
 MEV-Boost in production; SUAVE Rigil testnet launched 2024; TEE-based block building in early devnet stage
 
 **Implementations:**
-- [flashbots/mev-boost](https://github.com/flashbots/mev-boost) — Go, production MEV marketplace
-- [flashbots/suave-geth](https://github.com/flashbots/suave-geth) — Go, SUAVE execution node (modified geth)
-- [flashbots/suapp-examples](https://github.com/flashbots/suapp-examples) — Solidity, example SUAVE applications
+- [flashbots/mev-boost](https://github.com/flashbots/mev-boost) ⭐ 1.4k — Go, production MEV marketplace
+- [flashbots/suave-geth](https://github.com/flashbots/suave-geth) ⭐ 201 — Go, SUAVE execution node (modified geth)
+- [flashbots/suapp-examples](https://github.com/flashbots/suapp-examples) ⭐ 57 — Solidity, example SUAVE applications
 
 **Security status:** Caution
 SUAVE relies on Intel SGX/TDX TEE; TEE side-channel vulnerabilities (Spectre, Foreshadow) are a known risk; remote attestation verifies code integrity but not hardware invulnerability
@@ -1483,9 +1478,9 @@ A validator key `sk` is split into `n` shares `sk_1, …, sk_n` using a `(t, n)`
 Obol and SSV have validators on Ethereum mainnet (2024); tens of thousands of ETH secured via DVT
 
 **Implementations:**
-- [ObolNetwork/charon](https://github.com/ObolNetwork/charon) — Go, Obol DVT middleware client
-- [ssvlabs/ssv](https://github.com/ssvlabs/ssv) — Go, SSV Network DVT protocol
-- [ssvlabs/ssv-dkg](https://github.com/ssvlabs/ssv-dkg) — Go, SSV distributed key generation tool
+- [ObolNetwork/charon](https://github.com/ObolNetwork/charon) ⭐ 219 — Go, Obol DVT middleware client
+- [ssvlabs/ssv](https://github.com/ssvlabs/ssv) ⭐ 216 — Go, SSV Network DVT protocol
+- [ssvlabs/ssv-dkg](https://github.com/ssvlabs/ssv-dkg) ⭐ 18 — Go, SSV distributed key generation tool
 
 **Security status:** Secure
 Threshold BLS signing ensures no single node holds the full key; DKG eliminates dealer trust; distributed slashing protection prevents equivocation; Beacon chain cannot distinguish DVT from normal validators
@@ -1540,9 +1535,9 @@ Because the VDF takes longer than the reveal window, the last revealer cannot co
 RANDAO is live on Ethereum PoS; VDF integration awaits ASIC hardware development and protocol specification
 
 **Implementations:**
-- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) — Python, RANDAO specification in Ethereum PoS
-- [ethereum/research](https://github.com/ethereum/research) — Python, VDF research and MinRoot specification
-- [prysmaticlabs/prysm](https://github.com/prysmaticlabs/prysm) — Go, RANDAO implementation in Prysm consensus client
+- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) ⭐ 3.9k — Python, RANDAO specification in Ethereum PoS
+- [ethereum/research](https://github.com/ethereum/research) ⭐ 1.9k — Python, VDF research and MinRoot specification
+- [prysmaticlabs/prysm](https://github.com/prysmaticlabs/prysm) ⭐ 3.7k — Go, RANDAO implementation in Prysm consensus client
 
 **Security status:** Caution
 RANDAO alone has last-revealer bias (small but non-zero); VDF eliminates bias but requires dedicated ASIC hardware; MinRoot VDF security under active analysis
@@ -1589,10 +1584,9 @@ RANDAO is deployed as Ethereum's randomness source; VDF integration is endorsed 
 Mina's Pickles is the most prominent production IVC; Nova and HyperNova integrated into zkVM prototypes (SP1, RISC Zero)
 
 **Implementations:**
-- [microsoft/Nova](https://github.com/microsoft/Nova) — Rust, Nova folding scheme by Microsoft Research
-- [lurk-lab/lurk-rs](https://github.com/lurk-lab/lurk-rs) — Rust, Lurk language with Nova-based IVC
-- [o1-labs/mina](https://github.com/o1-labs/mina) — OCaml, Mina Protocol with Pickles IVC
-- [nexus-xyz/nexus-zkvm](https://github.com/nexus-xyz/nexus-zkvm) — Rust, Nexus zkVM using Nova/HyperNova folding
+- [microsoft/Nova](https://github.com/microsoft/Nova) ⭐ 837 — Rust, Nova folding scheme by Microsoft Research
+- [lurk-lab/lurk-rs](https://github.com/lurk-lab/lurk-rs) ⭐ 450 — Rust, Lurk language with Nova-based IVC
+- [nexus-xyz/nexus-zkvm](https://github.com/nexus-xyz/nexus-zkvm) ⭐ 2.6k — Rust, Nexus zkVM using Nova/HyperNova folding
 
 **Security status:** Secure
 Folding schemes (Nova, HyperNova) have formal security proofs under standard assumptions; accumulation-based recursion avoids in-circuit verification overhead
@@ -1647,9 +1641,9 @@ Withdraw (to fresh address):
 Tornado Cash v2 deployed on Ethereum mainnet; OFAC sanctioned (August 2022); contracts remain on-chain and functional
 
 **Implementations:**
-- [tornadocash/tornado-core](https://github.com/tornadocash/tornado-core) — Solidity/JavaScript, core Tornado Cash contracts and circuits
-- [tornadocash/tornado-nova](https://github.com/tornadocash/tornado-nova) — Solidity, Tornado Nova with arbitrary amounts
-- [iden3/circomlib](https://github.com/iden3/circomlib) — JavaScript, Circom circuit library used by Tornado Cash
+- [tornadocash/tornado-core](https://github.com/tornadocash/tornado-core) ⭐ 1.7k — Solidity/JavaScript, core Tornado Cash contracts and circuits
+- [tornadocash/tornado-nova](https://github.com/tornadocash/tornado-nova) ⭐ 137 — Solidity, Tornado Nova with arbitrary amounts
+- [iden3/circomlib](https://github.com/iden3/circomlib) ⭐ 735 — JavaScript, Circom circuit library used by Tornado Cash
 
 **Security status:** Secure
 Groth16 proof system over BN254 is computationally sound; trusted setup had 1,114 participants; anonymity set bounded by deposit pool size; timing analysis can reduce effective privacy
@@ -1721,9 +1715,9 @@ Full viewing key (fvk = (ak, nk, ovk)) → view all activity without spending
 Sapling activated on Zcash mainnet October 2018; remains the most widely used shielded protocol by transaction count
 
 **Implementations:**
-- [zcash/librustzcash](https://github.com/zcash/librustzcash) — Rust, Zcash Sapling note handling, proofs, and key derivation
-- [zcash/zcash](https://github.com/zcash/zcash) — C++, full Zcash node with Sapling circuit
-- [ArkEcosystem/zcash-primitives](https://github.com/ArkEcosystem/mainsail) — Rust, Sapling primitives crate for third-party use
+- [zcash/librustzcash](https://github.com/zcash/librustzcash) ⭐ 387 — Rust, Zcash Sapling note handling, proofs, and key derivation
+- [zcash/zcash](https://github.com/zcash/zcash) ⭐ 5.4k — C++, full Zcash node with Sapling circuit
+- [ArkEcosystem/zcash-primitives](https://github.com/ArkEcosystem/mainsail) ⭐ 13 — Rust, Sapling primitives crate for third-party use
 
 **Security status:** Secure
 Groth16 proofs over BLS12-381; binding signature (RedJubjub Schnorr) enforces value balance via Pedersen commitment algebra; trusted setup via MPC ceremony with ~200 participants
@@ -1781,9 +1775,8 @@ A *surjection proof* proves that the asset generator `H_asset` used in each outp
 Liquid Network live since October 2018; used for institutional OTC settlement, tokenised bonds, Tether USDT on Liquid
 
 **Implementations:**
-- [ElementsProject/elements](https://github.com/ElementsProject/elements) — C++, Elements sidechain with CT and Confidential Assets
-- [ElementsProject/secp256k1-zkp](https://github.com/ElementsProject/secp256k1-zkp) — C, Bulletproofs and surjection proofs for Liquid
-- [nickvdS/rust-secp256k1-zkp](https://github.com/nickvdS/rust-secp256k1-zkp) — Rust, bindings for secp256k1-zkp
+- [ElementsProject/elements](https://github.com/ElementsProject/elements) ⭐ 1.1k — C++, Elements sidechain with CT and Confidential Assets
+- [ElementsProject/secp256k1-zkp](https://github.com/ElementsProject/secp256k1-zkp) ⭐ 419 — C, Bulletproofs and surjection proofs for Liquid
 
 **Security status:** Secure
 Pedersen commitments and Bulletproofs are cryptographically sound under discrete log; surjection proofs prevent cross-asset inflation; federation trust (15-of-15) is a separate non-cryptographic assumption
@@ -1849,10 +1842,10 @@ The Nomad bug (August 2022) bypassed this by allowing the zero hash `0x00...00` 
 Multisig and light-client bridges are in production; ZK bridges deployed on mainnet (2024); >$2.5B lost to bridge exploits historically
 
 **Implementations:**
-- [cosmos/ibc-go](https://github.com/cosmos/ibc-go) — Go, IBC light-client bridge (strongest trust model)
-- [succinctlabs/telepathy-contracts](https://github.com/succinctlabs/telepathy-contracts) — Solidity, ZK bridge contracts
-- [connext/monorepo](https://github.com/connext/monorepo) — TypeScript, Connext liquidity network bridge
-- [wormhole-foundation/wormhole](https://github.com/wormhole-foundation/wormhole) — Multi-language, Wormhole guardian bridge
+- [cosmos/ibc-go](https://github.com/cosmos/ibc-go) ⭐ 635 — Go, IBC light-client bridge (strongest trust model)
+- [succinctlabs/telepathy-contracts](https://github.com/succinctlabs/telepathy-contracts) ⭐ 80 — Solidity, ZK bridge contracts
+- [connext/monorepo](https://github.com/connext/monorepo) ⭐ 302 — TypeScript, Connext liquidity network bridge
+- [wormhole-foundation/wormhole](https://github.com/wormhole-foundation/wormhole) ⭐ 1.9k — Multi-language, Wormhole guardian bridge
 
 **Security status:** Caution
 Security varies dramatically by trust model: multisig bridges have suffered >$2B in losses; light-client and ZK bridges have no known exploits but are newer; implementation bugs (not crypto breaks) are the primary risk vector
@@ -1889,8 +1882,8 @@ Bridge security taxonomy is well-established in academic and industry literature
 Under active development for Monero (2024-2025); no mainnet activation date; Seraphis library prototype available
 
 **Implementations:**
-- [UkoeHB/Seraphis](https://github.com/UkoeHB/Seraphis) — C++, Seraphis reference implementation
-- [UkoeHB/monero](https://github.com/UkoeHB/monero/tree/seraphis_lib) — C++, Seraphis integration branch for Monero
+- [UkoeHB/Seraphis](https://github.com/UkoeHB/Seraphis) ⭐ 57 — C++, Seraphis reference implementation
+- [UkoeHB/monero](https://github.com/UkoeHB/monero/tree/seraphis_lib) ⭐ 8 — C++, Seraphis integration branch for Monero
 
 **Security status:** Secure
 Grootle/Triptych membership proofs are formally proven; logarithmic-size proofs enable larger anonymity sets (128+); Jamtis provides forward secrecy of sender identity
@@ -1924,9 +1917,7 @@ Well-received by Monero research community; Triptych published at ESORICS 2021; 
 Bulletproofs+ deployed on Monero mainnet (August 2022, hard fork v15); Bulletproofs++ proposed for future upgrade
 
 **Implementations:**
-- [monero-project/monero](https://github.com/monero-project/monero) — C++, Bulletproofs+ in production Monero
-- [nickvdS/bulletproofs-plus](https://github.com/nickvdS/bulletproofs-plus) — Rust, Bulletproofs+ reference implementation
-- [nickvdS/dalek-bulletproofs](https://github.com/nickvdS/dalek-bulletproofs) — Rust, dalek Bulletproofs library (original BP)
+- [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, Bulletproofs+ in production Monero
 
 **Security status:** Secure
 Tighter security reduction than original Bulletproofs; weighted inner product argument proven under discrete log assumption; no trusted setup
@@ -1977,8 +1968,7 @@ Prover (P)                 Server (S, e.g. bank API)          Verifier (V, notar
 TLSNotary is the most mature implementation (2024); Chainlink acquired DECO (2020); zkTLS (Reclaim, Opacity) emerging
 
 **Implementations:**
-- [tlsnotary/tlsn](https://github.com/tlsnotary/tlsn) — Rust, TLSNotary prover and verifier
-- [reclaimprotocol/reclaim-sdk](https://github.com/reclaimprotocol/reclaim-sdk) — TypeScript, zkTLS proofs for web data
+- [tlsnotary/tlsn](https://github.com/tlsnotary/tlsn) ⭐ 407 — Rust, TLSNotary prover and verifier
 - [nickvdS/deco-paper](https://eprint.iacr.org/2019/1332) — Reference paper (Cornell/Chainlink)
 
 **Security status:** Caution
@@ -2029,9 +2019,8 @@ If selected:
 Algorand mainnet since June 2019; Cardano (Ouroboros Praos) since July 2020; both with instant finality
 
 **Implementations:**
-- [algorand/go-algorand](https://github.com/algorand/go-algorand) — Go, Algorand node with ECVRF-based sortition
-- [IntersectMBO/cardano-node](https://github.com/IntersectMBO/cardano-node) — Haskell, Cardano node with Ouroboros Praos VRF
-- [nickvdS/polkadot-sdk](https://github.com/nickvdS/polkadot-sdk) — Rust, BABE VRF slot assignment for Polkadot
+- [algorand/go-algorand](https://github.com/algorand/go-algorand) ⭐ 1.4k — Go, Algorand node with ECVRF-based sortition
+- [IntersectMBO/cardano-node](https://github.com/IntersectMBO/cardano-node) ⭐ 3.2k — Haskell, Cardano node with Ouroboros Praos VRF
 
 **Security status:** Secure
 VRF output is provably unpredictable and non-biasable; ECVRF over Ed25519 is standardised (IETF RFC 9381); leader identity hidden until proposal
@@ -2083,9 +2072,9 @@ Nova folding (cheap):
 Nova and HyperNova are research-grade with working implementations; production rollup provers (SP1, RISC Zero) currently use STARK recursion
 
 **Implementations:**
-- [microsoft/Nova](https://github.com/microsoft/Nova) — Rust, Nova R1CS folding scheme by Microsoft Research
-- [lurk-lab/lurk-rs](https://github.com/lurk-lab/lurk-rs) — Rust, Lurk zkVM using Nova (Arecibo)
-- [nexus-xyz/nexus-zkvm](https://github.com/nexus-xyz/nexus-zkvm) — Rust, Nexus zkVM with HyperNova folding
+- [microsoft/Nova](https://github.com/microsoft/Nova) ⭐ 837 — Rust, Nova R1CS folding scheme by Microsoft Research
+- [lurk-lab/lurk-rs](https://github.com/lurk-lab/lurk-rs) ⭐ 450 — Rust, Lurk zkVM using Nova (Arecibo)
+- [nexus-xyz/nexus-zkvm](https://github.com/nexus-xyz/nexus-zkvm) ⭐ 2.6k — Rust, Nexus zkVM with HyperNova folding
 - [geometryresearch/sangria](https://geometry.xyz/notebook/sangria-a-folding-scheme-for-plonk) — Research, Sangria PLONK folding specification
 
 **Security status:** Secure
@@ -2138,10 +2127,9 @@ on chain B                               Bob uses s to claim asset_A
 IBC (115+ chains), HTLCs (Lightning, atomic swaps), and ZK light client bridges (Succinct, Polymer) all in production
 
 **Implementations:**
-- [cosmos/ibc-go](https://github.com/cosmos/ibc-go) — Go, IBC light-client bridge protocol
-- [nickvdS/btcrelay](https://github.com/nickvdS/btcrelay) — Solidity, SPV relay for Bitcoin on Ethereum (historical)
-- [connext/monorepo](https://github.com/connext/monorepo) — TypeScript, Connext HTLC-based liquidity network
-- [succinctlabs/telepathy-contracts](https://github.com/succinctlabs/telepathy-contracts) — Solidity, ZK light client bridge
+- [cosmos/ibc-go](https://github.com/cosmos/ibc-go) ⭐ 635 — Go, IBC light-client bridge protocol
+- [connext/monorepo](https://github.com/connext/monorepo) ⭐ 302 — TypeScript, Connext HTLC-based liquidity network
+- [succinctlabs/telepathy-contracts](https://github.com/succinctlabs/telepathy-contracts) ⭐ 80 — Solidity, ZK light client bridge
 
 **Security status:** Caution
 Security ranges from weak (multisig) to strong (ZK validity proofs); HTLCs are secure under hash preimage resistance + timelock enforcement; light-client bridges reduce trust to source chain consensus
@@ -2183,9 +2171,9 @@ Batch execution (uniform clearing price)
 Penumbra mainnet launched 2024 on Cosmos (IBC-connected); shielded transactions and batch swaps operational
 
 **Implementations:**
-- [penumbra-zone/penumbra](https://github.com/penumbra-zone/penumbra) — Rust, Penumbra full node and shielded pool
-- [anoma/ferveo](https://github.com/anoma/ferveo) — Rust, Ferveo DKG for threshold encryption
-- [penumbra-zone/decaf377](https://github.com/penumbra-zone/decaf377) — Rust, Decaf377 curve for Penumbra cryptography
+- [penumbra-zone/penumbra](https://github.com/penumbra-zone/penumbra) ⭐ 476 — Rust, Penumbra full node and shielded pool
+- [anoma/ferveo](https://github.com/anoma/ferveo) ⭐ 84 — Rust, Ferveo DKG for threshold encryption
+- [penumbra-zone/decaf377](https://github.com/penumbra-zone/decaf377) ⭐ 17 — Rust, Decaf377 curve for Penumbra cryptography
 
 **Security status:** Caution
 Groth16 proofs over Decaf377 are sound; threshold encryption requires >= 2/3 honest validators for decryption; batch swap mechanism prevents front-running but requires committee liveness
@@ -2229,9 +2217,8 @@ Decryption requires threshold key ceremony (network-wide threshold FHE)
 Zama fhEVM on testnet (2024); Fhenix and Inco building FHE-native rollups; no mainnet production deployment yet
 
 **Implementations:**
-- [zama-ai/fhevm](https://github.com/zama-ai/fhevm) — Solidity/Rust, FHE-enabled EVM smart contracts (TFHE)
-- [zama-ai/tfhe-rs](https://github.com/zama-ai/tfhe-rs) — Rust, TFHE library powering fhEVM
-- [FhenixProtocol/fhenix](https://github.com/FhenixProtocol/fheos) — Go, Fhenix FHE rollup
+- [zama-ai/fhevm](https://github.com/zama-ai/fhevm) ⭐ 25k — Solidity/Rust, FHE-enabled EVM smart contracts (TFHE)
+- [zama-ai/tfhe-rs](https://github.com/zama-ai/tfhe-rs) ⭐ 1.6k — Rust, TFHE library powering fhEVM
 
 **Security status:** Caution
 TFHE is cryptographically secure under LWE assumption; threshold decryption requires honest validator majority; FHE computation overhead (~100 ms per gate) limits practical throughput; implementation maturity is low
@@ -2280,9 +2267,9 @@ Ethereum L1:
 Aztec Network testnet launched 2024; Noir language in active use by external teams; Aztec Connect (v1) sunset 2023
 
 **Implementations:**
-- [AztecProtocol/aztec-packages](https://github.com/AztecProtocol/aztec-packages) — TypeScript/Noir, Aztec Network monorepo
-- [noir-lang/noir](https://github.com/noir-lang/noir) — Rust, Noir ZK domain-specific language
-- [AztecProtocol/barretenberg](https://github.com/AztecProtocol/barretenberg) — C++, UltraPlonk/Honk proving backend
+- [AztecProtocol/aztec-packages](https://github.com/AztecProtocol/aztec-packages) ⭐ 435 — TypeScript/Noir, Aztec Network monorepo
+- [noir-lang/noir](https://github.com/noir-lang/noir) ⭐ 1.3k — Rust, Noir ZK domain-specific language
+- [AztecProtocol/barretenberg](https://github.com/AztecProtocol/barretenberg) ⭐ 194 — C++, UltraPlonk/Honk proving backend
 
 **Security status:** Caution
 UltraPlonk proof system is well-studied; Honk prover under active development; UTXO-based private state model mirrors Zcash (battle-tested design); testnet stage means limited real-world security validation
@@ -2327,9 +2314,8 @@ Cosmos Hub (provider chain)
 Replicated Security live on Cosmos Hub since March 2023; Neutron and Stride are first consumer chains; Partial Set Security launched 2024
 
 **Implementations:**
-- [cosmos/interchain-security](https://github.com/cosmos/interchain-security) — Go, ICS provider and consumer chain modules
-- [informalsystems/mesh-security](https://github.com/nickvdS/mesh-security) — Rust/Go, Mesh Security protocol
-- [cosmos/ibc-go](https://github.com/cosmos/ibc-go) — Go, IBC transport for cross-chain slashing evidence
+- [cosmos/interchain-security](https://github.com/cosmos/interchain-security) ⭐ 190 — Go, ICS provider and consumer chain modules
+- [cosmos/ibc-go](https://github.com/cosmos/ibc-go) ⭐ 635 — Go, IBC transport for cross-chain slashing evidence
 
 **Security status:** Secure
 Economic security inherited from Cosmos Hub's staked ATOM; double-signing evidence is cryptographically verifiable (two Ed25519 signatures at same height); slashing is enforced via IBC packet relay

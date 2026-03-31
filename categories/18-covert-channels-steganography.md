@@ -17,9 +17,7 @@
 Core steganographic techniques range from toy (LSB) to research prototypes (Meteor); no standardised production deployment.
 
 **Implementations:**
-- [OpenStego](https://github.com/syvaidya/openstego) — Java, LSB and randomised LSB embedding/extraction
-- [Steghide](https://github.com/StefanoDeVuworst/steghide) — C++, JPEG/BMP steganography with passphrase encryption
-- [meteor-stego](https://github.com/kaptchuk/meteor) — Python, reference implementation of Meteor LLM steganography
+- [OpenStego](https://github.com/syvaidya/openstego) ⭐ 1.4k — Java, LSB and randomised LSB embedding/extraction
 
 **Security status:** Caution
 LSB embedding is trivially detectable by modern steganalysis; provably secure schemes (Meteor) are secure under formal models but lack deployment hardening.
@@ -46,7 +44,7 @@ Steganography is a well-studied academic field but has no standardisation body; 
 Cachin's model is a theoretical framework; practical implementations remain academic prototypes.
 
 **Implementations:**
-- [min-entropy-coupling](https://github.com/jkuck/min-entropy-coupling) — Python, reference implementation of minimum-entropy coupling for steganography
+No notable open-source implementations available.
 
 **Security status:** Secure
 Information-theoretic guarantees (zero KL divergence) provide the strongest possible security under the model assumptions.
@@ -74,9 +72,8 @@ Standard theoretical framework in the steganography research community; Cachin's
 Research prototypes and proof-of-concept tools exist; no standardised or widely deployed production system.
 
 **Implementations:**
-- [covert_channels](https://github.com/dsnezhkov/TrustTrees) — Python, TCP/IP covert channel toolkit
-- [ptunnel-ng](https://github.com/lnslbrty/ptunnel-ng) — C, ICMP tunnel for covert TCP communication
-- [iodine](https://github.com/yarrick/iodine) — C, DNS tunnel for IPv4 over DNS
+- [ptunnel-ng](https://github.com/lnslbrty/ptunnel-ng) ⭐ 557 — C, ICMP tunnel for covert TCP communication
+- [iodine](https://github.com/yarrick/iodine) ⭐ 7.8k — C, DNS tunnel for IPv4 over DNS
 
 **Security status:** Caution
 Network stego channels are detectable by traffic normalisation and statistical timing analysis; security depends heavily on the specific channel and warden model.
@@ -106,8 +103,8 @@ S-UNIWARD and HILL have production-quality reference implementations; deep-learn
 
 **Implementations:**
 - [UNIWARD (DDE Binghamton)](http://dde.binghamton.edu/download/stego_algorithms/) — MATLAB, reference implementations of S-UNIWARD, HILL, and WOW
-- [SteganoGAN](https://github.com/DAI-Lab/SteganoGAN) — Python/PyTorch, GAN-based image steganography
-- [HiDDeN](https://github.com/ando-khachatryan/HiDDeN) — Python/PyTorch, encoder-decoder deep steganography
+- [SteganoGAN](https://github.com/DAI-Lab/SteganoGAN) ⭐ 378 — Python/PyTorch, GAN-based image steganography
+- [HiDDeN](https://github.com/ando-khachatryan/HiDDeN) ⭐ 423 — Python/PyTorch, encoder-decoder deep steganography
 
 **Security status:** Caution
 Adaptive schemes resist classical steganalysis but are increasingly vulnerable to CNN-based detectors (SRNet, Yedroudj-Net); security degrades with payload size.
@@ -136,9 +133,6 @@ SRM and CNN-based detectors have production-quality implementations used in fore
 
 **Implementations:**
 - [SRM (DDE Binghamton)](http://dde.binghamton.edu/download/feature_extractors/) — MATLAB, Spatial Rich Model feature extractor
-- [SRNet](https://github.com/brijesh-soni/SRNet-Steganalysis) — Python/TensorFlow, deep residual steganalysis network
-- [YedroudjNet](https://github.com/yedrouj/Yedroudj-Net) — Python/PyTorch, CNN steganalyser with SRM-inspired preprocessing
-- [ALASKA steganalysis challenge](https://github.com/YassineYousworki/alaska2-steganalysis) — Python, Kaggle competition codebase
 
 **Security status:** Secure
 State-of-the-art CNN detectors achieve >95% accuracy against most embedding schemes at moderate payloads; detection accuracy degrades at very low embedding rates.
@@ -192,10 +186,9 @@ Foundational theoretical work; cited in the steganography and broadcast encrypti
 Deployed at scale in cinema forensic watermarking (DCI), streaming services, and ML model IP protection.
 
 **Implementations:**
-- [OpenCV watermarking](https://github.com/opencv/opencv) — C++/Python, image processing with DCT-domain watermark support
-- [invisible-watermark](https://github.com/ShieldMnt/invisible-watermark) — Python, DWT/DCT invisible watermarking library
-- [Tardos fingerprinting](https://github.com/AntoineTard662/tardos-fingerprinting) — Python, implementation of Tardos collusion-resistant codes
-- [uchicago-sandlab/tree-ring-watermark](https://github.com/YuxinWenRick/tree-ring-watermark) — Python, tree-ring watermarking for diffusion models
+- [OpenCV watermarking](https://github.com/opencv/opencv) ⭐ 86k — C++/Python, image processing with DCT-domain watermark support
+- [invisible-watermark](https://github.com/ShieldMnt/invisible-watermark) ⭐ 1.9k — Python, DWT/DCT invisible watermarking library
+- [uchicago-sandlab/tree-ring-watermark](https://github.com/YuxinWenRick/tree-ring-watermark) ⭐ 352 — Python, tree-ring watermarking for diffusion models
 
 **Security status:** Caution
 Robust watermarks survive standard transformations but can be removed by sophisticated adversaries (overprinting, model fine-tuning); Tardos codes provide provable collusion resistance.
@@ -224,8 +217,7 @@ Standardised by ISO/IEC 19794 (biometric watermarking) and DCI (cinema); Boneh-S
 ASA is an attack model, not a deployable system; Dual_EC_DRBG was the only known real-world kleptographic backdoor.
 
 **Implementations:**
-- [dual-ec-drbg-poc](https://github.com/jvdsn/dual-ec-drbg) — Python, proof-of-concept Dual_EC_DRBG backdoor demonstration
-- [klern](https://github.com/nickthedude/klern) — Python, educational kleptography toolkit
+No notable open-source implementations available.
 
 **Security status:** Broken
 Kleptographic attacks are devastating when present; Dual_EC_DRBG was confirmed backdoored. Defence requires deterministic randomness (EdDSA) or cryptographic reverse firewalls.
@@ -253,9 +245,8 @@ The ASA threat model (Bellare et al. 2014) is universally accepted in the crypto
 Signal Protocol and OTR are deployed at scale in messaging applications; theoretical constructions (Sahai-Waters) remain unimplemented.
 
 **Implementations:**
-- [libsignal](https://github.com/signalapp/libsignal) — Rust/Java/Swift, Signal Protocol with deniable messaging
-- [libotr](https://github.com/otr-team/libotr) — C, Off-the-Record Messaging library
-- [VeraCrypt](https://github.com/veracrypt/VeraCrypt) — C++, hidden volume deniable encryption
+- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift, Signal Protocol with deniable messaging
+- [VeraCrypt](https://github.com/veracrypt/VeraCrypt) ⭐ 9.4k — C++, hidden volume deniable encryption
 
 **Security status:** Secure
 Signal and OTR provide practical deniability against offline third-party verification; theoretical receiver-deniability (from iO) is not practically achievable.
@@ -282,8 +273,7 @@ Signal Protocol is the gold standard for deniable messaging; OTR established the
 Deployed in Signal and OTR messaging protocols; theoretical constructions exist for formal guarantees.
 
 **Implementations:**
-- [libsignal](https://github.com/signalapp/libsignal) — Rust/Java/Swift, deniable authentication via Triple-DH
-- [libotr](https://github.com/otr-team/libotr) — C, deniable authentication in OTR messaging
+- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift, deniable authentication via Triple-DH
 
 **Security status:** Secure
 DH-based deniable auth in Signal and OTR is secure against offline transcript analysis; concurrent composition requires stronger assumptions.
@@ -311,8 +301,8 @@ MP3Stego has a stable reference implementation; echo hiding remains primarily ac
 
 **Implementations:**
 - [MP3Stego](https://www.petitcolas.net/steganography/mp3stego/) — C, reference implementation for MP3 compressed-domain steganography
-- [AudioStego](https://github.com/danielcardeenas/AudioStego) — C++, LSB audio steganography tool
-- [steganography-tools](https://github.com/ragibson/Steganography) — Python, audio and image steganography toolkit
+- [AudioStego](https://github.com/danielcardeenas/AudioStego) ⭐ 295 — C++, LSB audio steganography tool
+- [steganography-tools](https://github.com/ragibson/Steganography) ⭐ 648 — Python, audio and image steganography toolkit
 
 **Security status:** Caution
 Echo hiding is detectable by cepstral analysis; MP3Stego resists casual inspection but is vulnerable to targeted steganalysis of bit-reservoir statistics.
@@ -340,8 +330,7 @@ SNOW and zero-width tools are readily usable; synonym substitution methods requi
 
 **Implementations:**
 - [SNOW](https://darkside.com.au/snow/) — C, whitespace steganography with ICE encryption
-- [stegcloak](https://github.com/KuroLabs/stegcloak) — JavaScript/Node.js, zero-width character steganography
-- [unicode-steganography](https://github.com/nickthedude/unicode-steganography) — Python, zero-width Unicode steganography
+- [stegcloak](https://github.com/KuroLabs/stegcloak) ⭐ 3.8k — JavaScript/Node.js, zero-width character steganography
 
 **Security status:** Caution
 Whitespace and zero-width methods are trivially stripped by text normalisation; synonym substitution is more robust but detectable by perplexity analysis.
@@ -367,7 +356,7 @@ Active research area; SNOW is widely known; zero-width methods are popular in CT
 Laboratory demonstrations only; requires wet-lab DNA synthesis and sequencing equipment for encode/decode.
 
 **Implementations:**
-- [DNA-Stego](https://github.com/topics/dna-steganography) — Various, GitHub topic aggregating DNA steganography research code
+No notable open-source implementations available.
 
 **Security status:** Secure
 No established steganalysis countermeasure exists for DNA steganography; security relies on physical inaccessibility and the lack of targeted sequence-pattern search tools.
@@ -394,8 +383,7 @@ Interdisciplinary niche spanning molecular biology and information security; Cle
 Working research codebases exist (SteganoGAN); no production deployment.
 
 **Implementations:**
-- [SteganoGAN](https://github.com/DAI-Lab/SteganoGAN) — Python/PyTorch, GAN-based image steganography with 4.4 bpp capacity
-- [ste-GAN-ography](https://github.com/jhayesq/ste-GAN-ography) — Python, adversarially trained steganography (Hayes-Danezis)
+- [SteganoGAN](https://github.com/DAI-Lab/SteganoGAN) ⭐ 378 — Python/PyTorch, GAN-based image steganography with 4.4 bpp capacity
 
 **Security status:** Caution
 GAN-trained schemes evade classical steganalysis but remain vulnerable to CNN-based detectors trained on the same generative distribution.
@@ -422,7 +410,7 @@ Active research frontier at the intersection of deep learning and steganography;
 Research implementations exist; superseded by content-adaptive schemes in practice.
 
 **Implementations:**
-- [OutGuess](https://github.com/crorvick/outguess) — C, JPEG steganography with histogram correction
+- [OutGuess](https://github.com/crorvick/outguess) ⭐ 159 — C, JPEG steganography with histogram correction
 
 **Security status:** Superseded
 Histogram preservation defeats first-order attacks but is ineffective against higher-order steganalysis (SRM, SPAM); modern adaptive schemes provide strictly better security.
@@ -450,8 +438,7 @@ Historically important; OutGuess was widely used in early 2000s. Superseded by S
 Research prototypes for H.264/H.265; no production-quality open-source tool.
 
 **Implementations:**
-- [OpenStego](https://github.com/syvaidya/openstego) — Java, general steganography with video format support
-- [video-steganography](https://github.com/dhavalthakkar93/Video-Steganography) — Python, frame-level LSB video steganography
+- [OpenStego](https://github.com/syvaidya/openstego) ⭐ 1.4k — Java, general steganography with video format support
 
 **Security status:** Caution
 Motion-vector schemes are difficult to detect visually but vulnerable to statistical models of inter-frame correlation; re-encoding can destroy payloads.
@@ -480,7 +467,7 @@ Active research area with publications in multimedia security venues; no standar
 VeraCrypt hidden volumes are widely deployed; Rubberhose and StegFS are historical/discontinued.
 
 **Implementations:**
-- [VeraCrypt](https://github.com/veracrypt/VeraCrypt) — C/C++, hidden volume deniable disk encryption (TrueCrypt successor)
+- [VeraCrypt](https://github.com/veracrypt/VeraCrypt) ⭐ 9.4k — C/C++, hidden volume deniable disk encryption (TrueCrypt successor)
 - [shufflecake](https://codeberg.org/shufflecake/shufflecake-c) — C, plausibly deniable hidden volumes for Linux
 
 **Security status:** Caution
@@ -509,8 +496,8 @@ VeraCrypt is the de facto standard for deniable disk encryption; independently a
 Spread-spectrum techniques underpin deployed watermarking systems (cinema, audio streaming); standalone stego tools exist.
 
 **Implementations:**
-- [invisible-watermark](https://github.com/ShieldMnt/invisible-watermark) — Python, spread-spectrum watermarking for images
-- [pywatermark](https://github.com/fire-keeper/BlindWatermark) — Python, blind DWT/DCT spread-spectrum watermarking
+- [invisible-watermark](https://github.com/ShieldMnt/invisible-watermark) ⭐ 1.9k — Python, spread-spectrum watermarking for images
+- [pywatermark](https://github.com/fire-keeper/BlindWatermark) ⭐ 1.6k — Python, blind DWT/DCT spread-spectrum watermarking
 
 **Security status:** Secure
 QIM and informed spread-spectrum achieve near-capacity robustness; resistant to amplitude scaling, compression, and additive noise at recommended parameters.
@@ -538,7 +525,7 @@ MICs are embedded in virtually all colour laser printers sold since the 1990s; d
 
 **Implementations:**
 - [EFF Yellow Dots Decoder](https://www.eff.org/pages/list-printers-which-do-or-do-not-print-tracking-dots) — Web, EFF's list and analysis of tracking dot patterns
-- [deda (TU Dresden)](https://github.com/dfd-tud/deda) — Python, tracking dot extraction, analysis, and anonymisation toolkit
+- [deda (TU Dresden)](https://github.com/dfd-tud/deda) ⭐ 2.4k — Python, tracking dot extraction, analysis, and anonymisation toolkit
 
 **Security status:** Broken
 The MIC encoding has been fully reverse-engineered by EFF and TU Dresden; the deda toolkit can anonymise printed pages by overwriting tracking dots.
@@ -595,8 +582,7 @@ Ker's square-root law and Costa's dirty-paper coding bound are universally accep
 Used in medical imaging (DICOM), legal forensics, and military imagery; production-quality implementations exist.
 
 **Implementations:**
-- [RDH-toolbox](https://github.com/ruoyu-wang/RDH) — MATLAB, reversible data hiding algorithms collection
-- [reversible-data-hiding](https://github.com/laisimiao/Reversible-Data-Hiding) — Python/MATLAB, PVO and histogram shifting implementations
+No notable open-source implementations available.
 
 **Security status:** Secure
 Lossless recovery is mathematically guaranteed; embedding detectability follows the same trade-offs as conventional steganography.
@@ -624,7 +610,7 @@ Important in specialised domains (medical imaging, legal forensics); active rese
 Academic prototypes; GAN-based synthesis removes the database requirement but is not deployed.
 
 **Implementations:**
-- [coverless-steganography](https://github.com/topics/coverless-steganography) — Various, GitHub topic aggregating coverless steganography research
+No notable open-source implementations available.
 
 **Security status:** Secure
 Defeats all passive statistical steganalysis by construction since no cover medium is modified; active wardens (restricting transmittable content) remain a threat.
@@ -652,8 +638,7 @@ Growing research area since 2015; GAN-based methods (2021) have increased intere
 OP_RETURN embedding is trivially deployable; address and script-field methods require custom tooling.
 
 **Implementations:**
-- [Apertus (OP_RETURN tool)](https://github.com/nickthedude/bitcoin-op-return) — Python, Bitcoin OP_RETURN data embedding
-- [etherdata](https://github.com/nickthedude/etherdata) — JavaScript, Ethereum event log data embedding
+No notable open-source implementations available.
 
 **Security status:** Caution
 On-chain data is permanent and public; OP_RETURN is easily identifiable; address-generation methods provide better imperceptibility but lower capacity.
@@ -681,8 +666,7 @@ Research interest driven by blockchain proliferation; no standardisation; used i
 Proof-of-concept demonstrations on real cloud infrastructure (AWS EC2); no deployable covert communication tool.
 
 **Implementations:**
-- [Mastik](https://github.com/0xADE1A1DE/Mastik) — C, microarchitectural side-channel toolkit (Flush+Reload, Prime+Probe)
-- [cache-attacks](https://github.com/IAIK/cache-attacks) — C, cache timing attack implementations from TU Graz
+- [Mastik](https://github.com/0xADE1A1DE/Mastik) ⭐ 118 — C, microarchitectural side-channel toolkit (Flush+Reload, Prime+Probe)
 
 **Security status:** Caution
 Covert channels are demonstrably functional on real hardware; mitigations (Intel CAT, page-dedup disablement) reduce but do not eliminate the threat.
@@ -710,8 +694,7 @@ Flush+Reload (Yarom-Falkner 2014) is one of the most cited microarchitectural at
 Research prototypes calibrated to specific platforms; no general-purpose production tool.
 
 **Implementations:**
-- [stego-retweet](https://github.com/nickthedude/stego-retweet) — Python, social media timing-based steganography
-- [stegcloak](https://github.com/KuroLabs/stegcloak) — JavaScript, zero-width character steganography usable in social media bios
+- [stegcloak](https://github.com/KuroLabs/stegcloak) ⭐ 3.8k — JavaScript, zero-width character steganography usable in social media bios
 
 **Security status:** Caution
 Platform re-encoding destroys most image-based payloads; timing and ordering channels survive but have very low capacity.
@@ -739,8 +722,8 @@ Active research area; publications in ACM CCS and multimedia security venues; no
 Theoretical attack analysis and mitigation proposals; subliminal-free SNARK constructions are at the prototype stage.
 
 **Implementations:**
-- [snarkjs](https://github.com/iden3/snarkjs) — JavaScript, Groth16/PLONK prover (demonstrates the vulnerable proof system)
-- [circom](https://github.com/iden3/circom) — Rust, ZK circuit compiler (context for subliminal channel analysis)
+- [snarkjs](https://github.com/iden3/snarkjs) ⭐ 2.0k — JavaScript, Groth16/PLONK prover (demonstrates the vulnerable proof system)
+- [circom](https://github.com/iden3/circom) ⭐ 1.6k — Rust, ZK circuit compiler (context for subliminal channel analysis)
 
 **Security status:** Caution
 Groth16 and PLONK proofs contain exploitable subliminal bandwidth (~256 bits/proof); mitigation requires deterministic randomness or subliminal-free constructions.
@@ -768,9 +751,7 @@ Growing awareness in the ZK community; Bellare-Hoang 2021 analysis has prompted 
 Working research implementations exist for METEOR, ADG, and DISCOP; not deployed in production systems.
 
 **Implementations:**
-- [meteor-stego](https://github.com/kaptchuk/meteor) — Python, arithmetic coding over language model distributions
-- [ADG-steganography](https://github.com/YangzlTHU/Linguistic-Steganography-and-Steganalysis) — Python, adaptive dynamic grouping for text steganography
-- [DISCOP](https://github.com/joshuacnf/DISCOP) — Python, distribution-copying LLM steganography
+- [ADG-steganography](https://github.com/YangzlTHU/Linguistic-Steganography-and-Steganalysis) ⭐ 33 — Python, adaptive dynamic grouping for text steganography
 
 **Security status:** Secure
 DISCOP achieves zero KL divergence per token under i.i.d. assumptions; multi-token dependencies remain a theoretical detection vector.
@@ -798,7 +779,7 @@ Rapidly growing research area driven by LLM proliferation; publications at top v
 Entirely theoretical; no deployed quantum steganography system exists.
 
 **Implementations:**
-- [Qiskit](https://github.com/Qiskit/qiskit) — Python, IBM quantum computing SDK suitable for simulating quantum steganography protocols
+- [Qiskit](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, IBM quantum computing SDK suitable for simulating quantum steganography protocols
 
 **Security status:** Secure
 Information-theoretic security guarantees under quantum channel models; quantum square-root law (Ahn-Winter 2022) establishes fundamental limits.
@@ -827,7 +808,7 @@ Small research community at the intersection of quantum information and steganog
 Proof-of-concept demonstrations by Guri et al. (Ben-Gurion University); no deployable exfiltration tool.
 
 **Implementations:**
-- [air-gap-research (Guri)](https://github.com/guri-cyber/air-gap-research) — Various, collection of air-gap covert channel PoCs
+No notable open-source implementations available.
 
 **Security status:** Caution
 Channels are functional on real hardware but require physical proximity and line-of-sight; countermeasures (LED covers, shielding) are effective.
@@ -856,8 +837,7 @@ Guri et al. have systematically catalogued these channels (2015-2024); accepted 
 HYDAN and FTE/SkypeMorph have working implementations; FTE is deployed in Tor pluggable transports.
 
 **Implementations:**
-- [fteproxy](https://github.com/kpdyer/fteproxy) — Python/C, Format-Transforming Encryption Tor pluggable transport
-- [HYDAN](https://github.com/syscall7/hydan) — C, x86 binary steganography
+- [fteproxy](https://github.com/kpdyer/fteproxy) ⭐ 155 — Python/C, Format-Transforming Encryption Tor pluggable transport
 
 **Security status:** Caution
 FTE provides cryptographic format compliance guarantees; HYDAN and HTTP stego are detectable by semantic analysis of instruction/header patterns.
@@ -885,8 +865,7 @@ FTE is integrated into Tor's pluggable transport ecosystem; HYDAN is a well-cite
 Research prototypes and proof-of-concept tools; Stega-Talk is the most complete open-source implementation.
 
 **Implementations:**
-- [SteganRTP](https://github.com/nickthedude/SteganRTP) — C, RTP header field steganography
-- [VoIP-stego (Mazurczyk)](https://github.com/topics/voip-steganography) — Various, GitHub topic for VoIP steganography tools
+No notable open-source implementations available.
 
 **Security status:** Caution
 LSB payload schemes are detectable by sliding-window RS analysis; timing-based channels (LACK) are more resistant but lower capacity.
@@ -914,8 +893,8 @@ Active research niche within network steganography; Mazurczyk-Szczypiorski are t
 TEMPEST shielding is a mature military/government standard (NATO SDIP-27); offensive EM eavesdropping tools range from research PoCs to classified capabilities.
 
 **Implementations:**
-- [TempestSDR (gr-tempest)](https://github.com/martinmarinov/TempestSDR) — Java/C, SDR-based TEMPEST display eavesdropping
-- [Deep-TEMPEST](https://github.com/emidan19/deep-tempest) — Python/PyTorch, CNN-enhanced HDMI EM eavesdropping
+- [TempestSDR (gr-tempest)](https://github.com/martinmarinov/TempestSDR) ⭐ 1.6k — Java/C, SDR-based TEMPEST display eavesdropping
+- [Deep-TEMPEST](https://github.com/emidan19/deep-tempest) ⭐ 673 — Python/PyTorch, CNN-enhanced HDMI EM eavesdropping
 
 **Security status:** Caution
 EM emanation attacks are well-established and effective at distance; TEMPEST-rated shielding mitigates but adds significant cost; Deep-TEMPEST (2024) dramatically improves digital display eavesdropping.
@@ -943,7 +922,6 @@ TEMPEST has been a recognised threat since WWII; NATO SDIP-27 and NSA TEMPEST st
 Proof-of-concept demonstrations by Guri et al.; no deployable tool for operational use.
 
 **Implementations:**
-- [air-gap-research (Guri)](https://github.com/guri-cyber/air-gap-research) — Various, collection of acoustic/ultrasonic air-gap PoCs
 - [GAIROSCOPE](https://arxiv.org/abs/2208.09764) — Paper with experimental setup details
 
 **Security status:** Caution
@@ -972,7 +950,7 @@ Guri et al. (Ben-Gurion University) are the dominant research group; threat mode
 Academic proof-of-concept demonstrations on NVIDIA GPUs; no production exfiltration tool.
 
 **Implementations:**
-- [gpu-covert-channel (Naghibijouybari)](https://github.com/nhajs/gpu-covert-channel) — CUDA/C++, GPU L2 cache covert channel PoC
+No notable open-source implementations available.
 
 **Security status:** Caution
 Demonstrated on real multi-tenant GPU infrastructure; NVIDIA MIG is insufficient (Veiled Pathways 2024); temporal partitioning is the primary mitigation.
@@ -1000,8 +978,8 @@ Rapidly growing concern in cloud ML security; NVBleed (2025) and Veiled Pathways
 Attack demonstrations on commodity CPUs; mitigations are deployed in production OSes and microcode but the fundamental vulnerability persists.
 
 **Implementations:**
-- [spectre-meltdown-checker](https://github.com/speed47/spectre-meltdown-checker) — Shell, system vulnerability checker for Spectre/Meltdown
-- [safeside](https://github.com/google/safeside) — C++, Google's collection of transient execution attack demonstrations
+- [spectre-meltdown-checker](https://github.com/speed47/spectre-meltdown-checker) ⭐ 3.9k — Shell, system vulnerability checker for Spectre/Meltdown
+- [safeside](https://github.com/google/safeside) ⭐ 506 — C++, Google's collection of transient execution attack demonstrations
 - [transient.fail](https://transient.fail/) — Web, comprehensive transient execution attack database
 
 **Security status:** Broken
@@ -1058,7 +1036,6 @@ Classic domain fronting was disabled by major CDN providers (Google, Amazon) in 
 
 **Implementations:**
 - [meek (Tor)](https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/meek) — Go, Tor pluggable transport using domain fronting
-- [Signal CDN fronting](https://github.com/nickthedude/signal-android) — Java, Signal's domain fronting for censorship circumvention (historical)
 
 **Security status:** Superseded
 Classic domain fronting is blocked by major CDNs; ECH provides stronger guarantees by encrypting the entire Client Hello; domain shadowing remains a threat.
@@ -1086,8 +1063,7 @@ Foundational censorship circumvention technique; meek is deployed in Tor; ECH is
 FontCode has a research implementation; homoglyph tools are readily available; FontGuard (2025) is a research prototype.
 
 **Implementations:**
-- [FontCode](https://github.com/nickthedude/FontCode) — Python, glyph perturbation steganography
-- [confusables (homoglyph detection)](https://github.com/vhf/confusable_homoglyphs) — Python, Unicode homoglyph detection and substitution library
+- [confusables (homoglyph detection)](https://github.com/vhf/confusable_homoglyphs) ⭐ 165 — Python, Unicode homoglyph detection and substitution library
 
 **Security status:** Caution
 Homoglyph methods are trivially defeated by Unicode normalisation; FontCode survives print-scan with error correction; FontGuard adds deep-learning robustness.
@@ -1115,7 +1091,7 @@ Small research community; FontCode (ACM SIGGRAPH 2018) is the most cited glyph s
 QuiCC and QuicCourier have proof-of-concept implementations; QUIC's design inherently enables covert channels.
 
 **Implementations:**
-- [QuiCC](https://github.com/nuvious/QuiCC) — Python, QUIC Connection ID covert channel tool
+- [QuiCC](https://github.com/nuvious/QuiCC) ⭐ 8 — Python, QUIC Connection ID covert channel tool
 
 **Security status:** Caution
 QUIC's encrypted headers make covert channels difficult to detect; countermeasures are limited since middlebox inspection is blocked by design.
@@ -1140,7 +1116,7 @@ Growing research area as QUIC adoption increases; Mileva et al. (2023) provide t
 Rivest's 1998 paper describes the concept; no widely used production implementation.
 
 **Implementations:**
-- [chaff-winnow](https://github.com/nickthedude/chaff-winnow) — Python, educational implementation of Rivest's chaffing and winnowing
+No notable open-source implementations available.
 
 **Security status:** Secure
 Confidentiality guarantee relies solely on MAC authentication; no encryption is used, so security reduces to the MAC scheme's unforgeability.
@@ -1165,8 +1141,8 @@ Important theoretical contribution to the encryption export control debate; cite
 Deployed as fteproxy in Tor's pluggable transport ecosystem; demonstrated live bypass of the Great Firewall of China.
 
 **Implementations:**
-- [fteproxy](https://github.com/kpdyer/fteproxy) — Python/C, Tor pluggable transport implementing FTE
-- [libfte](https://github.com/kpdyer/libfte) — C++, core FTE library with DFA-based format enforcement
+- [fteproxy](https://github.com/kpdyer/fteproxy) ⭐ 155 — Python/C, Tor pluggable transport implementing FTE
+- [libfte](https://github.com/kpdyer/libfte) ⭐ 18 — C++, core FTE library with DFA-based format enforcement
 
 **Security status:** Secure
 Provides a cryptographic guarantee that output conforms to the target regular-language format; any format describable by a regex can serve as a carrier.
@@ -1218,7 +1194,7 @@ Official Tor Project tool; formal analysis at USENIX Security 2024; dominant cir
 Research implementations exist; not deployed in production systems.
 
 **Implementations:**
-- [neural-linguistic-steganography (Ziegler)](https://github.com/zieglerk/steganography) — Python, arithmetic coding over GPT-2
+No notable open-source implementations available.
 
 **Security status:** Caution
 Provably undetectable under marginal distribution assumptions; multi-token statistical tests may distinguish from natural text.
@@ -1243,8 +1219,8 @@ Active research frontier; builds on LLM proliferation; publications at EMNLP and
 Deployed in cinema forensic watermarking (DCI), streaming audio fingerprinting, and satellite broadcast forensics.
 
 **Implementations:**
-- [invisible-watermark](https://github.com/ShieldMnt/invisible-watermark) — Python, spread-spectrum image watermarking
-- [AudioWmark](https://github.com/swesterfeld/audiowmark) — C++, robust audio watermarking using spread-spectrum techniques
+- [invisible-watermark](https://github.com/ShieldMnt/invisible-watermark) ⭐ 1.9k — Python, spread-spectrum image watermarking
+- [AudioWmark](https://github.com/swesterfeld/audiowmark) ⭐ 536 — C++, robust audio watermarking using spread-spectrum techniques
 
 **Security status:** Secure
 Robust to compression, filtering, and geometric transforms at recommended parameters; correlation-based detection is well-understood.
@@ -1271,8 +1247,7 @@ Cox et al. 1997 is the foundational work; spread-spectrum watermarking is standa
 Required for DICOM medical images, court-admitted photographs, and military imagery where pixel-level fidelity is mandatory.
 
 **Implementations:**
-- [RDH-EI (encrypted-domain)](https://github.com/topics/reversible-data-hiding) — Various, GitHub topic aggregating RDH implementations
-- [reversible-watermarking](https://github.com/laisimiao/Reversible-Data-Hiding) — Python/MATLAB, histogram shifting and difference expansion implementations
+No notable open-source implementations available.
 
 **Security status:** Secure
 Lossless recovery is mathematically guaranteed; encrypted-domain RDH (2025) enables embedding without decryption.

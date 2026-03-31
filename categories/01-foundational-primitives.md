@@ -18,10 +18,10 @@
 Deployed at scale in TLS 1.3, WireGuard, disk encryption (BitLocker, FileVault), and virtually every modern protocol.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES-NI accelerated, ubiquitous
-- [libsodium](https://github.com/jedisct1/libsodium) — C, ChaCha20/Salsa20, misuse-resistant API
-- [BoringSSL](https://github.com/google/boringssl) — C, Google's OpenSSL fork with ChaCha20-Poly1305
-- [wolfSSL](https://github.com/wolfSSL/wolfssl) — C, embedded-focused TLS with AES/ChaCha20
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-NI accelerated, ubiquitous
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, ChaCha20/Salsa20, misuse-resistant API
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C, Google's OpenSSL fork with ChaCha20-Poly1305
+- [wolfSSL](https://github.com/wolfSSL/wolfssl) ⭐ 2.8k — C, embedded-focused TLS with AES/ChaCha20
 
 **Security status:** Secure
 AES-256 and ChaCha20 have no known practical attacks at recommended parameters. Salsa20 and Serpent are also unbroken.
@@ -49,10 +49,9 @@ AES is NIST FIPS 197; ChaCha20 is IETF RFC 8439; Camellia is ISO/IEC 18033-3. Al
 RSA-OAEP and ECIES are deployed at massive scale; HPKE is in TLS ECH, MLS, and OHTTP.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, RSA-OAEP, ECIES, HPKE (3.2+)
-- [BoringSSL](https://github.com/google/boringssl) — C, HPKE used in Chrome ECH
-- [libsodium](https://github.com/jedisct1/libsodium) — C, crypto_box (X25519+XSalsa20-Poly1305)
-- [hpke-rs](https://github.com/niccolli/hpke-rs) — Rust, RFC 9180 implementation
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RSA-OAEP, ECIES, HPKE (3.2+)
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C, HPKE used in Chrome ECH
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, crypto_box (X25519+XSalsa20-Poly1305)
 
 **Security status:** Secure
 RSA-OAEP requires 2048+ bit keys; ECIES and HPKE are secure at recommended parameters. Cramer-Shoup provides CCA2 without random oracles.
@@ -82,10 +81,10 @@ RSA-OAEP is PKCS#1/NIST; HPKE is IETF RFC 9180; ECIES is IEEE 1363a and SECG SEC
 SHA-256/512 are ubiquitous (TLS, Bitcoin, Git); SHA-3 is NIST-standardized; BLAKE3 is rapidly adopted.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, SHA-2 and SHA-3 with hardware acceleration
-- [BLAKE3](https://github.com/BLAKE3-team/BLAKE3) — Rust/C, official BLAKE3 with SIMD
-- [XKCP](https://github.com/XKCP/XKCP) — C, Keccak team's reference SHA-3/SHAKE/K12
-- [libsodium](https://github.com/jedisct1/libsodium) — C, BLAKE2b, SHA-256/512
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, SHA-2 and SHA-3 with hardware acceleration
+- [BLAKE3](https://github.com/BLAKE3-team/BLAKE3) ⭐ 6.1k — Rust/C, official BLAKE3 with SIMD
+- [XKCP](https://github.com/XKCP/XKCP) ⭐ 643 — C, Keccak team's reference SHA-3/SHAKE/K12
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, BLAKE2b, SHA-256/512
 
 **Security status:** Secure
 All listed hashes have no known practical collision or preimage attacks at full rounds. SHA-256 provides 128-bit collision resistance; SHA-3 adds structural diversity.
@@ -113,10 +112,10 @@ SHA-2 is NIST FIPS 180-4; SHA-3 is NIST FIPS 202; BLAKE2 is RFC 7693; BLAKE3 is 
 HMAC-SHA256 is in every TLS deployment; Poly1305 is in TLS 1.3 and WireGuard; GMAC is inside AES-GCM.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, HMAC, CMAC, GMAC
-- [libsodium](https://github.com/jedisct1/libsodium) — C, Poly1305, HMAC-SHA256/512
-- [BoringSSL](https://github.com/google/boringssl) — C, HMAC, Poly1305
-- [XKCP](https://github.com/XKCP/XKCP) — C, KMAC reference implementation
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, HMAC, CMAC, GMAC
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, Poly1305, HMAC-SHA256/512
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C, HMAC, Poly1305
+- [XKCP](https://github.com/XKCP/XKCP) ⭐ 643 — C, KMAC reference implementation
 
 **Security status:** Secure
 HMAC-SHA256 is provably secure if the compression function is a PRF. Poly1305 is information-theoretically secure as a one-time MAC. KMAC is based on SHA-3.
@@ -147,11 +146,11 @@ HMAC is NIST FIPS 198-1 and IETF RFC 2104; CMAC is NIST SP 800-38B; KMAC is NIST
 ECDSA is in TLS and Bitcoin; Ed25519 is in SSH, Signal, and Tor; BLS is in Ethereum 2.0 consensus.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, ECDSA, Ed25519, RSA-PSS
-- [libsodium](https://github.com/jedisct1/libsodium) — C, Ed25519 signing/verification
-- [blst](https://github.com/supranational/blst) — C/Rust, BLS12-381 signatures, Ethereum-focused
-- [ed25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) — Rust, Ed25519 with batch verification
-- [secp256k1](https://github.com/bitcoin-core/secp256k1) — C, ECDSA and Schnorr for Bitcoin
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, ECDSA, Ed25519, RSA-PSS
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, Ed25519 signing/verification
+- [blst](https://github.com/supranational/blst) ⭐ 554 — C/Rust, BLS12-381 signatures, Ethereum-focused
+- [ed25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, Ed25519 with batch verification
+- [secp256k1](https://github.com/bitcoin-core/secp256k1) ⭐ 2.4k — C, ECDSA and Schnorr for Bitcoin
 
 **Security status:** Secure
 All listed signature schemes are secure at recommended parameters. ECDSA requires careful nonce generation (RFC 6979 deterministic nonces recommended). RSA-PSS requires 2048+ bit keys.
@@ -178,9 +177,9 @@ ECDSA and Ed25519 are NIST/IETF standards (FIPS 186-5, RFC 8032); RSA-PSS is PKC
 AES as PRP and HMAC as PRF are deployed in virtually every cryptographic system worldwide.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES and HMAC with hardware acceleration
-- [BoringSSL](https://github.com/google/boringssl) — C, AES-NI optimized PRP/PRF
-- [libsodium](https://github.com/jedisct1/libsodium) — C, HMAC-SHA256/512 as PRF
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES and HMAC with hardware acceleration
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C, AES-NI optimized PRP/PRF
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, HMAC-SHA256/512 as PRF
 
 **Security status:** Secure
 AES as PRP is secure under the standard-model PRP assumption; HMAC-SHA256 is a provably secure PRF. GGM and Naor-Reingold are foundational constructions with no known attacks.
@@ -208,9 +207,9 @@ AES is NIST FIPS 197; HMAC is NIST FIPS 198-1. GGM and Naor-Reingold are foundat
 AES-CTR and ChaCha20 as PRGs are deployed at scale in TLS, DRBG, and OS entropy systems.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES-CTR-DRBG as PRG
-- [libsodium](https://github.com/jedisct1/libsodium) — C, ChaCha20 stream as PRG
-- [Linux kernel CSPRNG](https://github.com/torvalds/linux) — C, ChaCha20-based /dev/urandom
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-CTR-DRBG as PRG
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, ChaCha20 stream as PRG
+- [Linux kernel CSPRNG](https://github.com/torvalds/linux) ⭐ 225k — C, ChaCha20-based /dev/urandom
 
 **Security status:** Secure
 AES-CTR and ChaCha20 are secure PRGs. BBS is provably secure under factoring but too slow for practice. Blum-Micali is secure under DLP.
@@ -236,9 +235,9 @@ AES-CTR is NIST SP 800-38A; ChaCha20 is RFC 8439. The PRG→PRF→PRP hierarchy 
 The Leftover Hash Lemma underlies HKDF-Extract and practical randomness extraction; Trevisan's and two-source extractors remain theoretical.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, HKDF-Extract implements the extraction pattern
-- [libsodium](https://github.com/jedisct1/libsodium) — C, randombytes_buf uses extraction internally
-- [HKDF (RFC 5869)](https://github.com/casebeer/python-hkdf) — Python, reference HKDF with extract phase
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, HKDF-Extract implements the extraction pattern
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, randombytes_buf uses extraction internally
+- [HKDF (RFC 5869)](https://github.com/casebeer/python-hkdf) ⭐ 22 — Python, reference HKDF with extract phase
 
 **Security status:** Secure
 The Leftover Hash Lemma is information-theoretically secure. Two-source extractors have rigorous proofs. No known attacks on these foundational constructions.
@@ -264,7 +263,6 @@ The extract-then-expand pattern is endorsed by NIST SP 800-56C and IETF RFC 5869
 Deployed in some biometric authentication systems and PUF key generation, but not standardized at scale.
 
 **Implementations:**
-- [fuzzy-extractor](https://github.com/niccolli/fuzzy-extractor) — Python, reference implementation of Gen/Rep
 - [NIST SP 800-90B](https://csrc.nist.gov/publications/detail/sp/800-90b/final) — entropy source validation (related framework)
 
 **Security status:** Secure
@@ -319,8 +317,8 @@ Shannon's theorem (1949) is the foundational result of information-theoretic sec
 RSA trapdoor is deployed everywhere (TLS, SSH, PGP). Lattice trapdoors underlie ML-KEM/ML-DSA (NIST PQ standards). Lossy TDFs remain theoretical.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, RSA trapdoor functions
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, lattice-based trapdoors (ML-KEM, ML-DSA)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RSA trapdoor functions
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, lattice-based trapdoors (ML-KEM, ML-DSA)
 - [GMP](https://gmplib.org/) — C, arbitrary-precision arithmetic for Rabin and RSA
 
 **Security status:** Secure
@@ -348,9 +346,9 @@ RSA is PKCS#1/NIST; lattice trapdoors are the basis of NIST PQ standards. Goldre
 GHASH is inside every AES-GCM deployment; Poly1305 is in TLS 1.3 and WireGuard; UMAC is in OpenSSH.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, GHASH with CLMULQDQ acceleration
-- [libsodium](https://github.com/jedisct1/libsodium) — C, Poly1305 implementation
-- [OpenSSH](https://github.com/openssh/openssh-portable) — C, UMAC-64/128
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, GHASH with CLMULQDQ acceleration
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, Poly1305 implementation
+- [OpenSSH](https://github.com/openssh/openssh-portable) ⭐ 3.8k — C, UMAC-64/128
 
 **Security status:** Secure
 Information-theoretically secure as universal hash families. Security of the MAC depends on the nonce/key management of the enclosing construction.
@@ -430,9 +428,9 @@ Foundational theoretical concept (Naor-Yung 1989, Rompel 1990). Important for mi
 SHA-3/Keccak is a NIST standard deployed in TLS, ML-KEM, and ML-DSA. STROBE is used in some protocols. Xoodyak was a NIST LWC finalist.
 
 **Implementations:**
-- [XKCP](https://github.com/XKCP/XKCP) — C, official Keccak team reference with optimized permutations
-- [OpenSSL](https://github.com/openssl/openssl) — C, SHA-3 and SHAKE
-- [tiny_sha3](https://github.com/mjosaarinen/tiny_sha3) — C, minimal SHA-3 for embedded
+- [XKCP](https://github.com/XKCP/XKCP) ⭐ 643 — C, official Keccak team reference with optimized permutations
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, SHA-3 and SHAKE
+- [tiny_sha3](https://github.com/mjosaarinen/tiny_sha3) ⭐ 227 — C, minimal SHA-3 for embedded
 - [STROBE](https://strobe.sourceforge.io/) — C, protocol framework on Keccak
 
 **Security status:** Secure
@@ -461,9 +459,8 @@ Keccak/SHA-3 is NIST FIPS 202. The sponge construction is endorsed by the Keccak
 ASCON is the NIST Lightweight Cryptography standard (2023). PRESENT is ISO-standardized. SIMON/SPECK are deployed in some IoT contexts.
 
 **Implementations:**
-- [Ascon](https://github.com/ascon/ascon-c) — C, official reference implementation
-- [PRESENT](https://github.com/kurtisschmidt/present-cipher) — C/Python, reference implementations
-- [SIMON/SPECK](https://github.com/nsacyber/simon-speck-supercop) — C, NSA reference implementations
+- [Ascon](https://github.com/ascon/ascon-c) ⭐ 276 — C, official reference implementation
+- [SIMON/SPECK](https://github.com/nsacyber/simon-speck-supercop) ⭐ 50 — C, NSA reference implementations
 
 **Security status:** Secure
 ASCON has no known practical attacks on full rounds. PRESENT and GIFT are unbroken. SIMON/SPECK are cryptanalytically sound but their NSA origin raises concerns for some users.
@@ -492,9 +489,8 @@ ASCON is NIST SP 800-232 (2023). PRESENT is ISO/IEC 29192-2. SIMON/SPECK are con
 Poseidon is deployed in Filecoin, Zcash (Orchard), and many ZK rollups. Poseidon2, Anemoi, and Tip5 are newer with growing adoption.
 
 **Implementations:**
-- [neptune](https://github.com/filecoin-project/neptune) — Rust, Poseidon for Filecoin
-- [poseidon2](https://github.com/HorizenLabs/poseidon2) — Rust, Poseidon2 reference
-- [Plonky3](https://github.com/Plonky3/Plonky3) — Rust, includes Poseidon2 and Tip5 for STARKs
+- [poseidon2](https://github.com/HorizenLabs/poseidon2) ⭐ 73 — Rust, Poseidon2 reference
+- [Plonky3](https://github.com/Plonky3/Plonky3) ⭐ 772 — Rust, includes Poseidon2 and Tip5 for STARKs
 
 **Security status:** Caution
 Poseidon and Poseidon2 have undergone significant cryptanalysis but are newer than traditional hashes. Griffin had an algebraic attack discovered in 2023 (Bariant-Leurent). Ongoing active cryptanalysis is expected.
@@ -520,9 +516,9 @@ Poseidon is the de facto standard in ZK proof systems. Poseidon2 and Tip5 are ga
 The FO transform is a mandatory component in ML-KEM (Kyber), which is a NIST standard. OAEP is deployed in RSA everywhere.
 
 **Implementations:**
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, ML-KEM uses FO transform internally
-- [pqcrypto](https://github.com/pqclean/PQClean) — C, clean PQ implementations using FO
-- [OpenSSL](https://github.com/openssl/openssl) — C, RSA-OAEP
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-KEM uses FO transform internally
+- [pqcrypto](https://github.com/pqclean/PQClean) ⭐ 893 — C, clean PQ implementations using FO
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RSA-OAEP
 
 **Security status:** Secure
 The FO transform is provably CCA-secure in ROM; QROM variants are secure against quantum adversaries. OAEP is secure in the random oracle model.
@@ -617,9 +613,8 @@ Active research area with applications in updatable encryption, key rotation, an
 Ristretto255 is used in OPAQUE, Privacy Pass (VOPRF), Signal anonymous credentials, and FROST threshold signatures.
 
 **Implementations:**
-- [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) — Rust, ristretto255 with full API
-- [libsodium](https://github.com/jedisct1/libsodium) — C, ristretto255 (crypto_core_ristretto255)
-- [ristretto255-group](https://github.com/niccolli/ristretto255) — Go, ristretto255 implementation
+- [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, ristretto255 with full API
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, ristretto255 (crypto_core_ristretto255)
 
 **Security status:** Secure
 Ristretto255 provides a clean prime-order group abstraction, eliminating cofactor-related attacks. Security reduces to the hardness of the discrete log on Curve25519.
@@ -647,10 +642,10 @@ RFC 9496 (2023) is an IETF standard. Ristretto255 is the recommended prime-order
 CTR-DRBG and HMAC-DRBG are deployed in every FIPS-validated cryptographic module. Fortuna is in FreeBSD and Windows.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, CTR-DRBG and HMAC-DRBG (NIST SP 800-90A)
-- [BoringSSL](https://github.com/google/boringssl) — C, CTR-DRBG
-- [Linux kernel](https://github.com/torvalds/linux) — C, ChaCha20-based CSPRNG (replaces older designs)
-- [wolfSSL](https://github.com/wolfSSL/wolfssl) — C, HMAC-DRBG, Hash-DRBG
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, CTR-DRBG and HMAC-DRBG (NIST SP 800-90A)
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C, CTR-DRBG
+- [Linux kernel](https://github.com/torvalds/linux) ⭐ 225k — C, ChaCha20-based CSPRNG (replaces older designs)
+- [wolfSSL](https://github.com/wolfSSL/wolfssl) ⭐ 2.8k — C, HMAC-DRBG, Hash-DRBG
 
 **Security status:** Caution
 HMAC-DRBG and CTR-DRBG are secure when properly seeded. Dual_EC_DRBG was backdoored by the NSA and is withdrawn. Entropy source quality is critical for all DRBGs.
@@ -683,8 +678,8 @@ Repeat for r rounds, then swap the final halves. Decryption uses the same struct
 DES is retired; 3DES is deprecated (NIST 2023). Blowfish survives in bcrypt. Twofish is available but rarely chosen over AES. The Luby-Rackoff theorem remains theoretically foundational.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, DES, 3DES, Blowfish (legacy)
-- [bcrypt](https://github.com/pyca/bcrypt) — Python/C, Blowfish-based password hashing
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, DES, 3DES, Blowfish (legacy)
+- [bcrypt](https://github.com/pyca/bcrypt) ⭐ 1.5k — Python/C, Blowfish-based password hashing
 - [Twofish](https://www.schneier.com/academic/twofish/) — reference C implementation
 
 **Security status:** Caution
@@ -726,10 +721,10 @@ The Luby-Rackoff theorem is a foundational result. DES was NIST FIPS 46 (withdra
 AES-GCM is the dominant AEAD in TLS 1.3, cloud APIs, and networking. XTS-AES is in BitLocker, FileVault, and LUKS. CBC is ubiquitous in legacy systems.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, all modes (ECB, CBC, CTR, GCM, CCM, XTS, OCB, GCM-SIV)
-- [BoringSSL](https://github.com/google/boringssl) — C, AES-GCM and AES-GCM-SIV
-- [libsodium](https://github.com/jedisct1/libsodium) — C, AES-256-GCM (hardware-accelerated)
-- [wolfSSL](https://github.com/wolfSSL/wolfssl) — C, AES modes for embedded/FIPS
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, all modes (ECB, CBC, CTR, GCM, CCM, XTS, OCB, GCM-SIV)
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C, AES-GCM and AES-GCM-SIV
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, AES-256-GCM (hardware-accelerated)
+- [wolfSSL](https://github.com/wolfSSL/wolfssl) ⭐ 2.8k — C, AES modes for embedded/FIPS
 
 **Security status:** Caution
 ECB must never be used. CBC requires random IVs and is vulnerable to padding oracle attacks if not combined with MAC (encrypt-then-MAC). CTR/GCM/CCM are secure with unique nonces. AES-GCM-SIV is nonce-misuse resistant.
@@ -760,8 +755,8 @@ NIST SP 800-38A (confidentiality modes), SP 800-38D (GCM), SP 800-38C (CCM), SP 
 Davies-Meyer is inside SHA-1, SHA-256, and SHA-512 — deployed in billions of devices. Miyaguchi-Preneel is in Whirlpool (ISO standard).
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, SHA-256/512 uses Davies-Meyer internally
-- [mbedtls](https://github.com/Mbed-TLS/mbedtls) — C, SHA-2 with Davies-Meyer compression
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, SHA-256/512 uses Davies-Meyer internally
+- [mbedtls](https://github.com/Mbed-TLS/mbedtls) ⭐ 6.6k — C, SHA-2 with Davies-Meyer compression
 - [Whirlpool](https://www.larc.usp.br/~pbarreto/WhirlpoolPage.html) — C, Miyaguchi-Preneel reference
 
 **Security status:** Secure
@@ -794,10 +789,10 @@ Davies-Meyer is the implicit standard via SHA-2 (NIST FIPS 180-4). The Preneel-G
 Argon2id, bcrypt, and PBKDF2 are deployed at massive scale in authentication systems worldwide. scrypt is used in Litecoin and Tarsnap.
 
 **Implementations:**
-- [libsodium](https://github.com/jedisct1/libsodium) — C, Argon2id (crypto_pwhash)
-- [bcrypt](https://github.com/pyca/bcrypt) — Python/C, bcrypt password hashing
-- [argon2](https://github.com/P-H-C/phc-winner-argon2) — C, official PHC winner reference
-- [OpenSSL](https://github.com/openssl/openssl) — C, PBKDF2, scrypt (3.0+), Argon2 (3.2+)
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, Argon2id (crypto_pwhash)
+- [bcrypt](https://github.com/pyca/bcrypt) ⭐ 1.5k — Python/C, bcrypt password hashing
+- [argon2](https://github.com/P-H-C/phc-winner-argon2) ⭐ 5.2k — C, official PHC winner reference
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, PBKDF2, scrypt (3.0+), Argon2 (3.2+)
 
 **Security status:** Secure
 Argon2id is the recommended default (RFC 9106). bcrypt is secure but not memory-hard (ASIC-attackable). PBKDF2 is weak against GPU attacks but FIPS-compliant. Use adequate parameters per OWASP guidance.
@@ -834,10 +829,10 @@ HKDF-Expand(PRK, info, L)  →  OKM  (output keying material, L bytes)
 HKDF is used in TLS 1.3, HPKE, Signal Protocol, Noise Framework, OPAQUE, and WireGuard. Universal key derivation primitive.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, HKDF-SHA256/SHA512 (EVP_KDF)
-- [BoringSSL](https://github.com/google/boringssl) — C, HKDF for TLS 1.3
-- [libsodium](https://github.com/jedisct1/libsodium) — C, crypto_kdf (BLAKE2b-based, similar pattern)
-- [hkdf](https://github.com/casebeer/python-hkdf) — Python, RFC 5869 reference
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, HKDF-SHA256/SHA512 (EVP_KDF)
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C, HKDF for TLS 1.3
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, crypto_kdf (BLAKE2b-based, similar pattern)
+- [hkdf](https://github.com/casebeer/python-hkdf) ⭐ 22 — Python, RFC 5869 reference
 
 **Security status:** Secure
 HKDF is provably secure when the underlying HMAC is a PRF. The extract-then-expand pattern cleanly separates entropy extraction from key expansion.
@@ -869,7 +864,6 @@ ZUC and SNOW 3G are deployed in every 4G/5G base station and handset globally. T
 
 **Implementations:**
 - [3GPP reference implementations](https://www.3gpp.org/) — C, SNOW 3G and ZUC for UEA2/UIA2 and EEA3/EIA3
-- [libsnow](https://github.com/niccolli/libsnow) — C, SNOW 3G reference
 - [Trivium/Grain](https://www.ecrypt.eu.org/stream/) — C, eSTREAM reference implementations
 
 **Security status:** Secure
@@ -897,9 +891,9 @@ SNOW 3G and ZUC are 3GPP TS 35.201/35.221 standards, mandatory in all LTE/5G dep
 Ed25519 batch verification is in libsodium and ed25519-dalek. BLS batch verification is in Ethereum 2.0 consensus clients.
 
 **Implementations:**
-- [ed25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) — Rust, Ed25519 batch verification
-- [blst](https://github.com/supranational/blst) — C/Rust, BLS12-381 batch verification
-- [libsodium](https://github.com/jedisct1/libsodium) — C, Ed25519 batch verify API
+- [ed25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, Ed25519 batch verification
+- [blst](https://github.com/supranational/blst) ⭐ 554 — C/Rust, BLS12-381 batch verification
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, Ed25519 batch verify API
 
 **Security status:** Secure
 Batch verification maintains the same security level as individual verification with overwhelming probability (random linear combination technique).
@@ -928,9 +922,9 @@ Batch verification is a standard optimization in blockchain systems. Ed25519 bat
 SM4 is mandatory in Chinese banking, government, and 5G infrastructure. ZUC is in all 3GPP deployments.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, SM4 support (3.0+)
-- [GmSSL](https://github.com/guanzhi/GmSSL) — C, full Chinese GM/T standard suite (SM1/SM4/ZUC)
-- [Tongsuo](https://github.com/Tongsuo-Project/Tongsuo) — C, Ant Group's OpenSSL fork with SM4 TLS 1.3
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, SM4 support (3.0+)
+- [GmSSL](https://github.com/guanzhi/GmSSL) ⭐ 6.0k — C, full Chinese GM/T standard suite (SM1/SM4/ZUC)
+- [Tongsuo](https://github.com/Tongsuo-Project/Tongsuo) ⭐ 1.4k — C, Ant Group's OpenSSL fork with SM4 TLS 1.3
 
 **Security status:** Secure
 SM4 has no known practical attacks on the full 32 rounds. SM1 is classified (hardware-only). ZUC is well-analyzed with no practical breaks.
@@ -958,9 +952,9 @@ SM4 is Chinese national standard GB/T 32907-2016 and ISO/IEC 18033-3:2010/Amd.1:
 ARIA is mandatory in Korean government and financial systems. Used in Korean TLS deployments.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, ARIA cipher support
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, ARIA cipher support
 - [KISA ARIA](https://seed.kisa.or.kr/) — C/Java, official Korean reference implementation
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, ARIA cipher
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, ARIA cipher
 
 **Security status:** Secure
 No practical attacks on full-round ARIA at any key size. Security margin is comparable to AES.
@@ -992,7 +986,7 @@ Korean national standard KS X 1213:2004; IETF RFC 5794 (algorithm) and RFC 6209 
 XTS-AES is in BitLocker, FileVault, VeraCrypt, and LUKS. SKINNY and Deoxys-BC are used in NIST LWC candidates.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES-XTS
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-XTS
 - [Linux dm-crypt](https://gitlab.com/cryptsetup/cryptsetup) — C, XTS-AES for LUKS disk encryption
 - [SKINNY](https://sites.google.com/site/skinaboretx/) — C, reference TBC implementation
 
@@ -1027,8 +1021,8 @@ XTS-AES is NIST SP 800-38E and IEEE P1619. The tweakable block cipher formalizat
 Foundational theoretical construction; not deployed as a standalone cipher but instantiated via AES and SKINNY/Deoxys.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES (the primary Even-Mansour instantiation) with AES-NI
-- [SKINNY-C](https://github.com/AsmOptC-RiscV/Assembly-Optimized-C-RiscV) — C, SKINNY tweakable block cipher (tweakable Even-Mansour)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES (the primary Even-Mansour instantiation) with AES-NI
+- [SKINNY-C](https://github.com/AsmOptC-RiscV/Assembly-Optimized-C-RiscV) ⭐ 16 — C, SKINNY tweakable block cipher (tweakable Even-Mansour)
 
 **Security status:** Secure
 Proven optimal birthday-bound security (n/2 bits) in the ideal permutation model; iterated variants achieve beyond-birthday security.
@@ -1059,9 +1053,9 @@ Foundational result in block cipher theory; universally cited in provable securi
 Default hash function in Rust HashMap, Python 3.4+, Ruby, Linux kernel (since 4.1), and OpenSSH.
 
 **Implementations:**
-- [SipHash reference](https://github.com/veorq/SipHash) — C, official reference by Aumasson and Bernstein
-- [Rust std::collections::HashMap](https://github.com/rust-lang/rust) — Rust, SipHash-1-3 as default hasher
-- [Linux kernel](https://github.com/torvalds/linux) — C, SipHash used in net/core and random subsystem
+- [SipHash reference](https://github.com/veorq/SipHash) ⭐ 752 — C, official reference by Aumasson and Bernstein
+- [Rust std::collections::HashMap](https://github.com/rust-lang/rust) ⭐ 111k — Rust, SipHash-1-3 as default hasher
+- [Linux kernel](https://github.com/torvalds/linux) ⭐ 225k — C, SipHash used in net/core and random subsystem
 
 **Security status:** Secure
 No known attacks on SipHash-2-4 at full rounds; provably secure PRF under standard assumptions for 128-bit key.
@@ -1091,9 +1085,9 @@ De-facto industry standard for keyed hash tables; endorsed by major language run
 Underlies SHA-1, SHA-256, SHA-512, and MD5 — deployed in virtually every cryptographic system worldwide.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, SHA-2 family (all Merkle-Damgard)
-- [libsodium](https://github.com/jedisct1/libsodium) — C, SHA-256/512
-- [BoringSSL](https://github.com/google/boringssl) — C, SHA-2 with hardware acceleration
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, SHA-2 family (all Merkle-Damgard)
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, SHA-256/512
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C, SHA-2 with hardware acceleration
 
 **Security status:** Caution
 The construction itself is sound (collision resistance reduces to compression function), but suffers from length-extension attacks when used naively as a MAC. Wide-pipe and HAIFA variants mitigate known structural weaknesses.
@@ -1122,7 +1116,7 @@ NIST FIPS 180-4 (SHA-2) is built on Merkle-Damgard. Universally understood and d
 Prohibited in TLS (RFC 7465), WEP deprecated, WPA-TKIP deprecated. Must not be used in any new system.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, RC4 retained for legacy compatibility only; disabled by default in modern builds
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RC4 retained for legacy compatibility only; disabled by default in modern builds
 
 **Security status:** Broken
 Keystream biases enable plaintext recovery in TLS within ~2^26 sessions (AlFardan-Bernstein-Paterson-Poettering-Schuldt 2013). WEP key recovery in minutes via FMS attack.
@@ -1151,8 +1145,8 @@ RFC 7465 formally prohibits RC4 in TLS. NIST deprecates RC4. Universal consensus
 Functionally superseded by ChaCha20. Rabbit has RFC 4503 but minimal deployment; HC-128 and SOSEMANUK have no significant production use.
 
 **Implementations:**
-- [Crypto++](https://github.com/weidai11/cryptopp) — C++, Rabbit, HC-128, SOSEMANUK
-- [wolfSSL](https://github.com/wolfSSL/wolfssl) — C, Rabbit (RFC 4503)
+- [Crypto++](https://github.com/weidai11/cryptopp) ⭐ 5.4k — C++, Rabbit, HC-128, SOSEMANUK
+- [wolfSSL](https://github.com/wolfSSL/wolfssl) ⭐ 2.8k — C, Rabbit (RFC 4503)
 
 **Security status:** Superseded
 All ciphers remain cryptographically unbroken at full rounds, but superseded by ChaCha20 which offers better constant-time properties and wider ecosystem support.
@@ -1182,9 +1176,9 @@ eSTREAM portfolio recognition but no NIST or broad IETF standardization beyond R
 Poly1305 is in TLS 1.3 and WireGuard; GMAC is inside every AES-GCM deployment; UMAC is in OpenSSH.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, GMAC, Poly1305
-- [libsodium](https://github.com/jedisct1/libsodium) — C, Poly1305 (crypto_onetimeauth)
-- [OpenSSH](https://github.com/openssh/openssh-portable) — C, UMAC-64/128
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, GMAC, Poly1305
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, Poly1305 (crypto_onetimeauth)
+- [OpenSSH](https://github.com/openssh/openssh-portable) ⭐ 3.8k — C, UMAC-64/128
 
 **Security status:** Secure
 Information-theoretically secure in the one-time setting; computationally secure with PRF-generated pads. Nonce reuse breaks one-time key secrecy.
@@ -1215,9 +1209,9 @@ Poly1305 is IETF RFC 8439; GMAC is NIST SP 800-38D; UMAC is IETF RFC 4418. Wegma
 NIST-standardized (SP 800-185) with production-quality implementations; adoption growing but less ubiquitous than SHA-3/SHAKE.
 
 **Implementations:**
-- [XKCP](https://github.com/XKCP/XKCP) — C, official Keccak team reference for cSHAKE, KMAC, TupleHash, ParallelHash
-- [OpenSSL](https://github.com/openssl/openssl) — C, KMAC support (3.0+)
-- [Go crypto](https://github.com/golang/crypto) — Go, cSHAKE and KMAC in golang.org/x/crypto/sha3
+- [XKCP](https://github.com/XKCP/XKCP) ⭐ 643 — C, official Keccak team reference for cSHAKE, KMAC, TupleHash, ParallelHash
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, KMAC support (3.0+)
+- [Go crypto](https://github.com/golang/crypto) ⭐ 3.3k — Go, cSHAKE and KMAC in golang.org/x/crypto/sha3
 
 **Security status:** Secure
 Based on full 24-round Keccak-f[1600]; no known attacks. Security inherits directly from SHA-3/SHAKE.
@@ -1247,9 +1241,9 @@ NIST SP 800-185 (2016). KMAC is referenced in NIST SP 800-108 Rev. 1 for KDF and
 Deployed in Bitcoin (HASH160) and legacy PGP; no new adoption recommended but existing uses remain safe.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, RIPEMD-160
-- [Crypto++](https://github.com/weidai11/cryptopp) — C++, RIPEMD-128/160/256/320
-- [Bitcoin Core](https://github.com/bitcoin/bitcoin) — C++, RIPEMD-160 for address derivation
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RIPEMD-160
+- [Crypto++](https://github.com/weidai11/cryptopp) ⭐ 5.4k — C++, RIPEMD-128/160/256/320
+- [Bitcoin Core](https://github.com/bitcoin/bitcoin) ⭐ 88k — C++, RIPEMD-160 for address derivation
 
 **Security status:** Caution
 No practical collision attack on full 80 rounds, but 160-bit output provides only 80-bit collision resistance. Not recommended for new designs; use SHA-256 or SHA-3.
@@ -1277,9 +1271,9 @@ ISO/IEC 10118-3 standard but largely superseded by SHA-2/SHA-3 outside the Bitco
 Mandatory in Chinese government, banking (UnionPay), and 5G systems; deployed at scale in Chinese PKI and TLS (RFC 8998).
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, SM3 support (1.1.1+)
-- [GmSSL](https://github.com/guanzhi/GmSSL) — C, Chinese national crypto library with SM3
-- [Botan](https://github.com/randombit/botan) — C++, SM3 hash
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, SM3 support (1.1.1+)
+- [GmSSL](https://github.com/guanzhi/GmSSL) ⭐ 6.0k — C, Chinese national crypto library with SM3
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, SM3 hash
 
 **Security status:** Secure
 No practical collision or preimage attack on full 64 rounds; best known attack reaches 28 steps. Independently analyzed by international cryptographers.
@@ -1308,9 +1302,8 @@ Chinese national standard GB/T 32905-2016; ISO/IEC 10118-3:2018; IETF RFC 8998. 
 Mandatory in Russian federal information systems; deployed in Russian banking, government PKI, and TLS implementations.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, Streebog and GOST 34.10-2012 via GOST engine
-- [libgost15](https://github.com/AktivCo/libgost15) — C, standalone Russian GOST primitives
-- [Botan](https://github.com/randombit/botan) — C++, Streebog hash
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, Streebog and GOST 34.10-2012 via GOST engine
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, Streebog hash
 
 **Security status:** Caution
 No practical break on full rounds, but rebound attacks reach reduced rounds. S-box derivation process has been questioned (similar concerns as Kuznyechik). Independent Western review is limited.
@@ -1341,9 +1334,9 @@ Russian national standard (GOST R 34.11-2012, GOST R 34.10-2012); IETF RFCs 6986
 Whirlpool is ISO-standardized but rarely deployed in new systems. Tiger/TTH is legacy P2P only. Both superseded by SHA-2/SHA-3/BLAKE.
 
 **Implementations:**
-- [Crypto++](https://github.com/weidai11/cryptopp) — C++, Whirlpool and Tiger
-- [Botan](https://github.com/randombit/botan) — C++, Whirlpool
-- [RHash](https://github.com/rhash/RHash) — C, Tiger, TTH, Whirlpool
+- [Crypto++](https://github.com/weidai11/cryptopp) ⭐ 5.4k — C++, Whirlpool and Tiger
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, Whirlpool
+- [RHash](https://github.com/rhash/RHash) ⭐ 706 — C, Tiger, TTH, Whirlpool
 
 **Security status:** Superseded
 No practical collision on full-round Whirlpool or Tiger, but both are superseded by SHA-2/SHA-3/BLAKE for all use cases.
@@ -1375,8 +1368,8 @@ Whirlpool is ISO/IEC 10118-3; Tiger has no formal standard. Neither is recommend
 xxHash is used in LZ4, Zstandard, RocksDB, ClickHouse; MurmurHash3 in Apache Spark, Cassandra; CRC-32 in Ethernet, gzip, ZIP.
 
 **Implementations:**
-- [xxHash](https://github.com/Cyan4973/xxHash) — C, official xxHash32/64/XXH3/XXH128
-- [smhasher](https://github.com/aappleby/smhasher) — C++, MurmurHash3 reference and test suite
+- [xxHash](https://github.com/Cyan4973/xxHash) ⭐ 10k — C, official xxHash32/64/XXH3/XXH128
+- [smhasher](https://github.com/aappleby/smhasher) ⭐ 2.9k — C++, MurmurHash3 reference and test suite
 - [FNV reference](http://www.isthe.com/chongo/tech/comp/fnv/) — C, FNV-1/FNV-1a reference
 
 **Security status:** Broken
@@ -1409,9 +1402,8 @@ Industry standard for non-cryptographic use cases. xxHash and MurmurHash are ubi
 Mandatory in Russian federal IT systems; deployed in Russian banking, government, and military communications.
 
 **Implementations:**
-- [OpenSSL GOST engine](https://github.com/gost-engine/engine) — C, Kuznyechik, Magma, and MGM AEAD
-- [libgost15](https://github.com/AktivCo/libgost15) — C, standalone GOST cipher implementations
-- [Botan](https://github.com/randombit/botan) — C++, Kuznyechik (GOST 34.12)
+- [OpenSSL GOST engine](https://github.com/gost-engine/engine) ⭐ 441 — C, Kuznyechik, Magma, and MGM AEAD
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, Kuznyechik (GOST 34.12)
 
 **Security status:** Caution
 No practical attack on full rounds, but Kuznyechik S-box has unexplained algebraic structure (Biryukov-Perrin 2019). Magma uses a 64-bit block, making it vulnerable to birthday-bound attacks at ~32 GB data. Limited independent Western analysis.
@@ -1445,9 +1437,9 @@ Russian national standard GOST R 34.12-2015; IETF RFCs 7801, 8891, and 9058 for 
 NR-AEAD (AES-GCM, ChaCha20-Poly1305) deployed in TLS 1.3, WireGuard. NMR-AEAD (AES-GCM-SIV) deployed in Google Tink and Android.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES-GCM, AES-CCM, ChaCha20-Poly1305
-- [BoringSSL](https://github.com/google/boringssl) — C, AES-GCM-SIV (RFC 8452)
-- [miscreant](https://github.com/miscreant/miscreant) — Multi-language, AES-SIV and AES-PMAC-SIV
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-GCM, AES-CCM, ChaCha20-Poly1305
+- [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C, AES-GCM-SIV (RFC 8452)
+- [miscreant](https://github.com/miscreant/miscreant) ⭐ 475 — Multi-language, AES-SIV and AES-PMAC-SIV
 
 **Security status:** Secure
 Individual schemes are secure at recommended parameters. Security model choice (NR vs NMR) depends on nonce management discipline; NMR is strictly stronger.
@@ -1492,9 +1484,9 @@ AES-GCM is NIST SP 800-38D; AES-SIV is RFC 5297; AES-GCM-SIV is RFC 8452; the SI
 Core of SHA-3 (FIPS 202), SHAKE, KMAC, and KangarooTwelve — deployed in every SHA-3 implementation worldwide.
 
 **Implementations:**
-- [XKCP](https://github.com/XKCP/XKCP) — C/Assembly, official Keccak team reference with AVX2/AVX-512 optimizations
-- [OpenSSL](https://github.com/openssl/openssl) — C, Keccak-f[1600] in SHA-3/SHAKE
-- [tiny_sha3](https://github.com/mjosaarinen/tiny_sha3) — C, minimal Keccak-f[1600] implementation
+- [XKCP](https://github.com/XKCP/XKCP) ⭐ 643 — C/Assembly, official Keccak team reference with AVX2/AVX-512 optimizations
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, Keccak-f[1600] in SHA-3/SHAKE
+- [tiny_sha3](https://github.com/mjosaarinen/tiny_sha3) ⭐ 227 — C, minimal Keccak-f[1600] implementation
 
 **Security status:** Secure
 No practical attack on full 24-round Keccak-f[1600]; best differential/algebraic attacks reach 7-8 rounds. 12-round Keccak-p has a comfortable security margin.
@@ -1544,9 +1536,9 @@ G(a, b, c, d, x, y):
 BLAKE2b is the core of Argon2 (RFC 9106) and WireGuard; libsodium defaults to BLAKE2b; deployed in Zcash and numerous applications.
 
 **Implementations:**
-- [BLAKE2 reference](https://github.com/BLAKE2/BLAKE2) — C, official reference for BLAKE2b/2s/2bp/2sp
-- [libsodium](https://github.com/jedisct1/libsodium) — C, BLAKE2b as crypto_generichash
-- [blake2-rfc](https://github.com/cesarb/blake2-rfc) — Rust, BLAKE2b/2s per RFC 7693
+- [BLAKE2 reference](https://github.com/BLAKE2/BLAKE2) ⭐ 694 — C, official reference for BLAKE2b/2s/2bp/2sp
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, BLAKE2b as crypto_generichash
+- [blake2-rfc](https://github.com/cesarb/blake2-rfc) ⭐ 66 — Rust, BLAKE2b/2s per RFC 7693
 
 **Security status:** Secure
 No known attacks on full-round BLAKE2b (12 rounds) or BLAKE2s (10 rounds). Security margin is comfortable; best cryptanalysis reaches reduced rounds only.
@@ -1575,9 +1567,8 @@ IETF RFC 7693; widely trusted by the cryptographic community. Used in Argon2 (PH
 EC-ElGamal is deployed in e-voting systems (Helios, Belenios) and confidential transaction schemes; Twisted ElGamal is in Solana's Token-2022.
 
 **Implementations:**
-- [libsodium](https://github.com/jedisct1/libsodium) — C, Ristretto255 group operations (ElGamal building block)
-- [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) — Rust, Ristretto255 ElGamal
-- [Helios](https://github.com/belenios/belenios) — OCaml, ElGamal-based e-voting
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, Ristretto255 group operations (ElGamal building block)
+- [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, Ristretto255 ElGamal
 
 **Security status:** Secure
 IND-CPA under DDH; requires CCA2 extension (e.g., Cramer-Shoup or HPKE) for chosen-ciphertext security. Additive homomorphism limited to small plaintext spaces.
@@ -1611,9 +1602,9 @@ Foundational public-key encryption scheme; universally taught and deployed. No f
 Used in threshold ECDSA (GG20, CGGMP21), e-voting (Helios, Belenios), and federated learning secure aggregation.
 
 **Implementations:**
-- [python-paillier](https://github.com/data61/python-paillier) — Python, CSIRO Data61's Paillier library
-- [libpaillier](https://github.com/niclabs/tcpaillier) — Go, threshold Paillier
-- [rust-paillier](https://github.com/KZen-networks/rust-paillier) — Rust, Paillier with ZK proofs for threshold ECDSA
+- [python-paillier](https://github.com/data61/python-paillier) ⭐ 634 — Python, CSIRO Data61's Paillier library
+- [libpaillier](https://github.com/niclabs/tcpaillier) ⭐ 20 — Go, threshold Paillier
+- [rust-paillier](https://github.com/KZen-networks/rust-paillier) ⭐ 37 — Rust, Paillier with ZK proofs for threshold ECDSA
 
 **Security status:** Secure
 Semantic security (IND-CPA) under the Decisional Composite Residuosity assumption. Requires 2048+ bit modulus for 112-bit security. Not CCA2-secure without additional proof mechanisms.
@@ -1643,9 +1634,9 @@ No formal NIST/IETF standard, but the de-facto standard additive homomorphic enc
 IDEA was the default cipher in PGP 2.x; prohibited in TLS (RFC 7525). 64-bit block size makes it unsafe for bulk encryption. Legacy only.
 
 **Implementations:**
-- [Crypto++](https://github.com/weidai11/cryptopp) — C++, IDEA
-- [Botan](https://github.com/randombit/botan) — C++, IDEA (legacy support)
-- [GnuPG](https://github.com/gpg/gnupg) — C, IDEA in OpenPGP legacy mode
+- [Crypto++](https://github.com/weidai11/cryptopp) ⭐ 5.4k — C++, IDEA
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, IDEA (legacy support)
+- [GnuPG](https://github.com/gpg/gnupg) ⭐ 906 — C, IDEA in OpenPGP legacy mode
 
 **Security status:** Superseded
 No practical key-recovery attack on full 8.5-round IDEA, but the 64-bit block size is vulnerable to birthday-bound attacks (SWEET32) at ~32 GB of data.
@@ -1676,9 +1667,8 @@ ISO/IEC 18033-3; historically important but fully superseded by AES. IDEA patent
 RSA-CRT is the universal RSA implementation in all major libraries and HSMs. Multi-prime RSA is supported in PKCS#1 v2.2.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, RSA-CRT and multi-prime RSA
-- [NSS](https://github.com/niccolli/nss) — C, RSA-CRT in Firefox/Thunderbird
-- [mbedTLS](https://github.com/Mbed-TLS/mbedtls) — C, RSA-CRT for embedded systems
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RSA-CRT and multi-prime RSA
+- [mbedTLS](https://github.com/Mbed-TLS/mbedtls) ⭐ 6.6k — C, RSA-CRT for embedded systems
 
 **Security status:** Caution
 RSA-CRT is secure but requires fault-attack countermeasures (signature verification before output). The Bellcore attack recovers the private key from a single faulty CRT computation. Blinding is mandatory.
@@ -1713,9 +1703,9 @@ PKCS#1 v2.2 (RFC 8017); universally implemented. RSA-CRT is the default RSA mode
 SHAKE128/256 are in all NIST PQC standards (ML-KEM, ML-DSA, SLH-DSA); KangarooTwelve is RFC 9560; BLAKE3 XOF is widely deployed.
 
 **Implementations:**
-- [XKCP](https://github.com/XKCP/XKCP) — C, SHAKE128/256, KangarooTwelve reference
-- [OpenSSL](https://github.com/openssl/openssl) — C, SHAKE128/256 (3.0+)
-- [BLAKE3](https://github.com/BLAKE3-team/BLAKE3) — Rust/C, unlimited output mode
+- [XKCP](https://github.com/XKCP/XKCP) ⭐ 643 — C, SHAKE128/256, KangarooTwelve reference
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, SHAKE128/256 (3.0+)
+- [BLAKE3](https://github.com/BLAKE3-team/BLAKE3) ⭐ 6.1k — Rust/C, unlimited output mode
 
 **Security status:** Secure
 SHAKE128/256 based on full 24-round Keccak; KangarooTwelve uses 12 rounds with comfortable margin. All have no known practical attacks.
@@ -1747,9 +1737,9 @@ SHAKE is NIST FIPS 202; KangarooTwelve is IETF RFC 9560; BLAKE3 XOF is widely tr
 Montgomery multiplication and Barrett reduction are in every RSA/ECC/PQC implementation. The Montgomery ladder is mandatory for X25519/X448.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C/Assembly, Montgomery multiplication with CIOS for RSA/ECC
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C/Assembly, Montgomery multiplication with CIOS for RSA/ECC
 - [GMP](https://gmplib.org/) — C/Assembly, multi-precision Montgomery and Karatsuba
-- [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) — Rust, Montgomery ladder for X25519
+- [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, Montgomery ladder for X25519
 
 **Security status:** Secure
 Implementation techniques, not cryptographic primitives. Constant-time Montgomery ladder and Barrett reduction prevent timing side channels when correctly implemented.
@@ -1787,10 +1777,10 @@ Universal implementation standard; described in every applied cryptography textb
 Constant-time coding practices and AES-NI are mandatory in all production cryptographic libraries (OpenSSL, BoringSSL, libsodium, NSS).
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C/Assembly, AES-NI, constant-time RSA/ECC
-- [libsodium](https://github.com/jedisct1/libsodium) — C, designed for constant-time from the ground up
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C/Assembly, AES-NI, constant-time RSA/ECC
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, designed for constant-time from the ground up
 - [BearSSL](https://bearssl.org/) — C, explicitly constant-time TLS library
-- [dudect](https://github.com/oreparaz/dudect) — C, statistical timing leak detection tool
+- [dudect](https://github.com/oreparaz/dudect) ⭐ 201 — C, statistical timing leak detection tool
 
 **Security status:** Secure
 When correctly implemented, constant-time code eliminates timing and cache side channels. Verification tools (ct-verif, dudect) provide assurance. AES-NI provides hardware-guaranteed constant-time AES.
@@ -1822,8 +1812,8 @@ Constant-time implementation is a universal requirement in production cryptograp
 Double PRF concepts are embedded in HMAC and key wrapping (AES-KW), though rarely deployed as a standalone primitive. RKA-secure PRF is primarily theoretical.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, AES-KW (key wrapping with double-key philosophy)
-- [libsodium](https://github.com/jedisct1/libsodium) — C, HMAC (inherent double-key construction)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-KW (key wrapping with double-key philosophy)
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, HMAC (inherent double-key construction)
 
 **Security status:** Secure
 AES-128 has no known RKA weakness. AES-256 has a 2^99.5 related-key attack (Biryukov-Khovratovich 2009) — theoretical, not practical, but motivates domain-separated key derivation.
@@ -1848,9 +1838,9 @@ RKA resistance is a well-studied theoretical concept; practically addressed thro
 Mandatory in Chinese wireless LAN (WAPI), banking, and government systems; hardware-accelerated on ARMv8.2-A.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, SM4 support (1.1.1+)
-- [GmSSL](https://github.com/guanzhi/GmSSL) — C, SM4 with GCM/CCM modes
-- [Botan](https://github.com/randombit/botan) — C++, SM4
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, SM4 support (1.1.1+)
+- [GmSSL](https://github.com/guanzhi/GmSSL) ⭐ 6.0k — C, SM4 with GCM/CCM modes
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, SM4
 
 **Security status:** Secure
 No practical attack on full 32-round SM4; best known cryptanalysis reaches 24 rounds.
@@ -1875,8 +1865,8 @@ Chinese national standard GB/T 32907-2016; ISO/IEC 18033-3:2010/Amd 1. Mandated 
 ARIA and SEED are deployed in Korean government, banking, and telecommunications. SEED is in legacy Korean web browsers and VPNs.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, ARIA and SEED
-- [Botan](https://github.com/randombit/botan) — C++, ARIA and SEED
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, ARIA and SEED
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, ARIA and SEED
 - [KISA reference](https://seed.kisa.or.kr/) — C, official Korean reference implementations
 
 **Security status:** Secure
@@ -1902,8 +1892,8 @@ Korean national standards (KS X 1213 for ARIA, KISA/TTA for SEED); IETF RFCs 579
 Mandatory in Russian federal systems; Kuznyechik for new deployments, Magma for legacy compatibility.
 
 **Implementations:**
-- [OpenSSL GOST engine](https://github.com/gost-engine/engine) — C, Kuznyechik and Magma
-- [Botan](https://github.com/randombit/botan) — C++, Kuznyechik
+- [OpenSSL GOST engine](https://github.com/gost-engine/engine) ⭐ 441 — C, Kuznyechik and Magma
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, Kuznyechik
 
 **Security status:** Caution
 No practical break on full rounds, but Kuznyechik/Streebog S-box has unexplained algebraic structure (Perrin-Udovenko 2019). Magma's 64-bit block is vulnerable to birthday-bound attacks.
@@ -1928,9 +1918,9 @@ Russian GOST standard with IETF RFCs for interoperability. S-box provenance cont
 SM3 is mandatory in Chinese PKI and banking; Streebog is mandatory in Russian federal systems. Both are deployed at national scale.
 
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, SM3 (1.1.1+) and Streebog via GOST engine
-- [GmSSL](https://github.com/guanzhi/GmSSL) — C, SM3
-- [Botan](https://github.com/randombit/botan) — C++, SM3 and Streebog
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, SM3 (1.1.1+) and Streebog via GOST engine
+- [GmSSL](https://github.com/guanzhi/GmSSL) ⭐ 6.0k — C, SM3
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, SM3 and Streebog
 
 **Security status:** Caution
 No practical attacks on full rounds of either hash. Streebog shares the same S-box provenance concerns as Kuznyechik. Independent Western analysis is limited for both.
@@ -1955,7 +1945,7 @@ SM3 is Chinese GB/T 32905-2016 and ISO/IEC 10118-3:2018; Streebog is GOST R 34.1
 CLEFIA is used in lightweight IoT contexts and is ISO-standardized. MISTY1 is legacy due to the full-round integral attack.
 
 **Implementations:**
-- [Crypto++](https://github.com/weidai11/cryptopp) — C++, MISTY1 and CLEFIA
+- [Crypto++](https://github.com/weidai11/cryptopp) ⭐ 5.4k — C++, MISTY1 and CLEFIA
 - [Sony CLEFIA](https://www.sony.net/Products/cryptography/clefia/) — C, official Sony reference implementation
 
 **Security status:** Caution
@@ -1982,9 +1972,9 @@ CLEFIA is ISO/IEC 29192-2; MISTY1 was NESSIE-selected and RFC 2994 but is now co
 NIST SP 800-232 published in 2025; adoption is beginning in IoT and embedded systems but not yet at scale.
 
 **Implementations:**
-- [Ascon reference](https://github.com/ascon/ascon-c) — C, official reference implementation
-- [ascon-rust](https://github.com/sebastinas/ascon-aead) — Rust, Ascon AEAD
-- [XKCP](https://github.com/XKCP/XKCP) — C, Ascon permutation variants
+- [Ascon reference](https://github.com/ascon/ascon-c) ⭐ 276 — C, official reference implementation
+- [ascon-rust](https://github.com/sebastinas/ascon-aead) ⭐ 21 — Rust, Ascon AEAD
+- [XKCP](https://github.com/XKCP/XKCP) ⭐ 643 — C, Ascon permutation variants
 
 **Security status:** Secure
 Best cryptanalysis reaches 7 of 12 rounds on the permutation. Extensive analysis during NIST LWC competition found no practical weakness.
@@ -2011,9 +2001,9 @@ NIST SP 800-232 (2025); winner of the NIST Lightweight Cryptography Standardizat
 PRESENT is ISO-standardized and deployed in constrained hardware. SKINNY and GIFT are used in academic AEAD constructions; GIFT-COFB and Romulus were NIST LWC finalists.
 
 **Implementations:**
-- [SKINNY-C](https://github.com/AsmOptC-RiscV/Assembly-Optimized-C-RiscV) — C, SKINNY reference and optimized
-- [GIFT reference](https://github.com/giftcipher/gift) — C, GIFT-128 reference
-- [Crypto++](https://github.com/weidai11/cryptopp) — C++, PRESENT
+- [SKINNY-C](https://github.com/AsmOptC-RiscV/Assembly-Optimized-C-RiscV) ⭐ 16 — C, SKINNY reference and optimized
+- [GIFT reference](https://github.com/giftcipher/gift) ⭐ 13 — C, GIFT-128 reference
+- [Crypto++](https://github.com/weidai11/cryptopp) ⭐ 5.4k — C++, PRESENT
 
 **Security status:** Secure
 No practical attacks on full rounds of PRESENT, GIFT-128, or SKINNY at recommended parameters. PRESENT's 64-bit block limits data volume (birthday bound).
@@ -2039,8 +2029,8 @@ PRESENT is ISO/IEC 29192-2. GIFT and SKINNY are well-studied in the academic com
 TurboSHAKE is in NIST SP 800-185 draft and gaining adoption; KangarooTwelve (same round count) is RFC 9560. MarsupilamiFourteen is newer with limited deployment.
 
 **Implementations:**
-- [XKCP](https://github.com/XKCP/XKCP) — C, TurboSHAKE and MarsupilamiFourteen reference by the Keccak team
-- [K12](https://github.com/XKCP/K12) — C, KangarooTwelve (same 12-round Keccak-p base as TurboSHAKE)
+- [XKCP](https://github.com/XKCP/XKCP) ⭐ 643 — C, TurboSHAKE and MarsupilamiFourteen reference by the Keccak team
+- [K12](https://github.com/XKCP/K12) ⭐ 52 — C, KangarooTwelve (same 12-round Keccak-p base as TurboSHAKE)
 
 **Security status:** Secure
 12-round Keccak-p has a comfortable security margin; best attack reaches 8 rounds. MarsupilamiFourteen's 14 rounds provide additional margin.
@@ -2066,7 +2056,7 @@ Deployed in Korean government and financial systems; KS X 3262 standardized.
 
 **Implementations:**
 - [KISA LSH reference](https://seed.kisa.or.kr/) — C, official Korean reference implementation with AVX2 optimization
-- [Botan](https://github.com/randombit/botan) — C++, LSH-256 and LSH-512
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, LSH-256 and LSH-512
 
 **Security status:** Secure
 No practical attacks on full 26/28-step LSH. Security analysis by KISA and international researchers confirms adequate margins.

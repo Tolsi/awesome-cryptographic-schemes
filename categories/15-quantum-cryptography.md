@@ -46,7 +46,7 @@ ITU-T Y.3800 series, ETSI QKD ISG standards. Widely deployed in China and Europe
 Purely theoretical; requires quantum computers for creation and verification. No prototype implementations exist.
 
 **Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, can simulate Wiesner's scheme on quantum simulators
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, can simulate Wiesner's scheme on quantum simulators
 
 **Security status:** Secure
 Security rests on the no-cloning theorem (information-theoretic). Public quantum money security depends on computational assumptions not yet fully validated.
@@ -73,7 +73,7 @@ Foundational theoretical primitive studied in quantum information; no standardiz
 Academic/theoretical stage; proofs of concept only. No production-quality implementations.
 
 **Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, quantum simulation framework for prototyping
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, quantum simulation framework for prototyping
 
 **Security status:** Secure
 Security from no-cloning theorem and computational assumptions (iO, quantum FHE). Theoretical guarantees are strong; no practical attacks known on the constructions.
@@ -99,7 +99,7 @@ Active research area at top cryptography venues (STOC, CRYPTO, EUROCRYPT). No st
 Purely theoretical; requires relativistic constraints and quantum communication. No experimental demonstrations.
 
 **Implementations:**
-- [SimulaQron](https://github.com/SoftwareQuTech/SimulaQron) — Python, quantum network simulator for position-based protocols
+- [SimulaQron](https://github.com/SoftwareQuTech/SimulaQron) ⭐ 130 — Python, quantum network simulator for position-based protocols
 
 **Security status:** Caution
 Secure against bounded quantum storage adversaries; general security requires relativistic constraints (speed of light). Unbounded entanglement attacks can break some variants.
@@ -126,7 +126,7 @@ First experimental demonstration on Quantinuum H2-1 (Nature 2025, 71,313 certifi
 
 **Implementations:**
 - [Quantinuum Quantum Origin](https://www.quantinuum.com/products/quantum-origin) — commercial quantum random number generation platform
-- [Cirq (Google)](https://github.com/quantumlib/Cirq) — Python, open-source framework used for random circuit sampling experiments
+- [Cirq (Google)](https://github.com/quantumlib/Cirq) ⭐ 4.9k — Python, open-source framework used for random circuit sampling experiments
 
 **Security status:** Secure
 Cryptographic certification under standard computational assumptions (LWE). The Quantinuum demonstration provides a formal proof of genuine quantum randomness.
@@ -182,11 +182,10 @@ Schemes designed to resist attacks from quantum computers (Shor's algorithm brea
 ML-KEM (FIPS 203), ML-DSA (FIPS 204), SLH-DSA (FIPS 205), FN-DSA (FIPS 206) are NIST standards deployed in Chrome, Signal, Cloudflare, and OpenSSH.
 
 **Implementations:**
-- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) — C, comprehensive PQC library with ML-KEM, ML-DSA, SLH-DSA, and more
-- [pqcrypto (Rust)](https://github.com/nickel-org/rust-pqcrypto) — Rust bindings for PQC algorithms
+- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, comprehensive PQC library with ML-KEM, ML-DSA, SLH-DSA, and more
 - [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, includes ML-KEM, ML-DSA, SLH-DSA implementations
-- [wolfSSL](https://github.com/wolfSSL/wolfssl) — C, production TLS library with PQC support
-- [PQClean](https://github.com/PQClean/PQClean) — C, clean portable implementations of PQC schemes
+- [wolfSSL](https://github.com/wolfSSL/wolfssl) ⭐ 2.8k — C, production TLS library with PQC support
+- [PQClean](https://github.com/PQClean/PQClean) ⭐ 893 — C, clean portable implementations of PQC schemes
 
 **Security status:** Secure
 NIST-standardized algorithms reviewed extensively during multi-year standardization process. No known practical attacks at recommended parameters. SIDH/SIKE broken (2022) but was not standardized.
@@ -222,7 +221,7 @@ NIST FIPS 203/204/205/206 standards. Mandated by CNSA 2.0 for US national securi
 SQIsign and CSIDH have reference implementations but no production deployments. SIDH/SIKE broken (2022). SQIsign2D in NIST Round 2.
 
 **Implementations:**
-- [SQIsign reference](https://github.com/SQIsign/sqisign) — C, reference implementation of SQIsign
+- [SQIsign reference](https://github.com/SQIsign/sqisign) ⭐ 27 — C, reference implementation of SQIsign
 - [CSIDH reference (Castryck-Lange-Martindale-Panny-Renes)](https://csidh.isogeny.org/) — C, CSIDH key exchange
 - [Sagemath isogeny tools](https://www.sagemath.org/) — Python, extensive isogeny computation support
 
@@ -309,8 +308,8 @@ All three are NIST Additional Signatures Round 2 candidates (2025). Recognized a
 sntrup761 is the default PQ key exchange algorithm in OpenSSH since version 8.5 (2021) — the largest real-world deployment of any non-ML-KEM PQ KEM.
 
 **Implementations:**
-- [OpenSSH](https://github.com/openssh/openssh-portable) — C, includes sntrup761x25519 hybrid key exchange by default
-- [libsodium](https://github.com/jedisct1/libsodium) — C, includes sntrup761 KEM
+- [OpenSSH](https://github.com/openssh/openssh-portable) ⭐ 3.8k — C, includes sntrup761x25519 hybrid key exchange by default
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, includes sntrup761 KEM
 - [NTRU Prime reference](https://ntruprime.cr.yp.to/software.html) — C, reference implementation by Bernstein et al.
 
 **Security status:** Secure
@@ -344,9 +343,9 @@ Reference implementation available; well-studied for 50 years. Not yet standardi
 
 **Implementations:**
 - [Classic McEliece reference](https://classic.mceliece.org/software.html) — C, reference and optimized implementations
-- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) — C, includes Classic McEliece
+- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, includes Classic McEliece
 - [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, Classic McEliece support
-- [PQClean](https://github.com/PQClean/PQClean) — C, portable Classic McEliece implementation
+- [PQClean](https://github.com/PQClean/PQClean) ⭐ 893 — C, portable Classic McEliece implementation
 
 **Security status:** Secure
 50-year track record of Goppa code hardness. Most conservative PQC KEM available. No known attacks approach proposed security levels.
@@ -377,8 +376,8 @@ Selected by NIST (March 2025) as fifth PQC algorithm. FIPS 207 draft expected ~2
 
 **Implementations:**
 - [HQC reference](https://pqc-hqc.org/) — C, NIST submission reference implementation
-- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) — C, includes HQC
-- [PQClean](https://github.com/PQClean/PQClean) — C, portable HQC implementation
+- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, includes HQC
+- [PQClean](https://github.com/PQClean/PQClean) ⭐ 893 — C, portable HQC implementation
 
 **Security status:** Secure
 No known attacks at proposed parameters. Based on quasi-cyclic code decoding hardness (less conservative than Classic McEliece but well-studied). NIST selected as code-based fallback for ML-KEM.
@@ -410,7 +409,7 @@ Selected by NIST for FIPS 207 standardization (March 2025). Positioned as a code
 Laboratory demonstrations over 833 km fiber; plug-and-play architectures demonstrated (2025). No commercial products yet.
 
 **Implementations:**
-- [OpenQKDSecurity](https://github.com/openqkdsecurity/openqkdsecurity) — Python, security analysis framework for QKD including TF-QKD
+No notable open-source implementations available.
 
 **Security status:** Secure
 Composable finite-key security proofs against general attacks for SNS-TF-QKD and variants. Information-theoretically secure. Phase synchronization requirements introduce implementation challenges.
@@ -444,10 +443,10 @@ X25519MLKEM768 deployed in Chrome, Firefox, Cloudflare, and Signal (2024). sntru
 
 **Implementations:**
 - [BoringSSL (Google)](https://boringssl.googlesource.com/boringssl/) — C, X25519MLKEM768 in Chrome/Android
-- [s2n-tls (AWS)](https://github.com/aws/s2n-tls) — C, hybrid PQ key exchange support
-- [OpenSSH](https://github.com/openssh/openssh-portable) — C, sntrup761x25519 hybrid by default
-- [wolfSSL](https://github.com/wolfSSL/wolfssl) — C, hybrid PQ TLS support
-- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) — C, hybrid KEM constructions
+- [s2n-tls (AWS)](https://github.com/aws/s2n-tls) ⭐ 4.7k — C, hybrid PQ key exchange support
+- [OpenSSH](https://github.com/openssh/openssh-portable) ⭐ 3.8k — C, sntrup761x25519 hybrid by default
+- [wolfSSL](https://github.com/wolfSSL/wolfssl) ⭐ 2.8k — C, hybrid PQ TLS support
+- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, hybrid KEM constructions
 
 **Security status:** Secure
 Security holds if either the classical or PQ component remains unbroken. Dual-PRF combiner provides IND-CCA2 security. RFC 9794 formalizes combiner requirements.
@@ -482,7 +481,6 @@ All protocols in the table above (BB84, E91, MDI-QKD) are discrete-variable (DV)
 Commercial CV-QKD systems available from Toshiba and ID Quantique. Composable security proofs mature (2022-2025). Photonic integrated circuit implementations emerging.
 
 **Implementations:**
-- [OpenQKDSecurity](https://github.com/openqkdsecurity/openqkdsecurity) — Python, CV-QKD security analysis tools
 - [ID Quantique Cerberis](https://www.idquantique.com/) — commercial CV-QKD system
 
 **Security status:** Secure
@@ -518,9 +516,9 @@ ETSI QKD ISG includes CV-QKD specifications. Growing commercial deployment. Acad
 Lab-scale demonstrations (18-user network fusion, 10 km NV-center teleportation). No field-deployed quantum repeater exists. Third-generation hardware not available at scale.
 
 **Implementations:**
-- [SimulaQron (QuTech)](https://github.com/SoftwareQuTech/SimulaQron) — Python, quantum network simulator
+- [SimulaQron (QuTech)](https://github.com/SoftwareQuTech/SimulaQron) ⭐ 130 — Python, quantum network simulator
 - [NetSquid (QuTech)](https://netsquid.org/) — Python, discrete-event quantum network simulator
-- [SeQUeNCe](https://github.com/sequence-toolbox/SeQUeNCe) — Python, quantum network simulator for repeater architectures
+- [SeQUeNCe](https://github.com/sequence-toolbox/SeQUeNCe) ⭐ 151 — Python, quantum network simulator for repeater architectures
 
 **Security status:** Secure
 Entanglement-based security is information-theoretic. Current bottleneck is engineering (quantum memory coherence time), not security assumptions.
@@ -556,7 +554,7 @@ MAYO and UOV are NIST Additional Signatures Round 2 candidates (2025). Reference
 **Implementations:**
 - [MAYO reference](https://pqmayo.org/) — C, NIST submission reference implementation
 - [UOV reference](https://www.uovsig.org/) — C, NIST submission reference implementation
-- [PQClean](https://github.com/PQClean/PQClean) — C, portable implementations of multivariate schemes
+- [PQClean](https://github.com/PQClean/PQClean) ⭐ 893 — C, portable implementations of multivariate schemes
 
 **Security status:** Caution
 UOV has survived 25+ years of cryptanalysis. MAYO is newer (2022); a 2025 exterior-algebra attack reduced MAYO2 security by 4-11 bits (Round 2 parameters account for this). Rainbow is broken.
@@ -590,7 +588,7 @@ FAEST v2 is a NIST Additional Signatures Round 2 candidate (2024-2025). Referenc
 
 **Implementations:**
 - [FAEST reference](https://faest.info/) — C, NIST submission reference implementation
-- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) — C, includes FAEST
+- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, includes FAEST
 
 **Security status:** Secure
 Security reduces to AES security only (no lattice, code, or isogeny assumption). The most assumption-conservative PQ signature if AES is secure.
@@ -623,9 +621,9 @@ NIST Additional Signatures Round 2 candidate. NIST PQC seminar (2024) highlighte
 No cryptographically relevant quantum computer (CRQC) exists. Shor's algorithm is well-understood theoretically but requires millions of physical qubits to attack RSA-2048.
 
 **Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, Shor's algorithm implementations for small instances
-- [Cirq (Google)](https://github.com/quantumlib/Cirq) — Python, quantum circuit framework with Shor's demos
-- [ProjectQ](https://github.com/ProjectQ-Framework/ProjectQ) — Python, includes Shor's algorithm module
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, Shor's algorithm implementations for small instances
+- [Cirq (Google)](https://github.com/quantumlib/Cirq) ⭐ 4.9k — Python, quantum circuit framework with Shor's demos
+- [ProjectQ](https://github.com/ProjectQ-Framework/ProjectQ) ⭐ 966 — Python, includes Shor's algorithm module
 
 **Security status:** Secure
 Shor's algorithm itself is correct and well-proven. The threat is to RSA/DH/ECC, not to PQC schemes. NIST PQC standards are immune to Shor's.
@@ -660,8 +658,8 @@ Universally accepted in the cryptographic and quantum computing communities. Sho
 No quantum computer can meaningfully accelerate Grover's search against 128-bit keys today. Theoretical impact is well-understood and mitigated by doubling key sizes.
 
 **Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, Grover's algorithm implementations and tutorials
-- [Cirq (Google)](https://github.com/quantumlib/Cirq) — Python, Grover search circuit implementations
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, Grover's algorithm implementations and tutorials
+- [Cirq (Google)](https://github.com/quantumlib/Cirq) ⭐ 4.9k — Python, Grover search circuit implementations
 
 **Security status:** Secure
 Grover's provides quadratic speedup only; AES-256 retains 128-bit quantum security. SHA-384/512 provide adequate collision resistance under BHT algorithm.
@@ -695,8 +693,8 @@ Noise parameters η₁ and η₂ define the centered binomial distribution for s
 ML-KEM is FIPS 203 (August 2024). Deployed as X25519MLKEM768 in Chrome, Firefox, Cloudflare, and Signal. Hardware NTT accelerators integrated into RISC-V and ARM cores.
 
 **Implementations:**
-- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) — C, reference and optimized ML-KEM
-- [CRYSTALS-Kyber reference](https://github.com/pq-crystals/kyber) — C, official reference implementation
+- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, reference and optimized ML-KEM
+- [CRYSTALS-Kyber reference](https://github.com/pq-crystals/kyber) ⭐ 1.2k — C, official reference implementation
 - [pqcrypto-kyber (Rust)](https://crates.io/crates/pqcrypto-kyber) — Rust, ML-KEM bindings
 - [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, ML-KEM-512/768/1024 support
 
@@ -735,9 +733,9 @@ NIST FIPS 203. Mandated by CNSA 2.0. Deployed by Google, Cloudflare, Signal, and
 Cryptanalytic research tools; not a deployable cryptographic scheme. Used for PQC parameter selection and security estimation.
 
 **Implementations:**
-- [Lattice Estimator](https://github.com/malb/lattice-estimator) — Python (SageMath), standard tool for estimating lattice problem hardness
-- [fplll](https://github.com/fplll/fplll) — C++, lattice reduction library (BKZ, LLL)
-- [G6K (General Sieving Kernel)](https://github.com/fplll/g6k) — Python/C++, state-of-the-art lattice sieving implementation
+- [Lattice Estimator](https://github.com/malb/lattice-estimator) ⭐ 351 — Python (SageMath), standard tool for estimating lattice problem hardness
+- [fplll](https://github.com/fplll/fplll) ⭐ 399 — C++, lattice reduction library (BKZ, LLL)
+- [G6K (General Sieving Kernel)](https://github.com/fplll/g6k) ⭐ 144 — Python/C++, state-of-the-art lattice sieving implementation
 
 **Security status:** Secure
 BDGL sieve and QWALK sieve define the best-known attack costs. Space requirements (~2^{0.2n}) are a practical bottleneck. Current parameters for ML-KEM/ML-DSA incorporate sieving cost estimates.
@@ -772,8 +770,8 @@ Lattice Estimator is the accepted community standard for PQC parameter selection
 Laboratory demonstrations with 3-5 photons or trapped ions. No production-quality implementations or commercial products.
 
 **Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, quantum secret sharing circuit implementations
-- [Cirq (Google)](https://github.com/quantumlib/Cirq) — Python, quantum circuit framework for QSS prototyping
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, quantum secret sharing circuit implementations
+- [Cirq (Google)](https://github.com/quantumlib/Cirq) ⭐ 4.9k — Python, quantum circuit framework for QSS prototyping
 
 **Security status:** Secure
 Information-theoretic security from quantum no-cloning for quantum shares. Verifiable QSS (2019) handles active adversaries. Security proofs are rigorous.
@@ -808,8 +806,8 @@ BIKE v5 with constant-time implementations for x86-64 and ARM. NIST Round 4 alte
 
 **Implementations:**
 - [BIKE reference](https://bikesuite.org/) — C, official NIST submission implementation
-- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) — C, includes BIKE
-- [PQClean](https://github.com/PQClean/PQClean) — C, portable BIKE implementation
+- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, includes BIKE
+- [PQClean](https://github.com/PQClean/PQClean) ⭐ 893 — C, portable BIKE implementation
 
 **Security status:** Caution
 Based on QC-MDPC code decoding hardness; newer assumption than Goppa codes. Decoding failure rate must be controlled carefully to prevent GJS reaction attacks. Constant-time BGF decoder mitigates this.
@@ -850,9 +848,9 @@ NIST Round 4 alternate. Active research community. Less conservative than Classi
 Classic McEliece is mature (50 years); HQC selected for FIPS 207; BIKE is Round 4 alternate. Production readiness varies by scheme.
 
 **Implementations:**
-- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) — C, all three NIST code-based KEMs
+- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, all three NIST code-based KEMs
 - [Classic McEliece reference](https://classic.mceliece.org/software.html) — C, reference implementation
-- [PQClean](https://github.com/PQClean/PQClean) — C, portable implementations of code-based schemes
+- [PQClean](https://github.com/PQClean/PQClean) ⭐ 893 — C, portable implementations of code-based schemes
 
 **Security status:** Secure
 Code-based hardness (random linear code decoding) is well-studied for 50+ years. No quantum algorithm provides better than square-root speedup over classical attacks.
@@ -890,7 +888,6 @@ CTIDH-512/1024 provide constant-time implementations. Research-grade; no product
 
 **Implementations:**
 - [CTIDH reference](https://ctidh.isogeny.org/) — C, constant-time CSIDH implementation
-- [sibc](https://github.com/JJChiDgu662uj431/sibc) — Python, supersingular isogeny-based cryptography library
 - [SageMath](https://www.sagemath.org/) — Python, extensive isogeny computation support
 
 **Security status:** Caution
@@ -928,8 +925,7 @@ Active research community. PEGASIS submitted to NIST (2024). No NIST standard; v
 CASCADE deployed in commercial QKD systems. LDPC reconciliation is the current best practice for high-rate QKD systems.
 
 **Implementations:**
-- [Cascade-CPP](https://github.com/brunorijsman/cascade-cpp) — C++, open-source CASCADE implementation
-- [OpenQKDSecurity](https://github.com/openqkdsecurity/openqkdsecurity) — Python, QKD security and reconciliation analysis
+- [Cascade-CPP](https://github.com/brunorijsman/cascade-cpp) ⭐ 22 — C++, open-source CASCADE implementation
 
 **Security status:** Secure
 Information reconciliation is a classical post-processing step; security depends on the underlying QKD protocol. Reconciliation efficiency directly affects secret key rate.
@@ -1011,7 +1007,7 @@ CNSA 2.0 is the active US NSS policy (effective 2022). FIPS 203/204/205/206 are 
 
 **Implementations:**
 - [NIST NCCoE PQC Migration Guides](https://www.nccoe.nist.gov/crypto-agility-considerations-migrating-post-quantum-cryptographic-standards) — NIST SP 1800-38 practice guides
-- [Cryptographic Discovery tools](https://github.com/IBM/sonar-cryptography) — Java, IBM Sonar Cryptography plugin for PQC migration discovery
+- [Cryptographic Discovery tools](https://github.com/IBM/sonar-cryptography) ⭐ 59 — Java, IBM Sonar Cryptography plugin for PQC migration discovery
 
 **Security status:** Secure
 Policy framework; security depends on the underlying NIST-standardized algorithms (ML-KEM, ML-DSA, SLH-DSA). AES-256 and SHA-384+ for symmetric.
@@ -1050,8 +1046,8 @@ NSA-mandated for US NSS. UK NCSC, German BSI, and French ANSSI have issued equiv
 IETF draft-ietf-lamps-pq-composite-sigs reached Last Call (2025). OQS provides composite certificate generation. Let's Encrypt planning test issuance.
 
 **Implementations:**
-- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) — C, composite certificate generation support
-- [OQS-OpenSSL provider](https://github.com/open-quantum-safe/oqs-provider) — C, OpenSSL 3.x provider with composite PQ certificates
+- [liboqs (Open Quantum Safe)](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, composite certificate generation support
+- [OQS-OpenSSL provider](https://github.com/open-quantum-safe/oqs-provider) ⭐ 460 — C, OpenSSL 3.x provider with composite PQ certificates
 - [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, composite signature and certificate support
 
 **Security status:** Secure
@@ -1091,10 +1087,9 @@ IETF LAMPS working group primary deliverable (2024-2025). Supported by major PKI
 X25519MLKEM768 deployed in production at Cloudflare, Google, and Fastly (2024). Full PQ TLS available in OQS-nginx and wolfSSL.
 
 **Implementations:**
-- [OQS-OpenSSL](https://github.com/open-quantum-safe/oqs-provider) — C, PQ TLS benchmarking with OpenSSL
-- [OQS-nginx](https://github.com/nicholasgasior/oqs-nginx) — C, PQ-enabled nginx for benchmarking
+- [OQS-OpenSSL](https://github.com/open-quantum-safe/oqs-provider) ⭐ 460 — C, PQ TLS benchmarking with OpenSSL
 - [Cloudflare PQ dashboard](https://pq.cloudflare.com/) — live PQ deployment statistics and benchmarks
-- [wolfSSL](https://github.com/wolfSSL/wolfssl) — C, production TLS with PQ benchmarks
+- [wolfSSL](https://github.com/wolfSSL/wolfssl) ⭐ 2.8k — C, production TLS with PQ benchmarks
 
 **Security status:** Secure
 Benchmarks reflect NIST-standardized algorithms. Performance characteristics are well-documented. Certificate chain size (not KEM performance) is the main deployment bottleneck.
@@ -1133,9 +1128,9 @@ Cloudflare, Google, and OQS benchmarks are widely cited. IETF drafts reference t
 Google Willow (2024) demonstrated below-threshold QEC scaling. Microsoft topological qubits (2025) demonstrated 8 encoded qubits. No fault-tolerant quantum computer yet.
 
 **Implementations:**
-- [Stim (Google)](https://github.com/quantumlib/Stim) — C++/Python, fast stabilizer circuit simulator for surface codes
-- [PyMatching](https://github.com/oscarhiggott/PyMatching) — Python, MWPM decoder for surface codes
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, QEC modules and surface code simulation
+- [Stim (Google)](https://github.com/quantumlib/Stim) ⭐ 683 — C++/Python, fast stabilizer circuit simulator for surface codes
+- [PyMatching](https://github.com/oscarhiggott/PyMatching) ⭐ 305 — Python, MWPM decoder for surface codes
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, QEC modules and surface code simulation
 
 **Security status:** Secure
 QEC is a defensive technology (protects quantum information). Its progress determines when a CRQC might threaten classical cryptography. Current hardware is far from CRQC scale.
@@ -1173,8 +1168,8 @@ Surface codes are the consensus leading QEC architecture. Google Willow results 
 Quantinuum H2 certified randomness (2025) is the first practically useful demonstration. Other experiments (Sycamore, Jiuzhang) are benchmarks, not deployable products.
 
 **Implementations:**
-- [Cirq (Google)](https://github.com/quantumlib/Cirq) — Python, framework used for Sycamore random circuit sampling
-- [Strawberry Fields (Xanadu)](https://github.com/XanaduAI/strawberryfields) — Python, photonic quantum computing for boson sampling
+- [Cirq (Google)](https://github.com/quantumlib/Cirq) ⭐ 4.9k — Python, framework used for Sycamore random circuit sampling
+- [Strawberry Fields (Xanadu)](https://github.com/XanaduAI/strawberryfields) ⭐ 842 — Python, photonic quantum computing for boson sampling
 - [Quantinuum Quantum Origin](https://www.quantinuum.com/products/quantum-origin) — commercial certified randomness product
 
 **Security status:** Secure
@@ -1203,7 +1198,6 @@ Published in Nature and Science. Quantinuum H2 certified randomness is the most 
 First experimental demonstrations in 2022 (Oxford, USTC) over laboratory distances. Rates extremely low (~0.07 bits per heralded event). No commercial systems.
 
 **Implementations:**
-- [DIQKD.jl](https://github.com/araujoms/DIQKD.jl) — Julia, device-independent QKD security analysis
 - [NetSquid (QuTech)](https://netsquid.org/) — Python, quantum network simulation including DI-QKD scenarios
 
 **Security status:** Secure
@@ -1232,7 +1226,7 @@ Published in Nature (2022). Recognized as the gold standard for QKD security. Pr
 Demonstrated over 100 km fiber (2022) and in 15-user networks (2021). Active Chinese research with plans for metropolitan deployment. No commercial products outside China.
 
 **Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, QSDC protocol simulation
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, QSDC protocol simulation
 
 **Security status:** Secure
 Information-theoretically secure; eavesdropping detection is built in. Requires quantum memory or block transmission for security checking, which introduces practical constraints.
@@ -1260,7 +1254,7 @@ Primarily developed in Chinese research institutions. Published in Nature Light:
 Demonstrated in multi-user networks (2023, Nanjing) and over 250 km fiber (2025). Signature rates exceed thousands per second. No commercial products.
 
 **Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, QDS protocol simulation
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, QDS protocol simulation
 
 **Security status:** Secure
 Information-theoretically secure non-repudiation from quantum no-cloning. OTUH-QDS provides efficient multi-bit signing.
@@ -1288,8 +1282,8 @@ Active research community, primarily in China and UK. Published in National Scie
 Experimental demonstrations exist for small circuits. BFK protocol (2009) is the standard. Mahadev classical verification (2018) is theoretical breakthrough. No production systems.
 
 **Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, BQC protocol simulation
-- [SimulaQron (QuTech)](https://github.com/SoftwareQuTech/SimulaQron) — Python, quantum network simulator for BQC protocols
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, BQC protocol simulation
+- [SimulaQron (QuTech)](https://github.com/SoftwareQuTech/SimulaQron) ⭐ 130 — Python, quantum network simulator for BQC protocols
 
 **Security status:** Secure
 BFK provides perfect privacy (information-theoretic). Mahadev classical verification relies on LWE assumption. Verifiable BQC detects cheating servers unconditionally.
@@ -1316,7 +1310,7 @@ Mahadev (2018) won FOCS best paper. Active research at QIP and STOC/FOCS. Import
 First experimental demonstration on photonic platform (2020). Mahadev compact QFHE (2018) is a theoretical breakthrough. No production systems.
 
 **Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, QHE protocol simulation and prototyping
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, QHE protocol simulation and prototyping
 
 **Security status:** Secure
 Mahadev QFHE security reduces to LWE. A no-go theorem proves perfect information-theoretic QHE with non-exponential overhead is impossible.
@@ -1344,7 +1338,7 @@ Active theoretical research at STOC/FOCS/CRYPTO. Experimental demonstration (202
 First experimental quantum-secure MPC from QOT demonstrated (2026). Noisy quantum storage model provides practical framework. No commercial systems.
 
 **Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, QOT protocol simulation
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, QOT protocol simulation
 
 **Security status:** Secure
 Unconditionally secure QOT is impossible (Lo 1997 no-go). Bounded/noisy quantum storage model provides practical security. QOT from one-way functions (2021) is a landmark result.
@@ -1372,7 +1366,7 @@ QOT from one-way functions (2021) is a major theoretical achievement (weaker ass
 Experimentally demonstrated on 3-user photonic network (2024). Theoretical protocols achieve near-1/2 fault tolerance. No production systems.
 
 **Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, QBA protocol simulation
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, QBA protocol simulation
 - [NetSquid (QuTech)](https://netsquid.org/) — Python, quantum network simulator for multi-party protocols
 
 **Security status:** Secure
@@ -1401,7 +1395,7 @@ Published in Science Advances (2024 experiment). Active research at quantum info
 Purely theoretical. ZK for NP against quantum adversaries established (Watrous 2006). Non-interactive quantum ZK from LWE (2024). No implementations.
 
 **Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, quantum circuit framework for ZK protocol simulation
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, quantum circuit framework for ZK protocol simulation
 
 **Security status:** Secure
 Rigorous security proofs using quantum rewinding techniques. ZK for QMA (quantum NP) achieved under standard assumptions. Non-interactive QZK from LWE (2024).
@@ -1428,7 +1422,7 @@ Published at FOCS, STOC, CRYPTO. Watrous quantum rewinding (2006) is a foundatio
 Theoretical with practical protocol design (Fehr-Salvail 2017 uses only BB84 preparation/measurement). No experimental demonstrations or products.
 
 **Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, QKR protocol simulation
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, QKR protocol simulation
 
 **Security status:** Secure
 Information-theoretically secure. Key is recycled (not consumed) when no eavesdropping detected. Better key efficiency than standard QKD for long messages.
@@ -1456,7 +1450,7 @@ Specialized topic within quantum cryptography. Published in CRYPTO and QIP. Offe
 Experimentally demonstrated with exponential advantage on multi-gigabit inputs (2015, 2021). Coherent-state implementations use standard telecom equipment. No commercial products.
 
 **Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) — Python, quantum fingerprinting protocol simulation
+- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, quantum fingerprinting protocol simulation
 
 **Security status:** Secure
 Provable exponential quantum advantage in communication complexity. No security vulnerabilities; the advantage is information-theoretic.

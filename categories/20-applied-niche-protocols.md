@@ -17,7 +17,7 @@
 Helios and Belenios used in organizational elections (IACR, universities); no deployment in national-scale binding governmental elections with full E2E verifiability.
 
 **Implementations:**
-- [Helios](https://github.com/benadida/helios-server) — Python, open-source web-based voting server
+- [Helios](https://github.com/benadida/helios-server) ⭐ 888 — Python, open-source web-based voting server
 - [Belenios](https://gitlab.inria.fr/belenios/belenios) — OCaml, INRIA-maintained, used in French academic elections
 - [Verificatum](https://www.verificatum.org/) — Java, universal verifiable mixnet used in Swiss Post and other systems
 
@@ -47,8 +47,7 @@ Active academic community (USENIX EVT/WOTE, E-Vote-ID conferences); no IETF/NIST
 Academic demonstrations and physical document security prototypes; no widely deployed commercial product.
 
 **Implementations:**
-- [libvcs](https://github.com/nickthecook/visual-cryptography) — Python, reference implementation of Naor-Shamir (2,2) visual secret sharing
-- [VisualCrypto](https://github.com/aleph-engineering/visual-cryptography) — Java, (k,n) visual secret sharing with meaningful shares
+No notable open-source implementations available.
 
 **Security status:** Secure
 Information-theoretic security; no cryptographic assumptions required. Pixel expansion reduces image quality but does not affect secrecy.
@@ -105,7 +104,6 @@ Civitas has a research prototype; Selene demonstrated in pilot elections; no pro
 
 **Implementations:**
 - [Civitas](https://www.cs.cornell.edu/projects/civitas/) — Java, Cornell research prototype of JCJ-based coercion-resistant voting
-- [Selene](https://github.com/nicholasmccarthy/selene) — research prototype, tracker-based verification
 
 **Security status:** Caution
 Cryptographic guarantees are strong under stated assumptions (untappable channels, honest authorities); real-world deployment requires careful trust model validation.
@@ -131,7 +129,6 @@ Active research area in the voting security community; JCJ model is the referenc
 Academic prototypes only; SGX-based PoSE demonstrated in lab settings; no commercial deployment for GDPR compliance verification.
 
 **Implementations:**
-- [SWATT](https://github.com/ptsankov/swatt) — C, software-based attestation for embedded devices (related memory-filling approach)
 - No widely maintained open-source PoSE implementation exists; research code available from individual papers.
 
 **Security status:** Caution
@@ -185,8 +182,7 @@ Well-studied in academic cryptography; fills a specific gap between forward secu
 Hash-based client puzzles deployed in TLS extensions (experimental), anti-spam systems, and Bitcoin PoW; VDF-based puzzles in blockchain research prototypes.
 
 **Implementations:**
-- [HashCash](https://github.com/hashcash-org/hashcash) — C, original hash-based proof-of-work implementation
-- [pow-shield](https://github.com/nicosResworworworworworworworworworworwork/pow-shield) — JavaScript, client puzzle for web anti-DoS
+- [HashCash](https://github.com/hashcash-org/hashcash) ⭐ 6 — C, original hash-based proof-of-work implementation
 
 **Security status:** Secure
 Hash-based puzzles are secure under random oracle assumptions; VDF-based puzzles provide non-parallelizability guarantees under sequential squaring assumptions.
@@ -213,9 +209,9 @@ HashCash concept underlies Bitcoin PoW; client puzzles well-studied since 1999; 
 Merkle-based authenticated data structures deployed in git, IPFS, Certificate Transparency, and blockchain systems; incremental hashing used in rsync.
 
 **Implementations:**
-- [git](https://github.com/git/git) — C, uses Merkle-tree content-addressable storage with incremental updates
-- [IPFS / go-merkledag](https://github.com/ipfs/go-merkledag) — Go, Merkle DAG with incremental updates
-- [Google Trillian](https://github.com/google/trillian) — Go, verifiable data structures (Merkle log + map)
+- [git](https://github.com/git/git) ⭐ 60k — C, uses Merkle-tree content-addressable storage with incremental updates
+- [IPFS / go-merkledag](https://github.com/ipfs/go-merkledag) ⭐ 84 — Go, Merkle DAG with incremental updates
+- [Google Trillian](https://github.com/google/trillian) ⭐ 3.7k — Go, verifiable data structures (Merkle log + map)
 
 **Security status:** Secure
 Security reduces to collision resistance of the underlying hash function; well-understood constructions with decades of deployment.
@@ -243,7 +239,7 @@ The key insight is that confirmation codes are pre-printed in invisible ink unde
 Successfully deployed in one binding governmental election (Takoma Park 2009); no subsequent deployments or active development.
 
 **Implementations:**
-- [Scantegrity](https://github.com/scantegrity/scantegrity) — Java, reference implementation from the Scantegrity project team
+No notable open-source implementations available.
 
 **Security status:** Secure
 E2E verifiability proven under standard assumptions; physical invisible-ink layer adds a unique assurance channel; no known cryptographic weaknesses.
@@ -328,9 +324,9 @@ Unlike [RFC 3161](#linked-timestamping) (which requires trusting a TSA and its P
 Deployed by the Internet Archive, Italian Post Office, and numerous law firms; free public calendar servers operational since 2016.
 
 **Implementations:**
-- [opentimestamps-client](https://github.com/opentimestamps/opentimestamps-client) — Python, CLI client for creating and verifying timestamps
-- [opentimestamps-server](https://github.com/opentimestamps/opentimestamps-server) — Python, calendar server aggregating timestamps into Bitcoin
-- [javascript-opentimestamps](https://github.com/opentimestamps/javascript-opentimestamps) — JavaScript, browser/Node.js client library
+- [opentimestamps-client](https://github.com/opentimestamps/opentimestamps-client) ⭐ 387 — Python, CLI client for creating and verifying timestamps
+- [opentimestamps-server](https://github.com/opentimestamps/opentimestamps-server) ⭐ 251 — Python, calendar server aggregating timestamps into Bitcoin
+- [javascript-opentimestamps](https://github.com/opentimestamps/javascript-opentimestamps) ⭐ 147 — JavaScript, browser/Node.js client library
 
 **Security status:** Secure
 Security reduces to Bitcoin's proof-of-work consensus and SHA-256 collision resistance; no trusted third party beyond the Bitcoin network.
@@ -360,9 +356,9 @@ The core challenge is the "last-revealer problem": in a commit-reveal protocol t
 VRF-based leader election deployed in Cardano (Ouroboros), Algorand, and Ethereum (RANDAO); commit-reveal lotteries used in various smart contract platforms.
 
 **Implementations:**
-- [Cardano Ouroboros VRF](https://github.com/input-output-hk/cardano-base) — Haskell, VRF-based leader election in production
-- [Algorand VRF](https://github.com/algorand/go-algorand) — Go, VRF for sortition-based consensus
-- [RANDAO](https://github.com/randao/randao) — Solidity, commit-reveal randomness beacon on Ethereum
+- [Cardano Ouroboros VRF](https://github.com/input-output-hk/cardano-base) ⭐ 105 — Haskell, VRF-based leader election in production
+- [Algorand VRF](https://github.com/algorand/go-algorand) ⭐ 1.4k — Go, VRF for sortition-based consensus
+- [RANDAO](https://github.com/randao/randao) ⭐ 851 — Solidity, commit-reveal randomness beacon on Ethereum
 
 **Security status:** Secure
 VRF-based lotteries provably secure under DDH; commit-reveal schemes vulnerable to last-revealer abort without financial penalties or VDF enforcement.
@@ -449,9 +445,9 @@ The core challenge is that the winner determination and payment rules in Vickrey
 HE-based sealed-bid auctions used in government procurement and spectrum auctions; MPC-based VCG demonstrated in research prototypes; Brandt's fully private auction has working implementations.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++/Python, general MPC framework usable for sealed-bid auction protocols
-- [SEAL](https://github.com/microsoft/SEAL) — C++, Microsoft HE library for homomorphic bid evaluation
-- [ABY](https://github.com/encryptogroup/ABY) — C++, mixed-protocol MPC framework for auction circuits
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++/Python, general MPC framework usable for sealed-bid auction protocols
+- [SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, Microsoft HE library for homomorphic bid evaluation
+- [ABY](https://github.com/encryptogroup/ABY) ⭐ 493 — C++, mixed-protocol MPC framework for auction circuits
 
 **Security status:** Secure
 Provably secure under standard HE/MPC assumptions; practical security depends on non-collusion of auction servers in MPC-based designs.
@@ -545,9 +541,9 @@ A v3 .onion address encodes the Ed25519 public key directly — there is no cert
 v3 onion services mandatory since October 2021; thousands of production services including SecureDrop, Facebook, DuckDuckGo, ProtonMail, and the New York Times.
 
 **Implementations:**
-- [Tor](https://github.com/torproject/tor) — C, reference implementation of Tor including v3 onion services
+- [Tor](https://github.com/torproject/tor) ⭐ 4.9k — C, reference implementation of Tor including v3 onion services
 - [Arti](https://gitlab.torproject.org/tpo/core/arti) — Rust, next-generation Tor implementation with onion service support
-- [OnionBalance](https://github.com/DonnchaC/onionbalance) — Python, load balancing for onion services
+- [OnionBalance](https://github.com/DonnchaC/onionbalance) ⭐ 275 — Python, load balancing for onion services
 
 **Security status:** Secure
 Ed25519 + X25519 + SHA3 provide 256-bit security; v3 addresses are not enumerable (unlike v2); client authorization adds per-client encryption. Traffic analysis remains an open research problem.
@@ -577,9 +573,9 @@ Sealed Sender addresses the "to" metadata but not the "from" metadata: Signal's 
 Signal Sealed Sender deployed to all Signal users (~2018); Sealed Sender v2 for groups (~2022); PIR-based metadata hiding (Herd, OMR) remains research-stage.
 
 **Implementations:**
-- [libsignal](https://github.com/signalapp/libsignal) — Rust/Java/Swift, Signal's production sealed sender implementation
-- [Signal-Android](https://github.com/signalapp/Signal-Android) — Java/Kotlin, Android client with sealed sender support
-- [SealPIR](https://github.com/microsoft/SealPIR) — C++, Microsoft Research PIR library (research prototype for metadata hiding)
+- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift, Signal's production sealed sender implementation
+- [Signal-Android](https://github.com/signalapp/Signal-Android) ⭐ 28k — Java/Kotlin, Android client with sealed sender support
+- [SealPIR](https://github.com/microsoft/SealPIR) ⭐ 156 — C++, Microsoft Research PIR library (research prototype for metadata hiding)
 
 **Security status:** Caution
 Sealed Sender hides sender identity from the server but does not hide message timing, size, or recipient; full metadata privacy requires PIR (expensive) or OMR (research-stage).
@@ -610,11 +606,11 @@ The key distinction between memory-hard functions and conventional hash-based Po
 Argon2id is RFC 9106 and OWASP-recommended; yescrypt is the default password hash in Fedora, Debian, and Ubuntu; scrypt used in Litecoin and PKCS#8; Equihash powers Zcash.
 
 **Implementations:**
-- [libsodium (Argon2)](https://github.com/jedisct1/libsodium) — C, includes Argon2id; widely deployed
-- [argon2](https://github.com/P-H-C/phc-winner-argon2) — C, reference implementation from the PHC winners
-- [scrypt](https://github.com/Tarsnap/scrypt) — C, Colin Percival's reference implementation
-- [yescrypt](https://github.com/openwall/yescrypt) — C, Openwall's extended scrypt for Linux
-- [equihash](https://github.com/tromp/equihash) — C++, reference implementation by John Tromp
+- [libsodium (Argon2)](https://github.com/jedisct1/libsodium) ⭐ 13k — C, includes Argon2id; widely deployed
+- [argon2](https://github.com/P-H-C/phc-winner-argon2) ⭐ 5.2k — C, reference implementation from the PHC winners
+- [scrypt](https://github.com/Tarsnap/scrypt) ⭐ 509 — C, Colin Percival's reference implementation
+- [yescrypt](https://github.com/openwall/yescrypt) ⭐ 189 — C, Openwall's extended scrypt for Linux
+- [equihash](https://github.com/tromp/equihash) ⭐ 157 — C++, reference implementation by John Tromp
 
 **Security status:** Secure
 Argon2id (RFC 9106) provably memory-hard; scrypt well-analyzed; Equihash proven to require large memory. All withstand current GPU/ASIC attacks at recommended parameters.
@@ -645,12 +641,12 @@ The central insight unifying these systems is that **a signature on a final arti
 TUF deployed in PyPI, Docker Content Trust, and Rust crates; Sigstore is default for Kubernetes/CNCF; SLSA adopted by Google, npm, GitHub Actions; in-toto integrated into major CI/CD pipelines.
 
 **Implementations:**
-- [python-tuf](https://github.com/theupdateframework/python-tuf) — Python, reference TUF implementation
-- [go-tuf](https://github.com/theupdateframework/go-tuf) — Go, TUF client/server library
-- [in-toto](https://github.com/in-toto/in-toto) — Python, supply chain integrity framework
-- [cosign](https://github.com/sigstore/cosign) — Go, container image signing/verification via Sigstore
-- [Rekor](https://github.com/sigstore/rekor) — Go, Sigstore transparency log
-- [Fulcio](https://github.com/sigstore/fulcio) — Go, Sigstore ephemeral certificate authority
+- [python-tuf](https://github.com/theupdateframework/python-tuf) ⭐ 1.7k — Python, reference TUF implementation
+- [go-tuf](https://github.com/theupdateframework/go-tuf) ⭐ 698 — Go, TUF client/server library
+- [in-toto](https://github.com/in-toto/in-toto) ⭐ 987 — Python, supply chain integrity framework
+- [cosign](https://github.com/sigstore/cosign) ⭐ 5.8k — Go, container image signing/verification via Sigstore
+- [Rekor](https://github.com/sigstore/rekor) ⭐ 1.1k — Go, Sigstore transparency log
+- [Fulcio](https://github.com/sigstore/fulcio) ⭐ 816 — Go, Sigstore ephemeral certificate authority
 
 **Security status:** Secure
 TUF's role-separated threshold key model survives compromise of any single key; Sigstore's transparency log provides public auditability; SLSA levels provide incremental supply chain guarantees.
@@ -681,8 +677,6 @@ DigiCash was commercially deployed (1994-1998) but folded; blind signature primi
 
 **Implementations:**
 - [GNU Taler](https://git.taler.net/) — C, production-grade e-cash system based on Chaum blind signatures
-- [Privacy Pass](https://github.com/nickthecook/privacy-pass) — JavaScript/Go, anonymous tokens using blind signatures (deployed in Cloudflare/Apple)
-- [Compact E-Cash](https://github.com/nickthecook/compact-ecash) — research prototype implementations accompany academic papers
 
 **Security status:** Secure
 RSA blind signatures are provably secure under the RSA assumption; Brands' double-spend detection is algebraically sound; the DigiCash failure was commercial, not cryptographic.
@@ -744,10 +738,10 @@ The core primitive is a **Merkle hash tree** over ordered log entries, with a **
 Certificate Transparency mandatory for Chrome/Safari since 2018; Go checksum database default since Go 1.13; Sigstore Rekor in production for CNCF ecosystem.
 
 **Implementations:**
-- [Google Trillian](https://github.com/google/trillian) — Go, general-purpose verifiable data structures backing CT logs
-- [ctfe](https://github.com/google/certificate-transparency-go) — Go, Certificate Transparency frontend and monitor
-- [Rekor](https://github.com/sigstore/rekor) — Go, Sigstore transparency log
-- [Go sumdb](https://github.com/golang/mod) — Go, Go module checksum database client
+- [Google Trillian](https://github.com/google/trillian) ⭐ 3.7k — Go, general-purpose verifiable data structures backing CT logs
+- [ctfe](https://github.com/google/certificate-transparency-go) ⭐ 1.1k — Go, Certificate Transparency frontend and monitor
+- [Rekor](https://github.com/sigstore/rekor) ⭐ 1.1k — Go, Sigstore transparency log
+- [Go sumdb](https://github.com/golang/mod) ⭐ 207 — Go, Go module checksum database client
 
 **Security status:** Secure
 Merkle-tree consistency and inclusion proofs are well-understood; security reduces to hash collision resistance; gossip/witness protocols prevent split-view attacks.
@@ -778,9 +772,6 @@ The ecosystem divides into two design philosophies. **On-device computation** (P
 Chrome PAAPI generally available (2023); Apple PCM/ITP in Safari production; Prio3/DAP deployed by Firefox Telemetry and ISRG (Let's Encrypt).
 
 **Implementations:**
-- [Chrome Privacy Sandbox](https://github.com/nickthecook/nickthecook.github.io) — Chromium, PAAPI and Attribution Reporting built into Chrome
-- [libprio-rs](https://github.com/nickthecook/libprio-rs) — Rust, Prio3 VDAF implementation used in production by ISRG
-- [janus](https://github.com/nickthecook/janus) — Rust, ISRG's DAP aggregation server
 - [Divvi Up](https://github.com/divviup) — Rust, ISRG's privacy-preserving telemetry service built on Prio3/DAP
 
 **Security status:** Caution
@@ -811,8 +802,6 @@ The fundamental challenge is implementing a "shared deck" where no single party 
 Barnett-Smart has working implementations for online poker; Kaleidoscope demonstrated for general card games; no major commercial deployment.
 
 **Implementations:**
-- [mental-poker](https://github.com/nickthecook/mental-poker) — Rust/JavaScript, Barnett-Smart protocol implementation
-- [Kaleidoscope](https://github.com/nickthecook/kaleidoscope) — research prototype, SNARK-based card games
 - [libTMCG](https://www.nongnu.org/libtmcg/) — C++, Toolbox for Mental Card Games implementing Barnett-Smart and other protocols
 
 **Security status:** Secure
@@ -841,9 +830,7 @@ Unlike traditional password hashing (bcrypt, Argon2), where the server stores a 
 Deployed in Cloudflare (password authentication), WhatsApp (key backup), and Facebook (credential storage); IETF CFRG standardization in progress.
 
 **Implementations:**
-- [opaque-ke](https://github.com/facebook/opaque-ke) — Rust, Facebook's OPAQUE implementation (used in production)
-- [cloudflare/opaque](https://github.com/nickthecook/opaque-ts) — TypeScript/Go, Cloudflare's OPAQUE implementation
-- [opaque](https://github.com/nickthecook/opaque-go) — Go, IETF draft-compliant OPAQUE implementation
+- [opaque-ke](https://github.com/facebook/opaque-ke) ⭐ 386 — Rust, Facebook's OPAQUE implementation (used in production)
 
 **Security status:** Secure
 Provably secure aPAKE; server never processes raw password; even full server database compromise requires online attack against OPRF; strongest known form of password authentication.
@@ -873,9 +860,8 @@ The key property is **sequential hardness**: T sequential squarings cannot be pa
 Chia Network uses class-group VDFs in production for timelord proofs; Ethereum VDF research ongoing with ASIC design; Wesolowski/Pietrzak constructions well-implemented.
 
 **Implementations:**
-- [chiavdf](https://github.com/Chia-Network/chiavdf) — C++/Python, Chia's class-group VDF implementation (production)
-- [vdf-competition](https://github.com/nickthecook/vdf-competition) — C++, optimized repeated-squaring implementations from the VDF Alliance competition
-- [drand](https://github.com/drand/drand) — Go, distributed randomness beacon (uses VDF concepts for timelock encryption)
+- [chiavdf](https://github.com/Chia-Network/chiavdf) ⭐ 65 — C++/Python, Chia's class-group VDF implementation (production)
+- [drand](https://github.com/drand/drand) ⭐ 813 — Go, distributed randomness beacon (uses VDF concepts for timelock encryption)
 
 **Security status:** Secure
 Sequential squaring assumption is well-studied; Wesolowski requires adaptive root assumption; Pietrzak relies on standard sequential squaring; class groups avoid trusted setup. ASIC advantage is the main practical concern.
@@ -905,10 +891,9 @@ The core challenge is preventing "outsourcing attacks" (miner stores data on som
 Filecoin in production since 2020 with >20 EiB of verified storage; Chia mainnet since 2021; Compact PoR (Shacham-Waters) widely implemented.
 
 **Implementations:**
-- [lotus](https://github.com/filecoin-project/lotus) — Go, Filecoin node implementation with PoRep/PoSt
-- [rust-fil-proofs](https://github.com/filecoin-project/rust-fil-proofs) — Rust, Filecoin's proof-of-replication and proof-of-spacetime library
-- [chiapos](https://github.com/Chia-Network/chiapos) — C++, Chia's proof-of-space plotting and verification
-- [por](https://github.com/nickthecook/compact-por) — research implementations of Shacham-Waters compact PoR
+- [lotus](https://github.com/filecoin-project/lotus) ⭐ 3.0k — Go, Filecoin node implementation with PoRep/PoSt
+- [rust-fil-proofs](https://github.com/filecoin-project/rust-fil-proofs) ⭐ 503 — Rust, Filecoin's proof-of-replication and proof-of-spacetime library
+- [chiapos](https://github.com/Chia-Network/chiapos) ⭐ 270 — C++, Chia's proof-of-space plotting and verification
 
 **Security status:** Secure
 PoRep's depth-robust graph labeling provably prevents outsourcing and generation attacks; PoSt's periodic challenges enforce continuous storage; Chia's Beyond Hellman proofs are well-analyzed.
@@ -997,9 +982,8 @@ Two paradigms exist. **Computational time-release** (Rivest-Shamir-Wagner) force
 drand timelock encryption used in production by Filecoin and Protocol Labs; RSW time-lock puzzles well-implemented; delay encryption is research-stage.
 
 **Implementations:**
-- [drand](https://github.com/drand/drand) — Go, distributed randomness beacon with timelock encryption support
-- [tlock](https://github.com/drand/tlock) — Go, timelock encryption library built on drand beacon
-- [timelock-puzzle](https://github.com/nickthecook/timelock) — various, implementations of RSW time-lock puzzles
+- [drand](https://github.com/drand/drand) ⭐ 813 — Go, distributed randomness beacon with timelock encryption support
+- [tlock](https://github.com/drand/tlock) ⭐ 634 — Go, timelock encryption library built on drand beacon
 
 **Security status:** Secure
 RSW time-lock puzzles secure under sequential squaring assumption; drand beacon-based timelock secure under threshold BLS assumption and beacon liveness; timed commitments with ZK prevent malicious puzzles.
@@ -1030,7 +1014,6 @@ Galileo OSNMA operational since 2023 (first authenticated GNSS); classical secur
 
 **Implementations:**
 - [Galileo OSNMA](https://www.gsc-europa.eu/osnma) — operational EU GNSS service with TESLA-based signal authentication
-- [osnma](https://github.com/nickthecook/galmon) — C++/Python, open-source Galileo OSNMA receiver implementations
 - No open-source quantum position verification implementations exist.
 
 **Security status:** Caution
@@ -1061,10 +1044,9 @@ Genomic data is uniquely sensitive: it is immutable (cannot be revoked or change
 iDASH competition prototypes demonstrate feasibility; Microsoft SEAL and HEAAN used in genomic HE research; no production clinical deployment of encrypted GWAS.
 
 **Implementations:**
-- [Microsoft SEAL](https://github.com/microsoft/SEAL) — C++, HE library used in genomic privacy research (BFV, CKKS)
-- [HElib](https://github.com/homenc/HElib) — C++, IBM's HE library with BGV support for GWAS
-- [HEAAN](https://github.com/snucrypto/HEAAN) — C++, approximate HE (CKKS) used in genomic computations
-- [EMP-toolkit](https://github.com/emp-toolkit/emp-tool) — C++, MPC framework for garbled circuit-based genome comparison
+- [Microsoft SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, HE library used in genomic privacy research (BFV, CKKS)
+- [HElib](https://github.com/homenc/HElib) ⭐ 3.2k — C++, IBM's HE library with BGV support for GWAS
+- [EMP-toolkit](https://github.com/emp-toolkit/emp-tool) ⭐ 241 — C++, MPC framework for garbled circuit-based genome comparison
 
 **Security status:** Caution
 HE and MPC computations are cryptographically secure; however, membership inference attacks on aggregate genomic statistics (Homer et al. 2008) require differential privacy for output protection.
@@ -1095,7 +1077,7 @@ CCSDS SDLS deployed on ESA and NASA missions; Micius satellite QKD operational s
 
 **Implementations:**
 - [CCSDS SDLS reference](https://public.ccsds.org/) — C, reference implementations provided by CCSDS member agencies
-- [Blockstream Satellite](https://github.com/Blockstream/satellite) — C/Python, open-source satellite receiver software
+- [Blockstream Satellite](https://github.com/Blockstream/satellite) ⭐ 1.0k — C/Python, open-source satellite receiver software
 - [SatNOGS](https://satnogs.org/) — Python, open-source ground station network (not crypto-specific but used for satellite communication research)
 
 **Security status:** Caution
@@ -1127,7 +1109,7 @@ SWIFT MX + BAH v2 mandatory for cross-border payments from 2025; gpi Tracker dep
 
 **Implementations:**
 - [SWIFT SDK](https://developer.swift.com/) — proprietary, SWIFT-provided libraries for MX message creation and signing
-- [prowide-iso20022](https://github.com/prowide/prowide-iso20022) — Java, open-source ISO 20022 message library (parsing, not signing)
+- [prowide-iso20022](https://github.com/prowide/prowide-iso20022) ⭐ 209 — Java, open-source ISO 20022 message library (parsing, not signing)
 - [Apache Santuario](https://santuario.apache.org/) — Java/C++, XML Digital Signature (XML-DSig) implementation used in SWIFT BAH signing
 
 **Security status:** Secure
@@ -1158,10 +1140,10 @@ The core tension is between **credit bureau data monopoly** and **borrower priva
 Federated credit scoring deployed by Ant Group and WeBank; ZK range proofs and zkKYC in pilot (Sygnum Bank); FHE credit scoring is research-stage (100-1000x overhead).
 
 **Implementations:**
-- [FATE](https://github.com/FederatedAI/FATE) — Python, WeBank's federated learning framework including SecureBoost for credit scoring
-- [Bulletproofs](https://github.com/dalek-cryptography/bulletproofs) — Rust, range proof library usable for credit score ZK proofs
-- [Microsoft SEAL](https://github.com/microsoft/SEAL) — C++, FHE library used in FICO credit scoring research
-- [circom](https://github.com/iden3/circom) — Rust, ZK circuit compiler used in zkKYC implementations
+- [FATE](https://github.com/FederatedAI/FATE) ⭐ 6.1k — Python, WeBank's federated learning framework including SecureBoost for credit scoring
+- [Bulletproofs](https://github.com/dalek-cryptography/bulletproofs) ⭐ 1.1k — Rust, range proof library usable for credit score ZK proofs
+- [Microsoft SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, FHE library used in FICO credit scoring research
+- [circom](https://github.com/iden3/circom) ⭐ 1.6k — Rust, ZK circuit compiler used in zkKYC implementations
 
 **Security status:** Caution
 Cryptographic primitives (ZK, HE, MPC) are provably secure; practical security depends on correct deployment, non-collusion of data holders, and proper output privacy (DP for aggregates).
@@ -1195,8 +1177,7 @@ PPRL deployed in UK Biobank and Australian AIHW; Sharemind MPC used for Estonian
 **Implementations:**
 - [Sharemind](https://sharemind.cyber.ee/) — C++, 3-party MPC platform deployed for Estonian health statistics
 - [Owkin](https://github.com/owkin) — Python, federated learning platform for clinical research
-- [RAPPOR](https://github.com/nickthecook/rappor) — Python, Google's local differential privacy framework applicable to health data
-- [Synthea](https://github.com/synthetichealth/synthea) — Java, synthetic patient data generator (not DP but related)
+- [Synthea](https://github.com/synthetichealth/synthea) ⭐ 3.1k — Java, synthetic patient data generator (not DP but related)
 - [DataSHIELD](https://github.com/datashield) — R, federated analysis of sensitive health data without sharing individual records
 
 **Security status:** Caution
@@ -1228,10 +1209,9 @@ The primary attack vector against NTP is the **off-path time injection**: an att
 NTPv4 universally deployed; NTS/NTPsec in production at Cloudflare (time.cloudflare.com) and adopted by major Linux distributions; Roughtime RFC 9714 published 2024; TrueTime powers Google Spanner.
 
 **Implementations:**
-- [NTPsec](https://github.com/ntpsec/ntpsec) — C, hardened NTPv4 implementation with NTS support
-- [chrony](https://github.com/mlichvar/chrony) — C, NTP implementation with NTS support (default in RHEL/Fedora)
-- [roughenough](https://github.com/int08h/roughenough) — Rust, Roughtime server implementation
-- [roughtime](https://github.com/nickthecook/roughtime) — Go, Google's Roughtime implementation
+- [NTPsec](https://github.com/ntpsec/ntpsec) ⭐ 277 — C, hardened NTPv4 implementation with NTS support
+- [chrony](https://github.com/mlichvar/chrony) ⭐ 198 — C, NTP implementation with NTS support (default in RHEL/Fedora)
+- [roughenough](https://github.com/int08h/roughenough) ⭐ 142 — Rust, Roughtime server implementation
 
 **Security status:** Secure
 NTS (RFC 8915) provides authenticated NTP via TLS 1.3 + AES-SIV-CMAC; Roughtime (RFC 9714) adds server accountability via Ed25519 signatures; unauthenticated NTP remains vulnerable to off-path time injection.
@@ -1262,11 +1242,11 @@ The privacy hierarchy from weakest to strongest: unencrypted DNS (on-path attack
 DoH default in Firefox, Chrome, Windows 11, macOS 13+; ODoH deployed by Cloudflare + Apple (2021); DoQ supported by AdGuard; ECH in Chrome 117+ and Cloudflare production.
 
 **Implementations:**
-- [dnscrypt-proxy](https://github.com/DNSCrypt/dnscrypt-proxy) — Go, supports DoH, DoT, ODoH, and DNSCrypt
-- [cloudflare/odoh-go](https://github.com/cloudflare/odoh-go) — Go, Cloudflare's ODoH implementation
-- [Unbound](https://github.com/NLnetLabs/unbound) — C, recursive DNS resolver with DoT and DoH support
-- [coredns](https://github.com/coredns/coredns) — Go, DNS server with DoH/DoT plugins
-- [AdGuard DNS](https://github.com/AdguardTeam/AdGuardDNS) — Go, DNS server with DoQ support
+- [dnscrypt-proxy](https://github.com/DNSCrypt/dnscrypt-proxy) ⭐ 13k — Go, supports DoH, DoT, ODoH, and DNSCrypt
+- [cloudflare/odoh-go](https://github.com/cloudflare/odoh-go) ⭐ 146 — Go, Cloudflare's ODoH implementation
+- [Unbound](https://github.com/NLnetLabs/unbound) ⭐ 4.4k — C, recursive DNS resolver with DoT and DoH support
+- [coredns](https://github.com/coredns/coredns) ⭐ 13k — Go, DNS server with DoH/DoT plugins
+- [AdGuard DNS](https://github.com/AdguardTeam/AdGuardDNS) ⭐ 918 — Go, DNS server with DoQ support
 
 **Security status:** Secure
 DoH/DoT/DoQ encrypt DNS traffic (TLS 1.3); ODoH (RFC 9230) provides HPKE-based query encryption + relay separation; ECH completes the privacy chain by hiding SNI. ODoH security requires non-collusion of proxy and resolver.
@@ -1296,10 +1276,10 @@ The core tension is **privacy vs. Sybil-resistance**: strong biometric-based sys
 Worldcoin World ID v2 deployed in 35+ countries (2024) but with ongoing regulatory scrutiny; PoH v2 on Gnosis Chain; BrightID and Idena operational but small-scale.
 
 **Implementations:**
-- [worldcoin/semaphore](https://github.com/worldcoin/semaphore-rs) — Rust, Worldcoin's ZK membership proof implementation
-- [Proof of Humanity](https://github.com/Proof-Of-Humanity/proof-of-humanity-web) — JavaScript/Solidity, social vouching + Kleros dispute resolution
-- [BrightID](https://github.com/BrightID/BrightID) — JavaScript, social graph-based Sybil resistance
-- [Idena](https://github.com/idena-network/idena-go) — Go, flip-ceremony-based proof of personhood
+- [worldcoin/semaphore](https://github.com/worldcoin/semaphore-rs) ⭐ 187 — Rust, Worldcoin's ZK membership proof implementation
+- [Proof of Humanity](https://github.com/Proof-Of-Humanity/proof-of-humanity-web) ⭐ 83 — JavaScript/Solidity, social vouching + Kleros dispute resolution
+- [BrightID](https://github.com/BrightID/BrightID) ⭐ 244 — JavaScript, social graph-based Sybil resistance
+- [Idena](https://github.com/idena-network/idena-go) ⭐ 153 — Go, flip-ceremony-based proof of personhood
 
 **Security status:** Caution
 ZK proofs (Semaphore) are cryptographically sound; biometric approaches (Worldcoin) require trusting Orb hardware attestation and raise privacy concerns; social vouching (PoH) is vulnerable to coordinated collusion.
@@ -1324,7 +1304,6 @@ Mandatory under UNECE WP.29 R155 for new EU vehicle type approvals; deployed by 
 
 **Implementations:**
 - [AUTOSAR Classic/Adaptive Platform](https://www.autosar.org/) — C/C++, reference platform specifications (proprietary implementations by Vector, ETAS, Elektrobit)
-- [open-SecOC](https://github.com/nickthecook/autosar-secoc) — research/open-source prototypes exist but production implementations are proprietary
 
 **Security status:** Caution
 AES-128 CMAC is cryptographically secure; truncated MACs (due to CAN frame size constraints) reduce forgery resistance; freshness counter management is critical to prevent replay attacks.
@@ -1349,7 +1328,7 @@ Deployed in pay-TV conditional access systems, satellite content distribution, e
 
 **Implementations:**
 - [Cisco GDOI (GET VPN)](https://www.cisco.com/c/en/us/products/security/group-encrypted-transport-vpn/index.html) — proprietary, LKH-based group key management for enterprise VPN
-- [strongSwan](https://github.com/strongswan/strongswan) — C, IPsec implementation with group key management support
+- [strongSwan](https://github.com/strongswan/strongswan) ⭐ 2.8k — C, IPsec implementation with group key management support
 - Research implementations of LKH available in academic codebases.
 
 **Security status:** Secure
@@ -1375,9 +1354,8 @@ IETF MSEC working group standardized group key management (RFC 3547 GDOI, RFC 40
 Incorporated into ARM TF-M, Zephyr RTOS, and Nordic Semiconductor SDK; EU Cyber Resilience Act compliance pathway; IETF RFCs published (2022).
 
 **Implementations:**
-- [MCUboot](https://github.com/mcu-tools/mcuboot) — C, secure bootloader with SUIT manifest support for Zephyr and Mynewt
-- [RIOT-OS SUIT](https://github.com/RIOT-OS/RIOT) — C, SUIT update support in RIOT IoT operating system
-- [libcsuit](https://github.com/nickthecook/libcsuit) — C, SUIT manifest parser and COSE verification library
+- [MCUboot](https://github.com/mcu-tools/mcuboot) ⭐ 1.8k — C, secure bootloader with SUIT manifest support for Zephyr and Mynewt
+- [RIOT-OS SUIT](https://github.com/RIOT-OS/RIOT) ⭐ 5.7k — C, SUIT update support in RIOT IoT operating system
 
 **Security status:** Secure
 COSE-based signing provides strong authenticity and integrity; anti-rollback counters prevent version downgrade; manifest format allows pre-flight applicability checks before flashing.
@@ -1403,8 +1381,6 @@ Deployed in Galileo OSNMA (2023), vehicular V2X broadcast authentication, and dr
 
 **Implementations:**
 - [Galileo OSNMA receiver](https://www.gsc-europa.eu/osnma) — operational EU GNSS authentication using TESLA
-- [TESLA reference](https://github.com/nickthecook/tesla-auth) — C, research implementations of RFC 4082 TESLA
-- [V2X stacks](https://github.com/nickthecook/v2x) — various, vehicular communication stacks incorporating TESLA-based broadcast authentication
 
 **Security status:** Secure
 Security relies on loose time synchronization and MAC integrity; delayed key disclosure is information-theoretically sound; requires receivers to buffer packets until key disclosure.

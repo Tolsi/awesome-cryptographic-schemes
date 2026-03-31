@@ -68,7 +68,7 @@ Every `##` section MUST include the following fields after the table and "State 
 <Brief explanation — e.g. "Deployed in TLS 1.3 on all major browsers" or "Academic prototype only, no production use">
 
 **Implementations:** <List of notable open-source implementations with URLs>
-- [Library/tool name](url) — language, brief note
+- [Library/tool name](url) ⭐ <star count> — language, brief note
 
 **Security status:** <One of: Secure / Caution / Broken / Superseded>
 <Brief explanation — known attacks, parameter recommendations, or reason for deprecation>
@@ -76,6 +76,21 @@ Every `##` section MUST include the following fields after the table and "State 
 **Community acceptance:** <One of: Standard / Widely trusted / Emerging / Niche / Controversial>
 <Brief explanation — standardization body endorsement, peer review status, adoption by major organizations, notable endorsements or criticisms from cryptographers>
 ```
+
+### Star counts in implementations
+
+Every GitHub repository link in the **Implementations:** section MUST include a star count badge in the format `⭐ <count>` placed between the link and the em-dash description:
+
+```markdown
+- [Library](https://github.com/owner/repo) ⭐ 29k — language, note
+```
+
+Star count formatting:
+- `< 1000`: show exact number (e.g. `⭐ 843`)
+- `1000–9999`: one decimal (e.g. `⭐ 2.1k`)
+- `≥ 10000`: no decimal (e.g. `⭐ 29k`)
+
+Non-GitHub links (GitLab, Bitbucket, official sites, etc.) do not require star counts. Star counts should be periodically updated using the script in `scripts/update_stars.sh`.
 
 Field value definitions:
 

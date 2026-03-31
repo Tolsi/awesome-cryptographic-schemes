@@ -55,7 +55,7 @@
 
 **Production readiness:** Research
 **Implementations:**
-- [laconic-ot (empirical-core)](https://github.com/AarhusCrypto/Laconic-OT) — Rust/C++, research prototype of laconic OT
+No notable open-source implementations available.
 **Security status:** Secure
 **Community acceptance:** Emerging
 
@@ -75,9 +75,9 @@
 
 **Production readiness:** Experimental
 **Implementations:**
-- [halo2](https://github.com/zcash/halo2) — Rust, Zcash's accumulation/IPA-based proving system
-- [nova](https://github.com/microsoft/Nova) — Rust, Microsoft Research folding/accumulation scheme
-- [protostar (Lurk Lab)](https://github.com/lurk-lab/Nova) — Rust, IVC and accumulation experiments
+- [halo2](https://github.com/zcash/halo2) ⭐ 895 — Rust, Zcash's accumulation/IPA-based proving system
+- [nova](https://github.com/microsoft/Nova) ⭐ 837 — Rust, Microsoft Research folding/accumulation scheme
+- [protostar (Lurk Lab)](https://github.com/lurk-lab/Nova) ⭐ 1 — Rust, IVC and accumulation experiments
 **Security status:** Secure
 **Community acceptance:** Emerging
 
@@ -98,8 +98,7 @@
 
 **Production readiness:** Research
 **Implementations:**
-- [tlock](https://github.com/drand/tlock) — Go, timelock encryption via drand threshold BLS (practical WE-like variant)
-- [ibe](https://github.com/nicola/ibe) — Rust, identity-based encryption usable for WE-like constructions
+- [tlock](https://github.com/drand/tlock) ⭐ 634 — Go, timelock encryption via drand threshold BLS (practical WE-like variant)
 **Security status:** Caution
 **Community acceptance:** Niche
 
@@ -119,8 +118,8 @@
 
 **Production readiness:** Mature
 **Implementations:**
-- [emp-ot](https://github.com/emp-toolkit/emp-ot) — C++, includes UC-secure OT built on dual-mode techniques
-- [lattigo](https://github.com/tuneinsight/lattigo) — Go, lattice-based crypto library with LWE primitives
+- [emp-ot](https://github.com/emp-toolkit/emp-ot) ⭐ 183 — C++, includes UC-secure OT built on dual-mode techniques
+- [lattigo](https://github.com/tuneinsight/lattigo) ⭐ 1.4k — Go, lattice-based crypto library with LWE primitives
 **Security status:** Secure
 **Community acceptance:** Widely trusted
 
@@ -160,8 +159,8 @@
 
 **Production readiness:** Mature
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, password hashing/verification implements point-function-like checks
-- [libsodium](https://github.com/jedisct1/libsodium) — C, `crypto_pwhash` and sealed-box primitives implement digital-locker patterns
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, password hashing/verification implements point-function-like checks
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, `crypto_pwhash` and sealed-box primitives implement digital-locker patterns
 **Security status:** Secure
 **Community acceptance:** Widely trusted
 
@@ -267,8 +266,8 @@
 
 **Production readiness:** Research
 **Implementations:**
-- [CiFEr](https://github.com/fentec-project/CiFEr) — C, functional encryption library (inner-product FE, not full iO bootstrapping)
-- [GoFE](https://github.com/fentec-project/gofe) — Go, functional encryption library from FENTEC project
+- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, functional encryption library (inner-product FE, not full iO bootstrapping)
+- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, functional encryption library from FENTEC project
 **Security status:** Secure
 **Community acceptance:** Niche
 
@@ -355,8 +354,8 @@
 
 **Production readiness:** Research
 **Implementations:**
-- [VOPRF (Cloudflare)](https://github.com/cloudflare/circl) — Go, CIRCL includes OPRF/VOPRF constructions related to constrained PRF ideas
-- [lattigo](https://github.com/tuneinsight/lattigo) — Go, lattice crypto library with LWE-based primitives applicable to CPRF research
+- [VOPRF (Cloudflare)](https://github.com/cloudflare/circl) ⭐ 1.6k — Go, CIRCL includes OPRF/VOPRF constructions related to constrained PRF ideas
+- [lattigo](https://github.com/tuneinsight/lattigo) ⭐ 1.4k — Go, lattice crypto library with LWE-based primitives applicable to CPRF research
 **Security status:** Secure
 **Community acceptance:** Niche
 
@@ -378,8 +377,8 @@
 
 **Production readiness:** Research
 **Implementations:**
-- [CiFEr](https://github.com/fentec-project/CiFEr) — C, inner-product and quadratic FE (practical subset, not full iO-based FE)
-- [GoFE](https://github.com/fentec-project/gofe) — Go, functional encryption library from FENTEC EU project
+- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, inner-product and quadratic FE (practical subset, not full iO-based FE)
+- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, functional encryption library from FENTEC EU project
 **Security status:** Secure
 **Community acceptance:** Niche
 
@@ -402,8 +401,8 @@
 
 **Production readiness:** Mature
 **Implementations:**
-- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, includes code-based schemes related to LPN hardness (e.g., HQC, BIKE)
-- [swanky (GaloisInc)](https://github.com/GaloisInc/swanky) — Rust, MPC library using LPN-based silent OT extension
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, includes code-based schemes related to LPN hardness (e.g., HQC, BIKE)
+- [swanky (GaloisInc)](https://github.com/GaloisInc/swanky) ⭐ 344 — Rust, MPC library using LPN-based silent OT extension
 **Security status:** Secure
 **Community acceptance:** Widely trusted
 
@@ -426,9 +425,8 @@
 
 **Production readiness:** Production
 **Implementations:**
-- [python-paillier](https://github.com/data61/python-paillier) — Python, CSIRO Data61 Paillier library
-- [libpaillier](https://github.com/niclabs/tchern) — C, threshold Paillier implementation
-- [rust-paillier](https://github.com/kzen-networks/rust-paillier) — Rust, Paillier encryption with threshold support
+- [python-paillier](https://github.com/data61/python-paillier) ⭐ 634 — Python, CSIRO Data61 Paillier library
+- [rust-paillier](https://github.com/kzen-networks/rust-paillier) ⭐ 37 — Rust, Paillier encryption with threshold support
 **Security status:** Secure
 **Community acceptance:** Widely trusted
 
@@ -451,9 +449,9 @@
 
 **Production readiness:** Production
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, DRBG/PRG implementations (AES-CTR-DRBG, practical PRGs)
-- [libsodium](https://github.com/jedisct1/libsodium) — C, ChaCha20-based CSPRNG
-- [ring](https://github.com/briansmith/ring) — Rust, SystemRandom and ChaCha20 PRG
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, DRBG/PRG implementations (AES-CTR-DRBG, practical PRGs)
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, ChaCha20-based CSPRNG
+- [ring](https://github.com/briansmith/ring) ⭐ 4.1k — Rust, SystemRandom and ChaCha20 PRG
 **Security status:** Secure
 **Community acceptance:** Standard
 
@@ -477,7 +475,7 @@
 **Production readiness:** Research
 **Implementations:**
 - [emp-toolkit](https://github.com/emp-toolkit) — C++, garbled circuits and OT protocols (practical MPC, not from OWF alone)
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++/Python, comprehensive MPC framework implementing multiple protocol families
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++/Python, comprehensive MPC framework implementing multiple protocol families
 **Security status:** Secure
 **Community acceptance:** Widely trusted
 
@@ -544,8 +542,8 @@
 
 **Production readiness:** Experimental
 **Implementations:**
-- [Charm-Crypto](https://github.com/JHUISI/charm) — Python, pairing-based crypto framework with predicate encryption schemes
-- [OpenABE](https://github.com/zeutro/openabe) — C++, ABE library (payload-hiding; partial attribute-hiding support)
+- [Charm-Crypto](https://github.com/JHUISI/charm) ⭐ 633 — Python, pairing-based crypto framework with predicate encryption schemes
+- [OpenABE](https://github.com/zeutro/openabe) ⭐ 274 — C++, ABE library (payload-hiding; partial attribute-hiding support)
 **Security status:** Secure
 **Community acceptance:** Emerging
 
@@ -590,10 +588,10 @@
 
 **Production readiness:** Production
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, ECDH/DH implementations used in TLS worldwide
-- [libsodium](https://github.com/jedisct1/libsodium) — C, X25519 Diffie-Hellman
-- [gnark-crypto](https://github.com/Consensys/gnark-crypto) — Go, pairing-based crypto (BN254, BLS12-381, BLS24-315)
-- [blst](https://github.com/supranational/blst) — C/Rust, high-performance BLS12-381 library
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, ECDH/DH implementations used in TLS worldwide
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, X25519 Diffie-Hellman
+- [gnark-crypto](https://github.com/Consensys/gnark-crypto) ⭐ 590 — Go, pairing-based crypto (BN254, BLS12-381, BLS24-315)
+- [blst](https://github.com/supranational/blst) ⭐ 554 — C/Rust, high-performance BLS12-381 library
 **Security status:** Secure
 **Community acceptance:** Standard
 
@@ -616,10 +614,10 @@
 
 **Production readiness:** Production
 **Implementations:**
-- [blst](https://github.com/supranational/blst) — C/Rust, optimized BLS12-381 pairing library used in Ethereum
-- [gnark-crypto](https://github.com/Consensys/gnark-crypto) — Go, BN254/BLS12-381 pairing implementations
-- [mcl](https://github.com/herumi/mcl) — C++, high-speed pairing library supporting BN/BLS curves
-- [Charm-Crypto](https://github.com/JHUISI/charm) — Python, pairing-based crypto framework (Groth-Sahai, IBE, ABE)
+- [blst](https://github.com/supranational/blst) ⭐ 554 — C/Rust, optimized BLS12-381 pairing library used in Ethereum
+- [gnark-crypto](https://github.com/Consensys/gnark-crypto) ⭐ 590 — Go, BN254/BLS12-381 pairing implementations
+- [mcl](https://github.com/herumi/mcl) ⭐ 520 — C++, high-speed pairing library supporting BN/BLS curves
+- [Charm-Crypto](https://github.com/JHUISI/charm) ⭐ 633 — Python, pairing-based crypto framework (Groth-Sahai, IBE, ABE)
 **Security status:** Secure
 **Community acceptance:** Standard
 
@@ -642,9 +640,9 @@
 
 **Production readiness:** Production
 **Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) — C, RSA encryption and PKCS#1/PSS signatures deployed everywhere
-- [Bouncy Castle](https://github.com/bcgit/bc-java) — Java, comprehensive RSA implementation
-- [ring](https://github.com/briansmith/ring) — Rust, RSA signature verification
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RSA encryption and PKCS#1/PSS signatures deployed everywhere
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, comprehensive RSA implementation
+- [ring](https://github.com/briansmith/ring) ⭐ 4.1k — Rust, RSA signature verification
 - [GMP](https://gmplib.org/) — C, arbitrary-precision arithmetic underpinning RSA implementations
 **Security status:** Secure
 **Community acceptance:** Standard
@@ -669,9 +667,9 @@
 **Production readiness:** Production
 **Implementations:**
 - [emp-toolkit](https://github.com/emp-toolkit) — C++, half-gates garbling with AES-NI acceleration
-- [swanky (GaloisInc)](https://github.com/GaloisInc/swanky) — Rust, garbled circuit library with half-gates and Free XOR
-- [ABY](https://github.com/encryptogroup/ABY) — C++, mixed-protocol framework including garbled circuits
-- [MOTION](https://github.com/encryptogroup/MOTION) — C++, next-gen MPC framework with garbling support
+- [swanky (GaloisInc)](https://github.com/GaloisInc/swanky) ⭐ 344 — Rust, garbled circuit library with half-gates and Free XOR
+- [ABY](https://github.com/encryptogroup/ABY) ⭐ 493 — C++, mixed-protocol framework including garbled circuits
+- [MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, next-gen MPC framework with garbling support
 **Security status:** Secure
 **Community acceptance:** Widely trusted
 
@@ -694,9 +692,9 @@
 
 **Production readiness:** Mature
 **Implementations:**
-- [Charm-Crypto](https://github.com/JHUISI/charm) — Python, MSP-based CP-ABE and KP-ABE schemes (Waters, BSW)
-- [OpenABE](https://github.com/zeutro/openabe) — C++, ABE library with LSSS/MSP access structures
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++/Python, arithmetic MPC using LSSS from MSPs
+- [Charm-Crypto](https://github.com/JHUISI/charm) ⭐ 633 — Python, MSP-based CP-ABE and KP-ABE schemes (Waters, BSW)
+- [OpenABE](https://github.com/zeutro/openabe) ⭐ 274 — C++, ABE library with LSSS/MSP access structures
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++/Python, arithmetic MPC using LSSS from MSPs
 **Security status:** Secure
 **Community acceptance:** Widely trusted
 
@@ -802,8 +800,8 @@
 
 **Production readiness:** Experimental
 **Implementations:**
-- [CiFEr](https://github.com/fentec-project/CiFEr) — C, multi-input inner-product FE from DDH and LWE
-- [GoFE](https://github.com/fentec-project/gofe) — Go, multi-input FE for inner products and quadratic functions
+- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, multi-input inner-product FE from DDH and LWE
+- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, multi-input FE for inner products and quadratic functions
 **Security status:** Secure
 **Community acceptance:** Emerging
 
@@ -827,8 +825,8 @@
 Inner-product attribute-hiding PE has prototype implementations; full-circuit attribute-hiding PE from iO remains theoretical.
 
 **Implementations:**
-- [CiFEr](https://github.com/fentec-project/CiFEr) — C, includes inner-product predicate encryption
-- [GoFE](https://github.com/fentec-project/gofe) — Go, functional encryption library with inner-product PE support
+- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, includes inner-product predicate encryption
+- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, functional encryption library with inner-product PE support
 
 **Security status:** Secure
 Inner-product constructions proven secure under standard assumptions (LWE, DLIN); full-circuit constructions inherit iO assumptions.
@@ -883,8 +881,8 @@ Theoretically well-understood; the ROM variant is implicitly used in password-ba
 Inner-product lattice PE has prototype implementations; more expressive lattice PE from evasive/tensor LWE remains purely theoretical.
 
 **Implementations:**
-- [CiFEr](https://github.com/fentec-project/CiFEr) — C, inner-product functional/predicate encryption from LWE
-- [FHEW/OpenFHE](https://github.com/openfheorg/openfhe-development) — C++, lattice cryptography library with ABE building blocks
+- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, inner-product functional/predicate encryption from LWE
+- [FHEW/OpenFHE](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, lattice cryptography library with ABE building blocks
 
 **Security status:** Secure
 Proven secure under LWE for inner-product predicates; evasive LWE and tensor LWE assumptions are newer and less battle-tested.

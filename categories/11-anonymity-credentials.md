@@ -18,10 +18,10 @@
 Deployed in EU EUDI Wallet (eIDAS 2.0), Hyperledger AnonCreds, IBM idemix, Microsoft U-Prove, and W3C VC ecosystems.
 
 **Implementations:**
-- [Hyperledger AnonCreds](https://github.com/hyperledger/anoncreds-rs) — Rust, CL-based anonymous credentials
-- [idemix (IBM)](https://github.com/IBM/idemix) — Go, Idemix anonymous credential library
-- [sd-jwt-rust](https://github.com/openwallet-foundation-labs/sd-jwt-rust) — Rust, SD-JWT reference implementation
-- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) — TypeScript, BBS+ signatures for W3C VCs
+- [Hyperledger AnonCreds](https://github.com/hyperledger/anoncreds-rs) ⭐ 85 — Rust, CL-based anonymous credentials
+- [idemix (IBM)](https://github.com/IBM/idemix) ⭐ 36 — Go, Idemix anonymous credential library
+- [sd-jwt-rust](https://github.com/openwallet-foundation-labs/sd-jwt-rust) ⭐ 20 — Rust, SD-JWT reference implementation
+- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 — TypeScript, BBS+ signatures for W3C VCs
 
 **Security status:** Secure
 CL and BBS+ are well-studied under standard assumptions; SD-JWT is hash-based and conservative. Parameter choices are mature.
@@ -49,9 +49,9 @@ SD-JWT is RFC 9901; BBS+ is W3C TR and IETF CFRG draft; CL Signatures are indust
 Nym mainnet deployed since 2022; Verificatum used in national elections (e.g., Norway, Estonia).
 
 **Implementations:**
-- [Nym](https://github.com/nymtech/nym) — Rust, deployed incentivized mixnet
-- [Verificatum](https://github.com/verificatum/verificatum-vmn) — Java, verifiable mixnet for e-voting
-- [Katzenpost](https://github.com/katzenpost/katzenpost) — Go, Loopix-style mixnet framework
+- [Nym](https://github.com/nymtech/nym) ⭐ 1.7k — Rust, deployed incentivized mixnet
+- [Verificatum](https://github.com/verificatum/verificatum-vmn) ⭐ 12 — Java, verifiable mixnet for e-voting
+- [Katzenpost](https://github.com/katzenpost/katzenpost) ⭐ 147 — Go, Loopix-style mixnet framework
 
 **Security status:** Secure
 Loopix model provides formal differential-privacy bounds on traffic analysis; verifiable shuffles are proven in standard model.
@@ -79,7 +79,7 @@ Tor network has 6000+ relays and 2M+ daily users; Sphinx is deployed in Lightnin
 **Implementations:**
 - [Tor](https://gitlab.torproject.org/tpo/core/tor) — C, the reference onion routing implementation
 - [Arti](https://gitlab.torproject.org/tpo/core/arti) — Rust, next-generation Tor client
-- [sphinx (Lightning)](https://github.com/lightningnetwork/lightning-onion) — Go, Sphinx packet construction for LND
+- [sphinx (Lightning)](https://github.com/lightningnetwork/lightning-onion) ⭐ 414 — Go, Sphinx packet construction for LND
 
 **Security status:** Caution
 Secure against local adversaries; vulnerable to global passive adversaries performing traffic correlation attacks. Tor does not claim to resist global adversaries.
@@ -105,8 +105,7 @@ Tor is the most studied and deployed anonymity network; recommended by EFF, jour
 No large-scale production deployments; Verdict is an academic prototype demonstrating accountability.
 
 **Implementations:**
-- [Verdict prototype](https://github.com/henrycg/verdict) — Go, accountable DC-net with ZK proofs
-- [Dissent](https://github.com/dedis/prifi) — Go, DC-net-based anonymity protocol (DEDIS lab)
+- [Dissent](https://github.com/dedis/prifi) ⭐ 52 — Go, DC-net-based anonymity protocol (DEDIS lab)
 
 **Security status:** Secure
 Information-theoretically anonymous (strongest possible guarantee); practical schemes add accountability via ZK proofs without weakening anonymity.
@@ -133,9 +132,7 @@ Strongest anonymity guarantee in theory but impractical at scale; primarily of a
 Deployed by Cloudflare (CAPTCHA bypass), Apple (Private Access Tokens in iOS/macOS), and Chrome (Trust Token API).
 
 **Implementations:**
-- [cloudflare/privacypass](https://github.com/cloudflare/privacypass) — TypeScript, Privacy Pass browser extension
-- [cloudflare/pat-go](https://github.com/cloudflare/pat-go) — Go, Privacy Pass token issuer/redeemer
-- [nicola/privatetoken](https://github.com/nicola/privatetoken-rs) — Rust, VOPRF-based token library
+- [cloudflare/pat-go](https://github.com/cloudflare/pat-go) ⭐ 38 — Go, Privacy Pass token issuer/redeemer
 
 **Security status:** Secure
 IETF-standardized (RFC 9576-9578); VOPRF and blind RSA are well-studied under standard assumptions.
@@ -161,7 +158,7 @@ IETF RFC 9576-9578; deployed at scale by Cloudflare, Apple, and Google; endorsed
 No major production deployments; academic prototypes only.
 
 **Implementations:**
-- [MIRACL Core](https://github.com/nicola/miracl_core) — C/Rust/Go, pairing-based crypto library usable for secret handshake implementations
+No notable open-source implementations available.
 
 **Security status:** Secure
 Pairing-based constructions proven under standard bilinear assumptions; unlinkable variants add stronger privacy.
@@ -188,9 +185,9 @@ Well-studied in academic literature but limited adoption outside research; no st
 Semaphore v4 deployed in Zupass and Ethereum applications; RLN v2 used in Waku messaging protocol.
 
 **Implementations:**
-- [Semaphore](https://github.com/semaphore-protocol/semaphore) — TypeScript/Solidity, anonymous group signaling
-- [RLN](https://github.com/rate-limiting-nullifier/rln-contracts) — Solidity, rate-limiting nullifier contracts
-- [Zupass](https://github.com/proofcarryingdata/zupass) — TypeScript, ZK identity and ticketing framework
+- [Semaphore](https://github.com/semaphore-protocol/semaphore) ⭐ 1.1k — TypeScript/Solidity, anonymous group signaling
+- [RLN](https://github.com/rate-limiting-nullifier/rln-contracts) ⭐ 17 — Solidity, rate-limiting nullifier contracts
+- [Zupass](https://github.com/proofcarryingdata/zupass) ⭐ 361 — TypeScript, ZK identity and ticketing framework
 
 **Security status:** Secure
 Based on Groth16/PLONK over well-studied curves; Semaphore circuit is formally audited; RLN slashing mechanism is provably sound.
@@ -242,7 +239,7 @@ Important theoretical contribution but not yet adopted in practice; complexity o
 Deployed in Signal Private Group System serving 100M+ users.
 
 **Implementations:**
-- [signalapp/libsignal](https://github.com/signalapp/libsignal) — Rust, official Signal crypto library including zkgroup KVAC
+- [signalapp/libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust, official Signal crypto library including zkgroup KVAC
 
 **Security status:** Secure
 Algebraic MAC-based; proven under DDH assumption over Ristretto255; no pairings needed.
@@ -271,8 +268,8 @@ GNU Taler is production-deployed; Compact E-Cash informs modern token systems; C
 
 **Implementations:**
 - [GNU Taler](https://git.taler.net/) — C/Python, production e-cash system
-- [cashu](https://github.com/cashubtc/cashu) — Python, Chaumian e-cash for Bitcoin Lightning
-- [Fedimint](https://github.com/fedimint/fedimint) — Rust, federated Chaumian e-cash on Bitcoin
+- [cashu](https://github.com/cashubtc/cashu) ⭐ 472 — Python, Chaumian e-cash for Bitcoin Lightning
+- [Fedimint](https://github.com/fedimint/fedimint) ⭐ 680 — Rust, federated Chaumian e-cash on Bitcoin
 
 **Security status:** Secure
 Blind signature-based e-cash is well-studied; double-spend detection is provably correct under standard assumptions.
@@ -298,8 +295,8 @@ Foundational cryptographic concept (1982); GNU Taler selected for EU NGI rollout
 Academic constructions only; no production deployments.
 
 **Implementations:**
-- [TFHE-rs](https://github.com/zama-ai/tfhe-rs) — Rust, lattice-based FHE library applicable to anonymous BE from LWE
-- [RELIC toolkit](https://github.com/relic-toolkit/relic) — C, pairing-based cryptography library supporting anonymous BE primitives
+- [TFHE-rs](https://github.com/zama-ai/tfhe-rs) ⭐ 1.6k — Rust, lattice-based FHE library applicable to anonymous BE from LWE
+- [RELIC toolkit](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing-based cryptography library supporting anonymous BE primitives
 
 **Security status:** Secure
 Pairing-based and lattice-based constructions proven under standard assumptions (DBDH, LWE).
@@ -352,9 +349,9 @@ Active research area but no standardization; combines multiple privacy primitive
 Umbra deployed on Ethereum mainnet; ERC-5564 standardized but adoption still growing; Monero uses stealth addresses in production.
 
 **Implementations:**
-- [Umbra Protocol](https://github.com/ScopeLift/umbra-protocol) — Solidity/TypeScript, stealth address protocol for Ethereum
-- [Monero](https://github.com/monero-project/monero) — C++, dual-key stealth addresses in production
-- [ERC-5564 reference](https://github.com/nerolation/EIP-Stealth-Address-ERC) — Solidity, reference implementation
+- [Umbra Protocol](https://github.com/ScopeLift/umbra-protocol) ⭐ 387 — Solidity/TypeScript, stealth address protocol for Ethereum
+- [Monero](https://github.com/monero-project/monero) ⭐ 10k — C++, dual-key stealth addresses in production
+- [ERC-5564 reference](https://github.com/nerolation/EIP-Stealth-Address-ERC) ⭐ 57 — Solidity, reference implementation
 
 **Security status:** Secure
 ECDH-based derivation is well-understood; view tags improve scanning efficiency without weakening privacy.
@@ -380,8 +377,7 @@ ERC-5564 is an accepted Ethereum standard; Monero has used stealth addresses sin
 Deployed in Nym Network for anonymous bandwidth credential issuance.
 
 **Implementations:**
-- [Nym Coconut](https://github.com/nymtech/nym/tree/develop/common/credentials) — Rust, Coconut credential implementation in Nym
-- [nymtech/coconut-rs](https://github.com/nicola/coconut-rs) — Rust, Coconut credential library (part of Nym)
+- [Nym Coconut](https://github.com/nymtech/nym/tree/develop/common/credentials) ⭐ 1.7k — Rust, Coconut credential implementation in Nym
 
 **Security status:** Secure
 PS signatures with threshold blind issuance; formal UC-style security analysis (2022); no known attacks.
@@ -436,8 +432,7 @@ Deployed by NYT, BBC, Facebook, ProPublica, and others; endorsed by EFF and priv
 Active network with thousands of routers; ECIES ratchet and SSU2 transport deployed since 2022.
 
 **Implementations:**
-- [i2p/i2p.i2p](https://github.com/nicola/i2p.i2p) — Java, reference I2P router implementation
-- [PurpleI2P/i2pd](https://github.com/PurpleI2P/i2pd) — C++, full-featured lightweight I2P daemon
+- [PurpleI2P/i2pd](https://github.com/PurpleI2P/i2pd) ⭐ 4.0k — C++, full-featured lightweight I2P daemon
 
 **Security status:** Caution
 Garlic routing adds correlation resistance vs onion routing; ECIES ratchet provides forward secrecy; network-level attacks remain possible against small anonymity sets.
@@ -491,9 +486,9 @@ GNU project; selected for EU CBDC pilots; endorsed by privacy advocates; not yet
 Orchard activated May 2022 on Zcash mainnet; Sapling deployed since 2018; billions of dollars in shielded transactions.
 
 **Implementations:**
-- [zcash/librustzcash](https://github.com/zcash/librustzcash) — Rust, Zcash Sapling and Orchard protocol libraries
-- [zcash/halo2](https://github.com/zcash/halo2) — Rust, Halo 2 proof system powering Orchard
-- [zcash/zcash](https://github.com/zcash/zcash) — C++/Rust, full Zcash node
+- [zcash/librustzcash](https://github.com/zcash/librustzcash) ⭐ 387 — Rust, Zcash Sapling and Orchard protocol libraries
+- [zcash/halo2](https://github.com/zcash/halo2) ⭐ 895 — Rust, Halo 2 proof system powering Orchard
+- [zcash/zcash](https://github.com/zcash/zcash) ⭐ 5.4k — C++/Rust, full Zcash node
 
 **Security status:** Secure
 Orchard uses Halo 2 (no trusted setup); Sapling's trusted ceremony had 700+ participants. No known attacks at recommended parameters.
@@ -521,10 +516,10 @@ Zcash is the premier privacy-focused cryptocurrency; Halo 2 is widely used beyon
 W3C VC DI BBS Cryptosuites v1.0 published (2024); IETF CFRG draft active; evaluated for EU eIDAS 2.0 but not yet mandated.
 
 **Implementations:**
-- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) — TypeScript, BBS+ signature library
-- [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) — Rust, BBS+ in Hyperledger AnonCreds v2
-- [decentralized-identity/bbs-signature](https://github.com/decentralized-identity/bbs-signature) — Rust, DIF BBS+ reference implementation
-- [mattrglobal/pairing_crypto](https://github.com/mattrglobal/pairing_crypto) — Rust, BLS12-381 pairing crypto for BBS+
+- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 — TypeScript, BBS+ signature library
+- [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) ⭐ 85 — Rust, BBS+ in Hyperledger AnonCreds v2
+- [decentralized-identity/bbs-signature](https://github.com/decentralized-identity/bbs-signature) ⭐ 101 — Rust, DIF BBS+ reference implementation
+- [mattrglobal/pairing_crypto](https://github.com/mattrglobal/pairing_crypto) ⭐ 31 — Rust, BLS12-381 pairing crypto for BBS+
 
 **Security status:** Secure
 Tight security proofs in ROM + algebraic group model (Tessaro-Zhu 2023); well-studied pairing-based construction.
@@ -553,8 +548,7 @@ W3C Technical Report; active IETF CFRG standardization; mandated for EU eIDAS 2.
 Deployed on Monero mainnet since 2014; mandatory privacy (all transactions use ring sigs, stealth addresses, RingCT since 2017).
 
 **Implementations:**
-- [monero-project/monero](https://github.com/monero-project/monero) — C++, full Monero node with CLSAG, RingCT, Bulletproofs+
-- [monero-rs/monero-rs](https://github.com/nicola/monero-rs) — Rust, Monero protocol library
+- [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, full Monero node with CLSAG, RingCT, Bulletproofs+
 
 **Security status:** Caution
 CLSAG and Bulletproofs+ are provably secure; ring size of 16 provides limited anonymity set; chain analysis firms claim partial traceability of older transactions.
@@ -582,8 +576,7 @@ Largest privacy-by-default cryptocurrency; active research community; peer-revie
 WabiSabi deployed in Wasabi Wallet 2.0 (2022); PayJoin (BIP 78) supported by multiple wallets.
 
 **Implementations:**
-- [WalletWasabi](https://github.com/WalletWasabi/WalletWasabi) — C#, Wasabi Wallet with WabiSabi CoinJoin
-- [nicola/payjoin](https://github.com/nicola/payjoin) — Rust, PayJoin (BIP 78/77) reference implementation
+- [WalletWasabi](https://github.com/WalletWasabi/WalletWasabi) ⭐ 2.5k — C#, Wasabi Wallet with WabiSabi CoinJoin
 
 **Security status:** Caution
 WabiSabi is cryptographically sound (KVAC-based); effectiveness depends on sufficient CoinJoin participation and UTXO management discipline.
@@ -609,8 +602,7 @@ WabiSabi peer-reviewed (ePrint 2021/206); CoinJoin is a widely accepted Bitcoin 
 0xbow Privacy Pools deployed on Ethereum mainnet (2024); Tornado Cash deployed but sanctioned by OFAC (2022).
 
 **Implementations:**
-- [0xbow Privacy Pools](https://github.com/0xbow-io/privacy-pools-v1) — Solidity/Circom, production Privacy Pools implementation
-- [nicola/tornado-core](https://github.com/nicola/tornado-core) — Solidity/Circom, Tornado Cash mixer (archived)
+No notable open-source implementations available.
 
 **Security status:** Caution
 Cryptographically sound (Groth16 + Merkle); compliance depends on quality of Association Set Providers (ASPs); Tornado Cash was sanctioned by OFAC.
@@ -636,7 +628,7 @@ Privacy Pools (Buterin et al.) aim to address regulatory concerns; Tornado Cash 
 Academic constructions only; no production deployments.
 
 **Implementations:**
-- [RELIC toolkit](https://github.com/relic-toolkit/relic) — C, pairing-based crypto library supporting group encryption primitives
+- [RELIC toolkit](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing-based crypto library supporting group encryption primitives
 
 **Security status:** Secure
 CCA-secure constructions proven under standard pairing assumptions; lattice variant provides PQ security.
@@ -664,9 +656,9 @@ Theoretical counterpart to group signatures; limited practical demand; no standa
 Intel EPID deployed in all SGX CPUs; TPM 2.0 ECDAA is an ISO standard (ISO/IEC 20008-2).
 
 **Implementations:**
-- [intel/linux-sgx](https://github.com/intel/linux-sgx) — C++, Intel SGX SDK with EPID attestation
-- [tpm2-software/tpm2-tss](https://github.com/tpm2-software/tpm2-tss) — C, TPM 2.0 software stack including ECDAA
-- [linux-sgx](https://github.com/intel/linux-sgx) — C++, Intel SGX SDK with EPID attestation support
+- [intel/linux-sgx](https://github.com/intel/linux-sgx) ⭐ 1.4k — C++, Intel SGX SDK with EPID attestation
+- [tpm2-software/tpm2-tss](https://github.com/tpm2-software/tpm2-tss) ⭐ 863 — C, TPM 2.0 software stack including ECDAA
+- [linux-sgx](https://github.com/intel/linux-sgx) ⭐ 1.4k — C++, Intel SGX SDK with EPID attestation support
 
 **Security status:** Caution
 ECDAA/EPID are cryptographically sound; Intel SGX has been affected by side-channel attacks (Spectre, Foreshadow) unrelated to DAA crypto.
@@ -695,9 +687,8 @@ ISO/IEC 20008-2 (TPM 2.0 ECDAA); deployed in billions of Intel CPUs; TCG standar
 VB accumulators used in Hyperledger AnonCreds v2; RSA/pairing accumulators deployed in idemix/IRMA systems.
 
 **Implementations:**
-- [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) — Rust, VB accumulator for AnonCreds v2 revocation
-- [privacybydesign/gabi](https://github.com/privacybydesign/gabi) — Go, accumulator-based revocation in IRMA/Yivi
-- [nicola/accumulator](https://github.com/nicola/accumulator) — Rust, RSA and bilinear accumulator library
+- [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) ⭐ 85 — Rust, VB accumulator for AnonCreds v2 revocation
+- [privacybydesign/gabi](https://github.com/privacybydesign/gabi) ⭐ 11 — Go, accumulator-based revocation in IRMA/Yivi
 
 **Security status:** Secure
 RSA accumulators require trusted setup (factorization); pairing-based and VB accumulators avoid this. All constructions well-studied.
@@ -724,9 +715,8 @@ Foundational primitive for anonymous credential revocation; deployed in Hyperled
 ~250,000 users in the Netherlands; Dutch government ministries, banks, and healthcare providers issue credentials.
 
 **Implementations:**
-- [privacybydesign/irmago](https://github.com/privacybydesign/irmago) — Go, IRMA/Yivi server and client library
-- [nicola/irma_mobile](https://github.com/nicola/irma_mobile) — Dart/Flutter, Yivi mobile app
-- [privacybydesign/irmago](https://github.com/privacybydesign/irmago) — Go, core IRMA server (REST API, issuance, verification, revocation)
+- [privacybydesign/irmago](https://github.com/privacybydesign/irmago) ⭐ 84 — Go, IRMA/Yivi server and client library
+- [privacybydesign/irmago](https://github.com/privacybydesign/irmago) ⭐ 84 — Go, core IRMA server (REST API, issuance, verification, revocation)
 
 **Security status:** Secure
 Based on well-studied Idemix/CL signatures; accumulator-based revocation formally analyzed.
@@ -755,9 +745,9 @@ Largest deployed Idemix system; endorsed by Privacy by Design Foundation; used b
 Bulletproofs deployed in Monero and Grin; LegoSNARK and BBS+ predicates in experimental credential systems.
 
 **Implementations:**
-- [dalek-cryptography/bulletproofs](https://github.com/dalek-cryptography/bulletproofs) — Rust, Bulletproofs range proof library (Ristretto)
-- [monero-project/monero](https://github.com/monero-project/monero) — C++, Bulletproofs+ in production
-- [dalek-cryptography/bulletproofs](https://github.com/dalek-cryptography/bulletproofs) — Rust, Bulletproofs implementation (Ristretto)
+- [dalek-cryptography/bulletproofs](https://github.com/dalek-cryptography/bulletproofs) ⭐ 1.1k — Rust, Bulletproofs range proof library (Ristretto)
+- [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, Bulletproofs+ in production
+- [dalek-cryptography/bulletproofs](https://github.com/dalek-cryptography/bulletproofs) ⭐ 1.1k — Rust, Bulletproofs implementation (Ristretto)
 
 **Security status:** Secure
 Bulletproofs proven in discrete-log setting; no trusted setup; Bulletproofs+ improves efficiency with same security.
@@ -784,9 +774,8 @@ Bulletproofs widely adopted in privacy-preserving blockchains; BBS+ predicate pr
 SD-JWT is RFC 9591 (2025); mandated by eIDAS 2.0 for EU EUDI Wallet. JWP is an active IETF draft.
 
 **Implementations:**
-- [openwallet-foundation-labs/sd-jwt-rust](https://github.com/openwallet-foundation-labs/sd-jwt-rust) — Rust, SD-JWT reference
-- [danielfett/sd-jwt](https://github.com/danielfett/sd-jwt) — Python, SD-JWT reference by spec author
-- [nicola/sd-jwt-js](https://github.com/nicola/sd-jwt-js) — TypeScript, SD-JWT library
+- [openwallet-foundation-labs/sd-jwt-rust](https://github.com/openwallet-foundation-labs/sd-jwt-rust) ⭐ 20 — Rust, SD-JWT reference
+- [danielfett/sd-jwt](https://github.com/danielfett/sd-jwt) ⭐ 4 — Python, SD-JWT reference by spec author
 
 **Security status:** Secure
 Hash-based selective disclosure is conservative and PQ-safe; no complex cryptographic assumptions beyond SHA-256.
@@ -814,7 +803,6 @@ Specifications reaching final draft (2024); EU EUDI Wallet reference implementat
 
 **Implementations:**
 - [eu-digital-identity-wallet](https://github.com/eu-digital-identity-wallet) — Kotlin/Swift, EU EUDI Wallet reference apps
-- [nicola/OID4VC](https://github.com/nicola/oid4vc) — TypeScript, OID4VCI/OID4VP implementation
 
 **Security status:** Secure
 Built on well-established OAuth 2.0/OIDC security model; response_uri binding prevents replay; credential security depends on underlying format (SD-JWT, mDL).
@@ -843,7 +831,7 @@ Reference implementations available; EU-wide deployment mandated by 2026; pilot 
 
 **Implementations:**
 - [eu-digital-identity-wallet](https://github.com/eu-digital-identity-wallet) — Kotlin/Swift, official EC-funded reference apps (iOS/Android)
-- [eudi-doc-architecture-and-reference-framework](https://github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework) — Architecture Reference Framework documentation
+- [eudi-doc-architecture-and-reference-framework](https://github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework) ⭐ 651 — Architecture Reference Framework documentation
 
 **Security status:** Secure
 Combines proven components (SD-JWT, COSE, OAuth 2.0); wallet instance attestation and key binding prevent credential theft; BBS+ under evaluation for unlinkability.
@@ -871,8 +859,7 @@ EU Regulation 2024/1183 (eIDAS 2.0); mandatory for all EU member states; backed 
 Deployed in Apple Wallet and Google Wallet; accepted at US TSA checkpoints; multiple US state DMVs issuing.
 
 **Implementations:**
-- [nicola/identity-credential](https://github.com/nicola/identity-credential) — Kotlin, Android Identity Credential library for mdoc
-- [nicola/nicola](https://github.com/nicola/nicola) — Swift, Apple ISO 18013-5 sample code
+- [nicola/nicola](https://github.com/nicola/nicola) ⭐ 1 — Swift, Apple ISO 18013-5 sample code
 
 **Security status:** Secure
 ECDSA P-256 + ECDH session keys; IACA PKI for issuer authentication; per-element hashing for selective disclosure.
@@ -900,10 +887,9 @@ ISO 18013-5 international standard; ISO 18013-7 for remote presentation; deploye
 All four major formats have production deployments: CL (AnonCreds), BBS+ (W3C VC DI), SD-JWT (RFC 9591), mDL (ISO 18013-5).
 
 **Implementations:**
-- [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) — Rust, CL-based AnonCreds
-- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) — TypeScript, BBS+ signatures
-- [danielfett/sd-jwt](https://github.com/danielfett/sd-jwt) — Python, SD-JWT reference
-- [nicola/identity-credential](https://github.com/nicola/identity-credential) — Kotlin, Android mdoc library
+- [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) ⭐ 85 — Rust, CL-based AnonCreds
+- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 — TypeScript, BBS+ signatures
+- [danielfett/sd-jwt](https://github.com/danielfett/sd-jwt) ⭐ 4 — Python, SD-JWT reference
 
 **Security status:** Secure
 All formats are secure at recommended parameters; CL and BBS+ are not PQ-safe; SD-JWT is PQ-safe (hash-based).
@@ -942,9 +928,9 @@ Each format is standardized in its domain: CL (Hyperledger), BBS+ (W3C/IETF), SD
 All three families have production deployments: BBS+/KVAC (credentials), EPID (group sigs), CLSAG (ring sigs).
 
 **Implementations:**
-- [signalapp/libsignal](https://github.com/signalapp/libsignal) — Rust, KVAC anonymous credentials (Signal)
-- [intel/linux-sgx](https://github.com/intel/linux-sgx) — C++, EPID group signatures (Intel SGX)
-- [monero-project/monero](https://github.com/monero-project/monero) — C++, CLSAG ring signatures (Monero)
+- [signalapp/libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust, KVAC anonymous credentials (Signal)
+- [intel/linux-sgx](https://github.com/intel/linux-sgx) ⭐ 1.4k — C++, EPID group signatures (Intel SGX)
+- [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, CLSAG ring signatures (Monero)
 
 **Security status:** Secure
 Each family is secure under its respective assumptions; choice depends on trust model and accountability requirements.
@@ -972,9 +958,9 @@ All three are well-studied with decades of research; deployed in major systems (
 SecureDrop deployed at 70+ news organizations (NYT, WaPo, Guardian); GlobaLeaks used in EU anti-corruption.
 
 **Implementations:**
-- [freedomofpress/securedrop](https://github.com/freedomofpress/securedrop) — Python, SecureDrop submission system
-- [globaleaks/globaleaks](https://github.com/globaleaks/GlobaLeaks) — Python, GlobaLeaks whistleblowing platform
-- [onionshare/onionshare](https://github.com/onionshare/onionshare) — Python, ephemeral onion file sharing
+- [freedomofpress/securedrop](https://github.com/freedomofpress/securedrop) ⭐ 3.8k — Python, SecureDrop submission system
+- [globaleaks/globaleaks](https://github.com/globaleaks/GlobaLeaks) ⭐ 1.4k — Python, GlobaLeaks whistleblowing platform
+- [onionshare/onionshare](https://github.com/onionshare/onionshare) ⭐ 6.9k — Python, ephemeral onion file sharing
 
 **Security status:** Caution
 Cryptographically sound (Tor + GPG/PGP); operational security is the primary risk — source behavior, metadata leaks, and compromised endpoints.
@@ -1002,8 +988,7 @@ SecureDrop is the gold standard endorsed by Freedom of the Press Foundation; rec
 SimpleX Chat and Session are production apps with active user bases; Briar deployed for activist use.
 
 **Implementations:**
-- [simplex-chat/simplex-chat](https://github.com/simplex-chat/simplex-chat) — Haskell, SimpleX Chat with metadata protection
-- [nicola/session-desktop](https://github.com/nicola/session-desktop) — TypeScript, Session messenger
+- [simplex-chat/simplex-chat](https://github.com/simplex-chat/simplex-chat) ⭐ 10k — Haskell, SimpleX Chat with metadata protection
 - [briar/briar](https://code.briarproject.org/briar/briar) — Java, Briar peer-to-peer messenger
 - [cwtch.im/cwtch](https://git.openprivacy.ca/cwtch.im/cwtch) — Go, metadata-resistant messenger
 
@@ -1033,9 +1018,9 @@ SimpleX and Briar recommended by privacy researchers; Vuvuzela remains research-
 Aztec Network testnet active (2024); Noir language gaining adoption; Aztec 2.0/Connect were deployed on Ethereum mainnet.
 
 **Implementations:**
-- [AztecProtocol/aztec-packages](https://github.com/AztecProtocol/aztec-packages) — TypeScript/Noir, Aztec Network monorepo
-- [noir-lang/noir](https://github.com/noir-lang/noir) — Rust, Noir ZK DSL and compiler
-- [AztecProtocol/barretenberg](https://github.com/AztecProtocol/barretenberg) — C++, UltraHonk/PLONK backend
+- [AztecProtocol/aztec-packages](https://github.com/AztecProtocol/aztec-packages) ⭐ 435 — TypeScript/Noir, Aztec Network monorepo
+- [noir-lang/noir](https://github.com/noir-lang/noir) ⭐ 1.3k — Rust, Noir ZK DSL and compiler
+- [AztecProtocol/barretenberg](https://github.com/AztecProtocol/barretenberg) ⭐ 194 — C++, UltraHonk/PLONK backend
 
 **Security status:** Caution
 UltraHonk/PLONK proofs are well-studied; testnet stage means production security is not yet battle-tested; Noir circuits require careful auditing.
@@ -1065,7 +1050,7 @@ Tor Browser with RFP and Letterboxing deployed to millions of users; Brave Brows
 
 **Implementations:**
 - [nicola/tor-browser](https://gitlab.torproject.org/tpo/applications/tor-browser) — C++/JS, Tor Browser with fingerprinting resistance
-- [nicola/nicola](https://github.com/nicola/nicola) — Brave Browser with fingerprinting defenses
+- [nicola/nicola](https://github.com/nicola/nicola) ⭐ 1 — Brave Browser with fingerprinting defenses
 - [nicola/nicola](https://coveryourtracks.eff.org/) — EFF Cover Your Tracks fingerprint testing tool
 
 **Security status:** Caution
@@ -1092,8 +1077,8 @@ Tor Browser's RFP is the reference standard; adopted by Firefox (privacy.resistF
 Nym mainnet launched 2022; NymVPN released 2024; token-incentivized mix nodes operational.
 
 **Implementations:**
-- [nymtech/nym](https://github.com/nymtech/nym) — Rust, Nym mixnet, credentials, and client libraries
-- [nymtech/nym-vpn-client](https://github.com/nymtech/nym-vpn-client) — Rust, NymVPN client application
+- [nymtech/nym](https://github.com/nymtech/nym) ⭐ 1.7k — Rust, Nym mixnet, credentials, and client libraries
+- [nymtech/nym-vpn-client](https://github.com/nymtech/nym-vpn-client) ⭐ 384 — Rust, NymVPN client application
 
 **Security status:** Secure
 Loopix-based mixing with formal DP bounds; Coconut credentials for anonymous access; Sphinx packet format proven secure.
@@ -1119,7 +1104,7 @@ Active mainnet with token incentives; endorsed by privacy researchers; growing u
 Production-grade software with PQ support; deployed in test networks; world's first post-quantum mixnet.
 
 **Implementations:**
-- [katzenpost/katzenpost](https://github.com/katzenpost/katzenpost) — Go, full Katzenpost mixnet implementation (client, server, PKI, Sphinx)
+- [katzenpost/katzenpost](https://github.com/katzenpost/katzenpost) ⭐ 147 — Go, full Katzenpost mixnet implementation (client, server, PKI, Sphinx)
 
 **Security status:** Secure
 Sphinx packet format proven secure; PQ key exchange via CTIDH/ML-KEM; Loopix-style mixing with formal DP guarantees.
@@ -1167,7 +1152,7 @@ Published at PETS 2016; well-cited in anonymous communication research; no imple
 Academic prototype (Stanford, 2015); demonstrated million-user anonymity sets; no production deployment.
 
 **Implementations:**
-- [henrycg/riposte](https://github.com/henrycg/riposte) — Go, Riposte anonymous broadcast prototype
+No notable open-source implementations available.
 
 **Security status:** Secure
 DC-net foundations provide information-theoretic anonymity; PIR prevents server collusion; active DoS resistance.
@@ -1191,7 +1176,7 @@ Published at IEEE S&P 2015; foundational reference for anonymous broadcast; supe
 Academic prototype (UT Austin / Microsoft Research, 2016); no production deployment.
 
 **Implementations:**
-- [nicola/pung](https://github.com/nicola/pung) — C++, PIR-based metadata-hiding messaging prototype
+No notable open-source implementations available.
 
 **Security status:** Secure
 Computational PIR provides cryptographic guarantees; no trusted relays required; security proven under standard assumptions.
@@ -1215,7 +1200,7 @@ Published at OSDI 2016; established the PIR-based metadata-hiding messaging para
 Academic prototype (Stanford, 2021); 10-100x faster than prior systems; no production deployment.
 
 **Implementations:**
-- [nicola/express](https://github.com/nicola/express) — C++, XOR-PIR-based metadata-hiding messaging
+No notable open-source implementations available.
 
 **Security status:** Secure
 Symmetric-key only; two-server model with one-malicious-server tolerance; proven security.
@@ -1239,7 +1224,7 @@ Published at USENIX Security 2021; current practical frontier for metadata-hidin
 Academic prototype (2020); demonstrated 9,433 msg/s for 32,000 users; no production deployment.
 
 **Implementations:**
-- [nicola/talek](https://github.com/nicola/talek) — Go, PIR-based private group messaging
+No notable open-source implementations available.
 
 **Security status:** Secure
 Information-theoretic PIR provides strongest access-pattern privacy; anytrust multi-server model.
@@ -1293,8 +1278,8 @@ WTF-PAD deployed in Tor Browser; Loopix cover traffic model deployed in Nym and 
 
 **Implementations:**
 - [nicola/tor-browser](https://gitlab.torproject.org/tpo/applications/tor-browser) — C++/JS, Tor Browser with WTF-PAD adaptive padding
-- [nymtech/nym](https://github.com/nymtech/nym) — Rust, Loopix-style Poisson cover traffic in Nym
-- [katzenpost/katzenpost](https://github.com/katzenpost/katzenpost) — Go, cover traffic in Katzenpost mixnet
+- [nymtech/nym](https://github.com/nymtech/nym) ⭐ 1.7k — Rust, Loopix-style Poisson cover traffic in Nym
+- [katzenpost/katzenpost](https://github.com/katzenpost/katzenpost) ⭐ 147 — Go, cover traffic in Katzenpost mixnet
 
 **Security status:** Caution
 Cover traffic provides formal DP bounds for mixnets; low-latency defenses (WTF-PAD) reduce but do not eliminate fingerprinting; arms race with ML-based attacks.
@@ -1322,10 +1307,9 @@ Traffic analysis is a well-studied research area; WTF-PAD adopted by Tor Project
 IETF RFC 9497 (2023); deployed in Privacy Pass (RFC 9576), OPAQUE password protocol, and private contact discovery.
 
 **Implementations:**
-- [cloudflare/circl](https://github.com/cloudflare/circl) — Go, Cloudflare's OPRF/VOPRF implementation
-- [cloudflare/circl](https://github.com/cloudflare/circl) — Go, Cloudflare's crypto library with OPRF/VOPRF
-- [nicola/voprf-ts](https://github.com/nicola/voprf-ts) — TypeScript, VOPRF implementation
-- [cfrg/draft-irtf-cfrg-voprf](https://github.com/cfrg/draft-irtf-cfrg-voprf) — IETF draft and test vectors
+- [cloudflare/circl](https://github.com/cloudflare/circl) ⭐ 1.6k — Go, Cloudflare's OPRF/VOPRF implementation
+- [cloudflare/circl](https://github.com/cloudflare/circl) ⭐ 1.6k — Go, Cloudflare's crypto library with OPRF/VOPRF
+- [cfrg/draft-irtf-cfrg-voprf](https://github.com/cfrg/draft-irtf-cfrg-voprf) ⭐ 39 — IETF draft and test vectors
 
 **Security status:** Secure
 DH-based with DLEQ proofs; proven in ROM; standardized over Ristretto255 and P-384.
@@ -1353,8 +1337,8 @@ IETF RFC 9497; deployed by Cloudflare, Apple, Google; foundational primitive for
 Intel EPID with SigRL-based VLR deployed in billions of Intel CPUs for SGX attestation.
 
 **Implementations:**
-- [intel/linux-sgx](https://github.com/intel/linux-sgx) — C++, Intel EPID with VLR mode
-- [intel/linux-sgx](https://github.com/intel/linux-sgx) — C++, Intel EPID with SigRL-based VLR
+- [intel/linux-sgx](https://github.com/intel/linux-sgx) ⭐ 1.4k — C++, Intel EPID with VLR mode
+- [intel/linux-sgx](https://github.com/intel/linux-sgx) ⭐ 1.4k — C++, Intel EPID with SigRL-based VLR
 
 **Security status:** Caution
 Cryptographically sound; O(R) revocation check per verification can be slow for large revocation lists; lattice-based VLR provides PQ path but with larger proofs.
@@ -1382,10 +1366,10 @@ Intel EPID is an industry standard; Boneh-Shacham VLR is a foundational paper; I
 zkLogin deployed on Sui blockchain for millions of users; Circom Passport and zk-creds are working prototypes; Zupass used at events.
 
 **Implementations:**
-- [zk-passport/proof-of-passport](https://github.com/zk-passport/proof-of-passport) — Circom/Solidity, passport ZK proofs
-- [semaphore-protocol/semaphore](https://github.com/semaphore-protocol/semaphore) — TypeScript, Semaphore-style credential proofs
-- [zk-passport/proof-of-passport](https://github.com/zk-passport/proof-of-passport) — Circom, ePassport ZK verification
-- [noir-lang/noir](https://github.com/noir-lang/noir) — Rust, Noir ZK DSL for credential proofs
+- [zk-passport/proof-of-passport](https://github.com/zk-passport/proof-of-passport) ⭐ 1.2k — Circom/Solidity, passport ZK proofs
+- [semaphore-protocol/semaphore](https://github.com/semaphore-protocol/semaphore) ⭐ 1.1k — TypeScript, Semaphore-style credential proofs
+- [zk-passport/proof-of-passport](https://github.com/zk-passport/proof-of-passport) ⭐ 1.2k — Circom, ePassport ZK verification
+- [noir-lang/noir](https://github.com/noir-lang/noir) ⭐ 1.3k — Rust, Noir ZK DSL for credential proofs
 
 **Security status:** Caution
 zkSNARK security depends on circuit correctness; ECDSA/RSA in-circuit verification is complex and requires careful auditing; trusted setup needed for Groth16.
@@ -1412,8 +1396,7 @@ Rapidly growing area; zkLogin (Sui) and Zupass demonstrate viability; more flexi
 Deployed in Signal messenger serving 100M+ users; covers group membership, auth tokens, profile keys, and usernames.
 
 **Implementations:**
-- [signalapp/libsignal](https://github.com/signalapp/libsignal) — Rust, official Signal library including zkgroup
-- [nicola/zkgroup](https://github.com/nicola/libsignal) — Rust, Signal's libsignal including zkgroup
+- [signalapp/libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust, official Signal library including zkgroup
 
 **Security status:** Secure
 CMZ KVAC proven under DDH over Ristretto255; Signal's implementation is audited and battle-tested at scale.
@@ -1442,7 +1425,7 @@ ECB Digital Euro in pilot phase (2024-2025); GNU Taler selected for EU CBDC pilo
 
 **Implementations:**
 - [GNU Taler](https://git.taler.net/) — C/Python, privacy-preserving e-cash for CBDC
-- [mit-dci/opencbdc-tx](https://github.com/mit-dci/opencbdc-tx) — C++, MIT/Boston Fed OpenCBDC research platform
+- [mit-dci/opencbdc-tx](https://github.com/mit-dci/opencbdc-tx) ⭐ 927 — C++, MIT/Boston Fed OpenCBDC research platform
 
 **Security status:** Secure
 Blind signature-based tiers are well-studied; ZK range proofs for spending limits proven secure; tiered privacy preserves AML compliance.
@@ -1499,8 +1482,7 @@ CRL and OCSP deployed globally in X.509 PKI; OAuth Status List mandated by EU EU
 
 **Implementations:**
 - [IETF OAuth Status List](https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/) — IETF draft specification and test vectors
-- [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) — Rust, accumulator-based non-revocation proofs
-- [nicola/bitstring-status-list](https://github.com/nicola/vc-bitstring-status-list-test-suite) — W3C Bitstring Status List test suite
+- [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) ⭐ 85 — Rust, accumulator-based non-revocation proofs
 
 **Security status:** Secure
 CRL/OCSP are well-established; accumulator-based proofs provide ZK revocation; OAuth Status List is simple and efficient.
@@ -1527,8 +1509,7 @@ CRL/OCSP are IETF standards (RFC 5280, RFC 6960); OAuth Status List mandated by 
 PTLCs planned for Bitcoin Lightning Network post-Taproot; not yet deployed; HTLC (predecessor) is in production.
 
 **Implementations:**
-- [lightningnetwork/lnd](https://github.com/lightningnetwork/lnd) — Go, Lightning Network daemon (HTLC; PTLC support planned)
-- [nicola/adaptor-signatures](https://github.com/nicola/adaptorsig) — Rust, adaptor signature library for PTLC construction
+- [lightningnetwork/lnd](https://github.com/lightningnetwork/lnd) ⭐ 8.1k — Go, Lightning Network daemon (HTLC; PTLC support planned)
 
 **Security status:** Secure
 AMHL framework proven secure (CCS 2019); Schnorr adaptor signatures well-studied; lattice variant provides PQ path.
@@ -1554,8 +1535,8 @@ Malavolta et al. (CCS 2019) is the foundational paper; PTLCs are planned for Lig
 Deployed in Penumbra (Cosmos chain, 2023); reduces wallet sync bandwidth by 10-100x.
 
 **Implementations:**
-- [penumbra-zone/penumbra](https://github.com/penumbra-zone/penumbra) — Rust, FMD implementation in Penumbra
-- [penumbra-zone/penumbra](https://github.com/penumbra-zone/penumbra) — Rust, FMD as part of Penumbra protocol
+- [penumbra-zone/penumbra](https://github.com/penumbra-zone/penumbra) ⭐ 476 — Rust, FMD implementation in Penumbra
+- [penumbra-zone/penumbra](https://github.com/penumbra-zone/penumbra) ⭐ 476 — Rust, FMD as part of Penumbra protocol
 
 **Security status:** Secure
 DH-based flag-key construction proven secure; tunable false-positive rate provides privacy-bandwidth trade-off.
