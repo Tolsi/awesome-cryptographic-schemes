@@ -1,5 +1,57 @@
 # Blockchain & Distributed Ledger
 
+
+<!-- TOC -->
+## Contents (46 schemes)
+
+- [Proof of Work (PoW) / Proof of Space](#proof-of-work-pow-proof-of-space)
+- [Data Availability Sampling (DAS)](#data-availability-sampling-das)
+- [Encrypted Mempools / Threshold Encryption for Transaction Ordering](#encrypted-mempools-threshold-encryption-for-transaction-ordering)
+- [Casper FFG / Ethereum Proof-of-Stake Finality](#casper-ffg-ethereum-proof-of-stake-finality)
+- [Bitcoin Taproot / BIP 340-342](#bitcoin-taproot-bip-340-342)
+- [MimbleWimble](#mimblewimble)
+- [Confidential Transactions (CT)](#confidential-transactions-ct)
+- [Fair Exchange / Atomic Swaps](#fair-exchange-atomic-swaps)
+- [IBC / Inter-Blockchain Communication Protocol](#ibc-inter-blockchain-communication-protocol)
+- [EIP-712: Ethereum Typed Structured Data Signing](#eip-712-ethereum-typed-structured-data-signing)
+- [Linear BFT Consensus (HotStuff / Tendermint)](#linear-bft-consensus-hotstuff-tendermint)
+- [Secret Leader Election](#secret-leader-election)
+- [Order-Fair Consensus](#order-fair-consensus)
+- [Groth16 / Zcash Sapling zk-SNARK](#groth16-zcash-sapling-zk-snark)
+- [Lightning Network Payment Channels](#lightning-network-payment-channels)
+- [ZK Rollups and Optimistic Rollups](#zk-rollups-and-optimistic-rollups)
+- [Verkle Trees (Ethereum State)](#verkle-trees-ethereum-state)
+- [Filecoin PoRep / PoSt (Proof of Replication / Proof of Spacetime)](#filecoin-porep-post-proof-of-replication-proof-of-spacetime)
+- [EIP-4844 Proto-Danksharding (Blob Transactions + KZG Ceremony)](#eip-4844-proto-danksharding-blob-transactions-kzg-ceremony)
+- [Mina Protocol — Pickles Recursive SNARK (22 KB Blockchain)](#mina-protocol-pickles-recursive-snark-22-kb-blockchain)
+- [Solana Proof of History (PoH)](#solana-proof-of-history-poh)
+- [Polkadot BABE/GRANDPA Hybrid Consensus](#polkadot-babegrandpa-hybrid-consensus)
+- [Ethereum BLS Aggregate Signatures (BDN / BLS12-381)](#ethereum-bls-aggregate-signatures-bdn-bls12-381)
+- [Helios — SNARK-Based Ethereum Light Client](#helios-snark-based-ethereum-light-client)
+- [zkBridge — Cross-Chain State Proofs](#zkbridge-cross-chain-state-proofs)
+- [Monero RingCT — Ring Signatures + Confidential Transactions](#monero-ringct-ring-signatures-confidential-transactions)
+- [Halo2 — Recursive SNARKs Without Trusted Setup (Zcash Orchard)](#halo2-recursive-snarks-without-trusted-setup-zcash-orchard)
+- [Ethereum PBS — Proposer-Builder Separation and MEV](#ethereum-pbs-proposer-builder-separation-and-mev)
+- [Flashbots and SUAVE — Encrypted Order Flow and TEE-Based MEV](#flashbots-and-suave-encrypted-order-flow-and-tee-based-mev)
+- [Ethereum DVT — Distributed Validator Technology](#ethereum-dvt-distributed-validator-technology)
+- [RANDAO and VDF — Unbiasable Randomness Beacon for Ethereum](#randao-and-vdf-unbiasable-randomness-beacon-for-ethereum)
+- [Incremental Verifiable Computation (IVC) for Blockchain](#incremental-verifiable-computation-ivc-for-blockchain)
+- [Tornado Cash — zkSNARK Privacy Mixer](#tornado-cash-zksnark-privacy-mixer)
+- [Zcash Sapling Transaction Structure](#zcash-sapling-transaction-structure)
+- [Confidential Transactions with Bulletproofs — Liquid Network](#confidential-transactions-with-bulletproofs-liquid-network)
+- [Bridge Security — Trust Model Taxonomy](#bridge-security-trust-model-taxonomy)
+- [Seraphis — Monero Next-Generation Transaction Protocol](#seraphis-monero-next-generation-transaction-protocol)
+- [Bulletproofs+ — Optimised Range Proofs](#bulletproofs-optimised-range-proofs)
+- [DECO — Decentralised Oracle via TLS Proofs](#deco-decentralised-oracle-via-tls-proofs)
+- [VRF-Based Consensus and Leader Election (Algorand)](#vrf-based-consensus-and-leader-election-algorand)
+- [Recursive SNARKs for Rollups — Nova and ProtoStar Folding](#recursive-snarks-for-rollups-nova-and-protostar-folding)
+- [Cross-Chain Bridges — Hash Time-Locked Contracts and Light Client Proofs](#cross-chain-bridges-hash-time-locked-contracts-and-light-client-proofs)
+- [Penumbra — Private DEX with Threshold Encryption](#penumbra-private-dex-with-threshold-encryption)
+- [FHE-Based Encrypted DeFi (fhEVM)](#fhe-based-encrypted-defi-fhevm)
+- [Aztec Protocol — Private Smart Contracts (Noir / PLONK)](#aztec-protocol-private-smart-contracts-noir-plonk)
+- [Interchain Security and Mesh Security (Cosmos)](#interchain-security-and-mesh-security-cosmos)
+<!-- /TOC -->
+
 ## Proof of Work (PoW) / Proof of Space
 
 **Goal:** Sybil resistance. Prove that computational or storage resources were expended. Unforgeable and adjustable in difficulty. Foundation of permissionless consensus (Bitcoin, Zcash, Chia).
@@ -254,33 +306,7 @@ Well-established in privacy-coin ecosystem; reviewed by leading cryptographers; 
 
 ---
 
-## Range Proofs
-
-**Goal:** Committed value in range. Prove that a Pedersen-committed value v lies in [0, 2^n) without revealing v. Essential building block for confidential transactions, e-voting, anonymous credentials, and any system where committed values must be non-negative.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Boudot Range Proof** | 2000 | Integer commitments | First efficient range proof; based on Fujisaki-Okamoto commitments [[1]](https://doi.org/10.1007/3-540-45539-6_31) |
-| **Borromean Ring Range Proof** | 2015 | Ring signatures | Per-bit ring signature; used in original Monero CT [[1]](https://github.com/Blockstream/borromean_paper/blob/master/borromean_draft_0.01_34241bb.pdf) |
-| **Bulletproofs Range Proof** | 2018 | Inner product argument | Logarithmic-size; no trusted setup; aggregatable [[1]](https://eprint.iacr.org/2017/1066) |
-| **Bulletproofs++** | 2022 | Reciprocal argument | ~15% smaller than Bulletproofs; optimized for range proofs [[1]](https://eprint.iacr.org/2022/510) |
-| **ZK-range from SNARKs** | 2020 | PLONK / Groth16 | Embed range check as circuit constraint; efficient when batched [[1]](https://eprint.iacr.org/2019/953) |
-
-**State of the art:** Bulletproofs++ (2022) for standalone range proofs; SNARK-embedded range checks for ZK circuits. See [ZK Proofs](#range-proofs), [Confidential Transactions](#confidential-transactions-ct).
-
-**Production readiness:** Production
-Bulletproofs deployed in Monero and Liquid; Bulletproofs+ in Monero since 2022; SNARK-embedded range checks in ZK rollups
-
-**Implementations:**
-- [dalek-cryptography/bulletproofs](https://github.com/dalek-cryptography/bulletproofs) ⭐ 1.1k — Rust, Bulletproofs implementation using Ristretto
-- [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, Bulletproofs+ range proofs in production
-- [ElementsProject/secp256k1-zkp](https://github.com/ElementsProject/secp256k1-zkp) ⭐ 419 — C, Bulletproofs for Liquid Network
-
-**Security status:** Secure
-Bulletproofs security relies on the discrete log assumption; no trusted setup required; well-studied with formal proofs
-
-**Community acceptance:** Widely trusted
-Bulletproofs are the standard range proof in production privacy systems; published at IEEE S&P 2018 with extensive peer review
+> **Range Proofs** are covered in [Commitments & Verifiability — Range Proofs](09-commitments-verifiability.md#range-proofs).
 
 ---
 

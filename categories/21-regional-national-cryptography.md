@@ -10,6 +10,23 @@ Cross-references to foundational concepts: [Symmetric Encryption](01-foundationa
 
 ---
 
+
+<!-- TOC -->
+## Contents (11 schemes)
+
+- [SM4 / Chinese National Standard Block Ciphers](#sm4-chinese-national-standard-block-ciphers)
+- [SM3 Hash Function](#sm3-hash-function)
+- [SM2 Digital Signatures (Chinese National Standard)](#sm2-digital-signatures-chinese-national-standard)
+- [GOST R 34.12-2015 Block Ciphers (Grasshopper / Magma)](#gost-r-3412-2015-block-ciphers-grasshopper-magma)
+- [GOST R 34.11-2012 (Streebog) and GOST R 34.10-2012](#gost-r-3411-2012-streebog-and-gost-r-3410-2012)
+- [GOST R 34.10-2012 (Russian Digital Signature Standard)](#gost-r-3410-2012-russian-digital-signature-standard)
+- [ARIA Block Cipher](#aria-block-cipher)
+- [ARIA and SEED (Korean Standard Block Ciphers)](#aria-and-seed-korean-standard-block-ciphers)
+- [LSH (Korean Lightweight Secure Hash)](#lsh-korean-lightweight-secure-hash)
+- [Camellia-GCM and ARIA-GCM](#camellia-gcm-and-aria-gcm)
+- [CLEFIA and MISTY1 (Japanese Industry Ciphers)](#clefia-and-misty1-japanese-industry-ciphers)
+<!-- /TOC -->
+
 ## SM4 / Chinese National Standard Block Ciphers
 
 **Goal:** Sovereign symmetric encryption. China's national commercial cryptography standards define a family of block ciphers and stream ciphers that serve as mandatory alternatives to AES in Chinese critical infrastructure, finance, and government systems — and increasingly in international standards via ISO/IEC.
@@ -87,12 +104,18 @@ SM2 is structurally similar to ECDSA but differs in key ways: (1) the signature 
 **State of the art:** Mandated in Chinese government/financial systems (GB/T 32918); ISO-standardized (ISO/IEC 14888-3:2018); supported in OpenSSL, BoringSSL, and GmSSL. Cross-links: [Foundational Signature Schemes](01-foundational-primitives.md#digital-signatures).
 
 **Production readiness:** Production
+Mandated in Chinese government and financial systems (GB/T 32918); deployed at scale in UnionPay, CFCA certificates, and national PKI.
+
 **Implementations:**
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, SM2 support since 1.1.1
 - [GmSSL](https://github.com/guanzhi/GmSSL) ⭐ 6.0k — C, Chinese crypto library with full SM2 suite
 - [Tongsuo](https://github.com/Tongsuo-Project/Tongsuo) ⭐ 1.4k — C, Alibaba fork of OpenSSL with SM2
+
 **Security status:** Secure
+Provably secure in the generic group model; no known practical attacks on the SM2 curve or signing algorithm.
+
 **Community acceptance:** Standard
+Chinese national standard GB/T 32918.2-2016; ISO/IEC 14888-3:2018; IETF RFC 8998. Limited adoption outside China.
 
 ---
 
@@ -179,12 +202,18 @@ GOST R 34.10-2012 uses an elliptic curve over F_p with Russian-specified paramet
 **State of the art:** GOST R 34.10-2012 is mandated in Russian Federation government systems and supported in OpenSSL (via GOST engine), Bouncy Castle, and CryptoPro CSP. The 512-bit variant provides the highest classical security level of any deployed ECC signature scheme. Cross-links: [Foundational Signature Schemes](01-foundational-primitives.md#digital-signatures).
 
 **Production readiness:** Production
+Mandated in Russian Federation government systems; deployed in Russian banking, e-document infrastructure, and TLS via RFC 9189.
+
 **Implementations:**
 - [OpenSSL GOST engine](https://github.com/gost-engine/engine) ⭐ 441 — C, GOST R 34.10-2012 for OpenSSL
 - [BouncyCastle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, GOST signature support
 - [CryptoPro CSP](https://www.cryptopro.ru/) — commercial, Russian government certified
+
 **Security status:** Caution
+No practical attacks known, but curve parameter derivation lacks a "nothing-up-my-sleeve" seed, raising transparency concerns among Western researchers.
+
 **Community acceptance:** Niche
+Russian national standard GOST R 34.10-2012; IETF RFCs 7091 and 9189. Not adopted outside Russia/CIS.
 
 ---
 

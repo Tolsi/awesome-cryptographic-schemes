@@ -1,5 +1,65 @@
 # Anonymity & Credentials
 
+
+<!-- TOC -->
+## Contents (54 schemes)
+
+- [Anonymous Credentials](#anonymous-credentials)
+- [Mix Networks (Mixnets)](#mix-networks-mixnets)
+- [Onion Routing](#onion-routing)
+- [DC-Nets (Dining Cryptographers Networks)](#dc-nets-dining-cryptographers-networks)
+- [Privacy Pass / Anonymous Tokens](#privacy-pass-anonymous-tokens)
+- [Secret Handshakes / Hidden Credentials](#secret-handshakes-hidden-credentials)
+- [Semaphore / Anonymous Group Signaling (RLN)](#semaphore-anonymous-group-signaling-rln)
+- [Delegatable Anonymous Credentials](#delegatable-anonymous-credentials)
+- [Keyed-Verification Anonymous Credentials (KVAC)](#keyed-verification-anonymous-credentials-kvac)
+- [E-Cash / Chaumian Digital Cash](#e-cash-chaumian-digital-cash)
+- [Anonymous Broadcast Encryption](#anonymous-broadcast-encryption)
+- [Anonymous Reputation Systems](#anonymous-reputation-systems)
+- [Stealth Addresses](#stealth-addresses)
+- [Coconut Credentials](#coconut-credentials)
+- [Tor v3 Onion Services](#tor-v3-onion-services)
+- [I2P (Invisible Internet Project)](#i2p-invisible-internet-project)
+- [GNU Taler](#gnu-taler)
+- [Zcash Shielded Protocols (Sapling / Orchard)](#zcash-shielded-protocols-sapling-orchard)
+- [BBS+ Anonymous Credentials](#bbs-anonymous-credentials)
+- [Monero's Privacy Stack](#moneros-privacy-stack)
+- [CoinJoin / WabiSabi](#coinjoin-wabisabi)
+- [Privacy Pools](#privacy-pools)
+- [Group Encryption](#group-encryption)
+- [Direct Anonymous Attestation (DAA)](#direct-anonymous-attestation-daa)
+- [Accumulators for Credential Revocation](#accumulators-for-credential-revocation)
+- [IRMA / Yivi Credential System](#irma-yivi-credential-system)
+- [ZKP-Based Attribute Predicates (Range Proofs for Credentials)](#zkp-based-attribute-predicates-range-proofs-for-credentials)
+- [SD-JWT and JSON Web Proof (JWP)](#sd-jwt-and-json-web-proof-jwp)
+- [OpenID for Verifiable Credentials (OID4VC)](#openid-for-verifiable-credentials-oid4vc)
+- [EU EUDI Wallet Cryptographic Architecture (eIDAS 2.0)](#eu-eudi-wallet-cryptographic-architecture-eidas-20)
+- [mDL (Mobile Driver's License, ISO 18013-5)](#mdl-mobile-drivers-license-iso-18013-5)
+- [Selective Disclosure Credential Formats Compared](#selective-disclosure-credential-formats-compared)
+- [Anonymous Credentials vs Group Signatures vs Ring Signatures](#anonymous-credentials-vs-group-signatures-vs-ring-signatures)
+- [Anonymous Whistleblowing Systems](#anonymous-whistleblowing-systems)
+- [Private Communication with Metadata Protection](#private-communication-with-metadata-protection)
+- [Aztec Protocol (Private Smart Contracts)](#aztec-protocol-private-smart-contracts)
+- [Browser Fingerprinting and Anonymity Defenses](#browser-fingerprinting-and-anonymity-defenses)
+- [Nym Network](#nym-network)
+- [Katzenpost](#katzenpost)
+- [Riffle](#riffle)
+- [Riposte](#riposte)
+- [Pung](#pung)
+- [Express](#express)
+- [Talek](#talek)
+- [Karaoke](#karaoke)
+- [Traffic Analysis Attacks and Cover Traffic Defenses](#traffic-analysis-attacks-and-cover-traffic-defenses)
+- [Oblivious Pseudorandom Functions (OPRF / VOPRF / POPRF)](#oblivious-pseudorandom-functions-oprf-voprf-poprf)
+- [Group Signatures with Verifier-Local Revocation (VLR)](#group-signatures-with-verifier-local-revocation-vlr)
+- [zkSNARK-Based Anonymous Credentials](#zksnark-based-anonymous-credentials)
+- [Signal KVAC v2 (zkgroup)](#signal-kvac-v2-zkgroup)
+- [CBDC Privacy Architectures](#cbdc-privacy-architectures)
+- [Post-Quantum Anonymous Credentials](#post-quantum-anonymous-credentials)
+- [Credential Status Mechanisms (Revocation Transparency)](#credential-status-mechanisms-revocation-transparency)
+- [Anonymous Multi-Hop Locks (AMHL)](#anonymous-multi-hop-locks-amhl)
+<!-- /TOC -->
+
 ## Anonymous Credentials
 
 **Goal:** Selective disclosure + unlinkability. Prove possession of attributes (age, nationality, membership) without revealing identity or linking multiple presentations. Used in digital IDs, privacy-preserving access control.
@@ -1532,29 +1592,7 @@ Malavolta et al. (CCS 2019) is the foundational paper; PTLCs are planned for Lig
 
 ---
 
-## Fuzzy Message Detection (FMD)
-
-**Goal:** Allow a recipient to detect messages intended for them on an encrypted broadcast channel without downloading and trial-decrypting every message, while revealing only a controlled false-positive rate to the server. The server applies a detection algorithm to each message using a detection key; it flags messages for the recipient but cannot distinguish true positives from false positives, providing differential privacy on the recipient's activity.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **FMD (Beck-Len-Maller-Zamfir)** | 2021 | DH-based flag-key pairs | First formal FMD definition; sender attaches a ciphertext-flag; server uses detection key to test flag; tunable false-positive rate p = 2^{-n} via multi-key scheme [[1]](https://eprint.iacr.org/2021/089) |
-| **FMD with Clue Keys (Penumbra)** | 2022 | FMD + ECDH clue generation | Deployed in Penumbra (privacy-focused Cosmos chain); each transaction includes a detection clue; full nodes filter for wallet using detection key; reduces sync bandwidth by 10-100x [[1]](https://protocol.penumbra.zone/main/crypto/fmd.html) |
-| **FMD from Oblivious Message Retrieval** | 2023 | PIR + FHE-based | Combines FMD detection with server-side homomorphic evaluation for stronger privacy; server cannot even learn false-positive rate [[1]](https://eprint.iacr.org/2021/1256) |
-
-**State of the art:** FMD (2021) solves a fundamental problem for encrypted blockchain wallets and messaging: efficient scanning without full download. Deployed in Penumbra's Cosmos chain (2023). The PIR-based variant from [Oblivious Message Retrieval](10-privacy-preserving-computation.md#oblivious-message-retrieval-omr) provides the strongest server-privacy guarantees. Related to [Stealth Addresses](#stealth-addresses), [Zcash Shielded Protocols](#zcash-shielded-protocols-sapling-orchard), and [PIR](10-privacy-preserving-computation.md#private-information-retrieval-pir).
-
-**Production readiness:** Experimental
-Deployed in Penumbra (Cosmos chain, 2023); reduces wallet sync bandwidth by 10-100x.
-
-**Implementations:**
-- [penumbra-zone/penumbra](https://github.com/penumbra-zone/penumbra) ⭐ 476 — Rust, FMD implementation in Penumbra
-- [penumbra-zone/penumbra](https://github.com/penumbra-zone/penumbra) ⭐ 476 — Rust, FMD as part of Penumbra protocol
-
-**Security status:** Secure
-DH-based flag-key construction proven secure; tunable false-positive rate provides privacy-bandwidth trade-off.
-
-**Community acceptance:** Emerging
-Published in 2021 (Beck-Len-Maller-Zamfir); deployed in Penumbra; solving a practical problem for encrypted blockchain wallets; growing interest.
+> **Fuzzy Message Detection (FMD)** is covered in [Privacy-Preserving Computation — FMD](10-privacy-preserving-computation.md#fuzzy-message-detection-fmd).
 
 ---
+

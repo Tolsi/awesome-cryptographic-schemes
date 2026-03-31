@@ -1,5 +1,62 @@
 # Key Exchange & Key Management
 
+
+<!-- TOC -->
+## Contents (51 schemes)
+
+- [Key Exchange / Key Agreement](#key-exchange-key-agreement)
+- [Password-Based Key Derivation (KDF / PAKE)](#password-based-key-derivation-kdf-pake)
+- [Hierarchical Deterministic Keys (BIP32 / HD Wallets)](#hierarchical-deterministic-keys-bip32-hd-wallets)
+- [Key Wrapping / Envelope Encryption](#key-wrapping-envelope-encryption)
+- [Non-Interactive Key Exchange (NIKE)](#non-interactive-key-exchange-nike)
+- [Certificateless Cryptography](#certificateless-cryptography)
+- [JOSE / JWS / JWE / JWT](#jose-jws-jwe-jwt)
+- [Key Transparency / CONIKS](#key-transparency-coniks)
+- [Updatable CRS / Powers of Tau](#updatable-crs-powers-of-tau)
+- [Password Hardened Encryption (PHE)](#password-hardened-encryption-phe)
+- [SLIP-39 / Shamir Backup for Hardware Wallets](#slip-39-shamir-backup-for-hardware-wallets)
+- [SIGMA Protocol (SIGn-and-MAc)](#sigma-protocol-sign-and-mac)
+- [Triple Diffie-Hellman (3DH) / X3DH](#triple-diffie-hellman-3dh-x3dh)
+- [Noise Protocol Framework](#noise-protocol-framework)
+- [Dragonfly Handshake / SAE (Simultaneous Authentication of Equals)](#dragonfly-handshake-sae-simultaneous-authentication-of-equals)
+- [OCSP / Certificate Revocation](#ocsp-certificate-revocation)
+- [J-PAKE (Password-Authenticated Key Exchange by Juggling)](#j-pake-password-authenticated-key-exchange-by-juggling)
+- [SPEKE (Simple Password Exponential Key Exchange)](#speke-simple-password-exponential-key-exchange)
+- [ECMQV (Elliptic Curve Menezes-Qu-Vanstone)](#ecmqv-elliptic-curve-menezes-qu-vanstone)
+- [TLS 1.3 Key Schedule](#tls-13-key-schedule)
+- [FFDHE — Named Finite-Field DH Groups (RFC 7919)](#ffdhe-named-finite-field-dh-groups-rfc-7919)
+- [WireGuard Cryptographic Protocol](#wireguard-cryptographic-protocol)
+- [PKIX / X.509 v3 Certificate Profile (RFC 5280)](#pkix-x509-v3-certificate-profile-rfc-5280)
+- [Station-to-Station (STS) Protocol](#station-to-station-sts-protocol)
+- [IKEv1 vs IKEv2 (Internet Key Exchange)](#ikev1-vs-ikev2-internet-key-exchange)
+- [SCEP (Simple Certificate Enrollment Protocol, RFC 8894)](#scep-simple-certificate-enrollment-protocol-rfc-8894)
+- [EST (Enrollment over Secure Transport, RFC 7030)](#est-enrollment-over-secure-transport-rfc-7030)
+- [CMP (Certificate Management Protocol, RFC 4210/9483)](#cmp-certificate-management-protocol-rfc-42109483)
+- [PKCS#12 / PFX (Private Key + Certificate Bundle)](#pkcs12-pfx-private-key-certificate-bundle)
+- [PBKDF2 / Password-Based Cryptography (PKCS#5 / RFC 8018)](#pbkdf2-password-based-cryptography-pkcs5-rfc-8018)
+- [KDF Comparison: PBKDF2 vs bcrypt vs scrypt vs Argon2id](#kdf-comparison-pbkdf2-vs-bcrypt-vs-scrypt-vs-argon2id)
+- [OAuth 2.0 / OpenID Connect Cryptographic Components](#oauth-20-openid-connect-cryptographic-components)
+- [Post-Quantum Key Exchange in Practice (Hybrid KEM)](#post-quantum-key-exchange-in-practice-hybrid-kem)
+- [Auditable Key Directory (AKD) / Key Transparency v2](#auditable-key-directory-akd-key-transparency-v2)
+- [One-Pass Diffie-Hellman (NIST SP 800-56A)](#one-pass-diffie-hellman-nist-sp-800-56a)
+- [MTI Protocols (Matsumoto-Takashima-Imai)](#mti-protocols-matsumoto-takashima-imai)
+- [Encrypted Key Exchange (EKE) — Bellovin-Merritt](#encrypted-key-exchange-eke-bellovin-merritt)
+- [Group Key Agreement (Burmester-Desmedt)](#group-key-agreement-burmester-desmedt)
+- [ISO/IEC 11770 Key Establishment Mechanisms](#isoiec-11770-key-establishment-mechanisms)
+- [KEM Combiner Constructions](#kem-combiner-constructions)
+- [Double Ratchet and KDF Chain Key Management](#double-ratchet-and-kdf-chain-key-management)
+- [ML-KEM (CRYSTALS-Kyber) Internals](#ml-kem-crystals-kyber-internals)
+- [HPKE (Hybrid Public Key Encryption, RFC 9180)](#hpke-hybrid-public-key-encryption-rfc-9180)
+- [ZRTP (Media Path Key Agreement for Secure RTP)](#zrtp-media-path-key-agreement-for-secure-rtp)
+- [EDHOC (Ephemeral Diffie-Hellman Over COSE, RFC 9528)](#edhoc-ephemeral-diffie-hellman-over-cose-rfc-9528)
+- [HQC (Hamming Quasi-Cyclic KEM)](#hqc-hamming-quasi-cyclic-kem)
+- [FrodoKEM (Conservative Lattice-Based KEM)](#frodokem-conservative-lattice-based-kem)
+- [SIDH / SIKE (Broken Isogeny-Based Key Exchange)](#sidh-sike-broken-isogeny-based-key-exchange)
+- [Age Encryption Format](#age-encryption-format)
+- [SFrame (Secure Frame for Real-Time Media, RFC 9605)](#sframe-secure-frame-for-real-time-media-rfc-9605)
+- [Oblivious HTTP (OHTTP, RFC 9458)](#oblivious-http-ohttp-rfc-9458)
+<!-- /TOC -->
+
 ## Key Exchange / Key Agreement
 
 **Goal:** Establish a shared secret over an insecure channel, providing confidentiality for subsequent communication.
@@ -193,78 +250,11 @@ Active research area for IoT/sensor networks; no IETF or NIST standardization.
 
 ---
 
-## Certificate Transparency (CT)
-
-**Goal:** Public auditability of certificates. Append-only Merkle-tree log of all TLS certificates issued by CAs, so misissued certificates are publicly detectable. Not a cryptographic primitive per se, but a critical cryptographic protocol.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Certificate Transparency (RFC 6962)** | 2013 | Merkle tree + signatures | Google initiative; all major CAs participate [[1]](https://www.rfc-editor.org/rfc/rfc6962) |
-| **Signed Certificate Timestamps (SCT)** | 2013 | Ed25519 / ECDSA | Proof of log inclusion; embedded in TLS certificates [[1]](https://www.rfc-editor.org/rfc/rfc6962) |
-| **Verifiable Data Structures** | 2015 | Merkle / append-only | General framework: key transparency, binary transparency (Google) [[1]](https://transparency.dev/) |
-
-**State of the art:** CT v2 (mandatory for Chrome), Key Transparency (Google/Apple for E2E messaging).
-
-**Production readiness:** Production
-Certificate Transparency is mandatory for all publicly trusted TLS certificates in Chrome and Safari; billions of certificates logged.
-
-**Implementations:**
-- [Trillian](https://github.com/google/trillian) ⭐ 3.7k — Go, Google's verifiable data structure server (CT log backend)
-- [certificate-transparency-go](https://github.com/google/certificate-transparency-go) ⭐ 1.1k — Go, CT log tools and libraries
-- [ct-woodpecker](https://github.com/letsencrypt/ct-woodpecker) ⭐ 190 [archived] — Go, CT log monitor by Let's Encrypt
-- [sigstore/rekor](https://github.com/sigstore/rekor) ⭐ 1.1k — Go, transparency log inspired by CT
-
-**Security status:** Secure
-CT relies on Merkle trees and digital signatures; no known attacks on the cryptographic components.
-
-**Community acceptance:** Standard
-RFC 6962 (CT v1) and RFC 9162 (CT v2); mandatory in Chrome since 2018; all major CAs participate.
+> **Certificate Transparency (CT)** is covered in [Applied Infrastructure PKI — Certificate Transparency](14-applied-infrastructure-pki.md#certificate-transparency-ct).
 
 ---
 
-## ACME Protocol / Automated Certificate Management
-
-**Goal:** Cryptographically automate the issuance and renewal of X.509 TLS certificates by proving domain control via challenge-response protocols — eliminating manual certificate management. The foundation of Let's Encrypt (600M+ certificates issued).
-
-**Core cryptographic operations:**
-
-| Step | Mechanism |
-|------|-----------|
-| **Account key** | ECDSA P-256 or RSA-2048 JWK |
-| **Request signing** | JWS (JSON Web Signature) with account key over all requests |
-| **Domain validation (HTTP-01)** | Server places `token.keyAuthorization` at `/.well-known/acme-challenge/`; keyAuthorization = `token || '.' || SHA-256(accountKey)` |
-| **Domain validation (DNS-01)** | Server places `Base64url(SHA-256(keyAuthorization))` in `_acme-challenge.` TXT DNS record |
-| **CSR submission** | Standard PKCS#10 CSR signed with domain private key |
-| **Certificate issuance** | CA verifies challenge, signs cert; server fetches via ACME order |
-
-**Nonce replay prevention:** Every ACME request requires a fresh `Replay-Nonce` header (JWS protected). Server rejects replays.
-
-**Key authorization binding:** `SHA-256(accountKey)` binds the domain proof to the specific ACME account — prevents a different ACME account from stealing a challenge response.
-
-| Implementation | Usage |
-|----------------|-------|
-| **Let's Encrypt** | 600M+ certs; largest CA globally [[1]](https://letsencrypt.org/) |
-| **ZeroSSL / Buypass** | Alternative free CAs using ACME |
-| **certbot / acme.sh** | Reference clients; automates renewal |
-| **Caddy** | Web server with ACME built-in |
-
-**State of the art:** RFC 8555 (2019); universally adopted. ACME for email (S/MIME, RFC 8823) is emerging. See [Certificate Transparency](#certificate-transparency-ct) for log-based revocation transparency.
-
-**Production readiness:** Production
-Let's Encrypt has issued 600M+ certificates; ACME is the dominant automated certificate management protocol.
-
-**Implementations:**
-- [certbot](https://github.com/certbot/certbot) ⭐ 32k — Python, reference ACME client by EFF
-- [acme.sh](https://github.com/acmesh-official/acme.sh) ⭐ 46k — Shell, pure-shell ACME client
-- [lego](https://github.com/go-acme/lego) ⭐ 9.4k — Go, ACME client library and CLI
-- [Caddy](https://github.com/caddyserver/caddy) ⭐ 71k — Go, web server with built-in ACME
-- [boulder](https://github.com/letsencrypt/boulder) ⭐ 5.7k — Go, Let's Encrypt's ACME CA server
-
-**Security status:** Secure
-RFC 8555 with nonce replay prevention and account key binding; no known cryptographic vulnerabilities.
-
-**Community acceptance:** Standard
-IETF RFC 8555; universally adopted by CAs and web servers; mandatory for Let's Encrypt, ZeroSSL, and Buypass.
+> **ACME Protocol / Automated Certificate Management** is covered in [Secure Communication Protocols — ACME Protocol](12-secure-communication-protocols.md#acme-protocol--automated-certificate-management).
 
 ---
 
@@ -2650,33 +2640,7 @@ Not NIST-standardized; endorsed by European agencies (BSI, ANSSI); undergoing IS
 
 ---
 
-## Classic McEliece (Code-Based KEM)
-
-**Goal:** Provide a post-quantum KEM with an extremely conservative security foundation based on binary Goppa codes, offering very small ciphertexts and fast decapsulation at the cost of large public keys.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **mceliece348864** | 2017 | Binary Goppa codes | NIST Level 1; pk 261 KB, ct 96 B [[1]](https://classic.mceliece.org/) |
-| **mceliece460896** | 2017 | Binary Goppa codes | NIST Level 3; pk 524 KB, ct 156 B [[1]](https://classic.mceliece.org/) |
-| **mceliece6688128** | 2017 | Binary Goppa codes | NIST Level 5; pk 1,044 KB, ct 208 B [[1]](https://classic.mceliece.org/) |
-| **mceliece6960119** | 2017 | Binary Goppa codes | NIST Level 5 (alt); pk 1,047 KB, ct 194 B [[1]](https://classic.mceliece.org/) |
-| **mceliece8192128** | 2017 | Binary Goppa codes | NIST Level 5 (high); pk 1,357 KB, ct 208 B [[1]](https://classic.mceliece.org/) |
-
-**State of the art:** NIST Round 4 candidate; NIST deferred standardization pending ISO completion to avoid incompatible standards [[1]](https://classic.mceliece.org/nist.html). The McEliece cryptosystem (1978) has a 45+ year security track record with no significant algorithmic improvements in attacks. Tiny ciphertexts but very large public keys make it best suited for long-lived keys or scenarios where the public key can be cached. Wikipedia overview [[2]](https://en.wikipedia.org/wiki/McEliece_cryptosystem). Related to [HQC](#hqc-hamming-quasi-cyclic-kem), [ML-KEM](#ml-kem-crystals-kyber-internals), and [Post-Quantum Key Exchange (Hybrid KEM)](#post-quantum-key-exchange-in-practice-hybrid-kem).
-
-**Production readiness:** Experimental
-NIST Round 4 candidate; reference implementations available but very large public keys (261 KB -- 1.4 MB) limit practical deployment.
-
-**Implementations:**
-- [classic.mceliece.org](https://classic.mceliece.org/) — C, reference implementation
-- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, Classic McEliece implementations
-- [pqcrypto](https://crates.io/crates/pqcrypto-classicmceliece) — Rust, Classic McEliece bindings
-
-**Security status:** Secure
-45+ year security track record (McEliece, 1978); no significant algorithmic improvements in attacks; most conservative PQ KEM.
-
-**Community acceptance:** Niche
-NIST Round 4 candidate (standardization deferred to ISO); endorsed by conservative cryptographers; large key sizes limit adoption.
+> **Classic McEliece (Code-Based KEM)** is covered in [Quantum Cryptography — Classic McEliece](15-quantum-cryptography.md#classic-mceliece-code-based-kem).
 
 ---
 

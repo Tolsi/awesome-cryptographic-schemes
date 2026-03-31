@@ -1,5 +1,72 @@
 # Commitments & Verifiability
 
+
+<!-- TOC -->
+## Contents (61 schemes)
+
+- [Commitment Schemes](#commitment-schemes)
+- [Verifiable Random Functions (VRF)](#verifiable-random-functions-vrf)
+- [Verifiable Delay Functions (VDF)](#verifiable-delay-functions-vdf)
+- [Verifiable Computation (VC)](#verifiable-computation-vc)
+- [Non-Malleable Encryption / Commitments](#non-malleable-encryption-commitments)
+- [Chameleon Hash (Trapdoor Hash)](#chameleon-hash-trapdoor-hash)
+- [Vector Commitments](#vector-commitments)
+- [Functional Commitments](#functional-commitments)
+- [KZG Polynomial Commitments](#kzg-polynomial-commitments)
+- [Inner Product Arguments (IPA) / Bulletproofs Polynomial Commitment](#inner-product-arguments-ipa-bulletproofs-polynomial-commitment)
+- [Range Proofs](#range-proofs)
+- [Multilinear Polynomial Commitments](#multilinear-polynomial-commitments)
+- [BDLOP Lattice Commitments](#bdlop-lattice-commitments)
+- [Verifiable Timed Commitments](#verifiable-timed-commitments)
+- [Commit-Reveal Schemes](#commit-reveal-schemes)
+- [Homomorphic Hashing](#homomorphic-hashing)
+- [Somewhere Statistically Binding (SSB) Hash](#somewhere-statistically-binding-ssb-hash)
+- [Proofs of Retrievability (PoR) / Provable Data Possession](#proofs-of-retrievability-por-provable-data-possession)
+- [Accumulators](#accumulators)
+- [Randomness Beacons / Coin Tossing](#randomness-beacons-coin-tossing)
+- [Merkle Mountain Ranges (MMR)](#merkle-mountain-ranges-mmr)
+- [Verifiable Encryption](#verifiable-encryption)
+- [Time-Lock Puzzles / Timed-Release Encryption](#time-lock-puzzles-timed-release-encryption)
+- [Proof of Solvency / Proof of Reserves](#proof-of-solvency-proof-of-reserves)
+- [Delay Encryption](#delay-encryption)
+- [Brakedown Polynomial Commitments](#brakedown-polynomial-commitments)
+- [Bandersnatch and In-Circuit VRF](#bandersnatch-and-in-circuit-vrf)
+- [GKR Protocol (Doubly-Efficient Interactive Proofs)](#gkr-protocol-doubly-efficient-interactive-proofs)
+- [Ligero / Ligero++ (MPC-in-the-Head Commitments)](#ligero-ligero-mpc-in-the-head-commitments)
+- [Trapdoor Commitments (Equivocable Commitments)](#trapdoor-commitments-equivocable-commitments)
+- [Feige-Fiat-Shamir Identification Scheme](#feige-fiat-shamir-identification-scheme)
+- [Polynomial Commitment Scheme Comparison](#polynomial-commitment-scheme-comparison)
+- [Threshold VRF and Distributed Randomness](#threshold-vrf-and-distributed-randomness)
+- [drand / League of Entropy Randomness Beacon](#drand-league-of-entropy-randomness-beacon)
+- [Aurora and Fractal (Recursive IOP-Based Proof Systems)](#aurora-and-fractal-recursive-iop-based-proof-systems)
+- [Commit-and-Prove SNARKs (LegoSNARK)](#commit-and-prove-snarks-legosnark)
+- [Greyhound / Labrador (Lattice-Based Polynomial Commitments)](#greyhound-labrador-lattice-based-polynomial-commitments)
+- [Updatable Trusted Setup Ceremonies (Sonic / Marlin)](#updatable-trusted-setup-ceremonies-sonic-marlin)
+- [MiMC and GMiMC (Minimal Multiplicative Complexity Hashes)](#mimc-and-gmimc-minimal-multiplicative-complexity-hashes)
+- [SNARK-Friendly Hash Functions (Poseidon / Rescue)](#snark-friendly-hash-functions-poseidon-rescue)
+- [Pedersen Commitments in Ristretto255 and the Dalek Library](#pedersen-commitments-in-ristretto255-and-the-dalek-library)
+- [FRI-Based Polynomial Commitments](#fri-based-polynomial-commitments)
+- [Verkle Trees](#verkle-trees)
+- [Perfectly Binding vs Perfectly Hiding Commitments](#perfectly-binding-vs-perfectly-hiding-commitments)
+- [UC-Secure Commitments](#uc-secure-commitments)
+- [Concurrent Non-Malleable Commitments](#concurrent-non-malleable-commitments)
+- [Fischlin Transform](#fischlin-transform)
+- [Witness-Extended Emulation](#witness-extended-emulation)
+- [Extractable Commitments](#extractable-commitments)
+- [Cross-Commitment Equality Proofs](#cross-commitment-equality-proofs)
+- [Algebraic Vector Commitments](#algebraic-vector-commitments)
+- [Statistically-Hiding Commitments from LWE](#statistically-hiding-commitments-from-lwe)
+- [Merkle Patricia Tries as Commitment Schemes](#merkle-patricia-tries-as-commitment-schemes)
+- [Selective-Opening Security for Commitments](#selective-opening-security-for-commitments)
+- [Rate-1 Commitments](#rate-1-commitments)
+- [Batch Commitments and Amortised Opening](#batch-commitments-and-amortised-opening)
+- [Round-Optimal Commitment Protocols](#round-optimal-commitment-protocols)
+- [Homomorphic Commitments for MPC](#homomorphic-commitments-for-mpc)
+- [Succinct Mercurial Commitments](#succinct-mercurial-commitments)
+- [Verifiable Computation Delegation (Succinct Arguments for Delegated Computation)](#verifiable-computation-delegation-succinct-arguments-for-delegated-computation)
+- [Compact Proofs of Exponentiation (PoE) and Knowledge of Exponent (KEA)](#compact-proofs-of-exponentiation-poe-and-knowledge-of-exponent-kea)
+<!-- /TOC -->
+
 ## Commitment Schemes
 
 **Goal:** Commit to a value (hiding) so it can be revealed later (binding). Like a sealed envelope. Used as a building block in many protocols.
@@ -325,6 +392,7 @@ Bulletproofs (2018) is one of the most cited and deployed ZK constructions. Adop
 | Scheme | Year | Basis | Proof size (k-bit range) | Note |
 |--------|------|-------|--------------------------|------|
 | **Square-decomposition (Boudot)** | 2000 | DLP + commitments | O(k) group elements | Early practical scheme [[1]](https://link.springer.com/chapter/10.1007/3-540-45539-6_31) |
+| **Borromean Ring Range Proof** | 2015 | Ring signatures | O(k) group elements | Per-bit ring signature; used in original Monero CT [[1]](https://github.com/Blockstream/borromean_paper/blob/master/borromean_draft_0.01_34241bb.pdf) |
 | **Bulletproofs range proof** | 2018 | IPA + Pedersen | O(log k) group elements | Transparent; most deployed; used in Monero, Grin, MimbleWimble [[1]](https://eprint.iacr.org/2017/1066) |
 | **Bulletproofs+** | 2021 | IPA variant | O(log k) — ~15% smaller | Reduces prover group elements [[1]](https://eprint.iacr.org/2020/735) |
 | **Bulletproofs++** | 2024 | Reciprocal set-membership | O(log k) — 3× fewer multiplications | Drop-in BP replacement; faster prover; CRYPTO 2024 [[1]](https://eprint.iacr.org/2022/510) |

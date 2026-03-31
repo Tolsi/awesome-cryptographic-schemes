@@ -1,5 +1,75 @@
 # Signatures — Advanced & Specialized
 
+
+<!-- TOC -->
+## Contents (64 schemes)
+
+- [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss)
+- [Blind Signatures](#blind-signatures)
+- [Ring & Group Signatures](#ring-group-signatures)
+- [Adaptor Signatures / Scriptless Scripts](#adaptor-signatures-scriptless-scripts)
+- [One-Time Signatures (OTS)](#one-time-signatures-ots)
+- [Attribute-Based Signatures (ABS)](#attribute-based-signatures-abs)
+- [Sanitizable Signatures](#sanitizable-signatures)
+- [Homomorphic Signatures](#homomorphic-signatures)
+- [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps)
+- [Rerandomizable Signatures (PS Signatures)](#rerandomizable-signatures-ps-signatures)
+- [Forward-Secure Signatures & Encryption](#forward-secure-signatures-encryption)
+- [Sequential Aggregate Signatures](#sequential-aggregate-signatures)
+- [Accountable Multi-Signatures / Subgroup Signatures](#accountable-multi-signatures-subgroup-signatures)
+- [Partially Blind Signatures](#partially-blind-signatures)
+- [Aggregate Signatures (BLS Aggregate)](#aggregate-signatures-bls-aggregate)
+- [Linkable Ring Signatures](#linkable-ring-signatures)
+- [Threshold Blind Signatures](#threshold-blind-signatures)
+- [Constrained / Policy-Based Signatures](#constrained-policy-based-signatures)
+- [Designated Verifier Signatures / Proofs](#designated-verifier-signatures-proofs)
+- [Undeniable Signatures](#undeniable-signatures)
+- [Fail-Stop Signatures](#fail-stop-signatures)
+- [Proxy Signatures](#proxy-signatures)
+- [Traceable Signatures](#traceable-signatures)
+- [Ring VRF](#ring-vrf)
+- [Threshold Ring Signatures](#threshold-ring-signatures)
+- [Broadcast Authentication (TESLA)](#broadcast-authentication-tesla)
+- [Identity-Based Signatures (IBS)](#identity-based-signatures-ibs)
+- [MuSig / MuSig2 (Schnorr Multi-Signatures)](#musig-musig2-schnorr-multi-signatures)
+- [Boneh-Boyen (BB) Short Signatures](#boneh-boyen-bb-short-signatures)
+- [Stateful Hash-Based Signatures (XMSS & LMS)](#stateful-hash-based-signatures-xmss-lms)
+- [NIST PQC Signature Standards (ML-DSA & SLH-DSA)](#nist-pqc-signature-standards-ml-dsa-slh-dsa)
+- [DKLs23 & Next-Generation Threshold ECDSA](#dkls23-next-generation-threshold-ecdsa)
+- [Schnorr Signatures (Original Scheme)](#schnorr-signatures-original-scheme)
+- [EdDSA (Ed25519 & Ed448)](#eddsa-ed25519-ed448)
+- [ECDSA — Details, Vulnerabilities, and RFC 6979](#ecdsa-details-vulnerabilities-and-rfc-6979)
+- [RSA-PSS vs. PKCS#1 v1.5 Signatures](#rsa-pss-vs-pkcs1-v15-signatures)
+- [Falcon / FN-DSA (NTRU-Based Lattice Signatures)](#falcon-fn-dsa-ntru-based-lattice-signatures)
+- [SPHINCS & SPHINCS+ (Stateless Hash-Based Signatures)](#sphincs-sphincs-stateless-hash-based-signatures)
+- [Picnic (Signatures from ZK Proofs of Symmetric Primitives)](#picnic-signatures-from-zk-proofs-of-symmetric-primitives)
+- [Rainbow & Multivariate Quadratic Signatures](#rainbow-multivariate-quadratic-signatures)
+- [Hedged Signatures](#hedged-signatures)
+- [BLISS & qTESLA (Early Lattice Signature Schemes)](#bliss-qtesla-early-lattice-signature-schemes)
+- [Fiat-Shamir with Aborts (Lattice Signature Paradigm)](#fiat-shamir-with-aborts-lattice-signature-paradigm)
+- [Multi-Designated Verifier Signatures (MDVS)](#multi-designated-verifier-signatures-mdvs)
+- [Unforgeability Notions: EUF-CMA, SUF-CMA, and Beyond](#unforgeability-notions-euf-cma-suf-cma-and-beyond)
+- [Batch Verification of Signatures](#batch-verification-of-signatures)
+- [Post-Quantum Signature Comparison: ML-DSA vs. SLH-DSA vs. FN-DSA](#post-quantum-signature-comparison-ml-dsa-vs-slh-dsa-vs-fn-dsa)
+- [Verifiable Random Functions (ECVRF, RFC 9381)](#verifiable-random-functions-ecvrf-rfc-9381)
+- [Schnorr Half-Aggregation (Signature Aggregation Beyond BLS)](#schnorr-half-aggregation-signature-aggregation-beyond-bls)
+- [Code-Based Signatures (Wave, LESS, and Related)](#code-based-signatures-wave-less-and-related)
+- [SQIsign (Isogeny-Based Signatures)](#sqisign-isogeny-based-signatures)
+- [STARK-Based Signatures](#stark-based-signatures)
+- [FROST Threshold Schnorr Signatures](#frost-threshold-schnorr-signatures)
+- [CGGMP Threshold ECDSA](#cggmp-threshold-ecdsa)
+- [MuSig2 (Multi-Signatures for Bitcoin)](#musig2-multi-signatures-for-bitcoin)
+- [BBS+ Signatures (Privacy-Preserving Selective Disclosure)](#bbs-signatures-privacy-preserving-selective-disclosure)
+- [Mercurial Signatures](#mercurial-signatures)
+- [Structure-Preserving Signatures on Equivalence Classes (SPS-EQ)](#structure-preserving-signatures-on-equivalence-classes-sps-eq)
+- [ROAST (Robust Asynchronous Threshold Signatures)](#roast-robust-asynchronous-threshold-signatures)
+- [Hash-Based Signatures: XMSS, LMS, and SPHINCS+](#hash-based-signatures-xmss-lms-and-sphincs)
+- [SPS-EQ (Structure-Preserving Signatures on Equivalence Classes)](#sps-eq-structure-preserving-signatures-on-equivalence-classes)
+- [Pointcheval-Sanders (PS) Signatures](#pointcheval-sanders-ps-signatures)
+- [Updatable Signatures](#updatable-signatures)
+- [Policy-Based Signatures (PBS)](#policy-based-signatures-pbs)
+<!-- /TOC -->
+
 ## Threshold Signature Schemes (TSS)
 
 **Goal:** *t-of-n* parties collectively sign without ever reconstructing the private key. Provides distributed trust and non-repudiation.
@@ -16,13 +86,19 @@
 **State of the art:** FROST (Schnorr threshold), CGGMP (ECDSA threshold), ROAST (robust async).
 
 **Production readiness:** Production
+Deployed in MPC wallets (ZenGo, Binance) and Bitcoin Taproot multisig; actively used for digital asset custody.
+
 **Implementations:**
 - [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, Binance threshold ECDSA/EdDSA
 - [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, GG18/GG20/CGGMP
 - [frost](https://github.com/ZcashFoundation/frost) ⭐ 250 — Rust, FROST for multiple curves
 - [bitcoin/secp256k1](https://github.com/BlockstreamResearch/secp256k1-zkp) ⭐ 419 — C, MuSig2 module
+
 **Security status:** Secure
+No known practical attacks; UC-secure models (CGGMP) with formal proofs under standard assumptions.
+
 **Community acceptance:** Widely trusted
+Strong peer review; FROST has an IETF RFC (9591); MuSig2 standardized as BIP 327.
 
 ---
 
@@ -40,11 +116,17 @@
 **State of the art:** RSA Blind Sig (Privacy Pass), BBS+ (anonymous credentials & selective disclosure).
 
 **Production readiness:** Production
+RSA Blind Signatures deployed in Privacy Pass (RFC 9474); BBS+ used in W3C Verifiable Credentials.
+
 **Implementations:**
 - [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — Rust/TypeScript, BBS+ selective disclosure
 - [privacypass](https://github.com/raphaelrobert/privacypass) ⭐ 62 — Go, RSA blind signature (Privacy Pass)
+
 **Security status:** Secure
+No known practical attacks; RSA blind sig has IETF RFC; BBS+ under active IETF standardization.
+
 **Community acceptance:** Standard
+RSA Blind Signature standardized as RFC 9474; BBS+ progressing through IETF CFRG.
 
 ---
 
@@ -63,10 +145,16 @@
 **State of the art:** CLSAG (privacy coins), dynamic group sigs (enterprise with member management), Raptor (PQ ring sig).
 
 **Production readiness:** Production
+CLSAG deployed in Monero mainnet; group signatures used in enterprise identity systems.
+
 **Implementations:**
 - [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, CLSAG implementation
+
 **Security status:** Secure
+No known practical attacks on CLSAG at current parameters; formal security proofs in the random oracle model.
+
 **Community acceptance:** Widely trusted
+CLSAG peer-reviewed and battle-tested in Monero; group signatures well-studied in academic literature for two decades.
 
 ---
 
@@ -83,11 +171,17 @@
 **State of the art:** Schnorr adaptor sigs (Bitcoin Taproot), ECDSA adaptors (cross-chain swaps).
 
 **Production readiness:** Experimental
+Used in atomic swap prototypes and Lightning channel research; not yet widely deployed in production.
+
 **Implementations:**
 - [LLFourn/secp256kfun](https://github.com/LLFourn/secp256kfun) ⭐ 111 — Rust, adaptor signatures for secp256k1
 - [BlockstreamResearch/scriptless-scripts](https://github.com/BlockstreamResearch/scriptless-scripts) ⭐ 169 — documentation and reference
+
 **Security status:** Secure
+No known attacks; security reduces to the underlying Schnorr/ECDSA assumptions.
+
 **Community acceptance:** Emerging
+Active research in the Bitcoin developer community; scriptless scripts enabling Taproot-based cross-chain swaps.
 
 ---
 
@@ -105,12 +199,18 @@
 **State of the art:** WOTS+ (used in XMSS, LMS, SPHINCS+), FORS (SPHINCS+ inner layer).
 
 **Production readiness:** Production
+WOTS+ deployed inside XMSS (RFC 8391), LMS (RFC 8554), and SPHINCS+ (FIPS 205) as leaf-level signing primitives.
+
 **Implementations:**
 - [XMSS reference](https://github.com/XMSS/xmss-reference) ⭐ 58 — C, reference WOTS+ implementation
 - [hash-sigs](https://github.com/cisco/hash-sigs) ⭐ 50 — C, LMS/HSS with LM-OTS
 - [sphincsplus](https://github.com/sphincs/sphincsplus) ⭐ 218 — C, reference SPHINCS+ with WOTS+ and FORS
+
 **Security status:** Secure
+Security depends solely on hash function properties; no known attacks at recommended parameters.
+
 **Community acceptance:** Standard
+NIST SP 800-208 recommends XMSS and LMS (which use WOTS+/LM-OTS); FORS standardized inside FIPS 205.
 
 ---
 
@@ -127,10 +227,16 @@
 **State of the art:** Pairing-based ABS (practical), Lattice ABS (PQ setting).
 
 **Production readiness:** Research
+Academic prototypes only; no production deployment of attribute-based signatures.
+
 **Implementations:**
 - [FAME-ABE](https://github.com/sagrawal87/ABE) ⭐ 206 — Python, pairing-based ABE (related ABS primitives)
+
 **Security status:** Secure
+No known attacks on pairing-based or lattice-based ABS constructions at recommended parameters.
+
 **Community acceptance:** Niche
+Well-studied in the attribute-based cryptography community; limited adoption outside academic research.
 
 ---
 
@@ -147,11 +253,17 @@
 **State of the art:** Accountable sanitizable sigs (GDPR: right to modify medical records while preserving audit trail).
 
 **Production readiness:** Research
+Academic prototypes; proposed for GDPR-compliant medical record redaction but no production deployment.
+
 **Implementations:**
 - [battery-sse/san-sig](https://github.com/battery-sse) — Java, reference sanitizable signature implementations
 - No widely-adopted production library exists
+
 **Security status:** Secure
+Formal security models (immutability, accountability, transparency) with proofs; no known attacks.
+
 **Community acceptance:** Niche
+Studied in the redactable/malleable signature community; limited to specialized document management use cases.
 
 ---
 
@@ -161,17 +273,25 @@
 
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
-| **Linearly Homomorphic Sig (Boneh-Freeman)** | 2011 | Pairings | Sign vectors; derive sig on any linear combination [[1]](https://eprint.iacr.org/2009/025) |
+| **Linearly Homomorphic Sig (Boneh-Freeman)** | 2011 | Pairings / SIS | Sign vectors; derive sig on any linear combination [[1]](https://eprint.iacr.org/2009/025) |
+| **Homomorphic Sig for Polynomials (Catalano-Fiore)** | 2013 | Pairings | Evaluate multivariate polynomials on signed data; extended to degree-d polynomials [[1]](https://eprint.iacr.org/2012/527) |
 | **Fully Homomorphic Sig (Gennaro-Wichs)** | 2013 | FHE + SNARK | Sign data; derive sig on ANY computable function [[1]](https://eprint.iacr.org/2012/023) |
-| **Homomorphic Sig for Polynomials (Catalano-Fiore)** | 2013 | Pairings | Evaluate multivariate polynomials on signed data [[1]](https://eprint.iacr.org/2013/433) |
+| **Gorbunov-Vaikuntanathan-Wichs Leveled HS** | 2015 | Polynomial-size circuits | Fully homomorphic sig from lattices; circuit privacy; standard LWE [[1]](https://eprint.iacr.org/2014/463) |
+| **Context-Hiding HS (Fleischhacker et al.)** | 2016 | Linear / circuits | Hides intermediate computation path; output σ_f reveals nothing about σᵢ [[1]](https://eprint.iacr.org/2016/457) |
 
-**State of the art:** Linear homomorphic sigs (practical, used in network coding), fully homomorphic sigs (theoretical).
+**State of the art:** Lattice-based leveled homomorphic signatures (Gorbunov et al. 2015) support arbitrary circuits and achieve context-hiding. Applications include verifiable outsourced ML (model training on signed data), authenticated stream processing, and [Verifiable FHE](07-homomorphic-functional-encryption.md#verifiable-fhe). See also [Sanitizable Signatures](#sanitizable-signatures) for a related but weaker primitive.
 
 **Production readiness:** Research
+Fully homomorphic signatures remain theoretical; linear homomorphic sigs have academic prototypes only.
+
 **Implementations:**
-- No production-quality library; fully homomorphic sigs remain theoretical
+- No widely used production implementations; reference code in academic paper repositories
+
 **Security status:** Secure
+Lattice-based constructions (Gorbunov et al. 2015) proven secure under standard LWE; pairing-based variants under DLIN.
+
 **Community acceptance:** Niche
+Published at top venues (CRYPTO, EUROCRYPT); important for verifiable computation but limited practical adoption.
 
 ---
 
@@ -189,11 +309,17 @@
 **State of the art:** EQS (Hanser-Slamanig 2014) for anonymous credentials; SPS are the "right" primitive for composable pairing-based crypto. See [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials).
 
 **Production readiness:** Research
+Academic constructions; used as building blocks in provable-security anonymous credential designs.
+
 **Implementations:**
 - [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library used to implement SPS schemes
 - [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit suitable for SPS implementations
+
 **Security status:** Secure
+No known attacks; security proved under standard pairing assumptions in Type III groups.
+
 **Community acceptance:** Niche
+Foundation of composable pairing-based cryptography; primarily used in academic anonymous credential constructions.
 
 ---
 
@@ -211,10 +337,16 @@
 **State of the art:** BBS+ (W3C VC standard, ISO mDL); PS signatures for academic constructions. Foundation of [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials) and [Structure-Preserving Signatures](#structure-preserving-signatures-sps).
 
 **Production readiness:** Mature
+BBS+ used in W3C Verifiable Credentials and ISO mDL; PS signatures deployed in academic credential systems.
+
 **Implementations:**
 - [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — Rust/TypeScript, BBS+ rerandomizable sigs
+
 **Security status:** Secure
+No known practical attacks; BBS+ has well-studied security proofs under pairing assumptions.
+
 **Community acceptance:** Widely trusted
+BBS+ adopted by W3C for Verifiable Credentials; CL signatures underpin Hyperledger AnonCreds.
 
 ---
 
@@ -232,11 +364,17 @@
 **State of the art:** TLS 1.3 ephemeral DH (practical FS), Signal ratchet (continuous FS), puncturable encryption (0-RTT FS).
 
 **Production readiness:** Production
+TLS 1.3 ephemeral DH provides forward secrecy in all major browsers and servers; Signal ratchet deployed at scale.
+
 **Implementations:**
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, TLS 1.3 ephemeral DH forward secrecy
 - [rustls](https://github.com/rustls/rustls) ⭐ 7.3k — Rust, TLS 1.3 with forward secrecy
+
 **Security status:** Secure
+No known attacks on key-evolving forward-secure constructions; TLS 1.3 FS extensively analyzed.
+
 **Community acceptance:** Standard
+IETF RFC 8446 (TLS 1.3) mandates forward secrecy; NIST and NSA guidance require FS in new deployments.
 
 ---
 
@@ -253,10 +391,16 @@
 **State of the art:** BGLS (general aggregation), LMRS (sequential/routing), HSA (bandwidth-optimized).
 
 **Production readiness:** Mature
+Well-studied schemes with formal proofs; proposed for BGP route attestation but limited production deployment.
+
 **Implementations:**
 No notable open-source implementations available.
+
 **Security status:** Secure
+No known attacks on BGLS or LMRS at recommended parameters; security proved under standard pairing assumptions.
+
 **Community acceptance:** Niche
+Used in academic proposals for BGP security (BGPSEC) and certificate chain compression; limited real-world adoption.
 
 ---
 
@@ -273,11 +417,17 @@ No notable open-source implementations available.
 **State of the art:** BLS + bitmap (Ethereum consensus), ASM (PoS slashing).
 
 **Production readiness:** Production
+Deployed in Ethereum consensus (100k+ validators using BLS + bitmap aggregation per epoch).
+
 **Implementations:**
 - [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) ⭐ 3.9k — Python, BLS + bitmap aggregation
 - [blst](https://github.com/supranational/blst) ⭐ 554 — C/Rust, BLS12-381 aggregate sigs for Ethereum
+
 **Security status:** Secure
+No known practical attacks; proof-of-possession prevents rogue-key attacks; formal security proofs.
+
 **Community acceptance:** Widely trusted
+Core component of Ethereum proof-of-stake consensus; adopted by major blockchain infrastructure.
 
 ---
 
@@ -295,10 +445,16 @@ No notable open-source implementations available.
 **State of the art:** Pairing-based PBS for efficiency; lattice PBS for PQ. Extends [Blind Signatures](#blind-signatures) with issuer-visible metadata. Used in e-cash systems and [Privacy Pass](11-anonymity-credentials.md#privacy-pass-anonymous-tokens).
 
 **Production readiness:** Experimental
+Academic reference implementations only; proposed for e-cash with visible denominations but not widely deployed.
+
 **Implementations:**
 - Academic reference implementations only for pairing and lattice PBS
+
 **Security status:** Secure
+No known attacks on pairing-based or lattice PBS constructions; extends blind signature security models.
+
 **Community acceptance:** Niche
+Studied in the blind signature and e-cash communities; lattice PBS provides a post-quantum path.
 
 ---
 
@@ -316,11 +472,17 @@ No notable open-source implementations available.
 **State of the art:** BLS aggregation on BLS12-381 (Ethereum consensus); differs from [Sequential Aggregate Signatures](#sequential-aggregate-signatures) in that aggregation is non-interactive and order-independent.
 
 **Production readiness:** Production
+BLS aggregation deployed in Ethereum consensus layer, aggregating 100k+ validator attestations per epoch.
+
 **Implementations:**
 - [blst](https://github.com/supranational/blst) ⭐ 554 — C/Rust/Go, BLS12-381 aggregation (Ethereum)
 - [herumi/bls](https://github.com/herumi/bls) ⭐ 319 — C++/Go, BLS signature library
+
 **Security status:** Secure
+No known practical attacks with proof-of-possession; rogue-key attacks prevented by PoP or key aggregation coefficients.
+
 **Community acceptance:** Standard
+EIP-2537 standardizes BLS precompile for Ethereum; BLS12-381 adopted across major blockchain platforms.
 
 ---
 
@@ -338,10 +500,16 @@ No notable open-source implementations available.
 **State of the art:** Triptych / Seraphis for next-gen Monero; RingCT currently deployed. Extends [Ring & Group Signatures](#ring-group-signatures) with linkability.
 
 **Production readiness:** Production
+RingCT/CLSAG deployed in Monero mainnet with key images for double-spend detection.
+
 **Implementations:**
 - [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, RingCT / CLSAG
+
 **Security status:** Secure
+No known practical attacks; linkability and unforgeability formally proved under DLP assumptions.
+
 **Community acceptance:** Widely trusted
+Foundation of Monero's privacy model; Triptych and Seraphis are actively researched next-generation replacements.
 
 ---
 
@@ -358,10 +526,16 @@ No notable open-source implementations available.
 **State of the art:** Lattice-based (PQ, 2025); BLS-based for production use. Combines [Blind Signatures](#blind-signatures), [Threshold Signatures](#threshold-signature-schemes-tss), and [Privacy Pass](11-anonymity-credentials.md#privacy-pass-anonymous-tokens).
 
 **Production readiness:** Experimental
+BLS-based threshold blind sigs proposed for anonymous token issuance; lattice variant (2025) is recent.
+
 **Implementations:**
 No notable open-source implementations available.
+
 **Security status:** Secure
+No known attacks; security combines blind signature and threshold signature assumptions.
+
 **Community acceptance:** Emerging
+Growing interest for decentralized anonymous token issuance; lattice-based variant extends to post-quantum settings.
 
 ---
 
@@ -378,11 +552,17 @@ No notable open-source implementations available.
 **State of the art:** Constrained signatures from lattices (Boneh-Kim 2017); related to [Constrained PRFs](01-foundational-primitives.md#puncturable-constrained-prf). Enables fine-grained delegation without proxy re-signing.
 
 **Production readiness:** Research
+Academic prototypes only; no production deployment of constrained or functional signatures.
+
 **Implementations:**
 - No production-quality implementations; academic prototypes accompany papers
 - Related: [constrained-prf](https://github.com/nicolo-ribaudo/ring-signature) — conceptual overlap with constrained PRFs
+
 **Security status:** Secure
+No known attacks; security proved under pairing or lattice assumptions depending on construction.
+
 **Community acceptance:** Niche
+Studied in the delegation and fine-grained access control community; related to constrained PRFs.
 
 ---
 
@@ -400,10 +580,16 @@ No notable open-source implementations available.
 **State of the art:** Strong DVS with efficient pairing-based constructions; used in privacy-preserving authentication where non-transferability is critical.
 
 **Production readiness:** Mature
+Well-studied constructions with efficient pairing-based instantiations; used in privacy-preserving authentication.
+
 **Implementations:**
 - Pairing-based DVS available in [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit
+
 **Security status:** Secure
+No known attacks; strong DVS achieves non-transferability even against the designated verifier.
+
 **Community acceptance:** Niche
+Used in privacy-preserving authentication protocols where non-transferability of proofs is required.
 
 ---
 
@@ -421,11 +607,17 @@ No notable open-source implementations available.
 **State of the art:** Largely superseded by designated-verifier signatures and chameleon signatures for most applications, but foundational to the concept of controlled verification.
 
 **Production readiness:** Deprecated
+Largely replaced by designated-verifier signatures and chameleon signatures for controlled verification.
+
 **Implementations:**
 - Historical implementations in early PGP-adjacent libraries
 - No actively maintained production library
+
 **Security status:** Superseded
+Technically secure but replaced by DVS and other non-transferable signature schemes with better properties.
+
 **Community acceptance:** Niche
+Historically important as the first controlled-verification scheme; now primarily of theoretical interest.
 
 ---
 
@@ -442,10 +634,16 @@ No notable open-source implementations available.
 **State of the art:** PQ fail-stop signatures (CRYPTO 2024); revived interest for post-quantum contexts. Extends [Digital Signatures](#updatable-signatures).
 
 **Production readiness:** Research
+Academic prototypes; PQ fail-stop sigs (CRYPTO 2024) revived interest but no production implementations.
+
 **Implementations:**
 - No production-quality library
+
 **Security status:** Secure
+No known attacks; signers have information-theoretic forgery detection guarantees.
+
 **Community acceptance:** Niche
+Renewed interest for post-quantum contexts (CRYPTO 2024); otherwise limited to theoretical cryptography.
 
 ---
 
@@ -462,10 +660,16 @@ No notable open-source implementations available.
 **State of the art:** proxy re-signatures (certificate translation), delegation by warrant (enterprise workflows).
 
 **Production readiness:** Mature
+Well-studied constructions; proxy re-signatures used in certificate translation and enterprise delegation workflows.
+
 **Implementations:**
 - Pairing-based constructions implementable via [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++
+
 **Security status:** Secure
+No known attacks on pairing-based proxy signature constructions at recommended parameters.
+
 **Community acceptance:** Niche
+Used in enterprise delegation and certificate translation; related to proxy re-encryption schemes.
 
 ---
 
@@ -482,11 +686,17 @@ No notable open-source implementations available.
 **State of the art:** Lattice-based traceable sigs for PQ; extends [Ring & Group Signatures](#ring-group-signatures) and [Linkable Ring Signatures](#linkable-ring-signatures) with full traceability.
 
 **Production readiness:** Research
+Academic prototypes; lattice-based traceable sigs (2019) extend to post-quantum but remain undeployed.
+
 **Implementations:**
 - Academic prototypes accompany published papers
 - Implementable via [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit
+
 **Security status:** Secure
+No known attacks; CCA-anonymity and traceability formally proved under pairing assumptions.
+
 **Community acceptance:** Niche
+Extends group signatures with accountability; relevant to PoS consensus and anonymous-but-auditable systems.
 
 ---
 
@@ -502,10 +712,16 @@ No notable open-source implementations available.
 **State of the art:** Ring VRF (2023); enables anonymous rate-limiting, anonymous login, and credential systems. Combines [VRF](#verifiable-random-functions-ecvrf-rfc-9381) and [Ring Signatures](#ring-group-signatures).
 
 **Production readiness:** Experimental
+First Ring VRF construction published in 2023; no production deployment yet.
+
 **Implementations:**
 No notable open-source implementations available.
+
 **Security status:** Secure
+No known attacks; security combines ring signature anonymity with VRF pseudorandomness guarantees.
+
 **Community acceptance:** Emerging
+Active research for anonymous rate-limiting, anonymous login, and decentralized identity applications.
 
 ---
 
@@ -522,11 +738,17 @@ No notable open-source implementations available.
 **State of the art:** Lattice-based TRS for PQ. Combines [Ring & Group Signatures](#ring-group-signatures) and [Threshold Signatures](#threshold-signature-schemes-tss).
 
 **Production readiness:** Research
+Academic prototypes only; lattice-based TRS provides a post-quantum path but remains undeployed.
+
 **Implementations:**
 - Academic reference implementations only
 - Lattice TRS implementable via [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, PQ crypto toolkit
+
 **Security status:** Secure
+No known attacks; security proved under DLP (classical) or SIS (lattice) assumptions.
+
 **Community acceptance:** Niche
+Combines ring signature anonymity with threshold trust; limited to specialized privacy-preserving applications.
 
 ---
 
@@ -543,10 +765,16 @@ No notable open-source implementations available.
 **State of the art:** TESLA for multicast authentication; μTESLA for IoT/sensor networks. Alternative to [Digital Signatures](#updatable-signatures) when computation is constrained.
 
 **Production readiness:** Mature
+TESLA deployed in IoT/sensor networks (Contiki-NG); muTESLA used in resource-constrained broadcast authentication.
+
 **Implementations:**
 - [contiki-ng](https://github.com/contiki-ng/contiki-ng) ⭐ 1.5k — C, includes TESLA for IoT broadcast auth
+
 **Security status:** Secure
+No known attacks; security depends on hash chain integrity and time synchronization assumptions.
+
 **Community acceptance:** Niche
+Standard for multicast/broadcast authentication in sensor networks; alternative to public-key sigs when computation is constrained.
 
 ---
 
@@ -564,12 +792,18 @@ No notable open-source implementations available.
 **State of the art:** Pairing-based IBS (standard model); lattice IBS for PQ. Complement to [IBE](#identity-based-signatures-ibs); same PKG architecture.
 
 **Production readiness:** Mature
+Well-studied constructions with production-quality pairing libraries; used in identity-based PKI deployments.
+
 **Implementations:**
 - [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing-based IBS implementations
 - [charm-crypto](https://github.com/JHUISI/charm) ⭐ 633 — Python, pairing-based IBS and IBE
 - [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, efficient pairings for IBS
+
 **Security status:** Secure
+No known attacks; Paterson-Schuldt achieves standard-model security without random oracles.
+
 **Community acceptance:** Niche
+Complement to IBE; adopted in enterprise identity systems where certificate-free PKI is desired.
 
 ---
 
@@ -589,11 +823,17 @@ MuSig2 is the n-of-n variant of [Threshold Signature Schemes](#threshold-signatu
 **State of the art:** MuSig2 (BIP 327, Bitcoin Taproot); MuSig-L for post-quantum multi-signatures. See [Threshold Signature Schemes](#threshold-signature-schemes-tss) for t-of-n variants.
 
 **Production readiness:** Production
+MuSig2 standardized as BIP 327 and deployed in Bitcoin Taproot wallets (BitGo, Blockstream Green).
+
 **Implementations:**
 - [secp256k1-zkp](https://github.com/BlockstreamResearch/secp256k1-zkp) ⭐ 419 — C, MuSig2 module
 - [frost](https://github.com/ZcashFoundation/frost) ⭐ 250 — Rust, includes MuSig2-compatible signing
+
 **Security status:** Secure
+No known attacks; provably secure under the AOMDL assumption with concurrent-session security.
+
 **Community acceptance:** Standard
+BIP 327 standardized for Bitcoin; MuSig-L extends to post-quantum via lattice-based key aggregation.
 
 ---
 
@@ -613,12 +853,18 @@ BB signatures fill the gap between BLS (random-oracle model, single group elemen
 **State of the art:** BB signatures (standard-model short sigs), Waters signatures (CDH-based, used in IBE/ABS constructions), BBS04 → BBS+ (W3C anonymous credentials). Cross-links: [Structure-Preserving Signatures](#structure-preserving-signatures-sps), [Rerandomizable Signatures](#rerandomizable-signatures-ps-signatures), [BLS Aggregate](#aggregate-signatures-bls-aggregate).
 
 **Production readiness:** Mature
+BB descendants (BBS04/BBS+) deployed in W3C Verifiable Credentials; Waters sigs used in IBE/ABS constructions.
+
 **Implementations:**
 - [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library for BB and Waters signatures
 - [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit with BB support
 - [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — Rust, BBS04/BBS+ (BB descendant)
+
 **Security status:** Secure
+No known attacks; BB secure under q-SDH in the standard model; Waters under plain CDH.
+
 **Community acceptance:** Widely trusted
+Foundational to BBS+ anonymous credentials (W3C); Waters signatures are the template for IBE/ABE constructions.
 
 ---
 
@@ -639,13 +885,19 @@ Stateful schemes require careful state management: reusing a leaf index is catas
 **State of the art:** LMS/HSS preferred for HSM firmware signing (CNSA 2.0 mandated for national-security code signing by 2030); XMSS for applications where signature size is critical. Contrast with [ML-DSA & SLH-DSA](#nist-pqc-signature-standards-ml-dsa-slh-dsa) (stateless, general-purpose PQ standards).
 
 **Production readiness:** Production
+NIST SP 800-208 approved; LMS/HSS mandated by CNSA 2.0 for national-security code signing by 2030.
+
 **Implementations:**
 - [XMSS reference](https://github.com/XMSS/xmss-reference) ⭐ 58 — C, NIST-recommended reference
 - [hash-sigs](https://github.com/cisco/hash-sigs) ⭐ 50 — C, LMS/HSS reference implementation
 - [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, includes XMSS and LMS
 - [BouncyCastle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, XMSS and LMS support
+
 **Security status:** Secure
+Security depends only on hash function properties; no known attacks; leaf reuse is catastrophic but a state management issue, not a cryptanalytic one.
+
 **Community acceptance:** Standard
+IETF RFCs 8391 (XMSS) and 8554 (LMS); NIST SP 800-208 recommended for stateful hash-based signing.
 
 ---
 
@@ -665,12 +917,18 @@ ML-DSA is based on the hardness of Module Learning With Errors (MLWE) and Module
 **State of the art:** FIPS 204 (ML-DSA) and FIPS 205 (SLH-DSA) finalized August 2024; NIST migration deadline for federal systems is 2030. Cross-links: [One-Time Signatures (OTS)](#one-time-signatures-ots) (WOTS+/FORS building blocks), [Stateful Hash-Based Signatures](#stateful-hash-based-signatures-xmss-lms) (XMSS/LMS), [PQC in the quantum-cryptography category](15-quantum-cryptography.md#post-quantum-cryptography).
 
 **Production readiness:** Production
+FIPS 204 (ML-DSA) and FIPS 205 (SLH-DSA) finalized August 2024; federal migration deadline is 2030.
+
 **Implementations:**
 - [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-DSA and SLH-DSA
 - [PQClean](https://github.com/PQClean/PQClean) ⭐ 893 — C, clean reference implementations
 - [BouncyCastle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, ML-DSA and SLH-DSA
+
 **Security status:** Secure
+No known practical attacks; ML-DSA based on MLWE/MSIS; SLH-DSA relies only on hash function properties.
+
 **Community acceptance:** Standard
+NIST FIPS 204 and 205 standardized; CNSA 2.0 mandates ML-DSA as primary PQ signature algorithm.
 
 ---
 
@@ -691,11 +949,17 @@ The core challenge of threshold ECDSA is that the signing equation requires a pr
 **State of the art:** CGGMP21 (production MPC wallets, e.g. Fireblocks, ZenGo); DKLs23 (leading academic construction; adoption growing, e.g. Vultisig). Extends [Threshold Signature Schemes](#threshold-signature-schemes-tss). For Schnorr threshold signing see [FROST](#threshold-signature-schemes-tss).
 
 **Production readiness:** Production
+CGGMP deployed in Fireblocks, ZenGo, and Binance MPC wallets; DKLs23 gaining adoption (Vultisig).
+
 **Implementations:**
 - [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, GG18/GG20/CGGMP
 - [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, Binance threshold ECDSA
+
 **Security status:** Secure
+UC-secure under standard assumptions; DKLs23 replaces Paillier MtA with OT for improved efficiency and security.
+
 **Community acceptance:** Widely trusted
+Industry standard for institutional MPC wallets; CGGMP has extensive peer review and production track record.
 
 ---
 
@@ -715,11 +979,17 @@ Schnorr signatures are strictly simpler than ECDSA: signing requires one scalar 
 **State of the art:** BIP 340 Schnorr (Bitcoin Taproot); EdDSA (TLS 1.3, SSH, Signal). Foundation of [MuSig2](#musig-musig2-schnorr-multi-signatures), [FROST](#threshold-signature-schemes-tss), [Adaptor Signatures](#adaptor-signatures-scriptless-scripts), and [Ring VRF](#ring-vrf).
 
 **Production readiness:** Production
+BIP 340 Schnorr deployed in Bitcoin Taproot; EdDSA (Schnorr variant) in TLS 1.3, SSH, Signal, WireGuard.
+
 **Implementations:**
 - [libsecp256k1](https://github.com/bitcoin-core/secp256k1) ⭐ 2.4k — C, BIP 340 Schnorr for Bitcoin
 - [ed25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, EdDSA (Schnorr variant)
+
 **Security status:** Secure
+Provably secure under the DLP assumption in the random oracle model; simplest signature with a formal proof.
+
 **Community acceptance:** Standard
+ISO/IEC 14888-3 standardized; BIP 340 for Bitcoin; EdDSA (RFC 8032) adopted across modern protocols.
 
 ---
 
@@ -740,12 +1010,18 @@ EdDSA improves on ECDSA in three concrete ways: (1) the nonce k is deterministic
 **State of the art:** Ed25519 (de-facto standard for modern protocols); FROST-Ed25519 (RFC 9591, threshold). See [Schnorr Signatures](#schnorr-signatures-original-scheme) for the underlying primitive and [FROST](#threshold-signature-schemes-tss) for threshold context.
 
 **Production readiness:** Production
+Ed25519 deployed in TLS 1.3, SSH, Signal, WireGuard, OpenPGP, and age; FIPS 186-5 approved for federal use.
+
 **Implementations:**
 - [ed25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, Ed25519
 - [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, Ed25519
 - [golang/crypto](https://github.com/golang/crypto) ⭐ 3.3k — Go, Ed25519
+
 **Security status:** Secure
+Deterministic nonces eliminate nonce-reuse vulnerabilities; complete curve arithmetic prevents implementation bugs.
+
 **Community acceptance:** Standard
+IETF RFC 8032; NIST FIPS 186-5; FROST-Ed25519 standardized as RFC 9591 for threshold signing.
 
 ---
 
@@ -767,12 +1043,18 @@ ECDSA's malleability and nonce sensitivity stand in contrast to [Schnorr](#schno
 **State of the art:** RFC 6979 deterministic ECDSA widely deployed (libsecp256k1, BoringSSL); ECDSA being superseded by Ed25519 in new protocols. For threshold ECDSA see [DKLs23](#dkls23-next-generation-threshold-ecdsa).
 
 **Production readiness:** Production
+Dominant deployed signature scheme in Bitcoin, TLS certificates, and code signing; RFC 6979 widely adopted.
+
 **Implementations:**
 - [libsecp256k1](https://github.com/bitcoin-core/secp256k1) ⭐ 2.4k — C, ECDSA with RFC 6979
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, ECDSA for TLS
 - [BouncyCastle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, ECDSA with RFC 6979
+
 **Security status:** Caution
+Highly sensitive to nonce quality; biased or reused nonces leak the private key (Sony PS3 2010, Minerva 2020).
+
 **Community acceptance:** Standard
+FIPS 186-5 approved; being gradually superseded by Ed25519 in new protocol designs due to nonce sensitivity.
 
 ---
 
@@ -793,10 +1075,16 @@ RSA-PSS signing appends a random salt (typically 32–64 bytes) before applying 
 **State of the art:** RSA-PSS mandated by TLS 1.3, FIPS 186-5, and X.509 code-signing CAs. PKCS#1 v1.5 retained for legacy TLS 1.2 server certificates. Both superseded by ECDSA/Ed25519 in new protocol designs.
 
 **Production readiness:** Production
+RSA-PSS mandated by TLS 1.3 and FIPS 186-5; PKCS#1 v1.5 retained for legacy TLS 1.2 compatibility.
+
 **Implementations:**
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RSA-PSS and PKCS#1 v1.5
+
 **Security status:** Caution
+RSA-PSS has tight ROM security proof; PKCS#1 v1.5 lacks tight proof and has historical padding-oracle vulnerabilities (Bleichenbacher 1998).
+
 **Community acceptance:** Standard
+FIPS 186-5 and TLS 1.3 mandate RSA-PSS for new key usage; both superseded by ECDSA/Ed25519 in new designs.
 
 ---
 
@@ -816,13 +1104,19 @@ Falcon's signing algorithm samples a short lattice vector close to a target poin
 **State of the art:** FIPS 206 (FN-DSA) finalized August 2024; implementations in liboqs, PQClean, and BouncyCastle. Preferred over ML-DSA where signature size dominates (e.g., embedded TLS). See [NIST PQC Signature Standards](#nist-pqc-signature-standards-ml-dsa-slh-dsa) for the broader NIST PQC context.
 
 **Production readiness:** Mature
+FIPS 206 finalized August 2024; implementations in liboqs, PQClean, and BouncyCastle; constant-time implementation is challenging.
+
 **Implementations:**
 - [falcon-sign.info reference](https://falcon-sign.info/) — C, official Falcon reference implementation
 - [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, Falcon/FN-DSA
 - [PQClean](https://github.com/PQClean/PQClean) ⭐ 893 — C, clean Falcon implementation
 - [BouncyCastle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, Falcon support
+
 **Security status:** Secure
+No known attacks at recommended parameters; NTRU-hardness assumption well-studied; main risk is implementation side-channels in the Gaussian sampler.
+
 **Community acceptance:** Standard
+NIST FIPS 206 standardized; preferred over ML-DSA where compact signature size is critical (IoT, embedded TLS).
 
 ---
 
@@ -842,13 +1136,19 @@ SPHINCS achieves statelessness by using a two-level hypertree: the top levels ar
 **State of the art:** SLH-DSA (FIPS 205, August 2024) is the production standard; SPHINCS+ reference code forms the basis of most library implementations (liboqs, PQClean). Preferred as a conservative backup to ML-DSA when algebraic assumptions are a concern. See [Stateful Hash-Based Signatures](#stateful-hash-based-signatures-xmss-lms) for the stateful XMSS/LMS family and [NIST PQC Signature Standards](#nist-pqc-signature-standards-ml-dsa-slh-dsa) for comparison.
 
 **Production readiness:** Production
+SLH-DSA (FIPS 205) finalized August 2024; conservative hash-only PQ backup to ML-DSA.
+
 **Implementations:**
 - [sphincsplus](https://github.com/sphincs/sphincsplus) ⭐ 218 — C, official SPHINCS+ reference
 - [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, SLH-DSA / SPHINCS+
 - [PQClean](https://github.com/PQClean/PQClean) ⭐ 893 — C, clean SPHINCS+ implementation
 - [BouncyCastle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, SPHINCS+ / SLH-DSA
+
 **Security status:** Secure
+Security reduces entirely to hash function properties (preimage, collision resistance); no algebraic assumptions.
+
 **Community acceptance:** Standard
+NIST FIPS 205 standardized; recommended as conservative PQ backup when lattice assumptions are a concern.
 
 ---
 
@@ -869,12 +1169,18 @@ The Picnic construction applies the Fiat-Shamir transform to a sigma protocol. T
 **State of the art:** Picnic3 (NIST Round 3 alternate, not standardized); Banquet for improved concrete security. Primarily of theoretical and benchmarking interest; signature sizes remain large compared to ML-DSA/Falcon. Foundation of the broader [MPCitH paradigm](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems).
 
 **Production readiness:** Experimental
+NIST PQC Round 3 alternate candidate (not selected for standardization); reference implementations available.
+
 **Implementations:**
 - [microsoft/Picnic](https://github.com/microsoft/Picnic) ⭐ 168 — C, official Picnic reference implementation
 - [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, Picnic integration
 - [PQClean](https://github.com/PQClean/PQClean) ⭐ 893 — C, Picnic clean implementation
+
 **Security status:** Secure
+Security reduces to symmetric primitive properties (collision resistance, pseudorandomness); no algebraic assumptions.
+
 **Community acceptance:** Niche
+Not selected for NIST standardization; primarily of theoretical interest as the canonical MPCitH signature instantiation.
 
 ---
 
@@ -897,10 +1203,16 @@ Multivariate signatures work by publishing a map P: GF(q)^n → GF(q)^m composed
 **State of the art:** Rainbow broken (2022); GeMSS not selected. MAYO and UOV are current NIST additional signatures on-ramp candidates (as of 2024). MQ signatures offer the shortest signatures of any PQ family but have historically suffered from structural attacks.
 
 **Production readiness:** Deprecated
+Rainbow broken in 2022 by Beullens' rectangular MinRank attack; MAYO and SNOVA are next-generation replacements.
+
 **Implementations:**
 - [MAYO](https://github.com/PQCMayo/MAYO-C) ⭐ 26 — C, MAYO reference implementation (NIST on-ramp)
+
 **Security status:** Broken
+Beullens (2022) broke all NIST Round 3 Rainbow parameters classically in ~53 bits of work; scheme is obsolete.
+
 **Community acceptance:** Controversial
+Rainbow's break highlighted risks of structured multivariate schemes; MAYO/UOV/SNOVA continue as NIST on-ramp candidates.
 
 ---
 
@@ -920,11 +1232,17 @@ The core tension is between two threat models: (a) RNG failure — the per-sign 
 **State of the art:** Hedged signing recommended by IRTF CFRG for all new Schnorr/ECDSA deployments; already default in several TLS stacks and hardware security modules. Extends [ECDSA — Details, Vulnerabilities, and RFC 6979](#ecdsa-details-vulnerabilities-and-rfc-6979) and [EdDSA](#eddsa-ed25519-ed448).
 
 **Production readiness:** Production
+Hedged Ed25519 default in libsodium; recommended by IRTF CFRG for all new Schnorr/ECDSA deployments.
+
 **Implementations:**
 - [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, hedged Ed25519 in recent versions
 - [draft-irtf-cfrg-det-sigs-with-noise](https://datatracker.ietf.org/doc/draft-irtf-cfrg-det-sigs-with-noise/) — IETF draft specification
+
 **Security status:** Secure
+Defeats both RNG-failure and fault/DPA attacks simultaneously; degrades gracefully if either defense is compromised.
+
 **Community acceptance:** Emerging
+IRTF CFRG draft formalizing hedged signing as the preferred approach; adopted in TLS stacks and HSMs.
 
 ---
 
@@ -945,10 +1263,16 @@ BLISS introduced the bimodal trick: instead of sampling a standard Gaussian nonc
 **State of the art:** Neither BLISS nor qTESLA was standardized; superseded by ML-DSA (FIPS 204) and Falcon/FN-DSA (FIPS 206). Historically important as the proof-of-concept lattice signature schemes that established the viability of the Fiat-Shamir-with-aborts paradigm. See [NIST PQC Signature Standards](#nist-pqc-signature-standards-ml-dsa-slh-dsa) and [Falcon / FN-DSA](#falcon-fn-dsa-ntru-based-lattice-signatures).
 
 **Production readiness:** Deprecated
+Neither BLISS nor qTESLA standardized; superseded by ML-DSA (FIPS 204) and Falcon/FN-DSA (FIPS 206).
+
 **Implementations:**
 - Superseded by [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-DSA/Falcon
+
 **Security status:** Superseded
+BLISS vulnerable to timing/cache side-channels in Gaussian sampler; qTESLA withdrawn due to insufficient security margins.
+
 **Community acceptance:** Niche
+Historically important as proof-of-concept lattice signatures; established the Fiat-Shamir-with-aborts paradigm used by ML-DSA.
 
 ---
 
@@ -969,12 +1293,18 @@ The Fiat-Shamir with Aborts paradigm proceeds as follows: the signer samples a m
 **State of the art:** Dilithium/ML-DSA (FIPS 204) is the primary standardized instantiation; Raccoon and Mitaka represent next-generation FSA designs prioritizing side-channel resistance. Foundational to [BLISS & qTESLA](#bliss-qtesla-early-lattice-signature-schemes), [ML-DSA & SLH-DSA](#nist-pqc-signature-standards-ml-dsa-slh-dsa), and [Falcon / FN-DSA](#falcon-fn-dsa-ntru-based-lattice-signatures).
 
 **Production readiness:** Production
+Core paradigm behind ML-DSA (FIPS 204); Dilithium uses uniform rejection sampling for constant-time implementation.
+
 **Implementations:**
 - [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-DSA (Dilithium) uses FSA
 - [PQClean](https://github.com/PQClean/PQClean) ⭐ 893 — C, clean Dilithium implementation
 - [pqm4](https://github.com/mupq/pqm4) ⭐ 413 — C, embedded ARM implementations of Dilithium/Falcon
+
 **Security status:** Secure
+Security proved under SIS assumption; abort mechanism ensures output distribution is independent of the secret key.
+
 **Community acceptance:** Standard
+Foundational technique behind NIST FIPS 204 (ML-DSA); Raccoon and Mitaka extend FSA for side-channel masking.
 
 ---
 
@@ -995,11 +1325,17 @@ MDVS is motivated by scenarios where a message must be privately authenticated t
 **State of the art:** Pairing-based MDVS (Laguillaumie-Vergnaud style) in standard model; lattice MDVS for PQ settings. Extends [Designated Verifier Signatures / Proofs](#designated-verifier-signatures-proofs) to the multi-verifier case.
 
 **Production readiness:** Research
+Academic prototypes only; proposed for committee authentication and board-level private signing.
+
 **Implementations:**
 - Academic reference implementations accompany published papers
 - Pairing-based MDVS implementable via [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++
+
 **Security status:** Secure
+No known attacks; simulatability ensures non-transferability; lattice MDVS provides post-quantum option.
+
 **Community acceptance:** Niche
+Extends DVS to multi-verifier settings; relevant for board/committee authentication with non-transferability.
 
 ---
 
@@ -1021,12 +1357,18 @@ The gap between EUF-CMA and SUF-CMA is practically significant: ECDSA is EUF-CMA
 **State of the art:** EUF-CMA is the baseline standard; SUF-CMA required for composable and blockchain applications. Tight reductions (e.g., Waters signatures, RSA-PSS) justify smaller parameters. Cross-links: [ECDSA — Details, Vulnerabilities, and RFC 6979](#ecdsa-details-vulnerabilities-and-rfc-6979), [Boneh-Boyen (BB) Short Signatures](#boneh-boyen-bb-short-signatures), [RSA-PSS vs. PKCS#1 v1.5 Signatures](#rsa-pss-vs-pkcs1-v15-signatures).
 
 **Production readiness:** Production
+EUF-CMA and SUF-CMA are the baseline security notions verified in all deployed signature libraries.
+
 **Implementations:**
 - Definitions implemented/tested in all major signature libraries:
 - [libsecp256k1](https://github.com/bitcoin-core/secp256k1) ⭐ 2.4k — C, SUF-CMA for BIP 340 Schnorr
 - [ed25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, SUF-CMA EdDSA
+
 **Security status:** Secure
+Formal definitions are sound; SUF-CMA prevents ECDSA-style malleability attacks critical for blockchain composability.
+
 **Community acceptance:** Standard
+EUF-CMA is the universal baseline; SUF-CMA required by Bitcoin (BIP 62/146) and composable protocol designs.
 
 ---
 
@@ -1048,13 +1390,19 @@ Batch verification works by exploiting the linearity of most signature verificat
 **State of the art:** Schnorr batch verification (BIP 340, Bitcoin); BLS batch verification (Ethereum consensus); EdDSA batch (libsodium, BoringSSL). Foundational optimization for any high-throughput signature-using system. See [Aggregate Signatures (BLS Aggregate)](#aggregate-signatures-bls-aggregate) for a related (but distinct) concept.
 
 **Production readiness:** Production
+Schnorr batch verification deployed in Bitcoin full nodes (BIP 340); BLS batch in Ethereum consensus.
+
 **Implementations:**
 - [libsecp256k1](https://github.com/bitcoin-core/secp256k1) ⭐ 2.4k — C, Schnorr batch verification (BIP 340)
 - [blst](https://github.com/supranational/blst) ⭐ 554 — C/Rust, BLS batch verification
 - [ed25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, EdDSA batch verification
 - [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, Ed25519 batch verify
+
 **Security status:** Secure
+Random-coefficient combination prevents forgery hiding; negligible (2^-128) false acceptance probability.
+
 **Community acceptance:** Widely trusted
+Standard optimization in Bitcoin, Ethereum, and TLS stacks; foundational for high-throughput signature systems.
 
 ---
 
@@ -1081,13 +1429,19 @@ ML-DSA is NIST's primary recommendation for general-purpose post-quantum signing
 **State of the art:** All three finalized August 2024. Migration deadline for US federal systems is 2030. NIST recommends ML-DSA as default; SLH-DSA when algebraic assumptions are unacceptable; FN-DSA when bandwidth is severely constrained. Cross-links: [NIST PQC Signature Standards (ML-DSA & SLH-DSA)](#nist-pqc-signature-standards-ml-dsa-slh-dsa), [Falcon / FN-DSA](#falcon-fn-dsa-ntru-based-lattice-signatures), [SPHINCS & SPHINCS+](#sphincs-sphincs-stateless-hash-based-signatures), [Stateful Hash-Based Signatures (XMSS & LMS)](#stateful-hash-based-signatures-xmss-lms), [Fiat-Shamir with Aborts](#fiat-shamir-with-aborts-lattice-signature-paradigm).
 
 **Production readiness:** Production
+All three FIPS standards finalized August 2024; library implementations available; federal migration deadline 2030.
+
 **Implementations:**
 - [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, all three NIST PQ sig standards
 - [PQClean](https://github.com/PQClean/PQClean) ⭐ 893 — C, clean reference implementations
 - [BouncyCastle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, ML-DSA, SLH-DSA, Falcon
 - [oqs-provider](https://github.com/open-quantum-safe/oqs-provider) ⭐ 460 — C, OpenSSL 3 provider for PQ sigs
+
 **Security status:** Secure
+No known practical attacks on any of the three standards at recommended parameters; diverse assumption families.
+
 **Community acceptance:** Standard
+NIST FIPS 204/205/206; CNSA 2.0 mandates ML-DSA as primary, permits SLH-DSA and FN-DSA as alternatives.
 
 ---
 
@@ -1108,10 +1462,16 @@ The ECVRF construction works by hashing the input α to an elliptic curve point 
 **State of the art:** RFC 9381 ECVRF (2023, deployed in Algorand, Cardano, Chainlink VRF); lattice VRF for PQ settings. Cross-links: [Ring VRF](#ring-vrf), [VRF in commitments](09-commitments-verifiability.md#verifiable-random-functions-vrf), [Secret Leader Election](13-blockchain-distributed-ledger.md#secret-leader-election).
 
 **Production readiness:** Production
+RFC 9381 ECVRF deployed in Algorand, Cardano (Ouroboros), and Chainlink VRF for verifiable on-chain randomness.
+
 **Implementations:**
 No notable open-source implementations available.
+
 **Security status:** Secure
+No known attacks; pseudorandomness proved under ECDLP assumption; uniqueness is unconditional.
+
 **Community acceptance:** Standard
+IETF RFC 9381 (2023) standardizes ECVRF; widely adopted in blockchain leader election and verifiable lottery systems.
 
 ---
 
@@ -1132,11 +1492,17 @@ Half-aggregation exploits the linear structure of Schnorr verification: given si
 **State of the art:** Half-aggregation (HALFAGG, 2021) theoretically sound; incremental variant (2023) enables practical deployment. Bitcoin CISA remains a proposal. Contrasts with [BLS Aggregate Signatures](#aggregate-signatures-bls-aggregate) (requires pairings, non-interactive, full aggregation) and [MuSig2](#musig-musig2-schnorr-multi-signatures) (interactive, n-of-n only).
 
 **Production readiness:** Experimental
+Theoretically sound (2021); Bitcoin CISA remains a soft-fork proposal; no production library yet.
+
 **Implementations:**
 - [BlockstreamResearch/cross-input-aggregation](https://github.com/BlockstreamResearch/scriptless-scripts) ⭐ 169 — research docs
 - No production-quality library yet; active BIP proposal for Bitcoin
+
 **Security status:** Secure
+No known attacks; security reduces to DLP on Schnorr-compatible curves; random binding coefficients prevent forgery.
+
 **Community acceptance:** Emerging
+Active BIP proposal for Bitcoin cross-input signature aggregation (CISA); incremental variant (2023) enables streaming.
 
 ---
 
@@ -1158,10 +1524,16 @@ Code-based cryptography is one of the oldest post-quantum families (McEliece 197
 **State of the art:** CROSS and MEDS are NIST additional signatures Round 2 candidates (as of 2024). Wave remains the strongest provably secure code-based hash-and-sign scheme but with impractical key sizes. Code-based signatures complement lattice-based schemes by relying on a completely different hardness assumption. See [Rainbow & Multivariate Quadratic Signatures](#rainbow-multivariate-quadratic-signatures) for the analogous MQ-based family and [Picnic (Signatures from ZK Proofs of Symmetric Primitives)](#picnic-signatures-from-zk-proofs-of-symmetric-primitives) for the MPCitH paradigm.
 
 **Production readiness:** Experimental
+CROSS and MEDS are NIST additional signatures Round 2 candidates (2024); Wave has impractical key sizes (~3 MB).
+
 **Implementations:**
 No notable open-source implementations available.
+
 **Security status:** Secure
+Based on well-studied Syndrome Decoding and Code Equivalence problems; no known practical attacks on current candidates.
+
 **Community acceptance:** Emerging
+CROSS and MEDS advancing through NIST on-ramp; code-based sigs provide assumption diversity from lattice schemes.
 
 ---
 
@@ -1183,10 +1555,16 @@ SQIsign achieves the smallest key and signature sizes of any known post-quantum 
 **State of the art:** SQIsignHD (2023) achieves ~1 s signing on server hardware — approaching practical range for use cases tolerating slow signing (e.g., certificate issuance). Submitted to NIST additional signatures on-ramp (2023); security and performance actively improving. Cross-links: [Isogeny-based cryptography](15-quantum-cryptography.md#isogeny-based-cryptography), [Post-Quantum Signature Comparison](#post-quantum-signature-comparison-ml-dsa-vs-slh-dsa-vs-fn-dsa).
 
 **Production readiness:** Research
+SQIsignHD approaches ~1s signing on modern CPUs; submitted to NIST on-ramp but no production deployment.
+
 **Implementations:**
 No notable open-source implementations available.
+
 **Security status:** Caution
+SIDH (related scheme) broken in 2022; SQIsign rests on a different problem (Deuring correspondence) which survived, but active cryptanalysis continues.
+
 **Community acceptance:** Emerging
+Smallest known PQ key+signature sizes (64B+177B); submitted to NIST additional signatures call; security under active analysis.
 
 ---
 
@@ -1208,11 +1586,17 @@ STARK-based signatures instantiate the general paradigm: to sign a message m, th
 **State of the art:** FAEST (NIST on-ramp Round 2, ~5 KB sigs); Whir (2024, ~5–10 KB sigs, fast prover). STARK signatures remain larger than ML-DSA/FN-DSA but offer transparent setup and pure hash-based security assumptions. Cross-links: [Picnic (Signatures from ZK Proofs of Symmetric Primitives)](#picnic-signatures-from-zk-proofs-of-symmetric-primitives), [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems), [MPCitH / VOLEitH Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems).
 
 **Production readiness:** Experimental
+FAEST (NIST on-ramp Round 2) achieves ~5 KB sigs; STARK provers deployed but not yet as standalone signature schemes.
+
 **Implementations:**
 - [plonky2](https://github.com/0xPolygonZero/plonky2) ⭐ 856 — Rust, STARK prover (can be used as signature)
 - [winterfell](https://github.com/facebook/winterfell) ⭐ 888 — Rust, STARK prover framework
+
 **Security status:** Secure
+Security reduces to collision-resistant hashing; transparent setup with no trusted parameters; post-quantum by construction.
+
 **Community acceptance:** Emerging
+FAEST advancing through NIST on-ramp; STARK signatures offer transparent PQ security but larger proof sizes than lattice schemes.
 
 ---
 
@@ -1233,12 +1617,18 @@ FROST achieves round-optimality for threshold Schnorr: Round 1 (preprocessing) g
 **State of the art:** RFC 9591 (2024) standardizes FROST for Ed25519/Ristretto255. Used in Zcash (NU5 multisig), Bitcoin custody solutions, and federated signing services. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss), [ROAST (Robust Async FROST)](#roast-robust-asynchronous-threshold-signatures).
 
 **Production readiness:** Production
+RFC 9591 (2024) standardizes FROST-Ed25519; deployed in Zcash multisig and Bitcoin custody solutions.
+
 **Implementations:**
 - [frost](https://github.com/ZcashFoundation/frost) ⭐ 250 — Rust, production FROST for Ed25519/Ristretto255/secp256k1/P-256
 - [frost-ed25519 (RFC 9591)](https://www.rfc-editor.org/rfc/rfc9591) — IETF standard specification
 - [secp256k1-zkp](https://github.com/BlockstreamResearch/secp256k1-zkp) ⭐ 419 — C, FROST-compatible modules
+
 **Security status:** Secure
+Provably secure under the OMDL assumption; 2-round protocol with formal UC-security analysis.
+
 **Community acceptance:** Standard
+IETF RFC 9591 standardized; Zcash Foundation maintains production-quality multi-curve implementation.
 
 ---
 
@@ -1259,11 +1649,17 @@ CGGMP improves over GG18/GG20 by achieving UC-security (composability) and stron
 **State of the art:** CGGMP (2021) is the dominant threshold ECDSA protocol for production MPC wallets. Implementations: multi-party-ecdsa (ZenGo), tss-lib (Binance), Nash. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss).
 
 **Production readiness:** Production
+Deployed in Fireblocks, Coinbase, ZenGo, and other institutional MPC wallet providers for ECDSA threshold signing.
+
 **Implementations:**
 - [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, CGGMP implementation
 - [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, Binance TSS library with CGGMP
+
 **Security status:** Secure
+UC-secure with strong identifiable abort; Paillier-based MtA with zero-knowledge range proofs for share conversion.
+
 **Community acceptance:** Widely trusted
+Dominant threshold ECDSA protocol for production MPC wallets; extensive peer review and industry adoption.
 
 ---
 
@@ -1284,11 +1680,17 @@ MuSig2 solves the key aggregation problem: given public keys PK₁,...,PKₙ, co
 **State of the art:** BIP 327 deployed in Bitcoin wallets (BitGo, Blockstream Green). Used in Lightning Network channel opens and Taproot-based custody. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss), [Adaptor Signatures / Scriptless Scripts](#adaptor-signatures-scriptless-scripts), [Taproot (Bitcoin Improvement)](13-blockchain-distributed-ledger.md#bitcoin-taproot-bip-340-342).
 
 **Production readiness:** Production
+BIP 327 deployed in Bitcoin Taproot wallets (BitGo, Blockstream Green); used in Lightning Network channel opens.
+
 **Implementations:**
 - [secp256k1-zkp](https://github.com/BlockstreamResearch/secp256k1-zkp) ⭐ 419 — C, BIP 327 MuSig2
 - [musig2 BIP 327](https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki) ⭐ 10k — specification
+
 **Security status:** Secure
+Provably secure under AOMDL with concurrent-session safety; key aggregation prevents rogue-key attacks.
+
 **Community acceptance:** Standard
+BIP 327 standardized for Bitcoin Taproot; enables n-of-n multisig indistinguishable from single-signer on-chain.
 
 ---
 
@@ -1309,12 +1711,18 @@ BBS+ signatures are constructed over Type III pairing groups (G₁, G₂, GT). A
 **State of the art:** IETF draft-irtf-cfrg-bbs-signatures progressing toward RFC; W3C VC Data Integrity BBS Cryptosuite (2023); deployed in Hyperledger AnonCreds, Microsoft Entra Verified ID, and EU Digital Identity Wallet (EUDI) pilots. Cross-links: [Blind Signatures](#blind-signatures), [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials), [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps).
 
 **Production readiness:** Mature
+Deployed in Hyperledger AnonCreds, Microsoft Entra Verified ID, and EU Digital Identity Wallet (EUDI) pilots.
+
 **Implementations:**
 - [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — Rust/TypeScript, BBS+ reference
 - [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) ⭐ 85 — Rust, AnonCreds with BBS+
 - [draft-irtf-cfrg-bbs-signatures](https://datatracker.ietf.org/doc/draft-irtf-cfrg-bbs-signatures/) — IETF draft
+
 **Security status:** Secure
+No known practical attacks; security proved under q-SDH assumption on BLS12-381; pairing check ensures unforgeability.
+
 **Community acceptance:** Emerging
+IETF draft-irtf-cfrg-bbs-signatures progressing toward RFC; W3C VC Data Integrity BBS Cryptosuite (2023).
 
 ---
 
@@ -1326,20 +1734,28 @@ BBS+ signatures are constructed over Type III pairing groups (G₁, G₂, GT). A
 |--------|------|-------|------|
 | **Mercurial Signatures (Chase-Kohlweiss-Lysyanskaya-Meiklejohn)** | 2014 | Pairings (Type III) | First formalization; public key and signature are both class-changeable [[1]](https://eprint.iacr.org/2014/944) |
 | **Mercurial Sig from EQS** | 2014 | Pairings | Mercurial sigs shown equivalent to Structure-Preserving Signatures on Equivalence Classes (SPS-EQ) [[1]](https://eprint.iacr.org/2014/944) |
+| **Crites-Lysyanskaya** | 2019 | Pairing-based, key equivalence | Enables true multi-level anonymous delegation chains; NDSS 2019 [[1]](https://eprint.iacr.org/2018/923) |
 | **Crites-Kohlweiss-Preneel-Sedaghat** | 2023 | Pairings | Improved efficiency; tighter security reduction; practical instantiation [[1]](https://eprint.iacr.org/2023/1051) |
+| **Stronger privacy (Lysyanskaya et al.)** | 2024 | Enhanced model | Strengthened privacy definitions; ePrint 2024/1216 [[1]](https://eprint.iacr.org/2024/1216) |
 | **Delegatable Anonymous Credentials from Mercurial Sigs** | 2019 | Pairings + Groth-Sahai | Multi-level delegation: user A delegates to B who delegates to C; each delegation is unlinkable [[1]](https://eprint.iacr.org/2018/1126) |
 
-Mercurial signatures operate on projective equivalence classes: two message vectors M = (M₁,...,Mₙ) and M' = (M'₁,...,M'ₙ) are equivalent if M' = ρ·M for some scalar ρ. The ConvertSig algorithm takes a signature σ on M and produces σ' on M' = ρ·M without the secret key. Similarly, ConvertPK changes the public key. This enables delegatable anonymous credentials: a credential issuer signs a user's attributes; the user re-randomizes the signature and public key before presenting, breaking linkability. The close relationship with SPS-EQ means advances in one directly transfer to the other.
+Mercurial signatures operate on projective equivalence classes: two message vectors M = (M₁,...,Mₙ) and M' = (M'₁,...,M'ₙ) are equivalent if M' = ρ·M for some scalar ρ. The ConvertSig algorithm takes a signature σ on M and produces σ' on M' = ρ·M without the secret key. Similarly, ConvertPK changes the public key. This enables delegatable anonymous credentials: a credential issuer signs a user's attributes; the user re-randomizes the signature and public key before presenting, breaking linkability. The close relationship with SPS-EQ means advances in one directly transfer to the other. Active research: non-interactive threshold variants appeared in 2025.
 
-**State of the art:** Mercurial signatures (2023 improvements) enable practical delegatable anonymous credentials with O(1)-size proofs per delegation level. Cross-links: [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps), [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials), [Rerandomizable Signatures (PS Signatures)](#rerandomizable-signatures-ps-signatures).
+**State of the art:** Mercurial signatures (2024 stronger privacy definitions) enable practical delegatable anonymous credentials with O(1)-size proofs per delegation level. Solves multi-hop anonymous delegation (A->B->C, each hop unlinkable). Cross-links: [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps), [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials), [Rerandomizable Signatures (PS Signatures)](#rerandomizable-signatures-ps-signatures).
 
 **Production readiness:** Research
+Academic prototypes; enables delegatable anonymous credentials but no production deployment.
+
 **Implementations:**
 - Academic reference implementations accompany published papers
 - Implementable via [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library
 - [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit
+
 **Security status:** Secure
+No known attacks; security proved under pairing assumptions; close relationship with SPS-EQ ensures dual advances.
+
 **Community acceptance:** Niche
+Foundation of delegatable anonymous credentials with unlinkable multi-level delegation chains.
 
 ---
 
@@ -1359,11 +1775,17 @@ SPS-EQ defines an equivalence relation on vectors of group elements: M ~ M' iff 
 **State of the art:** FHS (2019) is the practical standard-model EQS; combined with set commitments for W3C-style attribute credentials. Active research on EQS from lattices (post-quantum). Cross-links: [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps), [Mercurial Signatures](#mercurial-signatures), [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials).
 
 **Production readiness:** Research
+Academic constructions; FHS (2019) provides standard-model EQS but no production deployment.
+
 **Implementations:**
 - [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library for SPS-EQ implementations
 - [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit
+
 **Security status:** Secure
+FHS construction proved EUF-CMA secure under co-CDH in Type III pairings; no known attacks.
+
 **Community acceptance:** Niche
+Core primitive for efficient anonymous credentials, blind token issuance, and delegatable credentials in pairing settings.
 
 ---
 
@@ -1382,11 +1804,17 @@ ROAST works by having the coordinator maintain a set of "available" signers and 
 **State of the art:** Deployed in Blockstream Liquid Network for federated block signing (11-of-15). Proposed for Bitcoin multisig custody and federated Lightning nodes. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss), [FROST Threshold Schnorr Signatures](#frost-threshold-schnorr-signatures).
 
 **Production readiness:** Production
+Deployed in Blockstream Liquid Network for federated block signing (11-of-15 threshold).
+
 **Implementations:**
 - [Blockstream Liquid](https://blog.blockstream.com/roast-robust-asynchronous-schnorr-threshold-signatures/) — deployed in Liquid federation
 - [frost](https://github.com/ZcashFoundation/frost) ⭐ 250 — Rust, FROST (ROAST-compatible base)
+
 **Security status:** Secure
+Robustness guaranteed as long as t honest signers are available; no additional cryptographic assumptions beyond FROST.
+
 **Community acceptance:** Emerging
+Deployed in Blockstream Liquid; proposed for Bitcoin multisig custody and federated Lightning nodes.
 
 ---
 
@@ -1409,14 +1837,20 @@ Stateful schemes (XMSS, LMS) use a Merkle tree whose leaves are one-time signatu
 **State of the art:** SLH-DSA / FIPS 205 (2024) is the NIST-standardized stateless hash-based signature. XMSS (RFC 8391) and LMS (RFC 8554) recommended by NIST SP 800-208 for stateful use cases (firmware signing). SPHINCS-alpha (2023) offers improved parameters. Cross-links: [One-Time Signatures (OTS)](#one-time-signatures-ots), [Post-Quantum Signature Comparison](#post-quantum-signature-comparison-ml-dsa-vs-slh-dsa-vs-fn-dsa), [Post-Quantum Cryptography (PQC)](15-quantum-cryptography.md#post-quantum-cryptography).
 
 **Production readiness:** Production
+XMSS/LMS recommended by NIST SP 800-208; SLH-DSA standardized as FIPS 205; all widely implemented.
+
 **Implementations:**
 - [XMSS reference](https://github.com/XMSS/xmss-reference) ⭐ 58 — C, official reference
 - [hash-sigs](https://github.com/cisco/hash-sigs) ⭐ 50 — C, LMS/HSS
 - [sphincsplus](https://github.com/sphincs/sphincsplus) ⭐ 218 — C, SPHINCS+ / SLH-DSA
 - [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, all three families
 - [BouncyCastle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, XMSS, LMS, SPHINCS+
+
 **Security status:** Secure
+Security depends only on hash function properties; no algebraic assumptions; stateful schemes require careful state management to avoid leaf reuse.
+
 **Community acceptance:** Standard
+IETF RFCs 8391/8554; NIST SP 800-208 and FIPS 205; CNSA 2.0 mandates for national-security applications.
 
 ---
 
@@ -1432,31 +1866,17 @@ Stateful schemes (XMSS, LMS) use a Merkle tree whose leaves are one-time signatu
 **State of the art:** The equivalence-class extension over ordinary SPS is the key innovation enabling adaptivity. Foundation for constant-size delegatable anonymous credentials, round-optimal blind signatures, and efficient group signatures.
 
 **Production readiness:** Research
+Academic constructions with concrete DAC implementation (PoPETs 2023); no widespread production use.
+
 **Implementations:**
 - [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library
 - [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit for SPS-EQ
+
 **Security status:** Secure
+No known attacks; EUF-CMA under standard pairing assumptions; public adaptability formally proved.
+
 **Community acceptance:** Niche
-
----
-
-## Mercurial Signatures
-
-**Goal:** Extend equivalence-class signatures to also allow randomization of the signer's public key, enabling multi-hop delegatable anonymous credentials where every delegation hop remains unlinkable.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Crites-Lysyanskaya** | 2019 | Pairing-based, key equivalence | Enables true multi-level anonymous delegation chains; NDSS 2019 [[1]](https://eprint.iacr.org/2018/923) |
-| **Stronger privacy (Lysyanskaya et al.)** | 2024 | Enhanced model | Strengthened privacy definitions; ePrint 2024/1216 [[1]](https://eprint.iacr.org/2024/1216) |
-
-**State of the art:** Solves multi-hop anonymous delegation (A→B→C, each hop unlinkable). Active research: non-interactive threshold variants appeared in 2025.
-
-**Production readiness:** Research
-**Implementations:**
-- Academic reference implementations accompany published papers
-- Implementable via [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library
-**Security status:** Secure
-**Community acceptance:** Niche
+Key innovation enabling constant-size delegatable anonymous credentials and round-optimal blind signatures.
 
 ---
 
@@ -1472,10 +1892,16 @@ Stateful schemes (XMSS, LMS) use a Merkle tree whose leaves are one-time signatu
 **State of the art:** PS signatures underpin anonymous tokens, e-cash, privacy-preserving authentication, and credential systems. Used in the Nym mixnet. Distinct from BLS (different construction goal) and blind signatures (PS is multi-message).
 
 **Production readiness:** Mature
+PS signatures deployed in the Nym mixnet (Coconut credentials); used for anonymous tokens and e-cash.
+
 **Implementations:**
 - [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library for PS implementations
+
 **Security status:** Secure
+No known attacks; security proved under the PS assumption in Type-3 pairings; efficient zero-knowledge proofs of knowledge.
+
 **Community acceptance:** Widely trusted
+Foundation of Coconut decentralized credentials (Nym network); widely referenced in anonymous token literature.
 
 ---
 
@@ -1491,11 +1917,17 @@ Stateful schemes (XMSS, LMS) use a Merkle tree whose leaves are one-time signatu
 **State of the art:** Addresses mandatory key rotation compliance (PCI DSS, HIPAA, SOC 2) without full data re-download. Applicable to cloud storage, firmware signing pipelines, and long-lived certificate chains.
 
 **Production readiness:** Research
+Academic prototypes; lattice-based updatable sigs (2025) extend to post-quantum but no production use.
+
 **Implementations:**
 - Academic reference implementations accompany published papers
 - No production-quality library; lattice-based variant (2025) is a recent development
+
 **Security status:** Secure
+No known attacks; update token is insufficient for forging new signatures; formal security proofs under DDH/CDH.
+
 **Community acceptance:** Niche
+Addresses key rotation compliance (PCI DSS, HIPAA) without full data re-download; limited to cloud storage use cases.
 
 ---
 
@@ -1511,10 +1943,16 @@ Stateful schemes (XMSS, LMS) use a Merkle tree whose leaves are one-time signatu
 **State of the art:** PCS (Policy-Compliant Signatures) extends PBS to two-party compliance: both sender and receiver must satisfy a joint policy. Used in regulated communications and enterprise signing.
 
 **Production readiness:** Research
+Academic prototypes; proposed for regulated enterprise signing (e.g., only legal dept signs NDAs) but no production use.
+
 **Implementations:**
 - Academic prototypes from Bellare-Fuchsbauer (PKC 2014)
 - Lattice-based updatable PBS (PKC 2024) — prototype implementations
+
 **Security status:** Secure
+No known attacks; cryptographic policy enforcement proved under pairing or lattice assumptions.
+
 **Community acceptance:** Niche
+Studied in the policy-enforced signing community; relevant for compliance-driven enterprise signing workflows.
 
 ---

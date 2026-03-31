@@ -1,5 +1,66 @@
 # Theoretical Foundations
 
+
+<!-- TOC -->
+## Contents (55 schemes)
+
+- [Leakage-Resilient Cryptography](#leakage-resilient-cryptography)
+- [Circular / KDM Security](#circular-kdm-security)
+- [Non-Malleable Codes](#non-malleable-codes)
+- [Witness Indistinguishability (WI) / Witness Hiding](#witness-indistinguishability-wi-witness-hiding)
+- [Non-Black-Box Zero-Knowledge / Concurrent ZK](#non-black-box-zero-knowledge-concurrent-zk)
+- [Rational Cryptography](#rational-cryptography)
+- [Human-Computable Cryptography](#human-computable-cryptography)
+- [Cryptographic Reverse Firewalls](#cryptographic-reverse-firewalls)
+- [Lossy Encryption / Lossy Trapdoor Functions](#lossy-encryption-lossy-trapdoor-functions)
+- [Random Oracle Model (ROM) vs. Standard Model](#random-oracle-model-rom-vs-standard-model)
+- [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa-ind-cca-security)
+- [Universal Composability (UC) Framework](#universal-composability-uc-framework)
+- [One-Way Functions and Impagliazzo's Five Worlds](#one-way-functions-and-impagliazzos-five-worlds)
+- [Black-Box Separations](#black-box-separations)
+- [Hardcore Predicates and the Goldreich-Levin Theorem](#hardcore-predicates-and-the-goldreich-levin-theorem)
+- [Pseudoentropy and Computational Entropy](#pseudoentropy-and-computational-entropy)
+- [NIZK: Definitions, Simulation Soundness, and Extractability](#nizk-definitions-simulation-soundness-and-extractability)
+- [Knowledge-of-Exponent Assumption (KEA) and Falsifiability](#knowledge-of-exponent-assumption-kea-and-falsifiability)
+- [Generic Group Model (GGM) and Algebraic Group Model (AGM)](#generic-group-model-ggm-and-algebraic-group-model-agm)
+- [Concrete Security and Reduction Tightness](#concrete-security-and-reduction-tightness)
+- [Perfect Forward Secrecy (PFS)](#perfect-forward-secrecy-pfs)
+- [Leftover Hash Lemma and Randomness Extraction](#leftover-hash-lemma-and-randomness-extraction)
+- [Hybrid Argument Technique](#hybrid-argument-technique)
+- [Random Self-Reducibility](#random-self-reducibility)
+- [Security Amplification](#security-amplification)
+- [Simulation-Based Security (SIM) vs. Indistinguishability-Based Security (IND)](#simulation-based-security-sim-vs-indistinguishability-based-security-ind)
+- [Adaptive vs. Static Corruptions in Multi-Party Protocols](#adaptive-vs-static-corruptions-in-multi-party-protocols)
+- [Indifferentiability Framework](#indifferentiability-framework)
+- [Symbolic Model (Dolev-Yao) vs. Computational Model](#symbolic-model-dolev-yao-vs-computational-model)
+- [Automated Protocol Verification (ProVerif, Tamarin, EasyCrypt)](#automated-protocol-verification-proverif-tamarin-easycrypt)
+- [Knowledge-Soundness, Extractability, and Simulation-Extractability](#knowledge-soundness-extractability-and-simulation-extractability)
+- [Entropy Source Models](#entropy-source-models)
+- [Bit Security and Its Definition](#bit-security-and-its-definition)
+- [Composability Beyond UC: GNUC, SPS, and IITM](#composability-beyond-uc-gnuc-sps-and-iitm)
+- [Abstract Cryptography (Constructive Cryptography)](#abstract-cryptography-constructive-cryptography)
+- [Programmable vs. Non-Programmable Random Oracles](#programmable-vs-non-programmable-random-oracles)
+- [Wegman-Carter-Shoup Authentication and Information-Theoretic MACs](#wegman-carter-shoup-authentication-and-information-theoretic-macs)
+- [Related-Key Security](#related-key-security)
+- [Multi-User and Multi-Instance Security](#multi-user-and-multi-instance-security)
+- [Selective vs. Full Security in IBE and ABE](#selective-vs-full-security-in-ibe-and-abe)
+- [Meta-Reduction Technique](#meta-reduction-technique)
+- [Beyond-Birthday-Bound (BBB) Security](#beyond-birthday-bound-bbb-security)
+- [ORAM Complexity and Lower Bounds](#oram-complexity-and-lower-bounds)
+- [Worst-Case to Average-Case Reductions for Lattices](#worst-case-to-average-case-reductions-for-lattices)
+- [Forking Lemma and Rewinding Techniques](#forking-lemma-and-rewinding-techniques)
+- [Code-Based Game-Playing Proofs](#code-based-game-playing-proofs)
+- [Quantum Random Oracle Model (QROM)](#quantum-random-oracle-model-qrom)
+- [Fine-Grained Cryptography](#fine-grained-cryptography)
+- [One-Way Functions and Kolmogorov Complexity](#one-way-functions-and-kolmogorov-complexity)
+- [Pseudorandom Correlation Generators (PCGs)](#pseudorandom-correlation-generators-pcgs)
+- [Gentry-Wichs Barrier (Non-Falsifiability of SNARGs)](#gentry-wichs-barrier-non-falsifiability-of-snargs)
+- [Communication Complexity of Secure Computation](#communication-complexity-of-secure-computation)
+- [Game-Based vs. Simulation-Based Security Paradigms](#game-based-vs-simulation-based-security-paradigms)
+- [Algebraic Group Model (AGM)](#algebraic-group-model-agm)
+- [Memory-Hard Functions (MHF) — Formal Theory](#memory-hard-functions-mhf-formal-theory)
+<!-- /TOC -->
+
 ## Leakage-Resilient Cryptography
 
 **Goal:** Side-channel resistance in theory. Schemes that remain secure even when an adversary obtains partial information about the secret key (via power analysis, timing, EM emanation, cold boot attacks).
@@ -188,15 +249,18 @@ Intellectually interesting and published at top venues (ITCS); not considered vi
 
 ## Cryptographic Reverse Firewalls
 
-**Goal:** Subversion resistance. A middlebox ("reverse firewall") re-randomizes a party's protocol messages so that even if the party's implementation is subverted (backdoored), no information leaks — without the firewall knowing any secrets.
+**Goal:** Subversion resistance. A middlebox ("reverse firewall") re-randomizes a party's protocol messages so that even if the party's implementation is subverted (backdoored), no information leaks — without the firewall knowing any secrets. The motivating threat is algorithm substitution attacks (ASA): a compromised implementation uses subliminal channels in its random-looking outputs (nonces, ciphertexts) to leak secret keys to a passive eavesdropper. The NSA's Dual_EC_DRBG backdoor is the canonical example.
 
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
 | **Mironov-Stephens-Davidowitz CRF** | 2015 | Rerandomization | Formal model; CRFs for key exchange, signatures, ZK proofs [[1]](https://eprint.iacr.org/2014/758) |
+| **CRF for Key Exchange (Dodis et al.)** | 2016 | Rerandomizable DH | Reverse firewall for Diffie-Hellman: firewall re-randomizes DH messages so that even a kleptographic implementation cannot exfiltrate the secret key [[1]](https://eprint.iacr.org/2016/424) |
+| **CRF for Signatures (Ateniese et al.)** | 2016 | Rerandomizable Schnorr | Reverse firewall re-randomizes Schnorr signature nonces; prevents nonce-covert-channel attacks [[1]](https://eprint.iacr.org/2015/1189) |
 | **CRF for OT (Chakraborty et al.)** | 2020 | UC framework | Reverse firewalls for oblivious transfer protocols [[1]](https://eprint.iacr.org/2020/156) |
+| **CRF for MPC** | 2020 | Rerandomizable garbled circuits | Extends CRFs to general MPC protocols; firewall rerandomizes garbled circuit messages without knowing the circuit inputs [[1]](https://eprint.iacr.org/2020/594) |
 | **CRF for 2PC (Chen-Haeberlen-Hicks-Tzialla)** | 2022 | Garbled circuits | Subversion-resistant two-party computation [[1]](https://eprint.iacr.org/2022/849) |
 
-**State of the art:** Theoretical framework (Mironov-Stephens-Davidowitz 2015); active research area post-Snowden. Practical deployment limited by performance overhead.
+**State of the art:** Theoretical framework (Mironov-Stephens-Davidowitz 2015); practical constructions exist for DH, Schnorr, ElGamal, and OT. Active research area post-Snowden. Closely related to [Kleptography / ASA](18-covert-channels-steganography.md#kleptography-algorithm-substitution-attacks-asa).
 
 **Production readiness:** Research
 Theoretical framework with academic prototypes; no production deployment of a standalone cryptographic reverse firewall exists.
@@ -205,7 +269,7 @@ Theoretical framework with academic prototypes; no production deployment of a st
 - No production-quality open-source implementations; proof-of-concept code accompanies individual papers.
 
 **Security status:** Secure
-Provably secure under rerandomizability assumptions; the framework is sound but depends on the protocol being algebraically rerandomizable.
+Provably eliminates subliminal channels under stated algebraic rerandomizability assumptions; limited to protocols designed with rerandomizability in mind.
 
 **Community acceptance:** Niche
 Well-regarded in the post-Snowden subversion-resistance research community; published at EUROCRYPT/CRYPTO. Limited practical adoption due to performance and protocol compatibility constraints.
@@ -318,6 +382,7 @@ UC is the standard security framework for MPC, MLS, and threshold protocols; all
 **Implementations:**
 - [EasyUC](https://github.com/easyuc/EasyUC) ⭐ 45 — OCaml/EasyCrypt, machine-checked UC proofs
 - [GNUC](https://eprint.iacr.org/2011/471) — formal model (no standalone software; used in paper proofs)
+- UC is a proof framework; every UC-secure MPC library (MP-SPDZ, libsignal, openmls) implicitly relies on it.
 
 **Security status:** Secure
 The UC framework itself is a definitional tool; its soundness is well-established. UC-secure protocols are secure under arbitrary composition by definition.
@@ -1478,31 +1543,6 @@ Well-established in the information-theoretic MPC community; Data-Prabhakaran-Pr
 
 ---
 
-## Universal Composability (UC) Framework
-
-**Goal:** Provide a simulation-based framework guaranteeing that a protocol remains secure even when composed arbitrarily with other protocols running concurrently in a real-world network.
-
-| Concept | Year | Basis | Note |
-|---------|------|-------|------|
-| **UC Framework (Canetti)** | 2001 | Ideal/real simulation | Gold standard for protocol composition; JACM 2020 [[1]](https://dl.acm.org/doi/10.1145/3402457) |
-
-**State of the art:** Virtually all serious MPC, threshold crypto, and blockchain protocol designs invoke UC security. TLS 1.3, ZK proof systems, and NIST PQ standards all rely on UC-style arguments.
-
-**Production readiness:** Production
-UC security is the standard framework for MPC, MLS (IETF RFC 9420), and threshold protocols; all serious protocol designs invoke UC security.
-
-**Implementations:**
-- [EasyUC](https://github.com/easyuc/EasyUC) ⭐ 45 — OCaml/EasyCrypt, machine-checked UC proofs
-- UC is a proof framework; every UC-secure MPC library (MP-SPDZ, libsignal, openmls) implicitly relies on it.
-
-**Security status:** Secure
-The UC framework is mathematically sound; UC-secure protocols are secure under arbitrary concurrent composition by construction.
-
-**Community acceptance:** Standard
-UC is the gold standard for composable protocol security; required by IETF MLS, used in all major MPC frameworks, and referenced in NIST PQC evaluations.
-
----
-
 ## Game-Based vs. Simulation-Based Security Paradigms
 
 **Goal:** Establish two complementary frameworks — game-based (winning a probabilistic challenge) and simulation-based (real/ideal indistinguishability) — for formally proving what cryptographic schemes guarantee.
@@ -1552,32 +1592,6 @@ AGM is an intermediate model between standard model and GGM; its assumptions are
 
 **Community acceptance:** Widely trusted
 AGM (Fuchsbauer-Kiltz-Loss 2018) is rapidly becoming the standard for pairing-based security proofs; widely cited and used in Ethereum and Zcash parameter justification.
-
----
-
-## Quantum Random Oracle Model (QROM)
-
-**Goal:** Extend the Random Oracle Model to adversaries capable of quantum superposition queries, enabling security proofs for hash-based and lattice-based schemes against quantum attackers.
-
-| Concept | Year | Basis | Note |
-|---------|------|-------|------|
-| **QROM (Boneh et al.)** | 2011 | Quantum superposition queries | Required for all NIST PQ standards (Kyber, Dilithium, SPHINCS+) [[1]](https://eprint.iacr.org/2020/129) |
-
-**State of the art:** Explicit requirement in NIST's PQC evaluation criteria. The Fujisaki-Okamoto transform's tightness in QROM directly affects deployed key sizes. A scheme proven secure only in classical ROM may be entirely broken by quantum adversaries.
-
-**Production readiness:** Production
-QROM analysis is mandatory for all NIST PQC standards; the Fujisaki-Okamoto transform's QROM tightness directly affects ML-KEM and ML-DSA parameter sizes.
-
-**Implementations:**
-- QROM is a proof model, not software. Schemes requiring QROM security:
-- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-KEM/ML-DSA with QROM-validated parameters
-- [pq-crystals](https://github.com/pq-crystals) — C, reference implementations with QROM security proofs
-
-**Security status:** Caution
-QROM proofs are essential for post-quantum confidence; classical ROM proofs are insufficient against quantum adversaries. Some QROM tightness gaps remain open.
-
-**Community acceptance:** Standard
-QROM is an explicit NIST PQC evaluation criterion; all standardized PQC schemes have QROM security analyses.
 
 ---
 

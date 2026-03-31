@@ -155,10 +155,19 @@ A validation script can be run with: `python3 scripts/validate_links.py` (if ava
 ## Adding a New Scheme
 
 1. Identify the most appropriate category file (or propose a new one if none fits).
-2. Add a new `##` section following the entry format above.
-3. Add a corresponding row to `INDEX.md` in alphabetical order.
-4. Add a cross-reference from related sections where useful.
-5. If creating a new category file, add it to `README.md`'s Contents list and update `CLAUDE.md`.
+2. **Check for duplicates:** search all category files for the scheme name before adding. Each scheme MUST appear in exactly ONE category file. If a related section exists elsewhere, add a cross-reference instead of duplicating.
+3. Add a new `##` section following the entry format above.
+4. Add a corresponding row to `INDEX.md` in alphabetical order.
+5. Add a cross-reference from related sections where useful.
+6. If creating a new category file, add it to `README.md`'s Contents list and update `CLAUDE.md`.
+
+### No duplicates rule
+
+Every `##` scheme section MUST exist in exactly one category file. **Never duplicate a section across files.** If a scheme is relevant to multiple categories, place it in the most specific one and add a cross-reference from the other:
+
+```markdown
+> **Scheme Name** is covered in [Category — Scheme Name](NN-filename.md#scheme-name-slug).
+```
 
 ## Category Summaries
 

@@ -1,5 +1,67 @@
 # Zero-Knowledge Proof Systems
 
+
+<!-- TOC -->
+## Contents (56 schemes)
+
+- [Zero-Knowledge Proofs (ZK)](#zero-knowledge-proofs-zk)
+- [SNARG (Succinct Non-Interactive Arguments without Zero-Knowledge)](#snarg-succinct-non-interactive-arguments-without-zero-knowledge)
+- [Interactive Oracle Proofs (IOP) / PCP](#interactive-oracle-proofs-iop-pcp)
+- [Sigma Protocols / Schnorr Identification](#sigma-protocols-schnorr-identification)
+- [Groth-Sahai Proofs](#groth-sahai-proofs)
+- [Folding Schemes](#folding-schemes)
+- [Lookup Arguments](#lookup-arguments)
+- [Sumcheck Protocol](#sumcheck-protocol)
+- [General-Purpose zkVMs](#general-purpose-zkvms)
+- [Proof-Carrying Data (PCD)](#proof-carrying-data-pcd)
+- [MPC-in-the-Head (MPCitH)](#mpc-in-the-head-mpcith)
+- [VOLEitH (VOLE-in-the-Head)](#voleith-vole-in-the-head)
+- [Binary-Field Proof Systems](#binary-field-proof-systems)
+- [Distributed / Collaborative SNARKs](#distributed-collaborative-snarks)
+- [zkML (Zero-Knowledge Machine Learning)](#zkml-zero-knowledge-machine-learning)
+- [Compressed Sigma Protocols](#compressed-sigma-protocols)
+- [Zero-Knowledge Sets](#zero-knowledge-sets)
+- [Witness PRF](#witness-prf)
+- [Malleable Proof Systems / Controlled-Malleable NIZK](#malleable-proof-systems-controlled-malleable-nizk)
+- [Multi-Prover Interactive Proofs (MIP)](#multi-prover-interactive-proofs-mip)
+- [zkTLS / MPC-TLS](#zktls-mpc-tls)
+- [Sonic](#sonic)
+- [Ligero and Aurora](#ligero-and-aurora)
+- [HyperPlonk](#hyperplonk)
+- [Orion and Brakedown (Linear-Time SNARKs)](#orion-and-brakedown-linear-time-snarks)
+- [RedShift](#redshift)
+- [Groth16](#groth16)
+- [Halo and Halo2](#halo-and-halo2)
+- [Plonky2](#plonky2)
+- [DEEP-FRI](#deep-fri)
+- [zkEVM Taxonomy and Ecosystem](#zkevm-taxonomy-and-ecosystem)
+- [Ligerito (Small-Field Polynomial Commitments and SNARKs)](#ligerito-small-field-polynomial-commitments-and-snarks)
+- [LogUp-GKR (Logarithmic Derivative Lookups via GKR)](#logup-gkr-logarithmic-derivative-lookups-via-gkr)
+- [Circom and SnarkJS](#circom-and-snarkjs)
+- [ZK Circuit DSLs: Noir, Leo, Cairo](#zk-circuit-dsls-noir-leo-cairo)
+- [CirC (Compiler Infrastructure for ZK and MPC)](#circ-compiler-infrastructure-for-zk-and-mpc)
+- [Spartan (Transparent R1CS SNARK via Sumcheck)](#spartan-transparent-r1cs-snark-via-sumcheck)
+- [Marlin and Lunar (Universal SNARKs for R1CS)](#marlin-and-lunar-universal-snarks-for-r1cs)
+- [Bulletproofs Inner-Product Argument](#bulletproofs-inner-product-argument)
+- [STARK Arithmetization: AIR and FRI](#stark-arithmetization-air-and-fri)
+- [VOLE-Based Zero-Knowledge Proofs](#vole-based-zero-knowledge-proofs)
+- [ZK Proofs for Regulatory Compliance (zkKYC / zkAML)](#zk-proofs-for-regulatory-compliance-zkkyc-zkaml)
+- [ZK Proofs for Identity (Proof of Age / Nationality)](#zk-proofs-for-identity-proof-of-age-nationality)
+- [ZK Proofs for Supply Chain (Proof of Origin / Provenance)](#zk-proofs-for-supply-chain-proof-of-origin-provenance)
+- [IVC vs. PCD vs. Accumulation Schemes (Recursive Composition Taxonomy)](#ivc-vs-pcd-vs-accumulation-schemes-recursive-composition-taxonomy)
+- [Sangria, Arecibo, and Sonobe (Folding Ecosystem)](#sangria-arecibo-and-sonobe-folding-ecosystem)
+- [Gemini (Elastic SNARKs)](#gemini-elastic-snarks)
+- [Boojum (zkSync Era Proof System)](#boojum-zksync-era-proof-system)
+- [LatticeFold (Post-Quantum Folding)](#latticefold-post-quantum-folding)
+- [Expander (GKR-Based Proof System)](#expander-gkr-based-proof-system)
+- [Libra and Virgo (GKR-Based Transparent SNARKs)](#libra-and-virgo-gkr-based-transparent-snarks)
+- [Ceno (Non-Uniform GKR zkVM)](#ceno-non-uniform-gkr-zkvm)
+- [BaseFold (Field-Agnostic Polynomial Commitments)](#basefold-field-agnostic-polynomial-commitments)
+- [Zeromorph (Multilinear KZG Evaluation Proofs)](#zeromorph-multilinear-kzg-evaluation-proofs)
+- [Kimchi (Mina Protocol Proof System)](#kimchi-mina-protocol-proof-system)
+- [SP1 Hypercube (Real-Time zkVM Proving)](#sp1-hypercube-real-time-zkvm-proving)
+<!-- /TOC -->
+
 ## Zero-Knowledge Proofs (ZK)
 
 **Goal:** Prove that a statement is true without revealing any information beyond the truth of the statement. Provides privacy + verifiability.
@@ -445,13 +507,15 @@ Active research area with growing interest from privacy-focused blockchain proje
 | System | Year | Basis | Note |
 |--------|------|-------|------|
 | **EZKL** | 2023 | Halo2 / KZG | Prove ONNX model inference in ZK; production-grade [[1]](https://github.com/zkonduit/ezkl) |
-| **Modulus Labs (Remainder)** | 2023 | Custom arithmetic circuits | ZK inference for transformers; on-chain verification [[1]](https://eprint.iacr.org/2023/1584) |
 | **Daniel Kang et al. (zkCNN)** | 2022 | GKR + sumcheck | Prove CNN inference; interactive → Fiat-Shamir [[1]](https://eprint.iacr.org/2021/673) |
+| **Modulus Labs (Remainder)** | 2023 | GKR protocol | Interactive proof system adapted for deep neural networks; logarithmic verifier time in model size [[1]](https://arxiv.org/abs/2306.02456) |
 | **Giza (ONNX→Cairo)** | 2023 | STARKs | Compile ONNX to Cairo (STARK-provable) [[1]](https://github.com/gizatechxyz/orion) |
+| **zkLLM (Sun-Li-Zhang)** | 2024 | tlookup + zkAttn | ZK proof for full LLM inference (13B params); custom attention proof protocol; CCS 2024 [[1]](https://arxiv.org/abs/2404.16109) |
+| **opML (Optimistic ML)** | 2024 | Fraud proof + ZK fallback | Optimistic verification of ML inference on-chain; ZK proof generated only on dispute; reduces cost by 1000x vs full zkML [[1]](https://arxiv.org/abs/2401.17555) |
 | **zkPyTorch** | 2025 | Expander proof engine | Auto-generate ZK proofs for standard PyTorch inference; no custom circuits [[1]](https://eprint.iacr.org/2025/535) |
 | **SecFormer** | 2024 | SMPC + segmented polynomials | Privacy-preserving transformer inference via SMPC; Goldschmidt's method for nonlinear ops; ACL 2024 [[1]](https://aclanthology.org/2024.findings-acl.790/) |
 
-**State of the art:** EZKL (practical), zkPyTorch (2025, PyTorch-native), SecFormer (2024, SMPC-based), active race between SNARK/STARK/SMPC approaches.
+**State of the art:** EZKL (practical), zkLLM (2024, billion-parameter models), zkPyTorch (2025, PyTorch-native), SecFormer (2024, SMPC-based), active race between SNARK/STARK/SMPC approaches. Optimistic approaches (opML) trade latency for cost. Extends [ZK Proof Systems](#zero-knowledge-proofs-zk) and [Verifiable AI Inference](17-ai-hardware-physical-security.md#zkllm-verifiable-ai-inference).
 
 **Production readiness:** Experimental
 EZKL has production-grade tooling for ONNX model verification. Other systems are research prototypes or early-stage products.
@@ -459,12 +523,13 @@ EZKL has production-grade tooling for ONNX model verification. Other systems are
 **Implementations:**
 - [EZKL](https://github.com/zkonduit/ezkl) ⭐ 1.2k — Rust — prove ONNX model inference in ZK
 - [Giza/Orion](https://github.com/gizatechxyz/orion) ⭐ 174 — Cairo — ONNX to STARK-provable execution
+- [opML](https://github.com/ora-io/opml) ⭐ 316 — Solidity/TypeScript, optimistic ML verification on-chain
 
 **Security status:** Caution
-Underlying proof systems are secure, but fixed-point arithmetic approximations in ML circuits may introduce precision-related soundness gaps. Active area of security analysis.
+Underlying proof systems are secure, but fixed-point arithmetic approximations in ML circuits may introduce precision-related soundness gaps. Circuit compilation from ONNX introduces potential for soundness bugs. Active area of security analysis.
 
 **Community acceptance:** Emerging
-High-profile research area backed by a16z, Modulus Labs, and Polyhedra. No standardization yet. Growing interest from AI safety and verifiable AI communities.
+High-profile research area backed by a16z, Modulus Labs, and Polyhedra. No standardization yet. Growing interest from AI safety, verifiable AI, and blockchain/Web3 communities.
 
 ---
 
@@ -573,56 +638,11 @@ Well-cited in academic cryptography. Primarily used as a building block in theor
 
 ---
 
-## Witness Indistinguishability (WI) / Witness Hiding
-
-**Goal:** Relaxed zero-knowledge. Witness indistinguishability: the verifier cannot distinguish which of multiple valid witnesses the prover used. Witness hiding: the verifier cannot compute any witness after the interaction. Weaker than ZK but sufficient for many applications and compositionally robust.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Feige-Shamir WI/WH** | 1990 | Any NP | Formal definitions; WI ⊂ ZK; WI composes under parallel composition (ZK does not) [[1]](https://doi.org/10.1145/100216.100272) |
-| **WI from Sigma Protocols** | 1994 | DLP | Run two Sigma protocols in parallel; WI without ZK [[1]](https://doi.org/10.1007/BFb0053443) |
-| **Resettable WI (Deng-Goyal-Sahai)** | 2009 | One-way functions | WI secure even if verifier can reset prover to initial state [[1]](https://doi.org/10.1109/FOCS.2009.12) |
-
-**State of the art:** WI is the default security notion for many sub-protocols in [MPC](06-multi-party-computation.md#multi-party-computation-mpc) and credential systems. Composes better than ZK — see [ZK Proofs](#zero-knowledge-proofs-zk), [Sigma Protocols](#sigma-protocols-schnorr-identification).
-
-**Production readiness:** Mature
-WI is a standard security notion used in production protocols (MPC, credential systems) rather than deployed as a standalone primitive.
-
-**Implementations:**
-- [libsnark](https://github.com/scipr-lab/libsnark) ⭐ 1.9k — C++ — SNARK library with WI proof modes
-
-**Security status:** Secure
-WI is a well-defined security property with formal proofs. Composes under parallel composition (unlike ZK), making it robust for concurrent protocols.
-
-**Community acceptance:** Standard
-Foundational security notion in theoretical cryptography since 1990. Universally accepted in the research community as a standard building block.
+> **Witness Indistinguishability (WI) / Witness Hiding** is covered in [Theoretical Foundations — WI / Witness Hiding](19-theoretical-foundations.md#witness-indistinguishability-wi--witness-hiding).
 
 ---
 
-## Non-Black-Box Zero-Knowledge / Concurrent ZK
-
-**Goal:** ZK under concurrent composition. Standard black-box ZK is impossible when many proof sessions run simultaneously (verifier can interleave sessions to cheat). Barak's breakthrough: the simulator reads the verifier's code directly (non-black-box), enabling ZK even under concurrent execution.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Barak Non-Black-Box ZK** | 2001 | Universal arguments | First non-black-box simulator; concurrent ZK for NP in plain model [[1]](https://doi.org/10.1109/SFCS.2001.959902) |
-| **Concurrent ZK (Canetti et al.)** | 2002 | Timing assumptions | Concurrent ZK under timing assumptions (bounded delay) [[1]](https://eprint.iacr.org/2001/055) |
-| **Resettable ZK (Canetti et al.)** | 2000 | Non-black-box | ZK secure even if verifier can rewind/reset prover [[1]](https://doi.org/10.1145/335305.335311) |
-| **Constant-Round Concurrent ZK (Goyal)** | 2013 | Non-black-box + commitments | O(1) rounds concurrent ZK; improved Barak's technique [[1]](https://eprint.iacr.org/2012/563) |
-
-**State of the art:** Constant-round concurrent ZK (Goyal 2013); essential for real-world protocols with parallel sessions. Extends [ZK Proofs](#zero-knowledge-proofs-zk).
-
-**Production readiness:** Research
-Theoretical breakthrough constructions. Practical protocols use simpler timing-based or CRS-based approaches for concurrent composition.
-
-**Implementations:**
-- [No production implementations](https://eprint.iacr.org/2012/563) — Theoretical — constant-round concurrent ZK requires non-black-box techniques
-
-**Security status:** Secure
-Provably secure under standard cryptographic assumptions. Security proofs are rigorous but non-constructive (non-black-box simulation).
-
-**Community acceptance:** Niche
-Major theoretical breakthrough (Barak 2001). Essential for the foundations of ZK theory but rarely implemented directly in practice.
+> **Non-Black-Box Zero-Knowledge / Concurrent ZK** is covered in [Theoretical Foundations — Non-Black-Box ZK / Concurrent ZK](19-theoretical-foundations.md#non-black-box-zero-knowledge--concurrent-zk).
 
 ---
 

@@ -1,5 +1,56 @@
 # Covert Channels & Steganography
 
+
+<!-- TOC -->
+## Contents (45 schemes)
+
+- [Steganography](#steganography)
+- [Information-Theoretic Steganography (Cachin Model)](#information-theoretic-steganography-cachin-model)
+- [Network / Protocol Steganography](#network-protocol-steganography)
+- [Content-Adaptive Image Steganography](#content-adaptive-image-steganography)
+- [Steganalysis](#steganalysis)
+- [Broadcast Steganography](#broadcast-steganography)
+- [Digital Watermarking / Fingerprinting](#digital-watermarking-fingerprinting)
+- [Kleptography / Algorithm-Substitution Attacks (ASA)](#kleptography-algorithm-substitution-attacks-asa)
+- [Deniable Encryption](#deniable-encryption)
+- [Deniable Authentication](#deniable-authentication)
+- [Audio Steganography (Echo Hiding & MP3Stego)](#audio-steganography-echo-hiding-mp3stego)
+- [Text / Linguistic Steganography](#text-linguistic-steganography)
+- [DNA Steganography](#dna-steganography)
+- [Adversarial / GAN Steganography](#adversarial-gan-steganography)
+- [Histogram-Preserving Steganography](#histogram-preserving-steganography)
+- [Video Steganography](#video-steganography)
+- [Steganographic File Systems](#steganographic-file-systems)
+- [Spread-Spectrum Steganography](#spread-spectrum-steganography)
+- [Printer Steganography (Machine Identification Codes)](#printer-steganography-machine-identification-codes)
+- [Robustness, Capacity, and Imperceptibility Trade-offs](#robustness-capacity-and-imperceptibility-trade-offs)
+- [Reversible Data Hiding / Lossless Steganography](#reversible-data-hiding-lossless-steganography)
+- [Coverless Steganography](#coverless-steganography)
+- [Blockchain Steganography](#blockchain-steganography)
+- [Cloud Cache Covert Channels](#cloud-cache-covert-channels)
+- [Social Network Steganography](#social-network-steganography)
+- [Subliminal Channels in Zero-Knowledge Proofs](#subliminal-channels-in-zero-knowledge-proofs)
+- [LLM-Based Linguistic Steganography](#llm-based-linguistic-steganography)
+- [Quantum Steganography](#quantum-steganography)
+- [Optical and Thermal Covert Channels](#optical-and-thermal-covert-channels)
+- [Steganographic Protocols (StegProtocol / HYDAN)](#steganographic-protocols-stegprotocol-hydan)
+- [VoIP Steganography](#voip-steganography)
+- [Electromagnetic Emanation Covert Channels (TEMPEST)](#electromagnetic-emanation-covert-channels-tempest)
+- [Air-Gap Acoustic and Ultrasonic Covert Channels](#air-gap-acoustic-and-ultrasonic-covert-channels)
+- [GPU Covert Channels](#gpu-covert-channels)
+- [Transient Execution Covert Channels](#transient-execution-covert-channels)
+- [Power-Line Covert Channels](#power-line-covert-channels)
+- [Domain Fronting](#domain-fronting)
+- [Font and Glyph Steganography](#font-and-glyph-steganography)
+- [QUIC Protocol Steganography](#quic-protocol-steganography)
+- [Chaffing and Winnowing](#chaffing-and-winnowing)
+- [Format-Transforming Encryption (FTE)](#format-transforming-encryption-fte)
+- [Snowflake (WebRTC-Based Pluggable Transport)](#snowflake-webrtc-based-pluggable-transport)
+- [Neural Linguistic Steganography (LLM-Based)](#neural-linguistic-steganography-llm-based)
+- [Spread-Spectrum Watermarking](#spread-spectrum-watermarking)
+- [Reversible Data Hiding (RDH)](#reversible-data-hiding-rdh)
+<!-- /TOC -->
+
 ## Steganography
 
 **Goal:** Covert communication. Hide the very existence of a secret message within an innocent-looking cover medium (image, audio, text). Even if an adversary inspects the medium, they cannot detect that a hidden message exists.

@@ -1,5 +1,74 @@
 # Privacy-Preserving Computation
 
+
+<!-- TOC -->
+## Contents (63 schemes)
+
+- [Private Set Intersection (PSI)](#private-set-intersection-psi)
+- [Private Set Union (PSU)](#private-set-union-psu)
+- [Private Set Difference / Set Operations](#private-set-difference-set-operations)
+- [Oblivious RAM (ORAM)](#oblivious-ram-oram)
+- [Frequency-Smoothing Oblivious Datastores (PANCAKE / Waffle)](#frequency-smoothing-oblivious-datastores-pancake-waffle)
+- [Private Information Retrieval (PIR)](#private-information-retrieval-pir)
+- [Searchable Encryption (SSE / PEKS)](#searchable-encryption-sse-peks)
+- [Oblivious PRF (OPRF)](#oblivious-prf-oprf)
+- [Oblivious Key-Value Store (OKVS)](#oblivious-key-value-store-okvs)
+- [Oblivious Sorting / Oblivious Data Structures](#oblivious-sorting-oblivious-data-structures)
+- [Private Function Evaluation (PFE)](#private-function-evaluation-pfe)
+- [Oblivious Message Retrieval (OMR)](#oblivious-message-retrieval-omr)
+- [Oblivious DNS (ODoH)](#oblivious-dns-odoh)
+- [Fuzzy Private Set Intersection (FPSI)](#fuzzy-private-set-intersection-fpsi)
+- [Private Proximity Testing](#private-proximity-testing)
+- [Private Heavy Hitters / Frequency Estimation](#private-heavy-hitters-frequency-estimation)
+- [Private Stream Aggregation (PSA)](#private-stream-aggregation-psa)
+- [Privacy-Preserving Record Linkage (PPRL)](#privacy-preserving-record-linkage-pprl)
+- [Differential Privacy](#differential-privacy)
+- [Prio / VDAF (Privacy-Preserving Aggregation)](#prio-vdaf-privacy-preserving-aggregation)
+- [Sealed-Bid Auction Protocols](#sealed-bid-auction-protocols)
+- [Oblivious Polynomial Evaluation (OPE)](#oblivious-polynomial-evaluation-ope)
+- [Fuzzy Message Detection (FMD)](#fuzzy-message-detection-fmd)
+- [Graph Encryption](#graph-encryption)
+- [Oblivious Automata / Branching Program Evaluation](#oblivious-automata-branching-program-evaluation)
+- [Oblivious SQL / Encrypted Database Joins](#oblivious-sql-encrypted-database-joins)
+- [Labeled PSI and Private Intersection-Sum (PSI-Sum)](#labeled-psi-and-private-intersection-sum-psi-sum)
+- [Volume-Hiding Searchable Encryption (Encrypted Multi-Maps)](#volume-hiding-searchable-encryption-encrypted-multi-maps)
+- [Shuffle Model of Differential Privacy](#shuffle-model-of-differential-privacy)
+- [Differentially Private Machine Learning (DP-SGD / PATE)](#differentially-private-machine-learning-dp-sgd-pate)
+- [Advanced Single-Server PIR (OnionPIR / Spiral)](#advanced-single-server-pir-onionpir-spiral)
+- [Conditional Disclosure of Secrets (CDS)](#conditional-disclosure-of-secrets-cds)
+- [Privacy-Preserving Contact Tracing (GAEN / DP-3T)](#privacy-preserving-contact-tracing-gaen-dp-3t)
+- [Laconic OT and Laconic Cryptography](#laconic-ot-and-laconic-cryptography)
+- [Keyword PIR](#keyword-pir)
+- [Unbalanced PSI (Client-Server PSI at Scale)](#unbalanced-psi-client-server-psi-at-scale)
+- [Homomorphic Encryption for ML Inference (CryptoNets)](#homomorphic-encryption-for-ml-inference-cryptonets)
+- [Differentially Private Synthetic Data Generation (DP-GAN / DP-VAE)](#differentially-private-synthetic-data-generation-dp-gan-dp-vae)
+- [Privacy-Preserving Federated Learning](#privacy-preserving-federated-learning)
+- [Secure Multi-Party Machine Learning (CrypTen / MOTION2NX)](#secure-multi-party-machine-learning-crypten-motion2nx)
+- [Private Nearest-Neighbor Search (Private Embedding Retrieval)](#private-nearest-neighbor-search-private-embedding-retrieval)
+- [Private Equality Testing (PET)](#private-equality-testing-pet)
+- [OT-Extension-Based PSI (KKRT16 / RR21)](#ot-extension-based-psi-kkrt16-rr21)
+- [Privacy-Preserving Disease Surveillance (DP Epidemiology)](#privacy-preserving-disease-surveillance-dp-epidemiology)
+- [Continual-Release Differential Privacy (Private Streaming Algorithms)](#continual-release-differential-privacy-private-streaming-algorithms)
+- [Privacy-Preserving Location Services (Geo-Fencing / Trajectory Privacy)](#privacy-preserving-location-services-geo-fencing-trajectory-privacy)
+- [Differential Privacy Auditing and Verification](#differential-privacy-auditing-and-verification)
+- [DPF-Based Private Information Retrieval](#dpf-based-private-information-retrieval)
+- [Forward-and-Backward-Private Dynamic Searchable Encryption](#forward-and-backward-private-dynamic-searchable-encryption)
+- [Optimal Oblivious RAM (OptORAMa / PanORAMa)](#optimal-oblivious-ram-optorama-panorama)
+- [Private Contact Discovery Protocols](#private-contact-discovery-protocols)
+- [Distributed Aggregation Protocol (DAP / Divvi Up)](#distributed-aggregation-protocol-dap-divvi-up)
+- [Privacy-Preserving Biometric Authentication](#privacy-preserving-biometric-authentication)
+- [Leakage-Abuse Attacks and Countermeasures for Encrypted Search](#leakage-abuse-attacks-and-countermeasures-for-encrypted-search)
+- [Private Set Membership Testing (Batch PIR / Private Membership Test)](#private-set-membership-testing-batch-pir-private-membership-test)
+- [Privacy-Preserving Ad Measurement (IPA / ARA)](#privacy-preserving-ad-measurement-ipa-ara)
+- [Oblivious DNS over HTTPS Deployments (Encrypted Metadata Protocols)](#oblivious-dns-over-https-deployments-encrypted-metadata-protocols)
+- [Spiral PIR / SimplePIR / DoublePIR](#spiral-pir-simplepir-doublepir)
+- [Circuit-PSI (PSI with Secret-Shared Output)](#circuit-psi-psi-with-secret-shared-output)
+- [Private Intersection-Sum (PSI-Sum / Private Join and Compute)](#private-intersection-sum-psi-sum-private-join-and-compute)
+- [STAR — Secret Sharing for Private Threshold Aggregation Reporting](#star-secret-sharing-for-private-threshold-aggregation-reporting)
+- [DP-3T / GAEN (Decentralized Privacy-Preserving Proximity Tracing)](#dp-3t-gaen-decentralized-privacy-preserving-proximity-tracing)
+- [Private Information Delivery (PID)](#private-information-delivery-pid)
+<!-- /TOC -->
+
 ## Private Set Intersection (PSI)
 
 **Goal:** Privacy-preserving intersection. Two parties compute the intersection of their private sets, learning only the intersection — nothing about non-matching elements. Used in contact discovery (Signal, Apple), private advertising measurement.
@@ -612,21 +681,24 @@ Important building block but rarely deployed independently; academic focus on ef
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
 | **Beck-Len-Miers-Green FMD** | 2021 | DDH / pairings | First FMD; tunable false-positive rate p via multi-key detection [[1]](https://eprint.iacr.org/2021/089) |
+| **FMD with Clue Keys (Penumbra)** | 2022 | FMD + ECDH clue generation | Deployed in Penumbra (privacy-focused Cosmos chain); each transaction includes a detection clue; reduces sync bandwidth by 10-100x [[1]](https://protocol.penumbra.zone/main/crypto/fmd.html) |
+| **FMD from Oblivious Message Retrieval** | 2023 | PIR + FHE-based | Combines FMD detection with server-side homomorphic evaluation for stronger privacy; server cannot even learn false-positive rate [[1]](https://eprint.iacr.org/2021/1256) |
 | **Multi-Server FMD** | 2025 | Distributed detection | Multiple servers hold detection key shares; threshold detection [[1]](https://eprint.iacr.org/2025/2072) |
 
-**State of the art:** FMD (2021) for privacy-preserving message routing; extends [OMR](#oblivious-message-retrieval-omr) and [PIR](#private-information-retrieval-pir) with tunable privacy/bandwidth tradeoff. Proposed for Zcash.
+**State of the art:** FMD (2021) solves a fundamental problem for encrypted blockchain wallets and messaging: efficient scanning without full download. Deployed in Penumbra’s Cosmos chain (2023). The PIR-based variant from [Oblivious Message Retrieval](#oblivious-message-retrieval-omr) provides the strongest server-privacy guarantees. Extends [OMR](#oblivious-message-retrieval-omr) and [PIR](#private-information-retrieval-pir) with tunable privacy/bandwidth tradeoff.
 
-**Production readiness:** Research
-Proposed for Zcash but not yet deployed; academic prototypes only
+**Production readiness:** Experimental
+Deployed in Penumbra (Cosmos chain, 2023); reduces wallet sync bandwidth by 10-100x.
 
 **Implementations:**
 - [zcash/librustzcash](https://github.com/zcash/librustzcash) ⭐ 387 — Rust, Zcash library exploring FMD integration
+- [penumbra-zone/penumbra](https://github.com/penumbra-zone/penumbra) ⭐ 476 — Rust, FMD implementation in Penumbra
 
 **Security status:** Secure
-Based on DDH/pairings; privacy degrades gracefully with tunable false-positive rate
+DH-based flag-key construction proven secure; tunable false-positive rate provides privacy-bandwidth trade-off.
 
 **Community acceptance:** Emerging
-Active interest from Zcash and privacy-coin communities; novel privacy/bandwidth tradeoff space
+Published in 2021 (Beck-Len-Maller-Zamfir); deployed in Penumbra; solving a practical problem for encrypted blockchain wallets; growing interest.
 
 ---
 

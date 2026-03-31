@@ -1,5 +1,53 @@
 # Quantum Cryptography & Post-Quantum
 
+
+<!-- TOC -->
+## Contents (42 schemes)
+
+- [Quantum Key Distribution (QKD)](#quantum-key-distribution-qkd)
+- [Quantum Money / Quantum Tokens](#quantum-money-quantum-tokens)
+- [Quantum Copy-Protection / Uncloneable Encryption](#quantum-copy-protection-uncloneable-encryption)
+- [Position-Based Quantum Cryptography](#position-based-quantum-cryptography)
+- [Certified Quantum Randomness / Proof of Quantumness](#certified-quantum-randomness-proof-of-quantumness)
+- [Post-Quantum Cryptography](#post-quantum-cryptography)
+- [Isogeny-Based Cryptography](#isogeny-based-cryptography)
+- [Lattice Isomorphism Problem (LIP) / HAWK](#lattice-isomorphism-problem-lip-hawk)
+- [Equivalence-Based PQ Signatures](#equivalence-based-pq-signatures)
+- [NTRU Prime / Streamlined NTRU Prime](#ntru-prime-streamlined-ntru-prime)
+- [Classic McEliece (Code-Based KEM)](#classic-mceliece-code-based-kem)
+- [HQC (Hamming Quasi-Cyclic) — FIPS 207](#hqc-hamming-quasi-cyclic-fips-207)
+- [Twin-Field QKD (TF-QKD)](#twin-field-qkd-tf-qkd)
+- [Hybrid PQ/Classical Key Exchange](#hybrid-pqclassical-key-exchange)
+- [Continuous-Variable QKD (CV-QKD)](#continuous-variable-qkd-cv-qkd)
+- [Quantum Repeaters and Quantum Networks](#quantum-repeaters-and-quantum-networks)
+- [Multivariate PQ Signatures (UOV / MAYO)](#multivariate-pq-signatures-uov-mayo)
+- [FAEST / VOLE-in-the-Head (Symmetric-Key PQ Signatures)](#faest-vole-in-the-head-symmetric-key-pq-signatures)
+- [Shor's Algorithm and Quantum Threats to Public-Key Cryptography](#shors-algorithm-and-quantum-threats-to-public-key-cryptography)
+- [Grover's Algorithm and Symmetric-Key Security](#grovers-algorithm-and-symmetric-key-security)
+- [ML-KEM (Kyber) Internals — Module LWE, NTT, and Noise Parameters](#ml-kem-kyber-internals-module-lwe-ntt-and-noise-parameters)
+- [Lattice Sieving and BKZ Complexity](#lattice-sieving-and-bkz-complexity)
+- [BIKE (Bit-Flipping Key Encapsulation)](#bike-bit-flipping-key-encapsulation)
+- [Code-Based Cryptography Overview](#code-based-cryptography-overview)
+- [CSIDH and CTIDH — Isogeny Group Actions](#csidh-and-ctidh-isogeny-group-actions)
+- [QKD Information Reconciliation — CASCADE and LDPC](#qkd-information-reconciliation-cascade-and-ldpc)
+- [Commercial QKD Systems and Quantum Network Deployments](#commercial-qkd-systems-and-quantum-network-deployments)
+- [CNSA 2.0 and PQC Migration Policy](#cnsa-20-and-pqc-migration-policy)
+- [Post-Quantum Composite Signatures and Certificates](#post-quantum-composite-signatures-and-certificates)
+- [Post-Quantum TLS Performance Benchmarks](#post-quantum-tls-performance-benchmarks)
+- [Quantum Error Correction — Surface Codes and Logical Qubits](#quantum-error-correction-surface-codes-and-logical-qubits)
+- [Quantum Advantage Experiments](#quantum-advantage-experiments)
+- [Device-Independent Quantum Key Distribution (DI-QKD)](#device-independent-quantum-key-distribution-di-qkd)
+- [Quantum Secure Direct Communication (QSDC)](#quantum-secure-direct-communication-qsdc)
+- [Quantum Digital Signatures (QDS)](#quantum-digital-signatures-qds)
+- [Blind Quantum Computation (BQC)](#blind-quantum-computation-bqc)
+- [Quantum Homomorphic Encryption (QHE)](#quantum-homomorphic-encryption-qhe)
+- [Quantum Oblivious Transfer (QOT)](#quantum-oblivious-transfer-qot)
+- [Quantum Byzantine Agreement (QBA)](#quantum-byzantine-agreement-qba)
+- [Quantum Zero-Knowledge Proofs](#quantum-zero-knowledge-proofs)
+- [Quantum Key Recycling (QKR)](#quantum-key-recycling-qkr)
+- [Quantum Fingerprinting](#quantum-fingerprinting)
+<!-- /TOC -->
+
 ## Quantum Key Distribution (QKD)
 
 **Goal:** Information-theoretic key establishment. Distribute a shared secret key using quantum mechanics — any eavesdropping attempt disturbs the quantum state and is detectable. Unlike PQ crypto (software), QKD requires quantum hardware.
@@ -746,39 +794,7 @@ Lattice Estimator is the accepted community standard for PQC parameter selection
 
 ---
 
-## Quantum Secret Sharing
-
-**Goal:** Distribute an unknown quantum state (a qubit) among n parties such that any authorized subset can reconstruct it, but unauthorized subsets learn nothing — even quantumly. Classical secret sharing (Shamir, 1979) distributes classical bits; quantum secret sharing (QSS) extends this to quantum states. Security is guaranteed by the laws of quantum mechanics (no-cloning theorem, entanglement monogamy) rather than computational hardness, and applies even against computationally unbounded adversaries.
-
-| Scheme | Year | Basis | Threshold | Note |
-|--------|------|-------|-----------|------|
-| **Hillery-Bužek-Berthiaume (HBB)** | 1999 | GHZ entanglement | (n, n) | First QSS scheme; uses n-party GHZ states; any strict subset is maximally mixed [[1]](https://arxiv.org/abs/quant-ph/9806063) |
-| **Cleve-Gottesman-Lo (CGL)** | 1999 | Quantum error-correcting codes | (k, n) | (k, n)-threshold QSS from quantum codes that correct n-k erasures; fully general [[1]](https://arxiv.org/abs/quant-ph/9901025) |
-| **Karlsson-Koashi-Imoto** | 1999 | Bell pairs + classical shares | (2, 3) | Players hold classical shares plus shared entanglement; reconstruction via LOCC [[1]](https://link.aps.org/doi/10.1103/PhysRevA.59.162) |
-| **Graph-State QSS** | 2006 | Graph states / stabilizer codes | Arbitrary access structure | Access structure determined by graph connectivity; efficient multiparty implementation [[1]](https://arxiv.org/abs/quant-ph/0602226) |
-| **Continuous-Variable QSS** | 2001 | Squeezed / coherent optical modes | (k, n) | QSS using optical quadratures; compatible with CV-QKD infrastructure [[1]](https://arxiv.org/abs/quant-ph/0009026) |
-| **Verifiable QSS** | 2019 | Quantum authentication codes | (k, n) | Handles dishonest dealer; quantum analog of classical VSS [[1]](https://arxiv.org/abs/1907.06564) |
-
-**HBB protocol:** The dealer prepares an n-party GHZ state |ψ⟩ = (|0⟩^⊗n + |1⟩^⊗n)/√2, encodes the secret qubit into the joint state, and distributes one qubit per party. Reconstruction requires all n players to measure and broadcast classical results; the last player applies a Pauli correction to recover the secret. Any strict subset of n-1 parties holds a maximally mixed state — completely uninformative about the secret state, even with unlimited computation.
-
-**CGL threshold construction:** Cleve-Gottesman-Lo proved that (k, n)-threshold QSS is equivalent to quantum error-correcting codes that correct n-k erasures. A [[n, 1, d]] quantum code with d = n−k+1 encodes 1 logical qubit into n physical qubits such that any k shares suffice for reconstruction while any k-1 shares are quantum-mechanically uninformative. For example, the [[5, 1, 3]] perfect code gives (3, 5)-threshold QSS.
-
-**Relation to classical secret sharing:** Classical (k, n)-threshold schemes achieve information-theoretic security against all adversaries holding fewer than k shares. QSS provides the same guarantee for quantum secrets, with the additional property that quantum shares cannot be classically copied — the no-cloning theorem prevents any share-amplification attack that has no classical analog.
-
-**State of the art:** Laboratory demonstrations exist with 3–5 photons or trapped ions. Graph-state and CV-QSS are the most hardware-feasible variants for current technology. Verifiable QSS (2019) handles active adversaries including a dishonest dealer, analogous to [PVSS](05-secret-sharing-threshold-cryptography.md#publicly-verifiable-secret-sharing-pvss) in the classical setting. See [Secret Sharing and Threshold Cryptography](05-secret-sharing-threshold-cryptography.md) for classical counterparts and [Quantum Key Distribution (QKD)](#quantum-key-distribution-qkd) for related quantum multiparty primitives.
-
-**Production readiness:** Research
-Laboratory demonstrations with 3-5 photons or trapped ions. No production-quality implementations or commercial products.
-
-**Implementations:**
-- [Qiskit (IBM)](https://github.com/Qiskit/qiskit) ⭐ 7.2k — Python, quantum secret sharing circuit implementations
-- [Cirq (Google)](https://github.com/quantumlib/Cirq) ⭐ 4.9k — Python, quantum circuit framework for QSS prototyping
-
-**Security status:** Secure
-Information-theoretic security from quantum no-cloning for quantum shares. Verifiable QSS (2019) handles active adversaries. Security proofs are rigorous.
-
-**Community acceptance:** Niche
-Active research area; publications at QIP and quantum information conferences. No standardization effort. Viewed as a quantum extension of classical secret sharing.
+> **Quantum Secret Sharing** is covered in [Secret Sharing & Threshold Cryptography — Quantum Secret Sharing](05-secret-sharing-threshold-cryptography.md#quantum-secret-sharing).
 
 ---
 

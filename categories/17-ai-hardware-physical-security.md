@@ -1,5 +1,58 @@
 # AI, Hardware & Physical Security
 
+
+<!-- TOC -->
+## Contents (47 schemes)
+
+- [zkLLM / Verifiable AI Inference](#zkllm-verifiable-ai-inference)
+- [Cryptographic Watermarking for AI / Pseudorandom Codes](#cryptographic-watermarking-for-ai-pseudorandom-codes)
+- [In-Sensor Cryptography](#in-sensor-cryptography)
+- [Physical Unclonable Functions (PUF)](#physical-unclonable-functions-puf)
+- [Encrypted Control Systems](#encrypted-control-systems)
+- [Wiretap Channel / Physical-Layer Security](#wiretap-channel-physical-layer-security)
+- [Proof of Location / Spatial Proofs](#proof-of-location-spatial-proofs)
+- [Power Analysis Attacks & Masking Countermeasures](#power-analysis-attacks-masking-countermeasures)
+- [Fault Injection Attacks & Countermeasures](#fault-injection-attacks-countermeasures)
+- [Speculative Execution & Cache-Timing Side-Channel Attacks](#speculative-execution-cache-timing-side-channel-attacks)
+- [Hardware True Random Number Generators (TRNGs)](#hardware-true-random-number-generators-trngs)
+- [Confidential ML / TEE-Based Inference](#confidential-ml-tee-based-inference)
+- [Electromagnetic Side-Channel Analysis (EMCA)](#electromagnetic-side-channel-analysis-emca)
+- [Side-Channel Resistant AES Implementations](#side-channel-resistant-aes-implementations)
+- [Secure MPC / HE for Private ML Inference](#secure-mpc-he-for-private-ml-inference)
+- [Federated Learning Security: Poisoning & Byzantine Robustness](#federated-learning-security-poisoning-byzantine-robustness)
+- [Model Extraction Attacks & Defenses](#model-extraction-attacks-defenses)
+- [Differential Privacy in ML (DP-SGD)](#differential-privacy-in-ml-dp-sgd)
+- [Acoustic Cryptanalysis](#acoustic-cryptanalysis)
+- [Cold Boot Attacks on DRAM](#cold-boot-attacks-on-dram)
+- [Rowhammer Attacks on DRAM](#rowhammer-attacks-on-dram)
+- [Hardware Security Modules (HSM) & FIPS 140-3](#hardware-security-modules-hsm-fips-140-3)
+- [ML Modeling Attacks on Strong PUFs & ML-Based Privacy Attacks](#ml-modeling-attacks-on-strong-pufs-ml-based-privacy-attacks)
+- [White-Box Cryptography (WBC)](#white-box-cryptography-wbc)
+- [Smart Card & Secure Element Cryptography](#smart-card-secure-element-cryptography)
+- [Cryptographic Hardware Accelerators (AES-NI, SHA-NI, AVX-512 VAES)](#cryptographic-hardware-accelerators-aes-ni-sha-ni-avx-512-vaes)
+- [Anti-Tamper Mechanisms & Cryptographic Zeroization](#anti-tamper-mechanisms-cryptographic-zeroization)
+- [GPU-Based Cryptographic Acceleration (CUDA AES, GPU FHE)](#gpu-based-cryptographic-acceleration-cuda-aes-gpu-fhe)
+- [AI Hardware Trojans (Backdoor Attacks on Neural Accelerators)](#ai-hardware-trojans-backdoor-attacks-on-neural-accelerators)
+- [Supply Chain Attacks on Cryptographic Hardware](#supply-chain-attacks-on-cryptographic-hardware)
+- [Formal Verification of Cryptographic Hardware](#formal-verification-of-cryptographic-hardware)
+- [Confidential GPU Computing (NVIDIA H100 CC, Azure Confidential GPU)](#confidential-gpu-computing-nvidia-h100-cc-azure-confidential-gpu)
+- [Federated Learning Secure Aggregation (SecAgg)](#federated-learning-secure-aggregation-secagg)
+- [Encrypted ML Frameworks (CrypTen, TF Encrypted, PySyft)](#encrypted-ml-frameworks-crypten-tf-encrypted-pysyft)
+- [Model Watermarking & Fingerprinting for IP Protection](#model-watermarking-fingerprinting-for-ip-protection)
+- [SRAM PUF Key Generation & Fuzzy Extractors](#sram-puf-key-generation-fuzzy-extractors)
+- [Arbiter PUF Protocols & Advanced Compositions](#arbiter-puf-protocols-advanced-compositions)
+- [RISC-V Cryptography Extensions (Zbk*, Zkn*, Zks*, Zvk*)](#risc-v-cryptography-extensions-zbk-zkn-zks-zvk)
+- [ARM Confidential Compute Architecture (CCA)](#arm-confidential-compute-architecture-cca)
+- [Intel Trust Domain Extensions (TDX)](#intel-trust-domain-extensions-tdx)
+- [CKKS-Based Homomorphic Encryption for ML Training](#ckks-based-homomorphic-encryption-for-ml-training)
+- [Caliptra — Open-Source Silicon Root of Trust](#caliptra-open-source-silicon-root-of-trust)
+- [Zero-Knowledge Proofs of Training (zkPoT / zkDL)](#zero-knowledge-proofs-of-training-zkpot-zkdl)
+- [Cryptographic Fairness Auditing / Fairness-as-a-Service](#cryptographic-fairness-auditing-fairness-as-a-service)
+- [Verifiable Machine Unlearning (FHorgEt)](#verifiable-machine-unlearning-fhorget)
+- [Dataset Watermarking for Training Data Provenance](#dataset-watermarking-for-training-data-provenance)
+- [Post-Quantum FIDO2 / Passkey Attestation](#post-quantum-fido2-passkey-attestation)
+<!-- /TOC -->
+
 ## zkLLM / Verifiable AI Inference
 
 **Goal:** Cryptographically prove that an AI model produced a specific output on a specific input — without revealing model weights or input data. Enables trustless AI-as-a-service: the provider proves correct inference, the client verifies without re-running the model.
@@ -1013,33 +1066,7 @@ Active open-source communities (Meta, OpenMined, Zama, IBM); no formal standard 
 
 ---
 
-## zkML (Zero-Knowledge Machine Learning)
-
-**Goal:** Prove in zero knowledge that a specific ML model produced a specific output on a specific input — without revealing model weights, input data, or intermediate activations. Enables verifiable AI-as-a-service, on-chain ML inference verification, and regulatory audits of black-box models.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **EZKL** | 2023 | Halo2 + quantized models | Open-source toolkit; compiles ONNX models to Halo2 ZK circuits; supports CNNs, transformers, and decision trees [[1]](https://github.com/zkonduit/ezkl) |
-| **Daniel Kang et al. Scaling zkML** | 2022 | Customized circuit compilers | First systematic study of scaling ZK proofs for ML; introduces optimised gadgets for ReLU, softmax, and matrix multiplication [[1]](https://arxiv.org/abs/2210.08674) |
-| **zkLLM (Sun-Li-Zhang)** | 2024 | tlookup + zkAttn | ZK proof for full LLM inference (13B params); custom attention proof protocol; CCS 2024 [[1]](https://arxiv.org/abs/2404.16109) |
-| **Modulus Labs / Remainder** | 2023 | GKR protocol | Interactive proof system adapted for deep neural networks; logarithmic verifier time in model size [[1]](https://arxiv.org/abs/2306.02456) |
-| **opML (Optimistic ML)** | 2024 | Fraud proof + ZK fallback | Optimistic verification of ML inference on-chain; ZK proof generated only on dispute; reduces cost by 1000x vs full zkML [[1]](https://arxiv.org/abs/2401.17555) |
-
-**State of the art:** EZKL is the most widely deployed zkML toolkit (2024); zkLLM extends to billion-parameter models but proving time remains minutes-scale. Optimistic approaches (opML) trade latency for cost. Extends [ZK Proof Systems](04-zero-knowledge-proof-systems.md#zero-knowledge-proof-systems) and [Verifiable AI Inference](#zkllm-verifiable-ai-inference).
-
-**Production readiness:** Experimental
-EZKL is the most deployed zkML toolkit; proving time for large models remains minutes-scale; used in blockchain verification
-
-**Implementations:**
-- [EZKL](https://github.com/zkonduit/ezkl) ⭐ 1.2k — Rust/Python, compile ONNX models to Halo2 ZK circuits
-- [Remainder (Modulus Labs)](https://github.com/remainder-labs) — Rust, GKR-based zkML prover
-- [opML](https://github.com/ora-io/opml) ⭐ 316 — Solidity/TypeScript, optimistic ML verification on-chain
-
-**Security status:** Caution
-ZK proof systems are sound under standard assumptions; circuit compilation from ONNX introduces potential for soundness bugs; active auditing
-
-**Community acceptance:** Emerging
-Growing blockchain/Web3 adoption; active academic research; no formal standard; Ethereum community interest in on-chain ML verification
+> **zkML (Zero-Knowledge Machine Learning)** is covered in [Zero-Knowledge Proof Systems — zkML](04-zero-knowledge-proof-systems.md#zkml-zero-knowledge-machine-learning).
 
 ---
 

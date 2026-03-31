@@ -1,5 +1,66 @@
 # Homomorphic & Functional Encryption
 
+
+<!-- TOC -->
+## Contents (55 schemes)
+
+- [Homomorphic Encryption (HE)](#homomorphic-encryption-he)
+- [Microsoft SEAL](#microsoft-seal)
+- [HElib](#helib)
+- [HEIR (Homomorphic Encryption Intermediate Representation)](#heir-homomorphic-encryption-intermediate-representation)
+- [Concrete & Concrete ML (Zama)](#concrete-concrete-ml-zama)
+- [Gentry's Original FHE (Ideal Lattices)](#gentrys-original-fhe-ideal-lattices)
+- [GSW (Gentry-Sahai-Waters) FHE](#gsw-gentry-sahai-waters-fhe)
+- [FHEW Bootstrapping](#fhew-bootstrapping)
+- [CKKS Approximate Arithmetic & Rescaling](#ckks-approximate-arithmetic-rescaling)
+- [Quadratic / Degree-2 Functional Encryption](#quadratic-degree-2-functional-encryption)
+- [Function-Hiding Inner-Product Functional Encryption (FH-IPFE)](#function-hiding-inner-product-functional-encryption-fh-ipfe)
+- [Decentralized Multi-Client Functional Encryption (DMCFE)](#decentralized-multi-client-functional-encryption-dmcfe)
+- [Multi-Key / Threshold FHE](#multi-key-threshold-fhe)
+- [Verifiable FHE](#verifiable-fhe)
+- [Attribute-Based & Functional Encryption](#attribute-based-functional-encryption)
+- [Identity-Based Encryption (IBE)](#identity-based-encryption-ibe)
+- [Multi-Authority ABE](#multi-authority-abe)
+- [Registration-Based Encryption (RBE)](#registration-based-encryption-rbe)
+- [Anonymous IBE](#anonymous-ibe)
+- [Broadcast Encryption](#broadcast-encryption)
+- [Access Control Encryption (ACE)](#access-control-encryption-ace)
+- [Matchmaking Encryption](#matchmaking-encryption)
+- [Key-Aggregate Encryption](#key-aggregate-encryption)
+- [Proxy Re-Encryption (PRE)](#proxy-re-encryption-pre)
+- [Transciphering / FHE-friendly Ciphers](#transciphering-fhe-friendly-ciphers)
+- [Hidden Vector Encryption (HVE)](#hidden-vector-encryption-hve)
+- [FHE over the Integers (DGHV)](#fhe-over-the-integers-dghv)
+- [NTRU-Based Encryption](#ntru-based-encryption)
+- [FHE Amortization & Batching (SIMD Packing)](#fhe-amortization-batching-simd-packing)
+- [Single-Key vs. Multi-Key FHE](#single-key-vs-multi-key-fhe)
+- [Paillier Additively Homomorphic Encryption](#paillier-additively-homomorphic-encryption)
+- [ElGamal & Multiplicatively Homomorphic Encryption](#elgamal-multiplicatively-homomorphic-encryption)
+- [Inner-Product Functional Encryption (IPFE)](#inner-product-functional-encryption-ipfe)
+- [FHE Benchmarks & Performance](#fhe-benchmarks-performance)
+- [Obfuscation-Based & General-Circuit Functional Encryption](#obfuscation-based-general-circuit-functional-encryption)
+- [Number Theoretic Transform (NTT) in FHE](#number-theoretic-transform-ntt-in-fhe)
+- [Parameter Selection for BFV / BGV / CKKS](#parameter-selection-for-bfv-bgv-ckks)
+- [HE for Healthcare & Genomics](#he-for-healthcare-genomics)
+- [FHE Applications in Cloud Computing](#fhe-applications-in-cloud-computing)
+- [FHE for Private Neural Network Training](#fhe-for-private-neural-network-training)
+- [Lattigo (Multiparty HE in Go)](#lattigo-multiparty-he-in-go)
+- [TenSEAL (Encrypted Tensor Operations)](#tenseal-encrypted-tensor-operations)
+- [PhantomFHE (GPU-Accelerated HE)](#phantomfhe-gpu-accelerated-he)
+- [HEonGPU (GPU FHE Library)](#heongpu-gpu-fhe-library)
+- [Apple Swift Homomorphic Encryption](#apple-swift-homomorphic-encryption)
+- [Covercrypt (Quantum-Safe ABE KEM)](#covercrypt-quantum-safe-abe-kem)
+- [Sunscreen (Rust FHE Compiler)](#sunscreen-rust-fhe-compiler)
+- [Intel HEXL (HE Hardware Acceleration)](#intel-hexl-he-hardware-acceleration)
+- [FHERMA (FHE Components Platform)](#fherma-fhe-components-platform)
+- [Multi-Input Quadratic Functional Encryption (MIQFE)](#multi-input-quadratic-functional-encryption-miqfe)
+- [FHEW — Fastest Homomorphic Encryption in the West](#fhew-fastest-homomorphic-encryption-in-the-west)
+- [Programmable Bootstrapping (PBS / CGGI Functional Bootstrapping)](#programmable-bootstrapping-pbs-cggi-functional-bootstrapping)
+- [Fuzzy Identity-Based Encryption (Fuzzy IBE)](#fuzzy-identity-based-encryption-fuzzy-ibe)
+- [Decentralized Attribute-Based Encryption (No Central Trust)](#decentralized-attribute-based-encryption-no-central-trust)
+- [Registered Attribute-Based Encryption (Reg-ABE)](#registered-attribute-based-encryption-reg-abe)
+<!-- /TOC -->
+
 ## Homomorphic Encryption (HE)
 
 **Goal:** Compute on encrypted data without decrypting it. The result, when decrypted, matches computation on plaintext. Provides confidentiality during processing.
@@ -880,34 +941,7 @@ SIMD batching (Smart-Vercauteren 2011) is universally adopted; BSGS rotation (Ha
 
 ---
 
-## Homomorphic Signatures
-
-**Goal:** Authenticate data while allowing untrusted parties to compute on it. A homomorphic signature scheme lets anyone aggregate or transform signed data — producing a valid signature on the function output — without access to the signing key. Enables verifiable delegation of computation on signed datasets.
-
-In a homomorphic signature scheme, a signer produces signatures σᵢ on dataset elements {mᵢ}. Given the signatures, any party can compute a signature σ_f on *f*(m₁, …, mₙ) for a supported function class *f* — without interacting with the signer. The verifier, given the public key and a description of *f*, accepts σ_f as authentic. Security requires that an adversary cannot produce a valid σ on any output outside the range of honest computations.
-
-Key constructions: Boneh and Freeman (2011) gave the first lattice-based homomorphic signature for linear functions (inner products over ℤ_p), built on the SIS problem. Catalano and Fiore (2013) extended to multilinear maps and arithmetic circuits. Gorbunov, Vaikuntanathan, and Wichs (2015) constructed fully homomorphic signatures for arbitrary polynomial-size circuits from standard lattice assumptions. Homomorphic signatures are related to [Homomorphic MACs](09-commitments-verifiability.md#verifiable-computation-vc) (which require a secret verification key) and are used in verifiable computation and authenticated data structures.
-
-| Scheme | Year | Class | Note |
-|--------|------|-------|------|
-| **Boneh-Freeman Lattice HS** | 2011 | Linear functions | SIS-based; first lattice homomorphic signature [[1]](https://eprint.iacr.org/2010/543) |
-| **Catalano-Fiore HS** | 2013 | Arithmetic circuits (pairings) | Multilinear-map HS; extended to degree-d polynomials [[1]](https://eprint.iacr.org/2012/527) |
-| **Gorbunov-Vaikuntanathan-Wichs Leveled HS** | 2015 | Polynomial-size circuits | Fully homomorphic sig from lattices; circuit privacy; standard LWE [[1]](https://eprint.iacr.org/2014/463) |
-| **Context-Hiding HS (Fleischhacker et al.)** | 2016 | Linear / circuits | Hides intermediate computation path; output σ_f reveals nothing about σᵢ [[1]](https://eprint.iacr.org/2016/457) |
-
-**State of the art:** Lattice-based leveled homomorphic signatures (Gorbunov et al. 2015) support arbitrary circuits and achieve context-hiding. Applications include verifiable outsourced ML (model training on signed data), authenticated stream processing, and [Verifiable FHE](#verifiable-fhe). See also [Sanitizable Signatures](08-signatures-advanced.md#sanitizable-signatures) for a related but weaker primitive.
-
-**Production readiness:** Research
-Academic constructions; no widely deployed production systems
-
-**Implementations:**
-- No widely used production implementations; reference code in academic paper repositories
-
-**Security status:** Secure
-Lattice-based constructions (Gorbunov et al. 2015) proven secure under standard LWE; pairing-based variants under DLIN
-
-**Community acceptance:** Niche
-Published at top venues (CRYPTO, EUROCRYPT); important for verifiable computation but limited practical adoption
+> **Homomorphic Signatures** are covered in [Advanced Signatures — Homomorphic Signatures](08-signatures-advanced.md#homomorphic-signatures).
 
 ---
 

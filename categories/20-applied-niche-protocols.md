@@ -1,5 +1,57 @@
 # Applied & Niche Protocols
 
+
+<!-- TOC -->
+## Contents (46 schemes)
+
+- [End-to-End Verifiable E-Voting](#end-to-end-verifiable-e-voting)
+- [Visual Cryptography](#visual-cryptography)
+- [Linked Timestamping](#linked-timestamping)
+- [Coercion-Resistant Voting / Receipt-Freeness](#coercion-resistant-voting-receipt-freeness)
+- [Proof of Secure Erasure (PoSE)](#proof-of-secure-erasure-pose)
+- [Key-Insulated Cryptography](#key-insulated-cryptography)
+- [Client Puzzles / Proof of Effort](#client-puzzles-proof-of-effort)
+- [Incremental Cryptography](#incremental-cryptography)
+- [Scantegrity II](#scantegrity-ii)
+- [Prêt à Voter](#prêt-à-voter)
+- [STAR-Vote](#star-vote)
+- [OpenTimestamps](#opentimestamps)
+- [Cryptographic Lotteries & Fairness Protocols](#cryptographic-lotteries-fairness-protocols)
+- [MarkPledge: Cast-as-Intended Verifiable Voting](#markpledge-cast-as-intended-verifiable-voting)
+- [Wombat Voting System](#wombat-voting-system)
+- [Cryptographic Sealed-Bid Auctions](#cryptographic-sealed-bid-auctions)
+- [Blockchain-Based Voting: Deployments and Controversies](#blockchain-based-voting-deployments-and-controversies)
+- [Distance-Bounding Protocols](#distance-bounding-protocols)
+- [Tor Hidden Services (.onion v3 Cryptography)](#tor-hidden-services-onion-v3-cryptography)
+- [Signal Sealed Sender & PIR-Based Metadata Privacy](#signal-sealed-sender-pir-based-metadata-privacy)
+- [Memory-Hard Proof of Work (Argon2, scrypt, Equihash)](#memory-hard-proof-of-work-argon2-scrypt-equihash)
+- [Supply Chain Cryptography: in-toto, SLSA, and TUF](#supply-chain-cryptography-in-toto-slsa-and-tuf)
+- [Blind Signature-Based E-Cash (Chaum DigiCash)](#blind-signature-based-e-cash-chaum-digicash)
+- [GNU Taler: Practical E-Cash with Income Transparency](#gnu-taler-practical-e-cash-with-income-transparency)
+- [Cryptographic Audit Logs and Append-Only Integrity](#cryptographic-audit-logs-and-append-only-integrity)
+- [Privacy-Preserving Analytics (PAAPI, ITP, VDAF/Prio)](#privacy-preserving-analytics-paapi-itp-vdafprio)
+- [Mental Poker Protocols](#mental-poker-protocols)
+- [OPAQUE: Password-Authenticated Key Exchange](#opaque-password-authenticated-key-exchange)
+- [Verifiable Delay Functions (VDFs)](#verifiable-delay-functions-vdfs)
+- [Proof of Storage (Filecoin PoRep / PoSt)](#proof-of-storage-filecoin-porep-post)
+- [Leakage-Resilient Protocols](#leakage-resilient-protocols)
+- [Time-Release Cryptography / Timed Commitments](#time-release-cryptography-timed-commitments)
+- [Secure Location Verification](#secure-location-verification)
+- [Cryptography for Genomic Privacy](#cryptography-for-genomic-privacy)
+- [Satellite Communication Cryptography](#satellite-communication-cryptography)
+- [ISO 20022 / SWIFT MX Financial Message Signing](#iso-20022-swift-mx-financial-message-signing)
+- [Privacy-Preserving Credit Scoring](#privacy-preserving-credit-scoring)
+- [Privacy-Preserving Healthcare Data Sharing](#privacy-preserving-healthcare-data-sharing)
+- [Secure Time Synchronization (NTPsec, Roughtime)](#secure-time-synchronization-ntpsec-roughtime)
+- [Oblivious DNS (ODoH) and Encrypted DNS Comparison](#oblivious-dns-odoh-and-encrypted-dns-comparison)
+- [Proof of Unique Human (Worldcoin, Proof of Personhood)](#proof-of-unique-human-worldcoin-proof-of-personhood)
+- [AUTOSAR SecOC — Secure Onboard Communication](#autosar-secoc-secure-onboard-communication)
+- [LKH — Logical Key Hierarchy for Secure Multicast](#lkh-logical-key-hierarchy-for-secure-multicast)
+- [IETF SUIT — Secure Firmware Update for IoT](#ietf-suit-secure-firmware-update-for-iot)
+- [TESLA — Timed Efficient Stream Loss-Tolerant Authentication](#tesla-timed-efficient-stream-loss-tolerant-authentication)
+- [Updatable Encryption (Key Rotation Protocols)](#updatable-encryption-key-rotation-protocols)
+<!-- /TOC -->
+
 ## End-to-End Verifiable E-Voting
 
 **Goal:** Voter-verifiable elections. Anyone can verify that votes were correctly counted, each voter can verify their vote was included, and ballot secrecy is maintained. Combines mixnets, HE, ZK, and blind signatures.
@@ -909,32 +961,7 @@ Filecoin and Chia are major blockchain projects with significant adoption; acade
 
 ---
 
-## Cryptographic Reverse Firewalls
-
-**Goal:** Protect a cryptographic protocol participant even when their own machine is compromised or backdoored — by routing all communication through an external "reverse firewall" that re-randomizes messages to strip any subliminal channels, without needing to know the participant's secret keys or trust the participant's implementation.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Mironov-Stephens-Brito CRF** | 2015 | Re-randomizable encryption + signatures | First formalization of cryptographic reverse firewalls; defines security: firewall preserves functionality + eliminates subliminal channels; constructions for OT, key exchange, and signatures [[1]](https://eprint.iacr.org/2014/758) |
-| **CRF for Key Exchange (Dodis et al.)** | 2016 | Rerandomizable DH | Reverse firewall for Diffie-Hellman: firewall re-randomizes DH messages so that even a kleptographic implementation cannot exfiltrate the secret key [[1]](https://eprint.iacr.org/2016/424) |
-| **CRF for Signatures (Ateniese et al.)** | 2016 | Rerandomizable Schnorr | Reverse firewall re-randomizes Schnorr signature nonces; prevents nonce-covert-channel attacks (cf. NIST Dual_EC_DRBG-style backdoors) [[1]](https://eprint.iacr.org/2015/1189) |
-| **CRF for MPC** | 2020 | Rerandomizable garbled circuits | Extends CRFs to general MPC protocols; firewall rerandomizes garbled circuit messages without knowing the circuit inputs [[1]](https://eprint.iacr.org/2020/594) |
-
-The motivating threat is **algorithm substitution attacks (ASA)**: a compromised implementation uses subliminal channels in its random-looking outputs (nonces, ciphertexts) to leak secret keys to a passive eavesdropper. The NSA's Dual_EC_DRBG backdoor is the canonical example. A cryptographic reverse firewall sits between the user's compromised machine and the network, re-randomizing every outgoing message. The key property is that the firewall does not need the user's secret key — it only needs the protocol to be algebraically rerandomizable. The firewall maintains functionality (the protocol still works correctly) while destroying any covert channel. The limitation is that the protocol must be designed with rerandomizability in mind.
-
-**State of the art:** Theoretical framework (2015+); practical constructions exist for DH, Schnorr, ElGamal, and OT. Closely related to [Kleptography / ASA](18-covert-channels-steganography.md#kleptography-algorithm-substitution-attacks-asa) (the attack CRFs defend against) and [Cryptographic Reverse Firewalls](19-theoretical-foundations.md#cryptographic-reverse-firewalls) in category 19.
-
-**Production readiness:** Research
-Theoretical framework with constructions for DH, Schnorr, ElGamal, and OT; no production deployment or commercial product.
-
-**Implementations:**
-- No widely maintained open-source implementations; research code accompanies individual papers (Mironov-Stephens-Brito, Dodis et al.).
-
-**Security status:** Secure
-Provably eliminates subliminal channels under stated algebraic rerandomizability assumptions; limited to protocols designed with rerandomizability in mind.
-
-**Community acceptance:** Niche
-Well-cited in the academic kleptography/ASA defense literature; motivated by the Dual_EC_DRBG backdoor; no standardization or industry adoption.
+> **Cryptographic Reverse Firewalls** are covered in [Theoretical Foundations — Cryptographic Reverse Firewalls](19-theoretical-foundations.md#cryptographic-reverse-firewalls).
 
 ---
 

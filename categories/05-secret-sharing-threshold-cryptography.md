@@ -1,5 +1,69 @@
 # Secret Sharing & Threshold Cryptography
 
+
+<!-- TOC -->
+## Contents (58 schemes)
+
+- [Secret Sharing Schemes (SSS)](#secret-sharing-schemes-sss)
+- [Threshold Decryption](#threshold-decryption)
+- [Publicly Verifiable Secret Sharing (PVSS)](#publicly-verifiable-secret-sharing-pvss)
+- [Distributed Key Generation (DKG)](#distributed-key-generation-dkg)
+- [Proactive Secret Sharing](#proactive-secret-sharing)
+- [Packed Secret Sharing](#packed-secret-sharing)
+- [Robust Secret Sharing](#robust-secret-sharing)
+- [Ramp Secret Sharing](#ramp-secret-sharing)
+- [General Access Structure Secret Sharing](#general-access-structure-secret-sharing)
+- [Asynchronous Verifiable Secret Sharing (AVSS)](#asynchronous-verifiable-secret-sharing-avss)
+- [Non-Interactive DKG (NIDKG)](#non-interactive-dkg-nidkg)
+- [Universal Thresholdizer](#universal-thresholdizer)
+- [Leakage-Resilient Secret Sharing](#leakage-resilient-secret-sharing)
+- [Traceable Secret Sharing](#traceable-secret-sharing)
+- [Unclonable Secret Sharing](#unclonable-secret-sharing)
+- [Evolving Secret Sharing](#evolving-secret-sharing)
+- [Secret Sharing with Cheater Detection](#secret-sharing-with-cheater-detection)
+- [Verifiable Information Dispersal (VID)](#verifiable-information-dispersal-vid)
+- [Accountable Decryption](#accountable-decryption)
+- [CRT-based Secret Sharing (Mignotte / Asmuth-Bloom)](#crt-based-secret-sharing-mignotte-asmuth-bloom)
+- [Computational Secret Sharing](#computational-secret-sharing)
+- [Multi-Secret Sharing](#multi-secret-sharing)
+- [Regenerating Codes for Distributed Storage](#regenerating-codes-for-distributed-storage)
+- [Multiplicative Secret Sharing](#multiplicative-secret-sharing)
+- [FROST: Flexible Round-Optimized Schnorr Threshold Signatures](#frost-flexible-round-optimized-schnorr-threshold-signatures)
+- [XOR-Based / Binary-Field Secret Sharing](#xor-based-binary-field-secret-sharing)
+- [DKLS23: Threshold ECDSA in Three Rounds](#dkls23-threshold-ecdsa-in-three-rounds)
+- [Threshold Raccoon: Post-Quantum Lattice Threshold Signatures](#threshold-raccoon-post-quantum-lattice-threshold-signatures)
+- [Hierarchical Secret Sharing](#hierarchical-secret-sharing)
+- [Linear Secret Sharing Schemes (LSSS)](#linear-secret-sharing-schemes-lsss)
+- [SCRAPE: Scalable Publicly Verifiable Secret Sharing](#scrape-scalable-publicly-verifiable-secret-sharing)
+- [Shared RSA Key Generation](#shared-rsa-key-generation)
+- [Threshold BLS Key Generation](#threshold-bls-key-generation)
+- [Pseudorandom Secret Sharing (PRSS / PRZS)](#pseudorandom-secret-sharing-prss-przs)
+- [Secret Sharing with Fairness](#secret-sharing-with-fairness)
+- [Share Conversion (Arithmetic-to-Boolean and Boolean-to-Arithmetic)](#share-conversion-arithmetic-to-boolean-and-boolean-to-arithmetic)
+- [Threshold Verifiable Random Functions (Threshold VRF)](#threshold-verifiable-random-functions-threshold-vrf)
+- [Online vs Offline Threshold Signing](#online-vs-offline-threshold-signing)
+- [Blakley's Geometric Secret Sharing](#blakleys-geometric-secret-sharing)
+- [Quantum Secret Sharing](#quantum-secret-sharing)
+- [Berlekamp-Welch Decoding for Secret Sharing](#berlekamp-welch-decoding-for-secret-sharing)
+- [Witness Encryption for Secret Sharing Policies](#witness-encryption-for-secret-sharing-policies)
+- [SLIP-39: Shamir's Secret Sharing for BIP-39 Mnemonics](#slip-39-shamirs-secret-sharing-for-bip-39-mnemonics)
+- [Weighted Threshold Secret Sharing](#weighted-threshold-secret-sharing)
+- [Secret Sharing with Cheater Identification (Harn-Lin)](#secret-sharing-with-cheater-identification-harn-lin)
+- [Secret Sharing over Non-Abelian Groups](#secret-sharing-over-non-abelian-groups)
+- [Visual Secret Sharing](#visual-secret-sharing)
+- [AONT-RS: All-or-Nothing Transform with Reed-Solomon for Cloud Storage](#aont-rs-all-or-nothing-transform-with-reed-solomon-for-cloud-storage)
+- [Rational Secret Sharing](#rational-secret-sharing)
+- [Verifiable Multi-Secret Sharing (VMSS)](#verifiable-multi-secret-sharing-vmss)
+- [Secret Sharing with Enrollment / Dynamic Secret Sharing](#secret-sharing-with-enrollment-dynamic-secret-sharing)
+- [Function Secret Sharing (FSS) for Threshold Policies](#function-secret-sharing-fss-for-threshold-policies)
+- [CRT-Based Secret Sharing (Mignotte / Asmuth-Bloom)](#crt-based-secret-sharing-mignotte-asmuth-bloom)
+- [Visual Secret Sharing (Visual Cryptography)](#visual-secret-sharing-visual-cryptography)
+- [Computational Secret Sharing / "Secret Sharing Made Short" (Krawczyk)](#computational-secret-sharing-secret-sharing-made-short-krawczyk)
+- [Hierarchical Threshold Secret Sharing (Tassa)](#hierarchical-threshold-secret-sharing-tassa)
+- [Verifiable Secret Redistribution (VSR)](#verifiable-secret-redistribution-vsr)
+- [Timed Secret Sharing](#timed-secret-sharing)
+<!-- /TOC -->
+
 ## Secret Sharing Schemes (SSS)
 
 **Goal:** Split a secret into *n* shares so that any *t* shares reconstruct it, but fewer than *t* reveal nothing. Provides confidentiality + availability.
@@ -1113,11 +1177,13 @@ Historically important as an independent invention; primarily of theoretical and
 |--------|------|-------|------|
 | **Hillery-Bužek-Berthiaume (HBB) QSS** | 1999 | GHZ entangled states | First quantum secret sharing; (2,3)-threshold using GHZ triplets; both quantum and classical secrets; PRA 1999 [[1]](https://doi.org/10.1103/PhysRevA.59.1829) |
 | **Cleve-Gottesman-Lo QSS** | 1999 | Quantum error-correcting codes | Reduction: any ((t,n)) quantum threshold SS corresponds to a quantum error-correcting code; characterizes achievable parameters via quantum Singleton bound [[1]](https://doi.org/10.1103/PhysRevLett.83.648) |
+| **Karlsson-Koashi-Imoto** | 1999 | Bell pairs + classical shares | Players hold classical shares plus shared entanglement; reconstruction via LOCC [[1]](https://link.aps.org/doi/10.1103/PhysRevA.59.162) |
+| **Continuous-Variable QSS** | 2001 | Gaussian states + CV optics | QSS using optical modes (continuous variables); experimentally demonstrated with squeezed light; Physical Review Letters 2001 [[1]](https://doi.org/10.1103/PhysRevLett.88.127902) |
 | **Approximate QSS (Ogawa et al.)** | 2005 | Decoupling lemma | Relaxes exact reconstruction to ε-approximate; enables QSS beyond the Singleton bound threshold; CMP 2005 [[1]](https://doi.org/10.1007/s00220-005-1372-8) |
 | **Graph-State QSS** | 2006 | Graph states + stabilizer codes | Efficient QSS construction from graph states; arbitrary access structures realizable; measurement-based; PRA 2006 [[1]](https://doi.org/10.1103/PhysRevA.74.032332) |
-| **Continuous-Variable QSS** | 2001 | Gaussian states + CV optics | QSS using optical modes (continuous variables); experimentally demonstrated with squeezed light; Physical Review Letters 2001 [[1]](https://doi.org/10.1103/PhysRevLett.88.127902) |
+| **Verifiable QSS** | 2019 | Quantum authentication codes | Handles dishonest dealer; quantum analog of classical VSS [[1]](https://arxiv.org/abs/1907.06564) |
 
-**State of the art:** Cleve-Gottesman-Lo (1999) gives the definitive theory: (t,n)-quantum SS exists if and only if 2t < n (quantum Singleton bound), unlike classical SS which allows any t < n. Graph-state QSS is the leading experimental platform. Distinct from [Unclonable SS](#unclonable-secret-sharing) (which prevents share cloning for classical secrets) and [Quantum Copy-Protection](15-quantum-cryptography.md#quantum-copy-protection-uncloneable-encryption). Extends [Secret Sharing](#secret-sharing-schemes-sss) to the quantum domain.
+**State of the art:** Cleve-Gottesman-Lo (1999) gives the definitive theory: (t,n)-quantum SS exists if and only if 2t < n (quantum Singleton bound), unlike classical SS which allows any t < n. Graph-state QSS is the leading experimental platform. Verifiable QSS (2019) handles active adversaries including a dishonest dealer, analogous to [PVSS](#publicly-verifiable-secret-sharing-pvss) in the classical setting. Distinct from [Unclonable SS](#unclonable-secret-sharing) (which prevents share cloning for classical secrets) and [Quantum Copy-Protection](15-quantum-cryptography.md#quantum-copy-protection-uncloneable-encryption). Extends [Secret Sharing](#secret-sharing-schemes-sss) to the quantum domain.
 
 **Production readiness:** Research
 Quantum SS requires quantum hardware; experimental demonstrations exist (graph-state QSS) but no production deployment.
@@ -1466,30 +1532,6 @@ Computationally secure under PRG assumptions; DPF correctness and privacy are we
 
 **Community acceptance:** Widely trusted
 DPF is deployed at scale by Apple, Google, and Mozilla for privacy-preserving telemetry; IETF VDAF standardization incorporates FSS concepts.
-
----
-
-## Blakley's Geometric Secret Sharing
-
-**Goal:** Encode a secret as the intersection point of hyperplanes in a k-dimensional space, providing a geometric alternative to Shamir's polynomial approach where reconstruction requires only linear algebra over integers.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Blakley's scheme** | 1979 | Hyperplane intersection | Shares are k-dimensional hyperplane coefficients; reconstruction via Gaussian elimination; shares are t times larger than Shamir [[1]](https://ar5iv.labs.arxiv.org/html/1901.02802) |
-
-**State of the art:** Provides an independent geometric foundation to Shamir; the matrix structure lends itself to certain error-correcting configurations and hardware implementations where matrix ops are cheaper than polynomial interpolation.
-
-**Production readiness:** Mature
-Blakley's scheme is implemented in educational and reference libraries; Shamir dominates in production but Blakley is available as an alternative.
-
-**Implementations:**
-No notable open-source implementations available.
-
-**Security status:** Secure
-Information-theoretically perfect secrecy; equivalent security to Shamir.
-
-**Community acceptance:** Niche
-Historically important as an independent invention of threshold secret sharing; primarily of theoretical and educational interest today.
 
 ---
 

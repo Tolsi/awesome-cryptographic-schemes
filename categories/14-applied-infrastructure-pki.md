@@ -1,5 +1,52 @@
 # Applied Cryptography & Infrastructure / PKI
 
+
+<!-- TOC -->
+## Contents (41 schemes)
+
+- [W3C Decentralized Identifiers (DID) and Verifiable Credentials](#w3c-decentralized-identifiers-did-and-verifiable-credentials)
+- [DANE / DNS-Based Authentication of Named Entities](#dane-dns-based-authentication-of-named-entities)
+- [TEE Remote Attestation](#tee-remote-attestation)
+- [EMV Cryptographic Authentication](#emv-cryptographic-authentication)
+- [Kerberos v5](#kerberos-v5)
+- [DNSSEC / DNS Security Extensions](#dnssec-dns-security-extensions)
+- [DNSSEC-Based Key Infrastructure: SSHFP, TLSA, SMIMEA](#dnssec-based-key-infrastructure-sshfp-tlsa-smimea)
+- [Sigstore / Keyless Code Signing](#sigstore-keyless-code-signing)
+- [TUF / The Update Framework](#tuf-the-update-framework)
+- [Cryptographic Provenance Attestation (C2PA / SLSA)](#cryptographic-provenance-attestation-c2pa-slsa)
+- [RPKI / Resource Public Key Infrastructure](#rpki-resource-public-key-infrastructure)
+- [CAA / Certification Authority Authorization](#caa-certification-authority-authorization)
+- [OCSP Stapling and Certificate Revocation](#ocsp-stapling-and-certificate-revocation)
+- [TPM 2.0 / Trusted Platform Module](#tpm-20-trusted-platform-module)
+- [FIDO2 / WebAuthn / Passkeys](#fido2-webauthn-passkeys)
+- [PKCS#11 / Cryptoki — HSM C API](#pkcs11-cryptoki-hsm-c-api)
+- [HSM Key Ceremony / Split Knowledge / Dual Control](#hsm-key-ceremony-split-knowledge-dual-control)
+- [DICE — Device Identifier Composition Engine](#dice-device-identifier-composition-engine)
+- [GSMA eSIM / Remote SIM Provisioning (RSP)](#gsma-esim-remote-sim-provisioning-rsp)
+- [PKCS#7 / CMS — Cryptographic Message Syntax](#pkcs7-cms-cryptographic-message-syntax)
+- [S/MIME — Secure/Multipurpose Internet Mail Extensions](#smime-securemultipurpose-internet-mail-extensions)
+- [Code Signing — Authenticode, Apple Notarization, Android Signing](#code-signing-authenticode-apple-notarization-android-signing)
+- [Certificate Transparency (CT)](#certificate-transparency-ct)
+- [COSE / CWT — CBOR Object Signing and Encryption](#cose-cwt-cbor-object-signing-and-encryption)
+- [AMD SEV-SNP — Attestation Report Structure](#amd-sev-snp-attestation-report-structure)
+- [Azure Confidential Computing — SGX and TDX Attestation](#azure-confidential-computing-sgx-and-tdx-attestation)
+- [Post-Quantum PKI Transition — Hybrid Certificates](#post-quantum-pki-transition-hybrid-certificates)
+- [CMC Protocol / Certificate Lifecycle Management](#cmc-protocol-certificate-lifecycle-management)
+- [Hardware Attestation in Mobile — Android Keystore and Apple Secure Enclave](#hardware-attestation-in-mobile-android-keystore-and-apple-secure-enclave)
+- [MACsec / IEEE 802.1AE — Link-Layer Encryption](#macsec-ieee-8021ae-link-layer-encryption)
+- [UEFI Secure Boot / Measured Boot / dm-verity](#uefi-secure-boot-measured-boot-dm-verity)
+- [GlobalPlatform SCP03 — Smart Card Secure Channel Protocol](#globalplatform-scp03-smart-card-secure-channel-protocol)
+- [Matter / Thread IoT Device Security (CASE/PASE)](#matter-thread-iot-device-security-casepase)
+- [IEEE 802.1X / EAP-TLS — Port-Based Network Access Control](#ieee-8021x-eap-tls-port-based-network-access-control)
+- [KMIP — Key Management Interoperability Protocol](#kmip-key-management-interoperability-protocol)
+- [X.509 Certificate Path Validation (RFC 5280)](#x509-certificate-path-validation-rfc-5280)
+- [SPIFFE / SPIRE — Workload Identity Framework](#spiffe-spire-workload-identity-framework)
+- [Arm PSA Certified / Platform Security Architecture](#arm-psa-certified-platform-security-architecture)
+- [Merkle Tree Certificates (MTC)](#merkle-tree-certificates-mtc)
+- [RPKI — Resource Public Key Infrastructure](#rpki-resource-public-key-infrastructure)
+- [CMP — Certificate Management Protocol (with Lightweight CMP)](#cmp-certificate-management-protocol-with-lightweight-cmp)
+<!-- /TOC -->
+
 ## W3C Decentralized Identifiers (DID) and Verifiable Credentials
 
 **Goal:** Enable self-sovereign digital identity — cryptographically verifiable identifiers and credentials that are not controlled by any single authority. Anyone can create a DID, prove ownership of it, and issue or present signed credential claims.
