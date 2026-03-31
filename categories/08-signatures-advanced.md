@@ -4,50 +4,70 @@
 <!-- TOC -->
 ## Contents (64 schemes)
 
+**[Threshold Signatures](#threshold-signatures)**
 - [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss)
+- [Accountable Multi-Signatures / Subgroup Signatures](#accountable-multi-signatures--subgroup-signatures)
+- [Threshold Blind Signatures](#threshold-blind-signatures)
+- [Threshold Ring Signatures](#threshold-ring-signatures)
+- [MuSig / MuSig2 (Schnorr Multi-Signatures)](#musig--musig2-schnorr-multi-signatures)
+- [FROST Threshold Schnorr Signatures](#frost-threshold-schnorr-signatures)
+- [CGGMP Threshold ECDSA](#cggmp-threshold-ecdsa)
+- [MuSig2 (Multi-Signatures for Bitcoin)](#musig2-multi-signatures-for-bitcoin)
+- [ROAST (Robust Asynchronous Threshold Signatures)](#roast-robust-asynchronous-threshold-signatures)
+
+**[Blind and Partially Blind Signatures](#blind-and-partially-blind-signatures)**
 - [Blind Signatures](#blind-signatures)
+- [Partially Blind Signatures](#partially-blind-signatures)
+
+**[Ring and Group Signatures](#ring-and-group-signatures)**
 - [Ring & Group Signatures](#ring--group-signatures)
+- [Linkable Ring Signatures](#linkable-ring-signatures)
+- [Traceable Signatures](#traceable-signatures)
+- [Ring VRF](#ring-vrf)
+- [EdDSA (Ed25519 & Ed448)](#eddsa-ed25519--ed448)
+- [Hedged Signatures](#hedged-signatures)
+
+**[Aggregate and BLS Signatures](#aggregate-and-bls-signatures)**
+- [Sequential Aggregate Signatures](#sequential-aggregate-signatures)
+- [Aggregate Signatures (BLS Aggregate)](#aggregate-signatures-bls-aggregate)
+
+**[Adaptor and Atomic Signatures](#adaptor-and-atomic-signatures)**
 - [Adaptor Signatures / Scriptless Scripts](#adaptor-signatures--scriptless-scripts)
-- [One-Time Signatures (OTS)](#one-time-signatures-ots)
-- [Attribute-Based Signatures (ABS)](#attribute-based-signatures-abs)
+
+**[Special-Purpose Signatures](#special-purpose-signatures)**
 - [Sanitizable Signatures](#sanitizable-signatures)
 - [Homomorphic Signatures](#homomorphic-signatures)
-- [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps)
-- [Rerandomizable Signatures (PS Signatures)](#rerandomizable-signatures-ps-signatures)
-- [Forward-Secure Signatures & Encryption](#forward-secure-signatures--encryption)
-- [Sequential Aggregate Signatures](#sequential-aggregate-signatures)
-- [Accountable Multi-Signatures / Subgroup Signatures](#accountable-multi-signatures--subgroup-signatures)
-- [Partially Blind Signatures](#partially-blind-signatures)
-- [Aggregate Signatures (BLS Aggregate)](#aggregate-signatures-bls-aggregate)
-- [Linkable Ring Signatures](#linkable-ring-signatures)
-- [Threshold Blind Signatures](#threshold-blind-signatures)
 - [Constrained / Policy-Based Signatures](#constrained--policy-based-signatures)
 - [Designated Verifier Signatures / Proofs](#designated-verifier-signatures--proofs)
 - [Undeniable Signatures](#undeniable-signatures)
 - [Fail-Stop Signatures](#fail-stop-signatures)
 - [Proxy Signatures](#proxy-signatures)
-- [Traceable Signatures](#traceable-signatures)
-- [Ring VRF](#ring-vrf)
-- [Threshold Ring Signatures](#threshold-ring-signatures)
+- [Multi-Designated Verifier Signatures (MDVS)](#multi-designated-verifier-signatures-mdvs)
+- [Mercurial Signatures](#mercurial-signatures)
+
+**[Structural Signature Primitives](#structural-signature-primitives)**
+- [One-Time Signatures (OTS)](#one-time-signatures-ots)
+- [Attribute-Based Signatures (ABS)](#attribute-based-signatures-abs)
+- [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps)
+- [Rerandomizable Signatures (PS Signatures)](#rerandomizable-signatures-ps-signatures)
+- [Forward-Secure Signatures & Encryption](#forward-secure-signatures--encryption)
 - [Broadcast Authentication (TESLA)](#broadcast-authentication-tesla)
 - [Identity-Based Signatures (IBS)](#identity-based-signatures-ibs)
-- [MuSig / MuSig2 (Schnorr Multi-Signatures)](#musig--musig2-schnorr-multi-signatures)
+- [BLISS & qTESLA (Early Lattice Signature Schemes)](#bliss--qtesla-early-lattice-signature-schemes)
+- [Structure-Preserving Signatures on Equivalence Classes (SPS-EQ)](#structure-preserving-signatures-on-equivalence-classes-sps-eq)
+- [SPS-EQ (Structure-Preserving Signatures on Equivalence Classes)](#sps-eq-structure-preserving-signatures-on-equivalence-classes)
 - [Boneh-Boyen (BB) Short Signatures](#boneh-boyen-bb-short-signatures)
 - [Stateful Hash-Based Signatures (XMSS & LMS)](#stateful-hash-based-signatures-xmss--lms)
 - [NIST PQC Signature Standards (ML-DSA & SLH-DSA)](#nist-pqc-signature-standards-ml-dsa--slh-dsa)
 - [DKLs23 & Next-Generation Threshold ECDSA](#dkls23--next-generation-threshold-ecdsa)
 - [Schnorr Signatures (Original Scheme)](#schnorr-signatures-original-scheme)
-- [EdDSA (Ed25519 & Ed448)](#eddsa-ed25519--ed448)
 - [ECDSA — Details, Vulnerabilities, and RFC 6979](#ecdsa--details-vulnerabilities-and-rfc-6979)
 - [RSA-PSS vs. PKCS#1 v1.5 Signatures](#rsa-pss-vs-pkcs1-v15-signatures)
 - [Falcon / FN-DSA (NTRU-Based Lattice Signatures)](#falcon--fn-dsa-ntru-based-lattice-signatures)
 - [SPHINCS & SPHINCS+ (Stateless Hash-Based Signatures)](#sphincs--sphincs-stateless-hash-based-signatures)
 - [Picnic (Signatures from ZK Proofs of Symmetric Primitives)](#picnic-signatures-from-zk-proofs-of-symmetric-primitives)
 - [Rainbow & Multivariate Quadratic Signatures](#rainbow--multivariate-quadratic-signatures)
-- [Hedged Signatures](#hedged-signatures)
-- [BLISS & qTESLA (Early Lattice Signature Schemes)](#bliss--qtesla-early-lattice-signature-schemes)
 - [Fiat-Shamir with Aborts (Lattice Signature Paradigm)](#fiat-shamir-with-aborts-lattice-signature-paradigm)
-- [Multi-Designated Verifier Signatures (MDVS)](#multi-designated-verifier-signatures-mdvs)
 - [Unforgeability Notions: EUF-CMA, SUF-CMA, and Beyond](#unforgeability-notions-euf-cma-suf-cma-and-beyond)
 - [Batch Verification of Signatures](#batch-verification-of-signatures)
 - [Post-Quantum Signature Comparison: ML-DSA vs. SLH-DSA vs. FN-DSA](#post-quantum-signature-comparison-ml-dsa-vs-slh-dsa-vs-fn-dsa)
@@ -56,22 +76,18 @@
 - [Code-Based Signatures (Wave, LESS, and Related)](#code-based-signatures-wave-less-and-related)
 - [SQIsign (Isogeny-Based Signatures)](#sqisign-isogeny-based-signatures)
 - [STARK-Based Signatures](#stark-based-signatures)
-- [FROST Threshold Schnorr Signatures](#frost-threshold-schnorr-signatures)
-- [CGGMP Threshold ECDSA](#cggmp-threshold-ecdsa)
-- [MuSig2 (Multi-Signatures for Bitcoin)](#musig2-multi-signatures-for-bitcoin)
 - [BBS+ Signatures (Privacy-Preserving Selective Disclosure)](#bbs-signatures-privacy-preserving-selective-disclosure)
-- [Mercurial Signatures](#mercurial-signatures)
-- [Structure-Preserving Signatures on Equivalence Classes (SPS-EQ)](#structure-preserving-signatures-on-equivalence-classes-sps-eq)
-- [ROAST (Robust Asynchronous Threshold Signatures)](#roast-robust-asynchronous-threshold-signatures)
 - [Hash-Based Signatures: XMSS, LMS, and SPHINCS+](#hash-based-signatures-xmss-lms-and-sphincs)
-- [SPS-EQ (Structure-Preserving Signatures on Equivalence Classes)](#sps-eq-structure-preserving-signatures-on-equivalence-classes)
 - [Pointcheval-Sanders (PS) Signatures](#pointcheval-sanders-ps-signatures)
 - [Updatable Signatures](#updatable-signatures)
 - [Policy-Based Signatures (PBS)](#policy-based-signatures-pbs)
+
 <!-- /TOC -->
 
+## Threshold Signatures
 
-## Threshold Signature Schemes (TSS)
+---
+### Threshold Signature Schemes (TSS)
 
 **Goal:** *t-of-n* parties collectively sign without ever reconstructing the private key. Provides distributed trust and non-repudiation.
 
@@ -103,309 +119,7 @@ Strong peer review; FROST has an IETF RFC (9591); MuSig2 standardized as BIP 327
 
 ---
 
-## Blind Signatures
-
-**Goal:** Signer signs a message without seeing its content. Provides anonymity + non-repudiation. Used in e-cash, anonymous credentials, Privacy Pass.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **RSA Blind Signature** | 1982 | RSA | Chaum's original; used in Privacy Pass (RFC 9474) [[1]](https://eprint.iacr.org/2022/895) |
-| **Blind Schnorr** | 1989 | DLP | Simple but requires care with ROS problem [[1]](https://eprint.iacr.org/2019/877) |
-| **BBS+ / BBS** | 2004 | Pairings | Multi-message blind sign + selective disclosure; W3C VC [[1]](https://eprint.iacr.org/2023/275) |
-| **Abe's Blind Signature** | 1997 | Pairing | Partially blind; used in anonymous e-cash schemes [[1]](https://link.springer.com/chapter/10.1007/978-3-642-10366-7_35) |
-
-**State of the art:** RSA Blind Sig (Privacy Pass), BBS+ (anonymous credentials & selective disclosure).
-
-**Production readiness:** Production
-RSA Blind Signatures deployed in Privacy Pass (RFC 9474); BBS+ used in W3C Verifiable Credentials.
-
-**Implementations:**
-- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — Rust/TypeScript, BBS+ selective disclosure
-- [privacypass](https://github.com/raphaelrobert/privacypass) ⭐ 62 — Go, RSA blind signature (Privacy Pass)
-
-**Security status:** Secure
-No known practical attacks; RSA blind sig has IETF RFC; BBS+ under active IETF standardization.
-
-**Community acceptance:** Standard
-RSA Blind Signature standardized as RFC 9474; BBS+ progressing through IETF CFRG.
-
----
-
-## Ring & Group Signatures
-
-**Goal:** Sign on behalf of a group/ring without revealing which member signed. Provides anonymity within a set.
-
-| Scheme | Year | Type | Note |
-|--------|------|------|------|
-| **Ring Signatures (Rivest-Shamir-Tauman)** | 2001 | Ring | Ad-hoc group, no setup; used in Monero (pre-2020) [[1]](https://link.springer.com/chapter/10.1007/3-540-45682-1_32) |
-| **CLSAG** | 2019 | Ring (linkable) | Compact Linkable Spontaneous; current Monero scheme [[1]](https://eprint.iacr.org/2019/654) |
-| **Group Signatures (BBS04)** | 2004 | Group | Requires group manager; revocable anonymity [[1]](https://eprint.iacr.org/2004/174) |
-| **Short Group Sig (Boneh-Boyen-Shacham)** | 2004 | Group | Pairing-based; very short signatures [[1]](https://eprint.iacr.org/2004/174) |
-| **Dynamic Group Signatures (Bellare-Shi-Zhang)** | 2005 | Group (dynamic) | Efficient join/revoke of members without re-keying; practical for real deployments [[1]](https://eprint.iacr.org/2005/385) |
-
-**State of the art:** CLSAG (privacy coins), dynamic group sigs (enterprise with member management), Raptor (PQ ring sig).
-
-**Production readiness:** Production
-CLSAG deployed in Monero mainnet; group signatures used in enterprise identity systems.
-
-**Implementations:**
-- [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, CLSAG implementation
-
-**Security status:** Secure
-No known practical attacks on CLSAG at current parameters; formal security proofs in the random oracle model.
-
-**Community acceptance:** Widely trusted
-CLSAG peer-reviewed and battle-tested in Monero; group signatures well-studied in academic literature for two decades.
-
----
-
-## Adaptor Signatures / Scriptless Scripts
-
-**Goal:** Conditional signatures. A "pre-signature" that becomes a valid signature only when a secret value is revealed — and revealing the signature reveals the secret. Enables trustless atomic swaps and payment channels without scripting.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Schnorr Adaptor Signatures** | 2018 | Schnorr / DLP | Pre-sign with respect to a point T; completion reveals discrete log of T [[1]](https://eprint.iacr.org/2020/476) |
-| **ECDSA Adaptor Signatures** | 2020 | ECDSA | Adaptor for ECDSA; enables scriptless scripts on Bitcoin pre-Taproot [[1]](https://eprint.iacr.org/2020/476) |
-| **Scriptless Scripts (Poelstra)** | 2017 | Schnorr + adaptor | Atomic swaps, payment channels, discreet log contracts — no on-chain scripts [[1]](https://download.wpsoftware.net/bitcoin/wizardry/mw-slides/2017-03-mit-bitcoin-expo/slides.pdf) |
-
-**State of the art:** Schnorr adaptor sigs (Bitcoin Taproot), ECDSA adaptors (cross-chain swaps).
-
-**Production readiness:** Experimental
-Used in atomic swap prototypes and Lightning channel research; not yet widely deployed in production.
-
-**Implementations:**
-- [LLFourn/secp256kfun](https://github.com/LLFourn/secp256kfun) ⭐ 111 — Rust, adaptor signatures for secp256k1
-- [BlockstreamResearch/scriptless-scripts](https://github.com/BlockstreamResearch/scriptless-scripts) ⭐ 169 — documentation and reference
-
-**Security status:** Secure
-No known attacks; security reduces to the underlying Schnorr/ECDSA assumptions.
-
-**Community acceptance:** Emerging
-Active research in the Bitcoin developer community; scriptless scripts enabling Taproot-based cross-chain swaps.
-
----
-
-## One-Time Signatures (OTS)
-
-**Goal:** Post-quantum authentication. Sign exactly one message; the signing key is spent. Quantum-safe: security depends only on hash function collision resistance. Building block of XMSS, LMS, and SPHINCS+.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Lamport OTS** | 1979 | Hash function | Simplest OTS; key size = 2n×hash; one message only [[1]](https://dl.acm.org/doi/10.1145/357980.358017) |
-| **WOTS (Winternitz OTS)** | 1980 | Hash chains | Compact variant; trade key size vs. signing cost [[1]](https://link.springer.com/chapter/10.1007/978-1-4684-4730-9_10) |
-| **WOTS+** | 2012 | Hash chains + bitmask | Tighter security proof; used inside XMSS and SPHINCS+ [[1]](https://eprint.iacr.org/2017/965) |
-| **FORS** | 2019 | Hash forest | Few-time variant; used inside SPHINCS+ for hypertree leaves [[1]](https://eprint.iacr.org/2017/349) |
-
-**State of the art:** WOTS+ (used in XMSS, LMS, SPHINCS+), FORS (SPHINCS+ inner layer).
-
-**Production readiness:** Production
-WOTS+ deployed inside XMSS (RFC 8391), LMS (RFC 8554), and SPHINCS+ (FIPS 205) as leaf-level signing primitives.
-
-**Implementations:**
-- [XMSS reference](https://github.com/XMSS/xmss-reference) ⭐ 58 — C, reference WOTS+ implementation
-- [hash-sigs](https://github.com/cisco/hash-sigs) ⭐ 50 — C, LMS/HSS with LM-OTS
-- [sphincsplus](https://github.com/sphincs/sphincsplus) ⭐ 218 — C, reference SPHINCS+ with WOTS+ and FORS
-
-**Security status:** Secure
-Security depends solely on hash function properties; no known attacks at recommended parameters.
-
-**Community acceptance:** Standard
-NIST SP 800-208 recommends XMSS and LMS (which use WOTS+/LM-OTS); FORS standardized inside FIPS 205.
-
----
-
-## Attribute-Based Signatures (ABS)
-
-**Goal:** Policy-based authentication. Sign a message with a set of attributes; the signature verifies if the signer's attributes satisfy a policy — without revealing which attributes or the signer's identity. Dual of ABE for signatures.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Maji-Prabhakaran-Rosulek ABS** | 2011 | Pairings | First ABS with expressive policies (monotone span programs) [[1]](https://eprint.iacr.org/2010/595) |
-| **Sakai-Attrapadung ABS** | 2016 | Pairings | Efficient constant-size signatures for AND policies [[1]](https://eprint.iacr.org/2016/246) |
-| **Lattice ABS** | 2014 | SIS / LWE | Post-quantum attribute-based signatures [[1]](https://eprint.iacr.org/2014/279) |
-
-**State of the art:** Pairing-based ABS (practical), Lattice ABS (PQ setting).
-
-**Production readiness:** Research
-Academic prototypes only; no production deployment of attribute-based signatures.
-
-**Implementations:**
-- [FAME-ABE](https://github.com/sagrawal87/ABE) ⭐ 206 — Python, pairing-based ABE (related ABS primitives)
-
-**Security status:** Secure
-No known attacks on pairing-based or lattice-based ABS constructions at recommended parameters.
-
-**Community acceptance:** Niche
-Well-studied in the attribute-based cryptography community; limited adoption outside academic research.
-
----
-
-## Sanitizable Signatures
-
-**Goal:** Authorized modification. A signer designates a "sanitizer" who can modify specified parts of a signed message while keeping the signature valid. Non-designated parts remain immutable. Used in medical records, redactable documents.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Ateniese et al.** | 2005 | Chameleon hash + sig | First sanitizable sig; sanitizer can change designated blocks [[1]](https://eprint.iacr.org/2004/245) |
-| **Brzuska et al. (formal model)** | 2009 | Generic | Formal security definitions: immutability, accountability, transparency [[1]](https://link.springer.com/chapter/10.1007/978-3-642-00468-1_28) |
-| **Sanitizable Sig with Accountability** | 2015 | Group sig + chameleon hash | Detect who sanitized; full accountability [[1]](https://eprint.iacr.org/2015/845) |
-
-**State of the art:** Accountable sanitizable sigs (GDPR: right to modify medical records while preserving audit trail).
-
-**Production readiness:** Research
-Academic prototypes; proposed for GDPR-compliant medical record redaction but no production deployment.
-
-**Implementations:**
-- [battery-sse/san-sig](https://github.com/battery-sse) — Java, reference sanitizable signature implementations
-- No widely-adopted production library exists
-
-**Security status:** Secure
-Formal security models (immutability, accountability, transparency) with proofs; no known attacks.
-
-**Community acceptance:** Niche
-Studied in the redactable/malleable signature community; limited to specialized document management use cases.
-
----
-
-## Homomorphic Signatures
-
-**Goal:** Compute on authenticated data. Given signatures on messages m₁,...,mₙ, anyone can derive a valid signature on f(m₁,...,mₙ) without the signing key. Enables verifiable delegation of computation on signed datasets.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Linearly Homomorphic Sig (Boneh-Freeman)** | 2011 | Pairings / SIS | Sign vectors; derive sig on any linear combination [[1]](https://eprint.iacr.org/2009/025) |
-| **Homomorphic Sig for Polynomials (Catalano-Fiore)** | 2013 | Pairings | Evaluate multivariate polynomials on signed data; extended to degree-d polynomials [[1]](https://eprint.iacr.org/2012/527) |
-| **Fully Homomorphic Sig (Gennaro-Wichs)** | 2013 | FHE + SNARK | Sign data; derive sig on ANY computable function [[1]](https://eprint.iacr.org/2012/023) |
-| **Gorbunov-Vaikuntanathan-Wichs Leveled HS** | 2015 | Polynomial-size circuits | Fully homomorphic sig from lattices; circuit privacy; standard LWE [[1]](https://eprint.iacr.org/2014/463) |
-| **Context-Hiding HS (Fleischhacker et al.)** | 2016 | Linear / circuits | Hides intermediate computation path; output σ_f reveals nothing about σᵢ [[1]](https://eprint.iacr.org/2016/457) |
-
-**State of the art:** Lattice-based leveled homomorphic signatures (Gorbunov et al. 2015) support arbitrary circuits and achieve context-hiding. Applications include verifiable outsourced ML (model training on signed data), authenticated stream processing, and [Verifiable FHE](07-homomorphic-functional-encryption.md#verifiable-fhe). See also [Sanitizable Signatures](#sanitizable-signatures) for a related but weaker primitive.
-
-**Production readiness:** Research
-Fully homomorphic signatures remain theoretical; linear homomorphic sigs have academic prototypes only.
-
-**Implementations:**
-- No widely used production implementations; reference code in academic paper repositories
-
-**Security status:** Secure
-Lattice-based constructions (Gorbunov et al. 2015) proven secure under standard LWE; pairing-based variants under DLIN.
-
-**Community acceptance:** Niche
-Published at top venues (CRYPTO, EUROCRYPT); important for verifiable computation but limited practical adoption.
-
----
-
-## Structure-Preserving Signatures (SPS)
-
-**Goal:** Composability with pairing-based proofs. Messages, public keys, and signatures are all group elements — enabling direct composition with Groth-Sahai proofs without hashing into the group. Foundation of provably secure anonymous credentials.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Abe-Haralambiev-Ohkubo (AHO)** | 2010 | Pairings (Type III) | First SPS; signatures on group element vectors [[1]](https://eprint.iacr.org/2010/133) |
-| **Abe-Groth-Ohkubo (AGO)** | 2011 | Pairings | Optimal SPS: 7 group elements, tight reduction [[1]](https://eprint.iacr.org/2011/358) |
-| **Equivalence-Class Signatures (EQS)** | 2014 | Pairings | Sign equivalence classes of vectors; basis of delegatable credentials [[1]](https://eprint.iacr.org/2014/944) |
-| **Mercurial Signatures** | 2008 | Pairings | Sign on equivalence classes with additional randomizability [[1]](https://eprint.iacr.org/2008/163) |
-
-**State of the art:** EQS (Hanser-Slamanig 2014) for anonymous credentials; SPS are the "right" primitive for composable pairing-based crypto. See [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials).
-
-**Production readiness:** Research
-Academic constructions; used as building blocks in provable-security anonymous credential designs.
-
-**Implementations:**
-- [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library used to implement SPS schemes
-- [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit suitable for SPS implementations
-
-**Security status:** Secure
-No known attacks; security proved under standard pairing assumptions in Type III groups.
-
-**Community acceptance:** Niche
-Foundation of composable pairing-based cryptography; primarily used in academic anonymous credential constructions.
-
----
-
-## Rerandomizable Signatures (PS Signatures)
-
-**Goal:** Unlinkable credential presentation. A signature can be publicly rerandomized into a fresh, valid signature on the same message — unlinkable to the original. Enables multi-show anonymous credentials without interaction with the issuer.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **CL Signatures (Camenisch-Lysyanskaya)** | 2004 | RSA / pairings | First practical rerandomizable sigs for anonymous credentials [[1]](https://eprint.iacr.org/2004/076) |
-| **PS Signatures (Pointcheval-Sanders)** | 2016 | Pairings (Type III) | Short, efficient, rerandomizable; basis of modern anon credentials [[1]](https://eprint.iacr.org/2015/525) |
-| **BBS+ Signatures** | 2004 | Pairings | Rerandomizable with selective disclosure; W3C Verifiable Credentials [[1]](https://eprint.iacr.org/2009/095) |
-| **PS Multi-Message** | 2018 | Pairings | Sign multiple messages; selectively disclose subset [[1]](https://eprint.iacr.org/2017/1197) |
-
-**State of the art:** BBS+ (W3C VC standard, ISO mDL); PS signatures for academic constructions. Foundation of [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials) and [Structure-Preserving Signatures](#structure-preserving-signatures-sps).
-
-**Production readiness:** Mature
-BBS+ used in W3C Verifiable Credentials and ISO mDL; PS signatures deployed in academic credential systems.
-
-**Implementations:**
-- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — Rust/TypeScript, BBS+ rerandomizable sigs
-
-**Security status:** Secure
-No known practical attacks; BBS+ has well-studied security proofs under pairing assumptions.
-
-**Community acceptance:** Widely trusted
-BBS+ adopted by W3C for Verifiable Credentials; CL signatures underpin Hyperledger AnonCreds.
-
----
-
-## Forward-Secure Signatures & Encryption
-
-**Goal:** Protect the past. If the current secret key is compromised, all messages/signatures from previous time periods remain secure. The key evolves forward; past keys are deleted.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Bellare-Miner Forward-Secure Sig** | 1999 | Key evolution tree | First FS signature; binary tree of keys; update = move to next leaf [[1]](https://eprint.iacr.org/1999/009) |
-| **Itkis-Reyzin FS-Sig** | 2001 | Factoring | Efficient FS signature based on Guillou-Quisquater [[1]](https://eprint.iacr.org/2001/006) |
-| **Canetti-Halevi-Katz FS-PKE** | 2003 | HIBE → FS-PKE | Elegant reduction: binary tree HIBE = forward-secure encryption [[1]](https://eprint.iacr.org/2003/083) |
-| **0-RTT TLS (forward secrecy)** | 2018 | Ephemeral DH + puncturable enc | TLS 1.3 0-RTT achieves FS via session ticket puncturing; see [Puncturable Encryption](02-authenticated-structured-encryption.md#puncturable-encryption) [[1]](https://www.rfc-editor.org/rfc/rfc8446) |
-
-**State of the art:** TLS 1.3 ephemeral DH (practical FS), Signal ratchet (continuous FS), puncturable encryption (0-RTT FS).
-
-**Production readiness:** Production
-TLS 1.3 ephemeral DH provides forward secrecy in all major browsers and servers; Signal ratchet deployed at scale.
-
-**Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, TLS 1.3 ephemeral DH forward secrecy
-- [rustls](https://github.com/rustls/rustls) ⭐ 7.3k — Rust, TLS 1.3 with forward secrecy
-
-**Security status:** Secure
-No known attacks on key-evolving forward-secure constructions; TLS 1.3 FS extensively analyzed.
-
-**Community acceptance:** Standard
-IETF RFC 8446 (TLS 1.3) mandates forward secrecy; NIST and NSA guidance require FS in new deployments.
-
----
-
-## Sequential Aggregate Signatures
-
-**Goal:** Chain-ordered aggregation. Each signer in sequence adds their signature to the aggregate — the final result is one compact signature validating all signers in order. Used in BGP route attestation, certificate chains.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Lysyanskaya-Micali-Reyzin-Shacham (LMRS)** | 2004 | RSA + certified trapdoor | First sequential aggregate sig; signer-by-signer aggregation [[1]](https://eprint.iacr.org/2003/197) |
-| **Boneh-Gentry-Lynn-Shacham (BGLS)** | 2003 | BLS + pairings | Non-sequential aggregate: any order; see [Digital Signatures](#updatable-signatures) for BLS [[1]](https://eprint.iacr.org/2002/175) |
-| **History-Free Sequential Aggregate (HSA)** | 2012 | RSA-based | No need to see previous messages; only aggregate sig passed along [[1]](https://eprint.iacr.org/2012/486) |
-
-**State of the art:** BGLS (general aggregation), LMRS (sequential/routing), HSA (bandwidth-optimized).
-
-**Production readiness:** Mature
-Well-studied schemes with formal proofs; proposed for BGP route attestation but limited production deployment.
-
-**Implementations:**
-No notable open-source implementations available.
-
-**Security status:** Secure
-No known attacks on BGLS or LMRS at recommended parameters; security proved under standard pairing assumptions.
-
-**Community acceptance:** Niche
-Used in academic proposals for BGP security (BGPSEC) and certificate chain compression; limited real-world adoption.
-
----
-
-## Accountable Multi-Signatures / Subgroup Signatures
+### Accountable Multi-Signatures / Subgroup Signatures
 
 **Goal:** Identify non-signers. In a multi-signature or threshold protocol, produce a compact proof that identifies *which* parties signed (or failed to sign). Important for BFT consensus where non-signing validators must be slashed.
 
@@ -432,89 +146,7 @@ Core component of Ethereum proof-of-stake consensus; adopted by major blockchain
 
 ---
 
-## Partially Blind Signatures
-
-**Goal:** Controlled anonymity with public metadata. The signer blindly signs a message m without seeing it, but both parties agree on a public info field c embedded in the signature. Enables e-cash with visible denominations but hidden serial numbers.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Abe-Fujisaki PBS** | 1996 | DLP | First partially blind signature; public info c agreed before signing [[1]](https://doi.org/10.1007/BFb0054858) |
-| **Abe-Okamoto PBS** | 2000 | DLP | Provably secure partially blind Schnorr-type scheme [[1]](https://doi.org/10.1007/3-540-44598-6_17) |
-| **Pairing-Based PBS** | 2005 | Pairings | Short partially blind signatures from bilinear maps [[1]](https://eprint.iacr.org/2005/123) |
-| **Lattice PBS (Rückert)** | 2010 | SIS | Post-quantum partially blind signatures from lattices [[1]](https://eprint.iacr.org/2009/220) |
-
-**State of the art:** Pairing-based PBS for efficiency; lattice PBS for PQ. Extends [Blind Signatures](#blind-signatures) with issuer-visible metadata. Used in e-cash systems and [Privacy Pass](11-anonymity-credentials.md#privacy-pass--anonymous-tokens).
-
-**Production readiness:** Experimental
-Academic reference implementations only; proposed for e-cash with visible denominations but not widely deployed.
-
-**Implementations:**
-- Academic reference implementations only for pairing and lattice PBS
-
-**Security status:** Secure
-No known attacks on pairing-based or lattice PBS constructions; extends blind signature security models.
-
-**Community acceptance:** Niche
-Studied in the blind signature and e-cash communities; lattice PBS provides a post-quantum path.
-
----
-
-## Aggregate Signatures (BLS Aggregate)
-
-**Goal:** Non-interactive signature compression. Anyone can combine N signatures from N different signers on N different messages into a single short aggregate signature. Verification checks all N messages at once. Critical for blockchain consensus scalability.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **BGLS Aggregate Signatures** | 2003 | Pairings (BLS) | First aggregate sigs; combine n BLS sigs into one; verify in O(n) pairings [[1]](https://eprint.iacr.org/2002/029) |
-| **BGLS Same-Message Aggregate** | 2003 | Pairings | n signers on same message → one sig; single pairing to verify [[1]](https://eprint.iacr.org/2002/029) |
-| **Ethereum BLS Aggregation** | 2020 | BLS12-381 | Aggregate 100k+ validator attestations per epoch; EIP-2537 [[1]](https://eips.ethereum.org/EIPS/eip-2537) |
-| **Compact Multi-Signatures (Boneh-Drijvers-Neven)** | 2018 | Pairings | Aggregate sigs with proof of possession; prevents rogue-key attacks [[1]](https://eprint.iacr.org/2018/483) |
-
-**State of the art:** BLS aggregation on BLS12-381 (Ethereum consensus); differs from [Sequential Aggregate Signatures](#sequential-aggregate-signatures) in that aggregation is non-interactive and order-independent.
-
-**Production readiness:** Production
-BLS aggregation deployed in Ethereum consensus layer, aggregating 100k+ validator attestations per epoch.
-
-**Implementations:**
-- [blst](https://github.com/supranational/blst) ⭐ 554 — C/Rust/Go, BLS12-381 aggregation (Ethereum)
-- [herumi/bls](https://github.com/herumi/bls) ⭐ 319 — C++/Go, BLS signature library
-
-**Security status:** Secure
-No known practical attacks with proof-of-possession; rogue-key attacks prevented by PoP or key aggregation coefficients.
-
-**Community acceptance:** Standard
-EIP-2537 standardizes BLS precompile for Ethereum; BLS12-381 adopted across major blockchain platforms.
-
----
-
-## Linkable Ring Signatures
-
-**Goal:** Anonymous signing with double-spend detection. Sign anonymously within a ring, but if the same signer signs twice (on the same tag/epoch), the two signatures are publicly linkable — without revealing the signer. Foundation of privacy-preserving cryptocurrencies.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Liu-Wei-Wong LRS** | 2004 | DLP | First linkable ring signature; linking tag derived from signer's key [[1]](https://eprint.iacr.org/2004/027) |
-| **CryptoNote Ring Signatures** | 2013 | EC + key images | One-time ring sigs with key images for double-spend detection; Monero [[1]](https://www.getmonero.org/resources/research-lab/pubs/whitepaper_annotated.pdf) |
-| **RingCT (Ring Confidential Transactions)** | 2016 | Pedersen + Borromean | Combines linkable ring sigs + confidential amounts; Monero v2+ [[1]](https://eprint.iacr.org/2015/1098) |
-| **Triptych** | 2021 | DLP + commitments | Logarithmic-size linkable ring sigs; Monero research [[1]](https://eprint.iacr.org/2020/018) |
-
-**State of the art:** Triptych / Seraphis for next-gen Monero; RingCT currently deployed. Extends [Ring & Group Signatures](#ring--group-signatures) with linkability.
-
-**Production readiness:** Production
-RingCT/CLSAG deployed in Monero mainnet with key images for double-spend detection.
-
-**Implementations:**
-- [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, RingCT / CLSAG
-
-**Security status:** Secure
-No known practical attacks; linkability and unforgeability formally proved under DLP assumptions.
-
-**Community acceptance:** Widely trusted
-Foundation of Monero's privacy model; Triptych and Seraphis are actively researched next-generation replacements.
-
----
-
-## Threshold Blind Signatures
+### Threshold Blind Signatures
 
 **Goal:** Distributed blind signing. A threshold t-of-n signers jointly produce a blind signature — no individual signer sees the message, and no fewer than t signers can produce a valid signature. Combines the anonymity of [Blind Signatures](#blind-signatures) with the distributed trust of [Threshold Signatures](#threshold-signature-schemes-tss).
 
@@ -540,193 +172,7 @@ Growing interest for decentralized anonymous token issuance; lattice-based varia
 
 ---
 
-## Constrained / Policy-Based Signatures
-
-**Goal:** Delegated signing with restrictions. Derive a constrained signing key that can only sign messages satisfying a predicate (e.g., "emails from @company.com", "transactions under $1000"). The master key signs anything; constrained keys are limited.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Bellare-Fuchsbauer Policy-Based Sigs** | 2014 | Generic | Formal model; signing key restricted to a message space defined by a policy [[1]](https://eprint.iacr.org/2014/100) |
-| **Boneh-Kim Constrained Sigs** | 2017 | Pairings / lattices | Constrained keys for circuit predicates; related to constrained PRFs [[1]](https://eprint.iacr.org/2017/502) |
-| **Functional Signatures (Boyle-Goldwasser-Ivan)** | 2014 | iO / pairings | Sign f(m) using a key for function f, without seeing m [[1]](https://eprint.iacr.org/2013/401) |
-
-**State of the art:** Constrained signatures from lattices (Boneh-Kim 2017); related to [Constrained PRFs](01-foundational-primitives.md#puncturable--constrained-prf). Enables fine-grained delegation without proxy re-signing.
-
-**Production readiness:** Research
-Academic prototypes only; no production deployment of constrained or functional signatures.
-
-**Implementations:**
-- No production-quality implementations; academic prototypes accompany papers
-- Related: [constrained-prf](https://github.com/nicolo-ribaudo/ring-signature) — conceptual overlap with constrained PRFs
-
-**Security status:** Secure
-No known attacks; security proved under pairing or lattice assumptions depending on construction.
-
-**Community acceptance:** Niche
-Studied in the delegation and fine-grained access control community; related to constrained PRFs.
-
----
-
-## Designated Verifier Signatures / Proofs
-
-**Goal:** Restricted verifiability. Only the designated verifier can check the signature's validity; they cannot convince any third party. Provides non-transferability of authentication.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **JSI Designated Verifier Signature** | 1996 | DLP | First DVS; designated verifier can simulate valid-looking signatures [[1]](https://link.springer.com/chapter/10.1007/3-540-49677-7_30) |
-| **Strong DVS (Saeednia-Kremer-Markowitch)** | 2003 | DLP | Strong: even the designated verifier cannot transfer conviction [[1]](https://link.springer.com/chapter/10.1007/978-3-540-39927-8_5) |
-| **Universal DVS (Steinfeld-Bull-Wang-Pieprzyk)** | 2003 | Any signature scheme | Transform any signature into a designated-verifier variant [[1]](https://eprint.iacr.org/2003/192) |
-| **Identity-Based DVS (Susilo-Zhang-Mu)** | 2004 | Pairings | DVS in identity-based setting; no PKI needed [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30108-0_16) |
-
-**State of the art:** Strong DVS with efficient pairing-based constructions; used in privacy-preserving authentication where non-transferability is critical.
-
-**Production readiness:** Mature
-Well-studied constructions with efficient pairing-based instantiations; used in privacy-preserving authentication.
-
-**Implementations:**
-- Pairing-based DVS available in [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit
-
-**Security status:** Secure
-No known attacks; strong DVS achieves non-transferability even against the designated verifier.
-
-**Community acceptance:** Niche
-Used in privacy-preserving authentication protocols where non-transferability of proofs is required.
-
----
-
-## Undeniable Signatures
-
-**Goal:** Controlled verifiability. The signer must cooperate interactively for signature verification — prevents unsanctioned redistribution of signatures. Signer can also run a *disavowal* protocol to prove a forgery.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Chaum-van Antwerpen** | 1989 | DLP | First undeniable signature; interactive verify + disavowal [[1]](https://link.springer.com/chapter/10.1007/0-387-34805-0_20) |
-| **Chaum (improved)** | 1991 | DLP | Zero-knowledge confirmation and disavowal protocols [[1]](https://doi.org/10.1007/3-540-46766-1_28) |
-| **Designated Confirmer Signatures** | 1994 | DLP | Third party can confirm; signer need not be online [[1]](https://doi.org/10.1007/BFb0053434) |
-| **Convertible Undeniable Signatures (Boyar et al.)** | 1991 | DLP | Signer can release a token to make the signature universally verifiable [[1]](https://doi.org/10.1007/3-540-38424-3_17) |
-
-**State of the art:** Largely superseded by designated-verifier signatures and chameleon signatures for most applications, but foundational to the concept of controlled verification.
-
-**Production readiness:** Deprecated
-Largely replaced by designated-verifier signatures and chameleon signatures for controlled verification.
-
-**Implementations:**
-- Historical implementations in early PGP-adjacent libraries
-- No actively maintained production library
-
-**Security status:** Superseded
-Technically secure but replaced by DVS and other non-transferable signature schemes with better properties.
-
-**Community acceptance:** Niche
-Historically important as the first controlled-verification scheme; now primarily of theoretical interest.
-
----
-
-## Fail-Stop Signatures
-
-**Goal:** Provable forgery detection. If an adversary with unbounded computational power forges a signature, the legitimate signer can produce an unconditional proof of forgery — the system "fails and stops" rather than silently accepting. Signers have information-theoretic protection; verifiers have computational protection. Strictly stronger than standard signatures.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Pfitzmann-Waidner Fail-Stop Sigs** | 1990 | Factoring + prekey | First fail-stop signature; signer proves forgery unconditionally [[1]](https://epubs.siam.org/doi/10.1137/S009753979324557X) |
-| **Pedersen-Pfitzmann FSS** | 1997 | DLP | Efficient fail-stop from discrete log; SIAM J. Computing [[1]](https://epubs.siam.org/doi/10.1137/S009753979324557X) |
-| **PQ Fail-Stop Sigs** | 2024 | Lattice | "That's Not My Signature!" — fail-stop for post-quantum world; CRYPTO 2024 [[1]](https://link.springer.com/chapter/10.1007/978-3-031-68376-3_4) |
-
-**State of the art:** PQ fail-stop signatures (CRYPTO 2024); revived interest for post-quantum contexts. Extends [Digital Signatures](#updatable-signatures).
-
-**Production readiness:** Research
-Academic prototypes; PQ fail-stop sigs (CRYPTO 2024) revived interest but no production implementations.
-
-**Implementations:**
-- No production-quality library
-
-**Security status:** Secure
-No known attacks; signers have information-theoretic forgery detection guarantees.
-
-**Community acceptance:** Niche
-Renewed interest for post-quantum contexts (CRYPTO 2024); otherwise limited to theoretical cryptography.
-
----
-
-## Proxy Signatures
-
-**Goal:** Delegated signing. Alice delegates her signing authority to Bob (proxy) who can sign messages on her behalf. The resulting signature is verifiable as a proxy signature, distinguishable from Alice's direct signatures.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Mambo-Usuda-Okamoto** | 1996 | DLP | First proxy signature scheme; delegation by warrant [[1]](https://link.springer.com/chapter/10.1007/BFb0028379) |
-| **Boldyreva et al. (proxy re-sig)** | 2003 | Bilinear pairings | Proxy re-signatures: convert Alice's sig into Bob's; see also [PRE](07-homomorphic-functional-encryption.md#proxy-re-encryption-pre) [[1]](https://eprint.iacr.org/2003/096) |
-| **Short Proxy Sig (Fuchsbauer-Pointcheval)** | 2008 | Pairings | Efficient, short proxy signatures with security proof [[1]](https://eprint.iacr.org/2008/460) |
-
-**State of the art:** proxy re-signatures (certificate translation), delegation by warrant (enterprise workflows).
-
-**Production readiness:** Mature
-Well-studied constructions; proxy re-signatures used in certificate translation and enterprise delegation workflows.
-
-**Implementations:**
-- Pairing-based constructions implementable via [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++
-
-**Security status:** Secure
-No known attacks on pairing-based proxy signature constructions at recommended parameters.
-
-**Community acceptance:** Niche
-Used in enterprise delegation and certificate translation; related to proxy re-encryption schemes.
-
----
-
-## Traceable Signatures
-
-**Goal:** Accountability in group signatures. A group member can sign anonymously, but if they exceed a signing quota (e.g., sign more than k times in an epoch), the group manager can trace and identify them. Stronger than linkability — full identity recovery.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Kiayias-Tsiounis-Yung Traceable Sigs** | 2004 | DLP + pairings | First traceable sigs; manager traces over-signers; CCA-anonymous [[1]](https://eprint.iacr.org/2004/007) |
-| **Traceable Sigs with Stepping Capabilities** | 2008 | Pairings | Incremental tracing: trace after threshold violations [[1]](https://doi.org/10.1007/978-3-540-78967-3_7) |
-| **Lattice Traceable Sigs** | 2019 | LWE / SIS | Post-quantum traceable group signatures [[1]](https://eprint.iacr.org/2019/1158) |
-
-**State of the art:** Lattice-based traceable sigs for PQ; extends [Ring & Group Signatures](#ring--group-signatures) and [Linkable Ring Signatures](#linkable-ring-signatures) with full traceability.
-
-**Production readiness:** Research
-Academic prototypes; lattice-based traceable sigs (2019) extend to post-quantum but remain undeployed.
-
-**Implementations:**
-- Academic prototypes accompany published papers
-- Implementable via [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit
-
-**Security status:** Secure
-No known attacks; CCA-anonymity and traceability formally proved under pairing assumptions.
-
-**Community acceptance:** Niche
-Extends group signatures with accountability; relevant to PoS consensus and anonymous-but-auditable systems.
-
----
-
-## Ring VRF
-
-**Goal:** Anonymous pseudorandom identity. Combine ring signature anonymity with VRF pseudorandomness: prove membership in a ring and output a unique, deterministic, unlinkable pseudonym per context — without revealing which ring member you are.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Burdges-de Valence-Hopwood-Patak Ring VRF** | 2023 | Schnorr + ring + VRF | First Ring VRF; unlinkable pseudonymous identity across contexts [[1]](https://eprint.iacr.org/2023/002) |
-| **ZK Continuations for Ring VRF** | 2023 | Groth16 + recursion | Efficient Ring VRF via recursive ZK proofs [[1]](https://eprint.iacr.org/2023/002) |
-
-**State of the art:** Ring VRF (2023); enables anonymous rate-limiting, anonymous login, and credential systems. Combines [VRF](#verifiable-random-functions-ecvrf-rfc-9381) and [Ring Signatures](#ring--group-signatures).
-
-**Production readiness:** Experimental
-First Ring VRF construction published in 2023; no production deployment yet.
-
-**Implementations:**
-No notable open-source implementations available.
-
-**Security status:** Secure
-No known attacks; security combines ring signature anonymity with VRF pseudorandomness guarantees.
-
-**Community acceptance:** Emerging
-Active research for anonymous rate-limiting, anonymous login, and decentralized identity applications.
-
----
-
-## Threshold Ring Signatures
+### Threshold Ring Signatures
 
 **Goal:** Anonymous threshold signing. At least t members of a ring must cooperate to produce a valid signature, but the ring hides which members signed. Combines the anonymity of ring signatures with the distributed trust of threshold signatures.
 
@@ -753,62 +199,7 @@ Combines ring signature anonymity with threshold trust; limited to specialized p
 
 ---
 
-## Broadcast Authentication (TESLA)
-
-**Goal:** Asymmetric authentication from symmetric primitives. Authenticate broadcast/multicast messages using only MACs — the time delay between sending and key disclosure creates an asymmetry that prevents forgery. No public-key crypto needed.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **TESLA** | 2000 | Hash chain + MAC | Timed Efficient Stream Loss-tolerant Authentication; delayed key disclosure [[1]](https://doi.org/10.1109/JSAC.2002.806128) |
-| **μTESLA** | 2002 | TESLA + sensor optimizations | Lightweight TESLA for sensor networks; base station bootstraps keys [[1]](https://doi.org/10.1145/586110.586132) |
-| **TESLA++** | 2003 | TESLA + immediate auth | Hybrid: some packets immediately verifiable, rest via TESLA [[1]](https://doi.org/10.1145/948109.948113) |
-
-**State of the art:** TESLA for multicast authentication; μTESLA for IoT/sensor networks. Alternative to [Digital Signatures](#updatable-signatures) when computation is constrained.
-
-**Production readiness:** Mature
-TESLA deployed in IoT/sensor networks (Contiki-NG); muTESLA used in resource-constrained broadcast authentication.
-
-**Implementations:**
-- [contiki-ng](https://github.com/contiki-ng/contiki-ng) ⭐ 1.5k — C, includes TESLA for IoT broadcast auth
-
-**Security status:** Secure
-No known attacks; security depends on hash chain integrity and time synchronization assumptions.
-
-**Community acceptance:** Niche
-Standard for multicast/broadcast authentication in sensor networks; alternative to public-key sigs when computation is constrained.
-
----
-
-## Identity-Based Signatures (IBS)
-
-**Goal:** Sign with identity, verify with identity. The signer obtains a signing key from a PKG using their identity string; anyone can verify using the signer's identity and master public key — no certificate lookup needed. Complement to IBE.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Shamir IBS (concept)** | 1984 | — | First proposal of identity-based signatures alongside IBE [[1]](https://doi.org/10.1007/3-540-39568-7_5) |
-| **Cha-Cheon IBS** | 2003 | Pairings (BDH) | Efficient pairing-based IBS from Gap-DH [[1]](https://eprint.iacr.org/2002/083) |
-| **Paterson-Schuldt IBS** | 2006 | Pairings | Provably secure in standard model (no random oracle) [[1]](https://eprint.iacr.org/2006/080) |
-| **Lattice IBS (Rückert)** | 2010 | SIS/LWE | Post-quantum identity-based signatures [[1]](https://eprint.iacr.org/2009/222) |
-
-**State of the art:** Pairing-based IBS (standard model); lattice IBS for PQ. Complement to [IBE](#identity-based-signatures-ibs); same PKG architecture.
-
-**Production readiness:** Mature
-Well-studied constructions with production-quality pairing libraries; used in identity-based PKI deployments.
-
-**Implementations:**
-- [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing-based IBS implementations
-- [charm-crypto](https://github.com/JHUISI/charm) ⭐ 633 — Python, pairing-based IBS and IBE
-- [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, efficient pairings for IBS
-
-**Security status:** Secure
-No known attacks; Paterson-Schuldt achieves standard-model security without random oracles.
-
-**Community acceptance:** Niche
-Complement to IBE; adopted in enterprise identity systems where certificate-free PKI is desired.
-
----
-
-## MuSig / MuSig2 (Schnorr Multi-Signatures)
+### MuSig / MuSig2 (Schnorr Multi-Signatures)
 
 **Goal:** Key-aggregating n-of-n multi-signatures. All n signers jointly produce a single standard Schnorr signature valid under an aggregate public key indistinguishable from a single-signer key. Enables cooperative Bitcoin Taproot key-path spends with no on-chain multi-sig overhead.
 
@@ -838,7 +229,991 @@ BIP 327 standardized for Bitcoin; MuSig-L extends to post-quantum via lattice-ba
 
 ---
 
-## Boneh-Boyen (BB) Short Signatures
+### FROST Threshold Schnorr Signatures
+
+**Goal:** Flexible Round-Optimized Schnorr Threshold signatures. A *t*-of-*n* threshold Schnorr signature scheme requiring only two rounds of communication. The resulting signature is a standard Schnorr signature — verifiers cannot distinguish a FROST-generated signature from one produced by a single signer. Designed for distributed key custody without a trusted dealer.
+
+| Scheme | Year | Rounds | Note |
+|--------|------|--------|------|
+| **FROST (Komlo-Goldberg)** | 2020 | 2 | Original FROST: preprocessing round + signing round; UC-secure under OMDL [[1]](https://eprint.iacr.org/2020/852) |
+| **FROST2 (re:FROST)** | 2023 | 2 | Refined security proof; identifiable abort; robustness extensions [[1]](https://eprint.iacr.org/2023/899) |
+| **FROST-DKG (Pedersen DKG + FROST)** | 2020 | 2 + DKG | Distributed key generation phase (Pedersen or Gennaro-Goldfeder DKG) followed by FROST signing [[1]](https://eprint.iacr.org/2020/852) |
+| **FROST-Ed25519 (RFC 9591)** | 2024 | 2 | IETF specification of FROST for Ed25519 and Ristretto255; interoperable wire format [[1]](https://datatracker.ietf.org/doc/rfc9591/) |
+| **FROST-secp256k1** | 2023 | 2 | FROST instantiation for Bitcoin's secp256k1 curve; compatible with BIP 340 (Schnorr) [[1]](https://github.com/ZcashFoundation/frost) |
+
+FROST achieves round-optimality for threshold Schnorr: Round 1 (preprocessing) generates nonce commitments which can be done offline before a message is known; Round 2 (signing) produces signature shares given a message. The coordinator aggregates shares into a single Schnorr signature. Security requires the One-More Discrete Logarithm (OMDL) assumption. FROST does not inherently provide robustness (a malicious participant can cause abort); the ROAST protocol wraps FROST to achieve guaranteed output delivery in asynchronous settings. The Zcash Foundation maintains a production-quality Rust implementation supporting Ed25519, Ristretto255, secp256k1, and P-256.
+
+**State of the art:** RFC 9591 (2024) standardizes FROST for Ed25519/Ristretto255. Used in Zcash (NU5 multisig), Bitcoin custody solutions, and federated signing services. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss), [ROAST (Robust Async FROST)](#roast-robust-asynchronous-threshold-signatures).
+
+**Production readiness:** Production
+RFC 9591 (2024) standardizes FROST-Ed25519; deployed in Zcash multisig and Bitcoin custody solutions.
+
+**Implementations:**
+- [frost](https://github.com/ZcashFoundation/frost) ⭐ 250 — Rust, production FROST for Ed25519/Ristretto255/secp256k1/P-256
+- [frost-ed25519 (RFC 9591)](https://www.rfc-editor.org/rfc/rfc9591) — IETF standard specification
+- [secp256k1-zkp](https://github.com/BlockstreamResearch/secp256k1-zkp) ⭐ 419 — C, FROST-compatible modules
+
+**Security status:** Secure
+Provably secure under the OMDL assumption; 2-round protocol with formal UC-security analysis.
+
+**Community acceptance:** Standard
+IETF RFC 9591 standardized; Zcash Foundation maintains production-quality multi-curve implementation.
+
+---
+
+### CGGMP Threshold ECDSA
+
+**Goal:** UC-secure threshold ECDSA with identifiable abort. A *t*-of-*n* protocol that produces standard ECDSA signatures without ever reconstructing the private key. Designed for MPC wallet infrastructure where ECDSA compatibility (Bitcoin, Ethereum) is required.
+
+| Scheme | Year | Rounds | Note |
+|--------|------|--------|------|
+| **GG18 (Gennaro-Goldfeder)** | 2018 | 6 (presign) + 1 | First practical threshold ECDSA via multiplicative-to-additive share conversion; Paillier-based [[1]](https://eprint.iacr.org/2019/114) |
+| **GG20** | 2020 | 4 (presign) + 1 | Improved GG18 with identifiable abort; 4-round presigning [[1]](https://eprint.iacr.org/2020/540) |
+| **CGGMP (Canetti-Gennaro-Goldfeder-Makriyannis-Peled)** | 2021 | 3 (presign) + 1 | UC-secure, 3-round presigning, strong identifiable abort; proved in UC framework [[1]](https://eprint.iacr.org/2021/060) |
+| **CGGMP with auxiliary info** | 2021 | 3 + setup | Adds Paillier/Pedersen range proofs for key-refresh and auxiliary parameter generation [[1]](https://eprint.iacr.org/2021/060) |
+| **Multi-party CGGMP (n > 2)** | 2021 | 3 (presign) + 1 | Extends naturally to *t*-of-*n* with Feldman VSS for key generation phase [[1]](https://eprint.iacr.org/2021/060) |
+
+CGGMP improves over GG18/GG20 by achieving UC-security (composability) and strong identifiable abort — if any party cheats, all honest parties can identify the cheater and exclude them. The presigning phase converts multiplicative shares to additive shares using Paillier homomorphic encryption and zero-knowledge range proofs. Key generation uses Feldman's Verifiable Secret Sharing. The protocol requires expensive modular exponentiations (Paillier), making it slower than FROST, but it produces standard ECDSA signatures compatible with existing blockchain verification logic. Deployed in Fireblocks, Coinbase, Zengo, and other institutional MPC wallet providers.
+
+**State of the art:** CGGMP (2021) is the dominant threshold ECDSA protocol for production MPC wallets. Implementations: multi-party-ecdsa (ZenGo), tss-lib (Binance), Nash. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss).
+
+**Production readiness:** Production
+Deployed in Fireblocks, Coinbase, ZenGo, and other institutional MPC wallet providers for ECDSA threshold signing.
+
+**Implementations:**
+- [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, CGGMP implementation
+- [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, Binance TSS library with CGGMP
+
+**Security status:** Secure
+UC-secure with strong identifiable abort; Paillier-based MtA with zero-knowledge range proofs for share conversion.
+
+**Community acceptance:** Widely trusted
+Dominant threshold ECDSA protocol for production MPC wallets; extensive peer review and industry adoption.
+
+---
+
+### MuSig2 (Multi-Signatures for Bitcoin)
+
+**Goal:** Two-round multi-signature scheme where *n* signers produce a single Schnorr signature that verifies under an aggregated public key. Enables key aggregation: the combined public key is indistinguishable from a single key on-chain, providing privacy and efficiency. Standardized as BIP 327 for Bitcoin Taproot.
+
+| Scheme | Year | Rounds | Note |
+|--------|------|--------|------|
+| **MuSig (Maxwell-Poelstra-Seurin-Wuille)** | 2018 | 3 | Original multi-sig; 3 rounds needed to prevent rogue-key attacks [[1]](https://eprint.iacr.org/2018/068) |
+| **MuSig-DN (Deterministic Nonce)** | 2020 | 2 | Eliminates nonce-reuse risk via zero-knowledge proof of nonce derivation; expensive ZKP [[1]](https://eprint.iacr.org/2020/1057) |
+| **MuSig2 (Nick-Ruffing-Seurin)** | 2020 | 2 | Concurrent security with 2 rounds; signers send two nonce values in round 1 [[1]](https://eprint.iacr.org/2020/1261) |
+| **BIP 327 (MuSig2)** | 2022 | 2 | Bitcoin standardization; specifies key aggregation, nonce generation, partial signing, aggregation [[1]](https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki) |
+| **MuSig2 + Adaptor Signatures** | 2022 | 2 | Combining MuSig2 with adaptor signatures for scriptless scripts in Lightning/DLCs [[1]](https://eprint.iacr.org/2020/1261) |
+
+MuSig2 solves the key aggregation problem: given public keys PK₁,...,PKₙ, compute an aggregate key apk = Σ aᵢ·PKᵢ where aᵢ are key aggregation coefficients derived by hashing all public keys together (preventing rogue-key attacks). Signing requires each party to generate two nonce pairs in round 1; in round 2, a linear combination of these nonces is used for the Schnorr signing equation. The resulting signature is a standard BIP 340 Schnorr signature. MuSig2 achieves concurrent security — multiple signing sessions can run in parallel safely — which MuSig1 could not guarantee in 2 rounds. On Bitcoin, MuSig2 enables n-of-n multisig that appears as a single Taproot key-path spend, saving ~50% in transaction weight versus script-path multisig.
+
+**State of the art:** BIP 327 deployed in Bitcoin wallets (BitGo, Blockstream Green). Used in Lightning Network channel opens and Taproot-based custody. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss), [Adaptor Signatures / Scriptless Scripts](#adaptor-signatures--scriptless-scripts), [Taproot (Bitcoin Improvement)](13-blockchain-distributed-ledger.md#bitcoin-taproot--bip-340-342).
+
+**Production readiness:** Production
+BIP 327 deployed in Bitcoin Taproot wallets (BitGo, Blockstream Green); used in Lightning Network channel opens.
+
+**Implementations:**
+- [secp256k1-zkp](https://github.com/BlockstreamResearch/secp256k1-zkp) ⭐ 419 — C, BIP 327 MuSig2
+- [musig2 BIP 327](https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki) ⭐ 10k — specification
+
+**Security status:** Secure
+Provably secure under AOMDL with concurrent-session safety; key aggregation prevents rogue-key attacks.
+
+**Community acceptance:** Standard
+BIP 327 standardized for Bitcoin Taproot; enables n-of-n multisig indistinguishable from single-signer on-chain.
+
+---
+
+### ROAST (Robust Asynchronous Threshold Signatures)
+
+**Goal:** Guarantee output delivery for threshold Schnorr signing in asynchronous networks with Byzantine participants. ROAST wraps FROST with a coordinator protocol that ensures a valid signature is always produced as long as *t* honest signers are available — even if up to *n - t* signers are malicious, unresponsive, or arbitrarily slow.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ROAST (Ruffing-Ronge-Jin-Schneider-Abdalla)** | 2022 | Schnorr/FROST | Robust wrapper: coordinator manages multiple concurrent FROST sessions; guaranteed completion [[1]](https://eprint.iacr.org/2022/550) |
+| **ROAST + FROST-secp256k1** | 2023 | secp256k1 / Schnorr | Instantiation for Bitcoin Taproot; Blockstream Liquid federation uses ROAST for block signing [[1]](https://blog.blockstream.com/roast-robust-asynchronous-schnorr-threshold-signatures/) |
+| **ROAST with Identifiable Abort** | 2022 | Schnorr | Combines robustness with cheater identification; detect-and-exclude misbehaving signers [[1]](https://eprint.iacr.org/2022/550) |
+
+ROAST works by having the coordinator maintain a set of "available" signers and initiate multiple concurrent FROST signing sessions. When a session fails (a signer is unresponsive or sends an invalid share), the coordinator marks that signer as unavailable, selects a different *t*-subset from available signers, and starts a new session. The key insight is that the coordinator only needs *one* session to succeed, and since there are at least *t* honest signers, at least one subset of *t* available signers is fully honest. The protocol terminates in at most *n - t + 1* session attempts. ROAST adds negligible overhead beyond FROST itself — the wrapper is purely a coordination mechanism with no additional cryptographic operations.
+
+**State of the art:** Deployed in Blockstream Liquid Network for federated block signing (11-of-15). Proposed for Bitcoin multisig custody and federated Lightning nodes. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss), [FROST Threshold Schnorr Signatures](#frost-threshold-schnorr-signatures).
+
+**Production readiness:** Production
+Deployed in Blockstream Liquid Network for federated block signing (11-of-15 threshold).
+
+**Implementations:**
+- [Blockstream Liquid](https://blog.blockstream.com/roast-robust-asynchronous-schnorr-threshold-signatures/) — deployed in Liquid federation
+- [frost](https://github.com/ZcashFoundation/frost) ⭐ 250 — Rust, FROST (ROAST-compatible base)
+
+**Security status:** Secure
+Robustness guaranteed as long as t honest signers are available; no additional cryptographic assumptions beyond FROST.
+
+**Community acceptance:** Emerging
+Deployed in Blockstream Liquid; proposed for Bitcoin multisig custody and federated Lightning nodes.
+
+---
+
+
+## Blind and Partially Blind Signatures
+
+---
+### Blind Signatures
+
+**Goal:** Signer signs a message without seeing its content. Provides anonymity + non-repudiation. Used in e-cash, anonymous credentials, Privacy Pass.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **RSA Blind Signature** | 1982 | RSA | Chaum's original; used in Privacy Pass (RFC 9474) [[1]](https://eprint.iacr.org/2022/895) |
+| **Blind Schnorr** | 1989 | DLP | Simple but requires care with ROS problem [[1]](https://eprint.iacr.org/2019/877) |
+| **BBS+ / BBS** | 2004 | Pairings | Multi-message blind sign + selective disclosure; W3C VC [[1]](https://eprint.iacr.org/2023/275) |
+| **Abe's Blind Signature** | 1997 | Pairing | Partially blind; used in anonymous e-cash schemes [[1]](https://link.springer.com/chapter/10.1007/978-3-642-10366-7_35) |
+
+**State of the art:** RSA Blind Sig (Privacy Pass), BBS+ (anonymous credentials & selective disclosure).
+
+**Production readiness:** Production
+RSA Blind Signatures deployed in Privacy Pass (RFC 9474); BBS+ used in W3C Verifiable Credentials.
+
+**Implementations:**
+- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — Rust/TypeScript, BBS+ selective disclosure
+- [privacypass](https://github.com/raphaelrobert/privacypass) ⭐ 62 — Go, RSA blind signature (Privacy Pass)
+
+**Security status:** Secure
+No known practical attacks; RSA blind sig has IETF RFC; BBS+ under active IETF standardization.
+
+**Community acceptance:** Standard
+RSA Blind Signature standardized as RFC 9474; BBS+ progressing through IETF CFRG.
+
+---
+
+### Partially Blind Signatures
+
+**Goal:** Controlled anonymity with public metadata. The signer blindly signs a message m without seeing it, but both parties agree on a public info field c embedded in the signature. Enables e-cash with visible denominations but hidden serial numbers.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Abe-Fujisaki PBS** | 1996 | DLP | First partially blind signature; public info c agreed before signing [[1]](https://doi.org/10.1007/BFb0054858) |
+| **Abe-Okamoto PBS** | 2000 | DLP | Provably secure partially blind Schnorr-type scheme [[1]](https://doi.org/10.1007/3-540-44598-6_17) |
+| **Pairing-Based PBS** | 2005 | Pairings | Short partially blind signatures from bilinear maps [[1]](https://eprint.iacr.org/2005/123) |
+| **Lattice PBS (Rückert)** | 2010 | SIS | Post-quantum partially blind signatures from lattices [[1]](https://eprint.iacr.org/2009/220) |
+
+**State of the art:** Pairing-based PBS for efficiency; lattice PBS for PQ. Extends [Blind Signatures](#blind-signatures) with issuer-visible metadata. Used in e-cash systems and [Privacy Pass](11-anonymity-credentials.md#privacy-pass--anonymous-tokens).
+
+**Production readiness:** Experimental
+Academic reference implementations only; proposed for e-cash with visible denominations but not widely deployed.
+
+**Implementations:**
+- Academic reference implementations only for pairing and lattice PBS
+
+**Security status:** Secure
+No known attacks on pairing-based or lattice PBS constructions; extends blind signature security models.
+
+**Community acceptance:** Niche
+Studied in the blind signature and e-cash communities; lattice PBS provides a post-quantum path.
+
+---
+
+
+## Ring and Group Signatures
+
+---
+### Ring & Group Signatures
+
+**Goal:** Sign on behalf of a group/ring without revealing which member signed. Provides anonymity within a set.
+
+| Scheme | Year | Type | Note |
+|--------|------|------|------|
+| **Ring Signatures (Rivest-Shamir-Tauman)** | 2001 | Ring | Ad-hoc group, no setup; used in Monero (pre-2020) [[1]](https://link.springer.com/chapter/10.1007/3-540-45682-1_32) |
+| **CLSAG** | 2019 | Ring (linkable) | Compact Linkable Spontaneous; current Monero scheme [[1]](https://eprint.iacr.org/2019/654) |
+| **Group Signatures (BBS04)** | 2004 | Group | Requires group manager; revocable anonymity [[1]](https://eprint.iacr.org/2004/174) |
+| **Short Group Sig (Boneh-Boyen-Shacham)** | 2004 | Group | Pairing-based; very short signatures [[1]](https://eprint.iacr.org/2004/174) |
+| **Dynamic Group Signatures (Bellare-Shi-Zhang)** | 2005 | Group (dynamic) | Efficient join/revoke of members without re-keying; practical for real deployments [[1]](https://eprint.iacr.org/2005/385) |
+
+**State of the art:** CLSAG (privacy coins), dynamic group sigs (enterprise with member management), Raptor (PQ ring sig).
+
+**Production readiness:** Production
+CLSAG deployed in Monero mainnet; group signatures used in enterprise identity systems.
+
+**Implementations:**
+- [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, CLSAG implementation
+
+**Security status:** Secure
+No known practical attacks on CLSAG at current parameters; formal security proofs in the random oracle model.
+
+**Community acceptance:** Widely trusted
+CLSAG peer-reviewed and battle-tested in Monero; group signatures well-studied in academic literature for two decades.
+
+---
+
+### Linkable Ring Signatures
+
+**Goal:** Anonymous signing with double-spend detection. Sign anonymously within a ring, but if the same signer signs twice (on the same tag/epoch), the two signatures are publicly linkable — without revealing the signer. Foundation of privacy-preserving cryptocurrencies.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Liu-Wei-Wong LRS** | 2004 | DLP | First linkable ring signature; linking tag derived from signer's key [[1]](https://eprint.iacr.org/2004/027) |
+| **CryptoNote Ring Signatures** | 2013 | EC + key images | One-time ring sigs with key images for double-spend detection; Monero [[1]](https://www.getmonero.org/resources/research-lab/pubs/whitepaper_annotated.pdf) |
+| **RingCT (Ring Confidential Transactions)** | 2016 | Pedersen + Borromean | Combines linkable ring sigs + confidential amounts; Monero v2+ [[1]](https://eprint.iacr.org/2015/1098) |
+| **Triptych** | 2021 | DLP + commitments | Logarithmic-size linkable ring sigs; Monero research [[1]](https://eprint.iacr.org/2020/018) |
+
+**State of the art:** Triptych / Seraphis for next-gen Monero; RingCT currently deployed. Extends [Ring & Group Signatures](#ring--group-signatures) with linkability.
+
+**Production readiness:** Production
+RingCT/CLSAG deployed in Monero mainnet with key images for double-spend detection.
+
+**Implementations:**
+- [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, RingCT / CLSAG
+
+**Security status:** Secure
+No known practical attacks; linkability and unforgeability formally proved under DLP assumptions.
+
+**Community acceptance:** Widely trusted
+Foundation of Monero's privacy model; Triptych and Seraphis are actively researched next-generation replacements.
+
+---
+
+### Traceable Signatures
+
+**Goal:** Accountability in group signatures. A group member can sign anonymously, but if they exceed a signing quota (e.g., sign more than k times in an epoch), the group manager can trace and identify them. Stronger than linkability — full identity recovery.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Kiayias-Tsiounis-Yung Traceable Sigs** | 2004 | DLP + pairings | First traceable sigs; manager traces over-signers; CCA-anonymous [[1]](https://eprint.iacr.org/2004/007) |
+| **Traceable Sigs with Stepping Capabilities** | 2008 | Pairings | Incremental tracing: trace after threshold violations [[1]](https://doi.org/10.1007/978-3-540-78967-3_7) |
+| **Lattice Traceable Sigs** | 2019 | LWE / SIS | Post-quantum traceable group signatures [[1]](https://eprint.iacr.org/2019/1158) |
+
+**State of the art:** Lattice-based traceable sigs for PQ; extends [Ring & Group Signatures](#ring--group-signatures) and [Linkable Ring Signatures](#linkable-ring-signatures) with full traceability.
+
+**Production readiness:** Research
+Academic prototypes; lattice-based traceable sigs (2019) extend to post-quantum but remain undeployed.
+
+**Implementations:**
+- Academic prototypes accompany published papers
+- Implementable via [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit
+
+**Security status:** Secure
+No known attacks; CCA-anonymity and traceability formally proved under pairing assumptions.
+
+**Community acceptance:** Niche
+Extends group signatures with accountability; relevant to PoS consensus and anonymous-but-auditable systems.
+
+---
+
+### Ring VRF
+
+**Goal:** Anonymous pseudorandom identity. Combine ring signature anonymity with VRF pseudorandomness: prove membership in a ring and output a unique, deterministic, unlinkable pseudonym per context — without revealing which ring member you are.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Burdges-de Valence-Hopwood-Patak Ring VRF** | 2023 | Schnorr + ring + VRF | First Ring VRF; unlinkable pseudonymous identity across contexts [[1]](https://eprint.iacr.org/2023/002) |
+| **ZK Continuations for Ring VRF** | 2023 | Groth16 + recursion | Efficient Ring VRF via recursive ZK proofs [[1]](https://eprint.iacr.org/2023/002) |
+
+**State of the art:** Ring VRF (2023); enables anonymous rate-limiting, anonymous login, and credential systems. Combines [VRF](#verifiable-random-functions-ecvrf-rfc-9381) and [Ring Signatures](#ring--group-signatures).
+
+**Production readiness:** Experimental
+First Ring VRF construction published in 2023; no production deployment yet.
+
+**Implementations:**
+No notable open-source implementations available.
+
+**Security status:** Secure
+No known attacks; security combines ring signature anonymity with VRF pseudorandomness guarantees.
+
+**Community acceptance:** Emerging
+Active research for anonymous rate-limiting, anonymous login, and decentralized identity applications.
+
+---
+
+### EdDSA (Ed25519 & Ed448)
+
+**Goal:** High-speed, misuse-resistant signatures. A deterministic Schnorr variant over twisted Edwards curves; the nonce is derived from the private key and message via a hash, eliminating the need for a secure random number generator during signing and preventing the catastrophic nonce-reuse vulnerability of ECDSA.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ed25519** | 2011 | edwards25519 (≅ Curve25519) + SHA-512 | 128-bit security; 32-byte public key; 64-byte signature; ~100k signs/sec [[1]](https://eprint.iacr.org/2011/368) |
+| **Ed448 (Goldilocks)** | 2015 | edwards448 + SHAKE256 | 224-bit security; 57-byte public key; 114-byte signature; conservative curve [[1]](https://eprint.iacr.org/2015/625) |
+| **RFC 8032** | 2017 | IETF standard | Standardizes Ed25519 and Ed448; specifies PureEdDSA and HashEdDSA variants [[1]](https://www.rfc-editor.org/rfc/rfc8032) |
+| **FIPS 186-5** | 2023 | NIST standard | Approves Ed25519 and Ed448 for federal use alongside ECDSA and RSA [[1]](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf) |
+| **FROST-Ed25519 / FROST-Ed448** | 2024 | RFC 9591 | Threshold EdDSA-compatible signing via FROST; 2-round protocol [[1]](https://www.rfc-editor.org/rfc/rfc9591) |
+
+EdDSA improves on ECDSA in three concrete ways: (1) the nonce k is deterministic (derived as H(private\_key\_prefix ‖ message)), so no per-sign entropy is needed; (2) the curve arithmetic is complete (no special-case for the point at infinity), eliminating an entire class of implementation bugs; (3) signatures are not malleable. The determinism also means EdDSA is collision-resilient for PureEdDSA: a hash collision does not break unforgeability. Ed25519 is widely deployed in TLS 1.3, SSH, Signal, WireGuard, OpenPGP, and age. FROST (RFC 9591) provides threshold EdDSA-compatible signing.
+
+**State of the art:** Ed25519 (de-facto standard for modern protocols); FROST-Ed25519 (RFC 9591, threshold). See [Schnorr Signatures](#schnorr-signatures-original-scheme) for the underlying primitive and [FROST](#threshold-signature-schemes-tss) for threshold context.
+
+**Production readiness:** Production
+Ed25519 deployed in TLS 1.3, SSH, Signal, WireGuard, OpenPGP, and age; FIPS 186-5 approved for federal use.
+
+**Implementations:**
+- [ed25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, Ed25519
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, Ed25519
+- [golang/crypto](https://github.com/golang/crypto) ⭐ 3.3k — Go, Ed25519
+
+**Security status:** Secure
+Deterministic nonces eliminate nonce-reuse vulnerabilities; complete curve arithmetic prevents implementation bugs.
+
+**Community acceptance:** Standard
+IETF RFC 8032; NIST FIPS 186-5; FROST-Ed25519 standardized as RFC 9591 for threshold signing.
+
+---
+
+### Hedged Signatures
+
+**Goal:** Side-channel-resistant deterministic signing. Pure deterministic schemes (EdDSA, RFC 6979) are vulnerable to fault attacks — an adversary who can induce a fault during signing can recover the private key even without knowing the internal state. Hedged signatures mix fresh per-sign randomness into the nonce derivation, preserving determinism's RNG-failure resilience while defeating fault attacks that exploit the deterministic structure.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Hedged ECDSA (Aranha et al.)** | 2020 | ECDSA + HMAC-DRBG + fresh randomness | Adds a random blinding value r to RFC 6979 nonce derivation: k = HMAC-DRBG(sk ‖ m ‖ r); hardware fault-resistant [[1]](https://eprint.iacr.org/2019/956) |
+| **Hedged EdDSA** | 2017 | EdDSA + extra randomness | Variant of Ed25519 mixing per-sign entropy into nonce hash; defeats rowhammer-style fault attacks [[1]](https://eprint.iacr.org/2017/985) |
+| **Composite Schnorr / "draft-irtf-cfrg-det-sigs-with-noise"** | 2022 | Schnorr + deterministic + random | IRTF CFRG draft; k = H(sk ‖ m ‖ r) where r is small (32 bytes); degrades to RFC 6979 if RNG fails, degrades to random signing if determinism is probed [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-det-sigs-with-noise/) |
+| **Libsodium / ristretto255 hedged** | 2022 | Ed25519 variant | libsodium's crypto_sign_ed25519 adds random noise internally in recent versions; transparent to applications [[1]](https://doc.libsodium.org/public-key_cryptography/public-key_signatures) |
+
+The core tension is between two threat models: (a) RNG failure — the per-sign random source is weak or predictable, as occurred in several Android Bitcoin wallet incidents; and (b) fault/DPA attacks — the signing device is physically probed and the deterministic computation is perturbed (e.g., via voltage glitching or electromagnetic fault injection), allowing an attacker to solve for the private key from two faulty signatures with the same deterministic nonce. Hedged signing defeats both threats simultaneously: the nonce depends on both the private key+message (as in RFC 6979) and fresh randomness (as in randomized signing). A faulty-RNG attacker still cannot predict k because of the deterministic component; a fault attacker cannot exploit a known k because the randomness prevents nonce repetition. The IRTF CFRG draft formalizes this as the preferred approach for new Schnorr-based schemes.
+
+**State of the art:** Hedged signing recommended by IRTF CFRG for all new Schnorr/ECDSA deployments; already default in several TLS stacks and hardware security modules. Extends [ECDSA — Details, Vulnerabilities, and RFC 6979](#ecdsa--details-vulnerabilities-and-rfc-6979) and [EdDSA](#eddsa-ed25519--ed448).
+
+**Production readiness:** Production
+Hedged Ed25519 default in libsodium; recommended by IRTF CFRG for all new Schnorr/ECDSA deployments.
+
+**Implementations:**
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, hedged Ed25519 in recent versions
+- [draft-irtf-cfrg-det-sigs-with-noise](https://datatracker.ietf.org/doc/draft-irtf-cfrg-det-sigs-with-noise/) — IETF draft specification
+
+**Security status:** Secure
+Defeats both RNG-failure and fault/DPA attacks simultaneously; degrades gracefully if either defense is compromised.
+
+**Community acceptance:** Emerging
+IRTF CFRG draft formalizing hedged signing as the preferred approach; adopted in TLS stacks and HSMs.
+
+---
+
+
+## Aggregate and BLS Signatures
+
+---
+### Sequential Aggregate Signatures
+
+**Goal:** Chain-ordered aggregation. Each signer in sequence adds their signature to the aggregate — the final result is one compact signature validating all signers in order. Used in BGP route attestation, certificate chains.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Lysyanskaya-Micali-Reyzin-Shacham (LMRS)** | 2004 | RSA + certified trapdoor | First sequential aggregate sig; signer-by-signer aggregation [[1]](https://eprint.iacr.org/2003/197) |
+| **Boneh-Gentry-Lynn-Shacham (BGLS)** | 2003 | BLS + pairings | Non-sequential aggregate: any order; see [Digital Signatures](#updatable-signatures) for BLS [[1]](https://eprint.iacr.org/2002/175) |
+| **History-Free Sequential Aggregate (HSA)** | 2012 | RSA-based | No need to see previous messages; only aggregate sig passed along [[1]](https://eprint.iacr.org/2012/486) |
+
+**State of the art:** BGLS (general aggregation), LMRS (sequential/routing), HSA (bandwidth-optimized).
+
+**Production readiness:** Mature
+Well-studied schemes with formal proofs; proposed for BGP route attestation but limited production deployment.
+
+**Implementations:**
+No notable open-source implementations available.
+
+**Security status:** Secure
+No known attacks on BGLS or LMRS at recommended parameters; security proved under standard pairing assumptions.
+
+**Community acceptance:** Niche
+Used in academic proposals for BGP security (BGPSEC) and certificate chain compression; limited real-world adoption.
+
+---
+
+### Aggregate Signatures (BLS Aggregate)
+
+**Goal:** Non-interactive signature compression. Anyone can combine N signatures from N different signers on N different messages into a single short aggregate signature. Verification checks all N messages at once. Critical for blockchain consensus scalability.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BGLS Aggregate Signatures** | 2003 | Pairings (BLS) | First aggregate sigs; combine n BLS sigs into one; verify in O(n) pairings [[1]](https://eprint.iacr.org/2002/029) |
+| **BGLS Same-Message Aggregate** | 2003 | Pairings | n signers on same message → one sig; single pairing to verify [[1]](https://eprint.iacr.org/2002/029) |
+| **Ethereum BLS Aggregation** | 2020 | BLS12-381 | Aggregate 100k+ validator attestations per epoch; EIP-2537 [[1]](https://eips.ethereum.org/EIPS/eip-2537) |
+| **Compact Multi-Signatures (Boneh-Drijvers-Neven)** | 2018 | Pairings | Aggregate sigs with proof of possession; prevents rogue-key attacks [[1]](https://eprint.iacr.org/2018/483) |
+
+**State of the art:** BLS aggregation on BLS12-381 (Ethereum consensus); differs from [Sequential Aggregate Signatures](#sequential-aggregate-signatures) in that aggregation is non-interactive and order-independent.
+
+**Production readiness:** Production
+BLS aggregation deployed in Ethereum consensus layer, aggregating 100k+ validator attestations per epoch.
+
+**Implementations:**
+- [blst](https://github.com/supranational/blst) ⭐ 554 — C/Rust/Go, BLS12-381 aggregation (Ethereum)
+- [herumi/bls](https://github.com/herumi/bls) ⭐ 319 — C++/Go, BLS signature library
+
+**Security status:** Secure
+No known practical attacks with proof-of-possession; rogue-key attacks prevented by PoP or key aggregation coefficients.
+
+**Community acceptance:** Standard
+EIP-2537 standardizes BLS precompile for Ethereum; BLS12-381 adopted across major blockchain platforms.
+
+---
+
+
+## Adaptor and Atomic Signatures
+
+---
+### Adaptor Signatures / Scriptless Scripts
+
+**Goal:** Conditional signatures. A "pre-signature" that becomes a valid signature only when a secret value is revealed — and revealing the signature reveals the secret. Enables trustless atomic swaps and payment channels without scripting.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Schnorr Adaptor Signatures** | 2018 | Schnorr / DLP | Pre-sign with respect to a point T; completion reveals discrete log of T [[1]](https://eprint.iacr.org/2020/476) |
+| **ECDSA Adaptor Signatures** | 2020 | ECDSA | Adaptor for ECDSA; enables scriptless scripts on Bitcoin pre-Taproot [[1]](https://eprint.iacr.org/2020/476) |
+| **Scriptless Scripts (Poelstra)** | 2017 | Schnorr + adaptor | Atomic swaps, payment channels, discreet log contracts — no on-chain scripts [[1]](https://download.wpsoftware.net/bitcoin/wizardry/mw-slides/2017-03-mit-bitcoin-expo/slides.pdf) |
+
+**State of the art:** Schnorr adaptor sigs (Bitcoin Taproot), ECDSA adaptors (cross-chain swaps).
+
+**Production readiness:** Experimental
+Used in atomic swap prototypes and Lightning channel research; not yet widely deployed in production.
+
+**Implementations:**
+- [LLFourn/secp256kfun](https://github.com/LLFourn/secp256kfun) ⭐ 111 — Rust, adaptor signatures for secp256k1
+- [BlockstreamResearch/scriptless-scripts](https://github.com/BlockstreamResearch/scriptless-scripts) ⭐ 169 — documentation and reference
+
+**Security status:** Secure
+No known attacks; security reduces to the underlying Schnorr/ECDSA assumptions.
+
+**Community acceptance:** Emerging
+Active research in the Bitcoin developer community; scriptless scripts enabling Taproot-based cross-chain swaps.
+
+---
+
+
+## Special-Purpose Signatures
+
+---
+### Sanitizable Signatures
+
+**Goal:** Authorized modification. A signer designates a "sanitizer" who can modify specified parts of a signed message while keeping the signature valid. Non-designated parts remain immutable. Used in medical records, redactable documents.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ateniese et al.** | 2005 | Chameleon hash + sig | First sanitizable sig; sanitizer can change designated blocks [[1]](https://eprint.iacr.org/2004/245) |
+| **Brzuska et al. (formal model)** | 2009 | Generic | Formal security definitions: immutability, accountability, transparency [[1]](https://link.springer.com/chapter/10.1007/978-3-642-00468-1_28) |
+| **Sanitizable Sig with Accountability** | 2015 | Group sig + chameleon hash | Detect who sanitized; full accountability [[1]](https://eprint.iacr.org/2015/845) |
+
+**State of the art:** Accountable sanitizable sigs (GDPR: right to modify medical records while preserving audit trail).
+
+**Production readiness:** Research
+Academic prototypes; proposed for GDPR-compliant medical record redaction but no production deployment.
+
+**Implementations:**
+- [battery-sse/san-sig](https://github.com/battery-sse) — Java, reference sanitizable signature implementations
+- No widely-adopted production library exists
+
+**Security status:** Secure
+Formal security models (immutability, accountability, transparency) with proofs; no known attacks.
+
+**Community acceptance:** Niche
+Studied in the redactable/malleable signature community; limited to specialized document management use cases.
+
+---
+
+### Homomorphic Signatures
+
+**Goal:** Compute on authenticated data. Given signatures on messages m₁,...,mₙ, anyone can derive a valid signature on f(m₁,...,mₙ) without the signing key. Enables verifiable delegation of computation on signed datasets.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Linearly Homomorphic Sig (Boneh-Freeman)** | 2011 | Pairings / SIS | Sign vectors; derive sig on any linear combination [[1]](https://eprint.iacr.org/2009/025) |
+| **Homomorphic Sig for Polynomials (Catalano-Fiore)** | 2013 | Pairings | Evaluate multivariate polynomials on signed data; extended to degree-d polynomials [[1]](https://eprint.iacr.org/2012/527) |
+| **Fully Homomorphic Sig (Gennaro-Wichs)** | 2013 | FHE + SNARK | Sign data; derive sig on ANY computable function [[1]](https://eprint.iacr.org/2012/023) |
+| **Gorbunov-Vaikuntanathan-Wichs Leveled HS** | 2015 | Polynomial-size circuits | Fully homomorphic sig from lattices; circuit privacy; standard LWE [[1]](https://eprint.iacr.org/2014/463) |
+| **Context-Hiding HS (Fleischhacker et al.)** | 2016 | Linear / circuits | Hides intermediate computation path; output σ_f reveals nothing about σᵢ [[1]](https://eprint.iacr.org/2016/457) |
+
+**State of the art:** Lattice-based leveled homomorphic signatures (Gorbunov et al. 2015) support arbitrary circuits and achieve context-hiding. Applications include verifiable outsourced ML (model training on signed data), authenticated stream processing, and [Verifiable FHE](07-homomorphic-functional-encryption.md#verifiable-fhe). See also [Sanitizable Signatures](#sanitizable-signatures) for a related but weaker primitive.
+
+**Production readiness:** Research
+Fully homomorphic signatures remain theoretical; linear homomorphic sigs have academic prototypes only.
+
+**Implementations:**
+- No widely used production implementations; reference code in academic paper repositories
+
+**Security status:** Secure
+Lattice-based constructions (Gorbunov et al. 2015) proven secure under standard LWE; pairing-based variants under DLIN.
+
+**Community acceptance:** Niche
+Published at top venues (CRYPTO, EUROCRYPT); important for verifiable computation but limited practical adoption.
+
+---
+
+### Constrained / Policy-Based Signatures
+
+**Goal:** Delegated signing with restrictions. Derive a constrained signing key that can only sign messages satisfying a predicate (e.g., "emails from @company.com", "transactions under $1000"). The master key signs anything; constrained keys are limited.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bellare-Fuchsbauer Policy-Based Sigs** | 2014 | Generic | Formal model; signing key restricted to a message space defined by a policy [[1]](https://eprint.iacr.org/2014/100) |
+| **Boneh-Kim Constrained Sigs** | 2017 | Pairings / lattices | Constrained keys for circuit predicates; related to constrained PRFs [[1]](https://eprint.iacr.org/2017/502) |
+| **Functional Signatures (Boyle-Goldwasser-Ivan)** | 2014 | iO / pairings | Sign f(m) using a key for function f, without seeing m [[1]](https://eprint.iacr.org/2013/401) |
+
+**State of the art:** Constrained signatures from lattices (Boneh-Kim 2017); related to [Constrained PRFs](01-foundational-primitives.md#puncturable--constrained-prf). Enables fine-grained delegation without proxy re-signing.
+
+**Production readiness:** Research
+Academic prototypes only; no production deployment of constrained or functional signatures.
+
+**Implementations:**
+- No production-quality implementations; academic prototypes accompany papers
+- Related: [constrained-prf](https://github.com/nicolo-ribaudo/ring-signature) — conceptual overlap with constrained PRFs
+
+**Security status:** Secure
+No known attacks; security proved under pairing or lattice assumptions depending on construction.
+
+**Community acceptance:** Niche
+Studied in the delegation and fine-grained access control community; related to constrained PRFs.
+
+---
+
+### Designated Verifier Signatures / Proofs
+
+**Goal:** Restricted verifiability. Only the designated verifier can check the signature's validity; they cannot convince any third party. Provides non-transferability of authentication.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **JSI Designated Verifier Signature** | 1996 | DLP | First DVS; designated verifier can simulate valid-looking signatures [[1]](https://link.springer.com/chapter/10.1007/3-540-49677-7_30) |
+| **Strong DVS (Saeednia-Kremer-Markowitch)** | 2003 | DLP | Strong: even the designated verifier cannot transfer conviction [[1]](https://link.springer.com/chapter/10.1007/978-3-540-39927-8_5) |
+| **Universal DVS (Steinfeld-Bull-Wang-Pieprzyk)** | 2003 | Any signature scheme | Transform any signature into a designated-verifier variant [[1]](https://eprint.iacr.org/2003/192) |
+| **Identity-Based DVS (Susilo-Zhang-Mu)** | 2004 | Pairings | DVS in identity-based setting; no PKI needed [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30108-0_16) |
+
+**State of the art:** Strong DVS with efficient pairing-based constructions; used in privacy-preserving authentication where non-transferability is critical.
+
+**Production readiness:** Mature
+Well-studied constructions with efficient pairing-based instantiations; used in privacy-preserving authentication.
+
+**Implementations:**
+- Pairing-based DVS available in [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit
+
+**Security status:** Secure
+No known attacks; strong DVS achieves non-transferability even against the designated verifier.
+
+**Community acceptance:** Niche
+Used in privacy-preserving authentication protocols where non-transferability of proofs is required.
+
+---
+
+### Undeniable Signatures
+
+**Goal:** Controlled verifiability. The signer must cooperate interactively for signature verification — prevents unsanctioned redistribution of signatures. Signer can also run a *disavowal* protocol to prove a forgery.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chaum-van Antwerpen** | 1989 | DLP | First undeniable signature; interactive verify + disavowal [[1]](https://link.springer.com/chapter/10.1007/0-387-34805-0_20) |
+| **Chaum (improved)** | 1991 | DLP | Zero-knowledge confirmation and disavowal protocols [[1]](https://doi.org/10.1007/3-540-46766-1_28) |
+| **Designated Confirmer Signatures** | 1994 | DLP | Third party can confirm; signer need not be online [[1]](https://doi.org/10.1007/BFb0053434) |
+| **Convertible Undeniable Signatures (Boyar et al.)** | 1991 | DLP | Signer can release a token to make the signature universally verifiable [[1]](https://doi.org/10.1007/3-540-38424-3_17) |
+
+**State of the art:** Largely superseded by designated-verifier signatures and chameleon signatures for most applications, but foundational to the concept of controlled verification.
+
+**Production readiness:** Deprecated
+Largely replaced by designated-verifier signatures and chameleon signatures for controlled verification.
+
+**Implementations:**
+- Historical implementations in early PGP-adjacent libraries
+- No actively maintained production library
+
+**Security status:** Superseded
+Technically secure but replaced by DVS and other non-transferable signature schemes with better properties.
+
+**Community acceptance:** Niche
+Historically important as the first controlled-verification scheme; now primarily of theoretical interest.
+
+---
+
+### Fail-Stop Signatures
+
+**Goal:** Provable forgery detection. If an adversary with unbounded computational power forges a signature, the legitimate signer can produce an unconditional proof of forgery — the system "fails and stops" rather than silently accepting. Signers have information-theoretic protection; verifiers have computational protection. Strictly stronger than standard signatures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Pfitzmann-Waidner Fail-Stop Sigs** | 1990 | Factoring + prekey | First fail-stop signature; signer proves forgery unconditionally [[1]](https://epubs.siam.org/doi/10.1137/S009753979324557X) |
+| **Pedersen-Pfitzmann FSS** | 1997 | DLP | Efficient fail-stop from discrete log; SIAM J. Computing [[1]](https://epubs.siam.org/doi/10.1137/S009753979324557X) |
+| **PQ Fail-Stop Sigs** | 2024 | Lattice | "That's Not My Signature!" — fail-stop for post-quantum world; CRYPTO 2024 [[1]](https://link.springer.com/chapter/10.1007/978-3-031-68376-3_4) |
+
+**State of the art:** PQ fail-stop signatures (CRYPTO 2024); revived interest for post-quantum contexts. Extends [Digital Signatures](#updatable-signatures).
+
+**Production readiness:** Research
+Academic prototypes; PQ fail-stop sigs (CRYPTO 2024) revived interest but no production implementations.
+
+**Implementations:**
+- No production-quality library
+
+**Security status:** Secure
+No known attacks; signers have information-theoretic forgery detection guarantees.
+
+**Community acceptance:** Niche
+Renewed interest for post-quantum contexts (CRYPTO 2024); otherwise limited to theoretical cryptography.
+
+---
+
+### Proxy Signatures
+
+**Goal:** Delegated signing. Alice delegates her signing authority to Bob (proxy) who can sign messages on her behalf. The resulting signature is verifiable as a proxy signature, distinguishable from Alice's direct signatures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Mambo-Usuda-Okamoto** | 1996 | DLP | First proxy signature scheme; delegation by warrant [[1]](https://link.springer.com/chapter/10.1007/BFb0028379) |
+| **Boldyreva et al. (proxy re-sig)** | 2003 | Bilinear pairings | Proxy re-signatures: convert Alice's sig into Bob's; see also [PRE](07-homomorphic-functional-encryption.md#proxy-re-encryption-pre) [[1]](https://eprint.iacr.org/2003/096) |
+| **Short Proxy Sig (Fuchsbauer-Pointcheval)** | 2008 | Pairings | Efficient, short proxy signatures with security proof [[1]](https://eprint.iacr.org/2008/460) |
+
+**State of the art:** proxy re-signatures (certificate translation), delegation by warrant (enterprise workflows).
+
+**Production readiness:** Mature
+Well-studied constructions; proxy re-signatures used in certificate translation and enterprise delegation workflows.
+
+**Implementations:**
+- Pairing-based constructions implementable via [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++
+
+**Security status:** Secure
+No known attacks on pairing-based proxy signature constructions at recommended parameters.
+
+**Community acceptance:** Niche
+Used in enterprise delegation and certificate translation; related to proxy re-encryption schemes.
+
+---
+
+### Multi-Designated Verifier Signatures (MDVS)
+
+**Goal:** Restricted verifiability for a defined set of recipients. Extend [Designated Verifier Signatures](#designated-verifier-signatures--proofs) from a single verifier to a set of k designated verifiers: any member of the set can verify, but no one outside the set can, and no member can transfer conviction to outsiders (since each verifier could have simulated the signature themselves).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Jakobsson-Sako-Impagliazzo MDVS** | 1996 | DLP | Conceptual extension of DVS to multiple designated verifiers; each verifier can simulate [[1]](https://link.springer.com/chapter/10.1007/3-540-68339-9_13) |
+| **Laguillaumie-Vergnaud MDVS** | 2004 | Pairings | First efficient pairing-based MDVS; constant-size signatures regardless of verifier count [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30564-4_22) |
+| **Dent-Libert-Paterson MDVS** | 2006 | Pairings (standard model) | MDVS in the standard model (no random oracle); verifier anonymity as additional property [[1]](https://eprint.iacr.org/2006/236) |
+| **Lattice MDVS (Zhang et al.)** | 2021 | Ring-LWE | Post-quantum MDVS from ring learning with errors [[1]](https://eprint.iacr.org/2021/829) |
+| **Strong MDVS (Schuldt-Matsuura)** | 2009 | Pairings | Strong variant: even members of the designated set cannot transfer conviction to other members [[1]](https://link.springer.com/chapter/10.1007/978-3-642-10433-6_12) |
+
+MDVS is motivated by scenarios where a message must be privately authenticated to a board or committee — each member can individually verify, but collective non-transferability means no subset can prove the signer's identity to outsiders. The simulatability condition requires that each designated verifier Di can produce transcripts (σ*, m) that are computationally indistinguishable from real signatures, without knowing the signer's key. Verifier anonymity (Dent-Libert-Paterson) adds the property that the signature does not reveal which verifiers were designated. Strong MDVS further prevents intra-set transfers: even if all k verifiers collude, they cannot convince an outsider — because any such coalition could have simulated the signature cooperatively.
+
+**State of the art:** Pairing-based MDVS (Laguillaumie-Vergnaud style) in standard model; lattice MDVS for PQ settings. Extends [Designated Verifier Signatures / Proofs](#designated-verifier-signatures--proofs) to the multi-verifier case.
+
+**Production readiness:** Research
+Academic prototypes only; proposed for committee authentication and board-level private signing.
+
+**Implementations:**
+- Academic reference implementations accompany published papers
+- Pairing-based MDVS implementable via [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++
+
+**Security status:** Secure
+No known attacks; simulatability ensures non-transferability; lattice MDVS provides post-quantum option.
+
+**Community acceptance:** Niche
+Extends DVS to multi-verifier settings; relevant for board/committee authentication with non-transferability.
+
+---
+
+### Mercurial Signatures
+
+**Goal:** Sign equivalence classes of message vectors under a secret randomization relation. A mercurial signature on a representative of an equivalence class can be publicly converted into a valid signature on any other representative of the same class — without the signing key. Enables delegatable anonymous credentials and unlinkable token systems.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Mercurial Signatures (Chase-Kohlweiss-Lysyanskaya-Meiklejohn)** | 2014 | Pairings (Type III) | First formalization; public key and signature are both class-changeable [[1]](https://eprint.iacr.org/2014/944) |
+| **Mercurial Sig from EQS** | 2014 | Pairings | Mercurial sigs shown equivalent to Structure-Preserving Signatures on Equivalence Classes (SPS-EQ) [[1]](https://eprint.iacr.org/2014/944) |
+| **Crites-Lysyanskaya** | 2019 | Pairing-based, key equivalence | Enables true multi-level anonymous delegation chains; NDSS 2019 [[1]](https://eprint.iacr.org/2018/923) |
+| **Crites-Kohlweiss-Preneel-Sedaghat** | 2023 | Pairings | Improved efficiency; tighter security reduction; practical instantiation [[1]](https://eprint.iacr.org/2023/1051) |
+| **Stronger privacy (Lysyanskaya et al.)** | 2024 | Enhanced model | Strengthened privacy definitions; ePrint 2024/1216 [[1]](https://eprint.iacr.org/2024/1216) |
+| **Delegatable Anonymous Credentials from Mercurial Sigs** | 2019 | Pairings + Groth-Sahai | Multi-level delegation: user A delegates to B who delegates to C; each delegation is unlinkable [[1]](https://eprint.iacr.org/2018/1126) |
+
+Mercurial signatures operate on projective equivalence classes: two message vectors M = (M₁,...,Mₙ) and M' = (M'₁,...,M'ₙ) are equivalent if M' = ρ·M for some scalar ρ. The ConvertSig algorithm takes a signature σ on M and produces σ' on M' = ρ·M without the secret key. Similarly, ConvertPK changes the public key. This enables delegatable anonymous credentials: a credential issuer signs a user's attributes; the user re-randomizes the signature and public key before presenting, breaking linkability. The close relationship with SPS-EQ means advances in one directly transfer to the other. Active research: non-interactive threshold variants appeared in 2025.
+
+**State of the art:** Mercurial signatures (2024 stronger privacy definitions) enable practical delegatable anonymous credentials with O(1)-size proofs per delegation level. Solves multi-hop anonymous delegation (A->B->C, each hop unlinkable). Cross-links: [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps), [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials), [Rerandomizable Signatures (PS Signatures)](#rerandomizable-signatures-ps-signatures).
+
+**Production readiness:** Research
+Academic prototypes; enables delegatable anonymous credentials but no production deployment.
+
+**Implementations:**
+- Academic reference implementations accompany published papers
+- Implementable via [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library
+- [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit
+
+**Security status:** Secure
+No known attacks; security proved under pairing assumptions; close relationship with SPS-EQ ensures dual advances.
+
+**Community acceptance:** Niche
+Foundation of delegatable anonymous credentials with unlinkable multi-level delegation chains.
+
+---
+
+
+## Structural Signature Primitives
+
+---
+### One-Time Signatures (OTS)
+
+**Goal:** Post-quantum authentication. Sign exactly one message; the signing key is spent. Quantum-safe: security depends only on hash function collision resistance. Building block of XMSS, LMS, and SPHINCS+.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Lamport OTS** | 1979 | Hash function | Simplest OTS; key size = 2n×hash; one message only [[1]](https://dl.acm.org/doi/10.1145/357980.358017) |
+| **WOTS (Winternitz OTS)** | 1980 | Hash chains | Compact variant; trade key size vs. signing cost [[1]](https://link.springer.com/chapter/10.1007/978-1-4684-4730-9_10) |
+| **WOTS+** | 2012 | Hash chains + bitmask | Tighter security proof; used inside XMSS and SPHINCS+ [[1]](https://eprint.iacr.org/2017/965) |
+| **FORS** | 2019 | Hash forest | Few-time variant; used inside SPHINCS+ for hypertree leaves [[1]](https://eprint.iacr.org/2017/349) |
+
+**State of the art:** WOTS+ (used in XMSS, LMS, SPHINCS+), FORS (SPHINCS+ inner layer).
+
+**Production readiness:** Production
+WOTS+ deployed inside XMSS (RFC 8391), LMS (RFC 8554), and SPHINCS+ (FIPS 205) as leaf-level signing primitives.
+
+**Implementations:**
+- [XMSS reference](https://github.com/XMSS/xmss-reference) ⭐ 58 — C, reference WOTS+ implementation
+- [hash-sigs](https://github.com/cisco/hash-sigs) ⭐ 50 — C, LMS/HSS with LM-OTS
+- [sphincsplus](https://github.com/sphincs/sphincsplus) ⭐ 218 — C, reference SPHINCS+ with WOTS+ and FORS
+
+**Security status:** Secure
+Security depends solely on hash function properties; no known attacks at recommended parameters.
+
+**Community acceptance:** Standard
+NIST SP 800-208 recommends XMSS and LMS (which use WOTS+/LM-OTS); FORS standardized inside FIPS 205.
+
+---
+
+### Attribute-Based Signatures (ABS)
+
+**Goal:** Policy-based authentication. Sign a message with a set of attributes; the signature verifies if the signer's attributes satisfy a policy — without revealing which attributes or the signer's identity. Dual of ABE for signatures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Maji-Prabhakaran-Rosulek ABS** | 2011 | Pairings | First ABS with expressive policies (monotone span programs) [[1]](https://eprint.iacr.org/2010/595) |
+| **Sakai-Attrapadung ABS** | 2016 | Pairings | Efficient constant-size signatures for AND policies [[1]](https://eprint.iacr.org/2016/246) |
+| **Lattice ABS** | 2014 | SIS / LWE | Post-quantum attribute-based signatures [[1]](https://eprint.iacr.org/2014/279) |
+
+**State of the art:** Pairing-based ABS (practical), Lattice ABS (PQ setting).
+
+**Production readiness:** Research
+Academic prototypes only; no production deployment of attribute-based signatures.
+
+**Implementations:**
+- [FAME-ABE](https://github.com/sagrawal87/ABE) ⭐ 206 — Python, pairing-based ABE (related ABS primitives)
+
+**Security status:** Secure
+No known attacks on pairing-based or lattice-based ABS constructions at recommended parameters.
+
+**Community acceptance:** Niche
+Well-studied in the attribute-based cryptography community; limited adoption outside academic research.
+
+---
+
+### Structure-Preserving Signatures (SPS)
+
+**Goal:** Composability with pairing-based proofs. Messages, public keys, and signatures are all group elements — enabling direct composition with Groth-Sahai proofs without hashing into the group. Foundation of provably secure anonymous credentials.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Abe-Haralambiev-Ohkubo (AHO)** | 2010 | Pairings (Type III) | First SPS; signatures on group element vectors [[1]](https://eprint.iacr.org/2010/133) |
+| **Abe-Groth-Ohkubo (AGO)** | 2011 | Pairings | Optimal SPS: 7 group elements, tight reduction [[1]](https://eprint.iacr.org/2011/358) |
+| **Equivalence-Class Signatures (EQS)** | 2014 | Pairings | Sign equivalence classes of vectors; basis of delegatable credentials [[1]](https://eprint.iacr.org/2014/944) |
+| **Mercurial Signatures** | 2008 | Pairings | Sign on equivalence classes with additional randomizability [[1]](https://eprint.iacr.org/2008/163) |
+
+**State of the art:** EQS (Hanser-Slamanig 2014) for anonymous credentials; SPS are the "right" primitive for composable pairing-based crypto. See [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials).
+
+**Production readiness:** Research
+Academic constructions; used as building blocks in provable-security anonymous credential designs.
+
+**Implementations:**
+- [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library used to implement SPS schemes
+- [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit suitable for SPS implementations
+
+**Security status:** Secure
+No known attacks; security proved under standard pairing assumptions in Type III groups.
+
+**Community acceptance:** Niche
+Foundation of composable pairing-based cryptography; primarily used in academic anonymous credential constructions.
+
+---
+
+### Rerandomizable Signatures (PS Signatures)
+
+**Goal:** Unlinkable credential presentation. A signature can be publicly rerandomized into a fresh, valid signature on the same message — unlinkable to the original. Enables multi-show anonymous credentials without interaction with the issuer.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CL Signatures (Camenisch-Lysyanskaya)** | 2004 | RSA / pairings | First practical rerandomizable sigs for anonymous credentials [[1]](https://eprint.iacr.org/2004/076) |
+| **PS Signatures (Pointcheval-Sanders)** | 2016 | Pairings (Type III) | Short, efficient, rerandomizable; basis of modern anon credentials [[1]](https://eprint.iacr.org/2015/525) |
+| **BBS+ Signatures** | 2004 | Pairings | Rerandomizable with selective disclosure; W3C Verifiable Credentials [[1]](https://eprint.iacr.org/2009/095) |
+| **PS Multi-Message** | 2018 | Pairings | Sign multiple messages; selectively disclose subset [[1]](https://eprint.iacr.org/2017/1197) |
+
+**State of the art:** BBS+ (W3C VC standard, ISO mDL); PS signatures for academic constructions. Foundation of [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials) and [Structure-Preserving Signatures](#structure-preserving-signatures-sps).
+
+**Production readiness:** Mature
+BBS+ used in W3C Verifiable Credentials and ISO mDL; PS signatures deployed in academic credential systems.
+
+**Implementations:**
+- [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 [archived] — Rust/TypeScript, BBS+ rerandomizable sigs
+
+**Security status:** Secure
+No known practical attacks; BBS+ has well-studied security proofs under pairing assumptions.
+
+**Community acceptance:** Widely trusted
+BBS+ adopted by W3C for Verifiable Credentials; CL signatures underpin Hyperledger AnonCreds.
+
+---
+
+### Forward-Secure Signatures & Encryption
+
+**Goal:** Protect the past. If the current secret key is compromised, all messages/signatures from previous time periods remain secure. The key evolves forward; past keys are deleted.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bellare-Miner Forward-Secure Sig** | 1999 | Key evolution tree | First FS signature; binary tree of keys; update = move to next leaf [[1]](https://eprint.iacr.org/1999/009) |
+| **Itkis-Reyzin FS-Sig** | 2001 | Factoring | Efficient FS signature based on Guillou-Quisquater [[1]](https://eprint.iacr.org/2001/006) |
+| **Canetti-Halevi-Katz FS-PKE** | 2003 | HIBE → FS-PKE | Elegant reduction: binary tree HIBE = forward-secure encryption [[1]](https://eprint.iacr.org/2003/083) |
+| **0-RTT TLS (forward secrecy)** | 2018 | Ephemeral DH + puncturable enc | TLS 1.3 0-RTT achieves FS via session ticket puncturing; see [Puncturable Encryption](02-authenticated-structured-encryption.md#puncturable-encryption) [[1]](https://www.rfc-editor.org/rfc/rfc8446) |
+
+**State of the art:** TLS 1.3 ephemeral DH (practical FS), Signal ratchet (continuous FS), puncturable encryption (0-RTT FS).
+
+**Production readiness:** Production
+TLS 1.3 ephemeral DH provides forward secrecy in all major browsers and servers; Signal ratchet deployed at scale.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, TLS 1.3 ephemeral DH forward secrecy
+- [rustls](https://github.com/rustls/rustls) ⭐ 7.3k — Rust, TLS 1.3 with forward secrecy
+
+**Security status:** Secure
+No known attacks on key-evolving forward-secure constructions; TLS 1.3 FS extensively analyzed.
+
+**Community acceptance:** Standard
+IETF RFC 8446 (TLS 1.3) mandates forward secrecy; NIST and NSA guidance require FS in new deployments.
+
+---
+
+### Broadcast Authentication (TESLA)
+
+**Goal:** Asymmetric authentication from symmetric primitives. Authenticate broadcast/multicast messages using only MACs — the time delay between sending and key disclosure creates an asymmetry that prevents forgery. No public-key crypto needed.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **TESLA** | 2000 | Hash chain + MAC | Timed Efficient Stream Loss-tolerant Authentication; delayed key disclosure [[1]](https://doi.org/10.1109/JSAC.2002.806128) |
+| **μTESLA** | 2002 | TESLA + sensor optimizations | Lightweight TESLA for sensor networks; base station bootstraps keys [[1]](https://doi.org/10.1145/586110.586132) |
+| **TESLA++** | 2003 | TESLA + immediate auth | Hybrid: some packets immediately verifiable, rest via TESLA [[1]](https://doi.org/10.1145/948109.948113) |
+
+**State of the art:** TESLA for multicast authentication; μTESLA for IoT/sensor networks. Alternative to [Digital Signatures](#updatable-signatures) when computation is constrained.
+
+**Production readiness:** Mature
+TESLA deployed in IoT/sensor networks (Contiki-NG); muTESLA used in resource-constrained broadcast authentication.
+
+**Implementations:**
+- [contiki-ng](https://github.com/contiki-ng/contiki-ng) ⭐ 1.5k — C, includes TESLA for IoT broadcast auth
+
+**Security status:** Secure
+No known attacks; security depends on hash chain integrity and time synchronization assumptions.
+
+**Community acceptance:** Niche
+Standard for multicast/broadcast authentication in sensor networks; alternative to public-key sigs when computation is constrained.
+
+---
+
+### Identity-Based Signatures (IBS)
+
+**Goal:** Sign with identity, verify with identity. The signer obtains a signing key from a PKG using their identity string; anyone can verify using the signer's identity and master public key — no certificate lookup needed. Complement to IBE.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Shamir IBS (concept)** | 1984 | — | First proposal of identity-based signatures alongside IBE [[1]](https://doi.org/10.1007/3-540-39568-7_5) |
+| **Cha-Cheon IBS** | 2003 | Pairings (BDH) | Efficient pairing-based IBS from Gap-DH [[1]](https://eprint.iacr.org/2002/083) |
+| **Paterson-Schuldt IBS** | 2006 | Pairings | Provably secure in standard model (no random oracle) [[1]](https://eprint.iacr.org/2006/080) |
+| **Lattice IBS (Rückert)** | 2010 | SIS/LWE | Post-quantum identity-based signatures [[1]](https://eprint.iacr.org/2009/222) |
+
+**State of the art:** Pairing-based IBS (standard model); lattice IBS for PQ. Complement to [IBE](#identity-based-signatures-ibs); same PKG architecture.
+
+**Production readiness:** Mature
+Well-studied constructions with production-quality pairing libraries; used in identity-based PKI deployments.
+
+**Implementations:**
+- [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing-based IBS implementations
+- [charm-crypto](https://github.com/JHUISI/charm) ⭐ 633 — Python, pairing-based IBS and IBE
+- [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, efficient pairings for IBS
+
+**Security status:** Secure
+No known attacks; Paterson-Schuldt achieves standard-model security without random oracles.
+
+**Community acceptance:** Niche
+Complement to IBE; adopted in enterprise identity systems where certificate-free PKI is desired.
+
+---
+
+### BLISS & qTESLA (Early Lattice Signature Schemes)
+
+**Goal:** Efficient lattice-based signatures preceding the NIST PQC process. BLISS (Bimodal Lattice Signature Scheme) achieved very compact signatures using a bimodal Gaussian distribution to cancel the error term; qTESLA was a Ring-LWE–based NIST PQC Round 1 candidate. Both illuminate the design space that led to ML-DSA (Dilithium) and Falcon.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BLISS (Ducas-Durmus-Lepoint-Lyubashevsky)** | 2013 | Ring-SIS + bimodal Gaussian | Bimodal distribution enables rejection-free signing; ~5600-bit sig at 128-bit security; CRYPTO 2013 [[1]](https://eprint.iacr.org/2013/383) |
+| **BLISS-B** | 2015 | BLISS + Bernoulli rejection sampling | Improved constant-time variant; reference implementation for timing-side-channel studies [[1]](https://tches.iacr.org/index.php/TCHES/article/view/836) |
+| **qTESLA (Round 1)** | 2017 | Ring-LWE (provably secure) | Conservative provable-security variant; NIST PQC Round 1; withdrawn before Round 2 due to parameter issues [[1]](https://eprint.iacr.org/2019/085) |
+| **qTESLA-p (provably secure)** | 2019 | Ring-LWE + NTRU-free | Revised parameter sets with concrete security reductions; still larger signatures than BLISS [[1]](https://eprint.iacr.org/2019/085) |
+| **Lyubashevsky's Fiat-Shamir with Aborts** | 2009 | Ring-SIS | Core signing technique behind BLISS, Dilithium, and Falcon: sign with a large key, reject if signature leaks too much information about the key [[1]](https://eprint.iacr.org/2011/537) |
+
+BLISS introduced the bimodal trick: instead of sampling a standard Gaussian nonce, the signer samples from a distribution that is the mixture of two Gaussians centered at +σ and −σ. This cancels the error term algebraically during signing, enabling smaller rejection rates and more compact signatures. BLISS signatures (~5600 bits at Level 1) were the most compact lattice signatures of their era and influenced all subsequent Fiat-Shamir-with-aborts constructions. However, BLISS implementations were repeatedly shown to leak the private key through timing and cache side-channels (the Gaussian sampler is notoriously hard to implement in constant time), which contributed to NIST preferring Dilithium's simpler uniform-rejection-sampling design for ML-DSA. qTESLA was based on the provably secure Ring-LWE assumption (Regev-style reduction) rather than the heuristic Ring-SIS assumption used in BLISS; it was withdrawn from Round 2 after parameter analysis revealed insufficient security margins in the submitted parameter sets.
+
+**State of the art:** Neither BLISS nor qTESLA was standardized; superseded by ML-DSA (FIPS 204) and Falcon/FN-DSA (FIPS 206). Historically important as the proof-of-concept lattice signature schemes that established the viability of the Fiat-Shamir-with-aborts paradigm. See [NIST PQC Signature Standards](#nist-pqc-signature-standards-ml-dsa--slh-dsa) and [Falcon / FN-DSA](#falcon--fn-dsa-ntru-based-lattice-signatures).
+
+**Production readiness:** Deprecated
+Neither BLISS nor qTESLA standardized; superseded by ML-DSA (FIPS 204) and Falcon/FN-DSA (FIPS 206).
+
+**Implementations:**
+- Superseded by [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-DSA/Falcon
+
+**Security status:** Superseded
+BLISS vulnerable to timing/cache side-channels in Gaussian sampler; qTESLA withdrawn due to insufficient security margins.
+
+**Community acceptance:** Niche
+Historically important as proof-of-concept lattice signatures; established the Fiat-Shamir-with-aborts paradigm used by ML-DSA.
+
+---
+
+### Structure-Preserving Signatures on Equivalence Classes (SPS-EQ)
+
+**Goal:** Sign equivalence classes of group-element vectors such that signatures can be publicly adapted to any class representative. All inputs and outputs (messages, keys, signatures) are group elements compatible with Groth-Sahai proofs. The core primitive behind efficient anonymous credentials, delegatable credentials, and blind token issuance in the pairing setting.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Hanser-Slamanig EQS** | 2014 | Pairings (Type III) | First EQS construction; sign [M]_R where [M]_R = {ρ·M : ρ ∈ Z_p*}; random-oracle model [[1]](https://eprint.iacr.org/2014/944) |
+| **Fuchsbauer-Hanser-Slamanig (FHS)** | 2019 | Pairings (Type III) | Standard-model EQS; optimal verification (3 pairing equations); basis of practical schemes [[1]](https://eprint.iacr.org/2018/1105) |
+| **EQS + Set Commitments** | 2023 | Pairings | Combine EQS with set commitments for attribute-hiding credentials with subset predicates [[1]](https://eprint.iacr.org/2022/1033) |
+| **EQS-based Anonymous Tokens** | 2021 | Pairings | Privacy Pass-style tokens: issuer signs blinded token; user unblinds + randomizes via EQS class change [[1]](https://eprint.iacr.org/2020/072) |
+
+SPS-EQ defines an equivalence relation on vectors of group elements: M ~ M' iff M' = ρ·M for some ρ ∈ Z_p*. The ChgRep algorithm takes (σ, M, ρ) and outputs σ' valid on ρ·M under the same public key — without the secret key. This is strictly more powerful than standard rerandomizable signatures because it changes the message, not just the signature. Applications: (1) anonymous credentials where showing a credential rerandomizes it; (2) blind issuance without interactive blind signing protocols; (3) delegatable credentials where each delegation level changes the representative. The FHS construction achieves EUF-CMA security under the co-CDH assumption in Type III pairings.
+
+**State of the art:** FHS (2019) is the practical standard-model EQS; combined with set commitments for W3C-style attribute credentials. Active research on EQS from lattices (post-quantum). Cross-links: [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps), [Mercurial Signatures](#mercurial-signatures), [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials).
+
+**Production readiness:** Research
+Academic constructions; FHS (2019) provides standard-model EQS but no production deployment.
+
+**Implementations:**
+- [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library for SPS-EQ implementations
+- [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit
+
+**Security status:** Secure
+FHS construction proved EUF-CMA secure under co-CDH in Type III pairings; no known attacks.
+
+**Community acceptance:** Niche
+Core primitive for efficient anonymous credentials, blind token issuance, and delegatable credentials in pairing settings.
+
+---
+
+### SPS-EQ (Structure-Preserving Signatures on Equivalence Classes)
+
+**Goal:** Sign a vector of group elements such that the signature can be publicly re-randomized (adapted) to a signature on any scalar-multiple of the vector, enabling unlinkable credential re-presentation without re-issuance.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Fuchsbauer-Hanser-Slamanig SPS-EQ** | 2014/2019 | Bilinear groups, equivalence classes | Public adaptability enables privacy-preserving DACs without NIZKs; Journal of Cryptology 2019 [[1]](https://link.springer.com/article/10.1007/s00145-018-9281-4) |
+| **Practical DAC from SPSEQ-UC** | 2023 | Updatable SPS-EQ | Concrete implementation of delegatable anonymous credentials; PoPETs 2023 [[1]](https://petsymposium.org/popets/2023/popets-2023-0093.pdf) |
+
+**State of the art:** The equivalence-class extension over ordinary SPS is the key innovation enabling adaptivity. Foundation for constant-size delegatable anonymous credentials, round-optimal blind signatures, and efficient group signatures.
+
+**Production readiness:** Research
+Academic constructions with concrete DAC implementation (PoPETs 2023); no widespread production use.
+
+**Implementations:**
+- [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library
+- [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit for SPS-EQ
+
+**Security status:** Secure
+No known attacks; EUF-CMA under standard pairing assumptions; public adaptability formally proved.
+
+**Community acceptance:** Niche
+Key innovation enabling constant-size delegatable anonymous credentials and round-optimal blind signatures.
+
+---
+
+### Boneh-Boyen (BB) Short Signatures
 
 **Goal:** Standard-model short signatures. Achieve existential unforgeability under chosen-message attack without random oracles, using a pairing-based construction and the q-Strong Diffie-Hellman (q-SDH) assumption. Signatures consist of a single group element — the shortest possible for pairing-based schemes.
 
@@ -869,7 +1244,7 @@ Foundational to BBS+ anonymous credentials (W3C); Waters signatures are the temp
 
 ---
 
-## Stateful Hash-Based Signatures (XMSS & LMS)
+### Stateful Hash-Based Signatures (XMSS & LMS)
 
 **Goal:** Post-quantum stateful tree signatures. Authenticate many messages using a Merkle tree of one-time keys; the signer advances a state counter so each leaf is used at most once. Security depends only on hash function properties — no number-theoretic assumptions. Standardized for use before PQC deployment is complete.
 
@@ -902,7 +1277,7 @@ IETF RFCs 8391 (XMSS) and 8554 (LMS); NIST SP 800-208 recommended for stateful h
 
 ---
 
-## NIST PQC Signature Standards (ML-DSA & SLH-DSA)
+### NIST PQC Signature Standards (ML-DSA & SLH-DSA)
 
 **Goal:** Drop-in post-quantum replacements for RSA and ECDSA. Standardized by NIST in August 2024 as FIPS 204 (ML-DSA) and FIPS 205 (SLH-DSA), these algorithms are designed to be secure against both classical and quantum adversaries and are the primary migration targets for digital signatures.
 
@@ -933,7 +1308,7 @@ NIST FIPS 204 and 205 standardized; CNSA 2.0 mandates ML-DSA as primary PQ signa
 
 ---
 
-## DKLs23 & Next-Generation Threshold ECDSA
+### DKLs23 & Next-Generation Threshold ECDSA
 
 **Goal:** Efficient maliciously-secure threshold ECDSA. Achieve t-of-n ECDSA signing with UC-security against a dishonest majority in the minimum number of rounds, replacing the expensive Paillier-based arithmetic of GG18/GG20 with oblivious transfer (OT) extensions for a dramatically faster protocol.
 
@@ -964,7 +1339,7 @@ Industry standard for institutional MPC wallets; CGGMP has extensive peer review
 
 ---
 
-## Schnorr Signatures (Original Scheme)
+### Schnorr Signatures (Original Scheme)
 
 **Goal:** Efficient, provably secure discrete-log signatures. Sign a message using a short commitment-response protocol; security is provable in the random oracle model under the discrete logarithm assumption — the simplest signature scheme to achieve this.
 
@@ -994,39 +1369,7 @@ ISO/IEC 14888-3 standardized; BIP 340 for Bitcoin; EdDSA (RFC 8032) adopted acro
 
 ---
 
-## EdDSA (Ed25519 & Ed448)
-
-**Goal:** High-speed, misuse-resistant signatures. A deterministic Schnorr variant over twisted Edwards curves; the nonce is derived from the private key and message via a hash, eliminating the need for a secure random number generator during signing and preventing the catastrophic nonce-reuse vulnerability of ECDSA.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Ed25519** | 2011 | edwards25519 (≅ Curve25519) + SHA-512 | 128-bit security; 32-byte public key; 64-byte signature; ~100k signs/sec [[1]](https://eprint.iacr.org/2011/368) |
-| **Ed448 (Goldilocks)** | 2015 | edwards448 + SHAKE256 | 224-bit security; 57-byte public key; 114-byte signature; conservative curve [[1]](https://eprint.iacr.org/2015/625) |
-| **RFC 8032** | 2017 | IETF standard | Standardizes Ed25519 and Ed448; specifies PureEdDSA and HashEdDSA variants [[1]](https://www.rfc-editor.org/rfc/rfc8032) |
-| **FIPS 186-5** | 2023 | NIST standard | Approves Ed25519 and Ed448 for federal use alongside ECDSA and RSA [[1]](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf) |
-| **FROST-Ed25519 / FROST-Ed448** | 2024 | RFC 9591 | Threshold EdDSA-compatible signing via FROST; 2-round protocol [[1]](https://www.rfc-editor.org/rfc/rfc9591) |
-
-EdDSA improves on ECDSA in three concrete ways: (1) the nonce k is deterministic (derived as H(private\_key\_prefix ‖ message)), so no per-sign entropy is needed; (2) the curve arithmetic is complete (no special-case for the point at infinity), eliminating an entire class of implementation bugs; (3) signatures are not malleable. The determinism also means EdDSA is collision-resilient for PureEdDSA: a hash collision does not break unforgeability. Ed25519 is widely deployed in TLS 1.3, SSH, Signal, WireGuard, OpenPGP, and age. FROST (RFC 9591) provides threshold EdDSA-compatible signing.
-
-**State of the art:** Ed25519 (de-facto standard for modern protocols); FROST-Ed25519 (RFC 9591, threshold). See [Schnorr Signatures](#schnorr-signatures-original-scheme) for the underlying primitive and [FROST](#threshold-signature-schemes-tss) for threshold context.
-
-**Production readiness:** Production
-Ed25519 deployed in TLS 1.3, SSH, Signal, WireGuard, OpenPGP, and age; FIPS 186-5 approved for federal use.
-
-**Implementations:**
-- [ed25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, Ed25519
-- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, Ed25519
-- [golang/crypto](https://github.com/golang/crypto) ⭐ 3.3k — Go, Ed25519
-
-**Security status:** Secure
-Deterministic nonces eliminate nonce-reuse vulnerabilities; complete curve arithmetic prevents implementation bugs.
-
-**Community acceptance:** Standard
-IETF RFC 8032; NIST FIPS 186-5; FROST-Ed25519 standardized as RFC 9591 for threshold signing.
-
----
-
-## ECDSA — Details, Vulnerabilities, and RFC 6979
+### ECDSA — Details, Vulnerabilities, and RFC 6979
 
 **Goal:** Elliptic-curve digital signatures with standardized security. ECDSA is the dominant deployed signature scheme (Bitcoin, TLS certificates, code signing), but its security is highly sensitive to nonce quality — a single reused or biased nonce leaks the private key.
 
@@ -1059,7 +1402,7 @@ FIPS 186-5 approved; being gradually superseded by Ed25519 in new protocol desig
 
 ---
 
-## RSA-PSS vs. PKCS#1 v1.5 Signatures
+### RSA-PSS vs. PKCS#1 v1.5 Signatures
 
 **Goal:** Provably secure RSA-based signatures. RSA-PSS (Probabilistic Signature Scheme) was designed by Bellare and Rogaway (1996) to achieve tight security reductions to the RSA problem, replacing the ad-hoc PKCS#1 v1.5 padding whose security cannot be formally proved.
 
@@ -1089,7 +1432,7 @@ FIPS 186-5 and TLS 1.3 mandate RSA-PSS for new key usage; both superseded by ECD
 
 ---
 
-## Falcon / FN-DSA (NTRU-Based Lattice Signatures)
+### Falcon / FN-DSA (NTRU-Based Lattice Signatures)
 
 **Goal:** Compact post-quantum signatures. Falcon uses NTRU lattices and Fast Fourier sampling to produce signatures significantly smaller than ML-DSA (Dilithium) while achieving the same security level — at the cost of a more complex implementation requiring careful handling of floating-point arithmetic.
 
@@ -1121,7 +1464,7 @@ NIST FIPS 206 standardized; preferred over ML-DSA where compact signature size i
 
 ---
 
-## SPHINCS & SPHINCS+ (Stateless Hash-Based Signatures)
+### SPHINCS & SPHINCS+ (Stateless Hash-Based Signatures)
 
 **Goal:** Stateless post-quantum signatures from hash functions alone. Unlike XMSS/LMS, no per-signer state counter is needed — each signing operation selects a random leaf from a hypertree, making the scheme safe to deploy in any context where state management is impractical. The successor SPHINCS+ was standardized as SLH-DSA (FIPS 205).
 
@@ -1153,7 +1496,7 @@ NIST FIPS 205 standardized; recommended as conservative PQ backup when lattice a
 
 ---
 
-## Picnic (Signatures from ZK Proofs of Symmetric Primitives)
+### Picnic (Signatures from ZK Proofs of Symmetric Primitives)
 
 **Goal:** Post-quantum signatures with a minimal-assumption foundation. Prove in zero knowledge that you know a secret key sk such that a public symmetric function F(sk, nonce) = output, then use the ZK proof as a signature. Security reduces entirely to properties of the symmetric primitive (collision resistance + pseudorandomness) — no lattice, factoring, or discrete-log assumption needed.
 
@@ -1185,7 +1528,7 @@ Not selected for NIST standardization; primarily of theoretical interest as the 
 
 ---
 
-## Rainbow & Multivariate Quadratic Signatures
+### Rainbow & Multivariate Quadratic Signatures
 
 **Goal:** Post-quantum signatures from the hardness of solving systems of multivariate quadratic (MQ) equations over finite fields. The MQ problem is NP-hard in general; multivariate schemes exploit structured trapdoors to make signing efficient while keeping the public map hard to invert.
 
@@ -1217,67 +1560,7 @@ Rainbow's break highlighted risks of structured multivariate schemes; MAYO/UOV/S
 
 ---
 
-## Hedged Signatures
-
-**Goal:** Side-channel-resistant deterministic signing. Pure deterministic schemes (EdDSA, RFC 6979) are vulnerable to fault attacks — an adversary who can induce a fault during signing can recover the private key even without knowing the internal state. Hedged signatures mix fresh per-sign randomness into the nonce derivation, preserving determinism's RNG-failure resilience while defeating fault attacks that exploit the deterministic structure.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Hedged ECDSA (Aranha et al.)** | 2020 | ECDSA + HMAC-DRBG + fresh randomness | Adds a random blinding value r to RFC 6979 nonce derivation: k = HMAC-DRBG(sk ‖ m ‖ r); hardware fault-resistant [[1]](https://eprint.iacr.org/2019/956) |
-| **Hedged EdDSA** | 2017 | EdDSA + extra randomness | Variant of Ed25519 mixing per-sign entropy into nonce hash; defeats rowhammer-style fault attacks [[1]](https://eprint.iacr.org/2017/985) |
-| **Composite Schnorr / "draft-irtf-cfrg-det-sigs-with-noise"** | 2022 | Schnorr + deterministic + random | IRTF CFRG draft; k = H(sk ‖ m ‖ r) where r is small (32 bytes); degrades to RFC 6979 if RNG fails, degrades to random signing if determinism is probed [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-det-sigs-with-noise/) |
-| **Libsodium / ristretto255 hedged** | 2022 | Ed25519 variant | libsodium's crypto_sign_ed25519 adds random noise internally in recent versions; transparent to applications [[1]](https://doc.libsodium.org/public-key_cryptography/public-key_signatures) |
-
-The core tension is between two threat models: (a) RNG failure — the per-sign random source is weak or predictable, as occurred in several Android Bitcoin wallet incidents; and (b) fault/DPA attacks — the signing device is physically probed and the deterministic computation is perturbed (e.g., via voltage glitching or electromagnetic fault injection), allowing an attacker to solve for the private key from two faulty signatures with the same deterministic nonce. Hedged signing defeats both threats simultaneously: the nonce depends on both the private key+message (as in RFC 6979) and fresh randomness (as in randomized signing). A faulty-RNG attacker still cannot predict k because of the deterministic component; a fault attacker cannot exploit a known k because the randomness prevents nonce repetition. The IRTF CFRG draft formalizes this as the preferred approach for new Schnorr-based schemes.
-
-**State of the art:** Hedged signing recommended by IRTF CFRG for all new Schnorr/ECDSA deployments; already default in several TLS stacks and hardware security modules. Extends [ECDSA — Details, Vulnerabilities, and RFC 6979](#ecdsa--details-vulnerabilities-and-rfc-6979) and [EdDSA](#eddsa-ed25519--ed448).
-
-**Production readiness:** Production
-Hedged Ed25519 default in libsodium; recommended by IRTF CFRG for all new Schnorr/ECDSA deployments.
-
-**Implementations:**
-- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, hedged Ed25519 in recent versions
-- [draft-irtf-cfrg-det-sigs-with-noise](https://datatracker.ietf.org/doc/draft-irtf-cfrg-det-sigs-with-noise/) — IETF draft specification
-
-**Security status:** Secure
-Defeats both RNG-failure and fault/DPA attacks simultaneously; degrades gracefully if either defense is compromised.
-
-**Community acceptance:** Emerging
-IRTF CFRG draft formalizing hedged signing as the preferred approach; adopted in TLS stacks and HSMs.
-
----
-
-## BLISS & qTESLA (Early Lattice Signature Schemes)
-
-**Goal:** Efficient lattice-based signatures preceding the NIST PQC process. BLISS (Bimodal Lattice Signature Scheme) achieved very compact signatures using a bimodal Gaussian distribution to cancel the error term; qTESLA was a Ring-LWE–based NIST PQC Round 1 candidate. Both illuminate the design space that led to ML-DSA (Dilithium) and Falcon.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **BLISS (Ducas-Durmus-Lepoint-Lyubashevsky)** | 2013 | Ring-SIS + bimodal Gaussian | Bimodal distribution enables rejection-free signing; ~5600-bit sig at 128-bit security; CRYPTO 2013 [[1]](https://eprint.iacr.org/2013/383) |
-| **BLISS-B** | 2015 | BLISS + Bernoulli rejection sampling | Improved constant-time variant; reference implementation for timing-side-channel studies [[1]](https://tches.iacr.org/index.php/TCHES/article/view/836) |
-| **qTESLA (Round 1)** | 2017 | Ring-LWE (provably secure) | Conservative provable-security variant; NIST PQC Round 1; withdrawn before Round 2 due to parameter issues [[1]](https://eprint.iacr.org/2019/085) |
-| **qTESLA-p (provably secure)** | 2019 | Ring-LWE + NTRU-free | Revised parameter sets with concrete security reductions; still larger signatures than BLISS [[1]](https://eprint.iacr.org/2019/085) |
-| **Lyubashevsky's Fiat-Shamir with Aborts** | 2009 | Ring-SIS | Core signing technique behind BLISS, Dilithium, and Falcon: sign with a large key, reject if signature leaks too much information about the key [[1]](https://eprint.iacr.org/2011/537) |
-
-BLISS introduced the bimodal trick: instead of sampling a standard Gaussian nonce, the signer samples from a distribution that is the mixture of two Gaussians centered at +σ and −σ. This cancels the error term algebraically during signing, enabling smaller rejection rates and more compact signatures. BLISS signatures (~5600 bits at Level 1) were the most compact lattice signatures of their era and influenced all subsequent Fiat-Shamir-with-aborts constructions. However, BLISS implementations were repeatedly shown to leak the private key through timing and cache side-channels (the Gaussian sampler is notoriously hard to implement in constant time), which contributed to NIST preferring Dilithium's simpler uniform-rejection-sampling design for ML-DSA. qTESLA was based on the provably secure Ring-LWE assumption (Regev-style reduction) rather than the heuristic Ring-SIS assumption used in BLISS; it was withdrawn from Round 2 after parameter analysis revealed insufficient security margins in the submitted parameter sets.
-
-**State of the art:** Neither BLISS nor qTESLA was standardized; superseded by ML-DSA (FIPS 204) and Falcon/FN-DSA (FIPS 206). Historically important as the proof-of-concept lattice signature schemes that established the viability of the Fiat-Shamir-with-aborts paradigm. See [NIST PQC Signature Standards](#nist-pqc-signature-standards-ml-dsa--slh-dsa) and [Falcon / FN-DSA](#falcon--fn-dsa-ntru-based-lattice-signatures).
-
-**Production readiness:** Deprecated
-Neither BLISS nor qTESLA standardized; superseded by ML-DSA (FIPS 204) and Falcon/FN-DSA (FIPS 206).
-
-**Implementations:**
-- Superseded by [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-DSA/Falcon
-
-**Security status:** Superseded
-BLISS vulnerable to timing/cache side-channels in Gaussian sampler; qTESLA withdrawn due to insufficient security margins.
-
-**Community acceptance:** Niche
-Historically important as proof-of-concept lattice signatures; established the Fiat-Shamir-with-aborts paradigm used by ML-DSA.
-
----
-
-## Fiat-Shamir with Aborts (Lattice Signature Paradigm)
+### Fiat-Shamir with Aborts (Lattice Signature Paradigm)
 
 **Goal:** Efficient lattice signatures via controlled rejection sampling. Extend the classical Fiat-Shamir transform — which converts interactive identification schemes into signatures via a hash challenge — to lattice settings where nonce distributions must be carefully masked to prevent leakage of the secret key. The "abort" mechanism restarts signing when a sampled nonce is deemed too revealing, ensuring the output distribution is independent of the secret.
 
@@ -1309,38 +1592,7 @@ Foundational technique behind NIST FIPS 204 (ML-DSA); Raccoon and Mitaka extend 
 
 ---
 
-## Multi-Designated Verifier Signatures (MDVS)
-
-**Goal:** Restricted verifiability for a defined set of recipients. Extend [Designated Verifier Signatures](#designated-verifier-signatures--proofs) from a single verifier to a set of k designated verifiers: any member of the set can verify, but no one outside the set can, and no member can transfer conviction to outsiders (since each verifier could have simulated the signature themselves).
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Jakobsson-Sako-Impagliazzo MDVS** | 1996 | DLP | Conceptual extension of DVS to multiple designated verifiers; each verifier can simulate [[1]](https://link.springer.com/chapter/10.1007/3-540-68339-9_13) |
-| **Laguillaumie-Vergnaud MDVS** | 2004 | Pairings | First efficient pairing-based MDVS; constant-size signatures regardless of verifier count [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30564-4_22) |
-| **Dent-Libert-Paterson MDVS** | 2006 | Pairings (standard model) | MDVS in the standard model (no random oracle); verifier anonymity as additional property [[1]](https://eprint.iacr.org/2006/236) |
-| **Lattice MDVS (Zhang et al.)** | 2021 | Ring-LWE | Post-quantum MDVS from ring learning with errors [[1]](https://eprint.iacr.org/2021/829) |
-| **Strong MDVS (Schuldt-Matsuura)** | 2009 | Pairings | Strong variant: even members of the designated set cannot transfer conviction to other members [[1]](https://link.springer.com/chapter/10.1007/978-3-642-10433-6_12) |
-
-MDVS is motivated by scenarios where a message must be privately authenticated to a board or committee — each member can individually verify, but collective non-transferability means no subset can prove the signer's identity to outsiders. The simulatability condition requires that each designated verifier Di can produce transcripts (σ*, m) that are computationally indistinguishable from real signatures, without knowing the signer's key. Verifier anonymity (Dent-Libert-Paterson) adds the property that the signature does not reveal which verifiers were designated. Strong MDVS further prevents intra-set transfers: even if all k verifiers collude, they cannot convince an outsider — because any such coalition could have simulated the signature cooperatively.
-
-**State of the art:** Pairing-based MDVS (Laguillaumie-Vergnaud style) in standard model; lattice MDVS for PQ settings. Extends [Designated Verifier Signatures / Proofs](#designated-verifier-signatures--proofs) to the multi-verifier case.
-
-**Production readiness:** Research
-Academic prototypes only; proposed for committee authentication and board-level private signing.
-
-**Implementations:**
-- Academic reference implementations accompany published papers
-- Pairing-based MDVS implementable via [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++
-
-**Security status:** Secure
-No known attacks; simulatability ensures non-transferability; lattice MDVS provides post-quantum option.
-
-**Community acceptance:** Niche
-Extends DVS to multi-verifier settings; relevant for board/committee authentication with non-transferability.
-
----
-
-## Unforgeability Notions: EUF-CMA, SUF-CMA, and Beyond
+### Unforgeability Notions: EUF-CMA, SUF-CMA, and Beyond
 
 **Goal:** Formal security definitions for digital signatures. Precisely characterize what it means for a signature scheme to be secure: which adversarial capabilities are modeled (chosen-message attacks), and what counts as a forgery (existential vs. strong vs. selective). These definitions underpin all provable security results in the signature literature.
 
@@ -1373,7 +1625,7 @@ EUF-CMA is the universal baseline; SUF-CMA required by Bitcoin (BIP 62/146) and 
 
 ---
 
-## Batch Verification of Signatures
+### Batch Verification of Signatures
 
 **Goal:** Amortize verification cost. Check the validity of n signatures simultaneously at a cost significantly less than n independent verifications. Critical for high-throughput systems such as blockchain nodes, certificate transparency logs, and TLS session resumption servers that must validate large volumes of signatures.
 
@@ -1407,7 +1659,7 @@ Standard optimization in Bitcoin, Ethereum, and TLS stacks; foundational for hig
 
 ---
 
-## Post-Quantum Signature Comparison: ML-DSA vs. SLH-DSA vs. FN-DSA
+### Post-Quantum Signature Comparison: ML-DSA vs. SLH-DSA vs. FN-DSA
 
 **Goal:** Practical comparison of the three NIST-standardized post-quantum signature algorithms. ML-DSA (FIPS 204), SLH-DSA (FIPS 205), and FN-DSA (FIPS 206) address different deployment scenarios — lattice speed, hash-only conservatism, and compact-size respectively — and choosing between them requires understanding their security assumptions, performance profiles, and implementation complexity trade-offs.
 
@@ -1446,7 +1698,7 @@ NIST FIPS 204/205/206; CNSA 2.0 mandates ML-DSA as primary, permits SLH-DSA and 
 
 ---
 
-## Verifiable Random Functions (ECVRF, RFC 9381)
+### Verifiable Random Functions (ECVRF, RFC 9381)
 
 **Goal:** Deterministic pseudorandomness with a proof. Given a private key sk and an input α, the VRF outputs a pseudorandom value β = VRF(sk, α) along with a proof π that anyone holding the public key can verify — confirming that β was computed correctly without revealing sk. Combines a signature's authentication with a PRF's pseudorandomness guarantee.
 
@@ -1476,7 +1728,7 @@ IETF RFC 9381 (2023) standardizes ECVRF; widely adopted in blockchain leader ele
 
 ---
 
-## Schnorr Half-Aggregation (Signature Aggregation Beyond BLS)
+### Schnorr Half-Aggregation (Signature Aggregation Beyond BLS)
 
 **Goal:** Non-interactive Schnorr signature compression without pairings. Aggregate n independent Schnorr signatures — from n different signers on n different messages — into a single compact representation roughly half the size of the concatenated originals. Unlike BLS aggregation, no pairing-friendly curve is required; unlike MuSig2, the signers need not interact or coordinate.
 
@@ -1507,7 +1759,7 @@ Active BIP proposal for Bitcoin cross-input signature aggregation (CISA); increm
 
 ---
 
-## Code-Based Signatures (Wave, LESS, and Related)
+### Code-Based Signatures (Wave, LESS, and Related)
 
 **Goal:** Post-quantum signatures from coding theory. Exploit the hardness of decoding random linear codes (Syndrome Decoding Problem) or the equivalence of linear codes (Code Equivalence Problem) to build signatures with well-studied post-quantum security. An alternative PQ family to lattice- and hash-based schemes.
 
@@ -1538,7 +1790,7 @@ CROSS and MEDS advancing through NIST on-ramp; code-based sigs provide assumptio
 
 ---
 
-## SQIsign (Isogeny-Based Signatures)
+### SQIsign (Isogeny-Based Signatures)
 
 **Goal:** Ultra-compact post-quantum signatures from isogeny graphs. Construct a Fiat-Shamir signature scheme whose security rests on the hardness of finding an isogeny between two supersingular elliptic curves — a problem believed resistant to quantum computers, with no known sub-exponential quantum algorithm (unlike discrete-log or factoring).
 
@@ -1569,7 +1821,7 @@ Smallest known PQ key+signature sizes (64B+177B); submitted to NIST additional s
 
 ---
 
-## STARK-Based Signatures
+### STARK-Based Signatures
 
 **Goal:** Signatures with transparent post-quantum security and succinctly verifiable proofs. Convert a STARK (Scalable Transparent ARgument of Knowledge) proof system into a signature scheme via Fiat-Shamir: the signer proves knowledge of a secret key that maps to a public commitment, producing a signature whose verification is fast even when the witness computation is complex. No trusted setup; security reduces to collision-resistant hashes.
 
@@ -1601,101 +1853,7 @@ FAEST advancing through NIST on-ramp; STARK signatures offer transparent PQ secu
 
 ---
 
-## FROST Threshold Schnorr Signatures
-
-**Goal:** Flexible Round-Optimized Schnorr Threshold signatures. A *t*-of-*n* threshold Schnorr signature scheme requiring only two rounds of communication. The resulting signature is a standard Schnorr signature — verifiers cannot distinguish a FROST-generated signature from one produced by a single signer. Designed for distributed key custody without a trusted dealer.
-
-| Scheme | Year | Rounds | Note |
-|--------|------|--------|------|
-| **FROST (Komlo-Goldberg)** | 2020 | 2 | Original FROST: preprocessing round + signing round; UC-secure under OMDL [[1]](https://eprint.iacr.org/2020/852) |
-| **FROST2 (re:FROST)** | 2023 | 2 | Refined security proof; identifiable abort; robustness extensions [[1]](https://eprint.iacr.org/2023/899) |
-| **FROST-DKG (Pedersen DKG + FROST)** | 2020 | 2 + DKG | Distributed key generation phase (Pedersen or Gennaro-Goldfeder DKG) followed by FROST signing [[1]](https://eprint.iacr.org/2020/852) |
-| **FROST-Ed25519 (RFC 9591)** | 2024 | 2 | IETF specification of FROST for Ed25519 and Ristretto255; interoperable wire format [[1]](https://datatracker.ietf.org/doc/rfc9591/) |
-| **FROST-secp256k1** | 2023 | 2 | FROST instantiation for Bitcoin's secp256k1 curve; compatible with BIP 340 (Schnorr) [[1]](https://github.com/ZcashFoundation/frost) |
-
-FROST achieves round-optimality for threshold Schnorr: Round 1 (preprocessing) generates nonce commitments which can be done offline before a message is known; Round 2 (signing) produces signature shares given a message. The coordinator aggregates shares into a single Schnorr signature. Security requires the One-More Discrete Logarithm (OMDL) assumption. FROST does not inherently provide robustness (a malicious participant can cause abort); the ROAST protocol wraps FROST to achieve guaranteed output delivery in asynchronous settings. The Zcash Foundation maintains a production-quality Rust implementation supporting Ed25519, Ristretto255, secp256k1, and P-256.
-
-**State of the art:** RFC 9591 (2024) standardizes FROST for Ed25519/Ristretto255. Used in Zcash (NU5 multisig), Bitcoin custody solutions, and federated signing services. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss), [ROAST (Robust Async FROST)](#roast-robust-asynchronous-threshold-signatures).
-
-**Production readiness:** Production
-RFC 9591 (2024) standardizes FROST-Ed25519; deployed in Zcash multisig and Bitcoin custody solutions.
-
-**Implementations:**
-- [frost](https://github.com/ZcashFoundation/frost) ⭐ 250 — Rust, production FROST for Ed25519/Ristretto255/secp256k1/P-256
-- [frost-ed25519 (RFC 9591)](https://www.rfc-editor.org/rfc/rfc9591) — IETF standard specification
-- [secp256k1-zkp](https://github.com/BlockstreamResearch/secp256k1-zkp) ⭐ 419 — C, FROST-compatible modules
-
-**Security status:** Secure
-Provably secure under the OMDL assumption; 2-round protocol with formal UC-security analysis.
-
-**Community acceptance:** Standard
-IETF RFC 9591 standardized; Zcash Foundation maintains production-quality multi-curve implementation.
-
----
-
-## CGGMP Threshold ECDSA
-
-**Goal:** UC-secure threshold ECDSA with identifiable abort. A *t*-of-*n* protocol that produces standard ECDSA signatures without ever reconstructing the private key. Designed for MPC wallet infrastructure where ECDSA compatibility (Bitcoin, Ethereum) is required.
-
-| Scheme | Year | Rounds | Note |
-|--------|------|--------|------|
-| **GG18 (Gennaro-Goldfeder)** | 2018 | 6 (presign) + 1 | First practical threshold ECDSA via multiplicative-to-additive share conversion; Paillier-based [[1]](https://eprint.iacr.org/2019/114) |
-| **GG20** | 2020 | 4 (presign) + 1 | Improved GG18 with identifiable abort; 4-round presigning [[1]](https://eprint.iacr.org/2020/540) |
-| **CGGMP (Canetti-Gennaro-Goldfeder-Makriyannis-Peled)** | 2021 | 3 (presign) + 1 | UC-secure, 3-round presigning, strong identifiable abort; proved in UC framework [[1]](https://eprint.iacr.org/2021/060) |
-| **CGGMP with auxiliary info** | 2021 | 3 + setup | Adds Paillier/Pedersen range proofs for key-refresh and auxiliary parameter generation [[1]](https://eprint.iacr.org/2021/060) |
-| **Multi-party CGGMP (n > 2)** | 2021 | 3 (presign) + 1 | Extends naturally to *t*-of-*n* with Feldman VSS for key generation phase [[1]](https://eprint.iacr.org/2021/060) |
-
-CGGMP improves over GG18/GG20 by achieving UC-security (composability) and strong identifiable abort — if any party cheats, all honest parties can identify the cheater and exclude them. The presigning phase converts multiplicative shares to additive shares using Paillier homomorphic encryption and zero-knowledge range proofs. Key generation uses Feldman's Verifiable Secret Sharing. The protocol requires expensive modular exponentiations (Paillier), making it slower than FROST, but it produces standard ECDSA signatures compatible with existing blockchain verification logic. Deployed in Fireblocks, Coinbase, Zengo, and other institutional MPC wallet providers.
-
-**State of the art:** CGGMP (2021) is the dominant threshold ECDSA protocol for production MPC wallets. Implementations: multi-party-ecdsa (ZenGo), tss-lib (Binance), Nash. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss).
-
-**Production readiness:** Production
-Deployed in Fireblocks, Coinbase, ZenGo, and other institutional MPC wallet providers for ECDSA threshold signing.
-
-**Implementations:**
-- [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, CGGMP implementation
-- [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, Binance TSS library with CGGMP
-
-**Security status:** Secure
-UC-secure with strong identifiable abort; Paillier-based MtA with zero-knowledge range proofs for share conversion.
-
-**Community acceptance:** Widely trusted
-Dominant threshold ECDSA protocol for production MPC wallets; extensive peer review and industry adoption.
-
----
-
-## MuSig2 (Multi-Signatures for Bitcoin)
-
-**Goal:** Two-round multi-signature scheme where *n* signers produce a single Schnorr signature that verifies under an aggregated public key. Enables key aggregation: the combined public key is indistinguishable from a single key on-chain, providing privacy and efficiency. Standardized as BIP 327 for Bitcoin Taproot.
-
-| Scheme | Year | Rounds | Note |
-|--------|------|--------|------|
-| **MuSig (Maxwell-Poelstra-Seurin-Wuille)** | 2018 | 3 | Original multi-sig; 3 rounds needed to prevent rogue-key attacks [[1]](https://eprint.iacr.org/2018/068) |
-| **MuSig-DN (Deterministic Nonce)** | 2020 | 2 | Eliminates nonce-reuse risk via zero-knowledge proof of nonce derivation; expensive ZKP [[1]](https://eprint.iacr.org/2020/1057) |
-| **MuSig2 (Nick-Ruffing-Seurin)** | 2020 | 2 | Concurrent security with 2 rounds; signers send two nonce values in round 1 [[1]](https://eprint.iacr.org/2020/1261) |
-| **BIP 327 (MuSig2)** | 2022 | 2 | Bitcoin standardization; specifies key aggregation, nonce generation, partial signing, aggregation [[1]](https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki) |
-| **MuSig2 + Adaptor Signatures** | 2022 | 2 | Combining MuSig2 with adaptor signatures for scriptless scripts in Lightning/DLCs [[1]](https://eprint.iacr.org/2020/1261) |
-
-MuSig2 solves the key aggregation problem: given public keys PK₁,...,PKₙ, compute an aggregate key apk = Σ aᵢ·PKᵢ where aᵢ are key aggregation coefficients derived by hashing all public keys together (preventing rogue-key attacks). Signing requires each party to generate two nonce pairs in round 1; in round 2, a linear combination of these nonces is used for the Schnorr signing equation. The resulting signature is a standard BIP 340 Schnorr signature. MuSig2 achieves concurrent security — multiple signing sessions can run in parallel safely — which MuSig1 could not guarantee in 2 rounds. On Bitcoin, MuSig2 enables n-of-n multisig that appears as a single Taproot key-path spend, saving ~50% in transaction weight versus script-path multisig.
-
-**State of the art:** BIP 327 deployed in Bitcoin wallets (BitGo, Blockstream Green). Used in Lightning Network channel opens and Taproot-based custody. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss), [Adaptor Signatures / Scriptless Scripts](#adaptor-signatures--scriptless-scripts), [Taproot (Bitcoin Improvement)](13-blockchain-distributed-ledger.md#bitcoin-taproot--bip-340-342).
-
-**Production readiness:** Production
-BIP 327 deployed in Bitcoin Taproot wallets (BitGo, Blockstream Green); used in Lightning Network channel opens.
-
-**Implementations:**
-- [secp256k1-zkp](https://github.com/BlockstreamResearch/secp256k1-zkp) ⭐ 419 — C, BIP 327 MuSig2
-- [musig2 BIP 327](https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki) ⭐ 10k — specification
-
-**Security status:** Secure
-Provably secure under AOMDL with concurrent-session safety; key aggregation prevents rogue-key attacks.
-
-**Community acceptance:** Standard
-BIP 327 standardized for Bitcoin Taproot; enables n-of-n multisig indistinguishable from single-signer on-chain.
-
----
-
-## BBS+ Signatures (Privacy-Preserving Selective Disclosure)
+### BBS+ Signatures (Privacy-Preserving Selective Disclosure)
 
 **Goal:** Multi-message signature scheme enabling selective disclosure and zero-knowledge proof of possession. A signer signs a vector of messages (m₁,...,mₗ); the holder can later derive a zero-knowledge proof revealing any subset of messages while hiding the rest. Foundation of W3C Verifiable Credentials with privacy.
 
@@ -1727,99 +1885,7 @@ IETF draft-irtf-cfrg-bbs-signatures progressing toward RFC; W3C VC Data Integrit
 
 ---
 
-## Mercurial Signatures
-
-**Goal:** Sign equivalence classes of message vectors under a secret randomization relation. A mercurial signature on a representative of an equivalence class can be publicly converted into a valid signature on any other representative of the same class — without the signing key. Enables delegatable anonymous credentials and unlinkable token systems.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Mercurial Signatures (Chase-Kohlweiss-Lysyanskaya-Meiklejohn)** | 2014 | Pairings (Type III) | First formalization; public key and signature are both class-changeable [[1]](https://eprint.iacr.org/2014/944) |
-| **Mercurial Sig from EQS** | 2014 | Pairings | Mercurial sigs shown equivalent to Structure-Preserving Signatures on Equivalence Classes (SPS-EQ) [[1]](https://eprint.iacr.org/2014/944) |
-| **Crites-Lysyanskaya** | 2019 | Pairing-based, key equivalence | Enables true multi-level anonymous delegation chains; NDSS 2019 [[1]](https://eprint.iacr.org/2018/923) |
-| **Crites-Kohlweiss-Preneel-Sedaghat** | 2023 | Pairings | Improved efficiency; tighter security reduction; practical instantiation [[1]](https://eprint.iacr.org/2023/1051) |
-| **Stronger privacy (Lysyanskaya et al.)** | 2024 | Enhanced model | Strengthened privacy definitions; ePrint 2024/1216 [[1]](https://eprint.iacr.org/2024/1216) |
-| **Delegatable Anonymous Credentials from Mercurial Sigs** | 2019 | Pairings + Groth-Sahai | Multi-level delegation: user A delegates to B who delegates to C; each delegation is unlinkable [[1]](https://eprint.iacr.org/2018/1126) |
-
-Mercurial signatures operate on projective equivalence classes: two message vectors M = (M₁,...,Mₙ) and M' = (M'₁,...,M'ₙ) are equivalent if M' = ρ·M for some scalar ρ. The ConvertSig algorithm takes a signature σ on M and produces σ' on M' = ρ·M without the secret key. Similarly, ConvertPK changes the public key. This enables delegatable anonymous credentials: a credential issuer signs a user's attributes; the user re-randomizes the signature and public key before presenting, breaking linkability. The close relationship with SPS-EQ means advances in one directly transfer to the other. Active research: non-interactive threshold variants appeared in 2025.
-
-**State of the art:** Mercurial signatures (2024 stronger privacy definitions) enable practical delegatable anonymous credentials with O(1)-size proofs per delegation level. Solves multi-hop anonymous delegation (A->B->C, each hop unlinkable). Cross-links: [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps), [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials), [Rerandomizable Signatures (PS Signatures)](#rerandomizable-signatures-ps-signatures).
-
-**Production readiness:** Research
-Academic prototypes; enables delegatable anonymous credentials but no production deployment.
-
-**Implementations:**
-- Academic reference implementations accompany published papers
-- Implementable via [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library
-- [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit
-
-**Security status:** Secure
-No known attacks; security proved under pairing assumptions; close relationship with SPS-EQ ensures dual advances.
-
-**Community acceptance:** Niche
-Foundation of delegatable anonymous credentials with unlinkable multi-level delegation chains.
-
----
-
-## Structure-Preserving Signatures on Equivalence Classes (SPS-EQ)
-
-**Goal:** Sign equivalence classes of group-element vectors such that signatures can be publicly adapted to any class representative. All inputs and outputs (messages, keys, signatures) are group elements compatible with Groth-Sahai proofs. The core primitive behind efficient anonymous credentials, delegatable credentials, and blind token issuance in the pairing setting.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Hanser-Slamanig EQS** | 2014 | Pairings (Type III) | First EQS construction; sign [M]_R where [M]_R = {ρ·M : ρ ∈ Z_p*}; random-oracle model [[1]](https://eprint.iacr.org/2014/944) |
-| **Fuchsbauer-Hanser-Slamanig (FHS)** | 2019 | Pairings (Type III) | Standard-model EQS; optimal verification (3 pairing equations); basis of practical schemes [[1]](https://eprint.iacr.org/2018/1105) |
-| **EQS + Set Commitments** | 2023 | Pairings | Combine EQS with set commitments for attribute-hiding credentials with subset predicates [[1]](https://eprint.iacr.org/2022/1033) |
-| **EQS-based Anonymous Tokens** | 2021 | Pairings | Privacy Pass-style tokens: issuer signs blinded token; user unblinds + randomizes via EQS class change [[1]](https://eprint.iacr.org/2020/072) |
-
-SPS-EQ defines an equivalence relation on vectors of group elements: M ~ M' iff M' = ρ·M for some ρ ∈ Z_p*. The ChgRep algorithm takes (σ, M, ρ) and outputs σ' valid on ρ·M under the same public key — without the secret key. This is strictly more powerful than standard rerandomizable signatures because it changes the message, not just the signature. Applications: (1) anonymous credentials where showing a credential rerandomizes it; (2) blind issuance without interactive blind signing protocols; (3) delegatable credentials where each delegation level changes the representative. The FHS construction achieves EUF-CMA security under the co-CDH assumption in Type III pairings.
-
-**State of the art:** FHS (2019) is the practical standard-model EQS; combined with set commitments for W3C-style attribute credentials. Active research on EQS from lattices (post-quantum). Cross-links: [Structure-Preserving Signatures (SPS)](#structure-preserving-signatures-sps), [Mercurial Signatures](#mercurial-signatures), [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials).
-
-**Production readiness:** Research
-Academic constructions; FHS (2019) provides standard-model EQS but no production deployment.
-
-**Implementations:**
-- [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library for SPS-EQ implementations
-- [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit
-
-**Security status:** Secure
-FHS construction proved EUF-CMA secure under co-CDH in Type III pairings; no known attacks.
-
-**Community acceptance:** Niche
-Core primitive for efficient anonymous credentials, blind token issuance, and delegatable credentials in pairing settings.
-
----
-
-## ROAST (Robust Asynchronous Threshold Signatures)
-
-**Goal:** Guarantee output delivery for threshold Schnorr signing in asynchronous networks with Byzantine participants. ROAST wraps FROST with a coordinator protocol that ensures a valid signature is always produced as long as *t* honest signers are available — even if up to *n - t* signers are malicious, unresponsive, or arbitrarily slow.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **ROAST (Ruffing-Ronge-Jin-Schneider-Abdalla)** | 2022 | Schnorr/FROST | Robust wrapper: coordinator manages multiple concurrent FROST sessions; guaranteed completion [[1]](https://eprint.iacr.org/2022/550) |
-| **ROAST + FROST-secp256k1** | 2023 | secp256k1 / Schnorr | Instantiation for Bitcoin Taproot; Blockstream Liquid federation uses ROAST for block signing [[1]](https://blog.blockstream.com/roast-robust-asynchronous-schnorr-threshold-signatures/) |
-| **ROAST with Identifiable Abort** | 2022 | Schnorr | Combines robustness with cheater identification; detect-and-exclude misbehaving signers [[1]](https://eprint.iacr.org/2022/550) |
-
-ROAST works by having the coordinator maintain a set of "available" signers and initiate multiple concurrent FROST signing sessions. When a session fails (a signer is unresponsive or sends an invalid share), the coordinator marks that signer as unavailable, selects a different *t*-subset from available signers, and starts a new session. The key insight is that the coordinator only needs *one* session to succeed, and since there are at least *t* honest signers, at least one subset of *t* available signers is fully honest. The protocol terminates in at most *n - t + 1* session attempts. ROAST adds negligible overhead beyond FROST itself — the wrapper is purely a coordination mechanism with no additional cryptographic operations.
-
-**State of the art:** Deployed in Blockstream Liquid Network for federated block signing (11-of-15). Proposed for Bitcoin multisig custody and federated Lightning nodes. Cross-links: [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss), [FROST Threshold Schnorr Signatures](#frost-threshold-schnorr-signatures).
-
-**Production readiness:** Production
-Deployed in Blockstream Liquid Network for federated block signing (11-of-15 threshold).
-
-**Implementations:**
-- [Blockstream Liquid](https://blog.blockstream.com/roast-robust-asynchronous-schnorr-threshold-signatures/) — deployed in Liquid federation
-- [frost](https://github.com/ZcashFoundation/frost) ⭐ 250 — Rust, FROST (ROAST-compatible base)
-
-**Security status:** Secure
-Robustness guaranteed as long as t honest signers are available; no additional cryptographic assumptions beyond FROST.
-
-**Community acceptance:** Emerging
-Deployed in Blockstream Liquid; proposed for Bitcoin multisig custody and federated Lightning nodes.
-
----
-
-## Hash-Based Signatures: XMSS, LMS, and SPHINCS+
+### Hash-Based Signatures: XMSS, LMS, and SPHINCS+
 
 **Goal:** Post-quantum digital signatures whose security relies solely on the collision resistance and preimage resistance of hash functions — no number-theoretic or lattice assumptions. Stateful schemes (XMSS, LMS) offer small signatures but require careful state management; stateless SPHINCS+ (SLH-DSA) trades larger signatures for operational simplicity.
 
@@ -1855,33 +1921,7 @@ IETF RFCs 8391/8554; NIST SP 800-208 and FIPS 205; CNSA 2.0 mandates for nationa
 
 ---
 
-## SPS-EQ (Structure-Preserving Signatures on Equivalence Classes)
-
-**Goal:** Sign a vector of group elements such that the signature can be publicly re-randomized (adapted) to a signature on any scalar-multiple of the vector, enabling unlinkable credential re-presentation without re-issuance.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Fuchsbauer-Hanser-Slamanig SPS-EQ** | 2014/2019 | Bilinear groups, equivalence classes | Public adaptability enables privacy-preserving DACs without NIZKs; Journal of Cryptology 2019 [[1]](https://link.springer.com/article/10.1007/s00145-018-9281-4) |
-| **Practical DAC from SPSEQ-UC** | 2023 | Updatable SPS-EQ | Concrete implementation of delegatable anonymous credentials; PoPETs 2023 [[1]](https://petsymposium.org/popets/2023/popets-2023-0093.pdf) |
-
-**State of the art:** The equivalence-class extension over ordinary SPS is the key innovation enabling adaptivity. Foundation for constant-size delegatable anonymous credentials, round-optimal blind signatures, and efficient group signatures.
-
-**Production readiness:** Research
-Academic constructions with concrete DAC implementation (PoPETs 2023); no widespread production use.
-
-**Implementations:**
-- [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library
-- [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit for SPS-EQ
-
-**Security status:** Secure
-No known attacks; EUF-CMA under standard pairing assumptions; public adaptability formally proved.
-
-**Community acceptance:** Niche
-Key innovation enabling constant-size delegatable anonymous credentials and round-optimal blind signatures.
-
----
-
-## Pointcheval-Sanders (PS) Signatures
+### Pointcheval-Sanders (PS) Signatures
 
 **Goal:** Short, constant-size, pairing-based signature on multiple messages that is publicly randomizable and supports efficient zero-knowledge proofs of knowledge.
 
@@ -1906,7 +1946,7 @@ Foundation of Coconut decentralized credentials (Nym network); widely referenced
 
 ---
 
-## Updatable Signatures
+### Updatable Signatures
 
 **Goal:** Allow a signature on a message to be re-signed under a new key using only a short update token, so cloud-stored authenticated data can be key-rotated without downloading or decrypting.
 
@@ -1932,7 +1972,7 @@ Addresses key rotation compliance (PCI DSS, HIPAA) without full data re-download
 
 ---
 
-## Policy-Based Signatures (PBS)
+### Policy-Based Signatures (PBS)
 
 **Goal:** Enforce that a signer can produce a valid institutional signature only when the signer's attributes satisfy an authority-set policy, without the signature revealing the policy or attributes.
 

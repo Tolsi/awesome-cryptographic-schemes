@@ -4,42 +4,57 @@
 <!-- TOC -->
 ## Contents (55 schemes)
 
+**[Leakage and Side-Channel Models](#leakage-and-side-channel-models)**
 - [Leakage-Resilient Cryptography](#leakage-resilient-cryptography)
+- [Leftover Hash Lemma and Randomness Extraction](#leftover-hash-lemma-and-randomness-extraction)
+
+**[Security Definitions and Models](#security-definitions-and-models)**
 - [Circular / KDM Security](#circular--kdm-security)
 - [Non-Malleable Codes](#non-malleable-codes)
+- [Random Oracle Model (ROM) vs. Standard Model](#random-oracle-model-rom-vs-standard-model)
+- [Universal Composability (UC) Framework](#universal-composability-uc-framework)
+- [NIZK: Definitions, Simulation Soundness, and Extractability](#nizk-definitions-simulation-soundness-and-extractability)
+- [Simulation-Based Security (SIM) vs. Indistinguishability-Based Security (IND)](#simulation-based-security-sim-vs-indistinguishability-based-security-ind)
+- [Indifferentiability Framework](#indifferentiability-framework)
+- [Knowledge-Soundness, Extractability, and Simulation-Extractability](#knowledge-soundness-extractability-and-simulation-extractability)
+- [Programmable vs. Non-Programmable Random Oracles](#programmable-vs-non-programmable-random-oracles)
+- [Forking Lemma and Rewinding Techniques](#forking-lemma-and-rewinding-techniques)
+- [Quantum Random Oracle Model (QROM)](#quantum-random-oracle-model-qrom)
+- [Gentry-Wichs Barrier (Non-Falsifiability of SNARGs)](#gentry-wichs-barrier-non-falsifiability-of-snargs)
+- [Game-Based vs. Simulation-Based Security Paradigms](#game-based-vs-simulation-based-security-paradigms)
+
+**[Zero-Knowledge Theory](#zero-knowledge-theory)**
 - [Witness Indistinguishability (WI) / Witness Hiding](#witness-indistinguishability-wi--witness-hiding)
 - [Non-Black-Box Zero-Knowledge / Concurrent ZK](#non-black-box-zero-knowledge--concurrent-zk)
+- [Cryptographic Reverse Firewalls](#cryptographic-reverse-firewalls)
+
+**[Game-Theoretic and Human Cryptography](#game-theoretic-and-human-cryptography)**
 - [Rational Cryptography](#rational-cryptography)
 - [Human-Computable Cryptography](#human-computable-cryptography)
-- [Cryptographic Reverse Firewalls](#cryptographic-reverse-firewalls)
+
+**[Lossy and Deniable Primitives](#lossy-and-deniable-primitives)**
 - [Lossy Encryption / Lossy Trapdoor Functions](#lossy-encryption--lossy-trapdoor-functions)
-- [Random Oracle Model (ROM) vs. Standard Model](#random-oracle-model-rom-vs-standard-model)
+
+**[Forward Security and Key Evolution](#forward-security-and-key-evolution)**
 - [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa--ind-cca-security)
-- [Universal Composability (UC) Framework](#universal-composability-uc-framework)
 - [One-Way Functions and Impagliazzo's Five Worlds](#one-way-functions-and-impagliazzos-five-worlds)
 - [Black-Box Separations](#black-box-separations)
 - [Hardcore Predicates and the Goldreich-Levin Theorem](#hardcore-predicates-and-the-goldreich-levin-theorem)
 - [Pseudoentropy and Computational Entropy](#pseudoentropy-and-computational-entropy)
-- [NIZK: Definitions, Simulation Soundness, and Extractability](#nizk-definitions-simulation-soundness-and-extractability)
 - [Knowledge-of-Exponent Assumption (KEA) and Falsifiability](#knowledge-of-exponent-assumption-kea-and-falsifiability)
 - [Generic Group Model (GGM) and Algebraic Group Model (AGM)](#generic-group-model-ggm-and-algebraic-group-model-agm)
 - [Concrete Security and Reduction Tightness](#concrete-security-and-reduction-tightness)
 - [Perfect Forward Secrecy (PFS)](#perfect-forward-secrecy-pfs)
-- [Leftover Hash Lemma and Randomness Extraction](#leftover-hash-lemma-and-randomness-extraction)
 - [Hybrid Argument Technique](#hybrid-argument-technique)
 - [Random Self-Reducibility](#random-self-reducibility)
 - [Security Amplification](#security-amplification)
-- [Simulation-Based Security (SIM) vs. Indistinguishability-Based Security (IND)](#simulation-based-security-sim-vs-indistinguishability-based-security-ind)
 - [Adaptive vs. Static Corruptions in Multi-Party Protocols](#adaptive-vs-static-corruptions-in-multi-party-protocols)
-- [Indifferentiability Framework](#indifferentiability-framework)
 - [Symbolic Model (Dolev-Yao) vs. Computational Model](#symbolic-model-dolev-yao-vs-computational-model)
 - [Automated Protocol Verification (ProVerif, Tamarin, EasyCrypt)](#automated-protocol-verification-proverif-tamarin-easycrypt)
-- [Knowledge-Soundness, Extractability, and Simulation-Extractability](#knowledge-soundness-extractability-and-simulation-extractability)
 - [Entropy Source Models](#entropy-source-models)
 - [Bit Security and Its Definition](#bit-security-and-its-definition)
 - [Composability Beyond UC: GNUC, SPS, and IITM](#composability-beyond-uc-gnuc-sps-and-iitm)
 - [Abstract Cryptography (Constructive Cryptography)](#abstract-cryptography-constructive-cryptography)
-- [Programmable vs. Non-Programmable Random Oracles](#programmable-vs-non-programmable-random-oracles)
 - [Wegman-Carter-Shoup Authentication and Information-Theoretic MACs](#wegman-carter-shoup-authentication-and-information-theoretic-macs)
 - [Related-Key Security](#related-key-security)
 - [Multi-User and Multi-Instance Security](#multi-user-and-multi-instance-security)
@@ -48,21 +63,20 @@
 - [Beyond-Birthday-Bound (BBB) Security](#beyond-birthday-bound-bbb-security)
 - [ORAM Complexity and Lower Bounds](#oram-complexity-and-lower-bounds)
 - [Worst-Case to Average-Case Reductions for Lattices](#worst-case-to-average-case-reductions-for-lattices)
-- [Forking Lemma and Rewinding Techniques](#forking-lemma-and-rewinding-techniques)
 - [Code-Based Game-Playing Proofs](#code-based-game-playing-proofs)
-- [Quantum Random Oracle Model (QROM)](#quantum-random-oracle-model-qrom)
 - [Fine-Grained Cryptography](#fine-grained-cryptography)
 - [One-Way Functions and Kolmogorov Complexity](#one-way-functions-and-kolmogorov-complexity)
 - [Pseudorandom Correlation Generators (PCGs)](#pseudorandom-correlation-generators-pcgs)
-- [Gentry-Wichs Barrier (Non-Falsifiability of SNARGs)](#gentry-wichs-barrier-non-falsifiability-of-snargs)
 - [Communication Complexity of Secure Computation](#communication-complexity-of-secure-computation)
-- [Game-Based vs. Simulation-Based Security Paradigms](#game-based-vs-simulation-based-security-paradigms)
 - [Algebraic Group Model (AGM)](#algebraic-group-model-agm)
 - [Memory-Hard Functions (MHF) — Formal Theory](#memory-hard-functions-mhf--formal-theory)
+
 <!-- /TOC -->
 
+## Leakage and Side-Channel Models
 
-## Leakage-Resilient Cryptography
+---
+### Leakage-Resilient Cryptography
 
 **Goal:** Side-channel resistance in theory. Schemes that remain secure even when an adversary obtains partial information about the secret key (via power analysis, timing, EM emanation, cold boot attacks).
 
@@ -89,573 +103,7 @@ Masking is mandated by Common Criteria (ISO 15408) for smart card certifications
 
 ---
 
-## Circular / KDM Security
-
-**Goal:** Security when encrypting the key itself. An encryption scheme is KDM-secure (Key-Dependent Message) if it remains secure even when the plaintext is a function of the secret key. Critical for FHE bootstrapping and disk encryption.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Boneh-Halevi-Hamburg-Ostrovsky** | 2008 | DDH | First KDM-CPA secure encryption from standard assumptions [[1]](https://eprint.iacr.org/2008/140) |
-| **Applebaum-Cash-Peikert-Sahai** | 2009 | LWE | KDM-secure for affine functions of the key [[1]](https://eprint.iacr.org/2009/070) |
-| **Barak-Haitner-Hofheinz-Ishai** | 2010 | Any CPA enc (bounded) | KDM security for bounded polynomial cycles [[1]](https://eprint.iacr.org/2010/198) |
-
-**State of the art:** LWE-based KDM (used in FHE bootstrapping security proofs), DDH-based (practical).
-
-**Production readiness:** Research
-KDM security is a proof-level property used in FHE security arguments; no standalone deployed KDM-secure encryption product exists.
-
-**Implementations:**
-- [Microsoft SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, FHE library whose bootstrapping security relies on KDM arguments
-- [OpenFHE](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, FHE library with KDM-relevant security proofs
-
-**Security status:** Secure
-No known attacks on the underlying LWE/DDH-based KDM constructions at recommended parameters.
-
-**Community acceptance:** Niche
-KDM security is a specialized theoretical notion; well-studied in the academic community but not a standalone standardization target.
-
----
-
-## Non-Malleable Codes
-
-**Goal:** Tamper resilience. An encoding scheme where any tampering with the codeword either leaves the decoded message unchanged or produces a completely unrelated message — an adversary cannot cause "related" modifications.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Dziembowski-Pietrzak-Wichs NMC** | 2010 | Split-state model | Foundational definition; adversary tampers with each state half independently [[1]](https://eprint.iacr.org/2009/608) |
-| **Continuous NMC (Faust et al.)** | 2014 | Split-state | Resist continuous (repeated) tampering, not just one-shot [[1]](https://eprint.iacr.org/2014/050) |
-| **NMC for Bounded Tampering (Chandran et al.)** | 2016 | Information-theoretic | For bounded number of tampering attempts [[1]](https://eprint.iacr.org/2015/1178) |
-| **Rate-1 NMC (Aggarwal-Dodis-Lovett)** | 2014 | Split-state | Asymptotically optimal rate (message ≈ codeword size) [[1]](https://eprint.iacr.org/2013/565) |
-
-**State of the art:** Split-state NMC (Dziembowski-Pietrzak-Wichs); used to protect against physical memory tampering (see [Leakage-Resilient Crypto](#leakage-resilient-cryptography)).
-
-**Production readiness:** Research
-Non-malleable codes are primarily a theoretical tool; no widely deployed standalone NMC product exists, though the concepts inform tamper-resilient hardware design.
-
-**Implementations:**
-- [libotr](https://github.com/off-the-record/libotr) ⭐ 64 — C, uses NMC-related techniques in tamper-resilient key storage
-
-**Security status:** Secure
-Information-theoretic security in the split-state model; computational variants secure under standard assumptions.
-
-**Community acceptance:** Niche
-Well-established in TCC/CRYPTO/EUROCRYPT theory community; limited awareness outside academic cryptography and hardware security.
-
----
-
-## Witness Indistinguishability (WI) / Witness Hiding
-
-**Goal:** Relaxed zero-knowledge. Witness indistinguishability: the verifier cannot distinguish which of multiple valid witnesses the prover used. Witness hiding: the verifier cannot compute any witness after the interaction. Weaker than ZK but sufficient for many applications and compositionally robust.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Feige-Shamir WI/WH** | 1990 | Any NP | Formal definitions; WI ⊂ ZK; WI composes under parallel composition (ZK does not) [[1]](https://doi.org/10.1145/100216.100272) |
-| **WI from Sigma Protocols** | 1994 | DLP | Run two Sigma protocols in parallel; WI without ZK [[1]](https://doi.org/10.1007/BFb0053443) |
-| **Resettable WI (Deng-Goyal-Sahai)** | 2009 | One-way functions | WI secure even if verifier can reset prover to initial state [[1]](https://doi.org/10.1109/FOCS.2009.12) |
-
-**State of the art:** WI is the default security notion for many sub-protocols in [MPC](06-multi-party-computation.md#multi-party-computation-mpc) and credential systems. Composes better than ZK — see [ZK Proofs](04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk), [Sigma Protocols](04-zero-knowledge-proof-systems.md#sigma-protocols--schnorr-identification).
-
-**Production readiness:** Mature
-WI is used as a building block inside deployed protocols (e.g., parallel Sigma protocols in credential systems) rather than as a standalone primitive.
-
-**Implementations:**
-- [arkworks-rs/crypto-primitives](https://github.com/arkworks-rs/crypto-primitives) ⭐ 241 — Rust, includes Sigma protocol implementations usable in WI mode
-
-**Security status:** Secure
-WI is a well-founded security notion; no attacks on the paradigm itself. Security of instantiations depends on the underlying hard problem.
-
-**Community acceptance:** Widely trusted
-Standard security notion in cryptographic protocol design since Feige-Shamir (1990); used pervasively in academic literature and protocol specifications.
-
----
-
-## Non-Black-Box Zero-Knowledge / Concurrent ZK
-
-**Goal:** ZK under concurrent composition. Standard black-box ZK is impossible when many proof sessions run simultaneously (verifier can interleave sessions to cheat). Barak's breakthrough: the simulator reads the verifier's code directly (non-black-box), enabling ZK even under concurrent execution.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Barak Non-Black-Box ZK** | 2001 | Universal arguments | First non-black-box simulator; concurrent ZK for NP in plain model [[1]](https://doi.org/10.1109/SFCS.2001.959902) |
-| **Concurrent ZK (Canetti et al.)** | 2002 | Timing assumptions | Concurrent ZK under timing assumptions (bounded delay) [[1]](https://eprint.iacr.org/2001/055) |
-| **Resettable ZK (Canetti et al.)** | 2000 | Non-black-box | ZK secure even if verifier can rewind/reset prover [[1]](https://doi.org/10.1145/335305.335311) |
-| **Constant-Round Concurrent ZK (Goyal)** | 2013 | Non-black-box + commitments | O(1) rounds concurrent ZK; improved Barak's technique [[1]](https://eprint.iacr.org/2012/563) |
-
-**State of the art:** Constant-round concurrent ZK (Goyal 2013); essential for real-world protocols with parallel sessions. Extends [ZK Proofs](04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk).
-
-**Production readiness:** Research
-Concurrent ZK techniques are primarily theoretical; practical protocols avoid the problem via the Fiat-Shamir heuristic or UC-secure designs rather than deploying non-black-box simulators directly.
-
-**Implementations:**
-- No production implementations of non-black-box concurrent ZK exist; the techniques are used in security proofs rather than deployed code.
-
-**Security status:** Secure
-Theoretical constructions are proven secure; Barak's non-black-box technique is sound under standard assumptions.
-
-**Community acceptance:** Niche
-Foundational in complexity-theoretic cryptography; Barak's 2001 result is a landmark. Practical protocols sidestep the issue via different design choices.
-
----
-
-## Rational Cryptography
-
-**Goal:** Crypto protocols secure against rational (game-theoretic) adversaries — not just honest/malicious but self-interested agents who deviate only when it benefits them. Uses mechanism design: make cheating economically irrational. Bridges cryptography and game theory.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Halpern-Teague Rational Secret Sharing** | 2004 | Game theory + SS | First rational SS; players cooperate because deviating yields worse outcome [[1]](https://doi.org/10.1145/1007352.1007427) |
-| **Abraham-Dolev-Gonen-Halpern** | 2006 | Rational MPC | Distributed computing with rational players; equilibrium-based security [[1]](https://doi.org/10.1007/11818175_1) |
-| **Groce-Katz Rational Protocol Design** | 2012 | Mechanism design + MPC | Fair MPC via utility alignment; punishment strategies enforce cooperation [[1]](https://eprint.iacr.org/2012/029) |
-
-**State of the art:** Rational protocol design (2012); active in blockchain mechanism design. Bridges [MPC](06-multi-party-computation.md#multi-party-computation-mpc) and economic incentive theory.
-
-**Production readiness:** Research
-Rational cryptography concepts influence blockchain mechanism design (staking penalties, slashing) but no standalone rational crypto protocol is deployed as a product.
-
-**Implementations:**
-- No dedicated open-source libraries; concepts are embedded in blockchain protocol implementations such as [Ethereum consensus specs](https://github.com/ethereum/consensus-specs) ⭐ 3.9k (slashing/incentive logic).
-
-**Security status:** Secure
-Game-theoretic security guarantees hold under the assumed rationality model; security degrades if adversaries are irrational (willing to lose money to attack).
-
-**Community acceptance:** Niche
-Active research area at the intersection of cryptography and game theory; influential in blockchain economics but not a mainstream cryptographic standard.
-
----
-
-## Human-Computable Cryptography
-
-**Goal:** Authentication without devices. Cryptographic protocols that a human can execute mentally — no computer, no smartphone. A person memorizes a secret mapping and can authenticate by answering challenges in their head, even against an adversary who observed all prior sessions.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Blum-Vempala Human Hash** | 2015 | Random mapping memorization | Human memorizes small mapping; computes f(challenge) mentally; usable but limited security [[1]](https://doi.org/10.4230/LIPIcs.ITCS.2017.10) |
-| **Blocki-Blum-Datta-Vempala** | 2017 | Cognitive model | Formal model of human computation; proves security bounds against polynomial adversary [[1]](https://doi.org/10.4230/LIPIcs.ITCS.2017.10) |
-| **CAPTCHA-Based Crypto (Canetti-Halevi-Steiner)** | 2013 | Human-solvable puzzles | CAPTCHA as cryptographic primitive; human interaction as security assumption [[1]](https://doi.org/10.1007/978-3-642-36362-7_30) |
-
-**State of the art:** Blum-Vempala (ITCS 2017); limited practical deployment but theoretically novel — security from cognitive limitations.
-
-**Production readiness:** Research
-Purely theoretical; no practical authentication system deploys human-computable cryptography at scale.
-
-**Implementations:**
-- No production implementations; academic prototypes described in papers only.
-
-**Security status:** Caution
-Security bounds are weak compared to standard cryptography; schemes tolerate only a small number of observed sessions before the secret is recoverable.
-
-**Community acceptance:** Niche
-Intellectually interesting and published at top venues (ITCS); not considered viable for real-world deployment by the broader cryptographic community.
-
----
-
-## Cryptographic Reverse Firewalls
-
-**Goal:** Subversion resistance. A middlebox ("reverse firewall") re-randomizes a party's protocol messages so that even if the party's implementation is subverted (backdoored), no information leaks — without the firewall knowing any secrets. The motivating threat is algorithm substitution attacks (ASA): a compromised implementation uses subliminal channels in its random-looking outputs (nonces, ciphertexts) to leak secret keys to a passive eavesdropper. The NSA's Dual_EC_DRBG backdoor is the canonical example.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Mironov-Stephens-Davidowitz CRF** | 2015 | Rerandomization | Formal model; CRFs for key exchange, signatures, ZK proofs [[1]](https://eprint.iacr.org/2014/758) |
-| **CRF for Key Exchange (Dodis et al.)** | 2016 | Rerandomizable DH | Reverse firewall for Diffie-Hellman: firewall re-randomizes DH messages so that even a kleptographic implementation cannot exfiltrate the secret key [[1]](https://eprint.iacr.org/2016/424) |
-| **CRF for Signatures (Ateniese et al.)** | 2016 | Rerandomizable Schnorr | Reverse firewall re-randomizes Schnorr signature nonces; prevents nonce-covert-channel attacks [[1]](https://eprint.iacr.org/2015/1189) |
-| **CRF for OT (Chakraborty et al.)** | 2020 | UC framework | Reverse firewalls for oblivious transfer protocols [[1]](https://eprint.iacr.org/2020/156) |
-| **CRF for MPC** | 2020 | Rerandomizable garbled circuits | Extends CRFs to general MPC protocols; firewall rerandomizes garbled circuit messages without knowing the circuit inputs [[1]](https://eprint.iacr.org/2020/594) |
-| **CRF for 2PC (Chen-Haeberlen-Hicks-Tzialla)** | 2022 | Garbled circuits | Subversion-resistant two-party computation [[1]](https://eprint.iacr.org/2022/849) |
-
-**State of the art:** Theoretical framework (Mironov-Stephens-Davidowitz 2015); practical constructions exist for DH, Schnorr, ElGamal, and OT. Active research area post-Snowden. Closely related to [Kleptography / ASA](18-covert-channels-steganography.md#kleptography--algorithm-substitution-attacks-asa).
-
-**Production readiness:** Research
-Theoretical framework with academic prototypes; no production deployment of a standalone cryptographic reverse firewall exists.
-
-**Implementations:**
-- No production-quality open-source implementations; proof-of-concept code accompanies individual papers.
-
-**Security status:** Secure
-Provably eliminates subliminal channels under stated algebraic rerandomizability assumptions; limited to protocols designed with rerandomizability in mind.
-
-**Community acceptance:** Niche
-Well-regarded in the post-Snowden subversion-resistance research community; published at EUROCRYPT/CRYPTO. Limited practical adoption due to performance and protocol compatibility constraints.
-
----
-
-## Lossy Encryption / Lossy Trapdoor Functions
-
-**Goal:** Proof technique as primitive. A public key can operate in two computationally indistinguishable modes: *injective* (normal encryption, decryptable) and *lossy* (ciphertext is statistically independent of the message). Enables elegant CCA security proofs and new constructions.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Peikert-Waters Lossy TDF** | 2008 | DDH / LWE | First lossy TDFs; injective and lossy modes; implies CCA-secure PKE [[1]](https://eprint.iacr.org/2007/279) |
-| **Bellare-Hofheinz-Yilek Lossy Encryption** | 2009 | DDH / LWE | Lossy encryption formalization; key-dependent message security [[1]](https://eprint.iacr.org/2009/079) |
-| **Lossy TDF from Lattices** | 2008 | LWE | Peikert-Waters LWE instantiation; post-quantum lossy TDF [[1]](https://eprint.iacr.org/2007/279) |
-| **All-But-One TDF** | 2008 | DDH / LWE | Lossy on one branch, injective on all others; CCA from CHF [[1]](https://eprint.iacr.org/2007/279) |
-
-**State of the art:** Lossy TDFs from LWE (PQ-secure); foundational for [KEM/DEM](#game-based-vs-simulation-based-security-paradigms) security proofs and [Dual-Mode Cryptosystems](16-obfuscation-advanced-hardness.md#dual-mode-cryptosystems).
-
-**Production readiness:** Research
-Lossy TDFs are a proof technique and theoretical primitive; they are not deployed as standalone products but underlie security proofs of deployed schemes.
-
-**Implementations:**
-- [lattigo](https://github.com/tuneinsight/lattigo) ⭐ 1.4k — Go, lattice-based crypto library whose security arguments use lossy-mode techniques
-- [OpenFHE](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, FHE library with LWE-based constructions whose proofs leverage lossy TDFs
-
-**Security status:** Secure
-Secure under DDH or LWE assumptions; the lossy/injective mode indistinguishability is the core security property.
-
-**Community acceptance:** Widely trusted
-Peikert-Waters lossy TDFs are a standard tool in provable security; cited in hundreds of papers and used in security proofs of NIST PQC candidates.
-
----
-
-## Random Oracle Model (ROM) vs. Standard Model
-
-**Goal:** Formalize when hash functions can be treated as ideal. The random oracle model (ROM), introduced by Bellare and Rogaway (1993), replaces cryptographic hash functions with a perfectly random function accessible only as an oracle. Proofs in the ROM are often simpler and tighter; the standard model avoids this idealization but demands stronger hardness assumptions or more complex constructions. A central open question is whether ROM security implies real-world security after instantiating the oracle with a concrete hash.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **ROM introduction** | 1993 | Bellare–Rogaway | Formalized the ROM paradigm; used to prove RSA-OAEP and FDH secure; advocates ROM as a practical design heuristic [[1]](https://cseweb.ucsd.edu/~mihir/papers/ro.pdf) |
-| **ROM separation (CGH)** | 1998 | Canetti–Goldreich–Halevi | Constructed schemes secure in ROM but insecure under any hash instantiation; ROM proofs do not imply standard-model security [[1]](https://eprint.iacr.org/1998/011) |
-| **Standard-model NIZK** | 2008 | Groth–Sahai | Pairing-based NIZK without any random oracle; canonical standard-model alternative [[1]](https://eprint.iacr.org/2007/155) |
-| **Ideal cipher ≡ ROM** | 2008 | Holenstein–Künzler–Tessaro | Proved the ideal cipher model and the random oracle model are equivalent [[1]](https://eprint.iacr.org/2008/246) |
-| **Instantiation impossibility for PSS** | 2011 | Dodis–Oliveira–Pietrzak | Black-box impossibility of instantiating PSS in the standard model even assuming ideal trapdoor permutations [[1]](https://link.springer.com/chapter/10.1007/978-3-642-19379-8_22) |
-
-**State of the art:** The ROM remains the dominant proof model for deployed protocols (TLS, OAEP, Fiat-Shamir heuristic). Standard-model alternatives exist but are less efficient. The CGH separation is the canonical impossibility reference; programmability of the random oracle is an active area of research.
-
-**Production readiness:** Production
-The ROM is the dominant proof model for virtually all deployed cryptographic protocols (TLS 1.3, RSA-OAEP, Schnorr signatures, Fiat-Shamir transforms).
-
-**Implementations:**
-- Every cryptographic library implicitly relies on ROM proofs; the model itself is a proof framework, not a software artifact.
-- [CryptoVerif](https://bblanche.gitlabpages.inria.fr/CryptoVerif/) — OCaml, automated game-based proof tool supporting ROM arguments
-- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, formal verification framework with ROM proof support
-
-**Security status:** Caution
-ROM proofs do not unconditionally imply real-world security (CGH 1998 separation); however, no deployed ROM-proven scheme has been broken due to oracle instantiation failure.
-
-**Community acceptance:** Standard
-The ROM is universally accepted in applied cryptography and NIST/IETF standardization; the CGH separation is acknowledged but considered a theoretical concern.
-
----
-
-## Semantic Security and IND-CPA / IND-CCA Security
-
-**Goal:** Formally define what it means for an encryption scheme to be "secure." Goldwasser and Micali (1984) introduced semantic security — no partial information about the plaintext leaks to a polynomial-time adversary — and proved it equivalent to indistinguishability under chosen-plaintext attack (IND-CPA). Naor and Yung (1990) then defined IND-CCA1, and Rackoff and Simon (1991) defined IND-CCA2 — the adaptive chosen-ciphertext attack notion that is the accepted gold standard today.
-
-| Notion | Year | Authors | Note |
-|--------|------|---------|------|
-| **Semantic security / IND-CPA** | 1984 | Goldwasser–Micali | Probabilistic encryption; semantic security ≡ IND-CPA; instantiated from quadratic residuosity [[1]](https://mit6875.github.io/PAPERS/probabilistic_encryption.pdf) |
-| **IND-CCA1 (non-adaptive CCA)** | 1990 | Naor–Yung | Dual-encryption + simulation yields CCA1-secure PKE; introduced the "lunchtime attack" model [[1]](https://doi.org/10.1145/100216.100221) |
-| **IND-CCA2 (adaptive CCA)** | 1991 | Rackoff–Simon | Adversary may query decryption oracle after seeing the challenge ciphertext; defines the accepted PKE security target [[1]](https://doi.org/10.1007/3-540-46766-1_34) |
-| **Hierarchy of PKE notions** | 1998 | Bellare–Desai–Jokipii–Rogaway | Formal taxonomy: OW-CPA ⊂ IND-CPA ⊂ IND-CCA1 ⊂ IND-CCA2; exhaustive separation examples [[1]](https://www.cs.ucdavis.edu/~rogaway/papers/relations.pdf) |
-| **Cramer-Shoup (standard-model CCA2)** | 1998 | Cramer–Shoup | First practical IND-CCA2-secure PKE in the standard model under DDH, no random oracle needed [[1]](https://eprint.iacr.org/1998/008) |
-
-**State of the art:** IND-CCA2 is mandatory for any deployed PKE or KEM. All current standards — ML-KEM, RSA-OAEP, ECIES — target IND-CCA2. These notions underpin every encryption section in this repository.
-
-**Production readiness:** Production
-IND-CPA/IND-CCA2 are the mandatory security targets for all deployed encryption standards (TLS, ML-KEM, RSA-OAEP, ECIES).
-
-**Implementations:**
-- These are definitional frameworks, not implementations. Every compliant encryption library targets these notions.
-
-**Security status:** Secure
-The definitional hierarchy (OW-CPA through IND-CCA2) is well-established and universally accepted.
-
-**Community acceptance:** Standard
-IND-CCA2 is mandated by NIST, IETF, and ISO for all public-key encryption and KEM standards. The Bellare-Rogaway taxonomy is taught in every graduate cryptography course.
-
----
-
-## Universal Composability (UC) Framework
-
-**Goal:** Guarantee protocol security under arbitrary concurrent composition. The UC framework (Canetti 2001/2020) defines security by requiring that a real protocol is computationally indistinguishable from an *ideal functionality* — a trusted party that computes the desired function perfectly — even when the protocol runs concurrently alongside arbitrarily many other protocols. Unlike standalone game-based definitions, UC security composes freely and is the appropriate model for multi-session, internet-scale deployments.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **UC framework** | 2001 | Canetti | Foundational definition; universal composition theorem; ideal functionalities for OT, commitment, CRS [[1]](https://eprint.iacr.org/2000/067) |
-| **UC commitments impossibility** | 2001 | Canetti–Fischlin | UC-secure commitments are impossible in the plain model; require a setup assumption (CRS or global ROM) [[1]](https://eprint.iacr.org/2001/055) |
-| **Simplified UC (CC-UC)** | 2015 | Canetti–Cohen–Lindell | Cleaner formalization for standard MPC settings; easier to use for protocol designers [[1]](https://eprint.iacr.org/2014/553) |
-| **UC journal version** | 2020 | Canetti | Definitive JACM version; consolidates all prior revisions; introduces global subroutines and global functionalities [[1]](https://dl.acm.org/doi/10.1145/3402457) |
-| **EasyUC** | 2019 | Canetti–Stoughton–Varia | Machine-checked UC proofs using the EasyCrypt proof assistant [[1]](https://eprint.iacr.org/2019/582) |
-
-**State of the art:** UC is the canonical composition framework for [MPC](06-multi-party-computation.md#multi-party-computation-mpc), [CGKA/MLS](12-secure-communication-protocols.md#continuous-group-key-agreement-cgka--mls), and [OT](06-multi-party-computation.md#oblivious-transfer-ot). Simulation-based security is the language of the UC model; game-based definitions (IND-CPA, etc.) remain preferred for standalone primitives.
-
-**Production readiness:** Mature
-UC is the standard security framework for MPC, MLS, and threshold protocols; all serious protocol designs invoke UC security. EasyUC provides machine-checked proofs.
-
-**Implementations:**
-- [EasyUC](https://github.com/easyuc/EasyUC) ⭐ 45 — OCaml/EasyCrypt, machine-checked UC proofs
-- [GNUC](https://eprint.iacr.org/2011/471) — formal model (no standalone software; used in paper proofs)
-- UC is a proof framework; every UC-secure MPC library (MP-SPDZ, libsignal, openmls) implicitly relies on it.
-
-**Security status:** Secure
-The UC framework itself is a definitional tool; its soundness is well-established. UC-secure protocols are secure under arbitrary composition by definition.
-
-**Community acceptance:** Standard
-UC is the gold standard for composable protocol security; required by IETF MLS, used in all major MPC frameworks, and referenced in NIST PQC evaluations.
-
----
-
-## One-Way Functions and Impagliazzo's Five Worlds
-
-**Goal:** Map the landscape of what cryptography is possible. One-way functions (OWFs) — functions easy to compute but hard to invert on a random input — are the minimal assumption underlying all of private-key cryptography. Whether OWFs exist is equivalent to asking whether P ≠ NP in the average-case sense. Impagliazzo (1995) organized five possible worlds according to which hardness assumptions hold, clarifying precisely which cryptographic primitives are achievable in each.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **OWF → PRG (HILL theorem)** | 1993 | Håstad–Impagliazzo–Levin–Luby | Any OWF implies a pseudorandom generator; stretched via Goldreich-Levin hard-core bits; foundational [[1]](https://doi.org/10.1137/S0097539793244708) |
-| **OWF → PRF (GGM)** | 1986 | Goldreich–Goldwasser–Micali | PRFs from any PRG (hence any OWF) via the GGM tree construction [[1]](https://dl.acm.org/doi/10.1145/6490.6503) |
-| **Impagliazzo's five worlds** | 1995 | Impagliazzo | Algorithmica / Heuristica / Pessiland / Minicrypt / Cryptomania; taxonomizes cryptographic possibility based on worst-case vs. average-case hardness and OWF/PKE existence [[1]](https://doi.org/10.1109/CCC.1995.514587) |
-| **OWF ↛ key agreement (oracle)** | 1989 | Impagliazzo–Rudich | Relativizing separation: OWFs alone do not imply key exchange via black-box reductions; Minicrypt ≠ Cryptomania [[1]](https://doi.org/10.1145/73007.73012) |
-| **OWF existence ↔ bounded KT complexity** | 2023 | Liu–Pass | OWFs exist if and only if there are problems with bounded Kolmogorov-time complexity; links OWF existence to meta-complexity [[1]](https://eprint.iacr.org/2020/1333) |
-
-**State of the art:** We almost certainly live in Cryptomania, but no proof exists. The HILL theorem (OWF → PRG) is the deepest structural result in symmetric cryptography. Liu-Pass (2023) gives the sharpest known characterization of when OWFs exist.
-
-**Production readiness:** Production
-OWFs are the minimal assumption underlying all deployed symmetric cryptography (AES, SHA-2, HMAC). The HILL/GGM chain (OWF → PRG → PRF) is the theoretical backbone of every deployed symmetric primitive.
-
-**Implementations:**
-- Every symmetric cryptographic library (OpenSSL, libsodium, etc.) implicitly instantiates OWF-based constructions.
-- The theoretical results are frameworks, not standalone software.
-
-**Security status:** Secure
-The existence of OWFs is a universally held assumption; no polynomial-time inversion algorithm is known for any candidate OWF.
-
-**Community acceptance:** Standard
-Impagliazzo's five worlds and the HILL theorem are cornerstones of cryptographic theory, taught in every graduate course and assumed in every security proof.
-
----
-
-## Black-Box Separations
-
-**Goal:** Prove that certain cryptographic primitives cannot be constructed from weaker ones via black-box reductions. A black-box separation shows — typically via a relativizing oracle argument — that no efficient algorithm can build primitive B from primitive A using only A's input/output interface, regardless of which specific A is chosen. These results delineate the "cryptographic primitive hierarchy" and prevent futile proof attempts.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **OWF ↛ key agreement** | 1989 | Impagliazzo–Rudich | Oracle world where OWFs exist but no key exchange protocol is secure; foundational separation result [[1]](https://doi.org/10.1145/73007.73012) |
-| **OWP ↛ collision-resistant hash** | 1998 | Simon | One-way permutations do not black-box imply collision-resistant hash functions [[1]](https://link.springer.com/chapter/10.1007/3-540-68339-9_23) |
-| **RTV framework** | 2004 | Reingold–Trevisan–Vadhan | Unified framework classifying black-box reductions: fully / semi / non-black-box; systematic catalogue of separations [[1]](https://eprint.iacr.org/2004/049) |
-| **Non-black-box techniques** | 2001 | Barak | Non-black-box simulation circumvents some separations for ZK; demonstrates limits of oracle-based lower bounds (see [Non-Black-Box ZK](#non-black-box-zero-knowledge--concurrent-zk)) [[1]](https://doi.org/10.1109/SFCS.2001.959902) |
-| **BB-uselessness composability** | 2021 | Couteau–Hartmann | Black-box uselessness composes: two BB-useless primitives cannot be combined to yield a useful one [[1]](https://eprint.iacr.org/2021/016) |
-
-**State of the art:** The Impagliazzo-Rudich oracle argument and the RTV taxonomy (2004) remain the standard tools. Non-black-box constructions (Barak, Bitansky-Paneth) partially circumvent these barriers for specific tasks (ZK, SNARGs) but not for key exchange or OT. Active area: non-black-box separations for PKE from OWF.
-
-**Production readiness:** Research
-Black-box separations are impossibility results; they guide protocol design but are not deployed as software.
-
-**Implementations:**
-- No software implementations; these are proof techniques and oracle-based impossibility arguments.
-
-**Security status:** Secure
-The separation results themselves are mathematically proven; they constrain what constructions are possible via black-box reductions.
-
-**Community acceptance:** Standard
-The Impagliazzo-Rudich separation and RTV taxonomy are standard references in theoretical cryptography; cited in virtually all papers on cryptographic reductions.
-
----
-
-## Hardcore Predicates and the Goldreich-Levin Theorem
-
-**Goal:** Extract hard-to-predict bits from one-way functions. A hardcore predicate of a function f is a single bit b(x) that is computationally unpredictable given f(x), even though f itself is easy to compute. Goldreich and Levin (1989) proved that the inner product ⟨x, r⟩ mod 2 is a universal hardcore predicate for any one-way function — padded with a random string r, it is hard to predict given (f(x), r). This result is the key step in constructing pseudorandom generators from arbitrary OWFs.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **Goldreich-Levin hardcore predicate** | 1989 | Goldreich–Levin | Inner product ⟨x,r⟩ is a hardcore bit for any OWF f padded as g(x,r)=(f(x),r); enables PRG from any OWF [[1]](https://dl.acm.org/doi/10.1145/73007.73010) |
-| **OWF → PRG via GL** | 1993 | Håstad–Impagliazzo–Levin–Luby | Full HILL theorem: PRG from any OWF by iterating Goldreich-Levin bit extraction; polynomial stretch [[1]](https://doi.org/10.1137/S0097539793244708) |
-| **List-decoding interpretation** | 1999 | Goldreich–Levin (Bellare exposition) | GL theorem recast as list-decoding of Hadamard codes; simplifies proof and generalises to other error-correcting codes [[1]](https://cseweb.ucsd.edu/~mihir/papers/gl.pdf) |
-| **Quantum GL** | 2001 | Adcock–Cleve | Quantum analogue of the GL theorem; hardcore bits remain hard against quantum adversaries with oracle access [[1]](https://link.springer.com/chapter/10.1007/3-540-45841-7_26) |
-
-**State of the art:** The Goldreich-Levin theorem is a cornerstone of theoretical cryptography — every treatment of OWF-to-PRG builds on it. The HILL theorem (Håstad–Impagliazzo–Levin–Luby 1993) extends it to full PRG construction. See [One-Way Functions and Impagliazzo's Five Worlds](#one-way-functions-and-impagliazzos-five-worlds) and [Pseudoentropy and Computational Entropy](#pseudoentropy-and-computational-entropy).
-
-**Production readiness:** Research
-The GL theorem is a proof technique; it is not implemented as standalone software but underlies the security arguments of all OWF-based constructions.
-
-**Implementations:**
-- No standalone implementations; the theorem is a reduction technique used in security proofs.
-- Textbook implementations exist in teaching materials (e.g., [Katz-Lindell companion code](https://github.com/joyofcryptography/joy-of-cryptography)).
-
-**Security status:** Secure
-The Goldreich-Levin theorem is unconditionally proven; the hardcore predicate is computationally hard to predict given any OWF.
-
-**Community acceptance:** Standard
-One of the most fundamental results in cryptographic theory; cited in thousands of papers and taught in every introductory cryptography course.
-
----
-
-## Pseudoentropy and Computational Entropy
-
-**Goal:** Formalise what it means for a distribution to "look like" it has more randomness than it really does. A distribution X has pseudoentropy at least k if it is computationally indistinguishable from some distribution Y with Shannon entropy ≥ k. This generalises pseudorandomness (a special case where k = |X|) and is the key bridge between one-way functions and pseudorandom generators via the HILL theorem. Yao's next-bit predictor characterisation (1982) gives an equivalent operational definition: a distribution is pseudorandom if and only if no efficient algorithm can predict the next bit better than chance given all previous bits.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **Next-bit predictor / Yao's theorem** | 1982 | Yao | A distribution is pseudorandom iff no efficient next-bit predictor has non-negligible advantage; equivalence between statistical tests and next-bit tests [[1]](https://doi.org/10.1109/SFCS.1982.45) |
-| **HILL pseudoentropy** | 1993/1999 | Håstad–Impagliazzo–Levin–Luby | Computational entropy definition: X has HILL pseudoentropy k if indistinguishable from a distribution of Shannon entropy k; used to prove OWF → PRG [[1]](https://doi.org/10.1137/S0097539793244708) |
-| **Metric pseudoentropy** | 2003 | Barak–Shaltiel–Wigderson | Computational analogues of entropy; metric entropy is weaker than HILL and easier to work with in hybrid arguments [[1]](https://www.boazbarak.org/Papers/compent.pdf) |
-| **Conditional computational entropy** | 2007 | Reyzin | Separates HILL pseudoentropy from compressibility; conditional variants needed for leakage-resilience and extraction [[1]](https://link.springer.com/chapter/10.1007/978-3-540-72540-4_10) |
-
-**State of the art:** HILL pseudoentropy remains the standard definition; the metric entropy variant is used in leakage-resilient cryptography and randomness extraction. See [One-Way Functions and Impagliazzo's Five Worlds](#one-way-functions-and-impagliazzos-five-worlds) and [Hardcore Predicates and the Goldreich-Levin Theorem](#hardcore-predicates-and-the-goldreich-levin-theorem).
-
-**Production readiness:** Research
-Pseudoentropy is a theoretical framework for security proofs; it is not deployed as standalone software.
-
-**Implementations:**
-- No standalone implementations; the concepts are proof tools used in security reductions.
-
-**Security status:** Secure
-HILL and metric pseudoentropy are well-defined mathematical concepts; their correctness is proven.
-
-**Community acceptance:** Widely trusted
-HILL pseudoentropy is the standard computational entropy notion; Yao's next-bit predictor theorem is universally accepted. Both are standard textbook material.
-
----
-
-## NIZK: Definitions, Simulation Soundness, and Extractability
-
-**Goal:** Formalise non-interactive zero-knowledge proofs and their security variants. A NIZK proof system in the common reference string (CRS) model allows a prover to convince a verifier of an NP statement without interaction and without revealing any witness, using a shared CRS. Beyond basic zero-knowledge and soundness, the literature has developed stronger variants: *simulation soundness* (an adversary cannot prove false statements even after seeing simulated proofs) and *extractability* (a knowledge extractor can recover the witness from any valid proof given trapdoor information about the CRS). These properties are essential for CCA-secure encryption, signature schemes, and UC-secure protocols.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **NIZK in the CRS model** | 1990/1999 | Feige–Lapidot–Shamir | First NIZK for all NP from any trapdoor permutation; adaptive soundness and ZK with shared random string [[1]](https://doi.org/10.1137/S0097539798334998) |
-| **Non-malleable / simulation-sound NIZK** | 1999 | Sahai | Non-malleable NIZK: adversary cannot derive related proofs; introduced simulation soundness — prover cannot prove false statements after seeing simulated proofs [[1]](https://doi.org/10.1109/SFFCS.1999.814584) |
-| **Unbounded simulation soundness** | 2006 | Groth–Ostrovsky–Sahai | First pairing-based NIZK achieving unbounded simulation soundness (after polynomially many simulated proofs); used to construct CCA2-secure PKE in the standard model [[1]](https://eprint.iacr.org/2006/107) |
-| **Groth-Sahai NIZK** | 2008 | Groth–Sahai | Efficient pairing-based NIZK for algebraic statements; witness-indistinguishable and simulation-sound; canonical standard-model NIZK [[1]](https://eprint.iacr.org/2007/155) |
-| **NIZK of knowledge / extractability** | 2012 | Groth | Extractable NIZK: knowledge extractor recovers witness from any valid proof; foundational for SNARKs and UC-secure protocols [[1]](https://dl.acm.org/doi/10.1145/2220357.2220358) |
-
-**State of the art:** Groth-Sahai proofs (2008) are the canonical standard-model NIZK for pairing-based languages. Simulation soundness and extractability are required by virtually every UC-secure construction. See [Universal Composability](#universal-composability-uc-framework), [Random Oracle Model](#random-oracle-model-rom-vs-standard-model), and [Knowledge-of-Exponent Assumption](#knowledge-of-exponent-assumption-kea-and-falsifiability).
-
-**Production readiness:** Mature
-Groth-Sahai proofs are implemented in research-grade libraries; simulation-sound NIZK is a building block in deployed SNARK systems.
-
-**Implementations:**
-- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) ⭐ 339 — Rust, production-quality Groth16 (which achieves simulation-extractability)
-- [zkcrypto/bellman](https://github.com/zkcrypto/bellman) ⭐ 1.1k — Rust, Zcash's Groth16 implementation with extractability
-- [Groth-Sahai reference](https://github.com/gijsvl/groth-sahai) ⭐ 13 — Python, academic reference for Groth-Sahai pairing-based NIZK
-
-**Security status:** Secure
-Groth-Sahai proofs are proven secure under DLIN/SXDH assumptions; simulation-extractable SNARKs secure under q-PKE/AGM.
-
-**Community acceptance:** Widely trusted
-Groth-Sahai is the standard reference for standard-model pairing-based NIZK; simulation-extractability is the accepted security target for SNARK-based protocols.
-
----
-
-## Knowledge-of-Exponent Assumption (KEA) and Falsifiability
-
-**Goal:** Enable extraction of witnesses from adversarial group elements. The Knowledge-of-Exponent Assumption (KEA), introduced by Damgård (1991), asserts that if an adversary outputs a pair (C, Y) with Y = C^a given (g, g^a), it must "know" an exponent c such that C = g^c — formalised by requiring an efficient extractor that outputs c. KEA and its generalisations (KEA2, KEA3, Power KEA) underlie many SNARK constructions. However, KEA is *non-falsifiable*: no polynomial-time algorithm can verify that the extractor fails, distinguishing it from standard computational assumptions. This tension between proof power and falsifiability is a central theme in foundations.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **KEA1 (original)** | 1991 | Damgård | Given (g, g^a), any adversary outputting (C, Y=C^a) must know c s.t. C=g^c; introduced to build CCA-secure PKE [[1]](https://link.springer.com/chapter/10.1007/3-540-46877-3_8) |
-| **KEA and 3-round ZK** | 2004 | Bellare–Palacio | Formalised KEA1/KEA2/KEA3 hierarchy; linked KEA to 3-round ZK arguments and to extractable commitments [[1]](https://eprint.iacr.org/2004/008) |
-| **Non-falsifiability of KEA** | 2011 | Naor | Classified KEA as non-falsifiable ("knowledge assumption"); distinguished from falsifiable assumptions (DDH, CDH); meta-theorem on which assumptions are "testable" [[1]](https://link.springer.com/chapter/10.1007/978-3-642-22792-9_16) |
-| **KEA inherent to SNARKs** | 2012 | Gentry–Wichs | Non-falsifiable assumptions are *necessary* for succinct non-interactive arguments (SNARGs) in the standard model; KEA-type assumptions cannot be avoided [[1]](https://eprint.iacr.org/2011/095) |
-| **Power KEA / q-PKE** | 2013 | Groth | q-Power Knowledge of Exponent used in Groth16 SNARK; adversary knowing (g, g^α, …, g^{α^q}) must extract a polynomial representation [[1]](https://eprint.iacr.org/2016/260) |
-
-**State of the art:** KEA and its variants are the standard assumptions behind Groth16 and other pairing-based SNARKs deployed in blockchains (Zcash, Ethereum). Their non-falsifiability remains a theoretical concern; the Algebraic Group Model (see [Generic Group Model and Algebraic Group Model](#generic-group-model-ggm-and-algebraic-group-model-agm)) provides a partial substitute with better-understood security properties.
-
-**Production readiness:** Production
-KEA assumptions underlie Groth16, which is deployed in Zcash, Tornado Cash, and numerous Ethereum L2 systems.
-
-**Implementations:**
-- KEA is an assumption, not a software artifact. Implementations of Groth16 rely on KEA:
-- [zkcrypto/bellman](https://github.com/zkcrypto/bellman) ⭐ 1.1k — Rust, Zcash's Groth16 (security depends on q-PKE/KEA)
-- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) ⭐ 339 — Rust, general-purpose Groth16
-
-**Security status:** Caution
-KEA is non-falsifiable (Naor 2011; Gentry-Wichs 2011 shows this is inherent for SNARGs). No known attacks, but the assumption cannot be tested or refuted efficiently.
-
-**Community acceptance:** Controversial
-Widely used in practice (Zcash, Ethereum) but theoretically controversial due to non-falsifiability. The AGM provides a partial alternative with better-understood properties.
-
----
-
-## Generic Group Model (GGM) and Algebraic Group Model (AGM)
-
-**Goal:** Prove security of discrete-log-based schemes by restricting how adversaries interact with group elements. In the Generic Group Model (Shoup 1997), the adversary receives only opaque handles to group elements and can only combine them via the group operation — it cannot exploit the bit-representation of elements. This allows information-theoretic lower bounds (e.g., Ω(p^{1/2}) queries to solve DLog in a group of prime order p). The Algebraic Group Model (Fuchsbauer-Kiltz-Loss 2018) is a weaker idealization: the adversary may use the group encoding, but must always output explicit linear combinations of its input group elements alongside each output, enabling tight reductions from DLog-style assumptions while avoiding the GGM's full idealization.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **Generic Group Model (GGM)** | 1997 | Shoup | Lower bound Ω(p^{1/2}) for DLog/CDH in a generic group of order p; formalised the "generic algorithm" as one that only uses the group operation oracle [[1]](https://www.shoup.net/papers/dlbounds1.pdf) |
-| **Baby-step giant-step as GGM optimal** | 1997 | Shoup | Pohlig-Hellman and BSGS meet the GGM lower bound; DLog is provably hard in the GGM [[1]](https://www.shoup.net/papers/dlbounds1.pdf) |
-| **Algebraic Group Model (AGM)** | 2018 | Fuchsbauer–Kiltz–Loss | AGM sits between GGM and standard model; adversary must supply linear representation of output elements; CDH, SDH, LRSW all reduce tightly to DLog in AGM; tight reductions for BLS and Groth16 [[1]](https://eprint.iacr.org/2017/620) |
-| **AGM analysis and limitations** | 2022 | Auerbach–Hoffmann–Pascual-Perez | Formal analysis of AGM's assumptions; identifies classes of schemes where AGM proofs do and do not transfer to standard model [[1]](https://link.springer.com/chapter/10.1007/978-3-031-22972-5_11) |
-| **AGM proofs transfer to GGM** | 2024 | Bauer–Fischlin–Konrath | Generic and algebraic computation models: conditions under which AGM security proofs imply GGM security [[1]](https://link.springer.com/chapter/10.1007/978-3-031-68388-6_2) |
-
-**State of the art:** The GGM lower bounds (Shoup 1997) are the canonical justification for DLog-based security parameters. The AGM (Fuchsbauer-Kiltz-Loss 2018) is now widely used for tight security proofs of pairing-based schemes; it underlies proofs of Groth16, BLS, and numerous other constructions. See [Knowledge-of-Exponent Assumption](#knowledge-of-exponent-assumption-kea-and-falsifiability) and [Black-Box Separations](#black-box-separations).
-
-**Production readiness:** Production
-GGM lower bounds justify DLog parameter sizes used in all deployed elliptic curve cryptography. AGM proofs validate BLS signatures (Ethereum 2.0) and Groth16 (Zcash).
-
-**Implementations:**
-- GGM/AGM are proof models, not software. Libraries whose security relies on GGM/AGM analysis:
-- [blst](https://github.com/supranational/blst) ⭐ 554 — C/assembly, BLS12-381 (AGM-proven tight security)
-- [arkworks-rs](https://github.com/arkworks-rs) — Rust, pairing-based crypto with AGM-validated parameters
-
-**Security status:** Secure
-GGM lower bounds are information-theoretic (proven). AGM is an intermediate model between standard model and GGM; its assumptions are stronger than standard model but weaker than GGM.
-
-**Community acceptance:** Widely trusted
-GGM (Shoup 1997) is universally cited for DLog parameter justification. AGM (2018) is rapidly becoming the standard for pairing-based security proofs.
-
----
-
-## Concrete Security and Reduction Tightness
-
-**Goal:** Quantify exactly how much security a construction provides at a specific parameter size. Asymptotic security theory says a scheme is "secure" if no polynomial-time adversary wins with non-negligible probability — but this hides constants and polynomial factors critical to practice. Concrete security (Bellare-Rogaway 1993/1997) replaces asymptotic language with explicit bounds: a scheme is (t, ε)-secure if no adversary running in time t wins with probability greater than ε. A reduction is *tight* if an adversary breaking the scheme yields another adversary breaking the underlying hardness problem with essentially the same (t, ε); a loose reduction with loss factor L means parameters must be inflated to compensate, sometimes by hundreds of bits.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **Concrete security framework** | 1993 | Bellare–Rogaway | Introduced (t,ε)-security for protocol analysis; argued that asymptotic security theory obscures practical parameter choices [[1]](https://cseweb.ucsd.edu/~mihir/papers/ro.pdf) |
-| **Exact security of digital signatures** | 1996 | Bellare–Rogaway | Tight security proof for Full Domain Hash (FDH) signatures in ROM; showed Schnorr/RSA-FDH have different tightness profiles [[1]](https://www.cs.ucdavis.edu/~rogaway/papers/exact.pdf) |
-| **Concrete security of symmetric enc** | 1997 | Bellare–Desai–Jokipii–Rogaway | Tight concrete-security hierarchy for IND-CPA, IND-CCA1, IND-CCA2 for symmetric encryption; upper and lower bounds on reduction loss [[1]](https://cseweb.ucsd.edu/~mihir/papers/sym-enc.pdf) |
-| **Impossibility of tight reductions** | 2015 | Bader–Jager–Li–Schäge | For certain signature schemes with tight security, proved tight black-box reductions from standard assumptions are impossible; separation between tight and loose security [[1]](https://eprint.iacr.org/2015/374) |
-| **Almost-tight security** | 2014 | Chen–Wee | "Almost-tight" reductions (loss at most linear in security parameter) for IBE and PKE; achieves near-optimal concrete security in the standard model [[1]](https://eprint.iacr.org/2013/134) |
-
-**State of the art:** Concrete security analysis is mandatory for standards work — NIST PQC submissions were evaluated in part on tightness of their security reductions. Almost-tight reductions are the practical goal when perfectly tight ones are impossible. See [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa--ind-cca-security) and [Random Oracle Model](#random-oracle-model-rom-vs-standard-model).
-
-**Production readiness:** Production
-Concrete security analysis directly determines parameter sizes in all deployed standards (AES key lengths, NIST PQC parameters, TLS cipher suite recommendations).
-
-**Implementations:**
-- Concrete security is an analysis framework, not standalone software. Tools that support concrete security analysis:
-- [CryptoVerif](https://bblanche.gitlabpages.inria.fr/CryptoVerif/) — OCaml, automated tool producing concrete security bounds
-- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, formal verification with concrete bound tracking
-
-**Security status:** Secure
-The concrete security framework itself is sound; its outputs directly determine whether deployed parameters provide the claimed security level.
-
-**Community acceptance:** Standard
-Concrete security analysis is mandatory in NIST, IETF, and ISO standardization processes. Bellare-Rogaway's framework is the universally accepted methodology.
-
----
-
-## Perfect Forward Secrecy (PFS)
-
-**Goal:** Bound the damage of long-term key compromise. A protocol achieves perfect (more precisely, *forward*) secrecy if compromise of a party's long-term secret key does not retroactively expose session keys established in prior sessions. Each session key is derived from fresh ephemeral randomness and is deleted immediately after use, so a future adversary who steals the long-term key obtains no information about past communications. PFS is now a hard requirement for modern TLS, Signal, and other secure-channel protocols.
-
-| Scheme / Result | Year | Basis | Note |
-|-----------------|------|-------|------|
-| **Diffie-Hellman ephemeral key exchange (DHE)** | 1976 | CDH | Use fresh DH exponents per session; first construction providing forward secrecy; session key derivable from ephemeral secrets only [[1]](https://doi.org/10.1109/TIT.1976.1055638) |
-| **Formal PFS definition (Günther)** | 1990 | Protocol analysis | First formal definition: past session keys remain secret after long-term key disclosure; distinguishes PFS from key freshness [[1]](https://link.springer.com/chapter/10.1007/3-540-46885-4_35) |
-| **TLS 1.3 with mandatory DHE/ECDHE** | 2018 | ECDH / X25519 | TLS 1.3 removes all static RSA key exchange modes; ephemeral (EC)DHE is the only handshake mode; PFS mandatory for all connections [[1]](https://www.rfc-editor.org/rfc/rfc8446) |
-| **Signal / Double Ratchet PFS** | 2016 | Diffie-Hellman ratchet | Per-message ephemeral DH updates provide forward secrecy and break-in recovery; strongest deployed PFS [[1]](https://signal.org/docs/specifications/doubleratchet/) |
-| **Puncturable encryption / fine-grained PFS** | 2015 | Green–Miers | Receiver can "puncture" a secret key so it no longer decrypts a specific ciphertext; enables message-level PFS without re-keying the full session [[1]](https://eprint.iacr.org/2015/1189) |
-
-**State of the art:** ECDHE in TLS 1.3 (X25519 / P-256) is the universal deployment standard. The Double Ratchet's per-message PFS goes further — see [Secure Channels](12-secure-communication-protocols.md#double-ratchet--symmetric-ratchet) and [Key Exchange](03-key-exchange-key-management.md#triple-diffie-hellman-3dh--x3dh). Puncturable encryption generalises PFS to the ciphertext level.
-
-**Production readiness:** Production
-PFS via ECDHE is mandatory in TLS 1.3 (RFC 8446) and deployed on every major browser and server. The Signal Double Ratchet provides per-message PFS for billions of users.
-
-**Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, TLS 1.3 with mandatory ECDHE PFS
-- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift, Double Ratchet with per-message PFS
-- [rustls](https://github.com/rustls/rustls) ⭐ 7.3k — Rust, TLS 1.3 with ECDHE-only handshake
-
-**Security status:** Secure
-PFS is a proven property of ephemeral key exchange; no attacks on the PFS guarantee itself at recommended parameters.
-
-**Community acceptance:** Standard
-PFS is mandated by TLS 1.3 (IETF RFC 8446), required by NIST SP 800-52r2, and universally deployed. Removal of static RSA key exchange in TLS 1.3 made PFS non-optional.
-
----
-
-## Leftover Hash Lemma and Randomness Extraction
+### Leftover Hash Lemma and Randomness Extraction
 
 **Goal:** Convert weak, biased randomness into uniform bits. The Leftover Hash Lemma (LHL), due to Impagliazzo, Levin, and Luby (1989), states that applying a pairwise-independent hash function to a source with min-entropy k produces output that is statistically close to uniform in length up to k − 2 log(1/ε). This is the foundational tool in *randomness extraction* — producing near-uniform bits from any high-entropy source — and underlies key derivation, privacy amplification in QKD, leakage-resilient cryptography, and the security of randomness beacons.
 
@@ -685,7 +133,817 @@ The LHL is universally accepted and cited in thousands of papers. HKDF (its prac
 
 ---
 
-## Hybrid Argument Technique
+
+## Security Definitions and Models
+
+---
+### Circular / KDM Security
+
+**Goal:** Security when encrypting the key itself. An encryption scheme is KDM-secure (Key-Dependent Message) if it remains secure even when the plaintext is a function of the secret key. Critical for FHE bootstrapping and disk encryption.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boneh-Halevi-Hamburg-Ostrovsky** | 2008 | DDH | First KDM-CPA secure encryption from standard assumptions [[1]](https://eprint.iacr.org/2008/140) |
+| **Applebaum-Cash-Peikert-Sahai** | 2009 | LWE | KDM-secure for affine functions of the key [[1]](https://eprint.iacr.org/2009/070) |
+| **Barak-Haitner-Hofheinz-Ishai** | 2010 | Any CPA enc (bounded) | KDM security for bounded polynomial cycles [[1]](https://eprint.iacr.org/2010/198) |
+
+**State of the art:** LWE-based KDM (used in FHE bootstrapping security proofs), DDH-based (practical).
+
+**Production readiness:** Research
+KDM security is a proof-level property used in FHE security arguments; no standalone deployed KDM-secure encryption product exists.
+
+**Implementations:**
+- [Microsoft SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, FHE library whose bootstrapping security relies on KDM arguments
+- [OpenFHE](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, FHE library with KDM-relevant security proofs
+
+**Security status:** Secure
+No known attacks on the underlying LWE/DDH-based KDM constructions at recommended parameters.
+
+**Community acceptance:** Niche
+KDM security is a specialized theoretical notion; well-studied in the academic community but not a standalone standardization target.
+
+---
+
+### Non-Malleable Codes
+
+**Goal:** Tamper resilience. An encoding scheme where any tampering with the codeword either leaves the decoded message unchanged or produces a completely unrelated message — an adversary cannot cause "related" modifications.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Dziembowski-Pietrzak-Wichs NMC** | 2010 | Split-state model | Foundational definition; adversary tampers with each state half independently [[1]](https://eprint.iacr.org/2009/608) |
+| **Continuous NMC (Faust et al.)** | 2014 | Split-state | Resist continuous (repeated) tampering, not just one-shot [[1]](https://eprint.iacr.org/2014/050) |
+| **NMC for Bounded Tampering (Chandran et al.)** | 2016 | Information-theoretic | For bounded number of tampering attempts [[1]](https://eprint.iacr.org/2015/1178) |
+| **Rate-1 NMC (Aggarwal-Dodis-Lovett)** | 2014 | Split-state | Asymptotically optimal rate (message ≈ codeword size) [[1]](https://eprint.iacr.org/2013/565) |
+
+**State of the art:** Split-state NMC (Dziembowski-Pietrzak-Wichs); used to protect against physical memory tampering (see [Leakage-Resilient Crypto](#leakage-resilient-cryptography)).
+
+**Production readiness:** Research
+Non-malleable codes are primarily a theoretical tool; no widely deployed standalone NMC product exists, though the concepts inform tamper-resilient hardware design.
+
+**Implementations:**
+- [libotr](https://github.com/off-the-record/libotr) ⭐ 64 — C, uses NMC-related techniques in tamper-resilient key storage
+
+**Security status:** Secure
+Information-theoretic security in the split-state model; computational variants secure under standard assumptions.
+
+**Community acceptance:** Niche
+Well-established in TCC/CRYPTO/EUROCRYPT theory community; limited awareness outside academic cryptography and hardware security.
+
+---
+
+### Random Oracle Model (ROM) vs. Standard Model
+
+**Goal:** Formalize when hash functions can be treated as ideal. The random oracle model (ROM), introduced by Bellare and Rogaway (1993), replaces cryptographic hash functions with a perfectly random function accessible only as an oracle. Proofs in the ROM are often simpler and tighter; the standard model avoids this idealization but demands stronger hardness assumptions or more complex constructions. A central open question is whether ROM security implies real-world security after instantiating the oracle with a concrete hash.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **ROM introduction** | 1993 | Bellare–Rogaway | Formalized the ROM paradigm; used to prove RSA-OAEP and FDH secure; advocates ROM as a practical design heuristic [[1]](https://cseweb.ucsd.edu/~mihir/papers/ro.pdf) |
+| **ROM separation (CGH)** | 1998 | Canetti–Goldreich–Halevi | Constructed schemes secure in ROM but insecure under any hash instantiation; ROM proofs do not imply standard-model security [[1]](https://eprint.iacr.org/1998/011) |
+| **Standard-model NIZK** | 2008 | Groth–Sahai | Pairing-based NIZK without any random oracle; canonical standard-model alternative [[1]](https://eprint.iacr.org/2007/155) |
+| **Ideal cipher ≡ ROM** | 2008 | Holenstein–Künzler–Tessaro | Proved the ideal cipher model and the random oracle model are equivalent [[1]](https://eprint.iacr.org/2008/246) |
+| **Instantiation impossibility for PSS** | 2011 | Dodis–Oliveira–Pietrzak | Black-box impossibility of instantiating PSS in the standard model even assuming ideal trapdoor permutations [[1]](https://link.springer.com/chapter/10.1007/978-3-642-19379-8_22) |
+
+**State of the art:** The ROM remains the dominant proof model for deployed protocols (TLS, OAEP, Fiat-Shamir heuristic). Standard-model alternatives exist but are less efficient. The CGH separation is the canonical impossibility reference; programmability of the random oracle is an active area of research.
+
+**Production readiness:** Production
+The ROM is the dominant proof model for virtually all deployed cryptographic protocols (TLS 1.3, RSA-OAEP, Schnorr signatures, Fiat-Shamir transforms).
+
+**Implementations:**
+- Every cryptographic library implicitly relies on ROM proofs; the model itself is a proof framework, not a software artifact.
+- [CryptoVerif](https://bblanche.gitlabpages.inria.fr/CryptoVerif/) — OCaml, automated game-based proof tool supporting ROM arguments
+- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, formal verification framework with ROM proof support
+
+**Security status:** Caution
+ROM proofs do not unconditionally imply real-world security (CGH 1998 separation); however, no deployed ROM-proven scheme has been broken due to oracle instantiation failure.
+
+**Community acceptance:** Standard
+The ROM is universally accepted in applied cryptography and NIST/IETF standardization; the CGH separation is acknowledged but considered a theoretical concern.
+
+---
+
+### Universal Composability (UC) Framework
+
+**Goal:** Guarantee protocol security under arbitrary concurrent composition. The UC framework (Canetti 2001/2020) defines security by requiring that a real protocol is computationally indistinguishable from an *ideal functionality* — a trusted party that computes the desired function perfectly — even when the protocol runs concurrently alongside arbitrarily many other protocols. Unlike standalone game-based definitions, UC security composes freely and is the appropriate model for multi-session, internet-scale deployments.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **UC framework** | 2001 | Canetti | Foundational definition; universal composition theorem; ideal functionalities for OT, commitment, CRS [[1]](https://eprint.iacr.org/2000/067) |
+| **UC commitments impossibility** | 2001 | Canetti–Fischlin | UC-secure commitments are impossible in the plain model; require a setup assumption (CRS or global ROM) [[1]](https://eprint.iacr.org/2001/055) |
+| **Simplified UC (CC-UC)** | 2015 | Canetti–Cohen–Lindell | Cleaner formalization for standard MPC settings; easier to use for protocol designers [[1]](https://eprint.iacr.org/2014/553) |
+| **UC journal version** | 2020 | Canetti | Definitive JACM version; consolidates all prior revisions; introduces global subroutines and global functionalities [[1]](https://dl.acm.org/doi/10.1145/3402457) |
+| **EasyUC** | 2019 | Canetti–Stoughton–Varia | Machine-checked UC proofs using the EasyCrypt proof assistant [[1]](https://eprint.iacr.org/2019/582) |
+
+**State of the art:** UC is the canonical composition framework for [MPC](06-multi-party-computation.md#multi-party-computation-mpc), [CGKA/MLS](12-secure-communication-protocols.md#continuous-group-key-agreement-cgka--mls), and [OT](06-multi-party-computation.md#oblivious-transfer-ot). Simulation-based security is the language of the UC model; game-based definitions (IND-CPA, etc.) remain preferred for standalone primitives.
+
+**Production readiness:** Mature
+UC is the standard security framework for MPC, MLS, and threshold protocols; all serious protocol designs invoke UC security. EasyUC provides machine-checked proofs.
+
+**Implementations:**
+- [EasyUC](https://github.com/easyuc/EasyUC) ⭐ 45 — OCaml/EasyCrypt, machine-checked UC proofs
+- [GNUC](https://eprint.iacr.org/2011/471) — formal model (no standalone software; used in paper proofs)
+- UC is a proof framework; every UC-secure MPC library (MP-SPDZ, libsignal, openmls) implicitly relies on it.
+
+**Security status:** Secure
+The UC framework itself is a definitional tool; its soundness is well-established. UC-secure protocols are secure under arbitrary composition by definition.
+
+**Community acceptance:** Standard
+UC is the gold standard for composable protocol security; required by IETF MLS, used in all major MPC frameworks, and referenced in NIST PQC evaluations.
+
+---
+
+### NIZK: Definitions, Simulation Soundness, and Extractability
+
+**Goal:** Formalise non-interactive zero-knowledge proofs and their security variants. A NIZK proof system in the common reference string (CRS) model allows a prover to convince a verifier of an NP statement without interaction and without revealing any witness, using a shared CRS. Beyond basic zero-knowledge and soundness, the literature has developed stronger variants: *simulation soundness* (an adversary cannot prove false statements even after seeing simulated proofs) and *extractability* (a knowledge extractor can recover the witness from any valid proof given trapdoor information about the CRS). These properties are essential for CCA-secure encryption, signature schemes, and UC-secure protocols.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **NIZK in the CRS model** | 1990/1999 | Feige–Lapidot–Shamir | First NIZK for all NP from any trapdoor permutation; adaptive soundness and ZK with shared random string [[1]](https://doi.org/10.1137/S0097539798334998) |
+| **Non-malleable / simulation-sound NIZK** | 1999 | Sahai | Non-malleable NIZK: adversary cannot derive related proofs; introduced simulation soundness — prover cannot prove false statements after seeing simulated proofs [[1]](https://doi.org/10.1109/SFFCS.1999.814584) |
+| **Unbounded simulation soundness** | 2006 | Groth–Ostrovsky–Sahai | First pairing-based NIZK achieving unbounded simulation soundness (after polynomially many simulated proofs); used to construct CCA2-secure PKE in the standard model [[1]](https://eprint.iacr.org/2006/107) |
+| **Groth-Sahai NIZK** | 2008 | Groth–Sahai | Efficient pairing-based NIZK for algebraic statements; witness-indistinguishable and simulation-sound; canonical standard-model NIZK [[1]](https://eprint.iacr.org/2007/155) |
+| **NIZK of knowledge / extractability** | 2012 | Groth | Extractable NIZK: knowledge extractor recovers witness from any valid proof; foundational for SNARKs and UC-secure protocols [[1]](https://dl.acm.org/doi/10.1145/2220357.2220358) |
+
+**State of the art:** Groth-Sahai proofs (2008) are the canonical standard-model NIZK for pairing-based languages. Simulation soundness and extractability are required by virtually every UC-secure construction. See [Universal Composability](#universal-composability-uc-framework), [Random Oracle Model](#random-oracle-model-rom-vs-standard-model), and [Knowledge-of-Exponent Assumption](#knowledge-of-exponent-assumption-kea-and-falsifiability).
+
+**Production readiness:** Mature
+Groth-Sahai proofs are implemented in research-grade libraries; simulation-sound NIZK is a building block in deployed SNARK systems.
+
+**Implementations:**
+- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) ⭐ 339 — Rust, production-quality Groth16 (which achieves simulation-extractability)
+- [zkcrypto/bellman](https://github.com/zkcrypto/bellman) ⭐ 1.1k — Rust, Zcash's Groth16 implementation with extractability
+- [Groth-Sahai reference](https://github.com/gijsvl/groth-sahai) ⭐ 13 — Python, academic reference for Groth-Sahai pairing-based NIZK
+
+**Security status:** Secure
+Groth-Sahai proofs are proven secure under DLIN/SXDH assumptions; simulation-extractable SNARKs secure under q-PKE/AGM.
+
+**Community acceptance:** Widely trusted
+Groth-Sahai is the standard reference for standard-model pairing-based NIZK; simulation-extractability is the accepted security target for SNARK-based protocols.
+
+---
+
+### Simulation-Based Security (SIM) vs. Indistinguishability-Based Security (IND)
+
+**Goal:** Understand two fundamental paradigms for defining cryptographic security. Indistinguishability-based definitions (IND) specify security via a game in which an adversary cannot distinguish between two explicitly chosen distributions — for example, encryptions of two messages of its choice. Simulation-based definitions (SIM) instead compare a real protocol execution to an ideal execution with a trusted party: a protocol is secure if any real-world adversary can be "simulated" by an ideal-world adversary that talks only to the ideal functionality, obtaining no more information. SIM-security is strictly stronger and composes modularly (the basis of UC); IND-based security is game-specific and may not compose, but is often easier to work with and sufficient for standalone primitives.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **IND-CPA / semantic security** | 1984 | Goldwasser–Micali | Canonical IND definition: adversary cannot distinguish encryptions of chosen plaintexts; equivalent to semantic security [[1]](https://mit6875.github.io/PAPERS/probabilistic_encryption.pdf) |
+| **SIM-security for OT** | 1987 | Goldreich–Micali–Wigderson | Ideal-world / real-world paradigm for oblivious transfer; adversary's view in the real protocol is simulatable given only the ideal output [[1]](https://doi.org/10.1145/28395.28420) |
+| **SIM vs. IND for encryption (non-equivalence)** | 2000 | Canetti–Dwork–Naor–Ostrovsky | SIM-secure (non-committing) encryption requires communication overhead; IND-CCA2 encryption does not achieve SIM-security against adaptive corruptions [[1]](https://eprint.iacr.org/1996/058) |
+| **Ideal functionality paradigm (UC)** | 2001 | Canetti | Formalised real/ideal world comparison as universal composition; every UC-secure protocol is SIM-secure in the strongest sense [[1]](https://eprint.iacr.org/2000/067) |
+| **IND ↛ SIM for PKE under adaptive corruptions** | 2011 | Nielsen–Wichs | Separation: IND-CCA2-secure PKE does not achieve SIM-based security when the receiver can be adaptively corrupted; non-committing encryption is necessary [[1]](https://eprint.iacr.org/2011/215) |
+
+**State of the art:** IND-CPA/IND-CCA2 remain the standard for standalone primitives (PKE, KEM, signatures). SIM-based / UC security is required for protocols that must compose — [MPC](06-multi-party-computation.md#multi-party-computation-mpc), [CGKA/MLS](12-secure-communication-protocols.md#continuous-group-key-agreement-cgka--mls), [OT](06-multi-party-computation.md#oblivious-transfer-ot). Non-committing encryption bridges the gap when adaptive corruptions are needed under SIM. See [Universal Composability (UC) Framework](#universal-composability-uc-framework) and [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa--ind-cca-security).
+
+**Production readiness:** Production
+Both paradigms are used in the security analysis of all deployed protocols: IND for standalone primitives, SIM for composed protocols (MPC, MLS, OT).
+
+**Implementations:**
+- These are definitional frameworks, not software. Tools for formalizing proofs in both paradigms:
+- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, supports both game-based (IND) and simulation-based proofs
+
+**Security status:** Secure
+Both paradigms are mathematically well-defined; their relationship (IND does not imply SIM under adaptive corruptions) is precisely characterized.
+
+**Community acceptance:** Standard
+Both paradigms are universally accepted; IND-CCA2 dominates for standalone primitives, SIM/UC for composable protocols. The Canetti-Dwork-Naor-Ostrovsky separation is a standard reference.
+
+---
+
+### Indifferentiability Framework
+
+**Goal:** Prove that a construction using a simpler ideal primitive is as secure as if a stronger ideal primitive were used directly. Maurer, Renner, and Holenstein (2004) introduced indifferentiability to capture when a hash construction built from an ideal compression function (or block cipher) is "as good as" a random oracle. A construction C[P] (using primitive P) is indifferentiable from an ideal primitive Q if there is a simulator S such that (C[P], P) is computationally indistinguishable from (Q, S^Q) — meaning any system that uses C[P] behaves as if it used Q directly. This justifies plugging hash constructions into random-oracle proofs without invalidating them.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Indifferentiability framework** | 2004 | Maurer–Renner–Holenstein | Foundational definition; indifferentiability implies security in any single-stage cryptographic game that uses the ideal primitive as a subroutine [[1]](https://link.springer.com/chapter/10.1007/978-3-540-24638-1_2) |
+| **Merkle-Damgård is NOT indifferentiable** | 2004 | Coron–Dodis–Malinaud–Puniya | MD construction leaks structure: length extension attacks mean MD[π] is not indifferentiable from a RO; motivates sponge and prefix-free MD variants [[1]](https://eprint.iacr.org/2005/210) |
+| **Sponge construction is indifferentiable** | 2008 | Bertoni–Daemen–Peeters–Van Assche | Sponge functions built from a random permutation are indifferentiable from a random oracle; theoretical foundation for SHA-3/Keccak [[1]](https://keccak.team/files/SpongeFunctions.pdf) |
+| **HMAC indifferentiability** | 2012 | Gazi–Maurer | HMAC built from an ideal compression function is indifferentiable from a PRF; justifies HMAC's security proofs in the random oracle model [[1]](https://link.springer.com/chapter/10.1007/978-3-642-32009-5_21) |
+| **Multi-stage security and indifferentiability limits** | 2011 | Ristenpart–Shacham–Shrimpton | Indifferentiability does not imply security for multi-stage games (e.g., RKA, related-key attacks); delineates the boundary of what indifferentiability guarantees [[1]](https://eprint.iacr.org/2011/005) |
+
+**State of the art:** Indifferentiability is the standard tool for justifying hash-construction security in the ROM. SHA-3's sponge design was chosen partly because it achieves indifferentiability from a random oracle (given a random permutation), unlike Merkle-Damgård. The Ristenpart-Shacham-Shrimpton limitation is important: indifferentiability does not cover all security properties. See [Random Oracle Model (ROM) vs. Standard Model](#random-oracle-model-rom-vs-standard-model).
+
+**Production readiness:** Production
+Indifferentiability proofs justify SHA-3 (Keccak), HMAC, and all sponge-based constructions deployed in TLS, SSH, and NIST standards.
+
+**Implementations:**
+- Indifferentiability is a proof framework, not standalone software. Constructions validated by indifferentiability analysis:
+- [XKCP (Keccak Code Package)](https://github.com/XKCP/XKCP) ⭐ 643 — C/assembly, reference SHA-3/Keccak implementation (sponge indifferentiability)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, HMAC implementation whose security relies on indifferentiability arguments
+
+**Security status:** Secure
+Indifferentiability proofs are mathematically rigorous; the sponge construction's indifferentiability from a random oracle is proven under the random permutation model.
+
+**Community acceptance:** Standard
+Indifferentiability is the accepted methodology for justifying hash construction security; it influenced NIST's selection of SHA-3 and is cited in all modern hash function analyses.
+
+---
+
+### Knowledge-Soundness, Extractability, and Simulation-Extractability
+
+**Goal:** Distinguish three increasingly strong notions of what it means for a proof system to "guarantee the prover knows a witness." *Proof of knowledge (PoK)* / *knowledge-soundness*: an efficient knowledge extractor can recover a witness from any prover that produces a valid proof with non-negligible probability, via rewinding or black-box extraction. *Extractability* (or *straight-line extraction*): the extractor recovers the witness from a single proof transcript, without rewinding — essential in the random oracle model and for composing with UC. *Simulation-extractability* (SE): the extractor succeeds even when the adversary has seen an arbitrary number of simulated proofs; the adversary cannot produce a new valid proof without knowing a witness, even after observing a polynomial number of proofs for other statements. SE is strictly stronger than both and is required whenever proofs are used in a setting where signatures or commitments can be forged using proof malleability.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Proof of knowledge / knowledge-soundness** | 1988 | Feige–Fiat–Shamir | Introduced the notion that a protocol is a "proof of knowledge" if a black-box extractor recovers the witness by rewinding the prover; formalised in Schnorr identification [[1]](https://doi.org/10.1007/3-540-47721-7_11) |
+| **Simulation-sound NIZK** | 1999 | Sahai | NIZK that remains sound even after an adversary sees simulated proofs; prevents a malicious prover from using simulated proofs as templates for forging new ones [[1]](https://doi.org/10.1109/SFFCS.1999.814584) |
+| **Simulation-extractability definition** | 2004 | Groth–Ostrovsky–Sahai | Formal definition of simulation-extractability for NIZK: after seeing simulated proofs, an adversary cannot produce a new valid proof without the extractor recovering a witness [[1]](https://eprint.iacr.org/2006/107) |
+| **SE-SNARKs** | 2012 | Groth | Groth16 SNARK achieves simulation-extractability under q-PKE; extractability is straight-line in the AGM/GGM; no rewinding needed in the algebraic setting [[1]](https://eprint.iacr.org/2016/260) |
+| **UC-extractability vs. SE** | 2017 | Abdolmaleki–Baghery–Lipmaa–Zając | Clarified hierarchy: UC-extractable NIZKs (straight-line, simulation-sound) are strictly stronger than SE; construction from pairing assumptions [[1]](https://eprint.iacr.org/2017/121) |
+| **Fiat-Shamir and simulation-extractability in ROM** | 2019 | Fischlin–Günther | Fiat-Shamir transforms produce simulation-extractable NIZKs in the ROM without rewinding; tight proof using straight-line extraction from the hash transcript [[1]](https://eprint.iacr.org/2020/1184) |
+
+**State of the art:** Simulation-extractability is the standard target for NIZKs used as building blocks in signature schemes, CCA-secure PKE, and UC-secure protocols. Groth16 achieves SE under algebraic assumptions; transparent SNARKs (STARK, Plonk) achieve knowledge-soundness in the ROM. See [NIZK: Definitions, Simulation Soundness, and Extractability](#nizk-definitions-simulation-soundness-and-extractability), [Knowledge-of-Exponent Assumption (KEA) and Falsifiability](#knowledge-of-exponent-assumption-kea-and-falsifiability), and [Universal Composability (UC) Framework](#universal-composability-uc-framework).
+
+**Production readiness:** Production
+Knowledge-soundness and simulation-extractability underlie all deployed SNARK systems (Groth16 in Zcash, Plonk in Ethereum L2s) and Fiat-Shamir-based signature schemes.
+
+**Implementations:**
+- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) ⭐ 339 — Rust, simulation-extractable SNARK
+- [zkcrypto/bellman](https://github.com/zkcrypto/bellman) ⭐ 1.1k — Rust, Zcash's Groth16 with extractability
+- [halo2](https://github.com/zcash/halo2) ⭐ 895 — Rust, Plonk-based proving system with knowledge-soundness in ROM
+
+**Security status:** Secure
+The hierarchy (knowledge-soundness ⊂ extractability ⊂ simulation-extractability) is well-established; each level is proven sound under its respective assumptions.
+
+**Community acceptance:** Standard
+Simulation-extractability is the accepted security target for SNARK-based protocols; knowledge-soundness is the minimum for all deployed proof systems.
+
+---
+
+### Programmable vs. Non-Programmable Random Oracles
+
+**Goal:** Identify which security proofs genuinely require the ability to "program" the random oracle — adaptively setting its outputs during the reduction. In the standard ROM, the reduction can program the oracle; in the non-programmable ROM (NPROM), the hash function is fixed before the reduction runs. Fischlin et al. (2010) showed that FDH signatures and many Fiat-Shamir transforms cannot be proven secure in the NPROM, clarifying which proofs rely on this artificial feature.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Random oracles with(out) programmability** | 2010 | Fischlin–Lehmann–Ristenpart–Shrimpton–Stam–Tessaro | FDH signatures cannot be proven secure in the NPROM via black-box reduction; programmability is essential; ASIACRYPT 2010 [[1]](https://link.springer.com/chapter/10.1007/978-3-642-17373-8_18) |
+| **Impossibility for Fiat-Shamir in NPROM** | 2016 | Fukumitsu–Hasegawa | Fiat-Shamir signatures cannot be proven secure in the NPROM under any standard hardness assumption [[1]](https://link.springer.com/chapter/10.1007/978-3-319-45871-7_23) |
+
+**State of the art:** NPROM separation results show that many ROM proofs rely on the artificial programmability feature. Constructions with NPROM proofs provide stronger real-world security evidence. See [Random Oracle Model (ROM) vs. Standard Model](#random-oracle-model-rom-vs-standard-model).
+
+**Production readiness:** Research
+NPROM separations are impossibility results; they guide protocol design but are not deployed as software.
+
+**Implementations:**
+- No standalone implementations; these are proof-theoretic results about the limitations of ROM proofs.
+
+**Security status:** Secure
+The separation results are mathematically proven; they clarify which ROM proofs are robust and which rely on artificial features.
+
+**Community acceptance:** Niche
+Well-known in the provable security community; Fischlin et al. (2010) and Fukumitsu-Hasegawa (2016) are standard references for ROM proof methodology.
+
+---
+
+### Forking Lemma and Rewinding Techniques
+
+**Goal:** Extract secret keys from forged signatures by "rewinding" an adversary. The forking lemma shows that if an adversary forges a signature in the random oracle model with non-negligible probability, replaying it with a different random oracle yields a second forgery from which the secret can be recovered. This is the core proof technique for Schnorr, ECDSA, and many Fiat-Shamir-based schemes.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Pointcheval-Stern forking lemma** | 1996 | Pointcheval–Stern | Original lemma; proves security of ElGamal-type and Schnorr signatures in ROM [[1]](https://doi.org/10.1007/3-540-68339-9_34) |
+| **General forking lemma** | 2006 | Bellare–Neven | Generalises to multi-signatures and arbitrary interactive proofs; tighter bounds [[1]](https://doi.org/10.1145/1180405.1180453) |
+| **High-moment forking lemma** | 2023 | Diemert–Gellert–Jager–Lyu | Explicit high-moment bounds; tight multi-signature security for Schnorr [[1]](https://cic.iacr.org/p/1/2/2) |
+
+**State of the art:** The general forking lemma (Bellare-Neven 2006) is the standard tool for ROM security proofs of discrete-log-based signatures. High-moment variants (2023) close tightness gaps for multi-signatures. See [Signatures (Advanced)](08-signatures-advanced.md).
+
+**Production readiness:** Production
+The forking lemma is the proof technique behind the security of Schnorr, ECDSA, EdDSA, and all Fiat-Shamir-based signature schemes deployed in TLS, SSH, and blockchains.
+
+**Implementations:**
+- The forking lemma is a proof technique, not standalone software. Signature schemes whose security proofs rely on it:
+- [libsecp256k1](https://github.com/bitcoin-core/secp256k1) ⭐ 2.4k — C, ECDSA/Schnorr (security via forking lemma)
+- [ed25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, EdDSA (security via forking lemma)
+
+**Security status:** Secure
+The forking lemma is a proven mathematical result; its tightness bounds are well-characterized (Bellare-Neven 2006, Diemert et al. 2023).
+
+**Community acceptance:** Standard
+The Pointcheval-Stern (1996) and Bellare-Neven (2006) forking lemmas are universally cited in ROM security proofs of DLog-based signatures.
+
+---
+
+### Quantum Random Oracle Model (QROM)
+
+**Goal:** Extend the Random Oracle Model to quantum adversaries who can query the oracle in superposition. Classical ROM proofs often break when the adversary makes quantum queries (e.g., Grover search over the oracle), so new proof techniques are needed for post-quantum security.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Random Oracles in a Quantum World** | 2011 | Boneh–Dagdelen–Fischlin–Lehmann–Schaffner–Zhandry | Defines QROM; shows classical ROM proofs can fail; gives QROM-secure signatures [[1]](https://eprint.iacr.org/2010/428) |
+| **Quantum-accessible ROM separation** | 2019 | Yamakawa–Zhandry | Constructs schemes secure in ROM but broken in QROM under standard assumptions [[1]](https://eprint.iacr.org/2020/1270) |
+| **Measure-and-reprogram** | 2019 | Don–Fehr–Majenz–Schaffner | General QROM proof technique: measure one query, reprogram oracle; proves Fiat-Shamir secure in QROM [[1]](https://eprint.iacr.org/2019/498) |
+| **Compressed oracle technique** | 2019 | Zhandry | Models quantum oracle access via compressed databases; simplifies QROM proofs [[1]](https://eprint.iacr.org/2018/544) |
+
+**State of the art:** QROM proofs are now required for post-quantum confidence; NIST PQC standards (ML-KEM, ML-DSA) have QROM analyses. Measure-and-reprogram and compressed oracles are the main techniques. See [Random Oracle Model vs. Standard Model](#random-oracle-model-rom-vs-standard-model), [Quantum Cryptography](15-quantum-cryptography.md).
+
+**Production readiness:** Production
+QROM proofs are required for all NIST PQC standards (ML-KEM, ML-DSA, SLH-DSA); the Fujisaki-Okamoto transform's QROM analysis directly determines deployed key sizes.
+
+**Implementations:**
+- QROM is a proof model, not software. Schemes with QROM security analyses:
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-KEM/ML-DSA with QROM-validated parameters
+- [pq-crystals](https://github.com/pq-crystals) — C, Kyber/Dilithium reference implementations with QROM proofs
+
+**Security status:** Caution
+QROM proofs are strictly stronger than classical ROM proofs for post-quantum security; however, some classical ROM results do not transfer to QROM, and QROM tightness gaps affect parameter selection.
+
+**Community acceptance:** Standard
+QROM analysis is an explicit requirement in NIST's PQC evaluation criteria; all finalists provided QROM security arguments.
+
+---
+
+### Gentry-Wichs Barrier (Non-Falsifiability of SNARGs)
+
+**Goal:** Prove a fundamental impossibility: adaptively sound succinct non-interactive arguments (SNARGs) for hard-on-average NP languages cannot be proven secure via black-box reduction to any falsifiable assumption. This explains why all known SNARK constructions rely on knowledge-type (non-falsifiable) assumptions or idealised models like the random oracle.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Gentry-Wichs impossibility** | 2011 | Gentry–Wichs | SNARGs for hard NP languages require non-falsifiable assumptions [[1]](https://eprint.iacr.org/2010/610) |
+| **Gentry-Wichs is tight** | 2021 | Waters–Wu | Constructs a non-adaptively sound SNARG from falsifiable assumptions, showing the barrier is tight [[1]](https://eprint.iacr.org/2019/1386) |
+| **Impossibility with preprocessing** | 2022 | Campanelli–Fiore–Querol | Extends impossibility to the preprocessing model; black-box extraction also impossible for adaptive SNARGs [[1]](https://eprint.iacr.org/2022/638) |
+
+**State of the art:** The Gentry-Wichs barrier (2011) remains the central theoretical explanation for why practical SNARKs (Groth16, Plonk, etc.) rely on knowledge assumptions or the ROM. Waters-Wu (2021) shows the bound is essentially tight. See [Knowledge-Soundness, Extractability](19-theoretical-foundations.md#knowledge-soundness-extractability-and-simulation-extractability), [ZK Proof Systems](04-zero-knowledge-proof-systems.md).
+
+**Production readiness:** Research
+The Gentry-Wichs barrier is an impossibility result; it explains why deployed SNARKs must use non-falsifiable assumptions or the ROM but is not itself deployed.
+
+**Implementations:**
+- No standalone implementations; the barrier is a proof-theoretic impossibility result.
+
+**Security status:** Secure
+The impossibility result is mathematically proven; it is a fundamental constraint on SNARG constructions, not an attack.
+
+**Community acceptance:** Standard
+Gentry-Wichs (2011) is universally cited when justifying the use of knowledge assumptions in SNARKs; it is a landmark result in the foundations of zero-knowledge.
+
+---
+
+### Game-Based vs. Simulation-Based Security Paradigms
+
+**Goal:** Establish two complementary frameworks — game-based (winning a probabilistic challenge) and simulation-based (real/ideal indistinguishability) — for formally proving what cryptographic schemes guarantee.
+
+| Concept | Year | Basis | Note |
+|---------|------|-------|------|
+| **Game-based (Bellare-Rogaway)** | 1990s | IND-CPA, EUF-CMA, etc. | Concrete, engineer-friendly; standard in NIST/IETF [[1]](http://bristolcrypto.blogspot.com/2015/05/52-things-number-32-difference-between.html) |
+| **Simulation-based (Goldreich et al.)** | 1990s | Real/ideal paradigm | Richer composition guarantees but harder to apply [[1]](https://www.wisdom.weizmann.ac.il/~oded/PSBookFrag/SimProof.pdf) |
+
+**State of the art:** Every deployed cryptographic security proof uses one or both paradigms. Understanding where they diverge is critical: a game-based secure scheme can leak in a compositional setting.
+
+**Production readiness:** Production
+Both paradigms are used in the security analysis of all deployed protocols: game-based for standalone primitives (AES, RSA, ECDSA), simulation-based for composed protocols (MPC, MLS, OT).
+
+**Implementations:**
+- These are definitional frameworks, not software. Tools supporting both paradigms:
+- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, supports both game-based and simulation-based proofs
+
+**Security status:** Secure
+Both paradigms are mathematically well-defined; their relationship is precisely characterized (IND does not imply SIM under adaptive corruptions).
+
+**Community acceptance:** Standard
+Both paradigms are universally accepted; game-based dominates for standalone primitives, simulation-based for composable protocols.
+
+---
+
+
+## Zero-Knowledge Theory
+
+---
+### Witness Indistinguishability (WI) / Witness Hiding
+
+**Goal:** Relaxed zero-knowledge. Witness indistinguishability: the verifier cannot distinguish which of multiple valid witnesses the prover used. Witness hiding: the verifier cannot compute any witness after the interaction. Weaker than ZK but sufficient for many applications and compositionally robust.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Feige-Shamir WI/WH** | 1990 | Any NP | Formal definitions; WI ⊂ ZK; WI composes under parallel composition (ZK does not) [[1]](https://doi.org/10.1145/100216.100272) |
+| **WI from Sigma Protocols** | 1994 | DLP | Run two Sigma protocols in parallel; WI without ZK [[1]](https://doi.org/10.1007/BFb0053443) |
+| **Resettable WI (Deng-Goyal-Sahai)** | 2009 | One-way functions | WI secure even if verifier can reset prover to initial state [[1]](https://doi.org/10.1109/FOCS.2009.12) |
+
+**State of the art:** WI is the default security notion for many sub-protocols in [MPC](06-multi-party-computation.md#multi-party-computation-mpc) and credential systems. Composes better than ZK — see [ZK Proofs](04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk), [Sigma Protocols](04-zero-knowledge-proof-systems.md#sigma-protocols--schnorr-identification).
+
+**Production readiness:** Mature
+WI is used as a building block inside deployed protocols (e.g., parallel Sigma protocols in credential systems) rather than as a standalone primitive.
+
+**Implementations:**
+- [arkworks-rs/crypto-primitives](https://github.com/arkworks-rs/crypto-primitives) ⭐ 241 — Rust, includes Sigma protocol implementations usable in WI mode
+
+**Security status:** Secure
+WI is a well-founded security notion; no attacks on the paradigm itself. Security of instantiations depends on the underlying hard problem.
+
+**Community acceptance:** Widely trusted
+Standard security notion in cryptographic protocol design since Feige-Shamir (1990); used pervasively in academic literature and protocol specifications.
+
+---
+
+### Non-Black-Box Zero-Knowledge / Concurrent ZK
+
+**Goal:** ZK under concurrent composition. Standard black-box ZK is impossible when many proof sessions run simultaneously (verifier can interleave sessions to cheat). Barak's breakthrough: the simulator reads the verifier's code directly (non-black-box), enabling ZK even under concurrent execution.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Barak Non-Black-Box ZK** | 2001 | Universal arguments | First non-black-box simulator; concurrent ZK for NP in plain model [[1]](https://doi.org/10.1109/SFCS.2001.959902) |
+| **Concurrent ZK (Canetti et al.)** | 2002 | Timing assumptions | Concurrent ZK under timing assumptions (bounded delay) [[1]](https://eprint.iacr.org/2001/055) |
+| **Resettable ZK (Canetti et al.)** | 2000 | Non-black-box | ZK secure even if verifier can rewind/reset prover [[1]](https://doi.org/10.1145/335305.335311) |
+| **Constant-Round Concurrent ZK (Goyal)** | 2013 | Non-black-box + commitments | O(1) rounds concurrent ZK; improved Barak's technique [[1]](https://eprint.iacr.org/2012/563) |
+
+**State of the art:** Constant-round concurrent ZK (Goyal 2013); essential for real-world protocols with parallel sessions. Extends [ZK Proofs](04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk).
+
+**Production readiness:** Research
+Concurrent ZK techniques are primarily theoretical; practical protocols avoid the problem via the Fiat-Shamir heuristic or UC-secure designs rather than deploying non-black-box simulators directly.
+
+**Implementations:**
+- No production implementations of non-black-box concurrent ZK exist; the techniques are used in security proofs rather than deployed code.
+
+**Security status:** Secure
+Theoretical constructions are proven secure; Barak's non-black-box technique is sound under standard assumptions.
+
+**Community acceptance:** Niche
+Foundational in complexity-theoretic cryptography; Barak's 2001 result is a landmark. Practical protocols sidestep the issue via different design choices.
+
+---
+
+### Cryptographic Reverse Firewalls
+
+**Goal:** Subversion resistance. A middlebox ("reverse firewall") re-randomizes a party's protocol messages so that even if the party's implementation is subverted (backdoored), no information leaks — without the firewall knowing any secrets. The motivating threat is algorithm substitution attacks (ASA): a compromised implementation uses subliminal channels in its random-looking outputs (nonces, ciphertexts) to leak secret keys to a passive eavesdropper. The NSA's Dual_EC_DRBG backdoor is the canonical example.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Mironov-Stephens-Davidowitz CRF** | 2015 | Rerandomization | Formal model; CRFs for key exchange, signatures, ZK proofs [[1]](https://eprint.iacr.org/2014/758) |
+| **CRF for Key Exchange (Dodis et al.)** | 2016 | Rerandomizable DH | Reverse firewall for Diffie-Hellman: firewall re-randomizes DH messages so that even a kleptographic implementation cannot exfiltrate the secret key [[1]](https://eprint.iacr.org/2016/424) |
+| **CRF for Signatures (Ateniese et al.)** | 2016 | Rerandomizable Schnorr | Reverse firewall re-randomizes Schnorr signature nonces; prevents nonce-covert-channel attacks [[1]](https://eprint.iacr.org/2015/1189) |
+| **CRF for OT (Chakraborty et al.)** | 2020 | UC framework | Reverse firewalls for oblivious transfer protocols [[1]](https://eprint.iacr.org/2020/156) |
+| **CRF for MPC** | 2020 | Rerandomizable garbled circuits | Extends CRFs to general MPC protocols; firewall rerandomizes garbled circuit messages without knowing the circuit inputs [[1]](https://eprint.iacr.org/2020/594) |
+| **CRF for 2PC (Chen-Haeberlen-Hicks-Tzialla)** | 2022 | Garbled circuits | Subversion-resistant two-party computation [[1]](https://eprint.iacr.org/2022/849) |
+
+**State of the art:** Theoretical framework (Mironov-Stephens-Davidowitz 2015); practical constructions exist for DH, Schnorr, ElGamal, and OT. Active research area post-Snowden. Closely related to [Kleptography / ASA](18-covert-channels-steganography.md#kleptography--algorithm-substitution-attacks-asa).
+
+**Production readiness:** Research
+Theoretical framework with academic prototypes; no production deployment of a standalone cryptographic reverse firewall exists.
+
+**Implementations:**
+- No production-quality open-source implementations; proof-of-concept code accompanies individual papers.
+
+**Security status:** Secure
+Provably eliminates subliminal channels under stated algebraic rerandomizability assumptions; limited to protocols designed with rerandomizability in mind.
+
+**Community acceptance:** Niche
+Well-regarded in the post-Snowden subversion-resistance research community; published at EUROCRYPT/CRYPTO. Limited practical adoption due to performance and protocol compatibility constraints.
+
+---
+
+
+## Game-Theoretic and Human Cryptography
+
+---
+### Rational Cryptography
+
+**Goal:** Crypto protocols secure against rational (game-theoretic) adversaries — not just honest/malicious but self-interested agents who deviate only when it benefits them. Uses mechanism design: make cheating economically irrational. Bridges cryptography and game theory.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Halpern-Teague Rational Secret Sharing** | 2004 | Game theory + SS | First rational SS; players cooperate because deviating yields worse outcome [[1]](https://doi.org/10.1145/1007352.1007427) |
+| **Abraham-Dolev-Gonen-Halpern** | 2006 | Rational MPC | Distributed computing with rational players; equilibrium-based security [[1]](https://doi.org/10.1007/11818175_1) |
+| **Groce-Katz Rational Protocol Design** | 2012 | Mechanism design + MPC | Fair MPC via utility alignment; punishment strategies enforce cooperation [[1]](https://eprint.iacr.org/2012/029) |
+
+**State of the art:** Rational protocol design (2012); active in blockchain mechanism design. Bridges [MPC](06-multi-party-computation.md#multi-party-computation-mpc) and economic incentive theory.
+
+**Production readiness:** Research
+Rational cryptography concepts influence blockchain mechanism design (staking penalties, slashing) but no standalone rational crypto protocol is deployed as a product.
+
+**Implementations:**
+- No dedicated open-source libraries; concepts are embedded in blockchain protocol implementations such as [Ethereum consensus specs](https://github.com/ethereum/consensus-specs) ⭐ 3.9k (slashing/incentive logic).
+
+**Security status:** Secure
+Game-theoretic security guarantees hold under the assumed rationality model; security degrades if adversaries are irrational (willing to lose money to attack).
+
+**Community acceptance:** Niche
+Active research area at the intersection of cryptography and game theory; influential in blockchain economics but not a mainstream cryptographic standard.
+
+---
+
+### Human-Computable Cryptography
+
+**Goal:** Authentication without devices. Cryptographic protocols that a human can execute mentally — no computer, no smartphone. A person memorizes a secret mapping and can authenticate by answering challenges in their head, even against an adversary who observed all prior sessions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Blum-Vempala Human Hash** | 2015 | Random mapping memorization | Human memorizes small mapping; computes f(challenge) mentally; usable but limited security [[1]](https://doi.org/10.4230/LIPIcs.ITCS.2017.10) |
+| **Blocki-Blum-Datta-Vempala** | 2017 | Cognitive model | Formal model of human computation; proves security bounds against polynomial adversary [[1]](https://doi.org/10.4230/LIPIcs.ITCS.2017.10) |
+| **CAPTCHA-Based Crypto (Canetti-Halevi-Steiner)** | 2013 | Human-solvable puzzles | CAPTCHA as cryptographic primitive; human interaction as security assumption [[1]](https://doi.org/10.1007/978-3-642-36362-7_30) |
+
+**State of the art:** Blum-Vempala (ITCS 2017); limited practical deployment but theoretically novel — security from cognitive limitations.
+
+**Production readiness:** Research
+Purely theoretical; no practical authentication system deploys human-computable cryptography at scale.
+
+**Implementations:**
+- No production implementations; academic prototypes described in papers only.
+
+**Security status:** Caution
+Security bounds are weak compared to standard cryptography; schemes tolerate only a small number of observed sessions before the secret is recoverable.
+
+**Community acceptance:** Niche
+Intellectually interesting and published at top venues (ITCS); not considered viable for real-world deployment by the broader cryptographic community.
+
+---
+
+
+## Lossy and Deniable Primitives
+
+---
+### Lossy Encryption / Lossy Trapdoor Functions
+
+**Goal:** Proof technique as primitive. A public key can operate in two computationally indistinguishable modes: *injective* (normal encryption, decryptable) and *lossy* (ciphertext is statistically independent of the message). Enables elegant CCA security proofs and new constructions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Peikert-Waters Lossy TDF** | 2008 | DDH / LWE | First lossy TDFs; injective and lossy modes; implies CCA-secure PKE [[1]](https://eprint.iacr.org/2007/279) |
+| **Bellare-Hofheinz-Yilek Lossy Encryption** | 2009 | DDH / LWE | Lossy encryption formalization; key-dependent message security [[1]](https://eprint.iacr.org/2009/079) |
+| **Lossy TDF from Lattices** | 2008 | LWE | Peikert-Waters LWE instantiation; post-quantum lossy TDF [[1]](https://eprint.iacr.org/2007/279) |
+| **All-But-One TDF** | 2008 | DDH / LWE | Lossy on one branch, injective on all others; CCA from CHF [[1]](https://eprint.iacr.org/2007/279) |
+
+**State of the art:** Lossy TDFs from LWE (PQ-secure); foundational for [KEM/DEM](#game-based-vs-simulation-based-security-paradigms) security proofs and [Dual-Mode Cryptosystems](16-obfuscation-advanced-hardness.md#dual-mode-cryptosystems).
+
+**Production readiness:** Research
+Lossy TDFs are a proof technique and theoretical primitive; they are not deployed as standalone products but underlie security proofs of deployed schemes.
+
+**Implementations:**
+- [lattigo](https://github.com/tuneinsight/lattigo) ⭐ 1.4k — Go, lattice-based crypto library whose security arguments use lossy-mode techniques
+- [OpenFHE](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, FHE library with LWE-based constructions whose proofs leverage lossy TDFs
+
+**Security status:** Secure
+Secure under DDH or LWE assumptions; the lossy/injective mode indistinguishability is the core security property.
+
+**Community acceptance:** Widely trusted
+Peikert-Waters lossy TDFs are a standard tool in provable security; cited in hundreds of papers and used in security proofs of NIST PQC candidates.
+
+---
+
+
+## Forward Security and Key Evolution
+
+---
+### Semantic Security and IND-CPA / IND-CCA Security
+
+**Goal:** Formally define what it means for an encryption scheme to be "secure." Goldwasser and Micali (1984) introduced semantic security — no partial information about the plaintext leaks to a polynomial-time adversary — and proved it equivalent to indistinguishability under chosen-plaintext attack (IND-CPA). Naor and Yung (1990) then defined IND-CCA1, and Rackoff and Simon (1991) defined IND-CCA2 — the adaptive chosen-ciphertext attack notion that is the accepted gold standard today.
+
+| Notion | Year | Authors | Note |
+|--------|------|---------|------|
+| **Semantic security / IND-CPA** | 1984 | Goldwasser–Micali | Probabilistic encryption; semantic security ≡ IND-CPA; instantiated from quadratic residuosity [[1]](https://mit6875.github.io/PAPERS/probabilistic_encryption.pdf) |
+| **IND-CCA1 (non-adaptive CCA)** | 1990 | Naor–Yung | Dual-encryption + simulation yields CCA1-secure PKE; introduced the "lunchtime attack" model [[1]](https://doi.org/10.1145/100216.100221) |
+| **IND-CCA2 (adaptive CCA)** | 1991 | Rackoff–Simon | Adversary may query decryption oracle after seeing the challenge ciphertext; defines the accepted PKE security target [[1]](https://doi.org/10.1007/3-540-46766-1_34) |
+| **Hierarchy of PKE notions** | 1998 | Bellare–Desai–Jokipii–Rogaway | Formal taxonomy: OW-CPA ⊂ IND-CPA ⊂ IND-CCA1 ⊂ IND-CCA2; exhaustive separation examples [[1]](https://www.cs.ucdavis.edu/~rogaway/papers/relations.pdf) |
+| **Cramer-Shoup (standard-model CCA2)** | 1998 | Cramer–Shoup | First practical IND-CCA2-secure PKE in the standard model under DDH, no random oracle needed [[1]](https://eprint.iacr.org/1998/008) |
+
+**State of the art:** IND-CCA2 is mandatory for any deployed PKE or KEM. All current standards — ML-KEM, RSA-OAEP, ECIES — target IND-CCA2. These notions underpin every encryption section in this repository.
+
+**Production readiness:** Production
+IND-CPA/IND-CCA2 are the mandatory security targets for all deployed encryption standards (TLS, ML-KEM, RSA-OAEP, ECIES).
+
+**Implementations:**
+- These are definitional frameworks, not implementations. Every compliant encryption library targets these notions.
+
+**Security status:** Secure
+The definitional hierarchy (OW-CPA through IND-CCA2) is well-established and universally accepted.
+
+**Community acceptance:** Standard
+IND-CCA2 is mandated by NIST, IETF, and ISO for all public-key encryption and KEM standards. The Bellare-Rogaway taxonomy is taught in every graduate cryptography course.
+
+---
+
+### One-Way Functions and Impagliazzo's Five Worlds
+
+**Goal:** Map the landscape of what cryptography is possible. One-way functions (OWFs) — functions easy to compute but hard to invert on a random input — are the minimal assumption underlying all of private-key cryptography. Whether OWFs exist is equivalent to asking whether P ≠ NP in the average-case sense. Impagliazzo (1995) organized five possible worlds according to which hardness assumptions hold, clarifying precisely which cryptographic primitives are achievable in each.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **OWF → PRG (HILL theorem)** | 1993 | Håstad–Impagliazzo–Levin–Luby | Any OWF implies a pseudorandom generator; stretched via Goldreich-Levin hard-core bits; foundational [[1]](https://doi.org/10.1137/S0097539793244708) |
+| **OWF → PRF (GGM)** | 1986 | Goldreich–Goldwasser–Micali | PRFs from any PRG (hence any OWF) via the GGM tree construction [[1]](https://dl.acm.org/doi/10.1145/6490.6503) |
+| **Impagliazzo's five worlds** | 1995 | Impagliazzo | Algorithmica / Heuristica / Pessiland / Minicrypt / Cryptomania; taxonomizes cryptographic possibility based on worst-case vs. average-case hardness and OWF/PKE existence [[1]](https://doi.org/10.1109/CCC.1995.514587) |
+| **OWF ↛ key agreement (oracle)** | 1989 | Impagliazzo–Rudich | Relativizing separation: OWFs alone do not imply key exchange via black-box reductions; Minicrypt ≠ Cryptomania [[1]](https://doi.org/10.1145/73007.73012) |
+| **OWF existence ↔ bounded KT complexity** | 2023 | Liu–Pass | OWFs exist if and only if there are problems with bounded Kolmogorov-time complexity; links OWF existence to meta-complexity [[1]](https://eprint.iacr.org/2020/1333) |
+
+**State of the art:** We almost certainly live in Cryptomania, but no proof exists. The HILL theorem (OWF → PRG) is the deepest structural result in symmetric cryptography. Liu-Pass (2023) gives the sharpest known characterization of when OWFs exist.
+
+**Production readiness:** Production
+OWFs are the minimal assumption underlying all deployed symmetric cryptography (AES, SHA-2, HMAC). The HILL/GGM chain (OWF → PRG → PRF) is the theoretical backbone of every deployed symmetric primitive.
+
+**Implementations:**
+- Every symmetric cryptographic library (OpenSSL, libsodium, etc.) implicitly instantiates OWF-based constructions.
+- The theoretical results are frameworks, not standalone software.
+
+**Security status:** Secure
+The existence of OWFs is a universally held assumption; no polynomial-time inversion algorithm is known for any candidate OWF.
+
+**Community acceptance:** Standard
+Impagliazzo's five worlds and the HILL theorem are cornerstones of cryptographic theory, taught in every graduate course and assumed in every security proof.
+
+---
+
+### Black-Box Separations
+
+**Goal:** Prove that certain cryptographic primitives cannot be constructed from weaker ones via black-box reductions. A black-box separation shows — typically via a relativizing oracle argument — that no efficient algorithm can build primitive B from primitive A using only A's input/output interface, regardless of which specific A is chosen. These results delineate the "cryptographic primitive hierarchy" and prevent futile proof attempts.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **OWF ↛ key agreement** | 1989 | Impagliazzo–Rudich | Oracle world where OWFs exist but no key exchange protocol is secure; foundational separation result [[1]](https://doi.org/10.1145/73007.73012) |
+| **OWP ↛ collision-resistant hash** | 1998 | Simon | One-way permutations do not black-box imply collision-resistant hash functions [[1]](https://link.springer.com/chapter/10.1007/3-540-68339-9_23) |
+| **RTV framework** | 2004 | Reingold–Trevisan–Vadhan | Unified framework classifying black-box reductions: fully / semi / non-black-box; systematic catalogue of separations [[1]](https://eprint.iacr.org/2004/049) |
+| **Non-black-box techniques** | 2001 | Barak | Non-black-box simulation circumvents some separations for ZK; demonstrates limits of oracle-based lower bounds (see [Non-Black-Box ZK](#non-black-box-zero-knowledge--concurrent-zk)) [[1]](https://doi.org/10.1109/SFCS.2001.959902) |
+| **BB-uselessness composability** | 2021 | Couteau–Hartmann | Black-box uselessness composes: two BB-useless primitives cannot be combined to yield a useful one [[1]](https://eprint.iacr.org/2021/016) |
+
+**State of the art:** The Impagliazzo-Rudich oracle argument and the RTV taxonomy (2004) remain the standard tools. Non-black-box constructions (Barak, Bitansky-Paneth) partially circumvent these barriers for specific tasks (ZK, SNARGs) but not for key exchange or OT. Active area: non-black-box separations for PKE from OWF.
+
+**Production readiness:** Research
+Black-box separations are impossibility results; they guide protocol design but are not deployed as software.
+
+**Implementations:**
+- No software implementations; these are proof techniques and oracle-based impossibility arguments.
+
+**Security status:** Secure
+The separation results themselves are mathematically proven; they constrain what constructions are possible via black-box reductions.
+
+**Community acceptance:** Standard
+The Impagliazzo-Rudich separation and RTV taxonomy are standard references in theoretical cryptography; cited in virtually all papers on cryptographic reductions.
+
+---
+
+### Hardcore Predicates and the Goldreich-Levin Theorem
+
+**Goal:** Extract hard-to-predict bits from one-way functions. A hardcore predicate of a function f is a single bit b(x) that is computationally unpredictable given f(x), even though f itself is easy to compute. Goldreich and Levin (1989) proved that the inner product ⟨x, r⟩ mod 2 is a universal hardcore predicate for any one-way function — padded with a random string r, it is hard to predict given (f(x), r). This result is the key step in constructing pseudorandom generators from arbitrary OWFs.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Goldreich-Levin hardcore predicate** | 1989 | Goldreich–Levin | Inner product ⟨x,r⟩ is a hardcore bit for any OWF f padded as g(x,r)=(f(x),r); enables PRG from any OWF [[1]](https://dl.acm.org/doi/10.1145/73007.73010) |
+| **OWF → PRG via GL** | 1993 | Håstad–Impagliazzo–Levin–Luby | Full HILL theorem: PRG from any OWF by iterating Goldreich-Levin bit extraction; polynomial stretch [[1]](https://doi.org/10.1137/S0097539793244708) |
+| **List-decoding interpretation** | 1999 | Goldreich–Levin (Bellare exposition) | GL theorem recast as list-decoding of Hadamard codes; simplifies proof and generalises to other error-correcting codes [[1]](https://cseweb.ucsd.edu/~mihir/papers/gl.pdf) |
+| **Quantum GL** | 2001 | Adcock–Cleve | Quantum analogue of the GL theorem; hardcore bits remain hard against quantum adversaries with oracle access [[1]](https://link.springer.com/chapter/10.1007/3-540-45841-7_26) |
+
+**State of the art:** The Goldreich-Levin theorem is a cornerstone of theoretical cryptography — every treatment of OWF-to-PRG builds on it. The HILL theorem (Håstad–Impagliazzo–Levin–Luby 1993) extends it to full PRG construction. See [One-Way Functions and Impagliazzo's Five Worlds](#one-way-functions-and-impagliazzos-five-worlds) and [Pseudoentropy and Computational Entropy](#pseudoentropy-and-computational-entropy).
+
+**Production readiness:** Research
+The GL theorem is a proof technique; it is not implemented as standalone software but underlies the security arguments of all OWF-based constructions.
+
+**Implementations:**
+- No standalone implementations; the theorem is a reduction technique used in security proofs.
+- Textbook implementations exist in teaching materials (e.g., [Katz-Lindell companion code](https://github.com/joyofcryptography/joy-of-cryptography)).
+
+**Security status:** Secure
+The Goldreich-Levin theorem is unconditionally proven; the hardcore predicate is computationally hard to predict given any OWF.
+
+**Community acceptance:** Standard
+One of the most fundamental results in cryptographic theory; cited in thousands of papers and taught in every introductory cryptography course.
+
+---
+
+### Pseudoentropy and Computational Entropy
+
+**Goal:** Formalise what it means for a distribution to "look like" it has more randomness than it really does. A distribution X has pseudoentropy at least k if it is computationally indistinguishable from some distribution Y with Shannon entropy ≥ k. This generalises pseudorandomness (a special case where k = |X|) and is the key bridge between one-way functions and pseudorandom generators via the HILL theorem. Yao's next-bit predictor characterisation (1982) gives an equivalent operational definition: a distribution is pseudorandom if and only if no efficient algorithm can predict the next bit better than chance given all previous bits.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Next-bit predictor / Yao's theorem** | 1982 | Yao | A distribution is pseudorandom iff no efficient next-bit predictor has non-negligible advantage; equivalence between statistical tests and next-bit tests [[1]](https://doi.org/10.1109/SFCS.1982.45) |
+| **HILL pseudoentropy** | 1993/1999 | Håstad–Impagliazzo–Levin–Luby | Computational entropy definition: X has HILL pseudoentropy k if indistinguishable from a distribution of Shannon entropy k; used to prove OWF → PRG [[1]](https://doi.org/10.1137/S0097539793244708) |
+| **Metric pseudoentropy** | 2003 | Barak–Shaltiel–Wigderson | Computational analogues of entropy; metric entropy is weaker than HILL and easier to work with in hybrid arguments [[1]](https://www.boazbarak.org/Papers/compent.pdf) |
+| **Conditional computational entropy** | 2007 | Reyzin | Separates HILL pseudoentropy from compressibility; conditional variants needed for leakage-resilience and extraction [[1]](https://link.springer.com/chapter/10.1007/978-3-540-72540-4_10) |
+
+**State of the art:** HILL pseudoentropy remains the standard definition; the metric entropy variant is used in leakage-resilient cryptography and randomness extraction. See [One-Way Functions and Impagliazzo's Five Worlds](#one-way-functions-and-impagliazzos-five-worlds) and [Hardcore Predicates and the Goldreich-Levin Theorem](#hardcore-predicates-and-the-goldreich-levin-theorem).
+
+**Production readiness:** Research
+Pseudoentropy is a theoretical framework for security proofs; it is not deployed as standalone software.
+
+**Implementations:**
+- No standalone implementations; the concepts are proof tools used in security reductions.
+
+**Security status:** Secure
+HILL and metric pseudoentropy are well-defined mathematical concepts; their correctness is proven.
+
+**Community acceptance:** Widely trusted
+HILL pseudoentropy is the standard computational entropy notion; Yao's next-bit predictor theorem is universally accepted. Both are standard textbook material.
+
+---
+
+### Knowledge-of-Exponent Assumption (KEA) and Falsifiability
+
+**Goal:** Enable extraction of witnesses from adversarial group elements. The Knowledge-of-Exponent Assumption (KEA), introduced by Damgård (1991), asserts that if an adversary outputs a pair (C, Y) with Y = C^a given (g, g^a), it must "know" an exponent c such that C = g^c — formalised by requiring an efficient extractor that outputs c. KEA and its generalisations (KEA2, KEA3, Power KEA) underlie many SNARK constructions. However, KEA is *non-falsifiable*: no polynomial-time algorithm can verify that the extractor fails, distinguishing it from standard computational assumptions. This tension between proof power and falsifiability is a central theme in foundations.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **KEA1 (original)** | 1991 | Damgård | Given (g, g^a), any adversary outputting (C, Y=C^a) must know c s.t. C=g^c; introduced to build CCA-secure PKE [[1]](https://link.springer.com/chapter/10.1007/3-540-46877-3_8) |
+| **KEA and 3-round ZK** | 2004 | Bellare–Palacio | Formalised KEA1/KEA2/KEA3 hierarchy; linked KEA to 3-round ZK arguments and to extractable commitments [[1]](https://eprint.iacr.org/2004/008) |
+| **Non-falsifiability of KEA** | 2011 | Naor | Classified KEA as non-falsifiable ("knowledge assumption"); distinguished from falsifiable assumptions (DDH, CDH); meta-theorem on which assumptions are "testable" [[1]](https://link.springer.com/chapter/10.1007/978-3-642-22792-9_16) |
+| **KEA inherent to SNARKs** | 2012 | Gentry–Wichs | Non-falsifiable assumptions are *necessary* for succinct non-interactive arguments (SNARGs) in the standard model; KEA-type assumptions cannot be avoided [[1]](https://eprint.iacr.org/2011/095) |
+| **Power KEA / q-PKE** | 2013 | Groth | q-Power Knowledge of Exponent used in Groth16 SNARK; adversary knowing (g, g^α, …, g^{α^q}) must extract a polynomial representation [[1]](https://eprint.iacr.org/2016/260) |
+
+**State of the art:** KEA and its variants are the standard assumptions behind Groth16 and other pairing-based SNARKs deployed in blockchains (Zcash, Ethereum). Their non-falsifiability remains a theoretical concern; the Algebraic Group Model (see [Generic Group Model and Algebraic Group Model](#generic-group-model-ggm-and-algebraic-group-model-agm)) provides a partial substitute with better-understood security properties.
+
+**Production readiness:** Production
+KEA assumptions underlie Groth16, which is deployed in Zcash, Tornado Cash, and numerous Ethereum L2 systems.
+
+**Implementations:**
+- KEA is an assumption, not a software artifact. Implementations of Groth16 rely on KEA:
+- [zkcrypto/bellman](https://github.com/zkcrypto/bellman) ⭐ 1.1k — Rust, Zcash's Groth16 (security depends on q-PKE/KEA)
+- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) ⭐ 339 — Rust, general-purpose Groth16
+
+**Security status:** Caution
+KEA is non-falsifiable (Naor 2011; Gentry-Wichs 2011 shows this is inherent for SNARGs). No known attacks, but the assumption cannot be tested or refuted efficiently.
+
+**Community acceptance:** Controversial
+Widely used in practice (Zcash, Ethereum) but theoretically controversial due to non-falsifiability. The AGM provides a partial alternative with better-understood properties.
+
+---
+
+### Generic Group Model (GGM) and Algebraic Group Model (AGM)
+
+**Goal:** Prove security of discrete-log-based schemes by restricting how adversaries interact with group elements. In the Generic Group Model (Shoup 1997), the adversary receives only opaque handles to group elements and can only combine them via the group operation — it cannot exploit the bit-representation of elements. This allows information-theoretic lower bounds (e.g., Ω(p^{1/2}) queries to solve DLog in a group of prime order p). The Algebraic Group Model (Fuchsbauer-Kiltz-Loss 2018) is a weaker idealization: the adversary may use the group encoding, but must always output explicit linear combinations of its input group elements alongside each output, enabling tight reductions from DLog-style assumptions while avoiding the GGM's full idealization.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Generic Group Model (GGM)** | 1997 | Shoup | Lower bound Ω(p^{1/2}) for DLog/CDH in a generic group of order p; formalised the "generic algorithm" as one that only uses the group operation oracle [[1]](https://www.shoup.net/papers/dlbounds1.pdf) |
+| **Baby-step giant-step as GGM optimal** | 1997 | Shoup | Pohlig-Hellman and BSGS meet the GGM lower bound; DLog is provably hard in the GGM [[1]](https://www.shoup.net/papers/dlbounds1.pdf) |
+| **Algebraic Group Model (AGM)** | 2018 | Fuchsbauer–Kiltz–Loss | AGM sits between GGM and standard model; adversary must supply linear representation of output elements; CDH, SDH, LRSW all reduce tightly to DLog in AGM; tight reductions for BLS and Groth16 [[1]](https://eprint.iacr.org/2017/620) |
+| **AGM analysis and limitations** | 2022 | Auerbach–Hoffmann–Pascual-Perez | Formal analysis of AGM's assumptions; identifies classes of schemes where AGM proofs do and do not transfer to standard model [[1]](https://link.springer.com/chapter/10.1007/978-3-031-22972-5_11) |
+| **AGM proofs transfer to GGM** | 2024 | Bauer–Fischlin–Konrath | Generic and algebraic computation models: conditions under which AGM security proofs imply GGM security [[1]](https://link.springer.com/chapter/10.1007/978-3-031-68388-6_2) |
+
+**State of the art:** The GGM lower bounds (Shoup 1997) are the canonical justification for DLog-based security parameters. The AGM (Fuchsbauer-Kiltz-Loss 2018) is now widely used for tight security proofs of pairing-based schemes; it underlies proofs of Groth16, BLS, and numerous other constructions. See [Knowledge-of-Exponent Assumption](#knowledge-of-exponent-assumption-kea-and-falsifiability) and [Black-Box Separations](#black-box-separations).
+
+**Production readiness:** Production
+GGM lower bounds justify DLog parameter sizes used in all deployed elliptic curve cryptography. AGM proofs validate BLS signatures (Ethereum 2.0) and Groth16 (Zcash).
+
+**Implementations:**
+- GGM/AGM are proof models, not software. Libraries whose security relies on GGM/AGM analysis:
+- [blst](https://github.com/supranational/blst) ⭐ 554 — C/assembly, BLS12-381 (AGM-proven tight security)
+- [arkworks-rs](https://github.com/arkworks-rs) — Rust, pairing-based crypto with AGM-validated parameters
+
+**Security status:** Secure
+GGM lower bounds are information-theoretic (proven). AGM is an intermediate model between standard model and GGM; its assumptions are stronger than standard model but weaker than GGM.
+
+**Community acceptance:** Widely trusted
+GGM (Shoup 1997) is universally cited for DLog parameter justification. AGM (2018) is rapidly becoming the standard for pairing-based security proofs.
+
+---
+
+### Concrete Security and Reduction Tightness
+
+**Goal:** Quantify exactly how much security a construction provides at a specific parameter size. Asymptotic security theory says a scheme is "secure" if no polynomial-time adversary wins with non-negligible probability — but this hides constants and polynomial factors critical to practice. Concrete security (Bellare-Rogaway 1993/1997) replaces asymptotic language with explicit bounds: a scheme is (t, ε)-secure if no adversary running in time t wins with probability greater than ε. A reduction is *tight* if an adversary breaking the scheme yields another adversary breaking the underlying hardness problem with essentially the same (t, ε); a loose reduction with loss factor L means parameters must be inflated to compensate, sometimes by hundreds of bits.
+
+| Result | Year | Authors | Note |
+|--------|------|---------|------|
+| **Concrete security framework** | 1993 | Bellare–Rogaway | Introduced (t,ε)-security for protocol analysis; argued that asymptotic security theory obscures practical parameter choices [[1]](https://cseweb.ucsd.edu/~mihir/papers/ro.pdf) |
+| **Exact security of digital signatures** | 1996 | Bellare–Rogaway | Tight security proof for Full Domain Hash (FDH) signatures in ROM; showed Schnorr/RSA-FDH have different tightness profiles [[1]](https://www.cs.ucdavis.edu/~rogaway/papers/exact.pdf) |
+| **Concrete security of symmetric enc** | 1997 | Bellare–Desai–Jokipii–Rogaway | Tight concrete-security hierarchy for IND-CPA, IND-CCA1, IND-CCA2 for symmetric encryption; upper and lower bounds on reduction loss [[1]](https://cseweb.ucsd.edu/~mihir/papers/sym-enc.pdf) |
+| **Impossibility of tight reductions** | 2015 | Bader–Jager–Li–Schäge | For certain signature schemes with tight security, proved tight black-box reductions from standard assumptions are impossible; separation between tight and loose security [[1]](https://eprint.iacr.org/2015/374) |
+| **Almost-tight security** | 2014 | Chen–Wee | "Almost-tight" reductions (loss at most linear in security parameter) for IBE and PKE; achieves near-optimal concrete security in the standard model [[1]](https://eprint.iacr.org/2013/134) |
+
+**State of the art:** Concrete security analysis is mandatory for standards work — NIST PQC submissions were evaluated in part on tightness of their security reductions. Almost-tight reductions are the practical goal when perfectly tight ones are impossible. See [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa--ind-cca-security) and [Random Oracle Model](#random-oracle-model-rom-vs-standard-model).
+
+**Production readiness:** Production
+Concrete security analysis directly determines parameter sizes in all deployed standards (AES key lengths, NIST PQC parameters, TLS cipher suite recommendations).
+
+**Implementations:**
+- Concrete security is an analysis framework, not standalone software. Tools that support concrete security analysis:
+- [CryptoVerif](https://bblanche.gitlabpages.inria.fr/CryptoVerif/) — OCaml, automated tool producing concrete security bounds
+- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, formal verification with concrete bound tracking
+
+**Security status:** Secure
+The concrete security framework itself is sound; its outputs directly determine whether deployed parameters provide the claimed security level.
+
+**Community acceptance:** Standard
+Concrete security analysis is mandatory in NIST, IETF, and ISO standardization processes. Bellare-Rogaway's framework is the universally accepted methodology.
+
+---
+
+### Perfect Forward Secrecy (PFS)
+
+**Goal:** Bound the damage of long-term key compromise. A protocol achieves perfect (more precisely, *forward*) secrecy if compromise of a party's long-term secret key does not retroactively expose session keys established in prior sessions. Each session key is derived from fresh ephemeral randomness and is deleted immediately after use, so a future adversary who steals the long-term key obtains no information about past communications. PFS is now a hard requirement for modern TLS, Signal, and other secure-channel protocols.
+
+| Scheme / Result | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Diffie-Hellman ephemeral key exchange (DHE)** | 1976 | CDH | Use fresh DH exponents per session; first construction providing forward secrecy; session key derivable from ephemeral secrets only [[1]](https://doi.org/10.1109/TIT.1976.1055638) |
+| **Formal PFS definition (Günther)** | 1990 | Protocol analysis | First formal definition: past session keys remain secret after long-term key disclosure; distinguishes PFS from key freshness [[1]](https://link.springer.com/chapter/10.1007/3-540-46885-4_35) |
+| **TLS 1.3 with mandatory DHE/ECDHE** | 2018 | ECDH / X25519 | TLS 1.3 removes all static RSA key exchange modes; ephemeral (EC)DHE is the only handshake mode; PFS mandatory for all connections [[1]](https://www.rfc-editor.org/rfc/rfc8446) |
+| **Signal / Double Ratchet PFS** | 2016 | Diffie-Hellman ratchet | Per-message ephemeral DH updates provide forward secrecy and break-in recovery; strongest deployed PFS [[1]](https://signal.org/docs/specifications/doubleratchet/) |
+| **Puncturable encryption / fine-grained PFS** | 2015 | Green–Miers | Receiver can "puncture" a secret key so it no longer decrypts a specific ciphertext; enables message-level PFS without re-keying the full session [[1]](https://eprint.iacr.org/2015/1189) |
+
+**State of the art:** ECDHE in TLS 1.3 (X25519 / P-256) is the universal deployment standard. The Double Ratchet's per-message PFS goes further — see [Secure Channels](12-secure-communication-protocols.md#double-ratchet--symmetric-ratchet) and [Key Exchange](03-key-exchange-key-management.md#triple-diffie-hellman-3dh--x3dh). Puncturable encryption generalises PFS to the ciphertext level.
+
+**Production readiness:** Production
+PFS via ECDHE is mandatory in TLS 1.3 (RFC 8446) and deployed on every major browser and server. The Signal Double Ratchet provides per-message PFS for billions of users.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, TLS 1.3 with mandatory ECDHE PFS
+- [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift, Double Ratchet with per-message PFS
+- [rustls](https://github.com/rustls/rustls) ⭐ 7.3k — Rust, TLS 1.3 with ECDHE-only handshake
+
+**Security status:** Secure
+PFS is a proven property of ephemeral key exchange; no attacks on the PFS guarantee itself at recommended parameters.
+
+**Community acceptance:** Standard
+PFS is mandated by TLS 1.3 (IETF RFC 8446), required by NIST SP 800-52r2, and universally deployed. Removal of static RSA key exchange in TLS 1.3 made PFS non-optional.
+
+---
+
+### Hybrid Argument Technique
 
 **Goal:** Prove indistinguishability of complex distributions by chaining small steps. The hybrid argument decomposes a security proof into a sequence of intermediate distributions — hybrids — that differ in only one position from their neighbors. If each adjacent pair is computationally indistinguishable, then by a triangle-inequality argument the endpoints are also indistinguishable, with a security loss of at most a factor equal to the number of hybrids. This is the single most widely used proof technique in computational cryptography.
 
@@ -714,7 +972,7 @@ The single most widely used proof technique in cryptography; Shoup's game-hoppin
 
 ---
 
-## Random Self-Reducibility
+### Random Self-Reducibility
 
 **Goal:** Show that solving the average-case problem is as hard as the worst case. A problem is *random self-reducible* if any instance can be reduced, in polynomial time, to a *uniformly random* instance of the same problem. Consequently, if an adversary can solve the problem on a noticeable fraction of inputs, one can solve *every* instance by random self-reduction, collapsing average-case and worst-case hardness. This property is crucial to cryptographic hardness: it justifies using a fixed public key (a specific problem instance) rather than a fresh random instance per use, and it underpins the security of Rabin's OWF, DDH-based schemes, and LWE.
 
@@ -742,7 +1000,7 @@ Universally accepted as a fundamental property; Regev's LWE reduction (2005) and
 
 ---
 
-## Security Amplification
+### Security Amplification
 
 **Goal:** Boost a scheme that is weakly secure (succeeds with constant probability) into one that is overwhelmingly secure (success probability exponentially small). Many natural constructions achieve only a weak form of security — for example, a one-way function that is hard to invert on only a 1/poly(n) fraction of inputs, or a commitment scheme that hides with probability 3/4. Security amplification via repetition turns weak OWFs into strong OWFs, weak PRGs into strong PRGs, and weak cryptographic protocols into fully secure ones, at the cost of polynomial blowup in computation or communication.
 
@@ -772,36 +1030,7 @@ Universally accepted; Raz's parallel repetition theorem (1998) is one of the mos
 
 ---
 
-## Simulation-Based Security (SIM) vs. Indistinguishability-Based Security (IND)
-
-**Goal:** Understand two fundamental paradigms for defining cryptographic security. Indistinguishability-based definitions (IND) specify security via a game in which an adversary cannot distinguish between two explicitly chosen distributions — for example, encryptions of two messages of its choice. Simulation-based definitions (SIM) instead compare a real protocol execution to an ideal execution with a trusted party: a protocol is secure if any real-world adversary can be "simulated" by an ideal-world adversary that talks only to the ideal functionality, obtaining no more information. SIM-security is strictly stronger and composes modularly (the basis of UC); IND-based security is game-specific and may not compose, but is often easier to work with and sufficient for standalone primitives.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **IND-CPA / semantic security** | 1984 | Goldwasser–Micali | Canonical IND definition: adversary cannot distinguish encryptions of chosen plaintexts; equivalent to semantic security [[1]](https://mit6875.github.io/PAPERS/probabilistic_encryption.pdf) |
-| **SIM-security for OT** | 1987 | Goldreich–Micali–Wigderson | Ideal-world / real-world paradigm for oblivious transfer; adversary's view in the real protocol is simulatable given only the ideal output [[1]](https://doi.org/10.1145/28395.28420) |
-| **SIM vs. IND for encryption (non-equivalence)** | 2000 | Canetti–Dwork–Naor–Ostrovsky | SIM-secure (non-committing) encryption requires communication overhead; IND-CCA2 encryption does not achieve SIM-security against adaptive corruptions [[1]](https://eprint.iacr.org/1996/058) |
-| **Ideal functionality paradigm (UC)** | 2001 | Canetti | Formalised real/ideal world comparison as universal composition; every UC-secure protocol is SIM-secure in the strongest sense [[1]](https://eprint.iacr.org/2000/067) |
-| **IND ↛ SIM for PKE under adaptive corruptions** | 2011 | Nielsen–Wichs | Separation: IND-CCA2-secure PKE does not achieve SIM-based security when the receiver can be adaptively corrupted; non-committing encryption is necessary [[1]](https://eprint.iacr.org/2011/215) |
-
-**State of the art:** IND-CPA/IND-CCA2 remain the standard for standalone primitives (PKE, KEM, signatures). SIM-based / UC security is required for protocols that must compose — [MPC](06-multi-party-computation.md#multi-party-computation-mpc), [CGKA/MLS](12-secure-communication-protocols.md#continuous-group-key-agreement-cgka--mls), [OT](06-multi-party-computation.md#oblivious-transfer-ot). Non-committing encryption bridges the gap when adaptive corruptions are needed under SIM. See [Universal Composability (UC) Framework](#universal-composability-uc-framework) and [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa--ind-cca-security).
-
-**Production readiness:** Production
-Both paradigms are used in the security analysis of all deployed protocols: IND for standalone primitives, SIM for composed protocols (MPC, MLS, OT).
-
-**Implementations:**
-- These are definitional frameworks, not software. Tools for formalizing proofs in both paradigms:
-- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, supports both game-based (IND) and simulation-based proofs
-
-**Security status:** Secure
-Both paradigms are mathematically well-defined; their relationship (IND does not imply SIM under adaptive corruptions) is precisely characterized.
-
-**Community acceptance:** Standard
-Both paradigms are universally accepted; IND-CCA2 dominates for standalone primitives, SIM/UC for composable protocols. The Canetti-Dwork-Naor-Ostrovsky separation is a standard reference.
-
----
-
-## Adaptive vs. Static Corruptions in Multi-Party Protocols
+### Adaptive vs. Static Corruptions in Multi-Party Protocols
 
 **Goal:** Model how an adversary may choose which parties to corrupt. A *static* adversary fixes the set of corrupted parties before the protocol begins; an *adaptive* adversary may corrupt parties during execution, choosing whom to corrupt based on messages it has observed so far. Adaptive corruption is far more realistic — a real attacker can target a party after seeing its public messages — but is much harder to achieve: it typically requires non-committing encryption or erasure assumptions, because the simulator must be able to explain honestly generated messages after the fact, having not yet fixed the corrupted party's internal state.
 
@@ -832,37 +1061,7 @@ Adaptive security is recognized as the correct real-world model; IETF MLS and ac
 
 ---
 
-## Indifferentiability Framework
-
-**Goal:** Prove that a construction using a simpler ideal primitive is as secure as if a stronger ideal primitive were used directly. Maurer, Renner, and Holenstein (2004) introduced indifferentiability to capture when a hash construction built from an ideal compression function (or block cipher) is "as good as" a random oracle. A construction C[P] (using primitive P) is indifferentiable from an ideal primitive Q if there is a simulator S such that (C[P], P) is computationally indistinguishable from (Q, S^Q) — meaning any system that uses C[P] behaves as if it used Q directly. This justifies plugging hash constructions into random-oracle proofs without invalidating them.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **Indifferentiability framework** | 2004 | Maurer–Renner–Holenstein | Foundational definition; indifferentiability implies security in any single-stage cryptographic game that uses the ideal primitive as a subroutine [[1]](https://link.springer.com/chapter/10.1007/978-3-540-24638-1_2) |
-| **Merkle-Damgård is NOT indifferentiable** | 2004 | Coron–Dodis–Malinaud–Puniya | MD construction leaks structure: length extension attacks mean MD[π] is not indifferentiable from a RO; motivates sponge and prefix-free MD variants [[1]](https://eprint.iacr.org/2005/210) |
-| **Sponge construction is indifferentiable** | 2008 | Bertoni–Daemen–Peeters–Van Assche | Sponge functions built from a random permutation are indifferentiable from a random oracle; theoretical foundation for SHA-3/Keccak [[1]](https://keccak.team/files/SpongeFunctions.pdf) |
-| **HMAC indifferentiability** | 2012 | Gazi–Maurer | HMAC built from an ideal compression function is indifferentiable from a PRF; justifies HMAC's security proofs in the random oracle model [[1]](https://link.springer.com/chapter/10.1007/978-3-642-32009-5_21) |
-| **Multi-stage security and indifferentiability limits** | 2011 | Ristenpart–Shacham–Shrimpton | Indifferentiability does not imply security for multi-stage games (e.g., RKA, related-key attacks); delineates the boundary of what indifferentiability guarantees [[1]](https://eprint.iacr.org/2011/005) |
-
-**State of the art:** Indifferentiability is the standard tool for justifying hash-construction security in the ROM. SHA-3's sponge design was chosen partly because it achieves indifferentiability from a random oracle (given a random permutation), unlike Merkle-Damgård. The Ristenpart-Shacham-Shrimpton limitation is important: indifferentiability does not cover all security properties. See [Random Oracle Model (ROM) vs. Standard Model](#random-oracle-model-rom-vs-standard-model).
-
-**Production readiness:** Production
-Indifferentiability proofs justify SHA-3 (Keccak), HMAC, and all sponge-based constructions deployed in TLS, SSH, and NIST standards.
-
-**Implementations:**
-- Indifferentiability is a proof framework, not standalone software. Constructions validated by indifferentiability analysis:
-- [XKCP (Keccak Code Package)](https://github.com/XKCP/XKCP) ⭐ 643 — C/assembly, reference SHA-3/Keccak implementation (sponge indifferentiability)
-- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, HMAC implementation whose security relies on indifferentiability arguments
-
-**Security status:** Secure
-Indifferentiability proofs are mathematically rigorous; the sponge construction's indifferentiability from a random oracle is proven under the random permutation model.
-
-**Community acceptance:** Standard
-Indifferentiability is the accepted methodology for justifying hash construction security; it influenced NIST's selection of SHA-3 and is cited in all modern hash function analyses.
-
----
-
-## Symbolic Model (Dolev-Yao) vs. Computational Model
+### Symbolic Model (Dolev-Yao) vs. Computational Model
 
 **Goal:** Understand two complementary paradigms for reasoning about protocol security. The *symbolic model* (Dolev-Yao, 1983) treats cryptographic operations as perfect black-box functions defined by algebraic term rewriting: an adversary can intercept, forward, and compose messages but cannot break the underlying primitives. This enables automated analysis via model checking and theorem proving. The *computational model* treats messages as bit strings, adversaries as probabilistic polynomial-time algorithms, and security as indistinguishability of probability distributions — the setting of provable security. Bridging the two models — showing that symbolic security implies computational security — is a central research challenge.
 
@@ -892,7 +1091,7 @@ The Dolev-Yao model is universally used in protocol verification; Abadi-Rogaway 
 
 ---
 
-## Automated Protocol Verification (ProVerif, Tamarin, EasyCrypt)
+### Automated Protocol Verification (ProVerif, Tamarin, EasyCrypt)
 
 **Goal:** Machine-check cryptographic protocol security. As protocols grow more complex — multi-round, multi-party, concurrent — manual proofs become error-prone and hard to verify. Automated tools offer two complementary approaches: *symbolic model checkers* (ProVerif, Tamarin) that reason about Dolev-Yao-style adversaries and can verify secrecy, authentication, and equivalence properties automatically for unbounded sessions; and *proof assistants / game-based frameworks* (EasyCrypt, CryptHOL) that formalise computational security proofs with machine-checked arithmetic, enabling verification of complex reduction arguments.
 
@@ -924,38 +1123,7 @@ ProVerif and Tamarin are the de facto standard for IETF protocol analysis. EasyC
 
 ---
 
-## Knowledge-Soundness, Extractability, and Simulation-Extractability
-
-**Goal:** Distinguish three increasingly strong notions of what it means for a proof system to "guarantee the prover knows a witness." *Proof of knowledge (PoK)* / *knowledge-soundness*: an efficient knowledge extractor can recover a witness from any prover that produces a valid proof with non-negligible probability, via rewinding or black-box extraction. *Extractability* (or *straight-line extraction*): the extractor recovers the witness from a single proof transcript, without rewinding — essential in the random oracle model and for composing with UC. *Simulation-extractability* (SE): the extractor succeeds even when the adversary has seen an arbitrary number of simulated proofs; the adversary cannot produce a new valid proof without knowing a witness, even after observing a polynomial number of proofs for other statements. SE is strictly stronger than both and is required whenever proofs are used in a setting where signatures or commitments can be forged using proof malleability.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **Proof of knowledge / knowledge-soundness** | 1988 | Feige–Fiat–Shamir | Introduced the notion that a protocol is a "proof of knowledge" if a black-box extractor recovers the witness by rewinding the prover; formalised in Schnorr identification [[1]](https://doi.org/10.1007/3-540-47721-7_11) |
-| **Simulation-sound NIZK** | 1999 | Sahai | NIZK that remains sound even after an adversary sees simulated proofs; prevents a malicious prover from using simulated proofs as templates for forging new ones [[1]](https://doi.org/10.1109/SFFCS.1999.814584) |
-| **Simulation-extractability definition** | 2004 | Groth–Ostrovsky–Sahai | Formal definition of simulation-extractability for NIZK: after seeing simulated proofs, an adversary cannot produce a new valid proof without the extractor recovering a witness [[1]](https://eprint.iacr.org/2006/107) |
-| **SE-SNARKs** | 2012 | Groth | Groth16 SNARK achieves simulation-extractability under q-PKE; extractability is straight-line in the AGM/GGM; no rewinding needed in the algebraic setting [[1]](https://eprint.iacr.org/2016/260) |
-| **UC-extractability vs. SE** | 2017 | Abdolmaleki–Baghery–Lipmaa–Zając | Clarified hierarchy: UC-extractable NIZKs (straight-line, simulation-sound) are strictly stronger than SE; construction from pairing assumptions [[1]](https://eprint.iacr.org/2017/121) |
-| **Fiat-Shamir and simulation-extractability in ROM** | 2019 | Fischlin–Günther | Fiat-Shamir transforms produce simulation-extractable NIZKs in the ROM without rewinding; tight proof using straight-line extraction from the hash transcript [[1]](https://eprint.iacr.org/2020/1184) |
-
-**State of the art:** Simulation-extractability is the standard target for NIZKs used as building blocks in signature schemes, CCA-secure PKE, and UC-secure protocols. Groth16 achieves SE under algebraic assumptions; transparent SNARKs (STARK, Plonk) achieve knowledge-soundness in the ROM. See [NIZK: Definitions, Simulation Soundness, and Extractability](#nizk-definitions-simulation-soundness-and-extractability), [Knowledge-of-Exponent Assumption (KEA) and Falsifiability](#knowledge-of-exponent-assumption-kea-and-falsifiability), and [Universal Composability (UC) Framework](#universal-composability-uc-framework).
-
-**Production readiness:** Production
-Knowledge-soundness and simulation-extractability underlie all deployed SNARK systems (Groth16 in Zcash, Plonk in Ethereum L2s) and Fiat-Shamir-based signature schemes.
-
-**Implementations:**
-- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) ⭐ 339 — Rust, simulation-extractable SNARK
-- [zkcrypto/bellman](https://github.com/zkcrypto/bellman) ⭐ 1.1k — Rust, Zcash's Groth16 with extractability
-- [halo2](https://github.com/zcash/halo2) ⭐ 895 — Rust, Plonk-based proving system with knowledge-soundness in ROM
-
-**Security status:** Secure
-The hierarchy (knowledge-soundness ⊂ extractability ⊂ simulation-extractability) is well-established; each level is proven sound under its respective assumptions.
-
-**Community acceptance:** Standard
-Simulation-extractability is the accepted security target for SNARK-based protocols; knowledge-soundness is the minimum for all deployed proof systems.
-
----
-
-## Entropy Source Models
+### Entropy Source Models
 
 **Goal:** Formalise the structure of imperfect randomness sources. Real-world entropy sources — hardware RNGs, user keystrokes, network jitter — are not uniformly random. The cryptographic treatment distinguishes several models of partial randomness: *min-entropy* (worst-case unpredictability over all outcomes), *Santha-Vazirani sources* (each bit is slightly biased but individually partially unpredictable), *block sources* (each successive block has min-entropy k conditioned on all prior blocks), and *non-oblivious / computational sources* (sources whose distributions are computationally indistinguishable from high-entropy ones). Understanding which source model applies determines whether and how much randomness can be extracted, and whether extraction requires a public seed.
 
@@ -985,7 +1153,7 @@ Min-entropy is mandated by NIST SP 800-90B and used in all RNG certifications. T
 
 ---
 
-## Bit Security and Its Definition
+### Bit Security and Its Definition
 
 **Goal:** Give a clean, meaningful measure of a cryptographic scheme's security level in bits. Informally, a scheme has "k-bit security" if breaking it requires about 2^k work. But formalising this precisely is subtle: different games, different success probability thresholds, and different resource measures (time, queries, distinguishing advantage) all affect the count. Micciancio and Walter (2018) identified and corrected a systematic error in the classical definition — schemes were often credited with more bits of security than they actually provide — by re-centering the advantage around 1/2 rather than 0, and requiring the attacker to do genuine prediction rather than mere distinguishing.
 
@@ -1015,7 +1183,7 @@ Micciancio-Walter (2018) is now the accepted standard for rigorous bit-security 
 
 ---
 
-## Composability Beyond UC: GNUC, SPS, and IITM
+### Composability Beyond UC: GNUC, SPS, and IITM
 
 **Goal:** Address limitations of the UC framework with alternative or complementary composition models. While UC is the dominant composability framework, it has known limitations: the UC composition theorem requires the environment to be a single interactive Turing machine; it handles subroutine composition but not, e.g., joint-state composition or global ciphersuites without careful extensions. Several alternatives have been proposed: *GNUC* (Hofheinz-Shoup, 2011) restructures the execution model to avoid subtle issues with UC's environment/protocol interfaces; *Symbolic Protocol System (SPS)* applies to formal-model composability; and the *Inexhaustible Interactive Turing Machine (IITM)* model (Küsters-Tuengerthal-Rausch, 2013) gives the most general and rigorously founded execution model, resolving well-formedness issues in UC while supporting global state, joint sessions, and arbitrary protocol structures.
 
@@ -1044,7 +1212,7 @@ UC remains dominant in practice; GNUC, IITM, and GUC are used by specialists in 
 
 ---
 
-## Abstract Cryptography (Constructive Cryptography)
+### Abstract Cryptography (Constructive Cryptography)
 
 **Goal:** Provide a top-down, composable framework for defining and proving cryptographic security. Maurer and Renner's Abstract Cryptography (2011) defines resources and constructions abstractly; security is the distance between a real construction and an ideal resource. The framework subsumes UC, information-theoretic security, and Shannon secrecy as special cases, giving a clean categorical treatment of composition.
 
@@ -1070,32 +1238,7 @@ Influential in the ETH Zurich school (Maurer, Renner) and in quantum cryptograph
 
 ---
 
-## Programmable vs. Non-Programmable Random Oracles
-
-**Goal:** Identify which security proofs genuinely require the ability to "program" the random oracle — adaptively setting its outputs during the reduction. In the standard ROM, the reduction can program the oracle; in the non-programmable ROM (NPROM), the hash function is fixed before the reduction runs. Fischlin et al. (2010) showed that FDH signatures and many Fiat-Shamir transforms cannot be proven secure in the NPROM, clarifying which proofs rely on this artificial feature.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **Random oracles with(out) programmability** | 2010 | Fischlin–Lehmann–Ristenpart–Shrimpton–Stam–Tessaro | FDH signatures cannot be proven secure in the NPROM via black-box reduction; programmability is essential; ASIACRYPT 2010 [[1]](https://link.springer.com/chapter/10.1007/978-3-642-17373-8_18) |
-| **Impossibility for Fiat-Shamir in NPROM** | 2016 | Fukumitsu–Hasegawa | Fiat-Shamir signatures cannot be proven secure in the NPROM under any standard hardness assumption [[1]](https://link.springer.com/chapter/10.1007/978-3-319-45871-7_23) |
-
-**State of the art:** NPROM separation results show that many ROM proofs rely on the artificial programmability feature. Constructions with NPROM proofs provide stronger real-world security evidence. See [Random Oracle Model (ROM) vs. Standard Model](#random-oracle-model-rom-vs-standard-model).
-
-**Production readiness:** Research
-NPROM separations are impossibility results; they guide protocol design but are not deployed as software.
-
-**Implementations:**
-- No standalone implementations; these are proof-theoretic results about the limitations of ROM proofs.
-
-**Security status:** Secure
-The separation results are mathematically proven; they clarify which ROM proofs are robust and which rely on artificial features.
-
-**Community acceptance:** Niche
-Well-known in the provable security community; Fischlin et al. (2010) and Fukumitsu-Hasegawa (2016) are standard references for ROM proof methodology.
-
----
-
-## Wegman-Carter-Shoup Authentication and Information-Theoretic MACs
+### Wegman-Carter-Shoup Authentication and Information-Theoretic MACs
 
 **Goal:** Achieve provably secure message authentication from information-theoretic assumptions using universal hash families. Wegman-Carter (1981) showed that combining a universal hash with a one-time pad on the tag produces an unconditionally secure MAC. Shoup (1996) extended this to the computational setting via a PRF (WCS construction), achieving security beyond the birthday bound for nonce-based MACs.
 
@@ -1124,7 +1267,7 @@ WCS is the basis of all modern AEAD MACs; Poly1305 and GHASH are standardized by
 
 ---
 
-## Related-Key Security
+### Related-Key Security
 
 **Goal:** Maintain security when the adversary can observe cipher behavior under keys related to the target key. In a related-key attack (RKA), the adversary queries a cipher under keys φ(K) for adversarially chosen derivation functions φ from some class Φ. Critical for block ciphers used in hash-function modes and for key schedules: AES-256 has RKA vulnerabilities, and several historical attacks on DES were related-key attacks.
 
@@ -1152,7 +1295,7 @@ Bellare-Kohno (2003) RKA definitions are standard in block cipher analysis; RKA 
 
 ---
 
-## Multi-User and Multi-Instance Security
+### Multi-User and Multi-Instance Security
 
 **Goal:** Accurately quantify security when many independent instances share the same design but use independent keys. Multi-user security bounds how much the adversary gains by attacking any of n independently keyed instances simultaneously — degrading by at most log n bits compared to single-user security. This matters at scale: attacking 2^30 TLS sessions costs only 30 fewer bits of security than attacking one.
 
@@ -1181,7 +1324,7 @@ Multi-user security is a mandatory consideration in NIST PQC evaluations and is 
 
 ---
 
-## Selective vs. Full Security in IBE and ABE
+### Selective vs. Full Security in IBE and ABE
 
 **Goal:** Distinguish two levels of IBE/ABE security based on when the adversary commits to the challenge identity. In the selective model, the adversary declares the challenge identity before seeing public parameters — an artificial restriction enabling the first standard-model IBE constructions. Full (adaptive) security, where the adversary chooses the challenge after seeing public parameters, is the correct real-world notion. Achieving full security in the standard model required dual-system encryption (Waters 2009).
 
@@ -1211,7 +1354,7 @@ Dual-system encryption (Waters 2009) is the canonical technique for full IBE/ABE
 
 ---
 
-## Meta-Reduction Technique
+### Meta-Reduction Technique
 
 **Goal:** Prove that tight security reductions cannot exist for certain schemes. A meta-reduction is a second-level reduction: given any assumed reduction R from breaking scheme S to solving hard problem P, construct a meta-reducer that uses R as a black box to solve P directly — contradicting P's hardness if R is too efficient. Coron (2002) introduced the approach for RSA-FDH signatures.
 
@@ -1238,7 +1381,7 @@ Coron's meta-reduction (2002) and Kakvi-Kiltz's correction (2012) are standard r
 
 ---
 
-## Beyond-Birthday-Bound (BBB) Security
+### Beyond-Birthday-Bound (BBB) Security
 
 **Goal:** Achieve symmetric-key security beyond the 2^{n/2} birthday bound inherent to n-bit primitives. A standard n-bit block cipher is only guaranteed secure up to 2^{n/2} queries. BBB constructions achieve security up to nearly 2^n queries by using algebraic structure that prevents birthday collisions from being exploitable. Critical for AES-128 at cloud scale where 2^64 blocks are reachable.
 
@@ -1267,7 +1410,7 @@ BBB security is an active design criterion in NIST and IETF; AES-GCM-SIV is stan
 
 ---
 
-## ORAM Complexity and Lower Bounds
+### ORAM Complexity and Lower Bounds
 
 **Goal:** Characterise the fundamental communication overhead required to hide memory access patterns in oblivious RAM. Goldreich-Ostrovsky (1996) proved an Ω(log n) bandwidth lower bound for hiding access patterns on n-word memories. This bound was tight but only proven in restricted models; Larsen-Nielsen (2021) extended it to all ORAM schemes. The matching O(log n) construction (OptORAMa, 2021) resolved a 25-year open problem.
 
@@ -1296,7 +1439,7 @@ PathORAM is the de facto standard ORAM in implementations; the Larsen-Nielsen (2
 
 ---
 
-## Worst-Case to Average-Case Reductions for Lattices
+### Worst-Case to Average-Case Reductions for Lattices
 
 **Goal:** Prove that breaking a randomly generated lattice instance is as hard as solving lattice problems on every possible lattice. This unique property — absent from number-theoretic assumptions like factoring — gives lattice-based cryptography its distinctive security foundation: an attacker who breaks one random instance can solve the hardest instances.
 
@@ -1326,35 +1469,7 @@ These reductions are the primary reason NIST selected lattice-based schemes for 
 
 ---
 
-## Forking Lemma and Rewinding Techniques
-
-**Goal:** Extract secret keys from forged signatures by "rewinding" an adversary. The forking lemma shows that if an adversary forges a signature in the random oracle model with non-negligible probability, replaying it with a different random oracle yields a second forgery from which the secret can be recovered. This is the core proof technique for Schnorr, ECDSA, and many Fiat-Shamir-based schemes.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **Pointcheval-Stern forking lemma** | 1996 | Pointcheval–Stern | Original lemma; proves security of ElGamal-type and Schnorr signatures in ROM [[1]](https://doi.org/10.1007/3-540-68339-9_34) |
-| **General forking lemma** | 2006 | Bellare–Neven | Generalises to multi-signatures and arbitrary interactive proofs; tighter bounds [[1]](https://doi.org/10.1145/1180405.1180453) |
-| **High-moment forking lemma** | 2023 | Diemert–Gellert–Jager–Lyu | Explicit high-moment bounds; tight multi-signature security for Schnorr [[1]](https://cic.iacr.org/p/1/2/2) |
-
-**State of the art:** The general forking lemma (Bellare-Neven 2006) is the standard tool for ROM security proofs of discrete-log-based signatures. High-moment variants (2023) close tightness gaps for multi-signatures. See [Signatures (Advanced)](08-signatures-advanced.md).
-
-**Production readiness:** Production
-The forking lemma is the proof technique behind the security of Schnorr, ECDSA, EdDSA, and all Fiat-Shamir-based signature schemes deployed in TLS, SSH, and blockchains.
-
-**Implementations:**
-- The forking lemma is a proof technique, not standalone software. Signature schemes whose security proofs rely on it:
-- [libsecp256k1](https://github.com/bitcoin-core/secp256k1) ⭐ 2.4k — C, ECDSA/Schnorr (security via forking lemma)
-- [ed25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, EdDSA (security via forking lemma)
-
-**Security status:** Secure
-The forking lemma is a proven mathematical result; its tightness bounds are well-characterized (Bellare-Neven 2006, Diemert et al. 2023).
-
-**Community acceptance:** Standard
-The Pointcheval-Stern (1996) and Bellare-Neven (2006) forking lemmas are universally cited in ROM security proofs of DLog-based signatures.
-
----
-
-## Code-Based Game-Playing Proofs
+### Code-Based Game-Playing Proofs
 
 **Goal:** Systematise cryptographic security proofs as disciplined transformations of pseudocode games. Each "hop" between games changes one small aspect; the sum of distinguishing advantages across hops bounds the adversary's total advantage. Eliminates the error-prone narrative style of earlier proofs.
 
@@ -1382,36 +1497,7 @@ Game-playing is the dominant proof style in applied cryptography; Shoup's sequen
 
 ---
 
-## Quantum Random Oracle Model (QROM)
-
-**Goal:** Extend the Random Oracle Model to quantum adversaries who can query the oracle in superposition. Classical ROM proofs often break when the adversary makes quantum queries (e.g., Grover search over the oracle), so new proof techniques are needed for post-quantum security.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **Random Oracles in a Quantum World** | 2011 | Boneh–Dagdelen–Fischlin–Lehmann–Schaffner–Zhandry | Defines QROM; shows classical ROM proofs can fail; gives QROM-secure signatures [[1]](https://eprint.iacr.org/2010/428) |
-| **Quantum-accessible ROM separation** | 2019 | Yamakawa–Zhandry | Constructs schemes secure in ROM but broken in QROM under standard assumptions [[1]](https://eprint.iacr.org/2020/1270) |
-| **Measure-and-reprogram** | 2019 | Don–Fehr–Majenz–Schaffner | General QROM proof technique: measure one query, reprogram oracle; proves Fiat-Shamir secure in QROM [[1]](https://eprint.iacr.org/2019/498) |
-| **Compressed oracle technique** | 2019 | Zhandry | Models quantum oracle access via compressed databases; simplifies QROM proofs [[1]](https://eprint.iacr.org/2018/544) |
-
-**State of the art:** QROM proofs are now required for post-quantum confidence; NIST PQC standards (ML-KEM, ML-DSA) have QROM analyses. Measure-and-reprogram and compressed oracles are the main techniques. See [Random Oracle Model vs. Standard Model](#random-oracle-model-rom-vs-standard-model), [Quantum Cryptography](15-quantum-cryptography.md).
-
-**Production readiness:** Production
-QROM proofs are required for all NIST PQC standards (ML-KEM, ML-DSA, SLH-DSA); the Fujisaki-Okamoto transform's QROM analysis directly determines deployed key sizes.
-
-**Implementations:**
-- QROM is a proof model, not software. Schemes with QROM security analyses:
-- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-KEM/ML-DSA with QROM-validated parameters
-- [pq-crystals](https://github.com/pq-crystals) — C, Kyber/Dilithium reference implementations with QROM proofs
-
-**Security status:** Caution
-QROM proofs are strictly stronger than classical ROM proofs for post-quantum security; however, some classical ROM results do not transfer to QROM, and QROM tightness gaps affect parameter selection.
-
-**Community acceptance:** Standard
-QROM analysis is an explicit requirement in NIST's PQC evaluation criteria; all finalists provided QROM security arguments.
-
----
-
-## Fine-Grained Cryptography
+### Fine-Grained Cryptography
 
 **Goal:** Build cryptographic primitives secure against adversaries bounded to a specific polynomial resource (e.g., NC1 circuits, AC0 circuits), where honest computation uses strictly fewer resources. Achieves unconditional or complexity-theoretic security without assuming one-way functions exist — useful in worlds where standard assumptions might fail.
 
@@ -1437,7 +1523,7 @@ Published at top venues (ITCS, CRYPTO); theoretically important for understandin
 
 ---
 
-## One-Way Functions and Kolmogorov Complexity
+### One-Way Functions and Kolmogorov Complexity
 
 **Goal:** Characterise the existence of one-way functions — the minimal assumption for almost all of cryptography — via the average-case hardness of a single natural problem: time-bounded Kolmogorov complexity (Kt). This identifies a "master problem" for cryptography: OWFs exist if and only if Kt is mildly hard on average.
 
@@ -1463,7 +1549,7 @@ Liu-Pass (2020) is a landmark result in theoretical cryptography, published at F
 
 ---
 
-## Pseudorandom Correlation Generators (PCGs)
+### Pseudorandom Correlation Generators (PCGs)
 
 **Goal:** Allow two (or more) parties to locally expand short correlated seeds into long streams of correlated randomness (OT correlations, Beaver triples, VOLE) with no further interaction. Replaces the expensive online generation of MPC preprocessing material with a one-time short seed exchange followed by silent local computation.
 
@@ -1491,33 +1577,7 @@ PCGs are a rapidly growing area with strong adoption in the MPC research communi
 
 ---
 
-## Gentry-Wichs Barrier (Non-Falsifiability of SNARGs)
-
-**Goal:** Prove a fundamental impossibility: adaptively sound succinct non-interactive arguments (SNARGs) for hard-on-average NP languages cannot be proven secure via black-box reduction to any falsifiable assumption. This explains why all known SNARK constructions rely on knowledge-type (non-falsifiable) assumptions or idealised models like the random oracle.
-
-| Result | Year | Authors | Note |
-|--------|------|---------|------|
-| **Gentry-Wichs impossibility** | 2011 | Gentry–Wichs | SNARGs for hard NP languages require non-falsifiable assumptions [[1]](https://eprint.iacr.org/2010/610) |
-| **Gentry-Wichs is tight** | 2021 | Waters–Wu | Constructs a non-adaptively sound SNARG from falsifiable assumptions, showing the barrier is tight [[1]](https://eprint.iacr.org/2019/1386) |
-| **Impossibility with preprocessing** | 2022 | Campanelli–Fiore–Querol | Extends impossibility to the preprocessing model; black-box extraction also impossible for adaptive SNARGs [[1]](https://eprint.iacr.org/2022/638) |
-
-**State of the art:** The Gentry-Wichs barrier (2011) remains the central theoretical explanation for why practical SNARKs (Groth16, Plonk, etc.) rely on knowledge assumptions or the ROM. Waters-Wu (2021) shows the bound is essentially tight. See [Knowledge-Soundness, Extractability](19-theoretical-foundations.md#knowledge-soundness-extractability-and-simulation-extractability), [ZK Proof Systems](04-zero-knowledge-proof-systems.md).
-
-**Production readiness:** Research
-The Gentry-Wichs barrier is an impossibility result; it explains why deployed SNARKs must use non-falsifiable assumptions or the ROM but is not itself deployed.
-
-**Implementations:**
-- No standalone implementations; the barrier is a proof-theoretic impossibility result.
-
-**Security status:** Secure
-The impossibility result is mathematically proven; it is a fundamental constraint on SNARG constructions, not an attack.
-
-**Community acceptance:** Standard
-Gentry-Wichs (2011) is universally cited when justifying the use of knowledge assumptions in SNARKs; it is a landmark result in the foundations of zero-knowledge.
-
----
-
-## Communication Complexity of Secure Computation
+### Communication Complexity of Secure Computation
 
 **Goal:** Determine the minimum bits that must be exchanged to securely evaluate a function, even with unlimited computation. These lower bounds are information-theoretic and show that secure computation inherently costs more communication than insecure computation for many functions.
 
@@ -1544,33 +1604,7 @@ Well-established in the information-theoretic MPC community; Data-Prabhakaran-Pr
 
 ---
 
-## Game-Based vs. Simulation-Based Security Paradigms
-
-**Goal:** Establish two complementary frameworks — game-based (winning a probabilistic challenge) and simulation-based (real/ideal indistinguishability) — for formally proving what cryptographic schemes guarantee.
-
-| Concept | Year | Basis | Note |
-|---------|------|-------|------|
-| **Game-based (Bellare-Rogaway)** | 1990s | IND-CPA, EUF-CMA, etc. | Concrete, engineer-friendly; standard in NIST/IETF [[1]](http://bristolcrypto.blogspot.com/2015/05/52-things-number-32-difference-between.html) |
-| **Simulation-based (Goldreich et al.)** | 1990s | Real/ideal paradigm | Richer composition guarantees but harder to apply [[1]](https://www.wisdom.weizmann.ac.il/~oded/PSBookFrag/SimProof.pdf) |
-
-**State of the art:** Every deployed cryptographic security proof uses one or both paradigms. Understanding where they diverge is critical: a game-based secure scheme can leak in a compositional setting.
-
-**Production readiness:** Production
-Both paradigms are used in the security analysis of all deployed protocols: game-based for standalone primitives (AES, RSA, ECDSA), simulation-based for composed protocols (MPC, MLS, OT).
-
-**Implementations:**
-- These are definitional frameworks, not software. Tools supporting both paradigms:
-- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 384 — OCaml, supports both game-based and simulation-based proofs
-
-**Security status:** Secure
-Both paradigms are mathematically well-defined; their relationship is precisely characterized (IND does not imply SIM under adaptive corruptions).
-
-**Community acceptance:** Standard
-Both paradigms are universally accepted; game-based dominates for standalone primitives, simulation-based for composable protocols.
-
----
-
-## Algebraic Group Model (AGM)
+### Algebraic Group Model (AGM)
 
 **Goal:** Restrict adversaries to algebraic operations on group elements, yielding a model intermediate between standard model and Generic Group Model that produces tighter and more credible security reductions.
 
@@ -1596,7 +1630,7 @@ AGM (Fuchsbauer-Kiltz-Loss 2018) is rapidly becoming the standard for pairing-ba
 
 ---
 
-## Memory-Hard Functions (MHF) — Formal Theory
+### Memory-Hard Functions (MHF) — Formal Theory
 
 **Goal:** Define and construct functions whose time-space product for evaluation is provably large regardless of attacker strategy, guaranteeing hardware-optimized brute-force costs proportionally more.
 

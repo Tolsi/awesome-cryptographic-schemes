@@ -4,11 +4,10 @@
 <!-- TOC -->
 ## Contents (56 schemes)
 
+**[Foundational MPC Protocols](#foundational-mpc-protocols)**
 - [Multi-Party Computation (MPC)](#multi-party-computation-mpc)
 - [Oblivious Transfer (OT)](#oblivious-transfer-ot)
 - [Garbled Circuits (expanded)](#garbled-circuits-expanded)
-- [Secure Aggregation (SecAgg)](#secure-aggregation-secagg)
-- [Function Secret Sharing (FSS) / Distributed Point Functions (DPF)](#function-secret-sharing-fss--distributed-point-functions-dpf)
 - [Homomorphic Secret Sharing (HSS)](#homomorphic-secret-sharing-hss)
 - [Oblivious Linear Evaluation (OLE) / VOLE](#oblivious-linear-evaluation-ole--vole)
 - [Silent OT / Pseudorandom Correlation Generators (PCG)](#silent-ot--pseudorandom-correlation-generators-pcg)
@@ -18,31 +17,21 @@
 - [YOSO Model (You Only Speak Once)](#yoso-model-you-only-speak-once)
 - [Secret-Shared Shuffle](#secret-shared-shuffle)
 - [Garbled RAM](#garbled-ram)
-- [Distributed PRF (DPRF)](#distributed-prf-dprf)
 - [Streaming / Online Secure Computation](#streaming--online-secure-computation)
-- [Beaver Triples (Multiplication Triples)](#beaver-triples-multiplication-triples)
 - [BMR Protocol (Constant-Round MPC)](#bmr-protocol-constant-round-mpc)
 - [MASCOT (Malicious Arithmetic MPC via OT)](#mascot-malicious-arithmetic-mpc-via-ot)
-- [Cut-and-Choose for Garbled Circuits (Malicious 2PC)](#cut-and-choose-for-garbled-circuits-malicious-2pc)
 - [SecureML and MPC-Based Machine Learning Inference](#secureml-and-mpc-based-machine-learning-inference)
-- [Mental Poker / Commutative Encryption](#mental-poker--commutative-encryption)
-- [TinyOT (Maliciously Secure 2PC from OT)](#tinyot-maliciously-secure-2pc-from-ot)
 - [Sharemind (MPC Platform)](#sharemind-mpc-platform)
 - [SCALE-MAMBA (MPC Framework)](#scale-mamba-mpc-framework)
 - [Carbyne Stack (Cloud-Native MPC)](#carbyne-stack-cloud-native-mpc)
 - [SuperPack (Dishonest Majority MPC with Constant Online Communication)](#superpack-dishonest-majority-mpc-with-constant-online-communication)
 - [EMP Toolkit (Efficient Multi-Party Computation Library)](#emp-toolkit-efficient-multi-party-computation-library)
-- [Efficient Two-Party ECDSA (DKLS18 / Doerner et al.)](#efficient-two-party-ecdsa-dkls18--doerner-et-al)
 - [Fair MPC (Fairness via Gradual Release)](#fair-mpc-fairness-via-gradual-release)
 - [Robust MPC with Cheater Identification](#robust-mpc-with-cheater-identification)
 - [Lattice-Based MPC](#lattice-based-mpc)
 - [GMW Protocol (Goldreich-Micali-Wigderson)](#gmw-protocol-goldreich-micali-wigderson)
 - [Honest Majority vs Dishonest Majority MPC (Security Models)](#honest-majority-vs-dishonest-majority-mpc-security-models)
 - [Oblivious Linear Algebra (Secure Matrix Operations)](#oblivious-linear-algebra-secure-matrix-operations)
-- [Secure Computation on Graphs (Private Graph Algorithms)](#secure-computation-on-graphs-private-graph-algorithms)
-- [ARIANN and SecureNN (Private Neural Network Inference)](#ariann-and-securenn-private-neural-network-inference)
-- [Two-Party PSI from Garbled Circuits (Pinkas et al.)](#two-party-psi-from-garbled-circuits-pinkas-et-al)
-- [Private Decision Trees and Random Forests (Bost et al., ABY3)](#private-decision-trees-and-random-forests-bost-et-al-aby3)
 - [MPC for E-Voting (Helios, Belenios, Civitas)](#mpc-for-e-voting-helios-belenios-civitas)
 - [MPC for Collaborative Fraud Detection (Privacy-Preserving ML Fraud)](#mpc-for-collaborative-fraud-detection-privacy-preserving-ml-fraud)
 - [Asynchronous MPC (Ben-Or-Kelmer-Rabin, Canetti-Rabin)](#asynchronous-mpc-ben-or-kelmer-rabin-canetti-rabin)
@@ -51,19 +40,44 @@
 - [Fantastic Four / SWIFT (Small-Party Honest-Majority MPC)](#fantastic-four--swift-small-party-honest-majority-mpc)
 - [MPC-Friendly Symmetric Primitives (LowMC, MiMC)](#mpc-friendly-symmetric-primitives-lowmc-mimc)
 - [Conclave (MPC for Relational Analytics on Big Data)](#conclave-mpc-for-relational-analytics-on-big-data)
-- [Obliv-C (Language for Data-Oblivious Computation)](#obliv-c-language-for-data-oblivious-computation)
-- [Delphi (Cryptographic Private Inference Service)](#delphi-cryptographic-private-inference-service)
 - [Multipars / MHz2k (Efficient MPC Preprocessing over Rings)](#multipars--mhz2k-efficient-mpc-preprocessing-over-rings)
 - [CGGMP21 (UC Threshold ECDSA with Identifiable Aborts)](#cggmp21-uc-threshold-ecdsa-with-identifiable-aborts)
 - [SPDZ Protocol Family (Speedz)](#spdz-protocol-family-speedz)
 - [ABY / ABY3 (Mixed-Protocol MPC Framework)](#aby--aby3-mixed-protocol-mpc-framework)
-- [TinyOT (OT-Based Actively Secure 2PC)](#tinyot-ot-based-actively-secure-2pc)
 - [BMR Protocol (Constant-Round Multi-Party Garbled Circuits)](#bmr-protocol-constant-round-multi-party-garbled-circuits)
 - [Sharemind (Practical 3-Party MPC Platform)](#sharemind-practical-3-party-mpc-platform)
+
+**[Oblivious Transfer and Extensions](#oblivious-transfer-and-extensions)**
+- [TinyOT (Maliciously Secure 2PC from OT)](#tinyot-maliciously-secure-2pc-from-ot)
+
+**[Garbled Circuits](#garbled-circuits)**
+- [Cut-and-Choose for Garbled Circuits (Malicious 2PC)](#cut-and-choose-for-garbled-circuits-malicious-2pc)
+- [Two-Party PSI from Garbled Circuits (Pinkas et al.)](#two-party-psi-from-garbled-circuits-pinkas-et-al)
+- [Obliv-C (Language for Data-Oblivious Computation)](#obliv-c-language-for-data-oblivious-computation)
+
+**[Function Secret Sharing and DPF](#function-secret-sharing-and-dpf)**
+- [Function Secret Sharing (FSS) / Distributed Point Functions (DPF)](#function-secret-sharing-fss--distributed-point-functions-dpf)
+- [Distributed PRF (DPRF)](#distributed-prf-dprf)
+
+**[OLE, VOLE, and Correlations](#ole-vole-and-correlations)**
+- [TinyOT (OT-Based Actively Secure 2PC)](#tinyot-ot-based-actively-secure-2pc)
+
+**[Secure Aggregation and Applications](#secure-aggregation-and-applications)**
+- [Secure Aggregation (SecAgg)](#secure-aggregation-secagg)
+- [Mental Poker / Commutative Encryption](#mental-poker--commutative-encryption)
+- [ARIANN and SecureNN (Private Neural Network Inference)](#ariann-and-securenn-private-neural-network-inference)
+- [Delphi (Cryptographic Private Inference Service)](#delphi-cryptographic-private-inference-service)
+- [Beaver Triples (Multiplication Triples)](#beaver-triples-multiplication-triples)
+- [Efficient Two-Party ECDSA (DKLS18 / Doerner et al.)](#efficient-two-party-ecdsa-dkls18--doerner-et-al)
+- [Secure Computation on Graphs (Private Graph Algorithms)](#secure-computation-on-graphs-private-graph-algorithms)
+- [Private Decision Trees and Random Forests (Bost et al., ABY3)](#private-decision-trees-and-random-forests-bost-et-al-aby3)
+
 <!-- /TOC -->
 
+## Foundational MPC Protocols
 
-## Multi-Party Computation (MPC)
+---
+### Multi-Party Computation (MPC)
 
 **Goal:** Multiple parties jointly compute a function over their private inputs without revealing anything except the output. Provides privacy + correctness.
 
@@ -95,7 +109,7 @@ Foundational protocols (GMW, BGW, SPDZ) are cornerstones of the MPC field with d
 
 ---
 
-## Oblivious Transfer (OT)
+### Oblivious Transfer (OT)
 
 **Goal:** Sender has multiple messages; receiver picks one and learns only that one — sender doesn't learn which was chosen. Foundational for MPC.
 
@@ -126,7 +140,7 @@ OT is a universally accepted foundational primitive; IKNP extension is a standar
 
 ---
 
-## Garbled Circuits (expanded)
+### Garbled Circuits (expanded)
 
 *Note: already a row in MPC section, but deserves own section for the optimization techniques.*
 
@@ -159,62 +173,7 @@ Garbled circuits are the standard approach for constant-round 2PC; decades of op
 
 ---
 
-## Secure Aggregation (SecAgg)
-
-**Goal:** Privacy-preserving summation. Multiple clients send encrypted inputs to a server, which learns only the aggregate (sum/average) — not individual contributions. Core primitive for federated learning.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Bonawitz et al. (Google SecAgg)** | 2017 | Secret sharing + DH masking | Tolerates dropouts; used in Gboard federated learning [[1]](https://eprint.iacr.org/2017/281) |
-| **Bell et al. (SecAgg+)** | 2020 | Sparse secret sharing | O(n log n) communication; improved scalability [[1]](https://eprint.iacr.org/2020/704) |
-| **FLAME (LWE-based)** | 2023 | LWE | Post-quantum secure aggregation [[1]](https://eprint.iacr.org/2023/224) |
-| **PAgIoT** | 2016 | Paillier + attributes | Privacy-preserving multi-attribute aggregation for IoT; lightweight for constrained devices [[1]](https://lgmanzan.github.io/docs/PagIoT.pdf) |
-
-**State of the art:** SecAgg+ (Google/Apple production), FLAME (PQ setting), PAgIoT (IoT-optimized).
-
-**Production readiness:** Production
-SecAgg is deployed in Google's Gboard federated learning and Apple's on-device learning pipelines at scale serving billions of users.
-
-**Implementations:**
-- [TensorFlow Federated](https://github.com/google-parfait/tensorflow-federated) ⭐ 2.4k — Python, includes SecAgg and SecAgg+ implementations
-- [PySyft](https://github.com/OpenMined/PySyft) ⭐ 9.9k — Python, secure aggregation for federated learning
-- [FATE](https://github.com/FederatedAI/FATE) ⭐ 6.1k — Python, federated AI platform with secure aggregation
-
-**Security status:** Secure
-SecAgg+ is proven secure against semi-honest adversaries with dropout tolerance; LWE-based FLAME provides post-quantum security.
-
-**Community acceptance:** Widely trusted
-SecAgg is the de facto standard for privacy-preserving federated learning; deployed by Google, Apple, and adopted in academic FL research.
-
----
-
-## Function Secret Sharing (FSS) / Distributed Point Functions (DPF)
-
-**Goal:** Secret-share a function. Split a function f into shares f₀, f₁ such that each share reveals nothing, but f₀(x) + f₁(x) = f(x) for all x. Enables efficient PIR, anonymous messaging, private database queries with sublinear communication.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Distributed Point Function (GI14)** | 2014 | PRG tree | Secret-share a point function (1 at target, 0 elsewhere); O(λ log N) key size [[1]](https://eprint.iacr.org/2018/707) |
-| **FSS for intervals/comparison** | 2015 | DPF + prefix tree | Extend DPF to interval functions; private range queries [[1]](https://eprint.iacr.org/2018/707) |
-| **FSS for decision trees** | 2021 | DPF composition | Secret-share a decision tree for private inference [[1]](https://eprint.iacr.org/2020/1392) |
-
-**State of the art:** DPF (used in Brave/STAR, Google Privacy Sandbox), FSS for intervals (private analytics).
-
-**Production readiness:** Experimental
-DPF is used in Brave's STAR protocol and Google's Privacy Sandbox for private analytics, but broader deployment is still emerging.
-
-**Implementations:**
-- [libfss](https://github.com/google/distributed_point_functions) ⭐ 79 — C++, Google's DPF library used in Privacy Sandbox
-
-**Security status:** Secure
-DPF security relies on standard PRG assumptions; well-studied with tight security reductions.
-
-**Community acceptance:** Emerging
-DPF is gaining traction in private analytics (Brave, Google); FSS for richer function classes remains primarily academic.
-
----
-
-## Homomorphic Secret Sharing (HSS)
+### Homomorphic Secret Sharing (HSS)
 
 **Goal:** Non-interactive secure computation. Secret-share data and compute on shares locally (without interaction between servers), then reconstruct the result. Like MPC but without communication rounds during computation.
 
@@ -241,7 +200,7 @@ HSS is well-studied theoretically but has limited practical adoption; primarily 
 
 ---
 
-## Oblivious Linear Evaluation (OLE) / VOLE
+### Oblivious Linear Evaluation (OLE) / VOLE
 
 **Goal:** Arithmetic oblivious transfer. Sender holds (a, b), receiver holds x; receiver learns ax + b and nothing else, sender learns nothing. VOLE (Vector OLE) extends this to vectors. The arithmetic foundation of modern MPC over large fields.
 
@@ -270,7 +229,7 @@ VOLE is rapidly becoming the preferred correlation for modern MPC preprocessing 
 
 ---
 
-## Silent OT / Pseudorandom Correlation Generators (PCG)
+### Silent OT / Pseudorandom Correlation Generators (PCG)
 
 **Goal:** Communication-efficient MPC setup. Generate enormous numbers of correlated random values (OT correlations, Beaver triples) from a short correlated seed — turning an O(n) communication task into O(n^ε) or O(polylog n).
 
@@ -299,7 +258,7 @@ PCG/Silent OT is recognized as transformative for MPC communication efficiency; 
 
 ---
 
-## Covert Security / Publicly Auditable MPC
+### Covert Security / Publicly Auditable MPC
 
 **Goal:** Intermediate MPC security. Stronger than semi-honest (passive), weaker than full malicious. In covert security, cheating is detected with probability ε — a rational adversary won't cheat if the reputational cost of detection outweighs the benefit. Much cheaper than malicious security.
 
@@ -327,7 +286,7 @@ Covert security is well-understood theoretically but rarely chosen in practice �
 
 ---
 
-## Asynchronous BFT / Asynchronous MPC
+### Asynchronous BFT / Asynchronous MPC
 
 **Goal:** Consensus and computation without timing assumptions. Protocols that tolerate arbitrary message delays — no timeouts, no synchrony assumptions. Necessary for truly decentralized systems where network conditions are unpredictable.
 
@@ -357,7 +316,7 @@ HoneyBadgerBFT and DAG-based successors are widely adopted in blockchain consens
 
 ---
 
-## Fluid MPC (Dynamic Participants)
+### Fluid MPC (Dynamic Participants)
 
 **Goal:** MPC with join/leave. Parties can dynamically enter and exit the computation mid-protocol — without restarting. Each round may have a completely different set of participants. Linear communication complexity. Essential for decentralized, permissionless settings.
 
@@ -382,7 +341,7 @@ Fluid MPC is recognized as an important theoretical advance for decentralized se
 
 ---
 
-## YOSO Model (You Only Speak Once)
+### YOSO Model (You Only Speak Once)
 
 **Goal:** MPC where each party sends exactly one message, then goes permanently offline. No interaction, no rounds — each party contributes once and disappears. Enables committee-based protocols where committee members are selected anonymously and ephemeral.
 
@@ -408,7 +367,7 @@ YOSO is an active research area with interest from the blockchain community for 
 
 ---
 
-## Secret-Shared Shuffle
+### Secret-Shared Shuffle
 
 **Goal:** Jointly permute a secret-shared dataset so that neither party learns the permutation. A fundamental building block for anonymous communication, private analytics, and oblivious sorting — but as a standalone, optimized primitive (not general MPC).
 
@@ -435,7 +394,7 @@ Secret-shared shuffle is gaining attention as a key building block for private a
 
 ---
 
-## Garbled RAM
+### Garbled RAM
 
 **Goal:** Efficient MPC for RAM programs. Extend garbled circuits to support random-access memory — instead of unrolling memory access into a massive circuit, emulate RAM with ORAM. Exponential improvement for memory-intensive computations.
 
@@ -462,34 +421,7 @@ Garbled RAM is well-studied theoretically but practical overhead remains high; s
 
 ---
 
-## Distributed PRF (DPRF)
-
-**Goal:** Threshold PRF evaluation. t-of-n servers jointly evaluate a PRF on input x — no single server knows the PRF key, and fewer than t servers learn nothing about the output. Enables distributed key derivation and tokenization.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Naor-Pinkas-Reingold DPRF** | 1999 | DDH | First DPRF; threshold Naor-Reingold PRF [[1]](https://doi.org/10.1007/3-540-48910-X_16) |
-| **Dodis-Yampolskiy DVRF/DPRF** | 2005 | Pairings | Verifiable DPRF; each server proves correct partial evaluation [[1]](https://eprint.iacr.org/2004/310) |
-| **Threshold OPRF (TOPRF)** | 2020 | EC + threshold | Threshold + oblivious: client input hidden, key distributed [[1]](https://eprint.iacr.org/2017/363) |
-
-**State of the art:** TOPRF for distributed password authentication (extends [OPRF](#oblivious-transfer-ot)); DPRF for distributed key management. Related to [PRF](#silent-ot--pseudorandom-correlation-generators-pcg).
-
-**Production readiness:** Mature
-DPRF and TOPRF are deployed in threshold password authentication systems and distributed key management services.
-
-**Implementations:**
-- [VOPRF (Cloudflare)](https://github.com/cloudflare/circl) ⭐ 1.6k — Go, includes OPRF/VOPRF/TOPRF in CIRCL library
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, DPRF protocol implementations
-
-**Security status:** Secure
-DDH-based DPRF and pairing-based DVRF have well-studied security reductions; TOPRF inherits OPRF security with threshold guarantees.
-
-**Community acceptance:** Widely trusted
-DPRF/TOPRF are established primitives with IETF standardization efforts (VOPRF RFC 9497) and broad cryptographic community trust.
-
----
-
-## Streaming / Online Secure Computation
+### Streaming / Online Secure Computation
 
 **Goal:** MPC on data streams. Compute on data that arrives continuously — parties cannot store the entire dataset. Single-pass or few-pass computation with sublinear memory. Distinct from standard [MPC](#multi-party-computation-mpc) which assumes all inputs available upfront.
 
@@ -515,36 +447,7 @@ Streaming secure computation is a recognized theoretical contribution but remain
 
 ---
 
-## Beaver Triples (Multiplication Triples)
-
-**Goal:** Amortize the cost of secure multiplications. A Beaver triple is a secret-shared tuple (⟨a⟩, ⟨b⟩, ⟨c⟩) with c = a·b, where a and b are uniformly random. Given a precomputed triple, two parties can evaluate any multiplication gate with a single round of communication and no cryptography — all expensive work is pushed to an offline preprocessing phase.
-
-| Technique | Year | Basis | Note |
-|-----------|------|-------|------|
-| **Beaver's Circuit Randomization** | 1991 | Information-theoretic | Original preprocessing model; reduce online MPC to XOR + broadcast using precomputed triples [[1]](https://dl.acm.org/doi/10.1145/103418.103444) |
-| **Triple generation via MASCOT** | 2016 | OT extension | Generate authenticated triples under malicious security using OT; basis of SPDZ preprocessing [[1]](https://eprint.iacr.org/2016/505) |
-| **Triple generation via PCG/Silent OT** | 2020 | Ring-LPN | Generate triples from short correlated seeds; sublinear communication [[1]](https://eprint.iacr.org/2020/924) |
-| **Masked Triples** | 2021 | Secret sharing | Amortize triples across conditional branches; reduce waste from unused branch triples [[1]](https://eprint.iacr.org/2021/604) |
-
-**State of the art:** PCG-based triple generation (2020) for minimal communication; MASCOT for concretely practical malicious-secure generation. Beaver triples are the universal currency of the preprocessing model — used in SPDZ, ABY, MOTION, and virtually every practical arithmetic MPC protocol. See [Silent OT / PCG](#silent-ot--pseudorandom-correlation-generators-pcg) and [OLE / VOLE](#oblivious-linear-evaluation-ole--vole).
-
-**Production readiness:** Production
-Beaver triples are the core preprocessing primitive in virtually every deployed arithmetic MPC system (SPDZ, ABY, MOTION, MP-SPDZ).
-
-**Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, multiple triple generation methods (MASCOT, Overdrive, PCG)
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, authenticated triple generation for SPDZ
-- [MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, Beaver triple-based multiplication for GMW/BMR
-
-**Security status:** Secure
-Beaver's technique is information-theoretically secure given correct triple generation; authenticated variants (SPDZ MACs) provide malicious security.
-
-**Community acceptance:** Standard
-Beaver triples are universally accepted as the standard technique for secure multiplication in the preprocessing model.
-
----
-
-## BMR Protocol (Constant-Round MPC)
+### BMR Protocol (Constant-Round MPC)
 
 **Goal:** Multiparty computation in a constant number of rounds, regardless of circuit depth. Beaver, Micali, and Rogaway (1990) generalize Yao's garbled circuits to n parties: parties collaboratively construct a garbled circuit using a round of MPC, then each party evaluates locally. Round complexity is O(1) rather than O(depth).
 
@@ -572,7 +475,7 @@ BMR is a foundational constant-round MPC protocol with broad acceptance in the c
 
 ---
 
-## MASCOT (Malicious Arithmetic MPC via OT)
+### MASCOT (Malicious Arithmetic MPC via OT)
 
 **Goal:** Efficient maliciously secure arithmetic MPC in the preprocessing model without FHE. MASCOT (Keller-Orsini-Scholl, 2016) generates authenticated Beaver multiplication triples using OT extension — achieving malicious security for dishonest majority with only ~6× overhead over semi-honest, and outperforming prior SPDZ preprocessing by over 200×.
 
@@ -600,36 +503,7 @@ MASCOT is the standard choice for OT-based malicious-secure preprocessing; widel
 
 ---
 
-## Cut-and-Choose for Garbled Circuits (Malicious 2PC)
-
-**Goal:** Achieve malicious security in Yao's garbled circuit framework without heavy generic techniques. One party garbles s circuits; the other checks roughly half of them (cut), and evaluates the rest (choose). Cheating requires all evaluated circuits to be malicious, giving soundness error ~2^{−s/2} or better with refined techniques.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Lindell-Pinkas Cut-and-Choose** | 2007 | GC + commit-reveal | Seminal cut-and-choose 2PC; s circuits gives 2^{−0.32s} cheating probability [[1]](https://eprint.iacr.org/2007/557) |
-| **Lindell Fast Cut-and-Choose** | 2013 | GC + forge-and-lose | Optimal s circuits for 2^{−s} soundness; single additional small MPC to "close the loop" [[1]](https://eprint.iacr.org/2013/079) |
-| **Amortizing Garbled Circuits (HKK)** | 2015 | GC batching | Batch cut-and-choose across multiple executions; amortize the s-circuit overhead [[1]](https://eprint.iacr.org/2015/081) |
-| **Authenticated Garbling (WRK)** | 2017 | GC + information-theoretic MACs | Replace cut-and-choose entirely with authenticated wires; single garbled circuit suffices; CCS 2017 [[1]](https://eprint.iacr.org/2017/030) |
-
-**State of the art:** Authenticated garbling (WRK 2017) supersedes cut-and-choose for most uses — achieving malicious 2PC with one garbled circuit and no circuit duplication. Cut-and-choose remains relevant when the underlying primitive is most convenient. See [Garbled Circuits (expanded)](#garbled-circuits-expanded).
-
-**Production readiness:** Mature
-Cut-and-choose techniques are implemented in research frameworks; largely superseded by authenticated garbling (WRK) in new deployments.
-
-**Implementations:**
-- [emp-ag2pc](https://github.com/emp-toolkit/emp-ag2pc) ⭐ 33 — C++, implements authenticated garbling (WRK) which supersedes cut-and-choose
-- [JustGarble](https://github.com/irdan/justGarble) ⭐ 15 — C, early garbled circuit implementation supporting cut-and-choose
-- [Obliv-C](https://github.com/samee/obliv-c) ⭐ 184 — C, supports malicious-secure 2PC via cut-and-choose
-
-**Security status:** Superseded
-Cut-and-choose is technically secure but authenticated garbling (WRK 2017) achieves malicious 2PC more efficiently with a single garbled circuit.
-
-**Community acceptance:** Widely trusted
-Cut-and-choose is a well-established technique with decades of study; WRK authenticated garbling is now preferred for most applications.
-
----
-
-## SecureML and MPC-Based Machine Learning Inference
+### SecureML and MPC-Based Machine Learning Inference
 
 **Goal:** Train and evaluate machine learning models on private data held by multiple parties. SecureML (Mohassel-Zhang, 2017) introduced efficient 2PC protocols for linear regression, logistic regression, and neural network training using secret sharing and Beaver triples over fixed-point arithmetic — enabling ML without exposing training data.
 
@@ -659,62 +533,7 @@ MPC-based ML is an active research area with growing industry interest; CrypTen 
 
 ---
 
-## Mental Poker / Commutative Encryption
-
-**Goal:** Fair card games without a trusted dealer. Two or more players deal, shuffle, and draw cards from a virtual deck — no player can cheat (see others' cards, stack the deck), and no trusted third party is needed. Uses commutative encryption: E_A(E_B(x)) = E_B(E_A(x)), so encryption order doesn't matter.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Shamir-Rivest-Adleman Mental Poker** | 1981 | Commutative RSA | First protocol; players encrypt cards with commutative cipher; shuffle by re-encrypting [[1]](https://people.csail.mit.edu/rivest/pubs/SRA81.pdf) |
-| **Barnett-Smart Mental Poker** | 2003 | ElGamal + ZK | Efficient protocol using ElGamal rerandomization + zero-knowledge proofs of shuffle [[1]](https://doi.org/10.1007/978-3-540-40061-5_23) |
-| **Blockchain Mental Poker** | 2018 | Smart contracts + commit-reveal | Trustless poker on Ethereum; disputes resolved on-chain [[1]](https://doi.org/10.1007/978-3-030-01177-2_28) |
-
-**State of the art:** Barnett-Smart (efficient, ZK-based); blockchain variants for trustless online play. The first example of [Secure Computation](#multi-party-computation-mpc) — historically predates general MPC.
-
-**Production readiness:** Experimental
-Mental poker protocols are implemented in blockchain-based card game platforms; traditional (non-blockchain) implementations are rare.
-
-**Implementations:**
-- [mental-poker](https://github.com/geometryxyz/mental-poker) ⭐ 117 — JavaScript, implementation of Barnett-Smart mental poker
-- [zkPoker](https://github.com/ottodevs/zkpoker) ⭐ 4 — Rust, zero-knowledge poker using ZK proofs
-
-**Security status:** Secure
-Barnett-Smart protocol is proven secure under DDH; blockchain variants inherit smart contract security assumptions.
-
-**Community acceptance:** Niche
-Mental poker is historically significant but has limited deployment; blockchain poker games use the techniques in niche applications.
-
----
-
-## TinyOT (Maliciously Secure 2PC from OT)
-
-**Goal:** Maliciously secure two-party computation over Boolean circuits using only symmetric-key primitives. TinyOT (Nielsen-Nordholt-Orlandi-Burra, CRYPTO 2012) departs entirely from Yao's garbled-circuit tradition: it uses correlated oblivious transfer (COT) to authenticate wire values with information-theoretic MACs, producing actively secure AND-triples in an offline phase and then evaluating the circuit gate-by-gate online. The result is the first OT-based (non-GC) protocol to beat garbled-circuit approaches in practice.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **TinyOT (NNOB)** | 2012 | OT extension + IT-MACs | Malicious 2PC via committed OT; 20 000+ AND gates/s in LAN; CRYPTO 2012 [[1]](https://eprint.iacr.org/2011/091) |
-| **TinyKeys for TinyOT** | 2018 | TinyOT + packed MACs | Reduce MAC key length; scale to large circuits with active security; ASIACRYPT 2018 [[1]](https://link.springer.com/chapter/10.1007/978-3-030-03332-3_4) |
-| **TinyTable** | 2017 | TinyOT + table garbling | Gate-scrambling variant; efficient for small look-up table gates; CRYPTO 2017 [[1]](https://eprint.iacr.org/2016/695) |
-
-**State of the art:** TinyOT remains the canonical OT-based alternative to cut-and-choose for malicious 2PC; largely superseded for garbled-circuit workloads by [Authenticated Garbling (WRK)](#cut-and-choose-for-garbled-circuits-malicious-2pc), but still competitive for Boolean circuits in high-latency networks. Foundation of [MASCOT](#mascot-malicious-arithmetic-mpc-via-ot) and many MPC frameworks.
-
-**Production readiness:** Mature
-TinyOT is implemented in research frameworks and serves as the foundation for MASCOT; not typically deployed standalone.
-
-**Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes TinyOT-based protocols
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, TinyOT-inspired preprocessing
-- [emp-toolkit](https://github.com/emp-toolkit) — C++, OT-MAC-based protocols descended from TinyOT
-
-**Security status:** Secure
-Full malicious security with information-theoretic MACs; rigorous proofs in the random oracle model.
-
-**Community acceptance:** Widely trusted
-TinyOT is a foundational protocol in the OT-based MPC lineage; its MAC-based approach is the standard for active security.
-
----
-
-## Sharemind (MPC Platform)
+### Sharemind (MPC Platform)
 
 **Goal:** Practical, deployable MPC for real-world data analysis. Sharemind (Bogdanov-Laur-Willemson, ESORICS 2008) is a virtual-machine framework for privacy-preserving computation over additive 3-party secret sharing — three non-colluding servers jointly evaluate arbitrary programs written in the SecreC language without any server seeing individual input values. Designed from the start with engineering concerns (performance, ease of deployment) rather than only theoretical security.
 
@@ -742,7 +561,7 @@ Sharemind is one of the oldest and most trusted deployed MPC platforms; used in 
 
 ---
 
-## SCALE-MAMBA (MPC Framework)
+### SCALE-MAMBA (MPC Framework)
 
 **Goal:** A unified, actively secure MPC framework supporting both dishonest-majority and honest-majority settings. SCALE-MAMBA (Smart, KU Leuven; successor to Bristol's SPDZ-2) integrates SPDZ-style preprocessing with a MAMBA high-level language (Python-like), supporting prime fields, binary fields, and rings. It combines linear secret-sharing-based (LSSS) MPC with garbled-circuit evaluation in a single protocol, allowing users to switch paradigms mid-computation for optimal performance.
 
@@ -769,7 +588,7 @@ SCALE-MAMBA is a well-established academic framework; widely cited in MPC resear
 
 ---
 
-## Carbyne Stack (Cloud-Native MPC)
+### Carbyne Stack (Cloud-Native MPC)
 
 **Goal:** Deploy MPC as a cloud-native microservice. Carbyne Stack (Bosch Research, open-sourced 2021) wraps SPDZ-like MPC protocols in a Kubernetes/Knative/Istio stack — each MPC party runs as an independent cloud service, with correlated-randomness generation, secret storage, and serverless computation all exposed as REST/gRPC APIs. The goal is to make MPC accessible to organizations without in-house cryptography expertise.
 
@@ -797,7 +616,7 @@ Carbyne Stack is a Linux Foundation Europe project (2023); growing adoption in t
 
 ---
 
-## SuperPack (Dishonest Majority MPC with Constant Online Communication)
+### SuperPack (Dishonest Majority MPC with Constant Online Communication)
 
 **Goal:** Reduce online communication in dishonest-majority MPC to a constant number of field elements per multiplication gate, independent of the number of parties. SuperPack (Escudero-Goyal-Polychroniadou-Song-Weng, EUROCRYPT 2023) combines packed secret sharing with ideas from honest-majority TurboPack to achieve, for the first time, O(1/ε) online communication per AND/multiplication gate in a dishonest-majority (up to 1−ε fraction of parties corrupt) actively secure setting — a factor ≥25× improvement over prior works.
 
@@ -823,7 +642,7 @@ SuperPack is recognized as a significant theoretical advance in communication-ef
 
 ---
 
-## EMP Toolkit (Efficient Multi-Party Computation Library)
+### EMP Toolkit (Efficient Multi-Party Computation Library)
 
 **Goal:** Provide a high-performance, research-grade library for implementing a wide range of MPC protocols. EMP (Wang-Ranellucci-Katz, CCS 2017) is a modular C++ toolkit covering oblivious transfer, garbled circuits, authenticated garbling, and VOLE-based protocols — designed so that protocol researchers can compose primitives and benchmark new constructions without building infrastructure from scratch.
 
@@ -853,37 +672,7 @@ EMP is the standard benchmarking library for garbled circuits and VOLE-ZK in aca
 
 ---
 
-## Efficient Two-Party ECDSA (DKLS18 / Doerner et al.)
-
-**Goal:** Compute a standard ECDSA signature between two parties where neither party holds the full signing key — the key is additively split, and both must cooperate to sign. Produces a signature verifiable under the ordinary (single-party) ECDSA algorithm. Practical for threshold custody of Bitcoin/Ethereum keys without changing the on-chain verification logic.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Lindell 2PC-ECDSA** | 2017 | Paillier + ZK | First concretely efficient 2PC ECDSA; uses Paillier encryption; CCS 2017 [[1]](https://eprint.iacr.org/2017/552) |
-| **DKLS18 (Doerner-Kondi-Lee-Shelat)** | 2018 | OT extension + multiplicative-to-additive | Replace Paillier with OT extension; 2× faster, smaller proofs; CCS 2018 [[1]](https://eprint.iacr.org/2018/499) |
-| **DKLS19 (2-of-2 + threshold extension)** | 2019 | OT + ECDSA nonce sharing | Generalize to t-of-n threshold; used as basis of many production HSMs [[1]](https://eprint.iacr.org/2019/523) |
-| **Canetti et al. UC 2PC-ECDSA** | 2020 | Paillier + UC framework | UC-secure 2PC ECDSA; tight security proofs; CCS 2020 [[1]](https://eprint.iacr.org/2019/503) |
-| **GG20 (Gennaro-Goldfeder)** | 2020 | Feldman VSS + OT | t-of-n threshold ECDSA used in production MPC wallets (e.g., Fireblocks, ZenGo) [[1]](https://eprint.iacr.org/2020/540) |
-
-**State of the art:** DKLS19 and GG20 are the dominant production protocols for threshold ECDSA; both are deployed in cryptocurrency custody, hardware security modules, and MPC wallets. Related to [Threshold Signature Schemes](08-signatures-advanced.md#threshold-signature-schemes-tss) and [Key Management](03-key-exchange-key-management.md).
-
-**Production readiness:** Production
-DKLS19 and GG20 are deployed in production MPC wallets (Fireblocks, ZenGo, Coinbase) and hardware security modules for cryptocurrency custody.
-
-**Implementations:**
-- [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, GG18/GG20 threshold ECDSA (ZenGo)
-- [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, threshold ECDSA/EdDSA library (Binance)
-- [DKLS](https://github.com/ArnaudBrousseau/dkls) ⭐ 1 — Rust, DKLS18/19 2PC ECDSA implementation
-
-**Security status:** Secure
-GG20 and DKLS19 have UC-secure proofs; deployed implementations are audited by professional security firms.
-
-**Community acceptance:** Widely trusted
-Threshold ECDSA (GG20, DKLS) is the industry standard for MPC-based cryptocurrency custody; deployed across major exchanges and wallet providers.
-
----
-
-## Fair MPC (Fairness via Gradual Release)
+### Fair MPC (Fairness via Gradual Release)
 
 **Goal:** Ensure that either all parties learn the output or none do — no party can abort after seeing the output while others remain in the dark. Standard MPC (GMW, SPDZ) achieves security-with-abort but not fairness. Fairness requires either an honest majority, a trusted third party, or cryptographic "gradual release" techniques that tie output delivery to an economic or time-based commitment.
 
@@ -911,7 +700,7 @@ Fair MPC is well-studied theoretically; blockchain-based approaches are practica
 
 ---
 
-## Robust MPC with Cheater Identification
+### Robust MPC with Cheater Identification
 
 **Goal:** MPC that does not merely abort when a cheater is detected — it identifies and expels the misbehaving party, then continues the computation with the remaining honest parties. Standard malicious-secure MPC achieves security-with-abort (computation stops when cheating is detected); robust MPC guarantees output delivery even under active attacks, provided cheaters can be identified and removed.
 
@@ -939,7 +728,7 @@ Robust MPC is essential for long-running distributed protocols; the identify-the
 
 ---
 
-## Lattice-Based MPC
+### Lattice-Based MPC
 
 **Goal:** Post-quantum secure multiparty computation whose hardness rests on lattice problems (LWE, RLWE) rather than Diffie-Hellman or factoring assumptions. Lattice-based MPC enables preprocessing-free or silent-OT-based protocols resilient to quantum adversaries, and connects naturally to FHE-based offline phases.
 
@@ -969,7 +758,7 @@ Lattice-based MPC is an active research frontier; Overdrive is practically deplo
 
 ---
 
-## GMW Protocol (Goldreich-Micali-Wigderson)
+### GMW Protocol (Goldreich-Micali-Wigderson)
 
 **Goal:** General-purpose MPC over Boolean (and arithmetic) circuits using oblivious transfer, tolerating any number of semi-honest corruptions among n parties. GMW (1987) reduces secure function evaluation to gate-by-gate secret-sharing with OT-based AND-gate evaluation — the first proof that any function can be securely computed in the semi-honest model without an honest majority. Later extended to malicious security via zero-knowledge proofs, giving the first general-purpose maliciously secure MPC.
 
@@ -998,7 +787,7 @@ GMW is a foundational MPC protocol taught in every cryptography course; the MOTI
 
 ---
 
-## Honest Majority vs Dishonest Majority MPC (Security Models)
+### Honest Majority vs Dishonest Majority MPC (Security Models)
 
 **Goal:** Understand the fundamental trade-offs in MPC depending on the fraction of parties an adversary can corrupt. The corruption threshold determines what is achievable — information-theoretic vs computational security, whether output delivery is guaranteed (robustness) or only security-with-abort, and how expensive the protocol must be.
 
@@ -1028,7 +817,7 @@ The honest/dishonest majority distinction is fundamental to MPC theory and pract
 
 ---
 
-## Oblivious Linear Algebra (Secure Matrix Operations)
+### Oblivious Linear Algebra (Secure Matrix Operations)
 
 **Goal:** Perform linear algebra — matrix multiplication, inversion, decomposition — on secret-shared or encrypted matrices, so that no party learns any entry of the input or intermediate matrices. A key building block for privacy-preserving machine learning (hidden-layer activations are matrix products), privacy-preserving statistics, and MPC-based genomics.
 
@@ -1058,65 +847,466 @@ Oblivious linear algebra is a key building block for private ML; growing adoptio
 
 ---
 
-## Secure Computation on Graphs (Private Graph Algorithms)
+### MPC for E-Voting (Helios, Belenios, Civitas)
 
-**Goal:** Evaluate graph algorithms — shortest paths, connectivity, PageRank, triangle counting, subgraph matching — on a graph whose structure is secret-shared among parties. Neither the edge set nor intermediate results are revealed. Applications include private contact-tracing, private social-network analysis, fraud detection across institutions, and private knowledge-graph queries.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Oblivious Graph Algorithms (Feigenbaum et al.)** | 2006 | Circuit MPC + ORAM | First systematic treatment; BFS, shortest path, connectivity on secret graphs; O(n² log n) gates [[1]](https://doi.org/10.1145/1132516.1132573) |
-| **GEM (Graph Encryption for Matching)** | 2016 | Graph encryption + SSE | Encrypted graph supporting private bipartite matching queries; sublinear search [[1]](https://eprint.iacr.org/2016/1247) |
-| **PrivGraph (Private PageRank)** | 2021 | Secret sharing + fixed-point | Secure PageRank for 2/3-party settings; convergence within privacy budget [[1]](https://eprint.iacr.org/2021/1234) |
-| **Private Triangle Counting** | 2020 | Arithmetic MPC + matrix ops | Secure triangle counting via private matrix trace; practical for graphs with thousands of nodes [[1]](https://eprint.iacr.org/2020/472) |
-| **SCALE-Graph (oblivious subgraph)** | 2023 | ORAM + garbled circuits | Oblivious subgraph isomorphism; hides which subgraph pattern matches [[1]](https://eprint.iacr.org/2023/1741) |
-
-**State of the art:** Private graph algorithms remain expensive — graph problems have complex data-dependent access patterns that require ORAM or oblivious data structures to hide. Practical systems restrict to specific graph properties (trees, planar graphs) or use approximate methods with differential privacy. Related to [ORAM](10-privacy-preserving-computation.md#oblivious-ram-oram), [Graph Encryption](10-privacy-preserving-computation.md#graph-encryption), and [Oblivious Sorting](10-privacy-preserving-computation.md#oblivious-sorting--oblivious-data-structures).
-
-**Production readiness:** Research
-Private graph algorithms remain expensive and are limited to academic prototypes; no production deployments exist.
-
-**Implementations:**
-- [Obliv-C](https://github.com/samee/obliv-c) ⭐ 184 — C, can express graph algorithms as 2PC programs
-
-**Security status:** Secure
-Security follows from underlying MPC/ORAM security; data-dependent access patterns are hidden by ORAM at significant cost.
-
-**Community acceptance:** Niche
-Private graph algorithms are theoretically well-studied but practical overhead limits adoption; active research area.
-
----
-
-## ARIANN and SecureNN (Private Neural Network Inference)
-
-**Goal:** Perform neural network inference (forward pass) on private inputs without revealing the input to the model holder, and without revealing the model weights to the input holder. Targets the two-party "ML-as-a-service" setting: a client has a private query; a server has a private model; only the inference result is revealed.
+**Goal:** Run a verifiable, privacy-preserving election without a single trusted tallier. MPC-based e-voting splits the tallying authority among multiple servers (trustees) using threshold encryption or secret sharing — no single server can decrypt individual ballots, and even a minority of corrupt servers cannot bias the result. Voters and observers can publicly verify that their vote was counted correctly without learning how others voted.
 
 | System | Year | Basis | Note |
 |--------|------|-------|------|
-| **SecureNN (Wagh-Gupta-Chandran)** | 2019 | 3PC + secret sharing | Private inference for ReLU-based networks; novel secure comparison for non-linear layers; CCS 2019 [[1]](https://eprint.iacr.org/2018/442) |
-| **ARIANN (Ryffel et al.)** | 2020 | 2PC + additive SS + function secret sharing | Sublinear communication for private inference using FSS for ReLU and comparison; PPML 2020 [[1]](https://arxiv.org/abs/2006.04593) |
-| **Cheetah** | 2022 | 2PC: CKKS (linear) + OT/GC (nonlinear) | Fast 2-party private inference by combining CKKS for matrix multiply with GC for ReLU; USENIX Security 2022 [[1]](https://eprint.iacr.org/2022/207) |
-| **Iron** | 2022 | 2PC + transformer attention | Private transformer inference (BERT, GPT-2); handles attention heads and softmax securely; NeurIPS 2022 [[1]](https://arxiv.org/abs/2207.05836) |
-| **BOLT** | 2023 | 2PC + lookup table garbling | Efficient non-linear activation via garbled lookup tables; replaces expensive GC sigmoid with table-based approach [[1]](https://eprint.iacr.org/2023/806) |
+| **Helios** | 2008 | ElGamal threshold + ZK shuffles | First widely deployed web-based verifiable voting; voters encrypt ballots; trustees jointly decrypt tally via threshold decryption; USENIX Security 2008 [[1]](https://www.usenix.org/legacy/events/sec08/tech/full_papers/adida/adida.pdf) |
+| **Civitas** | 2008 | Mix-nets + threshold decryption | Coercion-resistant e-voting; MPC-based registration and tallying; anonymous credential issuance via MPC; IEEE S&P 2008 [[1]](https://eprint.iacr.org/2008/136) |
+| **Belenios** | 2013 | ElGamal threshold + homomorphic tally | Successor to Helios; trustees hold shares of the decryption key via Pedersen DKG; used in real French university elections [[1]](https://eprint.iacr.org/2013/177) |
+| **DEMOS-2** | 2015 | Secret sharing + MPC tally | Fully coercion-resistant; distributes credential issuance and tallying using MPC with honest majority [[1]](https://eprint.iacr.org/2015/1069) |
+| **Norwegian e-voting (Scytl/MPC)** | 2014 | Threshold decryption + mix-net | National-scale use of threshold MPC for tallying in Norwegian parliamentary elections; post-election audit [[1]](https://dl.acm.org/doi/10.1145/2660267.2660315) |
 
-**State of the art:** Cheetah and BOLT represent the current performance frontier for 2-party private inference. The key challenge remains non-linear layers (ReLU, softmax, GeLU) — linear layers are well-handled by CKKS, but activations require expensive garbled circuits or FSS-based techniques. Distinct from [SecureML / MPC-based ML training](#secureml-and-mpc-based-machine-learning-inference) (covers training); related to [FSS / DPF](#function-secret-sharing-fss--distributed-point-functions-dpf), [Garbled Circuits](#garbled-circuits-expanded), and [HE](07-homomorphic-functional-encryption.md#homomorphic-encryption-he).
+**State of the art:** Belenios is the most actively maintained and deployed academic system (France, Switzerland); Civitas pioneered coercion resistance via MPC. The dominant approach is homomorphic tally (fast but limited to simple tally functions) or MPC-based mix-net (supports ranked/approval voting). Related to [Threshold Decryption](05-secret-sharing-threshold-cryptography.md#threshold-decryption), [Mix-networks](11-anonymity-credentials.md#mix-networks-mixnets), [E-voting](20-applied-niche-protocols.md#coercion-resistant-voting--receipt-freeness), and [DKG](05-secret-sharing-threshold-cryptography.md#distributed-key-generation-dkg).
 
-**Production readiness:** Experimental
-Cheetah, BOLT, and SecureNN have working implementations; deployed in research settings but not yet at production scale.
+**Production readiness:** Production
+Belenios is deployed in real elections (French universities, IACR elections); Helios has been used for organizational voting.
 
 **Implementations:**
-- [SecureNN](https://github.com/snwagh/securenn-public) ⭐ 131 — C++, 3-party private neural network inference
-- [Cheetah](https://github.com/Alibaba-Gemini-Lab/OpenCheetah) ⭐ 215 — C++, fast 2-party private inference (Alibaba)
-- [CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.6k — Python, private inference and training framework
+- [Helios](https://github.com/benadida/helios-server) ⭐ 888 — Python, web-based verifiable voting
+- [Belenios](https://github.com/glondu/belenios) ⭐ 147 — OCaml, verifiable voting system with threshold decryption
+- [Civitas](https://github.com/eastcoastcrypto/Civitas) ⭐ 13 — Java, coercion-resistant e-voting prototype
 
-**Security status:** Secure
-Protocols have rigorous security proofs; non-linear layer approximations introduce accuracy loss but no security degradation.
+**Security status:** Caution
+Voting systems are secure under their threat models but require careful operational deployment; coercion resistance remains challenging in practice.
 
-**Community acceptance:** Emerging
-Private neural network inference is a rapidly growing field; Cheetah and BOLT represent the performance frontier.
+**Community acceptance:** Widely trusted
+Belenios and Helios are the standard academic e-voting systems; used in real elections with public verifiability.
 
 ---
 
-## Two-Party PSI from Garbled Circuits (Pinkas et al.)
+### MPC for Collaborative Fraud Detection (Privacy-Preserving ML Fraud)
+
+**Goal:** Multiple financial institutions jointly train or evaluate fraud detection models on their combined transaction data without sharing raw records. Each institution's data (account histories, transaction patterns) is sensitive and legally protected — but pooling it would dramatically improve fraud detection rates. MPC enables cross-institutional analysis while each party retains data sovereignty.
+
+| System / Scheme | Year | Basis | Note |
+|-----------------|------|-------|------|
+| **Privacy-Preserving Fraud Detection (Bringer et al.)** | 2011 | HE + secret sharing | Bank-to-bank comparison of transaction fingerprints under FHE; first MPC fraud system [[1]](https://link.springer.com/chapter/10.1007/978-3-642-24209-0_12) |
+| **Cape Privacy (now Tumult Labs)** | 2019 | Differential privacy + MPC | Platform for privacy-preserving data collaboration; used by financial institutions for fraud and AML analytics; combines MPC with DP output perturbation [[1]](https://github.com/capeprivacy) |
+| **FATE (Federated AI Technology Enabler)** | 2019 | Federated learning + secret sharing + HE | WeBank's open-source FL platform; secure gradient aggregation for logistic regression and tree-based fraud models across banks [[1]](https://github.com/FederatedAI/FATE) |
+| **Crypten cross-institution fraud** | 2021 | Secret sharing (SPDZ-like) | Demonstrated training fraud classifiers across two financial institutions using CrypTen; PyTorch-native [[1]](https://arxiv.org/abs/2109.00984) |
+| **OpenMined PySyft** | 2018+ | Secret sharing + DP + FL | Open-source MPC+FL library used for privacy-preserving AML and credit scoring research across institutions [[1]](https://github.com/OpenMined/PySyft) |
+
+**State of the art:** Production cross-institution fraud detection MPC is in early deployment — FATE and Cape/Tumult have real customers, but full MPC (not just FL + DP) for fraud remains expensive. The dominant practical approach combines federated learning for local model training with MPC only for secure aggregation, plus differential privacy for output protection. Related to [SecureML / MPC-based ML](#secureml-and-mpc-based-machine-learning-inference), [Secure Aggregation](#secure-aggregation-secagg), [Differential Privacy](10-privacy-preserving-computation.md#differential-privacy), and [Carbyne Stack](#carbyne-stack-cloud-native-mpc).
+
+**Production readiness:** Experimental
+FATE and PySyft have real enterprise customers; full MPC-based fraud detection (vs FL+DP) is in early deployment.
+
+**Implementations:**
+- [FATE](https://github.com/FederatedAI/FATE) ⭐ 6.1k — Python, WeBank's federated AI platform with secure aggregation
+- [PySyft](https://github.com/OpenMined/PySyft) ⭐ 9.9k — Python, MPC+FL library for privacy-preserving analytics
+- [CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.6k — Python, demonstrated cross-institution fraud classification
+
+**Security status:** Secure
+Underlying MPC/FL protocols are proven secure; DP output perturbation provides additional privacy guarantees.
+
+**Community acceptance:** Emerging
+Privacy-preserving fraud detection is an active industry application; FATE and PySyft have growing adoption in financial institutions.
+
+---
+
+### Asynchronous MPC (Ben-Or-Kelmer-Rabin, Canetti-Rabin)
+
+**Goal:** Multiparty computation without synchrony assumptions. In the asynchronous model, messages can be arbitrarily delayed and the protocol cannot wait for slow parties — it must make progress whenever n − t messages arrive (where t is the corruption threshold). This is strictly harder than synchronous MPC: the adversary can selectively delay messages to control what each party "sees" first. Ben-Or-Kelmer-Rabin (1994) and Canetti-Rabin (1996) gave the first rigorous treatments.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ben-Or-Kelmer-Rabin (BKR) Async MPC** | 1994 | Information-theoretic + async BA | First async MPC with t < n/4 tolerance; uses async Byzantine agreement (ABA) as a sub-protocol; PODC 1994 [[1]](https://dl.acm.org/doi/10.1145/164051.164083) |
+| **Canetti-Rabin Async MPC** | 1996 | Verifiable SS + async BA | Improved to t < n/3; uses AVSS (asynchronous verifiable secret sharing) to handle late arrivals; STOC 1996 [[1]](https://dl.acm.org/doi/10.1145/237814.238015) |
+| **Beerliová-Trubíniová–Hirt Async MPC** | 2010 | Packed SS + async BA | Efficient async MPC with optimal t < n/3; communication O(n²) per multiplication gate [[1]](https://eprint.iacr.org/2010/236) |
+| **AMPR (Async MPC with Preprocessing)** | 2015 | Beaver triples + async online | Preprocessing model for async MPC; decouple triple generation (sync-friendly) from async online phase [[1]](https://eprint.iacr.org/2015/1064) |
+| **Astra (async 3PC)** | 2019 | 3PC + async model | Practical 3-party async MPC for ML workloads; honest majority; CCS 2019 [[1]](https://eprint.iacr.org/2019/429) |
+
+**State of the art:** Async MPC achieves t < n/3 (information-theoretic) and t < n/2 (with computational assumptions and security-with-abort). The gap between sync and async tolerance (n/3 vs n/2 for IT-MPC) is fundamental. Modern async MPC is used in distributed key generation ceremonies and DeFi threshold services that cannot rely on a synchronous clock. Distinct from [Asynchronous BFT](#asynchronous-bft--asynchronous-mpc) (consensus focus) — async MPC is about computing arbitrary functions, not just agreement. Related to [AVSS](05-secret-sharing-threshold-cryptography.md#asynchronous-verifiable-secret-sharing-avss) and [Robust MPC](#robust-mpc-with-cheater-identification).
+
+**Production readiness:** Mature
+Async MPC techniques are used in DKG ceremonies and DeFi threshold services; standalone async MPC frameworks are less common.
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes async-compatible protocol variants
+- [HoneyBadgerMPC](https://github.com/initc3/HoneyBadgerMPC) ⭐ 137 — Python, async MPC framework building on HoneyBadgerBFT
+
+**Security status:** Secure
+Async MPC achieves t < n/3 (IT) and t < n/2 (computational) with rigorous proofs; the async model is well-formalized.
+
+**Community acceptance:** Widely trusted
+Async MPC is fundamental to distributed systems that cannot assume synchrony; deployed in DeFi and DKG protocols.
+
+---
+
+### Replicated Secret Sharing MPC (Araki et al.)
+
+**Goal:** Achieve extremely high-throughput three-party computation with an honest majority by exploiting replicated secret sharing, where each party holds two of three additive shares. AND gates require communicating only a single bit per gate per party, enabling billions of gates per second on commodity hardware.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Araki et al. (Semi-honest 3PC)** | 2016 | Replicated secret sharing | 1 bit communication per AND gate; 7 billion AND gates/s throughput; CCS 2016 [[1]](https://eprint.iacr.org/2016/768) |
+| **Furukawa et al. (Malicious 3PC)** | 2017 | Replicated SS + cut-and-choose | Extend Araki to malicious security via post-execution verification; EUROCRYPT 2017 [[1]](https://eprint.iacr.org/2016/944) |
+| **Replicated SS over Rings** | 2023 | Replicated SS + Z_{2^k} | Multi-party replicated secret sharing over rings for privacy-preserving ML; supports native integer arithmetic [[1]](https://www.acsu.buffalo.edu/~mblanton/publications/popets23-1.pdf) |
+
+**State of the art:** Araki et al. remains the highest-throughput semi-honest 3PC protocol known; Furukawa et al. achieves malicious security with modest overhead. The replicated SS approach underpins practical frameworks like ABY3 and MP-SPDZ's replicated-sharing backends. Related to [ABY / ABY3](#multi-party-computation-mpc), [Sharemind](#sharemind-mpc-platform), and [Honest Majority MPC](#honest-majority-vs-dishonest-majority-mpc-security-models).
+
+**Production readiness:** Production
+Replicated SS 3PC is deployed in ABY3 and MP-SPDZ's replicated backends; used in privacy-preserving ML services.
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, replicated secret sharing backends (semi-honest and malicious)
+- [ABY3](https://github.com/ladnir/aby3) ⭐ 212 — C++, replicated SS for 3-party ML workloads
+- [MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, includes replicated SS protocols
+
+**Security status:** Secure
+Information-theoretically secure in the semi-honest model; Furukawa et al. achieves malicious security with post-execution verification.
+
+**Community acceptance:** Widely trusted
+Replicated SS 3PC is the fastest known semi-honest MPC protocol; widely adopted for honest-majority 3-party settings.
+
+---
+
+### MPC-in-the-Head (IKOS Paradigm)
+
+**Goal:** Construct zero-knowledge proofs from any MPC protocol, treated as a black box. The prover simulates an MPC protocol "in their head" among virtual parties, commits to each party's view, and the verifier checks a random subset of views for consistency. Privacy of the MPC protocol guarantees zero-knowledge; soundness comes from the fact that cheating requires corrupting views that are likely to be checked.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **IKOS (Ishai-Kushilevitz-Ostrovsky-Sahai)** | 2007 | Any semi-honest MPC | First MPC-in-the-head construction; transforms any t-private MPC into a ZK proof; STOC 2007 [[1]](https://web.cs.ucla.edu/~rafail/PUBLIC/77.pdf) |
+| **KKW (Katz-Kolesnikov-Wang)** | 2018 | MPC-in-the-head + OT | Improved MPCitH with fewer parties and better concrete efficiency; CCS 2018 [[1]](https://eprint.iacr.org/2018/475) |
+| **Syndrome Decoding in the Head (SDitH)** | 2022 | MPCitH + code-based crypto | Post-quantum signatures from MPCitH applied to syndrome decoding; NIST PQC candidate [[1]](https://eprint.iacr.org/2022/188) |
+| **VOLEitH (Baum et al.)** | 2023 | VOLE + MPCitH | Replace MPC with VOLE correlations for more efficient ZK proofs; smaller proof sizes [[1]](https://eprint.iacr.org/2023/996) |
+
+**State of the art:** MPCitH is the dominant paradigm for post-quantum ZK signatures (SDitH is a NIST PQC candidate); VOLEitH achieves the best concrete proof sizes for arithmetic relations. The paradigm bridges [MPC](#multi-party-computation-mpc) and [Zero-Knowledge Proof Systems](04-zero-knowledge-proof-systems.md#mpc-in-the-head-mpcith). Related to [VOLE](#oblivious-linear-evaluation-ole--vole) and [Silent OT / PCG](#silent-ot--pseudorandom-correlation-generators-pcg).
+
+**Production readiness:** Experimental
+MPCitH is used in the Picnic post-quantum signature scheme (NIST alternate candidate); SDitH is a NIST PQC candidate.
+
+**Implementations:**
+- [Picnic](https://github.com/microsoft/Picnic) ⭐ 168 — C, Microsoft's MPCitH-based post-quantum signature
+- [SDitH](https://github.com/sdith/sdith) ⭐ 5 — C, Syndrome Decoding in the Head signature scheme
+
+**Security status:** Secure
+MPCitH has rigorous security reductions from MPC privacy to ZK soundness; SDitH security relies on well-studied code-based assumptions.
+
+**Community acceptance:** Emerging
+MPCitH is a recognized paradigm for post-quantum ZK; SDitH is under NIST PQC evaluation; VOLEitH is gaining traction for efficient proofs.
+
+---
+
+### Fantastic Four / SWIFT (Small-Party Honest-Majority MPC)
+
+**Goal:** Practically efficient MPC for small fixed numbers of parties (3 or 4) with an honest majority and malicious security. These protocols exploit the specific structure of 3-party or 4-party settings to achieve much higher throughput than general n-party protocols, targeting privacy-preserving machine learning workloads.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SWIFT** | 2021 | 3PC + replicated SS | First robust and efficient PPML framework in 3PC with malicious security; guarantees output delivery; USENIX Security 2021 [[1]](https://eprint.iacr.org/2020/592) |
+| **Fantastic Four (Dalskov et al.)** | 2021 | 4PC + replicated SS | Honest-majority 4PC with malicious security; simpler design than prior 4PC; no function-dependent preprocessing; USENIX Security 2021 [[1]](https://www.usenix.org/conference/usenixsecurity21/presentation/dalskov) |
+| **Tetrad (Koti et al.)** | 2022 | 4PC + mixed sharing | Fast 4PC with fairness and guaranteed output delivery; optimized for ML inference; NDSS 2022 [[1]](https://eprint.iacr.org/2021/755) |
+| **Secure 5PC** | 2024 | 5PC + private robustness | Five-party computation with minimal online communication and private robustness [[1]](https://link.springer.com/chapter/10.1007/978-981-96-0954-3_3) |
+
+**State of the art:** SWIFT (3PC) and Fantastic Four (4PC) are the leading protocols for small-party honest-majority PPML, both implemented in MP-SPDZ. The 4-party setting is attractive because it allows malicious security with guaranteed output delivery while tolerating 1 corruption. Related to [ABY3](#multi-party-computation-mpc), [Replicated SS MPC](#replicated-secret-sharing-mpc-araki-et-al), and [SecureML](#secureml-and-mpc-based-machine-learning-inference).
+
+**Production readiness:** Experimental
+SWIFT and Fantastic Four are implemented in MP-SPDZ; used in PPML research benchmarks but not yet widely deployed in production.
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes SWIFT (3PC) and Fantastic Four (4PC) protocols
+
+**Security status:** Secure
+Both protocols provide full malicious security with guaranteed output delivery under honest majority; rigorous proofs at USENIX Security 2021.
+
+**Community acceptance:** Emerging
+SWIFT and Fantastic Four are well-received in the PPML community; the 4-party model is gaining interest for its security/efficiency trade-off.
+
+---
+
+### MPC-Friendly Symmetric Primitives (LowMC, MiMC)
+
+**Goal:** Design block ciphers and hash functions that minimize the number of non-linear (multiplicative) operations, since multiplications are the expensive bottleneck in MPC, FHE, and ZK proof systems. Standard ciphers like AES require hundreds of AND gates per block; MPC-friendly designs reduce this by 5-50x, enabling efficient hybrid protocols where data is encrypted locally and decrypted inside MPC.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **LowMC** | 2015 | Substitution-permutation network | Minimizes multiplicative depth and count; configurable AND-gate budget; up to 5x faster than AES in MPC [[1]](https://eprint.iacr.org/2016/687) |
+| **MiMC** | 2016 | x^3 round function over F_p | Minimal multiplicative complexity over large fields; 1 multiplication per round; efficient for SNARK-based applications [[1]](https://eprint.iacr.org/2016/492) |
+| **Rasta / HERA** | 2018 | Alternating moduli | Nonce-based encryption using alternating mod-2 and mod-3 operations; sublinear multiplicative complexity [[1]](https://eprint.iacr.org/2018/181) |
+| **Ciminion** | 2021 | Toffoli gates + Farfalle-like | MPC/FHE-friendly with very low AND depth; designed for SPDZ-style protocols [[1]](https://eprint.iacr.org/2021/267) |
+
+**State of the art:** LowMC is used in Picnic post-quantum signatures (NIST alternate candidate); MiMC is widely used in ZK-SNARK circuits. The design goal is to minimize the multiplicative depth (for round-complexity) and multiplicative count (for communication). Related to [Garbled Circuits](#garbled-circuits-expanded), [Silent OT / PCG](#silent-ot--pseudorandom-correlation-generators-pcg), and [ZK-Friendly Hash Functions](01-foundational-primitives.md#hash-functions).
+
+**Production readiness:** Production
+LowMC is used in Picnic (NIST PQC alternate candidate); MiMC and Poseidon are deployed in ZK-SNARK circuits on Ethereum and other blockchains.
+
+**Implementations:**
+- [Picnic](https://github.com/microsoft/Picnic) ⭐ 168 — C, uses LowMC as the underlying block cipher
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes MPC-friendly cipher evaluations
+- [Ciminion reference](https://github.com/ongetekend/ciminion) ⭐ 5 — Sage, reference implementation of Ciminion
+
+**Security status:** Caution
+LowMC and MiMC have been subject to algebraic attacks; parameter recommendations have been updated. Newer designs (Ciminion) are less studied.
+
+**Community acceptance:** Widely trusted
+MPC-friendly ciphers are a recognized design category; LowMC (Picnic) and MiMC (ZK circuits) are widely deployed.
+
+---
+
+### Conclave (MPC for Relational Analytics on Big Data)
+
+**Goal:** Scale MPC to big-data relational analytics by compiling SQL-like queries into a hybrid of local cleartext processing and small MPC steps. Rather than running the entire query inside MPC (which is prohibitively slow for large datasets), Conclave identifies which operations can be safely performed locally and pushes only the privacy-sensitive joins and aggregations into MPC, achieving orders-of-magnitude speedup.
+
+| System | Year | Basis | Note |
+|--------|------|-------|------|
+| **Conclave (Volgushev et al.)** | 2019 | Hybrid cleartext + MPC compiler | Query compiler for multi-party relational analytics; 3-6 orders of magnitude faster than pure MPC; EuroSys 2019 [[1]](https://dl.acm.org/doi/10.1145/3302424.3303982) |
+| **Senate** | 2021 | Malicious-secure MPC + SQL | Maliciously secure collaborative analytics platform for relational queries; tolerates n-1 corruptions [[1]](https://www.usenix.org/conference/osdi21/presentation/poddar) |
+| **Secrecy** | 2022 | Secret sharing + relational algebra | MPC system for SQL with native relational operators (join, group-by, order-by) over secret-shared tables [[1]](https://dl.acm.org/doi/10.14778/3514061.3514066) |
+
+**State of the art:** Conclave + Sharemind is deployed for real analytics; Senate provides malicious security for SQL. The key insight is that most data in a relational query can be processed locally — only the privacy-critical operations (joins across parties, aggregations revealing cross-party patterns) need MPC. Related to [Sharemind](#sharemind-mpc-platform), [Carbyne Stack](#carbyne-stack-cloud-native-mpc), and [Oblivious SQL](10-privacy-preserving-computation.md#oblivious-sql--encrypted-database-joins).
+
+**Production readiness:** Experimental
+Conclave has been demonstrated with Sharemind for real analytics; Senate and Secrecy are academic prototypes.
+
+**Implementations:**
+- [Conclave](https://github.com/multiparty/conclave) ⭐ 100 — Python, hybrid cleartext/MPC query compiler for relational analytics
+- [Secrecy](https://github.com/multiparty/secrecy) ⭐ 0 — C, secret-shared relational algebra engine
+
+**Security status:** Secure
+Hybrid execution is proven secure: cleartext portions see only public data, MPC portions use standard secret sharing security.
+
+**Community acceptance:** Niche
+Conclave and Secrecy are well-cited in the MPC-for-analytics literature; the hybrid cleartext/MPC approach is gaining acceptance.
+
+---
+
+### Multipars / MHz2k (Efficient MPC Preprocessing over Rings)
+
+**Goal:** Generate authenticated multiplication triples over rings Z_{2^k} (native machine integers) more efficiently than SPDZ2k/Overdrive2k, using improved packing techniques for lattice-based homomorphic encryption or lightweight linear HE. Operating over rings rather than prime fields avoids expensive modular reduction and matches the natural word size of CPUs, making MPC practical for integer-heavy workloads like ML inference.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Overdrive2k (Orsini-Smart-Vercauteren)** | 2020 | BGV + ring packing | First SHE-based preprocessing for SPDZ2k over Z_{2^k}; extends Overdrive packing to rings [[1]](https://link.springer.com/chapter/10.1007/978-3-030-40186-3_12) |
+| **MHz2k** | 2021 | BGV + improved ZK packing | 3.5x better amortized communication than Overdrive2k; new packing and resharing techniques [[1]](https://eprint.iacr.org/2021/1383) |
+| **Multipars** | 2024 | Linear HE + ring preprocessing | 11x faster than Overdrive2k; first actively secure N-party protocol over Z_{2^k} using only linear HE in offline phase; PoPETs 2024 [[1]](https://petsymposium.org/popets/2024/popets-2024-0038.pdf) |
+
+**State of the art:** Multipars (2024) is the current state of the art for ring-based MPC preprocessing, outperforming all prior approaches by large margins. The progression from Overdrive2k to MHz2k to Multipars reflects a trend toward lighter cryptographic assumptions (linear HE instead of SHE) and better amortization. Related to [MASCOT / Overdrive](#mascot-malicious-arithmetic-mpc-via-ot), [SPDZ2k](#multi-party-computation-mpc), and [Lattice-Based MPC](#lattice-based-mpc).
+
+**Production readiness:** Research
+Multipars (2024) is a recent advance; MHz2k is implemented in research codebases but not deployed in production.
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes ring-based preprocessing variants (Overdrive2k, SPDZ2k)
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, supports ring-based MPC protocols
+
+**Security status:** Secure
+Security builds on well-studied BGV/BFV lattice assumptions; ring operations preserve SPDZ2k security guarantees.
+
+**Community acceptance:** Emerging
+Ring-based preprocessing is recognized as important for practical ML workloads; Multipars advances the state of the art significantly.
+
+---
+
+### CGGMP21 (UC Threshold ECDSA with Identifiable Aborts)
+
+**Goal:** Provide a universally composable (UC-secure), non-interactive threshold ECDSA protocol where misbehaving signers are publicly identifiable. CGGMP21 allows any t-of-n parties to produce a standard ECDSA signature — compatible with Bitcoin, Ethereum, and all existing ECDSA verifiers — while supporting proactive key refresh (periodic re-sharing of key material to limit the window of compromise) and presigning (message-independent preprocessing that makes the final signing round non-interactive).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CGGMP21 (Canetti-Gennaro-Goldfeder-Makriyannis-Peled)** | 2021 | Paillier + UC framework + presigning | UC-secure t-of-n threshold ECDSA; non-interactive signing via presigning; identifiable aborts; CCS 2020 / ePrint 2021 [[1]](https://eprint.iacr.org/2021/060) |
+| **Doerner et al. 3-Round Threshold ECDSA** | 2023 | OT + multiplicative-to-additive | Reduce threshold ECDSA to 3 rounds; improves on CGGMP21 round complexity [[1]](https://eprint.iacr.org/2023/765) |
+| **Synedrion (Entropy)** | 2023 | CGGMP21 implementation | Production Rust implementation of CGGMP21; audited; used in Entropy Network [[1]](https://github.com/entropyxyz/synedrion) |
+
+**State of the art:** CGGMP21 is the dominant production protocol for threshold ECDSA in MPC wallets (Fireblocks MPC-CMP, ZenGo, Entropy); its presigning mechanism enables sub-second signing latency. Distinct from [DKLS18/GG20](#efficient-two-party-ecdsa-dkls18--doerner-et-al) (which covers the OT-based and earlier Paillier-based 2PC approaches). Related to [Threshold Signature Schemes](08-signatures-advanced.md#threshold-signature-schemes-tss) and [Key Management](03-key-exchange-key-management.md).
+
+**Production readiness:** Production
+CGGMP21 is deployed in production MPC wallets (Fireblocks MPC-CMP, ZenGo, Entropy Network) for cryptocurrency custody.
+
+**Implementations:**
+- [Synedrion](https://github.com/entropyxyz/synedrion) ⭐ 85 — Rust, audited CGGMP21 implementation (Entropy Network)
+- [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, includes CGGMP21 (ZenGo)
+- [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, threshold ECDSA including CGGMP-style protocols
+
+**Security status:** Secure
+UC-secure with identifiable aborts; presigning mechanism is proven secure; implementations are professionally audited.
+
+**Community acceptance:** Widely trusted
+CGGMP21 is the industry standard for threshold ECDSA in MPC wallets; endorsed by major cryptocurrency custodians.
+
+---
+
+### SPDZ Protocol Family (Speedz)
+
+**Goal:** Achieve actively secure MPC against a dishonest majority by separating an offline preprocessing phase (generating authenticated Beaver triples) from a fast, lightweight online phase that requires only field additions and multiplications.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SPDZ (Damgård-Pastro-Smart-Zakarias)** | 2012 | SHE (BGV) offline + MAC online | Foundational dishonest-majority MPC; online phase costs only a few field ops per gate; CRYPTO 2012 [[1]](https://eprint.iacr.org/2011/535) |
+| **SPDZ2k (Cramer et al.)** | 2018 | Extends SPDZ to Z/2^k | Native 32/64-bit integer arithmetic; eliminates field conversion overhead for ML/comparison workloads; CRYPTO 2018 [[1]](https://eprint.iacr.org/2018/482) |
+| **MASCOT (Keller-Orsini-Scholl)** | 2016 | OT-extension preprocessing | Replaces SPDZ's expensive SHE offline with OT-based triple generation, 200x faster; CCS 2016 [[1]](https://eprint.iacr.org/2016/505) |
+| **Overdrive (Keller-Pastro-Rotaru)** | 2018 | Improved BGV packing | Better amortized SHE preprocessing for SPDZ; EUROCRYPT 2018 [[1]](https://eprint.iacr.org/2017/1230) |
+
+**State of the art:** SPDZ is the industry-standard benchmark for dishonest-majority MPC. MASCOT made it practical on commodity hardware by removing the FHE dependency. SPDZ2k is the default for arithmetic-heavy privacy-preserving ML pipelines (native integer ops). The MP-SPDZ framework implements 30+ protocol variants under one API.
+
+**Production readiness:** Production
+SPDZ is the industry-standard MPC protocol family; deployed via MP-SPDZ, SCALE-MAMBA, and Carbyne Stack in production systems.
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, reference implementation of 30+ SPDZ variants
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, actively secure SPDZ with MAMBA scripting
+- [Carbyne Stack](https://github.com/carbynestack/carbynestack) ⭐ 91 — Java/Kotlin, cloud-native SPDZ2k deployment
+
+**Security status:** Secure
+SPDZ has rigorous active security proofs under standard assumptions; MAC-based online phase provides information-theoretic verification.
+
+**Community acceptance:** Standard
+SPDZ is the de facto standard for dishonest-majority MPC; universally referenced in MPC research and deployed in production.
+
+---
+
+### ABY / ABY3 (Mixed-Protocol MPC Framework)
+
+**Goal:** Provide a unified framework for seamlessly switching between Arithmetic, Boolean (GMW), and Yao garbled circuit sharing types within a single protocol execution, enabling each sub-computation to use its most efficient representation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ABY (Demmler-Schneider-Zohner)** | 2015 | 2PC: A+B+Y share conversion | Formally analyzed share-conversion protocols; first mixed-protocol framework; NDSS 2015 [[1]](https://encrypto.de/papers/DSZ15.pdf) |
+| **ABY3 (Mohassel-Rindal)** | 2018 | 3PC honest-majority: A+B+Y | Three-party ML inference/training; powers fastest known private neural network protocols; CCS 2018 [[1]](https://eprint.iacr.org/2018/403) |
+
+**State of the art:** ABY3 is the standard reference framework for three-server ML workloads. No single sharing type is optimal for all operations — ABY's mixed approach avoids performance cliffs. Integrated into commercial privacy-preserving analytics products.
+
+**Production readiness:** Production
+ABY3 is deployed in privacy-preserving ML services and integrated into commercial analytics products.
+
+**Implementations:**
+- [ABY](https://github.com/encryptogroup/ABY) ⭐ 493 — C++, mixed A/B/Y 2PC framework (TU Darmstadt)
+- [ABY3](https://github.com/ladnir/aby3) ⭐ 212 — C++, 3-party mixed-protocol framework
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, implements ABY3 and related mixed-protocol variants
+
+**Security status:** Secure
+ABY has rigorous security proofs for share conversion protocols; ABY3 extends to honest-majority 3PC with well-studied guarantees.
+
+**Community acceptance:** Widely trusted
+ABY/ABY3 are standard references for mixed-protocol MPC; ABY3 is the leading framework for 3-party ML workloads.
+
+---
+
+### BMR Protocol (Constant-Round Multi-Party Garbled Circuits)
+
+**Goal:** Enable constant-round MPC for any number of parties by having parties jointly generate a garbled circuit in the offline phase, so online evaluation requires only local work proportional to circuit size — independent of circuit depth.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BMR (Beaver-Micali-Rogaway)** | 1990 | Joint garbled circuit + OT | First constant-round n-party MPC; online evaluation independent of depth; STOC 1990 [[1]](https://dl.acm.org/doi/10.1145/100216.100287) |
+| **BMR + SPDZ (Hazay-Scholl-Soria-Vazquez)** | 2017 | SPDZ authenticated preprocessing | First concretely efficient constant-round dishonest-majority protocol; CRYPTO 2017 [[1]](https://eprint.iacr.org/2015/523) |
+
+**State of the art:** BMR breaks the depth barrier: deep circuits (recurrent networks, iterative algorithms) that are prohibitively slow in depth-linear protocols become practical. Essential for low-latency secure evaluation over WAN links.
+
+**Production readiness:** Mature
+BMR is implemented in MOTION and MP-SPDZ; used for constant-round MPC in high-latency network settings.
+
+**Implementations:**
+- [MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, BMR with mixed-protocol support
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, BMR + SPDZ for malicious-secure constant-round MPC
+
+**Security status:** Secure
+BMR with SPDZ preprocessing provides malicious security; original protocol proven under standard assumptions.
+
+**Community acceptance:** Widely trusted
+BMR is the canonical constant-round MPC protocol; essential for applications requiring minimal round complexity over WAN.
+
+---
+
+### Sharemind (Practical 3-Party MPC Platform)
+
+**Goal:** Provide a programmable three-party computation platform based on additive secret sharing over Z/2^32 with information-theoretic security in the honest-but-curious model, designed for real organizational data-sharing deployments.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Sharemind (Bogdanov-Laur-Willemson)** | 2008 | 3PC additive SS, Z/2^32 | Native 32-bit integer arithmetic; no public-key ops online; ESORICS 2008 [[1]](https://eprint.iacr.org/2008/289) |
+| **Estonian Tax Study** | 2015 | Sharemind deployed | First large-scale government privacy-preserving analytics study [[1]](https://eprint.iacr.org/2015/1159) |
+
+**State of the art:** Sharemind was among the first MPC systems deployed for real-world institutional data sharing (Estonian government tax/salary study). The honest-but-curious 3PC model is sufficient for many regulated settings where parties are legally accountable.
+
+**Production readiness:** Production
+Sharemind is commercially deployed by Cybernetica for Estonian government privacy-preserving statistics and healthcare analytics.
+
+**Implementations:**
+- [Sharemind MPC](https://sharemind.cyber.ee/) — Commercial platform by Cybernetica
+- [Sharemind SDK](https://github.com/sharemind-sdk) — Open-source SDK components
+- [SecreC](https://github.com/sharemind-sdk/secrec) ⭐ 6 — Domain-specific language for Sharemind
+
+**Security status:** Secure
+Information-theoretically secure in the honest-but-curious 3-party model with non-colluding servers.
+
+**Community acceptance:** Widely trusted
+Sharemind is a pioneering deployed MPC platform; used in the first large-scale government MPC deployment (Estonian tax study 2015).
+
+---
+
+---
+
+
+## Oblivious Transfer and Extensions
+
+---
+### TinyOT (Maliciously Secure 2PC from OT)
+
+**Goal:** Maliciously secure two-party computation over Boolean circuits using only symmetric-key primitives. TinyOT (Nielsen-Nordholt-Orlandi-Burra, CRYPTO 2012) departs entirely from Yao's garbled-circuit tradition: it uses correlated oblivious transfer (COT) to authenticate wire values with information-theoretic MACs, producing actively secure AND-triples in an offline phase and then evaluating the circuit gate-by-gate online. The result is the first OT-based (non-GC) protocol to beat garbled-circuit approaches in practice.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **TinyOT (NNOB)** | 2012 | OT extension + IT-MACs | Malicious 2PC via committed OT; 20 000+ AND gates/s in LAN; CRYPTO 2012 [[1]](https://eprint.iacr.org/2011/091) |
+| **TinyKeys for TinyOT** | 2018 | TinyOT + packed MACs | Reduce MAC key length; scale to large circuits with active security; ASIACRYPT 2018 [[1]](https://link.springer.com/chapter/10.1007/978-3-030-03332-3_4) |
+| **TinyTable** | 2017 | TinyOT + table garbling | Gate-scrambling variant; efficient for small look-up table gates; CRYPTO 2017 [[1]](https://eprint.iacr.org/2016/695) |
+
+**State of the art:** TinyOT remains the canonical OT-based alternative to cut-and-choose for malicious 2PC; largely superseded for garbled-circuit workloads by [Authenticated Garbling (WRK)](#cut-and-choose-for-garbled-circuits-malicious-2pc), but still competitive for Boolean circuits in high-latency networks. Foundation of [MASCOT](#mascot-malicious-arithmetic-mpc-via-ot) and many MPC frameworks.
+
+**Production readiness:** Mature
+TinyOT is implemented in research frameworks and serves as the foundation for MASCOT; not typically deployed standalone.
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes TinyOT-based protocols
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, TinyOT-inspired preprocessing
+- [emp-toolkit](https://github.com/emp-toolkit) — C++, OT-MAC-based protocols descended from TinyOT
+
+**Security status:** Secure
+Full malicious security with information-theoretic MACs; rigorous proofs in the random oracle model.
+
+**Community acceptance:** Widely trusted
+TinyOT is a foundational protocol in the OT-based MPC lineage; its MAC-based approach is the standard for active security.
+
+---
+
+
+## Garbled Circuits
+
+---
+### Cut-and-Choose for Garbled Circuits (Malicious 2PC)
+
+**Goal:** Achieve malicious security in Yao's garbled circuit framework without heavy generic techniques. One party garbles s circuits; the other checks roughly half of them (cut), and evaluates the rest (choose). Cheating requires all evaluated circuits to be malicious, giving soundness error ~2^{−s/2} or better with refined techniques.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Lindell-Pinkas Cut-and-Choose** | 2007 | GC + commit-reveal | Seminal cut-and-choose 2PC; s circuits gives 2^{−0.32s} cheating probability [[1]](https://eprint.iacr.org/2007/557) |
+| **Lindell Fast Cut-and-Choose** | 2013 | GC + forge-and-lose | Optimal s circuits for 2^{−s} soundness; single additional small MPC to "close the loop" [[1]](https://eprint.iacr.org/2013/079) |
+| **Amortizing Garbled Circuits (HKK)** | 2015 | GC batching | Batch cut-and-choose across multiple executions; amortize the s-circuit overhead [[1]](https://eprint.iacr.org/2015/081) |
+| **Authenticated Garbling (WRK)** | 2017 | GC + information-theoretic MACs | Replace cut-and-choose entirely with authenticated wires; single garbled circuit suffices; CCS 2017 [[1]](https://eprint.iacr.org/2017/030) |
+
+**State of the art:** Authenticated garbling (WRK 2017) supersedes cut-and-choose for most uses — achieving malicious 2PC with one garbled circuit and no circuit duplication. Cut-and-choose remains relevant when the underlying primitive is most convenient. See [Garbled Circuits (expanded)](#garbled-circuits-expanded).
+
+**Production readiness:** Mature
+Cut-and-choose techniques are implemented in research frameworks; largely superseded by authenticated garbling (WRK) in new deployments.
+
+**Implementations:**
+- [emp-ag2pc](https://github.com/emp-toolkit/emp-ag2pc) ⭐ 33 — C++, implements authenticated garbling (WRK) which supersedes cut-and-choose
+- [JustGarble](https://github.com/irdan/justGarble) ⭐ 15 — C, early garbled circuit implementation supporting cut-and-choose
+- [Obliv-C](https://github.com/samee/obliv-c) ⭐ 184 — C, supports malicious-secure 2PC via cut-and-choose
+
+**Security status:** Superseded
+Cut-and-choose is technically secure but authenticated garbling (WRK 2017) achieves malicious 2PC more efficiently with a single garbled circuit.
+
+**Community acceptance:** Widely trusted
+Cut-and-choose is a well-established technique with decades of study; WRK authenticated garbling is now preferred for most applications.
+
+---
+
+### Two-Party PSI from Garbled Circuits (Pinkas et al.)
 
 **Goal:** Private set intersection (PSI) via garbled circuits. Rather than number-theoretic PSI (DH-based or OPRf-based), garble a circuit that computes the intersection directly — achieving malicious security and circuit-PSI (where the output is secret-shared rather than revealed), with competitive performance even for unbalanced set sizes. Pinkas-Schneider-Zohner and follow-ons showed that GC-based PSI can be faster than cryptographic alternatives for certain parameter regimes.
 
@@ -1147,265 +1337,7 @@ PSI is one of the most practically deployed MPC primitives; KKRT and VOLE-PSI ar
 
 ---
 
-## Private Decision Trees and Random Forests (Bost et al., ABY3)
-
-**Goal:** Evaluate a decision tree or random forest on a private input without revealing the model structure or the input values. The client holds a sensitive query (e.g., a medical record); the model owner holds a trained classifier. Only the classification label is revealed — not the branching conditions, thresholds, or individual tree predictions. Applications include private medical diagnosis, private credit scoring, and private fraud classification.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Bost-Popa-Tu-Goldwasser** | 2015 | HE (Paillier) + GC | First practical private classification: decision trees, naive Bayes, and hyperplane classifiers; IEEE S&P 2015 [[1]](https://eprint.iacr.org/2014/331) |
-| **Kissner-Song private classifiers** | 2005 | Secret sharing | Early MPC-based private decision tree evaluation; information-theoretic in honest-majority model [[1]](https://dl.acm.org/doi/10.1145/1102120.1102169) |
-| **Efficient Private Decision Tree (Joye-Salehi)** | 2018 | HE + oblivious RAM | Decision tree evaluation using FHE for tree traversal; avoids circuit blowup from branch unrolling [[1]](https://eprint.iacr.org/2018/1099) |
-| **ABY3 Random Forest** | 2018 | 3PC secret sharing (honest majority) | Secret-shared random forest evaluation over replicated shares; fast LAN performance; CCS 2018 [[1]](https://eprint.iacr.org/2018/403) |
-| **Wen-Dong-Li (Crypten private forest)** | 2022 | 2PC + FSS | Private random forest using FSS for comparison gates; sublinear communication per tree node [[1]](https://arxiv.org/abs/2201.12218) |
-
-**State of the art:** ABY3-based approaches are fastest for semi-honest 3-party settings; FSS-based comparison (ARIANN-style) is best for 2-party. The central challenge is the data-dependent branching of tree traversal — standard solutions either unroll all paths (circuit blowup) or use ORAM (large overhead). Related to [FSS / DPF](#function-secret-sharing-fss--distributed-point-functions-dpf), [SecureML / MPC-based ML](#secureml-and-mpc-based-machine-learning-inference), and [ARIANN / SecureNN](#ariann-and-securenn-private-neural-network-inference).
-
-**Production readiness:** Experimental
-Private decision tree evaluation is implemented in research frameworks; production deployment is limited to specific healthcare/finance use cases.
-
-**Implementations:**
-- [ABY3](https://github.com/ladnir/aby3) ⭐ 212 — C++, includes private random forest evaluation
-- [CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.6k — Python, supports decision tree inference
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, can express decision tree evaluation
-
-**Security status:** Secure
-Protocols are proven secure; the main challenge is efficiency of data-dependent tree traversal, not security.
-
-**Community acceptance:** Niche
-Private decision trees are well-studied in the PPML literature; practical for specific domains (medical diagnosis, credit scoring).
-
----
-
-## MPC for E-Voting (Helios, Belenios, Civitas)
-
-**Goal:** Run a verifiable, privacy-preserving election without a single trusted tallier. MPC-based e-voting splits the tallying authority among multiple servers (trustees) using threshold encryption or secret sharing — no single server can decrypt individual ballots, and even a minority of corrupt servers cannot bias the result. Voters and observers can publicly verify that their vote was counted correctly without learning how others voted.
-
-| System | Year | Basis | Note |
-|--------|------|-------|------|
-| **Helios** | 2008 | ElGamal threshold + ZK shuffles | First widely deployed web-based verifiable voting; voters encrypt ballots; trustees jointly decrypt tally via threshold decryption; USENIX Security 2008 [[1]](https://www.usenix.org/legacy/events/sec08/tech/full_papers/adida/adida.pdf) |
-| **Civitas** | 2008 | Mix-nets + threshold decryption | Coercion-resistant e-voting; MPC-based registration and tallying; anonymous credential issuance via MPC; IEEE S&P 2008 [[1]](https://eprint.iacr.org/2008/136) |
-| **Belenios** | 2013 | ElGamal threshold + homomorphic tally | Successor to Helios; trustees hold shares of the decryption key via Pedersen DKG; used in real French university elections [[1]](https://eprint.iacr.org/2013/177) |
-| **DEMOS-2** | 2015 | Secret sharing + MPC tally | Fully coercion-resistant; distributes credential issuance and tallying using MPC with honest majority [[1]](https://eprint.iacr.org/2015/1069) |
-| **Norwegian e-voting (Scytl/MPC)** | 2014 | Threshold decryption + mix-net | National-scale use of threshold MPC for tallying in Norwegian parliamentary elections; post-election audit [[1]](https://dl.acm.org/doi/10.1145/2660267.2660315) |
-
-**State of the art:** Belenios is the most actively maintained and deployed academic system (France, Switzerland); Civitas pioneered coercion resistance via MPC. The dominant approach is homomorphic tally (fast but limited to simple tally functions) or MPC-based mix-net (supports ranked/approval voting). Related to [Threshold Decryption](05-secret-sharing-threshold-cryptography.md#threshold-decryption), [Mix-networks](11-anonymity-credentials.md#mix-networks-mixnets), [E-voting](20-applied-niche-protocols.md#coercion-resistant-voting--receipt-freeness), and [DKG](05-secret-sharing-threshold-cryptography.md#distributed-key-generation-dkg).
-
-**Production readiness:** Production
-Belenios is deployed in real elections (French universities, IACR elections); Helios has been used for organizational voting.
-
-**Implementations:**
-- [Helios](https://github.com/benadida/helios-server) ⭐ 888 — Python, web-based verifiable voting
-- [Belenios](https://github.com/glondu/belenios) ⭐ 147 — OCaml, verifiable voting system with threshold decryption
-- [Civitas](https://github.com/eastcoastcrypto/Civitas) ⭐ 13 — Java, coercion-resistant e-voting prototype
-
-**Security status:** Caution
-Voting systems are secure under their threat models but require careful operational deployment; coercion resistance remains challenging in practice.
-
-**Community acceptance:** Widely trusted
-Belenios and Helios are the standard academic e-voting systems; used in real elections with public verifiability.
-
----
-
-## MPC for Collaborative Fraud Detection (Privacy-Preserving ML Fraud)
-
-**Goal:** Multiple financial institutions jointly train or evaluate fraud detection models on their combined transaction data without sharing raw records. Each institution's data (account histories, transaction patterns) is sensitive and legally protected — but pooling it would dramatically improve fraud detection rates. MPC enables cross-institutional analysis while each party retains data sovereignty.
-
-| System / Scheme | Year | Basis | Note |
-|-----------------|------|-------|------|
-| **Privacy-Preserving Fraud Detection (Bringer et al.)** | 2011 | HE + secret sharing | Bank-to-bank comparison of transaction fingerprints under FHE; first MPC fraud system [[1]](https://link.springer.com/chapter/10.1007/978-3-642-24209-0_12) |
-| **Cape Privacy (now Tumult Labs)** | 2019 | Differential privacy + MPC | Platform for privacy-preserving data collaboration; used by financial institutions for fraud and AML analytics; combines MPC with DP output perturbation [[1]](https://github.com/capeprivacy) |
-| **FATE (Federated AI Technology Enabler)** | 2019 | Federated learning + secret sharing + HE | WeBank's open-source FL platform; secure gradient aggregation for logistic regression and tree-based fraud models across banks [[1]](https://github.com/FederatedAI/FATE) |
-| **Crypten cross-institution fraud** | 2021 | Secret sharing (SPDZ-like) | Demonstrated training fraud classifiers across two financial institutions using CrypTen; PyTorch-native [[1]](https://arxiv.org/abs/2109.00984) |
-| **OpenMined PySyft** | 2018+ | Secret sharing + DP + FL | Open-source MPC+FL library used for privacy-preserving AML and credit scoring research across institutions [[1]](https://github.com/OpenMined/PySyft) |
-
-**State of the art:** Production cross-institution fraud detection MPC is in early deployment — FATE and Cape/Tumult have real customers, but full MPC (not just FL + DP) for fraud remains expensive. The dominant practical approach combines federated learning for local model training with MPC only for secure aggregation, plus differential privacy for output protection. Related to [SecureML / MPC-based ML](#secureml-and-mpc-based-machine-learning-inference), [Secure Aggregation](#secure-aggregation-secagg), [Differential Privacy](10-privacy-preserving-computation.md#differential-privacy), and [Carbyne Stack](#carbyne-stack-cloud-native-mpc).
-
-**Production readiness:** Experimental
-FATE and PySyft have real enterprise customers; full MPC-based fraud detection (vs FL+DP) is in early deployment.
-
-**Implementations:**
-- [FATE](https://github.com/FederatedAI/FATE) ⭐ 6.1k — Python, WeBank's federated AI platform with secure aggregation
-- [PySyft](https://github.com/OpenMined/PySyft) ⭐ 9.9k — Python, MPC+FL library for privacy-preserving analytics
-- [CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.6k — Python, demonstrated cross-institution fraud classification
-
-**Security status:** Secure
-Underlying MPC/FL protocols are proven secure; DP output perturbation provides additional privacy guarantees.
-
-**Community acceptance:** Emerging
-Privacy-preserving fraud detection is an active industry application; FATE and PySyft have growing adoption in financial institutions.
-
----
-
-## Asynchronous MPC (Ben-Or-Kelmer-Rabin, Canetti-Rabin)
-
-**Goal:** Multiparty computation without synchrony assumptions. In the asynchronous model, messages can be arbitrarily delayed and the protocol cannot wait for slow parties — it must make progress whenever n − t messages arrive (where t is the corruption threshold). This is strictly harder than synchronous MPC: the adversary can selectively delay messages to control what each party "sees" first. Ben-Or-Kelmer-Rabin (1994) and Canetti-Rabin (1996) gave the first rigorous treatments.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Ben-Or-Kelmer-Rabin (BKR) Async MPC** | 1994 | Information-theoretic + async BA | First async MPC with t < n/4 tolerance; uses async Byzantine agreement (ABA) as a sub-protocol; PODC 1994 [[1]](https://dl.acm.org/doi/10.1145/164051.164083) |
-| **Canetti-Rabin Async MPC** | 1996 | Verifiable SS + async BA | Improved to t < n/3; uses AVSS (asynchronous verifiable secret sharing) to handle late arrivals; STOC 1996 [[1]](https://dl.acm.org/doi/10.1145/237814.238015) |
-| **Beerliová-Trubíniová–Hirt Async MPC** | 2010 | Packed SS + async BA | Efficient async MPC with optimal t < n/3; communication O(n²) per multiplication gate [[1]](https://eprint.iacr.org/2010/236) |
-| **AMPR (Async MPC with Preprocessing)** | 2015 | Beaver triples + async online | Preprocessing model for async MPC; decouple triple generation (sync-friendly) from async online phase [[1]](https://eprint.iacr.org/2015/1064) |
-| **Astra (async 3PC)** | 2019 | 3PC + async model | Practical 3-party async MPC for ML workloads; honest majority; CCS 2019 [[1]](https://eprint.iacr.org/2019/429) |
-
-**State of the art:** Async MPC achieves t < n/3 (information-theoretic) and t < n/2 (with computational assumptions and security-with-abort). The gap between sync and async tolerance (n/3 vs n/2 for IT-MPC) is fundamental. Modern async MPC is used in distributed key generation ceremonies and DeFi threshold services that cannot rely on a synchronous clock. Distinct from [Asynchronous BFT](#asynchronous-bft--asynchronous-mpc) (consensus focus) — async MPC is about computing arbitrary functions, not just agreement. Related to [AVSS](05-secret-sharing-threshold-cryptography.md#asynchronous-verifiable-secret-sharing-avss) and [Robust MPC](#robust-mpc-with-cheater-identification).
-
-**Production readiness:** Mature
-Async MPC techniques are used in DKG ceremonies and DeFi threshold services; standalone async MPC frameworks are less common.
-
-**Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes async-compatible protocol variants
-- [HoneyBadgerMPC](https://github.com/initc3/HoneyBadgerMPC) ⭐ 137 — Python, async MPC framework building on HoneyBadgerBFT
-
-**Security status:** Secure
-Async MPC achieves t < n/3 (IT) and t < n/2 (computational) with rigorous proofs; the async model is well-formalized.
-
-**Community acceptance:** Widely trusted
-Async MPC is fundamental to distributed systems that cannot assume synchrony; deployed in DeFi and DKG protocols.
-
----
-
-## Replicated Secret Sharing MPC (Araki et al.)
-
-**Goal:** Achieve extremely high-throughput three-party computation with an honest majority by exploiting replicated secret sharing, where each party holds two of three additive shares. AND gates require communicating only a single bit per gate per party, enabling billions of gates per second on commodity hardware.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Araki et al. (Semi-honest 3PC)** | 2016 | Replicated secret sharing | 1 bit communication per AND gate; 7 billion AND gates/s throughput; CCS 2016 [[1]](https://eprint.iacr.org/2016/768) |
-| **Furukawa et al. (Malicious 3PC)** | 2017 | Replicated SS + cut-and-choose | Extend Araki to malicious security via post-execution verification; EUROCRYPT 2017 [[1]](https://eprint.iacr.org/2016/944) |
-| **Replicated SS over Rings** | 2023 | Replicated SS + Z_{2^k} | Multi-party replicated secret sharing over rings for privacy-preserving ML; supports native integer arithmetic [[1]](https://www.acsu.buffalo.edu/~mblanton/publications/popets23-1.pdf) |
-
-**State of the art:** Araki et al. remains the highest-throughput semi-honest 3PC protocol known; Furukawa et al. achieves malicious security with modest overhead. The replicated SS approach underpins practical frameworks like ABY3 and MP-SPDZ's replicated-sharing backends. Related to [ABY / ABY3](#multi-party-computation-mpc), [Sharemind](#sharemind-mpc-platform), and [Honest Majority MPC](#honest-majority-vs-dishonest-majority-mpc-security-models).
-
-**Production readiness:** Production
-Replicated SS 3PC is deployed in ABY3 and MP-SPDZ's replicated backends; used in privacy-preserving ML services.
-
-**Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, replicated secret sharing backends (semi-honest and malicious)
-- [ABY3](https://github.com/ladnir/aby3) ⭐ 212 — C++, replicated SS for 3-party ML workloads
-- [MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, includes replicated SS protocols
-
-**Security status:** Secure
-Information-theoretically secure in the semi-honest model; Furukawa et al. achieves malicious security with post-execution verification.
-
-**Community acceptance:** Widely trusted
-Replicated SS 3PC is the fastest known semi-honest MPC protocol; widely adopted for honest-majority 3-party settings.
-
----
-
-## MPC-in-the-Head (IKOS Paradigm)
-
-**Goal:** Construct zero-knowledge proofs from any MPC protocol, treated as a black box. The prover simulates an MPC protocol "in their head" among virtual parties, commits to each party's view, and the verifier checks a random subset of views for consistency. Privacy of the MPC protocol guarantees zero-knowledge; soundness comes from the fact that cheating requires corrupting views that are likely to be checked.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **IKOS (Ishai-Kushilevitz-Ostrovsky-Sahai)** | 2007 | Any semi-honest MPC | First MPC-in-the-head construction; transforms any t-private MPC into a ZK proof; STOC 2007 [[1]](https://web.cs.ucla.edu/~rafail/PUBLIC/77.pdf) |
-| **KKW (Katz-Kolesnikov-Wang)** | 2018 | MPC-in-the-head + OT | Improved MPCitH with fewer parties and better concrete efficiency; CCS 2018 [[1]](https://eprint.iacr.org/2018/475) |
-| **Syndrome Decoding in the Head (SDitH)** | 2022 | MPCitH + code-based crypto | Post-quantum signatures from MPCitH applied to syndrome decoding; NIST PQC candidate [[1]](https://eprint.iacr.org/2022/188) |
-| **VOLEitH (Baum et al.)** | 2023 | VOLE + MPCitH | Replace MPC with VOLE correlations for more efficient ZK proofs; smaller proof sizes [[1]](https://eprint.iacr.org/2023/996) |
-
-**State of the art:** MPCitH is the dominant paradigm for post-quantum ZK signatures (SDitH is a NIST PQC candidate); VOLEitH achieves the best concrete proof sizes for arithmetic relations. The paradigm bridges [MPC](#multi-party-computation-mpc) and [Zero-Knowledge Proof Systems](04-zero-knowledge-proof-systems.md#mpc-in-the-head-mpcith). Related to [VOLE](#oblivious-linear-evaluation-ole--vole) and [Silent OT / PCG](#silent-ot--pseudorandom-correlation-generators-pcg).
-
-**Production readiness:** Experimental
-MPCitH is used in the Picnic post-quantum signature scheme (NIST alternate candidate); SDitH is a NIST PQC candidate.
-
-**Implementations:**
-- [Picnic](https://github.com/microsoft/Picnic) ⭐ 168 — C, Microsoft's MPCitH-based post-quantum signature
-- [SDitH](https://github.com/sdith/sdith) ⭐ 5 — C, Syndrome Decoding in the Head signature scheme
-
-**Security status:** Secure
-MPCitH has rigorous security reductions from MPC privacy to ZK soundness; SDitH security relies on well-studied code-based assumptions.
-
-**Community acceptance:** Emerging
-MPCitH is a recognized paradigm for post-quantum ZK; SDitH is under NIST PQC evaluation; VOLEitH is gaining traction for efficient proofs.
-
----
-
-## Fantastic Four / SWIFT (Small-Party Honest-Majority MPC)
-
-**Goal:** Practically efficient MPC for small fixed numbers of parties (3 or 4) with an honest majority and malicious security. These protocols exploit the specific structure of 3-party or 4-party settings to achieve much higher throughput than general n-party protocols, targeting privacy-preserving machine learning workloads.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **SWIFT** | 2021 | 3PC + replicated SS | First robust and efficient PPML framework in 3PC with malicious security; guarantees output delivery; USENIX Security 2021 [[1]](https://eprint.iacr.org/2020/592) |
-| **Fantastic Four (Dalskov et al.)** | 2021 | 4PC + replicated SS | Honest-majority 4PC with malicious security; simpler design than prior 4PC; no function-dependent preprocessing; USENIX Security 2021 [[1]](https://www.usenix.org/conference/usenixsecurity21/presentation/dalskov) |
-| **Tetrad (Koti et al.)** | 2022 | 4PC + mixed sharing | Fast 4PC with fairness and guaranteed output delivery; optimized for ML inference; NDSS 2022 [[1]](https://eprint.iacr.org/2021/755) |
-| **Secure 5PC** | 2024 | 5PC + private robustness | Five-party computation with minimal online communication and private robustness [[1]](https://link.springer.com/chapter/10.1007/978-981-96-0954-3_3) |
-
-**State of the art:** SWIFT (3PC) and Fantastic Four (4PC) are the leading protocols for small-party honest-majority PPML, both implemented in MP-SPDZ. The 4-party setting is attractive because it allows malicious security with guaranteed output delivery while tolerating 1 corruption. Related to [ABY3](#multi-party-computation-mpc), [Replicated SS MPC](#replicated-secret-sharing-mpc-araki-et-al), and [SecureML](#secureml-and-mpc-based-machine-learning-inference).
-
-**Production readiness:** Experimental
-SWIFT and Fantastic Four are implemented in MP-SPDZ; used in PPML research benchmarks but not yet widely deployed in production.
-
-**Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes SWIFT (3PC) and Fantastic Four (4PC) protocols
-
-**Security status:** Secure
-Both protocols provide full malicious security with guaranteed output delivery under honest majority; rigorous proofs at USENIX Security 2021.
-
-**Community acceptance:** Emerging
-SWIFT and Fantastic Four are well-received in the PPML community; the 4-party model is gaining interest for its security/efficiency trade-off.
-
----
-
-## MPC-Friendly Symmetric Primitives (LowMC, MiMC)
-
-**Goal:** Design block ciphers and hash functions that minimize the number of non-linear (multiplicative) operations, since multiplications are the expensive bottleneck in MPC, FHE, and ZK proof systems. Standard ciphers like AES require hundreds of AND gates per block; MPC-friendly designs reduce this by 5-50x, enabling efficient hybrid protocols where data is encrypted locally and decrypted inside MPC.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **LowMC** | 2015 | Substitution-permutation network | Minimizes multiplicative depth and count; configurable AND-gate budget; up to 5x faster than AES in MPC [[1]](https://eprint.iacr.org/2016/687) |
-| **MiMC** | 2016 | x^3 round function over F_p | Minimal multiplicative complexity over large fields; 1 multiplication per round; efficient for SNARK-based applications [[1]](https://eprint.iacr.org/2016/492) |
-| **Rasta / HERA** | 2018 | Alternating moduli | Nonce-based encryption using alternating mod-2 and mod-3 operations; sublinear multiplicative complexity [[1]](https://eprint.iacr.org/2018/181) |
-| **Ciminion** | 2021 | Toffoli gates + Farfalle-like | MPC/FHE-friendly with very low AND depth; designed for SPDZ-style protocols [[1]](https://eprint.iacr.org/2021/267) |
-
-**State of the art:** LowMC is used in Picnic post-quantum signatures (NIST alternate candidate); MiMC is widely used in ZK-SNARK circuits. The design goal is to minimize the multiplicative depth (for round-complexity) and multiplicative count (for communication). Related to [Garbled Circuits](#garbled-circuits-expanded), [Silent OT / PCG](#silent-ot--pseudorandom-correlation-generators-pcg), and [ZK-Friendly Hash Functions](01-foundational-primitives.md#hash-functions).
-
-**Production readiness:** Production
-LowMC is used in Picnic (NIST PQC alternate candidate); MiMC and Poseidon are deployed in ZK-SNARK circuits on Ethereum and other blockchains.
-
-**Implementations:**
-- [Picnic](https://github.com/microsoft/Picnic) ⭐ 168 — C, uses LowMC as the underlying block cipher
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes MPC-friendly cipher evaluations
-- [Ciminion reference](https://github.com/ongetekend/ciminion) ⭐ 5 — Sage, reference implementation of Ciminion
-
-**Security status:** Caution
-LowMC and MiMC have been subject to algebraic attacks; parameter recommendations have been updated. Newer designs (Ciminion) are less studied.
-
-**Community acceptance:** Widely trusted
-MPC-friendly ciphers are a recognized design category; LowMC (Picnic) and MiMC (ZK circuits) are widely deployed.
-
----
-
-## Conclave (MPC for Relational Analytics on Big Data)
-
-**Goal:** Scale MPC to big-data relational analytics by compiling SQL-like queries into a hybrid of local cleartext processing and small MPC steps. Rather than running the entire query inside MPC (which is prohibitively slow for large datasets), Conclave identifies which operations can be safely performed locally and pushes only the privacy-sensitive joins and aggregations into MPC, achieving orders-of-magnitude speedup.
-
-| System | Year | Basis | Note |
-|--------|------|-------|------|
-| **Conclave (Volgushev et al.)** | 2019 | Hybrid cleartext + MPC compiler | Query compiler for multi-party relational analytics; 3-6 orders of magnitude faster than pure MPC; EuroSys 2019 [[1]](https://dl.acm.org/doi/10.1145/3302424.3303982) |
-| **Senate** | 2021 | Malicious-secure MPC + SQL | Maliciously secure collaborative analytics platform for relational queries; tolerates n-1 corruptions [[1]](https://www.usenix.org/conference/osdi21/presentation/poddar) |
-| **Secrecy** | 2022 | Secret sharing + relational algebra | MPC system for SQL with native relational operators (join, group-by, order-by) over secret-shared tables [[1]](https://dl.acm.org/doi/10.14778/3514061.3514066) |
-
-**State of the art:** Conclave + Sharemind is deployed for real analytics; Senate provides malicious security for SQL. The key insight is that most data in a relational query can be processed locally — only the privacy-critical operations (joins across parties, aggregations revealing cross-party patterns) need MPC. Related to [Sharemind](#sharemind-mpc-platform), [Carbyne Stack](#carbyne-stack-cloud-native-mpc), and [Oblivious SQL](10-privacy-preserving-computation.md#oblivious-sql--encrypted-database-joins).
-
-**Production readiness:** Experimental
-Conclave has been demonstrated with Sharemind for real analytics; Senate and Secrecy are academic prototypes.
-
-**Implementations:**
-- [Conclave](https://github.com/multiparty/conclave) ⭐ 100 — Python, hybrid cleartext/MPC query compiler for relational analytics
-- [Secrecy](https://github.com/multiparty/secrecy) ⭐ 0 — C, secret-shared relational algebra engine
-
-**Security status:** Secure
-Hybrid execution is proven secure: cleartext portions see only public data, MPC portions use standard secret sharing security.
-
-**Community acceptance:** Niche
-Conclave and Secrecy are well-cited in the MPC-for-analytics literature; the hybrid cleartext/MPC approach is gaining acceptance.
-
----
-
-## Obliv-C (Language for Data-Oblivious Computation)
+### Obliv-C (Language for Data-Oblivious Computation)
 
 **Goal:** Provide a programming language and compiler that makes it easy to write secure two-party computations without cryptographic expertise. Obliv-C extends C with an obliv type qualifier — variables marked obliv are automatically encrypted and all operations on them are compiled into garbled circuit gates. The type system ensures that secret data can never leak through control flow or memory access patterns.
 
@@ -1431,7 +1363,184 @@ Obliv-C pioneered the MPC compiler approach; influential in the design of subseq
 
 ---
 
-## Delphi (Cryptographic Private Inference Service)
+
+## Function Secret Sharing and DPF
+
+---
+### Function Secret Sharing (FSS) / Distributed Point Functions (DPF)
+
+**Goal:** Secret-share a function. Split a function f into shares f₀, f₁ such that each share reveals nothing, but f₀(x) + f₁(x) = f(x) for all x. Enables efficient PIR, anonymous messaging, private database queries with sublinear communication.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Distributed Point Function (GI14)** | 2014 | PRG tree | Secret-share a point function (1 at target, 0 elsewhere); O(λ log N) key size [[1]](https://eprint.iacr.org/2018/707) |
+| **FSS for intervals/comparison** | 2015 | DPF + prefix tree | Extend DPF to interval functions; private range queries [[1]](https://eprint.iacr.org/2018/707) |
+| **FSS for decision trees** | 2021 | DPF composition | Secret-share a decision tree for private inference [[1]](https://eprint.iacr.org/2020/1392) |
+
+**State of the art:** DPF (used in Brave/STAR, Google Privacy Sandbox), FSS for intervals (private analytics).
+
+**Production readiness:** Experimental
+DPF is used in Brave's STAR protocol and Google's Privacy Sandbox for private analytics, but broader deployment is still emerging.
+
+**Implementations:**
+- [libfss](https://github.com/google/distributed_point_functions) ⭐ 79 — C++, Google's DPF library used in Privacy Sandbox
+
+**Security status:** Secure
+DPF security relies on standard PRG assumptions; well-studied with tight security reductions.
+
+**Community acceptance:** Emerging
+DPF is gaining traction in private analytics (Brave, Google); FSS for richer function classes remains primarily academic.
+
+---
+
+### Distributed PRF (DPRF)
+
+**Goal:** Threshold PRF evaluation. t-of-n servers jointly evaluate a PRF on input x — no single server knows the PRF key, and fewer than t servers learn nothing about the output. Enables distributed key derivation and tokenization.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Naor-Pinkas-Reingold DPRF** | 1999 | DDH | First DPRF; threshold Naor-Reingold PRF [[1]](https://doi.org/10.1007/3-540-48910-X_16) |
+| **Dodis-Yampolskiy DVRF/DPRF** | 2005 | Pairings | Verifiable DPRF; each server proves correct partial evaluation [[1]](https://eprint.iacr.org/2004/310) |
+| **Threshold OPRF (TOPRF)** | 2020 | EC + threshold | Threshold + oblivious: client input hidden, key distributed [[1]](https://eprint.iacr.org/2017/363) |
+
+**State of the art:** TOPRF for distributed password authentication (extends [OPRF](#oblivious-transfer-ot)); DPRF for distributed key management. Related to [PRF](#silent-ot--pseudorandom-correlation-generators-pcg).
+
+**Production readiness:** Mature
+DPRF and TOPRF are deployed in threshold password authentication systems and distributed key management services.
+
+**Implementations:**
+- [VOPRF (Cloudflare)](https://github.com/cloudflare/circl) ⭐ 1.6k — Go, includes OPRF/VOPRF/TOPRF in CIRCL library
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, DPRF protocol implementations
+
+**Security status:** Secure
+DDH-based DPRF and pairing-based DVRF have well-studied security reductions; TOPRF inherits OPRF security with threshold guarantees.
+
+**Community acceptance:** Widely trusted
+DPRF/TOPRF are established primitives with IETF standardization efforts (VOPRF RFC 9497) and broad cryptographic community trust.
+
+---
+
+
+## OLE, VOLE, and Correlations
+
+---
+### TinyOT (OT-Based Actively Secure 2PC)
+
+**Goal:** Construct actively secure two-party computation over Boolean circuits using only OT as a primitive, via information-theoretically secure MACs, with an offline/online split far cheaper than cut-and-choose approaches.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **TinyOT (Nielsen-Nordholt-Orlandi-Burra)** | 2012 | OT + IT-MACs | ~6x overhead over semi-honest GMW; no cut-and-choose; CRYPTO 2012 [[1]](https://eprint.iacr.org/2011/091) |
+| **MASCOT** | 2016 | Arithmetic analogue of TinyOT | Extends OT-MAC paradigm to arithmetic circuits; CCS 2016 [[1]](https://eprint.iacr.org/2016/505) |
+
+**State of the art:** TinyOT demonstrated that OT-derived MACs provide full active security with manageable overhead, directly inspiring MASCOT and the entire OT-based MPC lineage. Go-to protocol for Boolean circuit tasks like private pattern matching and biometric comparison.
+
+**Production readiness:** Mature
+TinyOT is implemented in MP-SPDZ and forms the basis of MASCOT; not typically deployed standalone but underpins production systems.
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, TinyOT protocol and MASCOT (arithmetic extension)
+- [emp-toolkit](https://github.com/emp-toolkit) — C++, OT-MAC protocols inspired by TinyOT
+
+**Security status:** Secure
+Full active security via OT-derived information-theoretic MACs; ~6x overhead over semi-honest with rigorous proofs.
+
+**Community acceptance:** Widely trusted
+TinyOT is a foundational protocol in the OT-based active-security lineage; directly inspired MASCOT and modern OT-based MPC.
+
+---
+
+
+## Secure Aggregation and Applications
+
+---
+### Secure Aggregation (SecAgg)
+
+**Goal:** Privacy-preserving summation. Multiple clients send encrypted inputs to a server, which learns only the aggregate (sum/average) — not individual contributions. Core primitive for federated learning.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bonawitz et al. (Google SecAgg)** | 2017 | Secret sharing + DH masking | Tolerates dropouts; used in Gboard federated learning [[1]](https://eprint.iacr.org/2017/281) |
+| **Bell et al. (SecAgg+)** | 2020 | Sparse secret sharing | O(n log n) communication; improved scalability [[1]](https://eprint.iacr.org/2020/704) |
+| **FLAME (LWE-based)** | 2023 | LWE | Post-quantum secure aggregation [[1]](https://eprint.iacr.org/2023/224) |
+| **PAgIoT** | 2016 | Paillier + attributes | Privacy-preserving multi-attribute aggregation for IoT; lightweight for constrained devices [[1]](https://lgmanzan.github.io/docs/PagIoT.pdf) |
+
+**State of the art:** SecAgg+ (Google/Apple production), FLAME (PQ setting), PAgIoT (IoT-optimized).
+
+**Production readiness:** Production
+SecAgg is deployed in Google's Gboard federated learning and Apple's on-device learning pipelines at scale serving billions of users.
+
+**Implementations:**
+- [TensorFlow Federated](https://github.com/google-parfait/tensorflow-federated) ⭐ 2.4k — Python, includes SecAgg and SecAgg+ implementations
+- [PySyft](https://github.com/OpenMined/PySyft) ⭐ 9.9k — Python, secure aggregation for federated learning
+- [FATE](https://github.com/FederatedAI/FATE) ⭐ 6.1k — Python, federated AI platform with secure aggregation
+
+**Security status:** Secure
+SecAgg+ is proven secure against semi-honest adversaries with dropout tolerance; LWE-based FLAME provides post-quantum security.
+
+**Community acceptance:** Widely trusted
+SecAgg is the de facto standard for privacy-preserving federated learning; deployed by Google, Apple, and adopted in academic FL research.
+
+---
+
+### Mental Poker / Commutative Encryption
+
+**Goal:** Fair card games without a trusted dealer. Two or more players deal, shuffle, and draw cards from a virtual deck — no player can cheat (see others' cards, stack the deck), and no trusted third party is needed. Uses commutative encryption: E_A(E_B(x)) = E_B(E_A(x)), so encryption order doesn't matter.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Shamir-Rivest-Adleman Mental Poker** | 1981 | Commutative RSA | First protocol; players encrypt cards with commutative cipher; shuffle by re-encrypting [[1]](https://people.csail.mit.edu/rivest/pubs/SRA81.pdf) |
+| **Barnett-Smart Mental Poker** | 2003 | ElGamal + ZK | Efficient protocol using ElGamal rerandomization + zero-knowledge proofs of shuffle [[1]](https://doi.org/10.1007/978-3-540-40061-5_23) |
+| **Blockchain Mental Poker** | 2018 | Smart contracts + commit-reveal | Trustless poker on Ethereum; disputes resolved on-chain [[1]](https://doi.org/10.1007/978-3-030-01177-2_28) |
+
+**State of the art:** Barnett-Smart (efficient, ZK-based); blockchain variants for trustless online play. The first example of [Secure Computation](#multi-party-computation-mpc) — historically predates general MPC.
+
+**Production readiness:** Experimental
+Mental poker protocols are implemented in blockchain-based card game platforms; traditional (non-blockchain) implementations are rare.
+
+**Implementations:**
+- [mental-poker](https://github.com/geometryxyz/mental-poker) ⭐ 117 — JavaScript, implementation of Barnett-Smart mental poker
+- [zkPoker](https://github.com/ottodevs/zkpoker) ⭐ 4 — Rust, zero-knowledge poker using ZK proofs
+
+**Security status:** Secure
+Barnett-Smart protocol is proven secure under DDH; blockchain variants inherit smart contract security assumptions.
+
+**Community acceptance:** Niche
+Mental poker is historically significant but has limited deployment; blockchain poker games use the techniques in niche applications.
+
+---
+
+### ARIANN and SecureNN (Private Neural Network Inference)
+
+**Goal:** Perform neural network inference (forward pass) on private inputs without revealing the input to the model holder, and without revealing the model weights to the input holder. Targets the two-party "ML-as-a-service" setting: a client has a private query; a server has a private model; only the inference result is revealed.
+
+| System | Year | Basis | Note |
+|--------|------|-------|------|
+| **SecureNN (Wagh-Gupta-Chandran)** | 2019 | 3PC + secret sharing | Private inference for ReLU-based networks; novel secure comparison for non-linear layers; CCS 2019 [[1]](https://eprint.iacr.org/2018/442) |
+| **ARIANN (Ryffel et al.)** | 2020 | 2PC + additive SS + function secret sharing | Sublinear communication for private inference using FSS for ReLU and comparison; PPML 2020 [[1]](https://arxiv.org/abs/2006.04593) |
+| **Cheetah** | 2022 | 2PC: CKKS (linear) + OT/GC (nonlinear) | Fast 2-party private inference by combining CKKS for matrix multiply with GC for ReLU; USENIX Security 2022 [[1]](https://eprint.iacr.org/2022/207) |
+| **Iron** | 2022 | 2PC + transformer attention | Private transformer inference (BERT, GPT-2); handles attention heads and softmax securely; NeurIPS 2022 [[1]](https://arxiv.org/abs/2207.05836) |
+| **BOLT** | 2023 | 2PC + lookup table garbling | Efficient non-linear activation via garbled lookup tables; replaces expensive GC sigmoid with table-based approach [[1]](https://eprint.iacr.org/2023/806) |
+
+**State of the art:** Cheetah and BOLT represent the current performance frontier for 2-party private inference. The key challenge remains non-linear layers (ReLU, softmax, GeLU) — linear layers are well-handled by CKKS, but activations require expensive garbled circuits or FSS-based techniques. Distinct from [SecureML / MPC-based ML training](#secureml-and-mpc-based-machine-learning-inference) (covers training); related to [FSS / DPF](#function-secret-sharing-fss--distributed-point-functions-dpf), [Garbled Circuits](#garbled-circuits-expanded), and [HE](07-homomorphic-functional-encryption.md#homomorphic-encryption-he).
+
+**Production readiness:** Experimental
+Cheetah, BOLT, and SecureNN have working implementations; deployed in research settings but not yet at production scale.
+
+**Implementations:**
+- [SecureNN](https://github.com/snwagh/securenn-public) ⭐ 131 — C++, 3-party private neural network inference
+- [Cheetah](https://github.com/Alibaba-Gemini-Lab/OpenCheetah) ⭐ 215 — C++, fast 2-party private inference (Alibaba)
+- [CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.6k — Python, private inference and training framework
+
+**Security status:** Secure
+Protocols have rigorous security proofs; non-linear layer approximations introduce accuracy loss but no security degradation.
+
+**Community acceptance:** Emerging
+Private neural network inference is a rapidly growing field; Cheetah and BOLT represent the performance frontier.
+
+---
+
+### Delphi (Cryptographic Private Inference Service)
 
 **Goal:** Co-design cryptography and machine learning to achieve fast private neural network inference. Delphi shifts expensive homomorphic encryption operations to an offline preprocessing phase and uses lightweight additive secret sharing online, while a planner automatically selects network architectures that balance accuracy against cryptographic cost — replacing expensive non-linear activations (ReLU) with cheaper alternatives where accuracy loss is minimal.
 
@@ -1458,194 +1567,119 @@ Delphi and CrypTFlow2 are well-cited in the PPML literature; the preprocessing-m
 
 ---
 
-## Multipars / MHz2k (Efficient MPC Preprocessing over Rings)
+### Beaver Triples (Multiplication Triples)
 
-**Goal:** Generate authenticated multiplication triples over rings Z_{2^k} (native machine integers) more efficiently than SPDZ2k/Overdrive2k, using improved packing techniques for lattice-based homomorphic encryption or lightweight linear HE. Operating over rings rather than prime fields avoids expensive modular reduction and matches the natural word size of CPUs, making MPC practical for integer-heavy workloads like ML inference.
+**Goal:** Amortize the cost of secure multiplications. A Beaver triple is a secret-shared tuple (⟨a⟩, ⟨b⟩, ⟨c⟩) with c = a·b, where a and b are uniformly random. Given a precomputed triple, two parties can evaluate any multiplication gate with a single round of communication and no cryptography — all expensive work is pushed to an offline preprocessing phase.
 
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Overdrive2k (Orsini-Smart-Vercauteren)** | 2020 | BGV + ring packing | First SHE-based preprocessing for SPDZ2k over Z_{2^k}; extends Overdrive packing to rings [[1]](https://link.springer.com/chapter/10.1007/978-3-030-40186-3_12) |
-| **MHz2k** | 2021 | BGV + improved ZK packing | 3.5x better amortized communication than Overdrive2k; new packing and resharing techniques [[1]](https://eprint.iacr.org/2021/1383) |
-| **Multipars** | 2024 | Linear HE + ring preprocessing | 11x faster than Overdrive2k; first actively secure N-party protocol over Z_{2^k} using only linear HE in offline phase; PoPETs 2024 [[1]](https://petsymposium.org/popets/2024/popets-2024-0038.pdf) |
+| Technique | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Beaver's Circuit Randomization** | 1991 | Information-theoretic | Original preprocessing model; reduce online MPC to XOR + broadcast using precomputed triples [[1]](https://dl.acm.org/doi/10.1145/103418.103444) |
+| **Triple generation via MASCOT** | 2016 | OT extension | Generate authenticated triples under malicious security using OT; basis of SPDZ preprocessing [[1]](https://eprint.iacr.org/2016/505) |
+| **Triple generation via PCG/Silent OT** | 2020 | Ring-LPN | Generate triples from short correlated seeds; sublinear communication [[1]](https://eprint.iacr.org/2020/924) |
+| **Masked Triples** | 2021 | Secret sharing | Amortize triples across conditional branches; reduce waste from unused branch triples [[1]](https://eprint.iacr.org/2021/604) |
 
-**State of the art:** Multipars (2024) is the current state of the art for ring-based MPC preprocessing, outperforming all prior approaches by large margins. The progression from Overdrive2k to MHz2k to Multipars reflects a trend toward lighter cryptographic assumptions (linear HE instead of SHE) and better amortization. Related to [MASCOT / Overdrive](#mascot-malicious-arithmetic-mpc-via-ot), [SPDZ2k](#multi-party-computation-mpc), and [Lattice-Based MPC](#lattice-based-mpc).
-
-**Production readiness:** Research
-Multipars (2024) is a recent advance; MHz2k is implemented in research codebases but not deployed in production.
-
-**Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes ring-based preprocessing variants (Overdrive2k, SPDZ2k)
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, supports ring-based MPC protocols
-
-**Security status:** Secure
-Security builds on well-studied BGV/BFV lattice assumptions; ring operations preserve SPDZ2k security guarantees.
-
-**Community acceptance:** Emerging
-Ring-based preprocessing is recognized as important for practical ML workloads; Multipars advances the state of the art significantly.
-
----
-
-## CGGMP21 (UC Threshold ECDSA with Identifiable Aborts)
-
-**Goal:** Provide a universally composable (UC-secure), non-interactive threshold ECDSA protocol where misbehaving signers are publicly identifiable. CGGMP21 allows any t-of-n parties to produce a standard ECDSA signature — compatible with Bitcoin, Ethereum, and all existing ECDSA verifiers — while supporting proactive key refresh (periodic re-sharing of key material to limit the window of compromise) and presigning (message-independent preprocessing that makes the final signing round non-interactive).
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **CGGMP21 (Canetti-Gennaro-Goldfeder-Makriyannis-Peled)** | 2021 | Paillier + UC framework + presigning | UC-secure t-of-n threshold ECDSA; non-interactive signing via presigning; identifiable aborts; CCS 2020 / ePrint 2021 [[1]](https://eprint.iacr.org/2021/060) |
-| **Doerner et al. 3-Round Threshold ECDSA** | 2023 | OT + multiplicative-to-additive | Reduce threshold ECDSA to 3 rounds; improves on CGGMP21 round complexity [[1]](https://eprint.iacr.org/2023/765) |
-| **Synedrion (Entropy)** | 2023 | CGGMP21 implementation | Production Rust implementation of CGGMP21; audited; used in Entropy Network [[1]](https://github.com/entropyxyz/synedrion) |
-
-**State of the art:** CGGMP21 is the dominant production protocol for threshold ECDSA in MPC wallets (Fireblocks MPC-CMP, ZenGo, Entropy); its presigning mechanism enables sub-second signing latency. Distinct from [DKLS18/GG20](#efficient-two-party-ecdsa-dkls18--doerner-et-al) (which covers the OT-based and earlier Paillier-based 2PC approaches). Related to [Threshold Signature Schemes](08-signatures-advanced.md#threshold-signature-schemes-tss) and [Key Management](03-key-exchange-key-management.md).
+**State of the art:** PCG-based triple generation (2020) for minimal communication; MASCOT for concretely practical malicious-secure generation. Beaver triples are the universal currency of the preprocessing model — used in SPDZ, ABY, MOTION, and virtually every practical arithmetic MPC protocol. See [Silent OT / PCG](#silent-ot--pseudorandom-correlation-generators-pcg) and [OLE / VOLE](#oblivious-linear-evaluation-ole--vole).
 
 **Production readiness:** Production
-CGGMP21 is deployed in production MPC wallets (Fireblocks MPC-CMP, ZenGo, Entropy Network) for cryptocurrency custody.
+Beaver triples are the core preprocessing primitive in virtually every deployed arithmetic MPC system (SPDZ, ABY, MOTION, MP-SPDZ).
 
 **Implementations:**
-- [Synedrion](https://github.com/entropyxyz/synedrion) ⭐ 85 — Rust, audited CGGMP21 implementation (Entropy Network)
-- [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, includes CGGMP21 (ZenGo)
-- [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, threshold ECDSA including CGGMP-style protocols
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, multiple triple generation methods (MASCOT, Overdrive, PCG)
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, authenticated triple generation for SPDZ
+- [MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, Beaver triple-based multiplication for GMW/BMR
 
 **Security status:** Secure
-UC-secure with identifiable aborts; presigning mechanism is proven secure; implementations are professionally audited.
-
-**Community acceptance:** Widely trusted
-CGGMP21 is the industry standard for threshold ECDSA in MPC wallets; endorsed by major cryptocurrency custodians.
-
----
-
-## SPDZ Protocol Family (Speedz)
-
-**Goal:** Achieve actively secure MPC against a dishonest majority by separating an offline preprocessing phase (generating authenticated Beaver triples) from a fast, lightweight online phase that requires only field additions and multiplications.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **SPDZ (Damgård-Pastro-Smart-Zakarias)** | 2012 | SHE (BGV) offline + MAC online | Foundational dishonest-majority MPC; online phase costs only a few field ops per gate; CRYPTO 2012 [[1]](https://eprint.iacr.org/2011/535) |
-| **SPDZ2k (Cramer et al.)** | 2018 | Extends SPDZ to Z/2^k | Native 32/64-bit integer arithmetic; eliminates field conversion overhead for ML/comparison workloads; CRYPTO 2018 [[1]](https://eprint.iacr.org/2018/482) |
-| **MASCOT (Keller-Orsini-Scholl)** | 2016 | OT-extension preprocessing | Replaces SPDZ's expensive SHE offline with OT-based triple generation, 200x faster; CCS 2016 [[1]](https://eprint.iacr.org/2016/505) |
-| **Overdrive (Keller-Pastro-Rotaru)** | 2018 | Improved BGV packing | Better amortized SHE preprocessing for SPDZ; EUROCRYPT 2018 [[1]](https://eprint.iacr.org/2017/1230) |
-
-**State of the art:** SPDZ is the industry-standard benchmark for dishonest-majority MPC. MASCOT made it practical on commodity hardware by removing the FHE dependency. SPDZ2k is the default for arithmetic-heavy privacy-preserving ML pipelines (native integer ops). The MP-SPDZ framework implements 30+ protocol variants under one API.
-
-**Production readiness:** Production
-SPDZ is the industry-standard MPC protocol family; deployed via MP-SPDZ, SCALE-MAMBA, and Carbyne Stack in production systems.
-
-**Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, reference implementation of 30+ SPDZ variants
-- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) ⭐ 266 — C++, actively secure SPDZ with MAMBA scripting
-- [Carbyne Stack](https://github.com/carbynestack/carbynestack) ⭐ 91 — Java/Kotlin, cloud-native SPDZ2k deployment
-
-**Security status:** Secure
-SPDZ has rigorous active security proofs under standard assumptions; MAC-based online phase provides information-theoretic verification.
+Beaver's technique is information-theoretically secure given correct triple generation; authenticated variants (SPDZ MACs) provide malicious security.
 
 **Community acceptance:** Standard
-SPDZ is the de facto standard for dishonest-majority MPC; universally referenced in MPC research and deployed in production.
+Beaver triples are universally accepted as the standard technique for secure multiplication in the preprocessing model.
 
 ---
 
-## ABY / ABY3 (Mixed-Protocol MPC Framework)
+### Efficient Two-Party ECDSA (DKLS18 / Doerner et al.)
 
-**Goal:** Provide a unified framework for seamlessly switching between Arithmetic, Boolean (GMW), and Yao garbled circuit sharing types within a single protocol execution, enabling each sub-computation to use its most efficient representation.
+**Goal:** Compute a standard ECDSA signature between two parties where neither party holds the full signing key — the key is additively split, and both must cooperate to sign. Produces a signature verifiable under the ordinary (single-party) ECDSA algorithm. Practical for threshold custody of Bitcoin/Ethereum keys without changing the on-chain verification logic.
 
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
-| **ABY (Demmler-Schneider-Zohner)** | 2015 | 2PC: A+B+Y share conversion | Formally analyzed share-conversion protocols; first mixed-protocol framework; NDSS 2015 [[1]](https://encrypto.de/papers/DSZ15.pdf) |
-| **ABY3 (Mohassel-Rindal)** | 2018 | 3PC honest-majority: A+B+Y | Three-party ML inference/training; powers fastest known private neural network protocols; CCS 2018 [[1]](https://eprint.iacr.org/2018/403) |
+| **Lindell 2PC-ECDSA** | 2017 | Paillier + ZK | First concretely efficient 2PC ECDSA; uses Paillier encryption; CCS 2017 [[1]](https://eprint.iacr.org/2017/552) |
+| **DKLS18 (Doerner-Kondi-Lee-Shelat)** | 2018 | OT extension + multiplicative-to-additive | Replace Paillier with OT extension; 2× faster, smaller proofs; CCS 2018 [[1]](https://eprint.iacr.org/2018/499) |
+| **DKLS19 (2-of-2 + threshold extension)** | 2019 | OT + ECDSA nonce sharing | Generalize to t-of-n threshold; used as basis of many production HSMs [[1]](https://eprint.iacr.org/2019/523) |
+| **Canetti et al. UC 2PC-ECDSA** | 2020 | Paillier + UC framework | UC-secure 2PC ECDSA; tight security proofs; CCS 2020 [[1]](https://eprint.iacr.org/2019/503) |
+| **GG20 (Gennaro-Goldfeder)** | 2020 | Feldman VSS + OT | t-of-n threshold ECDSA used in production MPC wallets (e.g., Fireblocks, ZenGo) [[1]](https://eprint.iacr.org/2020/540) |
 
-**State of the art:** ABY3 is the standard reference framework for three-server ML workloads. No single sharing type is optimal for all operations — ABY's mixed approach avoids performance cliffs. Integrated into commercial privacy-preserving analytics products.
+**State of the art:** DKLS19 and GG20 are the dominant production protocols for threshold ECDSA; both are deployed in cryptocurrency custody, hardware security modules, and MPC wallets. Related to [Threshold Signature Schemes](08-signatures-advanced.md#threshold-signature-schemes-tss) and [Key Management](03-key-exchange-key-management.md).
 
 **Production readiness:** Production
-ABY3 is deployed in privacy-preserving ML services and integrated into commercial analytics products.
+DKLS19 and GG20 are deployed in production MPC wallets (Fireblocks, ZenGo, Coinbase) and hardware security modules for cryptocurrency custody.
 
 **Implementations:**
-- [ABY](https://github.com/encryptogroup/ABY) ⭐ 493 — C++, mixed A/B/Y 2PC framework (TU Darmstadt)
-- [ABY3](https://github.com/ladnir/aby3) ⭐ 212 — C++, 3-party mixed-protocol framework
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, implements ABY3 and related mixed-protocol variants
+- [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, GG18/GG20 threshold ECDSA (ZenGo)
+- [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, threshold ECDSA/EdDSA library (Binance)
+- [DKLS](https://github.com/ArnaudBrousseau/dkls) ⭐ 1 — Rust, DKLS18/19 2PC ECDSA implementation
 
 **Security status:** Secure
-ABY has rigorous security proofs for share conversion protocols; ABY3 extends to honest-majority 3PC with well-studied guarantees.
+GG20 and DKLS19 have UC-secure proofs; deployed implementations are audited by professional security firms.
 
 **Community acceptance:** Widely trusted
-ABY/ABY3 are standard references for mixed-protocol MPC; ABY3 is the leading framework for 3-party ML workloads.
+Threshold ECDSA (GG20, DKLS) is the industry standard for MPC-based cryptocurrency custody; deployed across major exchanges and wallet providers.
 
 ---
 
-## TinyOT (OT-Based Actively Secure 2PC)
+### Secure Computation on Graphs (Private Graph Algorithms)
 
-**Goal:** Construct actively secure two-party computation over Boolean circuits using only OT as a primitive, via information-theoretically secure MACs, with an offline/online split far cheaper than cut-and-choose approaches.
+**Goal:** Evaluate graph algorithms — shortest paths, connectivity, PageRank, triangle counting, subgraph matching — on a graph whose structure is secret-shared among parties. Neither the edge set nor intermediate results are revealed. Applications include private contact-tracing, private social-network analysis, fraud detection across institutions, and private knowledge-graph queries.
 
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
-| **TinyOT (Nielsen-Nordholt-Orlandi-Burra)** | 2012 | OT + IT-MACs | ~6x overhead over semi-honest GMW; no cut-and-choose; CRYPTO 2012 [[1]](https://eprint.iacr.org/2011/091) |
-| **MASCOT** | 2016 | Arithmetic analogue of TinyOT | Extends OT-MAC paradigm to arithmetic circuits; CCS 2016 [[1]](https://eprint.iacr.org/2016/505) |
+| **Oblivious Graph Algorithms (Feigenbaum et al.)** | 2006 | Circuit MPC + ORAM | First systematic treatment; BFS, shortest path, connectivity on secret graphs; O(n² log n) gates [[1]](https://doi.org/10.1145/1132516.1132573) |
+| **GEM (Graph Encryption for Matching)** | 2016 | Graph encryption + SSE | Encrypted graph supporting private bipartite matching queries; sublinear search [[1]](https://eprint.iacr.org/2016/1247) |
+| **PrivGraph (Private PageRank)** | 2021 | Secret sharing + fixed-point | Secure PageRank for 2/3-party settings; convergence within privacy budget [[1]](https://eprint.iacr.org/2021/1234) |
+| **Private Triangle Counting** | 2020 | Arithmetic MPC + matrix ops | Secure triangle counting via private matrix trace; practical for graphs with thousands of nodes [[1]](https://eprint.iacr.org/2020/472) |
+| **SCALE-Graph (oblivious subgraph)** | 2023 | ORAM + garbled circuits | Oblivious subgraph isomorphism; hides which subgraph pattern matches [[1]](https://eprint.iacr.org/2023/1741) |
 
-**State of the art:** TinyOT demonstrated that OT-derived MACs provide full active security with manageable overhead, directly inspiring MASCOT and the entire OT-based MPC lineage. Go-to protocol for Boolean circuit tasks like private pattern matching and biometric comparison.
+**State of the art:** Private graph algorithms remain expensive — graph problems have complex data-dependent access patterns that require ORAM or oblivious data structures to hide. Practical systems restrict to specific graph properties (trees, planar graphs) or use approximate methods with differential privacy. Related to [ORAM](10-privacy-preserving-computation.md#oblivious-ram-oram), [Graph Encryption](10-privacy-preserving-computation.md#graph-encryption), and [Oblivious Sorting](10-privacy-preserving-computation.md#oblivious-sorting--oblivious-data-structures).
 
-**Production readiness:** Mature
-TinyOT is implemented in MP-SPDZ and forms the basis of MASCOT; not typically deployed standalone but underpins production systems.
+**Production readiness:** Research
+Private graph algorithms remain expensive and are limited to academic prototypes; no production deployments exist.
 
 **Implementations:**
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, TinyOT protocol and MASCOT (arithmetic extension)
-- [emp-toolkit](https://github.com/emp-toolkit) — C++, OT-MAC protocols inspired by TinyOT
+- [Obliv-C](https://github.com/samee/obliv-c) ⭐ 184 — C, can express graph algorithms as 2PC programs
 
 **Security status:** Secure
-Full active security via OT-derived information-theoretic MACs; ~6x overhead over semi-honest with rigorous proofs.
+Security follows from underlying MPC/ORAM security; data-dependent access patterns are hidden by ORAM at significant cost.
 
-**Community acceptance:** Widely trusted
-TinyOT is a foundational protocol in the OT-based active-security lineage; directly inspired MASCOT and modern OT-based MPC.
+**Community acceptance:** Niche
+Private graph algorithms are theoretically well-studied but practical overhead limits adoption; active research area.
 
 ---
 
-## BMR Protocol (Constant-Round Multi-Party Garbled Circuits)
+### Private Decision Trees and Random Forests (Bost et al., ABY3)
 
-**Goal:** Enable constant-round MPC for any number of parties by having parties jointly generate a garbled circuit in the offline phase, so online evaluation requires only local work proportional to circuit size — independent of circuit depth.
+**Goal:** Evaluate a decision tree or random forest on a private input without revealing the model structure or the input values. The client holds a sensitive query (e.g., a medical record); the model owner holds a trained classifier. Only the classification label is revealed — not the branching conditions, thresholds, or individual tree predictions. Applications include private medical diagnosis, private credit scoring, and private fraud classification.
 
 | Scheme | Year | Basis | Note |
 |--------|------|-------|------|
-| **BMR (Beaver-Micali-Rogaway)** | 1990 | Joint garbled circuit + OT | First constant-round n-party MPC; online evaluation independent of depth; STOC 1990 [[1]](https://dl.acm.org/doi/10.1145/100216.100287) |
-| **BMR + SPDZ (Hazay-Scholl-Soria-Vazquez)** | 2017 | SPDZ authenticated preprocessing | First concretely efficient constant-round dishonest-majority protocol; CRYPTO 2017 [[1]](https://eprint.iacr.org/2015/523) |
+| **Bost-Popa-Tu-Goldwasser** | 2015 | HE (Paillier) + GC | First practical private classification: decision trees, naive Bayes, and hyperplane classifiers; IEEE S&P 2015 [[1]](https://eprint.iacr.org/2014/331) |
+| **Kissner-Song private classifiers** | 2005 | Secret sharing | Early MPC-based private decision tree evaluation; information-theoretic in honest-majority model [[1]](https://dl.acm.org/doi/10.1145/1102120.1102169) |
+| **Efficient Private Decision Tree (Joye-Salehi)** | 2018 | HE + oblivious RAM | Decision tree evaluation using FHE for tree traversal; avoids circuit blowup from branch unrolling [[1]](https://eprint.iacr.org/2018/1099) |
+| **ABY3 Random Forest** | 2018 | 3PC secret sharing (honest majority) | Secret-shared random forest evaluation over replicated shares; fast LAN performance; CCS 2018 [[1]](https://eprint.iacr.org/2018/403) |
+| **Wen-Dong-Li (Crypten private forest)** | 2022 | 2PC + FSS | Private random forest using FSS for comparison gates; sublinear communication per tree node [[1]](https://arxiv.org/abs/2201.12218) |
 
-**State of the art:** BMR breaks the depth barrier: deep circuits (recurrent networks, iterative algorithms) that are prohibitively slow in depth-linear protocols become practical. Essential for low-latency secure evaluation over WAN links.
+**State of the art:** ABY3-based approaches are fastest for semi-honest 3-party settings; FSS-based comparison (ARIANN-style) is best for 2-party. The central challenge is the data-dependent branching of tree traversal — standard solutions either unroll all paths (circuit blowup) or use ORAM (large overhead). Related to [FSS / DPF](#function-secret-sharing-fss--distributed-point-functions-dpf), [SecureML / MPC-based ML](#secureml-and-mpc-based-machine-learning-inference), and [ARIANN / SecureNN](#ariann-and-securenn-private-neural-network-inference).
 
-**Production readiness:** Mature
-BMR is implemented in MOTION and MP-SPDZ; used for constant-round MPC in high-latency network settings.
-
-**Implementations:**
-- [MOTION](https://github.com/encryptogroup/MOTION) ⭐ 90 — C++, BMR with mixed-protocol support
-- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, BMR + SPDZ for malicious-secure constant-round MPC
-
-**Security status:** Secure
-BMR with SPDZ preprocessing provides malicious security; original protocol proven under standard assumptions.
-
-**Community acceptance:** Widely trusted
-BMR is the canonical constant-round MPC protocol; essential for applications requiring minimal round complexity over WAN.
-
----
-
-## Sharemind (Practical 3-Party MPC Platform)
-
-**Goal:** Provide a programmable three-party computation platform based on additive secret sharing over Z/2^32 with information-theoretic security in the honest-but-curious model, designed for real organizational data-sharing deployments.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Sharemind (Bogdanov-Laur-Willemson)** | 2008 | 3PC additive SS, Z/2^32 | Native 32-bit integer arithmetic; no public-key ops online; ESORICS 2008 [[1]](https://eprint.iacr.org/2008/289) |
-| **Estonian Tax Study** | 2015 | Sharemind deployed | First large-scale government privacy-preserving analytics study [[1]](https://eprint.iacr.org/2015/1159) |
-
-**State of the art:** Sharemind was among the first MPC systems deployed for real-world institutional data sharing (Estonian government tax/salary study). The honest-but-curious 3PC model is sufficient for many regulated settings where parties are legally accountable.
-
-**Production readiness:** Production
-Sharemind is commercially deployed by Cybernetica for Estonian government privacy-preserving statistics and healthcare analytics.
+**Production readiness:** Experimental
+Private decision tree evaluation is implemented in research frameworks; production deployment is limited to specific healthcare/finance use cases.
 
 **Implementations:**
-- [Sharemind MPC](https://sharemind.cyber.ee/) — Commercial platform by Cybernetica
-- [Sharemind SDK](https://github.com/sharemind-sdk) — Open-source SDK components
-- [SecreC](https://github.com/sharemind-sdk/secrec) ⭐ 6 — Domain-specific language for Sharemind
+- [ABY3](https://github.com/ladnir/aby3) ⭐ 212 — C++, includes private random forest evaluation
+- [CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.6k — Python, supports decision tree inference
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, can express decision tree evaluation
 
 **Security status:** Secure
-Information-theoretically secure in the honest-but-curious 3-party model with non-colluding servers.
+Protocols are proven secure; the main challenge is efficiency of data-dependent tree traversal, not security.
 
-**Community acceptance:** Widely trusted
-Sharemind is a pioneering deployed MPC platform; used in the first large-scale government MPC deployment (Estonian tax study 2015).
-
----
+**Community acceptance:** Niche
+Private decision trees are well-studied in the PPML literature; practical for specific domains (medical diagnosis, credit scoring).
 
 ---

@@ -4,22 +4,9 @@
 <!-- TOC -->
 ## Contents (57 schemes)
 
+**[Authenticated Encryption (AEAD)](#authenticated-encryption-aead)**
 - [Authenticated Encryption (AEAD)](#authenticated-encryption-aead)
 - [Key-Committing AEAD](#key-committing-aead)
-- [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem--dem-paradigm)
-- [Format-Preserving Encryption (FPE)](#format-preserving-encryption-fpe)
-- [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers)
-- [Order-Preserving / Order-Revealing Encryption (OPE / ORE)](#order-preserving--order-revealing-encryption-ope--ore)
-- [Deterministic Encryption / Convergent Encryption](#deterministic-encryption--convergent-encryption)
-- [Updatable Encryption](#updatable-encryption)
-- [Rerandomizable Encryption](#rerandomizable-encryption)
-- [Signcryption](#signcryption)
-- [Non-Committing Encryption](#non-committing-encryption)
-- [Honey Encryption](#honey-encryption)
-- [Property-Preserving Encryption (PPE)](#property-preserving-encryption-ppe)
-- [Puncturable Encryption](#puncturable-encryption)
-- [Secure Deduplication](#secure-deduplication)
-- [White-Box Cryptography](#white-box-cryptography)
 - [AES-CCM (Counter with CBC-MAC)](#aes-ccm-counter-with-cbc-mac)
 - [EAX Mode](#eax-mode)
 - [Hybrid Public Key Encryption (HPKE)](#hybrid-public-key-encryption-hpke)
@@ -29,14 +16,10 @@
 - [AEGIS (A Fast Authenticated Encryption Algorithm)](#aegis-a-fast-authenticated-encryption-algorithm)
 - [SNOW-V and SNOW-V-GCM](#snow-v-and-snow-v-gcm)
 - [Rocca-S (Beyond-5G / 6G AEAD)](#rocca-s-beyond-5g--6g-aead)
-- [ECIES (Elliptic Curve Integrated Encryption Scheme)](#ecies-elliptic-curve-integrated-encryption-scheme)
-- [XSalsa20 and XChaCha20 (Extended-Nonce Stream Ciphers)](#xsalsa20-and-xchacha20-extended-nonce-stream-ciphers)
 - [AES-CCM* (IEEE 802.15.4 / ZigBee)](#aes-ccm-ieee-802154--zigbee)
 - [CAESAR Lightweight Winners (ACORN, GIFT-COFB)](#caesar-lightweight-winners-acorn-gift-cofb)
 - [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard)
 - [CWC Mode (Carter-Wegman + CTR)](#cwc-mode-carter-wegman--ctr)
-- [AES Key Wrap (KW / KWP, RFC 5649 / NIST SP 800-38F)](#aes-key-wrap-kw--kwp-rfc-5649--nist-sp-800-38f)
-- [Ciphertext Stealing (CTS)](#ciphertext-stealing-cts)
 - [CBC Mode Padding and Padding Oracle Attacks](#cbc-mode-padding-and-padding-oracle-attacks)
 - [Romulus AEAD (NIST LWC Finalist)](#romulus-aead-nist-lwc-finalist)
 - [Xoodyak (NIST LWC Finalist)](#xoodyak-nist-lwc-finalist)
@@ -46,8 +29,6 @@
 - [STREAM: Online Authenticated Encryption with Segmented Ciphertexts](#stream-online-authenticated-encryption-with-segmented-ciphertexts)
 - [Forkcipher (ForkAES, ForkSkinny)](#forkcipher-forkaes-forkskinny)
 - [Deterministic AEAD with Any Nonce (DAEAD / ANYDAE)](#deterministic-aead-with-any-nonce-daead--anydae)
-- [Encode-then-Encipher and Feistel-Based Wide-Block Ciphers (EME, XCB, HCH, TET)](#encode-then-encipher-and-feistel-based-wide-block-ciphers-eme-xcb-hch-tet)
-- [Robust KEM + DEM (REACT, OAEP+)](#robust-kem--dem-react-oaep)
 - [Leakage-Resilient AEAD (LRAE)](#leakage-resilient-aead-lrae)
 - [GCM-SST (Galois/Counter Mode with Secure Short Tags)](#gcm-sst-galoiscounter-mode-with-secure-short-tags)
 - [Robust Authenticated Encryption (RAE / Beyond INT-CTXT)](#robust-authenticated-encryption-rae--beyond-int-ctxt)
@@ -61,10 +42,41 @@
 - [Spook (Leakage-Resilient Sponge-Based AEAD)](#spook-leakage-resilient-sponge-based-aead)
 - [ESTATE (Energy-Efficient Short-Tweak TBC-Based AEAD)](#estate-energy-efficient-short-tweak-tbc-based-aead)
 - [Partitioning Oracle Attacks and Committing AEAD Landscape](#partitioning-oracle-attacks-and-committing-aead-landscape)
+
+**[Key Encapsulation and Hybrid Encryption](#key-encapsulation-and-hybrid-encryption)**
+- [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem--dem-paradigm)
+- [Signcryption](#signcryption)
+- [ECIES (Elliptic Curve Integrated Encryption Scheme)](#ecies-elliptic-curve-integrated-encryption-scheme)
+- [Robust KEM + DEM (REACT, OAEP+)](#robust-kem--dem-react-oaep)
+
+**[Format-Preserving and Disk Encryption](#format-preserving-and-disk-encryption)**
+- [Format-Preserving Encryption (FPE)](#format-preserving-encryption-fpe)
+- [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers)
+- [Order-Preserving / Order-Revealing Encryption (OPE / ORE)](#order-preserving--order-revealing-encryption-ope--ore)
+- [Updatable Encryption](#updatable-encryption)
+- [Rerandomizable Encryption](#rerandomizable-encryption)
+- [Puncturable Encryption](#puncturable-encryption)
+
+**[Order and Property-Preserving Encryption](#order-and-property-preserving-encryption)**
+- [Deterministic Encryption / Convergent Encryption](#deterministic-encryption--convergent-encryption)
+- [Property-Preserving Encryption (PPE)](#property-preserving-encryption-ppe)
+- [Secure Deduplication](#secure-deduplication)
+
+**[Updatable and Special Encryption](#updatable-and-special-encryption)**
+- [Non-Committing Encryption](#non-committing-encryption)
+- [Honey Encryption](#honey-encryption)
+- [White-Box Cryptography](#white-box-cryptography)
+- [XSalsa20 and XChaCha20 (Extended-Nonce Stream Ciphers)](#xsalsa20-and-xchacha20-extended-nonce-stream-ciphers)
+- [AES Key Wrap (KW / KWP, RFC 5649 / NIST SP 800-38F)](#aes-key-wrap-kw--kwp-rfc-5649--nist-sp-800-38f)
+- [Ciphertext Stealing (CTS)](#ciphertext-stealing-cts)
+- [Encode-then-Encipher and Feistel-Based Wide-Block Ciphers (EME, XCB, HCH, TET)](#encode-then-encipher-and-feistel-based-wide-block-ciphers-eme-xcb-hch-tet)
+
 <!-- /TOC -->
 
-
 ## Authenticated Encryption (AEAD)
+
+---
+### Authenticated Encryption (AEAD)
 
 **Goal:** Confidentiality + Integrity + Authentication in a single primitive. Encrypt and authenticate data so tampering is detectable.
 
@@ -96,7 +108,7 @@ AES-GCM and ChaCha20-Poly1305 are NIST/IETF standards; AES-GCM-SIV is RFC 8452; 
 
 ---
 
-## Key-Committing AEAD
+### Key-Committing AEAD
 
 **Goal:** Prevent "invisible salamander" attacks and other multi-key attacks on AEAD schemes. Standard AEAD (AES-GCM, ChaCha20-Poly1305) is *not* key-committing: a single ciphertext can decrypt validly under two different keys, enabling attacks on systems that branch on decryption success before checking the key.
 
@@ -127,395 +139,7 @@ Active standardization discussion at NIST Block Cipher Modes Workshop (2023); ad
 
 ---
 
-## Key Encapsulation Mechanism (KEM) / DEM Paradigm
-
-**Goal:** Modular encryption design. Split public-key encryption into two clean steps: (1) KEM produces a shared symmetric key from public key, (2) DEM encrypts data with that key. Enables clean security proofs and mix-and-match of components.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Shoup KEM/DEM** | 2001 | Any PKE | Formal paradigm definition; cleaner than direct PKE proofs [[1]](https://shoup.net/papers/kem-dem.pdf) |
-| **RSA-KEM** | 2003 | RSA | Random RSA encapsulation; NIST SP 800-56B [[1]](https://csrc.nist.gov/publications/detail/sp/800/56/b/rev-2/final) |
-| **DHKEM (X25519)** | 2022 | ECDH | DH-based KEM used in HPKE (RFC 9180) [[1]](https://www.rfc-editor.org/rfc/rfc9180) |
-| **ML-KEM (Kyber)** | 2024 | MLWE lattice | NIST PQ standard KEM (FIPS 203) [[1]](https://csrc.nist.gov/pubs/fips/203/final) |
-
-**State of the art:** all modern encryption standards use KEM/DEM (HPKE, ML-KEM, ECIES). The paradigm is the default design pattern.
-
-**Production readiness:** Production
-KEM/DEM is the foundation of HPKE (RFC 9180), ML-KEM (FIPS 203), and all modern hybrid encryption deployed in TLS, MLS, and QUIC.
-
-**Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RSA-KEM, DHKEM, ML-KEM support
-- [hpke](https://github.com/cisco/go-hpke) ⭐ 30 — Go, HPKE implementation with DHKEM
-- [aws-lc](https://github.com/aws/aws-lc) ⭐ 731 — C, ML-KEM (Kyber) in production at AWS
-
-**Security status:** Secure
-The KEM/DEM paradigm has clean, well-understood security reductions; IND-CCA2 KEM + IND-CPA DEM = IND-CCA2 hybrid.
-
-**Community acceptance:** Standard
-NIST FIPS 203 (ML-KEM), IETF RFC 9180 (HPKE), ISO 18033-2; the universal paradigm for public-key encryption.
-
----
-
-## Format-Preserving Encryption (FPE)
-
-**Goal:** Confidentiality with structural compatibility. Ciphertext has the exact same format as plaintext — a 16-digit credit card number encrypts to another 16-digit number. Required for PCI-DSS tokenization and legacy systems.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **FF1** | 2016 | Feistel + AES | NIST SP 800-38G standard; variable-radix alphabet [[1]](https://csrc.nist.gov/publications/detail/sp/800/38/g/final) |
-| **FF3-1** | 2019 | Feistel + AES tweaked | NIST SP 800-38G Rev.1; replaces broken FF3 [[1]](https://csrc.nist.gov/publications/detail/sp/800/38/g/rev-1/final) |
-| **BPS (Bellare-Pian-Shi)** | 2010 | Feistel | Theoretical foundation for FPE security [[1]](https://eprint.iacr.org/2009/251) |
-
-**State of the art:** FF1 (general), FF3-1 (tweakable, NIST standard).
-
-**Production readiness:** Production
-Deployed in PCI-DSS tokenization systems, payment processing, and legacy database encryption at major enterprises.
-
-**Implementations:**
-- [pyffx](https://github.com/emulbreh/pyffx) ⭐ 55 — Python, FF1 implementation
-- [format-preserving-encryption](https://github.com/capitalone/fpe) ⭐ 208 [archived] — Go, FF1 implementation by Capital One
-- [Mysto FPE](https://github.com/mysto/java-fpe) ⭐ 75 — Java, FF1 and FF3-1 implementations
-- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, FF1 support (via EVP API)
-
-**Security status:** Caution
-FF1 and FF3-1 are secure for sufficiently large domains; small-domain FPE has inherent leakage. FF3 (original) is broken and must not be used.
-
-**Community acceptance:** Standard
-NIST SP 800-38G (FF1) and SP 800-38G Rev.1 (FF3-1); widely adopted in PCI-DSS tokenization.
-
----
-
-## Disk Encryption / Tweakable Block Ciphers
-
-**Goal:** At-rest confidentiality. Encrypt each disk sector independently with a sector-number-dependent tweak, so sectors can be read/written randomly without decrypting the whole disk. Used in BitLocker, FileVault, LUKS, Android FBE.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **XTS-AES** | 2007 | Tweakable AES | IEEE 1619; sector-level encryption; tweak = sector number [[1]](https://ieeexplore.ieee.org/document/4493450) |
-| **XEX (Rogaway)** | 2004 | Tweakable block cipher | Foundation: xor-encrypt-xor; XTS is a variant [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30539-2_2) |
-| **Adiantum** | 2019 | ChaCha + NH + Poly1305 | Google; for devices without AES-NI (low-end Android) [[1]](https://eprint.iacr.org/2018/720) |
-| **AES-HCTR2** | 2021 | AES + universal hash | Wide-block tweakable cipher; successor to Adiantum on AES-NI devices [[1]](https://eprint.iacr.org/2021/1441) |
-
-**State of the art:** XTS-AES (BitLocker, FileVault, LUKS), Adiantum (low-end Android), AES-HCTR2 (modern Android).
-
-**Production readiness:** Production
-XTS-AES is deployed in BitLocker, FileVault, LUKS, and Android FBE on billions of devices.
-
-**Implementations:**
-- [Linux kernel dm-crypt](https://gitlab.com/cryptsetup/cryptsetup) — C, XTS-AES, Adiantum, AES-HCTR2 in kernel
-- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, XTS-AES mode
-- [Adiantum (Android)](https://android.googlesource.com/kernel/common/+/refs/heads/android-mainline/crypto/adiantum.c) — C, kernel implementation by Google
-
-**Security status:** Secure
-XTS-AES provides sector-level confidentiality but not authentication; Adiantum and HCTR2 are secure wide-block alternatives.
-
-**Community acceptance:** Standard
-IEEE 1619 (XTS-AES); NIST approved for storage encryption; Adiantum and HCTR2 deployed by Google in Android.
-
----
-
-## Order-Preserving / Order-Revealing Encryption (OPE / ORE)
-
-**Goal:** Encrypted range queries. Ciphertext preserves or reveals the numerical order of plaintexts, enabling range queries on encrypted databases without decrypting. **Warning:** inherent leakage; weaker than standard encryption.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Boldyreva OPE** | 2009 | Hypergeometric sampling | First provably secure OPE; leaks order + approximate distance [[1]](https://eprint.iacr.org/2009/197) |
-| **Chenette-Lewi-Wu ORE** | 2016 | PRF + block cipher | Reveals only order, not distance; "best-possible" ORE [[1]](https://eprint.iacr.org/2016/612) |
-| **Lewi-Wu Practical ORE** | 2016 | PRF | Efficient; used in CryptDB-like systems [[1]](https://eprint.iacr.org/2016/612) |
-
-**State of the art:** Lewi-Wu ORE (practical), but SSE/FHE approaches preferred when leakage is unacceptable.
-
-**Production readiness:** Experimental
-Used in encrypted database research (CryptDB-like systems); limited real-world deployment due to inherent leakage.
-
-**Implementations:**
-- [CryptDB](https://github.com/CryptDB/CryptDB) ⭐ 521 — C++, OPE used in encrypted database queries
-- [pyope](https://github.com/tonyo/pyope) ⭐ 103 — Python, Boldyreva OPE implementation
-
-**Security status:** Caution
-All OPE/ORE inherently leaks order (and sometimes distance); inference attacks can reconstruct plaintext distributions from ciphertext order.
-
-**Community acceptance:** Niche
-No standardization; used in academic encrypted database research. Widely criticized for leakage in practice.
-
----
-
-## Deterministic Encryption / Convergent Encryption
-
-**Goal:** Encrypted deduplication & lookup. Same plaintext always produces the same ciphertext, enabling equality checks without decryption. Leaks plaintext equality — not suitable where this matters.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **SIV Mode (Rogaway-Shrimpton)** | 2006 | AES + CMAC | Deterministic AEAD; misuse-resistant; IV = MAC(header, plaintext) [[1]](https://eprint.iacr.org/2006/221) |
-| **Convergent Encryption** | 2002 | Hash-as-key | Key = H(plaintext); enables cloud dedup of encrypted data [[1]](https://dl.acm.org/doi/10.5555/514236.514238) |
-| **MLE (Message-Locked Encryption)** | 2013 | Various | Formalization of convergent encryption with security definitions [[1]](https://eprint.iacr.org/2012/631) |
-
-**State of the art:** AES-SIV (misuse-resistant AEAD, RFC 5297), MLE (cloud deduplication).
-
-**Production readiness:** Production
-AES-SIV is deployed in cloud storage, key wrapping, and encrypted databases; convergent encryption is used in deduplication systems.
-
-**Implementations:**
-- [miscreant](https://github.com/miscreant/miscreant.rb) ⭐ 22 [archived] — Ruby/JS/Rust/Go, AES-SIV (RFC 5297)
-- [Tink](https://github.com/tink-crypto/tink) ⭐ 13k — Java/Go/C++/Python, AES-SIV (deterministic AEAD)
-- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-SIV support
-
-**Security status:** Caution
-AES-SIV is secure but deterministic (leaks plaintext equality). Convergent encryption is vulnerable to offline brute-force on low-entropy data.
-
-**Community acceptance:** Standard
-AES-SIV is IETF RFC 5297; MLE is a well-studied framework. Convergent encryption is deployed but with known limitations.
-
----
-
-## Updatable Encryption
-
-**Goal:** Key rotation without re-download. Server applies a short re-encryption token to update all ciphertexts from an old key to a new key — without decrypting or downloading data. Used in cloud storage key rotation.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **BLMR (Boneh et al.)** | 2013 | ElGamal / AES | Formal model for ciphertext-independent updates [[1]](https://eprint.iacr.org/2012/021) |
-| **Lehmann-Tackmann** | 2018 | Hybrid (KEM + DEM) | CCA-secure updatable encryption [[1]](https://eprint.iacr.org/2018/794) |
-| **Klooß-Lehmann-Rupp** | 2019 | Forward-secure enc | Forward + post-compromise security [[1]](https://eprint.iacr.org/2019/043) |
-
-**State of the art:** Klooß-Lehmann-Rupp (strongest security guarantees), BLMR (foundational).
-
-**Production readiness:** Research
-Academic constructions; no widely deployed production system uses formal updatable encryption schemes.
-
-**Implementations:**
-- [Recrypt](https://github.com/IronCoreLabs/recrypt-rs) ⭐ 166 — Rust, proxy re-encryption (related primitive)
-
-**Security status:** Secure
-Klooß-Lehmann-Rupp provides forward and post-compromise security; formal proofs in standard model.
-
-**Community acceptance:** Niche
-Active academic research; no NIST or IETF standardization. Cloud key rotation typically uses simpler re-encryption approaches.
-
----
-
-## Rerandomizable Encryption
-
-**Goal:** Unlinkable ciphertexts. Anyone can publicly transform a ciphertext into a fresh-looking encryption of the same plaintext — unlinkable to the original. Foundation of mixnets and anonymous credentials.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **ElGamal (rerandomizable)** | 1985 | DDH | Naturally rerandomizable: multiply by Enc(1) [[1]](https://link.springer.com/chapter/10.1007/3-540-39568-7_2) |
-| **Groth RCCA** | 2004 | Pairings | CCA-secure under rerandomization (RCCA model) [[1]](https://eprint.iacr.org/2003/174) |
-| **Prabhakaran-Rosulek RCCA** | 2007 | DDH | Efficient RCCA without pairings [[1]](https://eprint.iacr.org/2007/064) |
-
-**State of the art:** Groth RCCA (provable security), ElGamal (practical in mixnets/voting).
-
-**Production readiness:** Mature
-ElGamal rerandomization is deployed in mixnets and e-voting systems; RCCA schemes remain research constructions.
-
-**Implementations:**
-- [Verificatum](https://www.verificatum.org/) — Java, ElGamal-based mixnet for e-voting
-- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, ElGamal primitives (via Ristretto255)
-- [Helios](https://github.com/benadida/helios-server) ⭐ 888 — Python, rerandomizable ElGamal in e-voting
-
-**Security status:** Secure
-ElGamal rerandomization is secure under DDH; Groth RCCA has formal proofs under pairing assumptions.
-
-**Community acceptance:** Niche
-ElGamal rerandomization is well-established in e-voting and mixnet communities; RCCA is a specialized academic notion.
-
----
-
-## Signcryption
-
-**Goal:** Confidentiality + Authentication + Non-repudiation in a single pass. More efficient than sequential sign-then-encrypt; security is proven jointly (IND-CCA2 + EUF-CMA).
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Zheng Signcryption** | 1997 | DLP / EC | First scheme; ~50% cost reduction vs. sign+encrypt [[1]](https://link.springer.com/chapter/10.1007/BFb0052234) |
-| **ECSC (Bao-Deng)** | 1998 | ECDLP | Elliptic curve variant; formal security proof [[1]](https://link.springer.com/chapter/10.1007/BFb0052237) |
-| **Signcryption KEM/DEM** | 2004 | Hybrid | Modular: KEM provides authenticated key + DEM encrypts [[1]](https://eprint.iacr.org/2004/075) |
-
-**State of the art:** Hybrid signcryption KEM/DEM (provable security), used in secure messaging design.
-
-**Production readiness:** Mature
-Signcryption concepts are used in secure messaging and CMS; standalone signcryption schemes have limited direct deployment.
-
-**Implementations:**
-- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, signcryption primitives
-- [IEEE 1363-2000](https://standards.ieee.org/ieee/1363/835/) — Standard, includes ECSC signcryption
-
-**Security status:** Secure
-Provably secure (IND-CCA2 + EUF-CMA) in the hybrid KEM/DEM model; EC-based schemes are well-studied.
-
-**Community acceptance:** Niche
-IEEE 1363 includes signcryption; not widely adopted as a standalone primitive — most systems use separate sign-then-encrypt.
-
----
-
-## Non-Committing Encryption
-
-**Goal:** Simulation security for encryption. After generating a ciphertext, the simulator can "explain" it as an encryption of any message — by revealing fake randomness. Required for UC-secure (universally composable) protocols, where standard CPA/CCA encryption is insufficient.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Canetti-Feige-Goldreich-Naor NCE** | 1996 | OT | First NCE; based on oblivious transfer [[1]](https://doi.org/10.1145/237814.237866) |
-| **Nielsen NCE** | 2002 | Trapdoor permutations | Efficient NCE from any trapdoor permutation [[1]](https://doi.org/10.1007/3-540-45539-6_14) |
-| **Adaptively Secure NCE (Choi et al.)** | 2009 | DDH | Non-committing encryption secure against adaptive corruption [[1]](https://eprint.iacr.org/2009/035) |
-| **Non-Committing Authenticated Enc** | 2017 | AEAD + NCE | Combine authenticity with non-committing property for UC channels [[1]](https://eprint.iacr.org/2017/332) |
-
-**State of the art:** DDH-based NCE (Choi et al.); essential for UC-secure [Secure Channels](12-secure-communication-protocols.md#secure-channels--protocol-constructions) and [MPC](06-multi-party-computation.md#multi-party-computation-mpc) in the adaptive corruption model.
-
-**Production readiness:** Research
-Academic primitive; used as a building block in UC-secure protocol proofs but not deployed as a standalone scheme.
-
-**Implementations:**
-- No widely available standalone open-source implementations; NCE appears as a component in UC-secure MPC frameworks.
-
-**Security status:** Secure
-DDH-based NCE (Choi et al.) is provably secure under standard assumptions; constructions are well-studied.
-
-**Community acceptance:** Niche
-Essential in UC-security theory; understood by the MPC/secure-channels research community but not standardized.
-
----
-
-## Honey Encryption
-
-**Goal:** Brute-force resistance. Decrypting with any wrong key produces a plausible-looking plaintext, so an attacker cannot tell when they found the correct key. Protects low-entropy secrets (passwords, PINs, credit card numbers).
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Honey Encryption (HE)** | 2014 | DTE (distribution-transforming encoder) | Foundational; each wrong key yields valid-looking plaintext [[1]](https://eprint.iacr.org/2014/155) |
-| **Natural Language HE** | 2015 | NLP + DTE | Honey encryption for natural language messages; GPT-based DTEs [[1]](https://eprint.iacr.org/2015/032) |
-| **Honey Encryption for Genomic Data** | 2016 | Genomic DTE | Domain-specific for protecting genome sequences [[1]](https://doi.org/10.1145/2976749.2978370) |
-
-**State of the art:** Juels-Ristenpart HE (2014) with domain-specific DTEs; adopted in password vault research. Key challenge: designing accurate DTEs for arbitrary domains.
-
-**Production readiness:** Research
-Academic proposals and prototypes; no mainstream production deployment beyond research password vault experiments.
-
-**Implementations:**
-- [honey-encryption](https://github.com/victornguyen75/honey-encryption) ⭐ 12 — Python, research implementation of Juels-Ristenpart HE
-- [honeywords](https://github.com/maheshmb13/Honeywords) ⭐ 3 — Python, related honeyword generation for password databases
-
-**Security status:** Caution
-Security depends entirely on the quality of the DTE (distribution-transforming encoder); poor DTEs provide no meaningful protection.
-
-**Community acceptance:** Niche
-Well-regarded academic concept; limited practical adoption due to difficulty of constructing accurate DTEs for real-world data.
-
----
-
-## Property-Preserving Encryption (PPE)
-
-**Goal:** Unifying framework for structured leakage. Encryption that intentionally preserves a specific property of the plaintext — enabling server-side computation without decryption. Formalizes the tradeoff between functionality and leakage for encrypted databases.
-
-| Property | Scheme | Note |
-|----------|--------|------|
-| **Equality** | [Deterministic Encryption](#deterministic-encryption--convergent-encryption) | Same plaintext → same ciphertext; enables dedup and equality search |
-| **Order** | [OPE / ORE](#order-preserving--order-revealing-encryption-ope--ore) | Ciphertext preserves numerical order; enables range queries |
-| **Orthogonality** | [Inner-Product FE](#puncturable-encryption) | Decrypt iff inner product = 0; enables subset queries |
-| **Pattern match** | [HVE](#puncturable-encryption) | Decrypt iff attributes match pattern with wildcards |
-| **Keyword** | [Searchable Encryption](#updatable-encryption) | Search encrypted data by keyword |
-
-**General framework:** Pandey-Rouselakis (2012) [[1]](https://eprint.iacr.org/2012/141) formalized PPE; Boldyreva-Chenette-O'Neill (2011) [[1]](https://eprint.iacr.org/2011/005) analyzed leakage. **Warning:** all PPE inherently leaks — weaker than semantic security. Use only when the leakage-functionality tradeoff is acceptable.
-
-**State of the art:** PPE is the theoretical umbrella for OPE, deterministic encryption, and HVE. CryptDB (2011) demonstrated practical encrypted SQL using multiple PPE layers. Subsequent inference attacks (Naveed-Kamara-Wright 2015, Grubbs et al. 2017) showed real-world leakage exploitation, tempering enthusiasm for PPE-based encrypted databases.
-
-**Production readiness:** Experimental
-Individual PPE schemes (OPE, deterministic encryption) are deployed in encrypted databases; the unifying PPE framework is academic.
-
-**Implementations:**
-- [CryptDB](https://github.com/CryptDB/CryptDB) ⭐ 521 — C++, uses multiple PPE schemes for encrypted SQL queries
-- [Arx](https://github.com/ArkDB) — research encrypted database using PPE primitives
-
-**Security status:** Caution
-All PPE inherently leaks the preserved property; inference attacks have been demonstrated against deployed encrypted databases.
-
-**Community acceptance:** Niche
-Academic framework; individual PPE schemes are used in encrypted database research but criticized for practical leakage.
-
----
-
-## Puncturable Encryption
-
-**Goal:** Forward-secure decryption. A recipient can "puncture" their secret key on specific ciphertexts they've already decrypted — the punctured key can decrypt everything *except* those messages. Provides forward secrecy without sender-side changes.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Green-Miers Puncturable Enc** | 2015 | Puncturable PRF + IBE | Puncture decryption key at tags; based on HIBE [[1]](https://eprint.iacr.org/2014/984) |
-| **Bloom Filter Encryption** | 2018 | BF + puncturable PRF | Efficiently puncture on a Bloom filter of processed messages [[1]](https://eprint.iacr.org/2018/199) |
-| **0-RTT with Puncturable Enc** | 2017 | TLS + puncturable enc | Replay-resistant 0-RTT key exchange without server state [[1]](https://eprint.iacr.org/2017/004) |
-
-**State of the art:** Bloom Filter Encryption (practical), 0-RTT puncturable (TLS optimization).
-
-**Production readiness:** Research
-Academic constructions; 0-RTT puncturable encryption concepts influence TLS design but no standalone deployment.
-
-**Implementations:**
-- No production-quality standalone libraries; concepts integrated into TLS 1.3 anti-replay research.
-
-**Security status:** Secure
-Provably secure under IBE/HIBE assumptions; Bloom Filter Encryption provides efficient puncturing with well-understood false-positive rates.
-
-**Community acceptance:** Niche
-Active research area; influences TLS 0-RTT anti-replay design but no IETF or NIST standardization of puncturable encryption itself.
-
----
-
-## Secure Deduplication
-
-**Goal:** Encrypted storage with duplicate elimination. Cloud server detects and removes duplicate files among encrypted uploads — without decrypting. Saves storage while preserving confidentiality. Formalizes security of convergent encryption.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Douceur et al. Convergent Encryption** | 2002 | H(plaintext) as key | Deterministic encryption for dedup; see [Deterministic Encryption](#deterministic-encryption--convergent-encryption) [[1]](https://doi.org/10.1145/514236.514243) |
-| **Bellare-Keelveedhi-Ristenpart (DupLESS)** | 2013 | Server-aided MLE | Server-aided message-locked encryption; key from OPRF prevents offline brute-force [[1]](https://eprint.iacr.org/2013/429) |
-| **Secure Dedup with PoW (Halevi et al.)** | 2011 | Proof of ownership | Client proves it owns file before server deduplicates [[1]](https://eprint.iacr.org/2011/277) |
-
-**State of the art:** DupLESS (server-aided OPRF-based dedup); extends [Deterministic Encryption](#deterministic-encryption--convergent-encryption) with formal security and [OPRF](10-privacy-preserving-computation.md#oblivious-prf-oprf).
-
-**Production readiness:** Experimental
-DupLESS is a research prototype; convergent encryption concepts are used in production cloud storage (e.g., Tahoe-LAFS) but without formal security guarantees.
-
-**Implementations:**
-- [Tahoe-LAFS](https://github.com/tahoe-lafs/tahoe-lafs) ⭐ 1.4k — Python, convergent encryption for distributed storage
-- [DupLESS](https://github.com/FadyMohareb/dupless) ⭐ 2 — research prototype
-
-**Security status:** Caution
-Convergent encryption is vulnerable to offline brute-force on predictable files; DupLESS mitigates this via server-aided OPRF.
-
-**Community acceptance:** Niche
-Academic research; convergent encryption is deployed in some cloud storage but secure deduplication with formal guarantees remains research-stage.
-
----
-
-## White-Box Cryptography
-
-**Goal:** Key hiding in hostile environments. Implement cryptographic algorithms so that the secret key cannot be extracted even by an adversary who has full access to the running software and execution environment. Used in DRM, mobile payments.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Chow et al. WB-AES** | 2002 | Lookup tables + mixing bijections | First white-box AES; series of table lookups encoding key [[1]](https://link.springer.com/chapter/10.1007/3-540-36492-7_17) |
-| **Billet et al. (cryptanalysis)** | 2004 | Algebraic attack | Broke Chow WB-AES; showed key extraction is possible [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30564-4_16) |
-| **WBC Challenge (CHES)** | 2017 | Competition | Ongoing competitions show no WBC scheme survives long-term attack [[1]](https://www.whiteboxcrypto.com/) |
-
-**State of the art:** no provably secure WBC exists; practical deployments rely on obfuscation + tamper-detection layers. Active research area.
-
-**Production readiness:** Experimental
-Deployed in commercial DRM and mobile payment SDKs (e.g., Apple Pay, content protection) despite lack of provable security.
-
-**Implementations:**
-- [SideChannelMarvels/Deadpool](https://github.com/SideChannelMarvels/Deadpool) ⭐ 677 — C/Python, white-box AES attack tools and challenge implementations
-- [WhibOx](https://www.whiteboxcrypto.com/) — competition platform with reference white-box implementations
-
-**Security status:** Broken
-No published white-box AES scheme has survived sustained cryptanalysis; all CHES competition entries broken within weeks to months.
-
-**Community acceptance:** Controversial
-Widely used commercially (DRM, payments) despite academic consensus that provable white-box security is currently unachievable.
-
----
-
-## AES-CCM (Counter with CBC-MAC)
+### AES-CCM (Counter with CBC-MAC)
 
 **Goal:** AEAD for constrained and wireless environments. Combine CTR-mode confidentiality with CBC-MAC authentication in a single pass over the message using only the AES encrypt operation — making it hardware-efficient and suitable for smart cards, 802.11 Wi-Fi, and Bluetooth.
 
@@ -550,7 +174,7 @@ NIST SP 800-38C; IEEE 802.11i (WPA2); Bluetooth Core Specification; RFC 6655 (TL
 
 ---
 
-## EAX Mode
+### EAX Mode
 
 **Goal:** A two-pass, patent-free AEAD with no restrictions on message length, nonce length, or block-cipher primitive — designed as a clean, provably-secure alternative to the complex CCM mode and the then-patented OCB mode.
 
@@ -594,7 +218,7 @@ Not a NIST standard but well-studied, patent-free, and implemented in all major 
 
 ---
 
-## Hybrid Public Key Encryption (HPKE)
+### Hybrid Public Key Encryption (HPKE)
 
 **Goal:** A single, modular, well-specified standard for public-key encryption of arbitrary messages. HPKE composes a KEM, a KDF, and an AEAD into one clean API with four operating modes (base, pre-shared key, authenticated sender, and combined), replacing ad-hoc ECIES constructions.
 
@@ -636,7 +260,7 @@ IETF RFC 9180; mandated for ECH (draft-ietf-tls-esni), MLS (RFC 9420), and Obliv
 
 ---
 
-## SpongeWrap / Duplex-Based AEAD
+### SpongeWrap / Duplex-Based AEAD
 
 **Goal:** Single-pass authenticated encryption from a cryptographic permutation, without needing a block cipher. The duplex construction alternates absorbing input and squeezing output through a single permutation call per block, providing confidentiality, integrity, and an optional per-block authentication tag in one traversal.
 
@@ -678,7 +302,7 @@ Ascon is NIST SP 800-232 (2025); SpongeWrap/duplex paradigm is the foundation of
 
 ---
 
-## MRAE and Online Authenticated Encryption (OAE)
+### MRAE and Online Authenticated Encryption (OAE)
 
 **Goal:** Formal treatment of nonce-misuse resistance and online/streaming AEAD. MRAE (Misuse-Resistant AE) guarantees that nonce reuse causes only confidentiality loss for repeated (nonce, AD, plaintext) triples — authenticity is never broken. Online AE (OAE) further requires that encryption is streaming (output begins before the full message is known) while retaining some misuse robustness.
 
@@ -721,7 +345,7 @@ AES-SIV is IETF RFC 5297; AES-GCM-SIV is RFC 8452. OAE remains an academic secur
 
 ---
 
-## OCB Mode (Offset Codebook Mode)
+### OCB Mode (Offset Codebook Mode)
 
 **Goal:** Single-pass, parallelisable AEAD at the cost of one block-cipher call per plaintext block — roughly the same work as bare encryption, with no separate MAC pass. Designed to be the fastest possible provably-secure authenticated encryption from a block cipher.
 
@@ -762,7 +386,7 @@ RFC 7253; CAESAR finalist; well-studied but not NIST-standardized. Patent-free s
 
 ---
 
-## AEGIS (A Fast Authenticated Encryption Algorithm)
+### AEGIS (A Fast Authenticated Encryption Algorithm)
 
 **Goal:** Achieve the highest possible AEAD throughput on processors with AES-NI instructions by using multiple AES round functions per step in a dedicated state machine — not as a mode of an existing cipher, but as a purpose-built authenticated encryption algorithm.
 
@@ -805,7 +429,7 @@ CAESAR high-performance winner; IETF CFRG draft progressing toward RFC; endorsed
 
 ---
 
-## SNOW-V and SNOW-V-GCM
+### SNOW-V and SNOW-V-GCM
 
 **Goal:** Ultra-high-throughput stream cipher and AEAD for 5G virtualized network functions. Reach 100+ Gbps in software on commodity server CPUs by redesigning the SNOW 3G (4G standard) architecture to exploit SIMD/AES-NI instructions, providing 256-bit security for next-generation cellular encryption.
 
@@ -842,7 +466,7 @@ Presented at IETF SAAG (2019); 3GPP chose ZUC for 5G radio layer instead. SNOW-V
 
 ---
 
-## Rocca-S (Beyond-5G / 6G AEAD)
+### Rocca-S (Beyond-5G / 6G AEAD)
 
 **Goal:** Exceed 100 Gbps encryption throughput in software for 6G network infrastructure, with 256-bit security and a 256-bit authentication tag, by designing a dedicated AES-NI-based permutation that maximally exploits SIMD parallelism and Intel VAES extensions.
 
@@ -885,78 +509,7 @@ IETF informational draft; research candidate for 6G. No 3GPP or NIST standardiza
 
 ---
 
-## ECIES (Elliptic Curve Integrated Encryption Scheme)
-
-**Goal:** Public-key encryption of arbitrary-length messages using elliptic-curve Diffie-Hellman for key agreement. ECIES combines ECDH key agreement, a key-derivation function, a symmetric cipher, and a MAC into a single encryption primitive — the practical EC equivalent of DHIES and the predecessor to the cleaner HPKE standard.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **DHIES (Abdalla-Bellare-Rogaway)** | 2001 | DH | Formal security foundation; IND-CCA2 under CDH; template for ECIES [[1]](https://eprint.iacr.org/1999/007) |
-| **ECIES (ANSI X9.63)** | 2001 | ECDH | ANSI standard; KDF = X9.63-KDF (ECDH output ‖ counter ‖ SharedInfo hashed with SHA-2) [[1]](https://www.secg.org/sec1-v2.pdf) |
-| **ECIES (IEEE 1363a)** | 2004 | ECDH | IEEE variant; flexible KDF and MAC choices [[1]](https://standards.ieee.org/ieee/1363a/1282/) |
-| **ECIES (ISO/IEC 18033-2)** | 2006 | ECDH | ISO variant used in smart-card and PKI toolkits [[1]](https://www.iso.org/standard/37971.html) |
-| **HPKE (RFC 9180)** | 2022 | DHKEM | Clean successor to ECIES; see [Hybrid Public Key Encryption](#hybrid-public-key-encryption-hpke) [[1]](https://www.rfc-editor.org/rfc/rfc9180) |
-
-**Construction:** The sender generates an ephemeral ECDH key pair, derives a shared secret via ECDH with the recipient's static public key, feeds the shared secret through a KDF (typically ANSI X9.63-KDF or HKDF) to obtain an encryption key and a MAC key, encrypts the message with a symmetric cipher (AES-CBC or AES-CTR), and appends a MAC tag. The ephemeral public key is sent alongside the ciphertext. The recipient reverses the process using their static private key.
-
-**ANSI X9.63-KDF:** `KDF(Z, keydatalen, SharedInfo) = H(Z ‖ Counter ‖ SharedInfo)` where Z is the ECDH shared secret, Counter starts at 0x00000001, and H is SHA-256 or SHA-512. Multiple hash iterations are concatenated if more key material is needed.
-
-**Interoperability issues:** ECIES has no single canonical form — ANSI X9.63, IEEE 1363a, and ISO 18033-2 differ in KDF, MAC placement, and point encoding, causing library incompatibilities. HPKE (RFC 9180) was designed partly to eliminate this fragmentation.
-
-**State of the art:** ECIES remains widely deployed in TLS 1.2 handshakes, S/MIME, OpenPGP, and hardware security modules. New protocols should prefer HPKE (RFC 9180), which has a cleaner security proof, explicit mode separation, and IETF standardization. ECIES is still the default in many HSM and PKI vendor APIs as of 2026.
-
-**Production readiness:** Production
-Deployed in TLS 1.2, S/MIME, OpenPGP, Ethereum (eciesjs), Apple/Google payment systems, and HSMs worldwide.
-
-**Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, ECIES via EVP_PKEY_derive
-- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, ECIES (ANSI X9.63 and ISO 18033-2)
-
-**Security status:** Superseded
-Technically secure (IND-CCA2 under CDH) but fragmented across incompatible variants. HPKE (RFC 9180) is the recommended successor.
-
-**Community acceptance:** Standard
-ANSI X9.63, IEEE 1363a, ISO 18033-2; widely standardized but superseded by HPKE for new protocol designs.
-
----
-
-## XSalsa20 and XChaCha20 (Extended-Nonce Stream Ciphers)
-
-**Goal:** Extend the nonce of Salsa20 and ChaCha20 from 64 bits to 192 bits so that nonces can be safely chosen uniformly at random without birthday-bound collision risk — enabling long-lived symmetric keys to encrypt large numbers of messages without nonce management infrastructure.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Salsa20** | 2005 | ARX stream cipher | 64-bit nonce; birthday collision expected after ~2³² messages [[1]](https://cr.yp.to/snuffle/spec.pdf) |
-| **HSalsa20** | 2008 | Salsa20 core | Key derivation subroutine: `(key, 128-bit input) → 256-bit subkey`; no nonce output [[1]](https://cr.yp.to/snuffle/xsalsa20-20110204.pdf) |
-| **XSalsa20** | 2011 | HSalsa20 + Salsa20 | 192-bit nonce; `subkey = HSalsa20(key, nonce[0:16])`; stream from `Salsa20(subkey, nonce[16:24])` [[1]](https://cr.yp.to/snuffle/xsalsa20-20110204.pdf) |
-| **HChaCha20** | 2015 | ChaCha20 core | ChaCha20 analogue of HSalsa20; maps `(key, 128-bit input) → 256-bit subkey` [[1]](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha) |
-| **XChaCha20** | 2015 | HChaCha20 + ChaCha20 | 192-bit nonce; same two-level construction applied to ChaCha20 [[1]](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha) |
-| **XChaCha20-Poly1305** | 2015 | XChaCha20 + Poly1305 | Full AEAD; 192-bit nonce; default in libsodium `crypto_secretbox` [[1]](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha) |
-
-**Construction:** XSalsa20 uses a two-level derivation. The first 16 bytes of the 24-byte nonce are fed into HSalsa20 together with the 256-bit key to produce a 256-bit subkey. The remaining 8 bytes serve as the nonce for a standard Salsa20 call with the subkey. Because the subkey is pseudorandom over a 256-bit space for each distinct 16-byte nonce prefix, the effective key is freshly derived per message and the nonce collision problem is eliminated.
-
-**Why it matters:** Standard Salsa20/ChaCha20 have 64-bit nonces. A birthday collision is expected after 2³² ≈ 4 billion messages with random nonce selection — feasible in large-scale messaging or bulk file encryption. XSalsa20/XChaCha20 push this boundary to 2⁹⁶ random nonces before a collision is expected, making random nonce selection safe for any realistic deployment lifetime.
-
-**State of the art:** XSalsa20 is the stream cipher underlying libsodium's `crypto_secretbox_xsalsa20poly1305`. XChaCha20-Poly1305 is the preferred modern variant, supported in libsodium, OpenSSL 3.x, and Tink. An IRTF CFRG Internet-Draft for XChaCha20 exists but has not been published as an RFC as of 2026.
-
-**Production readiness:** Production
-XChaCha20-Poly1305 is the default AEAD in libsodium (used by Signal, Wireguard-related tools, age encryption); XSalsa20 in NaCl.
-
-**Implementations:**
-- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, XChaCha20-Poly1305 (crypto_aead) and XSalsa20-Poly1305 (crypto_secretbox)
-- [NaCl](https://nacl.cr.yp.to/) — C, original XSalsa20-Poly1305 by Bernstein
-- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, XChaCha20-Poly1305 (3.x)
-- [Tink](https://github.com/tink-crypto/tink) ⭐ 13k — Java/Go/C++, XChaCha20-Poly1305
-
-**Security status:** Secure
-256-bit key, 192-bit nonce eliminates birthday-bound nonce collision risk; secure under standard PRF assumptions.
-
-**Community acceptance:** Widely trusted
-IRTF CFRG draft (not yet RFC); de facto standard via libsodium adoption; endorsed by Bernstein and the NaCl community.
-
----
-
-## AES-CCM* (IEEE 802.15.4 / ZigBee)
+### AES-CCM* (IEEE 802.15.4 / ZigBee)
 
 **Goal:** A parameterized variant of AES-CCM for IEEE 802.15.4 low-power wireless networks (ZigBee, Thread, Matter) that supports encryption-only, authentication-only, and combined enc+auth modes via a single security-level field — using only AES-128 and targeting 8-bit microcontrollers and sub-GHz radio chips.
 
@@ -989,7 +542,7 @@ IEEE 802.15.4-2006 Annex B; mandated in ZigBee, Thread, and Matter specification
 
 ---
 
-## CAESAR Lightweight Winners (ACORN, GIFT-COFB)
+### CAESAR Lightweight Winners (ACORN, GIFT-COFB)
 
 **Goal:** Authenticated encryption for extremely constrained hardware — RFID tags, sensor nodes, 8-bit microcontrollers — where gate count, power, and per-bit latency dominate over throughput. The CAESAR competition (2014–2019) lightweight-use-case category produced co-winners ACORN and GIFT-COFB, each demonstrating a distinct minimal-area design strategy.
 
@@ -1024,7 +577,7 @@ CAESAR lightweight winners (2019); superseded by Ascon (NIST SP 800-232) for sta
 
 ---
 
-## Ascon-128 / Ascon-128a (NIST LWC Standard)
+### Ascon-128 / Ascon-128a (NIST LWC Standard)
 
 **Goal:** The NIST Lightweight Cryptography (LWC) standard AEAD for constrained devices — microcontrollers, RFID tags, IoT sensors — providing 128-bit security with a minimal footprint, a single hardware-friendly permutation, and a clean duplex-sponge design that covers both AEAD and hashing under one primitive family.
 
@@ -1069,7 +622,7 @@ NIST SP 800-232 (2025); NIST LWC winner (2023); endorsed by NIST, Graz Universit
 
 ---
 
-## CWC Mode (Carter-Wegman + CTR)
+### CWC Mode (Carter-Wegman + CTR)
 
 **Goal:** Provide an authenticated encryption with associated data (AEAD) mode that achieves ~128-bit authentication security by combining CTR-mode encryption with a Carter-Wegman MAC built on a 96-bit prime-field universal hash function — offering a provably-secure, patent-free alternative to GCM at the cost of heavier (but parallelisable) authentication arithmetic.
 
@@ -1108,86 +661,7 @@ Historical significance as a patent-free AEAD proposal; never standardized by NI
 
 ---
 
-## AES Key Wrap (KW / KWP, RFC 5649 / NIST SP 800-38F)
-
-**Goal:** Integrity-protected transport of cryptographic key material using only a block cipher — no separate MAC or IV randomness required. Key wrap produces a deterministic ciphertext from which any single-bit modification is detected with overwhelming probability, making it suitable for storing or transmitting keys in environments that must use only a block cipher primitive.
-
-| Scheme | Year | Standard | Input constraint | Output expansion | Note |
-|--------|------|----------|-----------------|-----------------|------|
-| **AES-KW** | 2001 | RFC 3394 / NIST SP 800-38F [[1]](https://www.rfc-editor.org/rfc/rfc3394) | Multiple of 8 bytes, ≥ 16 bytes | +8 bytes | Schaad-Housley; 6n AES-ECB calls for n 8-byte blocks |
-| **AES-KWP** | 2009 | RFC 5649 / NIST SP 800-38F [[1]](https://www.rfc-editor.org/rfc/rfc5649) | Any length ≥ 1 byte | +8 to +15 bytes | Adds length-encoding padding; supersedes RFC 3394 for variable-length keys |
-| **NIST SP 800-38F** | 2012 | NIST [[1]](https://csrc.nist.gov/publications/detail/sp/800/38/f/final) | Both | Both | Authoritative NIST formalization; mandates AES-256 for wrapping keys ≥ 128 bits |
-| **JWE AES Key Wrap** | 2015 | RFC 7516 [[1]](https://www.rfc-editor.org/rfc/rfc7516) | Content encryption key | Wrapped CEK | `A128KW`, `A192KW`, `A256KW` algorithm identifiers in JSON Web Encryption |
-
-**AES-KW construction (RFC 3394):** Input is n 64-bit semi-blocks (n ≥ 2). The algorithm runs 6n iterations of an AES-ECB encryption of the concatenation `(A ‖ R_i)` where A is a 64-bit "integrity check register" initialized to `0xA6A6A6A6A6A6A6A6` and R_1..R_{n-1} are the data semi-blocks. Each iteration updates A and one R_i. The output is the final A prepended to R_1..R_{n-1}. No randomness is used — output is deterministic for identical inputs under the same key.
-
-**AES-KWP construction (RFC 5649):** Extends KW by prepending an 8-byte alternative IV `0xA65959A6 ‖ len(plaintext)` to the padded input. For plaintexts of 1–8 bytes, a single AES-ECB call on the 16-byte block suffices, producing 24 bytes of output.
-
-**Security:** KW is proven IND-CPA and INT-CTXT under the PRP assumption for AES. Determinism means it is not IND-CCA2 — an adversary who queries the same key twice gets identical wrapped output, leaking equality. This is acceptable for key material, which is sampled uniformly at random and never reused under the same wrapping key in correct usage.
-
-**Deployments:** PKCS #7 / CMS EnvelopedData key transport; XML Encryption; JWE; KMIP (Key Management Interoperability Protocol); ANSI X9.73; every PKCS#11-compliant HSM (`C_WrapKey` / `C_UnwrapKey` mechanisms). OpenSSL implements KW as `AES_wrap_key` / `AES_unwrap_key`.
-
-**State of the art:** AES-KWP (RFC 5649) is the current standard for symmetric key transport. AES-KW (RFC 3394) is deprecated for inputs not a multiple of 8 bytes — use KWP. For public-key key transport see [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem--dem-paradigm) and [Hybrid Public Key Encryption (HPKE)](#hybrid-public-key-encryption-hpke).
-
-**Production readiness:** Production
-Deployed in PKCS#11 HSMs, CMS/PKCS#7, XML Encryption, JWE, and KMIP key management systems worldwide.
-
-**Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES_wrap_key / AES_unwrap_key
-- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, AES Key Wrap (RFC 3394 and RFC 5649)
-- [Go stdlib](https://pkg.go.dev/crypto/cipher) — Go, AES Key Wrap support
-
-**Security status:** Secure
-Proven IND-CPA and INT-CTXT under PRP assumption for AES; deterministic output is acceptable for uniformly random key material.
-
-**Community acceptance:** Standard
-NIST SP 800-38F; IETF RFC 3394 (KW) and RFC 5649 (KWP); mandated in PKCS#11, KMIP, and JWE.
-
----
-
-## Ciphertext Stealing (CTS)
-
-**Goal:** Encrypt a plaintext of arbitrary byte length using a block cipher in CBC (or ECB) mode without ciphertext expansion — output length exactly equals input length — by rearranging the last two output blocks to absorb the final short plaintext block without adding padding bytes.
-
-| Variant | Last-block handling | Standard | Primary use |
-|---------|---------------------|----------|-------------|
-| **CBC-CS1** | Swap last two ciphertext blocks unconditionally | — | Rare; last block always shorter than full block |
-| **CBC-CS2** | Swap if last block is partial; no swap if full | — | Conditional swap; uncommon |
-| **CBC-CS3** | No swap; last full block precedes short final block | NIST SP 800-38A Addendum (2010) [[1]](https://csrc.nist.gov/publications/detail/sp/800/38/a/addendum/final) | NIST preferred variant |
-| **Kerberos CBC-CTS** | CS3 variant with Kerberos IV | RFC 3962, RFC 8009 [[1]](https://www.rfc-editor.org/rfc/rfc3962) | AES-CTS-HMAC-SHA1-96 Kerberos encryption type |
-| **XTS-AES with CTS** | XEX-based stealing for partial final sector | IEEE Std 1619-2007 [[1]](https://ieeexplore.ieee.org/document/4493450) | Disk encryption of sectors not a multiple of 16 bytes |
-
-**CS3 mechanics:** Given plaintext P of length L = n·B + r where B = block size and 0 < r ≤ B:
-1. Encrypt blocks P_1 … P_{n−1} in standard CBC, producing C_1 … C_{n−1}.
-2. Encrypt C_{n−1} with the block cipher to obtain intermediate value T.
-3. XOR T with P_n (zero-padded to B bytes) to produce C_n (the penultimate output block, full length B).
-4. Truncate T to r bytes; this becomes C_{n+1-like} (the final output block, length r).
-
-Decryption reverses the process: the receiver reconstructs the zero-padded P_n from C_n and T, then strips the r-byte fragment. Total output length = n·B − (B − r) = L. No padding bytes are transmitted.
-
-**Constraint:** The plaintext must be at least one full block (B bytes) long for CTS to be applicable. For very short inputs (< B bytes), PKCS#7 padding or a stream cipher must be used instead.
-
-**CTS does not provide authentication.** Like all raw CBC variants, CTS is confidentiality-only. It must always be combined with an external MAC or used inside an authenticated mode. See [Authenticated Encryption (AEAD)](#authenticated-encryption-aead) and [CBC Mode Padding and Padding Oracle Attacks](#cbc-mode-padding-and-padding-oracle-attacks).
-
-**State of the art:** CTS is deployed in Kerberos (RFC 3962, RFC 8009) for AES-encrypted tickets and in XTS-AES for partial-sector disk encryption. For new designs, AEAD modes are strongly preferred. CTS remains useful only when ciphertext expansion is structurally prohibited (e.g., fixed-size Kerberos ticket fields or fixed-sector-size storage media).
-
-**Production readiness:** Production
-Deployed in Kerberos (RFC 3962, RFC 8009) and XTS-AES disk encryption on all major operating systems.
-
-**Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-CBC-CTS via EVP API
-- [Linux kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git) — C, CTS in dm-crypt and fscrypt subsystems
-- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, CBC-CTS mode
-
-**Security status:** Caution
-Confidentiality-only; provides no authentication. Must be combined with a MAC or used inside an authenticated mode.
-
-**Community acceptance:** Standard
-NIST SP 800-38A Addendum (CS3); RFC 3962 and RFC 8009 (Kerberos); IEEE 1619 (XTS-AES with CTS).
-
----
-
-## CBC Mode Padding and Padding Oracle Attacks
+### CBC Mode Padding and Padding Oracle Attacks
 
 **Goal:** Understanding the PKCS#7 padding convention used with CBC mode and the padding oracle attack family that makes any encryption-without-authentication under CBC catastrophically vulnerable to chosen-ciphertext decryption — motivating the universal adoption of AEAD modes for all new designs.
 
@@ -1226,7 +700,7 @@ PKCS#7 is RFC 5652; CBC is NIST SP 800-38A. Universally understood but deprecate
 
 ---
 
-## Romulus AEAD (NIST LWC Finalist)
+### Romulus AEAD (NIST LWC Finalist)
 
 **Goal:** Lightweight authenticated encryption with a clean, modular design for constrained devices (IoT, embedded MCUs) by instantiating a tweakable block cipher (TBC) mode on top of the SKINNY-128 lightweight cipher — providing strong side-channel resistance through a minimal, regular datapath and provable security in the standard model.
 
@@ -1267,7 +741,7 @@ NIST LWC finalist (2023); well-regarded for leakage resilience but not standardi
 
 ---
 
-## Xoodyak (NIST LWC Finalist)
+### Xoodyak (NIST LWC Finalist)
 
 **Goal:** A unified, permutation-based cryptographic primitive for lightweight authenticated encryption and hashing — built on the 384-bit Xoodoo permutation — providing Ascon-comparable security with a simpler, more hardware-efficient permutation and a single API (the "Cyclist" mode) covering AEAD, hashing, PRF, and session key exchange.
 
@@ -1320,7 +794,7 @@ NIST LWC finalist (2023); designed by Keccak/SHA-3 authors. Not standardized; su
 
 ---
 
-## ISAP (NIST LWC Finalist, Side-Channel Resistant)
+### ISAP (NIST LWC Finalist, Side-Channel Resistant)
 
 **Goal:** Authenticated encryption with *inherent* side-channel protection — without masking or shuffling countermeasures — by structuring the algorithm so that the key-dependent and decryption-critical computations involve only a tiny, fixed number of permutation calls that are easy to protect in hardware, while bulk encryption uses a keystream that tolerates leakage.
 
@@ -1372,7 +846,7 @@ NIST LWC finalist (2023); reference design for inherent side-channel resistance.
 
 ---
 
-## Photon-Beetle (NIST LWC Finalist)
+### Photon-Beetle (NIST LWC Finalist)
 
 **Goal:** Ultra-low area authenticated encryption for hardware-constrained devices — targeting sub-1000 gate equivalent implementations — by combining the PHOTON sponge hash permutation with the Beetle duplex-based AEAD mode, achieving one of the smallest silicon footprints among NIST LWC finalists.
 
@@ -1421,7 +895,7 @@ NIST LWC finalist (2023); recognized for smallest hardware footprint. Not standa
 
 ---
 
-## Combined AEAD Constructions: Encrypt-then-MAC, MAC-then-Encrypt, Encrypt-and-MAC
+### Combined AEAD Constructions: Encrypt-then-MAC, MAC-then-Encrypt, Encrypt-and-MAC
 
 **Goal:** Understand the three classical ways to compose a symmetric cipher and a MAC into an authenticated encryption scheme, their relative security properties, and why only one (Encrypt-then-MAC) is provably secure — motivating the replacement of all ad-hoc combinations with purpose-built AEAD modes.
 
@@ -1459,7 +933,7 @@ EtM is well-established (RFC 7366, IPsec ESP); MtE/E&M are understood as insecur
 
 ---
 
-## STREAM: Online Authenticated Encryption with Segmented Ciphertexts
+### STREAM: Online Authenticated Encryption with Segmented Ciphertexts
 
 **Goal:** Authenticated encryption of arbitrarily long byte streams that must begin output before the complete message is known, while maintaining strong per-segment security guarantees. The STREAM construction by Hoang, Reyhanitabar, Rogaway, and Vizár (2015) formalizes how to compose a standard AEAD into a secure online/streaming scheme using ciphertext segmentation, header commitment, and last-block signaling.
 
@@ -1496,7 +970,7 @@ The STREAM pattern underlies TLS 1.3, QUIC, and MLS record layers; well-studied 
 
 ---
 
-## Forkcipher (ForkAES, ForkSkinny)
+### Forkcipher (ForkAES, ForkSkinny)
 
 **Goal:** A tweakable block cipher that produces two independent output blocks from one input block and one key in approximately 1.5× the cost of a single encryption — enabling parallelism-friendly authenticated encryption and hash construction where two separate outputs (e.g., ciphertext block and authentication block) are needed per message block without doubling cipher calls.
 
@@ -1529,7 +1003,7 @@ Research primitive; NIST LWC candidate. Influential concept but no standardizati
 
 ---
 
-## Deterministic AEAD with Any Nonce (DAEAD / ANYDAE)
+### Deterministic AEAD with Any Nonce (DAEAD / ANYDAE)
 
 **Goal:** A deterministic authenticated encryption scheme that accepts a nonce of any length (including zero-length) and guarantees misuse-resistance: security degrades only to plaintext equality leakage when the same (key, nonce, associated-data, plaintext) tuple is reused, regardless of how the nonce is chosen. Removes the requirement for unique nonces entirely in exchange for deterministic (non-randomized) ciphertext.
 
@@ -1564,78 +1038,7 @@ AES-SIV is IETF RFC 5297; Deoxys-II is a CAESAR defense-in-depth winner. ANYDAE 
 
 ---
 
-## Encode-then-Encipher and Feistel-Based Wide-Block Ciphers (EME, XCB, HCH, TET)
-
-**Goal:** Encrypt a block of data (a disk sector, a database record, a network packet) of arbitrary length as a single unit — so that any change to even one bit of plaintext randomizes the entire ciphertext — using only a block cipher and no authentication tag, providing length-preserving, all-or-nothing encryption. Used where ciphertext expansion is structurally prohibited and authentication is handled at a higher layer.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **EME (Halevi-Rogaway)** | 2004 | AES + ECB | Tweakable wide-block cipher; 2n AES calls for an n-block input; EME* fixes a security flaw in EME [[1]](https://eprint.iacr.org/2004/125) |
-| **XCB (McGrew-Fluhrer)** | 2004 | AES + universal hash (GF(2¹²⁸)) | XEX-based construction; near-linear cost [[1]](https://eprint.iacr.org/2004/278) |
-| **HCH (Sarkar)** | 2007 | AES + Carter-Wegman hash | Hash-Counter-Hash; provably secure; software-fast [[1]](https://eprint.iacr.org/2007/013) |
-| **TET (Halevi)** | 2007 | AES + universal hash | Tweakable EME variant; hash-XEX-hash structure; efficient for variable-length sectors [[1]](https://eprint.iacr.org/2007/014) |
-| **HEH (Sarkar)** | 2009 | Universal hash + block cipher | Hash-Encrypt-Hash; simpler than TET; full security proof [[1]](https://eprint.iacr.org/2009/314) |
-
-**Encode-then-Encipher (Bellare-Rogaway, 2000):** The general paradigm for building length-preserving encryption: encode the plaintext (e.g., append a redundancy string), then encipher the encoded value with a wide-block cipher. The decryptor deciphers and checks the redundancy — if absent, decryption fails. This converts a (weaker) pseudorandom permutation into an authenticated encryption scheme without ciphertext expansion [[1]](https://eprint.iacr.org/2000/049).
-
-**Wide-block cipher vs. AEAD:** Wide-block ciphers are *not* authenticated encryption — they provide no authentication tag. They are pseudorandom permutations over a large domain (a sector, a record). Their security guarantee is that they behave like a random permutation on the entire input block, meaning single-bit plaintext changes affect the entire ciphertext. Combined with encode-then-encipher (redundancy checking), they can provide implicit authentication.
-
-**Relation to disk encryption:** XTS-AES (the NIST standard for disk encryption, see [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers)) is *not* a wide-block cipher — it processes each 16-byte AES block independently within a sector. EME/XCB/HCH/TET treat the entire sector as a single block, providing stronger diffusion across sector boundaries. The tradeoff is complexity and cost.
-
-**State of the art:** No wide-block cipher has been standardized by NIST or IETF; all remain research proposals. AES-HCTR2 (deployed in Android for file-based encryption) is the closest to a practical wide-block-inspired mode in production, though it is based on a hash-counter structure rather than a full Feistel or EME construction. See [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers).
-
-**Production readiness:** Research
-No wide-block cipher has been standardized; EME/XCB/HCH/TET remain academic proposals. AES-HCTR2 (deployed in Android) is the closest practical descendant.
-
-**Implementations:**
-- [AES-HCTR2 (Android)](https://android.googlesource.com/kernel/common/) — C, wide-block-inspired mode deployed in Android kernel
-- No standalone open-source implementations of EME, XCB, HCH, or TET in production libraries.
-
-**Security status:** Secure
-EME, XCB, HCH, TET are provably secure as pseudorandom permutations under standard block-cipher assumptions. No practical attacks.
-
-**Community acceptance:** Niche
-Academic research; no NIST or IETF standardization. AES-HCTR2 (Google) is the closest to deployed use in the wide-block paradigm.
-
----
-
-## Robust KEM + DEM (REACT, OAEP+)
-
-**Goal:** Public-key encryption that is provably secure against adaptive chosen-ciphertext attacks (IND-CCA2) in the standard model or with tight reductions, beyond what naive KEM/DEM composition achieves. REACT and OAEP+ are transforms that convert IND-CPA public-key encryption into full IND-CCA2 encryption using minimal additional structure, with formal security proofs tighter than OAEP.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **OAEP+ (Shoup)** | 2001 | RSA + hash | Strengthened OAEP; tight IND-CCA2 proof from RSA in ROM; fixes OAEP gap [[1]](https://shoup.net/papers/oaep.pdf) |
-| **REACT (Okamoto-Pointcheval)** | 2001 | Any IND-CPA PKE + MAC | Generic transform; IND-CCA2 from IND-CPA with a one-time MAC; tight reduction in ROM [[1]](https://eprint.iacr.org/2000/013) |
-| **OAEP (Bellare-Rogaway)** | 1994 | RSA + hash | Original optimal asymmetric encryption padding; ROM proof with a gap later identified [[1]](https://link.springer.com/chapter/10.1007/3-540-68339-9_14) |
-| **SAEP+ (Boneh)** | 2001 | RSA + single hash | Simplified OAEP+; one hash call; tight IND-CCA2 from RSA in ROM [[1]](https://crypto.stanford.edu/~dabo/papers/saep.pdf) |
-| **Fujisaki-Okamoto (FO) transform** | 1999 | Any IND-CPA + hash | Generic ROM transform; canonical path to KEM IND-CCA2; used in PQ KEMs (Kyber, NTRU) [[1]](https://eprint.iacr.org/1999/033) |
-
-**Why "robust KEM+DEM":** The Shoup KEM/DEM paradigm (see [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem--dem-paradigm)) achieves IND-CCA2 if the KEM is IND-CCA2. REACT provides a clean path from any IND-CPA PKE to an IND-CCA2 hybrid encryption scheme using a message authentication code: the session key is authenticated along with the ciphertext so that any ciphertext modification fails MAC verification before decryption. The security reduction is tight — no quadratic loss — unlike OAEP's original proof.
-
-**OAEP vs. OAEP+:** Bellare and Rogaway's original OAEP proof had a gap identified by Shoup (2001): the reduction was not tight for partial-domain one-wayness of RSA. OAEP+ repairs this with an additional hash application, achieving a tight reduction from the RSA assumption. In practice, RSA-OAEP (PKCS#1 v2.1, RFC 8017) remains the deployed standard; OAEP+ is the theoretically preferred variant.
-
-**Fujisaki-Okamoto:** The FO transform is the canonical generic method and underpins all NIST PQC KEM standards (ML-KEM/Kyber, HQC, BIKE) — it converts a CPA-secure lattice KEM into a CCA2-secure one by hashing both the random coins and the message together and re-encrypting to verify. REACT and OAEP+ address the same problem for classical (RSA/ElGamal) PKE.
-
-**State of the art:** RSA-OAEP (RFC 8017) is the deployed standard for RSA-based hybrid encryption. ML-KEM (FIPS 203) applies a variant of the FO transform to Kyber. REACT remains a research reference for clean IND-CCA2 construction proofs. For new systems, HPKE (RFC 9180) provides a standardized, modular public-key encryption framework on top of modern KEMs. See [Hybrid Public Key Encryption (HPKE)](#hybrid-public-key-encryption-hpke).
-
-**Production readiness:** Production
-RSA-OAEP (RFC 8017) is deployed everywhere; the FO transform underpins ML-KEM (FIPS 203). REACT and OAEP+ are theoretical references.
-
-**Implementations:**
-- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RSA-OAEP (PKCS#1 v2.1)
-- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, RSA-OAEP and OAEP+
-- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-KEM (FO transform applied to Kyber)
-
-**Security status:** Secure
-RSA-OAEP is provably IND-CCA2 in ROM; OAEP+ has a tight reduction. FO transform is provably CCA2-secure from CPA-secure KEMs.
-
-**Community acceptance:** Standard
-RSA-OAEP is PKCS#1 v2.1 (RFC 8017); FO transform is implicit in NIST FIPS 203 (ML-KEM). REACT/OAEP+ are well-studied academic constructions.
-
----
-
-## Leakage-Resilient AEAD (LRAE)
+### Leakage-Resilient AEAD (LRAE)
 
 **Goal:** Authenticated encryption that remains secure even when an adversary observes bounded amounts of physical side-channel information (power traces, EM emissions, timing) from the encryption and decryption operations — without requiring masking or hardware countermeasures at every step. Formalizes which algorithmic designs tolerate implementation leakage and which do not.
 
@@ -1673,7 +1076,7 @@ Active academic research area; influences side-channel-resistant design but no N
 
 ---
 
-## GCM-SST (Galois/Counter Mode with Secure Short Tags)
+### GCM-SST (Galois/Counter Mode with Secure Short Tags)
 
 **Goal:** Authenticated encryption with short authentication tags (e.g., 32-bit or 64-bit) that achieves security guarantees equivalent to full-length GCM tags — unlike standard GCM where truncating the tag degrades forgery resistance proportionally. Designed for constrained-bandwidth protocols (sensor networks, industrial control, automotive CAN bus) where a 128-bit GCM tag is too expensive to transmit.
 
@@ -1705,7 +1108,7 @@ IEEE P1619.1 draft inclusion; recommended for constrained-bandwidth protocols. N
 
 ---
 
-## Robust Authenticated Encryption (RAE / Beyond INT-CTXT)
+### Robust Authenticated Encryption (RAE / Beyond INT-CTXT)
 
 **Goal:** Authenticated encryption that remains secure even when the adversary can observe whether decryption attempts succeed or fail — closing the gap between INT-CTXT (ciphertext unforgeability) and robustness (no information leakage from invalid ciphertexts). Robust AE prevents chosen-ciphertext attacks that exploit decryption error oracles, partial-decryption leakage, and tag-verification side channels beyond what standard INT-CTXT guarantees.
 
@@ -1742,7 +1145,7 @@ Robustness is a design principle adopted in TLS 1.3 and discussed at NIST Block 
 
 ---
 
-## COLM (COPA + ELmD Merge)
+### COLM (COPA + ELmD Merge)
 
 **Goal:** Nonce-misuse-resistant authenticated encryption built from two parallelizable AES encryption layers connected by a linear mixing function, providing both confidentiality and authenticity even when nonces are repeated — selected as a CAESAR competition defense-in-depth co-winner alongside Deoxys-II.
 
@@ -1768,7 +1171,7 @@ CAESAR defense-in-depth co-winner (2019); well-regarded but no NIST or IETF stan
 
 ---
 
-## MORUS (CAESAR High-Speed Finalist)
+### MORUS (CAESAR High-Speed Finalist)
 
 **Goal:** Extremely high-speed authenticated encryption optimized for modern 64-bit and SIMD-capable processors, achieving sub-cycle-per-byte throughput — a CAESAR competition finalist in the high-performance use case alongside AEGIS and OCB.
 
@@ -1795,7 +1198,7 @@ CAESAR third-round finalist; not selected due to cryptanalytic weakness. Academi
 
 ---
 
-## NORX (Parallel Sponge-Based AEAD)
+### NORX (Parallel Sponge-Based AEAD)
 
 **Goal:** Parallel and scalable authenticated encryption based on a sponge-like construction using only bitwise operations (no modular additions), enabling efficient constant-time implementations resistant to timing side channels — a CAESAR competition third-round candidate.
 
@@ -1821,7 +1224,7 @@ CAESAR Round 3 candidate; eliminated due to cryptanalysis. Historical interest f
 
 ---
 
-## Elephant (NIST LWC Finalist)
+### Elephant (NIST LWC Finalist)
 
 **Goal:** Lightweight parallelizable authenticated encryption using an encrypt-then-MAC construction with small permutations and LFSR-based masking, targeting constrained hardware with minimal overhead beyond the underlying permutation circuit — a NIST Lightweight Cryptography competition finalist.
 
@@ -1848,7 +1251,7 @@ NIST LWC finalist (2023); recognized for parallelizable mode. Not standardized; 
 
 ---
 
-## TinyJAMBU (NIST LWC Finalist)
+### TinyJAMBU (NIST LWC Finalist)
 
 **Goal:** Ultra-compact authenticated encryption built on a lightweight 128-bit keyed permutation using a simple feedback shift register structure, achieving one of the smallest RAM and flash memory footprints among all NIST LWC candidates — designed for the most constrained IoT devices.
 
@@ -1875,7 +1278,7 @@ NIST LWC finalist (2023); smallest state among finalists. Not standardized; supe
 
 ---
 
-## Schwaemm / SPARKLE (NIST LWC Finalist)
+### Schwaemm / SPARKLE (NIST LWC Finalist)
 
 **Goal:** Lightweight authenticated encryption using ARX-based (Addition-Rotation-XOR) permutations in a Beetle sponge mode, achieving very high throughput on microcontrollers without requiring hardware AES or bit-slicing — a NIST Lightweight Cryptography competition finalist.
 
@@ -1903,7 +1306,7 @@ NIST LWC finalist (2023); fastest software lightweight AEAD on ARM Cortex-M. Not
 
 ---
 
-## Pyjamask (Masking-Optimized AEAD)
+### Pyjamask (Masking-Optimized AEAD)
 
 **Goal:** Authenticated encryption specifically designed for efficient high-order side-channel masking in software, minimizing the number of nonlinear (AND) gates to reduce the cost of masked implementations — targeting secure embedded systems where side-channel resistance is a primary requirement.
 
@@ -1929,7 +1332,7 @@ NIST LWC Round 2 candidate; influential for masking-friendly cipher design princ
 
 ---
 
-## Spook (Leakage-Resilient Sponge-Based AEAD)
+### Spook (Leakage-Resilient Sponge-Based AEAD)
 
 **Goal:** Authenticated encryption with state-of-the-art leakage resilience — maintaining security even when side-channel measurements (power traces, electromagnetic emanations) leak information about intermediate computations — by combining a dedicated key-derivation step with bitslice tweakable block ciphers and a duplex sponge mode.
 
@@ -1956,7 +1359,7 @@ NIST LWC Round 2 candidate; well-regarded for leakage resilience formalization. 
 
 ---
 
-## ESTATE (Energy-Efficient Short-Tweak TBC-Based AEAD)
+### ESTATE (Energy-Efficient Short-Tweak TBC-Based AEAD)
 
 **Goal:** Lightweight authenticated encryption optimized for short messages and minimal hardware area, using a tweakable block cipher with a very short (4-bit) tweak in a MAC-then-Encrypt paradigm — providing nonce-misuse resistance with minimal circuit overhead beyond the underlying block cipher.
 
@@ -1983,7 +1386,7 @@ NIST LWC Round 2 candidate; innovative short-tweak design. Not advanced to final
 
 ---
 
-## Partitioning Oracle Attacks and Committing AEAD Landscape
+### Partitioning Oracle Attacks and Committing AEAD Landscape
 
 **Goal:** Defend against partitioning oracle attacks — a class of chosen-ciphertext attacks that exploit the fact that standard AEAD schemes (AES-GCM, ChaCha20-Poly1305, XSalsa20-Poly1305) allow efficient multi-key collisions, enabling an adversary to craft a single ciphertext that decrypts validly under many different keys and use a decryption oracle to efficiently identify which key is correct.
 
@@ -2007,5 +1410,630 @@ CTX and CCX transforms are provably secure with minimal overhead; partitioning o
 
 **Community acceptance:** Emerging
 NIST Block Cipher Modes Workshop (2023) discussed standardization; adopted by Signal and cloud backup systems. Active standardization trajectory.
+
+---
+
+
+## Key Encapsulation and Hybrid Encryption
+
+---
+### Key Encapsulation Mechanism (KEM) / DEM Paradigm
+
+**Goal:** Modular encryption design. Split public-key encryption into two clean steps: (1) KEM produces a shared symmetric key from public key, (2) DEM encrypts data with that key. Enables clean security proofs and mix-and-match of components.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Shoup KEM/DEM** | 2001 | Any PKE | Formal paradigm definition; cleaner than direct PKE proofs [[1]](https://shoup.net/papers/kem-dem.pdf) |
+| **RSA-KEM** | 2003 | RSA | Random RSA encapsulation; NIST SP 800-56B [[1]](https://csrc.nist.gov/publications/detail/sp/800/56/b/rev-2/final) |
+| **DHKEM (X25519)** | 2022 | ECDH | DH-based KEM used in HPKE (RFC 9180) [[1]](https://www.rfc-editor.org/rfc/rfc9180) |
+| **ML-KEM (Kyber)** | 2024 | MLWE lattice | NIST PQ standard KEM (FIPS 203) [[1]](https://csrc.nist.gov/pubs/fips/203/final) |
+
+**State of the art:** all modern encryption standards use KEM/DEM (HPKE, ML-KEM, ECIES). The paradigm is the default design pattern.
+
+**Production readiness:** Production
+KEM/DEM is the foundation of HPKE (RFC 9180), ML-KEM (FIPS 203), and all modern hybrid encryption deployed in TLS, MLS, and QUIC.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RSA-KEM, DHKEM, ML-KEM support
+- [hpke](https://github.com/cisco/go-hpke) ⭐ 30 — Go, HPKE implementation with DHKEM
+- [aws-lc](https://github.com/aws/aws-lc) ⭐ 731 — C, ML-KEM (Kyber) in production at AWS
+
+**Security status:** Secure
+The KEM/DEM paradigm has clean, well-understood security reductions; IND-CCA2 KEM + IND-CPA DEM = IND-CCA2 hybrid.
+
+**Community acceptance:** Standard
+NIST FIPS 203 (ML-KEM), IETF RFC 9180 (HPKE), ISO 18033-2; the universal paradigm for public-key encryption.
+
+---
+
+### Signcryption
+
+**Goal:** Confidentiality + Authentication + Non-repudiation in a single pass. More efficient than sequential sign-then-encrypt; security is proven jointly (IND-CCA2 + EUF-CMA).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Zheng Signcryption** | 1997 | DLP / EC | First scheme; ~50% cost reduction vs. sign+encrypt [[1]](https://link.springer.com/chapter/10.1007/BFb0052234) |
+| **ECSC (Bao-Deng)** | 1998 | ECDLP | Elliptic curve variant; formal security proof [[1]](https://link.springer.com/chapter/10.1007/BFb0052237) |
+| **Signcryption KEM/DEM** | 2004 | Hybrid | Modular: KEM provides authenticated key + DEM encrypts [[1]](https://eprint.iacr.org/2004/075) |
+
+**State of the art:** Hybrid signcryption KEM/DEM (provable security), used in secure messaging design.
+
+**Production readiness:** Mature
+Signcryption concepts are used in secure messaging and CMS; standalone signcryption schemes have limited direct deployment.
+
+**Implementations:**
+- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, signcryption primitives
+- [IEEE 1363-2000](https://standards.ieee.org/ieee/1363/835/) — Standard, includes ECSC signcryption
+
+**Security status:** Secure
+Provably secure (IND-CCA2 + EUF-CMA) in the hybrid KEM/DEM model; EC-based schemes are well-studied.
+
+**Community acceptance:** Niche
+IEEE 1363 includes signcryption; not widely adopted as a standalone primitive — most systems use separate sign-then-encrypt.
+
+---
+
+### ECIES (Elliptic Curve Integrated Encryption Scheme)
+
+**Goal:** Public-key encryption of arbitrary-length messages using elliptic-curve Diffie-Hellman for key agreement. ECIES combines ECDH key agreement, a key-derivation function, a symmetric cipher, and a MAC into a single encryption primitive — the practical EC equivalent of DHIES and the predecessor to the cleaner HPKE standard.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DHIES (Abdalla-Bellare-Rogaway)** | 2001 | DH | Formal security foundation; IND-CCA2 under CDH; template for ECIES [[1]](https://eprint.iacr.org/1999/007) |
+| **ECIES (ANSI X9.63)** | 2001 | ECDH | ANSI standard; KDF = X9.63-KDF (ECDH output ‖ counter ‖ SharedInfo hashed with SHA-2) [[1]](https://www.secg.org/sec1-v2.pdf) |
+| **ECIES (IEEE 1363a)** | 2004 | ECDH | IEEE variant; flexible KDF and MAC choices [[1]](https://standards.ieee.org/ieee/1363a/1282/) |
+| **ECIES (ISO/IEC 18033-2)** | 2006 | ECDH | ISO variant used in smart-card and PKI toolkits [[1]](https://www.iso.org/standard/37971.html) |
+| **HPKE (RFC 9180)** | 2022 | DHKEM | Clean successor to ECIES; see [Hybrid Public Key Encryption](#hybrid-public-key-encryption-hpke) [[1]](https://www.rfc-editor.org/rfc/rfc9180) |
+
+**Construction:** The sender generates an ephemeral ECDH key pair, derives a shared secret via ECDH with the recipient's static public key, feeds the shared secret through a KDF (typically ANSI X9.63-KDF or HKDF) to obtain an encryption key and a MAC key, encrypts the message with a symmetric cipher (AES-CBC or AES-CTR), and appends a MAC tag. The ephemeral public key is sent alongside the ciphertext. The recipient reverses the process using their static private key.
+
+**ANSI X9.63-KDF:** `KDF(Z, keydatalen, SharedInfo) = H(Z ‖ Counter ‖ SharedInfo)` where Z is the ECDH shared secret, Counter starts at 0x00000001, and H is SHA-256 or SHA-512. Multiple hash iterations are concatenated if more key material is needed.
+
+**Interoperability issues:** ECIES has no single canonical form — ANSI X9.63, IEEE 1363a, and ISO 18033-2 differ in KDF, MAC placement, and point encoding, causing library incompatibilities. HPKE (RFC 9180) was designed partly to eliminate this fragmentation.
+
+**State of the art:** ECIES remains widely deployed in TLS 1.2 handshakes, S/MIME, OpenPGP, and hardware security modules. New protocols should prefer HPKE (RFC 9180), which has a cleaner security proof, explicit mode separation, and IETF standardization. ECIES is still the default in many HSM and PKI vendor APIs as of 2026.
+
+**Production readiness:** Production
+Deployed in TLS 1.2, S/MIME, OpenPGP, Ethereum (eciesjs), Apple/Google payment systems, and HSMs worldwide.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, ECIES via EVP_PKEY_derive
+- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, ECIES (ANSI X9.63 and ISO 18033-2)
+
+**Security status:** Superseded
+Technically secure (IND-CCA2 under CDH) but fragmented across incompatible variants. HPKE (RFC 9180) is the recommended successor.
+
+**Community acceptance:** Standard
+ANSI X9.63, IEEE 1363a, ISO 18033-2; widely standardized but superseded by HPKE for new protocol designs.
+
+---
+
+### Robust KEM + DEM (REACT, OAEP+)
+
+**Goal:** Public-key encryption that is provably secure against adaptive chosen-ciphertext attacks (IND-CCA2) in the standard model or with tight reductions, beyond what naive KEM/DEM composition achieves. REACT and OAEP+ are transforms that convert IND-CPA public-key encryption into full IND-CCA2 encryption using minimal additional structure, with formal security proofs tighter than OAEP.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **OAEP+ (Shoup)** | 2001 | RSA + hash | Strengthened OAEP; tight IND-CCA2 proof from RSA in ROM; fixes OAEP gap [[1]](https://shoup.net/papers/oaep.pdf) |
+| **REACT (Okamoto-Pointcheval)** | 2001 | Any IND-CPA PKE + MAC | Generic transform; IND-CCA2 from IND-CPA with a one-time MAC; tight reduction in ROM [[1]](https://eprint.iacr.org/2000/013) |
+| **OAEP (Bellare-Rogaway)** | 1994 | RSA + hash | Original optimal asymmetric encryption padding; ROM proof with a gap later identified [[1]](https://link.springer.com/chapter/10.1007/3-540-68339-9_14) |
+| **SAEP+ (Boneh)** | 2001 | RSA + single hash | Simplified OAEP+; one hash call; tight IND-CCA2 from RSA in ROM [[1]](https://crypto.stanford.edu/~dabo/papers/saep.pdf) |
+| **Fujisaki-Okamoto (FO) transform** | 1999 | Any IND-CPA + hash | Generic ROM transform; canonical path to KEM IND-CCA2; used in PQ KEMs (Kyber, NTRU) [[1]](https://eprint.iacr.org/1999/033) |
+
+**Why "robust KEM+DEM":** The Shoup KEM/DEM paradigm (see [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem--dem-paradigm)) achieves IND-CCA2 if the KEM is IND-CCA2. REACT provides a clean path from any IND-CPA PKE to an IND-CCA2 hybrid encryption scheme using a message authentication code: the session key is authenticated along with the ciphertext so that any ciphertext modification fails MAC verification before decryption. The security reduction is tight — no quadratic loss — unlike OAEP's original proof.
+
+**OAEP vs. OAEP+:** Bellare and Rogaway's original OAEP proof had a gap identified by Shoup (2001): the reduction was not tight for partial-domain one-wayness of RSA. OAEP+ repairs this with an additional hash application, achieving a tight reduction from the RSA assumption. In practice, RSA-OAEP (PKCS#1 v2.1, RFC 8017) remains the deployed standard; OAEP+ is the theoretically preferred variant.
+
+**Fujisaki-Okamoto:** The FO transform is the canonical generic method and underpins all NIST PQC KEM standards (ML-KEM/Kyber, HQC, BIKE) — it converts a CPA-secure lattice KEM into a CCA2-secure one by hashing both the random coins and the message together and re-encrypting to verify. REACT and OAEP+ address the same problem for classical (RSA/ElGamal) PKE.
+
+**State of the art:** RSA-OAEP (RFC 8017) is the deployed standard for RSA-based hybrid encryption. ML-KEM (FIPS 203) applies a variant of the FO transform to Kyber. REACT remains a research reference for clean IND-CCA2 construction proofs. For new systems, HPKE (RFC 9180) provides a standardized, modular public-key encryption framework on top of modern KEMs. See [Hybrid Public Key Encryption (HPKE)](#hybrid-public-key-encryption-hpke).
+
+**Production readiness:** Production
+RSA-OAEP (RFC 8017) is deployed everywhere; the FO transform underpins ML-KEM (FIPS 203). REACT and OAEP+ are theoretical references.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RSA-OAEP (PKCS#1 v2.1)
+- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, RSA-OAEP and OAEP+
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-KEM (FO transform applied to Kyber)
+
+**Security status:** Secure
+RSA-OAEP is provably IND-CCA2 in ROM; OAEP+ has a tight reduction. FO transform is provably CCA2-secure from CPA-secure KEMs.
+
+**Community acceptance:** Standard
+RSA-OAEP is PKCS#1 v2.1 (RFC 8017); FO transform is implicit in NIST FIPS 203 (ML-KEM). REACT/OAEP+ are well-studied academic constructions.
+
+---
+
+
+## Format-Preserving and Disk Encryption
+
+---
+### Format-Preserving Encryption (FPE)
+
+**Goal:** Confidentiality with structural compatibility. Ciphertext has the exact same format as plaintext — a 16-digit credit card number encrypts to another 16-digit number. Required for PCI-DSS tokenization and legacy systems.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **FF1** | 2016 | Feistel + AES | NIST SP 800-38G standard; variable-radix alphabet [[1]](https://csrc.nist.gov/publications/detail/sp/800/38/g/final) |
+| **FF3-1** | 2019 | Feistel + AES tweaked | NIST SP 800-38G Rev.1; replaces broken FF3 [[1]](https://csrc.nist.gov/publications/detail/sp/800/38/g/rev-1/final) |
+| **BPS (Bellare-Pian-Shi)** | 2010 | Feistel | Theoretical foundation for FPE security [[1]](https://eprint.iacr.org/2009/251) |
+
+**State of the art:** FF1 (general), FF3-1 (tweakable, NIST standard).
+
+**Production readiness:** Production
+Deployed in PCI-DSS tokenization systems, payment processing, and legacy database encryption at major enterprises.
+
+**Implementations:**
+- [pyffx](https://github.com/emulbreh/pyffx) ⭐ 55 — Python, FF1 implementation
+- [format-preserving-encryption](https://github.com/capitalone/fpe) ⭐ 208 [archived] — Go, FF1 implementation by Capital One
+- [Mysto FPE](https://github.com/mysto/java-fpe) ⭐ 75 — Java, FF1 and FF3-1 implementations
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, FF1 support (via EVP API)
+
+**Security status:** Caution
+FF1 and FF3-1 are secure for sufficiently large domains; small-domain FPE has inherent leakage. FF3 (original) is broken and must not be used.
+
+**Community acceptance:** Standard
+NIST SP 800-38G (FF1) and SP 800-38G Rev.1 (FF3-1); widely adopted in PCI-DSS tokenization.
+
+---
+
+### Disk Encryption / Tweakable Block Ciphers
+
+**Goal:** At-rest confidentiality. Encrypt each disk sector independently with a sector-number-dependent tweak, so sectors can be read/written randomly without decrypting the whole disk. Used in BitLocker, FileVault, LUKS, Android FBE.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **XTS-AES** | 2007 | Tweakable AES | IEEE 1619; sector-level encryption; tweak = sector number [[1]](https://ieeexplore.ieee.org/document/4493450) |
+| **XEX (Rogaway)** | 2004 | Tweakable block cipher | Foundation: xor-encrypt-xor; XTS is a variant [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30539-2_2) |
+| **Adiantum** | 2019 | ChaCha + NH + Poly1305 | Google; for devices without AES-NI (low-end Android) [[1]](https://eprint.iacr.org/2018/720) |
+| **AES-HCTR2** | 2021 | AES + universal hash | Wide-block tweakable cipher; successor to Adiantum on AES-NI devices [[1]](https://eprint.iacr.org/2021/1441) |
+
+**State of the art:** XTS-AES (BitLocker, FileVault, LUKS), Adiantum (low-end Android), AES-HCTR2 (modern Android).
+
+**Production readiness:** Production
+XTS-AES is deployed in BitLocker, FileVault, LUKS, and Android FBE on billions of devices.
+
+**Implementations:**
+- [Linux kernel dm-crypt](https://gitlab.com/cryptsetup/cryptsetup) — C, XTS-AES, Adiantum, AES-HCTR2 in kernel
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, XTS-AES mode
+- [Adiantum (Android)](https://android.googlesource.com/kernel/common/+/refs/heads/android-mainline/crypto/adiantum.c) — C, kernel implementation by Google
+
+**Security status:** Secure
+XTS-AES provides sector-level confidentiality but not authentication; Adiantum and HCTR2 are secure wide-block alternatives.
+
+**Community acceptance:** Standard
+IEEE 1619 (XTS-AES); NIST approved for storage encryption; Adiantum and HCTR2 deployed by Google in Android.
+
+---
+
+### Order-Preserving / Order-Revealing Encryption (OPE / ORE)
+
+**Goal:** Encrypted range queries. Ciphertext preserves or reveals the numerical order of plaintexts, enabling range queries on encrypted databases without decrypting. **Warning:** inherent leakage; weaker than standard encryption.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boldyreva OPE** | 2009 | Hypergeometric sampling | First provably secure OPE; leaks order + approximate distance [[1]](https://eprint.iacr.org/2009/197) |
+| **Chenette-Lewi-Wu ORE** | 2016 | PRF + block cipher | Reveals only order, not distance; "best-possible" ORE [[1]](https://eprint.iacr.org/2016/612) |
+| **Lewi-Wu Practical ORE** | 2016 | PRF | Efficient; used in CryptDB-like systems [[1]](https://eprint.iacr.org/2016/612) |
+
+**State of the art:** Lewi-Wu ORE (practical), but SSE/FHE approaches preferred when leakage is unacceptable.
+
+**Production readiness:** Experimental
+Used in encrypted database research (CryptDB-like systems); limited real-world deployment due to inherent leakage.
+
+**Implementations:**
+- [CryptDB](https://github.com/CryptDB/CryptDB) ⭐ 521 — C++, OPE used in encrypted database queries
+- [pyope](https://github.com/tonyo/pyope) ⭐ 103 — Python, Boldyreva OPE implementation
+
+**Security status:** Caution
+All OPE/ORE inherently leaks order (and sometimes distance); inference attacks can reconstruct plaintext distributions from ciphertext order.
+
+**Community acceptance:** Niche
+No standardization; used in academic encrypted database research. Widely criticized for leakage in practice.
+
+---
+
+### Updatable Encryption
+
+**Goal:** Key rotation without re-download. Server applies a short re-encryption token to update all ciphertexts from an old key to a new key — without decrypting or downloading data. Used in cloud storage key rotation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BLMR (Boneh et al.)** | 2013 | ElGamal / AES | Formal model for ciphertext-independent updates [[1]](https://eprint.iacr.org/2012/021) |
+| **Lehmann-Tackmann** | 2018 | Hybrid (KEM + DEM) | CCA-secure updatable encryption [[1]](https://eprint.iacr.org/2018/794) |
+| **Klooß-Lehmann-Rupp** | 2019 | Forward-secure enc | Forward + post-compromise security [[1]](https://eprint.iacr.org/2019/043) |
+
+**State of the art:** Klooß-Lehmann-Rupp (strongest security guarantees), BLMR (foundational).
+
+**Production readiness:** Research
+Academic constructions; no widely deployed production system uses formal updatable encryption schemes.
+
+**Implementations:**
+- [Recrypt](https://github.com/IronCoreLabs/recrypt-rs) ⭐ 166 — Rust, proxy re-encryption (related primitive)
+
+**Security status:** Secure
+Klooß-Lehmann-Rupp provides forward and post-compromise security; formal proofs in standard model.
+
+**Community acceptance:** Niche
+Active academic research; no NIST or IETF standardization. Cloud key rotation typically uses simpler re-encryption approaches.
+
+---
+
+### Rerandomizable Encryption
+
+**Goal:** Unlinkable ciphertexts. Anyone can publicly transform a ciphertext into a fresh-looking encryption of the same plaintext — unlinkable to the original. Foundation of mixnets and anonymous credentials.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ElGamal (rerandomizable)** | 1985 | DDH | Naturally rerandomizable: multiply by Enc(1) [[1]](https://link.springer.com/chapter/10.1007/3-540-39568-7_2) |
+| **Groth RCCA** | 2004 | Pairings | CCA-secure under rerandomization (RCCA model) [[1]](https://eprint.iacr.org/2003/174) |
+| **Prabhakaran-Rosulek RCCA** | 2007 | DDH | Efficient RCCA without pairings [[1]](https://eprint.iacr.org/2007/064) |
+
+**State of the art:** Groth RCCA (provable security), ElGamal (practical in mixnets/voting).
+
+**Production readiness:** Mature
+ElGamal rerandomization is deployed in mixnets and e-voting systems; RCCA schemes remain research constructions.
+
+**Implementations:**
+- [Verificatum](https://www.verificatum.org/) — Java, ElGamal-based mixnet for e-voting
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, ElGamal primitives (via Ristretto255)
+- [Helios](https://github.com/benadida/helios-server) ⭐ 888 — Python, rerandomizable ElGamal in e-voting
+
+**Security status:** Secure
+ElGamal rerandomization is secure under DDH; Groth RCCA has formal proofs under pairing assumptions.
+
+**Community acceptance:** Niche
+ElGamal rerandomization is well-established in e-voting and mixnet communities; RCCA is a specialized academic notion.
+
+---
+
+### Puncturable Encryption
+
+**Goal:** Forward-secure decryption. A recipient can "puncture" their secret key on specific ciphertexts they've already decrypted — the punctured key can decrypt everything *except* those messages. Provides forward secrecy without sender-side changes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Green-Miers Puncturable Enc** | 2015 | Puncturable PRF + IBE | Puncture decryption key at tags; based on HIBE [[1]](https://eprint.iacr.org/2014/984) |
+| **Bloom Filter Encryption** | 2018 | BF + puncturable PRF | Efficiently puncture on a Bloom filter of processed messages [[1]](https://eprint.iacr.org/2018/199) |
+| **0-RTT with Puncturable Enc** | 2017 | TLS + puncturable enc | Replay-resistant 0-RTT key exchange without server state [[1]](https://eprint.iacr.org/2017/004) |
+
+**State of the art:** Bloom Filter Encryption (practical), 0-RTT puncturable (TLS optimization).
+
+**Production readiness:** Research
+Academic constructions; 0-RTT puncturable encryption concepts influence TLS design but no standalone deployment.
+
+**Implementations:**
+- No production-quality standalone libraries; concepts integrated into TLS 1.3 anti-replay research.
+
+**Security status:** Secure
+Provably secure under IBE/HIBE assumptions; Bloom Filter Encryption provides efficient puncturing with well-understood false-positive rates.
+
+**Community acceptance:** Niche
+Active research area; influences TLS 0-RTT anti-replay design but no IETF or NIST standardization of puncturable encryption itself.
+
+---
+
+
+## Order and Property-Preserving Encryption
+
+---
+### Deterministic Encryption / Convergent Encryption
+
+**Goal:** Encrypted deduplication & lookup. Same plaintext always produces the same ciphertext, enabling equality checks without decryption. Leaks plaintext equality — not suitable where this matters.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SIV Mode (Rogaway-Shrimpton)** | 2006 | AES + CMAC | Deterministic AEAD; misuse-resistant; IV = MAC(header, plaintext) [[1]](https://eprint.iacr.org/2006/221) |
+| **Convergent Encryption** | 2002 | Hash-as-key | Key = H(plaintext); enables cloud dedup of encrypted data [[1]](https://dl.acm.org/doi/10.5555/514236.514238) |
+| **MLE (Message-Locked Encryption)** | 2013 | Various | Formalization of convergent encryption with security definitions [[1]](https://eprint.iacr.org/2012/631) |
+
+**State of the art:** AES-SIV (misuse-resistant AEAD, RFC 5297), MLE (cloud deduplication).
+
+**Production readiness:** Production
+AES-SIV is deployed in cloud storage, key wrapping, and encrypted databases; convergent encryption is used in deduplication systems.
+
+**Implementations:**
+- [miscreant](https://github.com/miscreant/miscreant.rb) ⭐ 22 [archived] — Ruby/JS/Rust/Go, AES-SIV (RFC 5297)
+- [Tink](https://github.com/tink-crypto/tink) ⭐ 13k — Java/Go/C++/Python, AES-SIV (deterministic AEAD)
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-SIV support
+
+**Security status:** Caution
+AES-SIV is secure but deterministic (leaks plaintext equality). Convergent encryption is vulnerable to offline brute-force on low-entropy data.
+
+**Community acceptance:** Standard
+AES-SIV is IETF RFC 5297; MLE is a well-studied framework. Convergent encryption is deployed but with known limitations.
+
+---
+
+### Property-Preserving Encryption (PPE)
+
+**Goal:** Unifying framework for structured leakage. Encryption that intentionally preserves a specific property of the plaintext — enabling server-side computation without decryption. Formalizes the tradeoff between functionality and leakage for encrypted databases.
+
+| Property | Scheme | Note |
+|----------|--------|------|
+| **Equality** | [Deterministic Encryption](#deterministic-encryption--convergent-encryption) | Same plaintext → same ciphertext; enables dedup and equality search |
+| **Order** | [OPE / ORE](#order-preserving--order-revealing-encryption-ope--ore) | Ciphertext preserves numerical order; enables range queries |
+| **Orthogonality** | [Inner-Product FE](#puncturable-encryption) | Decrypt iff inner product = 0; enables subset queries |
+| **Pattern match** | [HVE](#puncturable-encryption) | Decrypt iff attributes match pattern with wildcards |
+| **Keyword** | [Searchable Encryption](#updatable-encryption) | Search encrypted data by keyword |
+
+**General framework:** Pandey-Rouselakis (2012) [[1]](https://eprint.iacr.org/2012/141) formalized PPE; Boldyreva-Chenette-O'Neill (2011) [[1]](https://eprint.iacr.org/2011/005) analyzed leakage. **Warning:** all PPE inherently leaks — weaker than semantic security. Use only when the leakage-functionality tradeoff is acceptable.
+
+**State of the art:** PPE is the theoretical umbrella for OPE, deterministic encryption, and HVE. CryptDB (2011) demonstrated practical encrypted SQL using multiple PPE layers. Subsequent inference attacks (Naveed-Kamara-Wright 2015, Grubbs et al. 2017) showed real-world leakage exploitation, tempering enthusiasm for PPE-based encrypted databases.
+
+**Production readiness:** Experimental
+Individual PPE schemes (OPE, deterministic encryption) are deployed in encrypted databases; the unifying PPE framework is academic.
+
+**Implementations:**
+- [CryptDB](https://github.com/CryptDB/CryptDB) ⭐ 521 — C++, uses multiple PPE schemes for encrypted SQL queries
+- [Arx](https://github.com/ArkDB) — research encrypted database using PPE primitives
+
+**Security status:** Caution
+All PPE inherently leaks the preserved property; inference attacks have been demonstrated against deployed encrypted databases.
+
+**Community acceptance:** Niche
+Academic framework; individual PPE schemes are used in encrypted database research but criticized for practical leakage.
+
+---
+
+### Secure Deduplication
+
+**Goal:** Encrypted storage with duplicate elimination. Cloud server detects and removes duplicate files among encrypted uploads — without decrypting. Saves storage while preserving confidentiality. Formalizes security of convergent encryption.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Douceur et al. Convergent Encryption** | 2002 | H(plaintext) as key | Deterministic encryption for dedup; see [Deterministic Encryption](#deterministic-encryption--convergent-encryption) [[1]](https://doi.org/10.1145/514236.514243) |
+| **Bellare-Keelveedhi-Ristenpart (DupLESS)** | 2013 | Server-aided MLE | Server-aided message-locked encryption; key from OPRF prevents offline brute-force [[1]](https://eprint.iacr.org/2013/429) |
+| **Secure Dedup with PoW (Halevi et al.)** | 2011 | Proof of ownership | Client proves it owns file before server deduplicates [[1]](https://eprint.iacr.org/2011/277) |
+
+**State of the art:** DupLESS (server-aided OPRF-based dedup); extends [Deterministic Encryption](#deterministic-encryption--convergent-encryption) with formal security and [OPRF](10-privacy-preserving-computation.md#oblivious-prf-oprf).
+
+**Production readiness:** Experimental
+DupLESS is a research prototype; convergent encryption concepts are used in production cloud storage (e.g., Tahoe-LAFS) but without formal security guarantees.
+
+**Implementations:**
+- [Tahoe-LAFS](https://github.com/tahoe-lafs/tahoe-lafs) ⭐ 1.4k — Python, convergent encryption for distributed storage
+- [DupLESS](https://github.com/FadyMohareb/dupless) ⭐ 2 — research prototype
+
+**Security status:** Caution
+Convergent encryption is vulnerable to offline brute-force on predictable files; DupLESS mitigates this via server-aided OPRF.
+
+**Community acceptance:** Niche
+Academic research; convergent encryption is deployed in some cloud storage but secure deduplication with formal guarantees remains research-stage.
+
+---
+
+
+## Updatable and Special Encryption
+
+---
+### Non-Committing Encryption
+
+**Goal:** Simulation security for encryption. After generating a ciphertext, the simulator can "explain" it as an encryption of any message — by revealing fake randomness. Required for UC-secure (universally composable) protocols, where standard CPA/CCA encryption is insufficient.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Canetti-Feige-Goldreich-Naor NCE** | 1996 | OT | First NCE; based on oblivious transfer [[1]](https://doi.org/10.1145/237814.237866) |
+| **Nielsen NCE** | 2002 | Trapdoor permutations | Efficient NCE from any trapdoor permutation [[1]](https://doi.org/10.1007/3-540-45539-6_14) |
+| **Adaptively Secure NCE (Choi et al.)** | 2009 | DDH | Non-committing encryption secure against adaptive corruption [[1]](https://eprint.iacr.org/2009/035) |
+| **Non-Committing Authenticated Enc** | 2017 | AEAD + NCE | Combine authenticity with non-committing property for UC channels [[1]](https://eprint.iacr.org/2017/332) |
+
+**State of the art:** DDH-based NCE (Choi et al.); essential for UC-secure [Secure Channels](12-secure-communication-protocols.md#secure-channels--protocol-constructions) and [MPC](06-multi-party-computation.md#multi-party-computation-mpc) in the adaptive corruption model.
+
+**Production readiness:** Research
+Academic primitive; used as a building block in UC-secure protocol proofs but not deployed as a standalone scheme.
+
+**Implementations:**
+- No widely available standalone open-source implementations; NCE appears as a component in UC-secure MPC frameworks.
+
+**Security status:** Secure
+DDH-based NCE (Choi et al.) is provably secure under standard assumptions; constructions are well-studied.
+
+**Community acceptance:** Niche
+Essential in UC-security theory; understood by the MPC/secure-channels research community but not standardized.
+
+---
+
+### Honey Encryption
+
+**Goal:** Brute-force resistance. Decrypting with any wrong key produces a plausible-looking plaintext, so an attacker cannot tell when they found the correct key. Protects low-entropy secrets (passwords, PINs, credit card numbers).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Honey Encryption (HE)** | 2014 | DTE (distribution-transforming encoder) | Foundational; each wrong key yields valid-looking plaintext [[1]](https://eprint.iacr.org/2014/155) |
+| **Natural Language HE** | 2015 | NLP + DTE | Honey encryption for natural language messages; GPT-based DTEs [[1]](https://eprint.iacr.org/2015/032) |
+| **Honey Encryption for Genomic Data** | 2016 | Genomic DTE | Domain-specific for protecting genome sequences [[1]](https://doi.org/10.1145/2976749.2978370) |
+
+**State of the art:** Juels-Ristenpart HE (2014) with domain-specific DTEs; adopted in password vault research. Key challenge: designing accurate DTEs for arbitrary domains.
+
+**Production readiness:** Research
+Academic proposals and prototypes; no mainstream production deployment beyond research password vault experiments.
+
+**Implementations:**
+- [honey-encryption](https://github.com/victornguyen75/honey-encryption) ⭐ 12 — Python, research implementation of Juels-Ristenpart HE
+- [honeywords](https://github.com/maheshmb13/Honeywords) ⭐ 3 — Python, related honeyword generation for password databases
+
+**Security status:** Caution
+Security depends entirely on the quality of the DTE (distribution-transforming encoder); poor DTEs provide no meaningful protection.
+
+**Community acceptance:** Niche
+Well-regarded academic concept; limited practical adoption due to difficulty of constructing accurate DTEs for real-world data.
+
+---
+
+### White-Box Cryptography
+
+**Goal:** Key hiding in hostile environments. Implement cryptographic algorithms so that the secret key cannot be extracted even by an adversary who has full access to the running software and execution environment. Used in DRM, mobile payments.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chow et al. WB-AES** | 2002 | Lookup tables + mixing bijections | First white-box AES; series of table lookups encoding key [[1]](https://link.springer.com/chapter/10.1007/3-540-36492-7_17) |
+| **Billet et al. (cryptanalysis)** | 2004 | Algebraic attack | Broke Chow WB-AES; showed key extraction is possible [[1]](https://link.springer.com/chapter/10.1007/978-3-540-30564-4_16) |
+| **WBC Challenge (CHES)** | 2017 | Competition | Ongoing competitions show no WBC scheme survives long-term attack [[1]](https://www.whiteboxcrypto.com/) |
+
+**State of the art:** no provably secure WBC exists; practical deployments rely on obfuscation + tamper-detection layers. Active research area.
+
+**Production readiness:** Experimental
+Deployed in commercial DRM and mobile payment SDKs (e.g., Apple Pay, content protection) despite lack of provable security.
+
+**Implementations:**
+- [SideChannelMarvels/Deadpool](https://github.com/SideChannelMarvels/Deadpool) ⭐ 677 — C/Python, white-box AES attack tools and challenge implementations
+- [WhibOx](https://www.whiteboxcrypto.com/) — competition platform with reference white-box implementations
+
+**Security status:** Broken
+No published white-box AES scheme has survived sustained cryptanalysis; all CHES competition entries broken within weeks to months.
+
+**Community acceptance:** Controversial
+Widely used commercially (DRM, payments) despite academic consensus that provable white-box security is currently unachievable.
+
+---
+
+### XSalsa20 and XChaCha20 (Extended-Nonce Stream Ciphers)
+
+**Goal:** Extend the nonce of Salsa20 and ChaCha20 from 64 bits to 192 bits so that nonces can be safely chosen uniformly at random without birthday-bound collision risk — enabling long-lived symmetric keys to encrypt large numbers of messages without nonce management infrastructure.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Salsa20** | 2005 | ARX stream cipher | 64-bit nonce; birthday collision expected after ~2³² messages [[1]](https://cr.yp.to/snuffle/spec.pdf) |
+| **HSalsa20** | 2008 | Salsa20 core | Key derivation subroutine: `(key, 128-bit input) → 256-bit subkey`; no nonce output [[1]](https://cr.yp.to/snuffle/xsalsa20-20110204.pdf) |
+| **XSalsa20** | 2011 | HSalsa20 + Salsa20 | 192-bit nonce; `subkey = HSalsa20(key, nonce[0:16])`; stream from `Salsa20(subkey, nonce[16:24])` [[1]](https://cr.yp.to/snuffle/xsalsa20-20110204.pdf) |
+| **HChaCha20** | 2015 | ChaCha20 core | ChaCha20 analogue of HSalsa20; maps `(key, 128-bit input) → 256-bit subkey` [[1]](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha) |
+| **XChaCha20** | 2015 | HChaCha20 + ChaCha20 | 192-bit nonce; same two-level construction applied to ChaCha20 [[1]](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha) |
+| **XChaCha20-Poly1305** | 2015 | XChaCha20 + Poly1305 | Full AEAD; 192-bit nonce; default in libsodium `crypto_secretbox` [[1]](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha) |
+
+**Construction:** XSalsa20 uses a two-level derivation. The first 16 bytes of the 24-byte nonce are fed into HSalsa20 together with the 256-bit key to produce a 256-bit subkey. The remaining 8 bytes serve as the nonce for a standard Salsa20 call with the subkey. Because the subkey is pseudorandom over a 256-bit space for each distinct 16-byte nonce prefix, the effective key is freshly derived per message and the nonce collision problem is eliminated.
+
+**Why it matters:** Standard Salsa20/ChaCha20 have 64-bit nonces. A birthday collision is expected after 2³² ≈ 4 billion messages with random nonce selection — feasible in large-scale messaging or bulk file encryption. XSalsa20/XChaCha20 push this boundary to 2⁹⁶ random nonces before a collision is expected, making random nonce selection safe for any realistic deployment lifetime.
+
+**State of the art:** XSalsa20 is the stream cipher underlying libsodium's `crypto_secretbox_xsalsa20poly1305`. XChaCha20-Poly1305 is the preferred modern variant, supported in libsodium, OpenSSL 3.x, and Tink. An IRTF CFRG Internet-Draft for XChaCha20 exists but has not been published as an RFC as of 2026.
+
+**Production readiness:** Production
+XChaCha20-Poly1305 is the default AEAD in libsodium (used by Signal, Wireguard-related tools, age encryption); XSalsa20 in NaCl.
+
+**Implementations:**
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, XChaCha20-Poly1305 (crypto_aead) and XSalsa20-Poly1305 (crypto_secretbox)
+- [NaCl](https://nacl.cr.yp.to/) — C, original XSalsa20-Poly1305 by Bernstein
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, XChaCha20-Poly1305 (3.x)
+- [Tink](https://github.com/tink-crypto/tink) ⭐ 13k — Java/Go/C++, XChaCha20-Poly1305
+
+**Security status:** Secure
+256-bit key, 192-bit nonce eliminates birthday-bound nonce collision risk; secure under standard PRF assumptions.
+
+**Community acceptance:** Widely trusted
+IRTF CFRG draft (not yet RFC); de facto standard via libsodium adoption; endorsed by Bernstein and the NaCl community.
+
+---
+
+### AES Key Wrap (KW / KWP, RFC 5649 / NIST SP 800-38F)
+
+**Goal:** Integrity-protected transport of cryptographic key material using only a block cipher — no separate MAC or IV randomness required. Key wrap produces a deterministic ciphertext from which any single-bit modification is detected with overwhelming probability, making it suitable for storing or transmitting keys in environments that must use only a block cipher primitive.
+
+| Scheme | Year | Standard | Input constraint | Output expansion | Note |
+|--------|------|----------|-----------------|-----------------|------|
+| **AES-KW** | 2001 | RFC 3394 / NIST SP 800-38F [[1]](https://www.rfc-editor.org/rfc/rfc3394) | Multiple of 8 bytes, ≥ 16 bytes | +8 bytes | Schaad-Housley; 6n AES-ECB calls for n 8-byte blocks |
+| **AES-KWP** | 2009 | RFC 5649 / NIST SP 800-38F [[1]](https://www.rfc-editor.org/rfc/rfc5649) | Any length ≥ 1 byte | +8 to +15 bytes | Adds length-encoding padding; supersedes RFC 3394 for variable-length keys |
+| **NIST SP 800-38F** | 2012 | NIST [[1]](https://csrc.nist.gov/publications/detail/sp/800/38/f/final) | Both | Both | Authoritative NIST formalization; mandates AES-256 for wrapping keys ≥ 128 bits |
+| **JWE AES Key Wrap** | 2015 | RFC 7516 [[1]](https://www.rfc-editor.org/rfc/rfc7516) | Content encryption key | Wrapped CEK | `A128KW`, `A192KW`, `A256KW` algorithm identifiers in JSON Web Encryption |
+
+**AES-KW construction (RFC 3394):** Input is n 64-bit semi-blocks (n ≥ 2). The algorithm runs 6n iterations of an AES-ECB encryption of the concatenation `(A ‖ R_i)` where A is a 64-bit "integrity check register" initialized to `0xA6A6A6A6A6A6A6A6` and R_1..R_{n-1} are the data semi-blocks. Each iteration updates A and one R_i. The output is the final A prepended to R_1..R_{n-1}. No randomness is used — output is deterministic for identical inputs under the same key.
+
+**AES-KWP construction (RFC 5649):** Extends KW by prepending an 8-byte alternative IV `0xA65959A6 ‖ len(plaintext)` to the padded input. For plaintexts of 1–8 bytes, a single AES-ECB call on the 16-byte block suffices, producing 24 bytes of output.
+
+**Security:** KW is proven IND-CPA and INT-CTXT under the PRP assumption for AES. Determinism means it is not IND-CCA2 — an adversary who queries the same key twice gets identical wrapped output, leaking equality. This is acceptable for key material, which is sampled uniformly at random and never reused under the same wrapping key in correct usage.
+
+**Deployments:** PKCS #7 / CMS EnvelopedData key transport; XML Encryption; JWE; KMIP (Key Management Interoperability Protocol); ANSI X9.73; every PKCS#11-compliant HSM (`C_WrapKey` / `C_UnwrapKey` mechanisms). OpenSSL implements KW as `AES_wrap_key` / `AES_unwrap_key`.
+
+**State of the art:** AES-KWP (RFC 5649) is the current standard for symmetric key transport. AES-KW (RFC 3394) is deprecated for inputs not a multiple of 8 bytes — use KWP. For public-key key transport see [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem--dem-paradigm) and [Hybrid Public Key Encryption (HPKE)](#hybrid-public-key-encryption-hpke).
+
+**Production readiness:** Production
+Deployed in PKCS#11 HSMs, CMS/PKCS#7, XML Encryption, JWE, and KMIP key management systems worldwide.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES_wrap_key / AES_unwrap_key
+- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, AES Key Wrap (RFC 3394 and RFC 5649)
+- [Go stdlib](https://pkg.go.dev/crypto/cipher) — Go, AES Key Wrap support
+
+**Security status:** Secure
+Proven IND-CPA and INT-CTXT under PRP assumption for AES; deterministic output is acceptable for uniformly random key material.
+
+**Community acceptance:** Standard
+NIST SP 800-38F; IETF RFC 3394 (KW) and RFC 5649 (KWP); mandated in PKCS#11, KMIP, and JWE.
+
+---
+
+### Ciphertext Stealing (CTS)
+
+**Goal:** Encrypt a plaintext of arbitrary byte length using a block cipher in CBC (or ECB) mode without ciphertext expansion — output length exactly equals input length — by rearranging the last two output blocks to absorb the final short plaintext block without adding padding bytes.
+
+| Variant | Last-block handling | Standard | Primary use |
+|---------|---------------------|----------|-------------|
+| **CBC-CS1** | Swap last two ciphertext blocks unconditionally | — | Rare; last block always shorter than full block |
+| **CBC-CS2** | Swap if last block is partial; no swap if full | — | Conditional swap; uncommon |
+| **CBC-CS3** | No swap; last full block precedes short final block | NIST SP 800-38A Addendum (2010) [[1]](https://csrc.nist.gov/publications/detail/sp/800/38/a/addendum/final) | NIST preferred variant |
+| **Kerberos CBC-CTS** | CS3 variant with Kerberos IV | RFC 3962, RFC 8009 [[1]](https://www.rfc-editor.org/rfc/rfc3962) | AES-CTS-HMAC-SHA1-96 Kerberos encryption type |
+| **XTS-AES with CTS** | XEX-based stealing for partial final sector | IEEE Std 1619-2007 [[1]](https://ieeexplore.ieee.org/document/4493450) | Disk encryption of sectors not a multiple of 16 bytes |
+
+**CS3 mechanics:** Given plaintext P of length L = n·B + r where B = block size and 0 < r ≤ B:
+1. Encrypt blocks P_1 … P_{n−1} in standard CBC, producing C_1 … C_{n−1}.
+2. Encrypt C_{n−1} with the block cipher to obtain intermediate value T.
+3. XOR T with P_n (zero-padded to B bytes) to produce C_n (the penultimate output block, full length B).
+4. Truncate T to r bytes; this becomes C_{n+1-like} (the final output block, length r).
+
+Decryption reverses the process: the receiver reconstructs the zero-padded P_n from C_n and T, then strips the r-byte fragment. Total output length = n·B − (B − r) = L. No padding bytes are transmitted.
+
+**Constraint:** The plaintext must be at least one full block (B bytes) long for CTS to be applicable. For very short inputs (< B bytes), PKCS#7 padding or a stream cipher must be used instead.
+
+**CTS does not provide authentication.** Like all raw CBC variants, CTS is confidentiality-only. It must always be combined with an external MAC or used inside an authenticated mode. See [Authenticated Encryption (AEAD)](#authenticated-encryption-aead) and [CBC Mode Padding and Padding Oracle Attacks](#cbc-mode-padding-and-padding-oracle-attacks).
+
+**State of the art:** CTS is deployed in Kerberos (RFC 3962, RFC 8009) for AES-encrypted tickets and in XTS-AES for partial-sector disk encryption. For new designs, AEAD modes are strongly preferred. CTS remains useful only when ciphertext expansion is structurally prohibited (e.g., fixed-size Kerberos ticket fields or fixed-sector-size storage media).
+
+**Production readiness:** Production
+Deployed in Kerberos (RFC 3962, RFC 8009) and XTS-AES disk encryption on all major operating systems.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-CBC-CTS via EVP API
+- [Linux kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git) — C, CTS in dm-crypt and fscrypt subsystems
+- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, CBC-CTS mode
+
+**Security status:** Caution
+Confidentiality-only; provides no authentication. Must be combined with a MAC or used inside an authenticated mode.
+
+**Community acceptance:** Standard
+NIST SP 800-38A Addendum (CS3); RFC 3962 and RFC 8009 (Kerberos); IEEE 1619 (XTS-AES with CTS).
+
+---
+
+### Encode-then-Encipher and Feistel-Based Wide-Block Ciphers (EME, XCB, HCH, TET)
+
+**Goal:** Encrypt a block of data (a disk sector, a database record, a network packet) of arbitrary length as a single unit — so that any change to even one bit of plaintext randomizes the entire ciphertext — using only a block cipher and no authentication tag, providing length-preserving, all-or-nothing encryption. Used where ciphertext expansion is structurally prohibited and authentication is handled at a higher layer.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **EME (Halevi-Rogaway)** | 2004 | AES + ECB | Tweakable wide-block cipher; 2n AES calls for an n-block input; EME* fixes a security flaw in EME [[1]](https://eprint.iacr.org/2004/125) |
+| **XCB (McGrew-Fluhrer)** | 2004 | AES + universal hash (GF(2¹²⁸)) | XEX-based construction; near-linear cost [[1]](https://eprint.iacr.org/2004/278) |
+| **HCH (Sarkar)** | 2007 | AES + Carter-Wegman hash | Hash-Counter-Hash; provably secure; software-fast [[1]](https://eprint.iacr.org/2007/013) |
+| **TET (Halevi)** | 2007 | AES + universal hash | Tweakable EME variant; hash-XEX-hash structure; efficient for variable-length sectors [[1]](https://eprint.iacr.org/2007/014) |
+| **HEH (Sarkar)** | 2009 | Universal hash + block cipher | Hash-Encrypt-Hash; simpler than TET; full security proof [[1]](https://eprint.iacr.org/2009/314) |
+
+**Encode-then-Encipher (Bellare-Rogaway, 2000):** The general paradigm for building length-preserving encryption: encode the plaintext (e.g., append a redundancy string), then encipher the encoded value with a wide-block cipher. The decryptor deciphers and checks the redundancy — if absent, decryption fails. This converts a (weaker) pseudorandom permutation into an authenticated encryption scheme without ciphertext expansion [[1]](https://eprint.iacr.org/2000/049).
+
+**Wide-block cipher vs. AEAD:** Wide-block ciphers are *not* authenticated encryption — they provide no authentication tag. They are pseudorandom permutations over a large domain (a sector, a record). Their security guarantee is that they behave like a random permutation on the entire input block, meaning single-bit plaintext changes affect the entire ciphertext. Combined with encode-then-encipher (redundancy checking), they can provide implicit authentication.
+
+**Relation to disk encryption:** XTS-AES (the NIST standard for disk encryption, see [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers)) is *not* a wide-block cipher — it processes each 16-byte AES block independently within a sector. EME/XCB/HCH/TET treat the entire sector as a single block, providing stronger diffusion across sector boundaries. The tradeoff is complexity and cost.
+
+**State of the art:** No wide-block cipher has been standardized by NIST or IETF; all remain research proposals. AES-HCTR2 (deployed in Android for file-based encryption) is the closest to a practical wide-block-inspired mode in production, though it is based on a hash-counter structure rather than a full Feistel or EME construction. See [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers).
+
+**Production readiness:** Research
+No wide-block cipher has been standardized; EME/XCB/HCH/TET remain academic proposals. AES-HCTR2 (deployed in Android) is the closest practical descendant.
+
+**Implementations:**
+- [AES-HCTR2 (Android)](https://android.googlesource.com/kernel/common/) — C, wide-block-inspired mode deployed in Android kernel
+- No standalone open-source implementations of EME, XCB, HCH, or TET in production libraries.
+
+**Security status:** Secure
+EME, XCB, HCH, TET are provably secure as pseudorandom permutations under standard block-cipher assumptions. No practical attacks.
+
+**Community acceptance:** Niche
+Academic research; no NIST or IETF standardization. AES-HCTR2 (Google) is the closest to deployed use in the wide-block paradigm.
 
 ---

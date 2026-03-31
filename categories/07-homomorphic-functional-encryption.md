@@ -4,7 +4,7 @@
 <!-- TOC -->
 ## Contents (55 schemes)
 
-- [Homomorphic Encryption (HE)](#homomorphic-encryption-he)
+**[Fully Homomorphic Encryption (FHE)](#fully-homomorphic-encryption-fhe)**
 - [Microsoft SEAL](#microsoft-seal)
 - [HElib](#helib)
 - [HEIR (Homomorphic Encryption Intermediate Representation)](#heir-homomorphic-encryption-intermediate-representation)
@@ -13,30 +13,12 @@
 - [GSW (Gentry-Sahai-Waters) FHE](#gsw-gentry-sahai-waters-fhe)
 - [FHEW Bootstrapping](#fhew-bootstrapping)
 - [CKKS Approximate Arithmetic & Rescaling](#ckks-approximate-arithmetic--rescaling)
-- [Quadratic / Degree-2 Functional Encryption](#quadratic--degree-2-functional-encryption)
-- [Function-Hiding Inner-Product Functional Encryption (FH-IPFE)](#function-hiding-inner-product-functional-encryption-fh-ipfe)
-- [Decentralized Multi-Client Functional Encryption (DMCFE)](#decentralized-multi-client-functional-encryption-dmcfe)
 - [Multi-Key / Threshold FHE](#multi-key--threshold-fhe)
 - [Verifiable FHE](#verifiable-fhe)
-- [Attribute-Based & Functional Encryption](#attribute-based--functional-encryption)
-- [Identity-Based Encryption (IBE)](#identity-based-encryption-ibe)
-- [Multi-Authority ABE](#multi-authority-abe)
-- [Registration-Based Encryption (RBE)](#registration-based-encryption-rbe)
-- [Anonymous IBE](#anonymous-ibe)
-- [Broadcast Encryption](#broadcast-encryption)
-- [Access Control Encryption (ACE)](#access-control-encryption-ace)
-- [Matchmaking Encryption](#matchmaking-encryption)
-- [Key-Aggregate Encryption](#key-aggregate-encryption)
-- [Proxy Re-Encryption (PRE)](#proxy-re-encryption-pre)
 - [Transciphering / FHE-friendly Ciphers](#transciphering--fhe-friendly-ciphers)
-- [Hidden Vector Encryption (HVE)](#hidden-vector-encryption-hve)
 - [FHE over the Integers (DGHV)](#fhe-over-the-integers-dghv)
-- [NTRU-Based Encryption](#ntru-based-encryption)
 - [FHE Amortization & Batching (SIMD Packing)](#fhe-amortization--batching-simd-packing)
 - [Single-Key vs. Multi-Key FHE](#single-key-vs-multi-key-fhe)
-- [Paillier Additively Homomorphic Encryption](#paillier-additively-homomorphic-encryption)
-- [ElGamal & Multiplicatively Homomorphic Encryption](#elgamal--multiplicatively-homomorphic-encryption)
-- [Inner-Product Functional Encryption (IPFE)](#inner-product-functional-encryption-ipfe)
 - [FHE Benchmarks & Performance](#fhe-benchmarks--performance)
 - [Obfuscation-Based & General-Circuit Functional Encryption](#obfuscation-based--general-circuit-functional-encryption)
 - [Number Theoretic Transform (NTT) in FHE](#number-theoretic-transform-ntt-in-fhe)
@@ -44,59 +26,57 @@
 - [HE for Healthcare & Genomics](#he-for-healthcare--genomics)
 - [FHE Applications in Cloud Computing](#fhe-applications-in-cloud-computing)
 - [FHE for Private Neural Network Training](#fhe-for-private-neural-network-training)
-- [Lattigo (Multiparty HE in Go)](#lattigo-multiparty-he-in-go)
-- [TenSEAL (Encrypted Tensor Operations)](#tenseal-encrypted-tensor-operations)
 - [PhantomFHE (GPU-Accelerated HE)](#phantomfhe-gpu-accelerated-he)
 - [HEonGPU (GPU FHE Library)](#heongpu-gpu-fhe-library)
 - [Apple Swift Homomorphic Encryption](#apple-swift-homomorphic-encryption)
-- [Covercrypt (Quantum-Safe ABE KEM)](#covercrypt-quantum-safe-abe-kem)
 - [Sunscreen (Rust FHE Compiler)](#sunscreen-rust-fhe-compiler)
-- [Intel HEXL (HE Hardware Acceleration)](#intel-hexl-he-hardware-acceleration)
 - [FHERMA (FHE Components Platform)](#fherma-fhe-components-platform)
-- [Multi-Input Quadratic Functional Encryption (MIQFE)](#multi-input-quadratic-functional-encryption-miqfe)
 - [FHEW — Fastest Homomorphic Encryption in the West](#fhew--fastest-homomorphic-encryption-in-the-west)
 - [Programmable Bootstrapping (PBS / CGGI Functional Bootstrapping)](#programmable-bootstrapping-pbs--cggi-functional-bootstrapping)
-- [Fuzzy Identity-Based Encryption (Fuzzy IBE)](#fuzzy-identity-based-encryption-fuzzy-ibe)
+
+**[Attribute-Based Encryption (ABE)](#attribute-based-encryption-abe)**
+- [Decentralized Multi-Client Functional Encryption (DMCFE)](#decentralized-multi-client-functional-encryption-dmcfe)
+- [Attribute-Based & Functional Encryption](#attribute-based--functional-encryption)
+- [Multi-Authority ABE](#multi-authority-abe)
+- [Access Control Encryption (ACE)](#access-control-encryption-ace)
+- [Covercrypt (Quantum-Safe ABE KEM)](#covercrypt-quantum-safe-abe-kem)
 - [Decentralized Attribute-Based Encryption (No Central Trust)](#decentralized-attribute-based-encryption-no-central-trust)
 - [Registered Attribute-Based Encryption (Reg-ABE)](#registered-attribute-based-encryption-reg-abe)
+
+**[Identity-Based Encryption (IBE)](#identity-based-encryption-ibe)**
+- [Identity-Based Encryption (IBE)](#identity-based-encryption-ibe)
+- [Registration-Based Encryption (RBE)](#registration-based-encryption-rbe)
+- [Anonymous IBE](#anonymous-ibe)
+- [Fuzzy Identity-Based Encryption (Fuzzy IBE)](#fuzzy-identity-based-encryption-fuzzy-ibe)
+
+**[Functional Encryption](#functional-encryption)**
+- [Quadratic / Degree-2 Functional Encryption](#quadratic--degree-2-functional-encryption)
+- [Function-Hiding Inner-Product Functional Encryption (FH-IPFE)](#function-hiding-inner-product-functional-encryption-fh-ipfe)
+- [Inner-Product Functional Encryption (IPFE)](#inner-product-functional-encryption-ipfe)
+- [Multi-Input Quadratic Functional Encryption (MIQFE)](#multi-input-quadratic-functional-encryption-miqfe)
+
+**[Broadcast and Special Encryption](#broadcast-and-special-encryption)**
+- [Broadcast Encryption](#broadcast-encryption)
+- [Matchmaking Encryption](#matchmaking-encryption)
+- [Key-Aggregate Encryption](#key-aggregate-encryption)
+- [Hidden Vector Encryption (HVE)](#hidden-vector-encryption-hve)
+
+**[Proxy Re-Encryption and Homomorphic Signatures](#proxy-re-encryption-and-homomorphic-signatures)**
+- [Proxy Re-Encryption (PRE)](#proxy-re-encryption-pre)
+- [NTRU-Based Encryption](#ntru-based-encryption)
+- [TenSEAL (Encrypted Tensor Operations)](#tenseal-encrypted-tensor-operations)
+- [Homomorphic Encryption (HE)](#homomorphic-encryption-he)
+- [Paillier Additively Homomorphic Encryption](#paillier-additively-homomorphic-encryption)
+- [ElGamal & Multiplicatively Homomorphic Encryption](#elgamal--multiplicatively-homomorphic-encryption)
+- [Lattigo (Multiparty HE in Go)](#lattigo-multiparty-he-in-go)
+- [Intel HEXL (HE Hardware Acceleration)](#intel-hexl-he-hardware-acceleration)
+
 <!-- /TOC -->
 
-
-## Homomorphic Encryption (HE)
-
-**Goal:** Compute on encrypted data without decrypting it. The result, when decrypted, matches computation on plaintext. Provides confidentiality during processing.
-
-| Scheme | Year | Type | Supported Operations | Note |
-|--------|------|------|---------------------|------|
-| **BFV** | 2012 | Leveled HE (integer arith.) | add, mul (leveled), SIMD batching | Batch integer computation via SIMD [[1]](https://eprint.iacr.org/2012/144) |
-| **BGV** | 2011 | Leveled HE (integer arith.) | add, mul (leveled), mod switching | Modulus switching for noise control [[1]](https://eprint.iacr.org/2011/277) |
-| **CKKS** | 2017 | Approximate HE (real/complex) | add, mul (approx. real/complex), SIMD | ML-friendly; approximate fixed-point [[1]](https://eprint.iacr.org/2016/421) |
-| **TFHE** | 2016 | Fully HE (Boolean/small int) | any Boolean gate, small int add/mul, fast bootstrapping | Fast bootstrapping (~10 ms); gate-by-gate [[1]](https://eprint.iacr.org/2018/421) |
-| **OpenFHE** | 2022 | Library | all of above (library) | Implements BFV, BGV, CKKS, TFHE (successor to PALISADE, HElib, HEAAN) [[1]](https://eprint.iacr.org/2022/915) |
-| **Paillier** | 1999 | Additive HE only | add only, scalar mul | Simple; used in e-voting, MPC, federated learning [[1]](https://link.springer.com/chapter/10.1007/3-540-48910-X_16) |
-| **TFHE-rs** | 2022 | TFHE (Rust) | Production FHE library | Programmable bootstrapping; used in Zama's fhEVM for encrypted smart contracts [[1]](https://github.com/zama-ai/tfhe-rs) |
-
-**State of the art:** TFHE (fast bootstrapping), CKKS (ML on encrypted data), OpenFHE (reference library), TFHE-rs (production Rust impl.).
-
-**Production readiness:** Production
-OpenFHE, SEAL, and TFHE-rs are deployed in production systems including encrypted smart contracts and privacy-preserving analytics
-
-**Implementations:**
-- [OpenFHE](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, supports BFV/BGV/CKKS/TFHE
-- [Microsoft SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, BFV/BGV/CKKS with AVX-512 via HEXL
-- [TFHE-rs](https://github.com/zama-ai/tfhe-rs) ⭐ 1.6k — Rust, production TFHE with programmable bootstrapping
-- [HElib](https://github.com/homenc/HElib) ⭐ 3.2k — C++, BGV/CKKS with bootstrapping
-- [HEAAN](https://github.com/kimandrik/HEAAN) ⭐ 66 — C++, original CKKS implementation
-
-**Security status:** Secure
-RLWE-based schemes at recommended parameters (128-bit security per HE Standard) have no known practical attacks
-
-**Community acceptance:** Standard
-Homomorphic Encryption Standardization (HES) consortium backed by Microsoft, Google, Intel, Samsung, and others; RLWE hardness assumption widely accepted
+## Fully Homomorphic Encryption (FHE)
 
 ---
-
-## Microsoft SEAL
+### Microsoft SEAL
 
 **Goal:** Production-grade homomorphic encryption library for integer and approximate-real arithmetic, enabling developers to build encrypted-data services without deep cryptographic expertise.
 
@@ -131,7 +111,7 @@ Developed by Microsoft Research; one of the HES reference implementations; widel
 
 ---
 
-## HElib
+### HElib
 
 **Goal:** Open-source BGV and CKKS homomorphic encryption library with state-of-the-art ciphertext packing and bootstrapping, designed for high-throughput encrypted computation.
 
@@ -163,7 +143,7 @@ Pioneered by Halevi and Shoup (IBM Research); foundational packing and bootstrap
 
 ---
 
-## HEIR (Homomorphic Encryption Intermediate Representation)
+### HEIR (Homomorphic Encryption Intermediate Representation)
 
 **Goal:** Unified MLIR-based compiler infrastructure for fully homomorphic encryption, lowering high-level programs to optimized FHE circuits targeting multiple back-end libraries and hardware accelerators.
 
@@ -194,7 +174,7 @@ Backed by Google; presented at WAHC 2024; coordinating with Zama Concrete on sha
 
 ---
 
-## Concrete & Concrete ML (Zama)
+### Concrete & Concrete ML (Zama)
 
 **Goal:** End-to-end FHE compiler and privacy-preserving ML framework that automatically translates Python programs and scikit-learn / PyTorch models into TFHE-based encrypted equivalents, hiding all cryptographic complexity from developers.
 
@@ -232,7 +212,7 @@ Backed by Zama (well-funded FHE startup); growing open-source community; fhEVM g
 
 ---
 
-## Gentry's Original FHE (Ideal Lattices)
+### Gentry's Original FHE (Ideal Lattices)
 
 **Goal:** Compute arbitrary functions on ciphertext without decrypting. Craig Gentry's 2009 construction was the first scheme ever proven to support unbounded homomorphic computation, resolving a 30-year open problem.
 
@@ -260,7 +240,7 @@ Gentry's 2009 thesis is universally recognized as the foundational breakthrough 
 
 ---
 
-## GSW (Gentry-Sahai-Waters) FHE
+### GSW (Gentry-Sahai-Waters) FHE
 
 **Goal:** Leveled and fully homomorphic encryption from LWE with an asymptotically faster, conceptually simpler design based on the *approximate eigenvector* method.
 
@@ -290,7 +270,7 @@ Published at CRYPTO 2013; foundational work underpinning all FHEW/TFHE-family sc
 
 ---
 
-## FHEW Bootstrapping
+### FHEW Bootstrapping
 
 **Goal:** Reduce the bootstrapping bottleneck of FHE to sub-second latency. FHEW (2015) broke the barrier from minutes to under one second per gate by combining a homomorphic NAND gate evaluation with a fast ring-based refresh procedure.
 
@@ -321,7 +301,7 @@ FHEW (EUROCRYPT 2015) and TFHE are cornerstones of modern gate-level FHE; widely
 
 ---
 
-## CKKS Approximate Arithmetic & Rescaling
+### CKKS Approximate Arithmetic & Rescaling
 
 **Goal:** Homomorphic computation over real and complex numbers with controlled approximation error. CKKS (2017) introduces a *rescaling* operation that manages ciphertext magnitude without expensive exact-integer techniques, making FHE practical for ML and scientific workloads.
 
@@ -364,102 +344,7 @@ Part of HE Standardization effort; dominant scheme for privacy-preserving ML; th
 
 ---
 
-## Quadratic / Degree-2 Functional Encryption
-
-**Goal:** Decrypt a *quadratic function* of the plaintext — i.e., a bilinear map of the form f(x) = xᵀ · M · y for encrypted vectors — without revealing the vectors themselves. Goes beyond linear inner-product FE to support quadratic features useful in ML and statistics.
-
-Baltico, Catalano, Fiore, and Gay (CRYPTO 2017) gave the first practically efficient FE for the class of bilinear maps on encrypted vectors: given an encryption of vector **x**, a secret key for matrix **M** (or, in the two-input variant, encryptions of both **x** and **y**) allows computing **xᵀM y** mod p. Their constructions over asymmetric bilinear groups are *linear in n* in ciphertext and key size — a public key of 2n+1 group elements, keys of 2 group elements — and are proven selectively secure under Matrix-DDH or adaptively secure in the generic group model.
-
-Degree-2 FE captures a rich class of statistics: Euclidean norms, dot products, chi-squared statistics, second-order features, and polynomial classifiers. The work also yields efficient predicate encryption for degree-2 polynomial predicates.
-
-| Scheme | Year | Security | Note |
-|--------|------|----------|------|
-| **IPFE (Abdalla et al.)** | 2015 | Selective, DDH/LWE | Inner-product FE (degree 1); practical; used in privacy-preserving data analysis [[1]](https://eprint.iacr.org/2015/017) |
-| **Quadratic FE (Baltico-Catalano-Fiore-Gay)** | 2017 | Selective (Matrix-DDH) / adaptive (GGM) | Bilinear map FE; ciphertext size O(n); pairings [[1]](https://eprint.iacr.org/2017/151) |
-| **FE for Quadratic Functions from k-Lin (Gay)** | 2020 | Adaptive, standard assumptions | Fully adaptive security from k-Lin without generic group model [[1]](https://eprint.iacr.org/2019/728) |
-| **Multi-Client IPFE** | 2019 | Selective, DDH | Multiple encryptors; joint inner product; no interaction [[1]](https://eprint.iacr.org/2017/972) |
-
-**State of the art:** Quadratic FE from pairings (Baltico et al.) is the most practical for single-input second-order functions. Adaptive security from k-Lin (Gay 2020) provides stronger guarantees. These schemes bridge [Inner-Product FE](#attribute-based--functional-encryption) and [Multi-Input FE](#attribute-based--functional-encryption) in the functional encryption hierarchy.
-
-**Production readiness:** Research
-Academic constructions with proof-of-concept implementations; not deployed in production systems
-
-**Implementations:**
-- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, functional encryption library including quadratic FE (FENTEC project)
-- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, functional encryption library with quadratic FE support
-
-**Security status:** Secure
-Proven secure under Matrix-DDH (selective) or k-Lin (adaptive); standard pairing-based assumptions
-
-**Community acceptance:** Niche
-Active academic research area; practical for specific use cases (second-order statistics, polynomial classifiers) but limited adoption outside research
-
----
-
-## Function-Hiding Inner-Product Functional Encryption (FH-IPFE)
-
-**Goal:** Compute the inner product ⟨**x**, **y**⟩ between an encrypted vector **x** and a key vector **y** while hiding *both* vectors — the decryptor learns only the inner product, nothing about either input individually.
-
-Standard [Inner-Product FE (IPFE)](#quadratic--degree-2-functional-encryption) hides the plaintext vector **x** but reveals the key vector **y** (which is in the functional decryption key). Bishop, Jain, and Kowalczyk (ASIACRYPT 2015) introduced **function-hiding** IPFE: the decryption key for **y** is itself a *ciphertext* under a secret-key IPFE scheme, so **y** is computationally hidden from any party that cannot decrypt. The construction uses bilinear groups under the Symmetric External Diffie-Hellman (SXDH) assumption.
-
-Applications are numerous wherever the *query vector* is also sensitive: biometric authentication (template vector must stay private), nearest-neighbour search (query embedding must stay private), private neural-network inference (weight vectors are the model owner's intellectual property). The practical follow-up by Bishop, Jain, and Kowalczyk (SCN 2018, ePrint 2016/440) halved parameter sizes and demonstrated real-world performance.
-
-| Scheme | Year | Security | Note |
-|--------|------|----------|------|
-| **Bishop-Jain-Kowalczyk FH-IPFE** | 2015 | Selective, SXDH | First function-hiding IPFE; secret-key scheme; bilinear groups [[1]](https://eprint.iacr.org/2015/672) |
-| **FH-IPFE is Practical (Bishop et al.)** | 2018 | Selective, SXDH | Halved parameters; biometric auth and NN inference demo [[1]](https://eprint.iacr.org/2016/440) |
-| **Tightly Secure Multi-Input FH-IPFE (Tomida)** | 2019 | Tight, k-Lin | Tight security reduction; multi-input extension [[1]](https://link.springer.com/chapter/10.1007/978-3-030-34618-8_16) |
-
-**State of the art:** Bishop et al. (2018) for practical single-key FH-IPFE; Tomida (2019) for tight multi-input security. Extends [IPFE](#quadratic--degree-2-functional-encryption) to protect the function key as well as the data, enabling private ML model inference on encrypted inputs.
-
-**Production readiness:** Research
-Proof-of-concept implementations exist; not yet deployed in production
-
-**Implementations:**
-- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, includes FH-IPFE implementation
-- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, functional encryption library with FH-IPFE
-
-**Security status:** Secure
-Proven secure under SXDH assumption; selective security model; no known attacks
-
-**Community acceptance:** Niche
-Published at ASIACRYPT 2015 and SCN 2018; important for private ML inference but limited to research community adoption
-
----
-
-## Decentralized Multi-Client Functional Encryption (DMCFE)
-
-**Goal:** Compute a joint function (e.g., an inner product) over data contributed by multiple independent parties without any central trusted authority — neither a master-key holder nor a single encryptor.
-
-Standard [Multi-Input FE](#attribute-based--functional-encryption) requires a central authority to issue all functional keys. Multi-Client FE (MCFE) allows multiple senders but still requires a central key authority. **Decentralized MCFE (DMCFE)**, introduced by Chotard, Dufour-Sans, Gay, Phan, and Pointcheval (ASIACRYPT 2018), removes the central authority entirely: each client independently holds a share of the master secret, and functional decryption keys are generated *non-interactively* (only setup requires interaction) by the clients themselves using a distributed key-generation protocol.
-
-The practical DMCFE construction for inner products operates as follows. Each client *i* holds a local secret key `sk_i`. To encrypt input `x_i`, client *i* produces a ciphertext `ct_i`. To generate a functional decryption key for weight vector **y** = (y₁, …, yₙ), each client *i* independently computes a key share `dk_i^y` from `sk_i` and `y_i` (no interaction). The aggregator combines `{dk_i^y}` and `{ct_i}` to recover ⟨**x**, **y**⟩ = Σ xᵢ · yᵢ without learning any individual `x_i`. Security relies on the DDH assumption over prime-order groups (the 2018/1021 improvement) or pairings (the original 2017/989 version).
-
-| Scheme | Year | Assumption | Note |
-|--------|------|------------|------|
-| **DMCFE-IP (Chotard et al.)** | 2018 | MDDH / pairings | First DMCFE; inner product; setup interaction only [[1]](https://eprint.iacr.org/2017/989) |
-| **DMCFE-IP from DDH (Chotard et al.)** | 2018 | DDH | Pairing-free variant; practical over standard groups [[1]](https://eprint.iacr.org/2018/1021) |
-| **Decentralizing IPFE (Chotard-Dufour-Sans-Gay-Pointcheval)** | 2019 | DDH / MDDH | Framework with stronger security notions; PKC 2019 [[1]](https://link.springer.com/chapter/10.1007/978-3-030-17259-6_5) |
-| **Verifiable DMCFE (ASIACRYPT 2023)** | 2023 | MDDH | Adds output verifiability; malicious-client resilience [[1]](https://eprint.iacr.org/2023/268) |
-
-**State of the art:** DDH-based DMCFE (Chotard et al. 2018) for practical deployments; verifiable DMCFE (2023) for settings with potentially malicious clients. Combines [Multi-Input FE](#attribute-based--functional-encryption) and [Multi-Authority ABE](#multi-authority-abe) ideas to achieve fully decentralized fine-grained computation on encrypted data.
-
-**Production readiness:** Research
-Academic prototypes only; no production deployments
-
-**Implementations:**
-- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, includes DMCFE for inner products
-- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, DMCFE implementation (FENTEC project)
-
-**Security status:** Secure
-Proven secure under DDH/MDDH assumptions; verifiable variant (2023) handles malicious clients
-
-**Community acceptance:** Niche
-Published at ASIACRYPT 2018 and PKC 2019; important for decentralized privacy-preserving analytics but limited real-world deployment
-
----
-
-## Multi-Key / Threshold FHE
+### Multi-Key / Threshold FHE
 
 **Goal:** Joint computation on data encrypted under different keys. Multiple parties each encrypt their data under their own key; a computation is performed on all ciphertexts jointly without any party decrypting.
 
@@ -486,7 +371,7 @@ Active research area; threshold FHE gaining traction for federated ML and blockc
 
 ---
 
-## Verifiable FHE
+### Verifiable FHE
 
 **Goal:** Trustworthy outsourced computation on encrypted data. The server performs FHE computation and provides a proof that the computation was done correctly — the client verifies the proof without re-executing. Without this, FHE outsourcing requires trusting the server's correctness.
 
@@ -512,285 +397,7 @@ Active research area bridging FHE and ZK proofs; recognized as critical for trus
 
 ---
 
-## Attribute-Based & Functional Encryption
-
-**Goal:** Fine-grained access control embedded in ciphertext. Decrypt only if your attributes/key satisfy a policy. Provides access control + confidentiality.
-
-| Scheme | Year | Type | Note |
-|--------|------|------|------|
-| **CP-ABE (Bethencourt-Sahai-Waters)** | 2007 | Ciphertext-Policy ABE | Policy in ciphertext; key has attributes [[1]](https://eprint.iacr.org/2006/309) |
-| **KP-ABE (Goyal-Pandey-Sahai-Waters)** | 2006 | Key-Policy ABE | Policy in key; ciphertext has attributes [[1]](https://eprint.iacr.org/2006/309) |
-| **FAME** | 2017 | CP-ABE (prime-order) | Fast, prime-order groups; practical [[1]](https://eprint.iacr.org/2017/807) |
-| **Inner-Product FE (Abdalla et al.)** | 2015 | Functional Encryption | Decrypt inner product of attribute vectors [[1]](https://eprint.iacr.org/2015/017) |
-| **Multi-Input FE** | 2014 | Functional Encryption | Multiple encryptors, joint function [[1]](https://eprint.iacr.org/2013/774) |
-| **Predicate Encryption (KSW)** | 2008 | Pairings | Generalization of ABE: decrypt iff predicate(key attrs, ct attrs) = true [[1]](https://eprint.iacr.org/2008/290) |
-
-**State of the art:** FAME (practical ABE), Inner-Product FE (ML applications).
-
-**Production readiness:** Mature
-CP-ABE and KP-ABE have production-quality implementations; deployed in access-control and DRM systems
-
-**Implementations:**
-- [OpenABE](https://github.com/zeutro/openabe) ⭐ 274 — C++, CP-ABE and KP-ABE (Zeutro/Northwestern)
-- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, pairing-based crypto framework with ABE schemes
-- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, functional encryption library including IPFE and quadratic FE
-- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, functional encryption library
-- [FAME (reference)](https://github.com/sagrawal87/ABE) ⭐ 206 — Python/Charm, FAME CP-ABE implementation
-
-**Security status:** Secure
-CP-ABE/KP-ABE proven secure under DBDH/DLIN assumptions; FAME under prime-order pairings; well-studied
-
-**Community acceptance:** Widely trusted
-ABE is a well-established research area with hundreds of papers; CP-ABE (BSW 2007) and FAME (2017) are widely referenced and implemented
-
----
-
-## Identity-Based Encryption (IBE)
-
-**Goal:** Confidentiality without PKI. Encrypt to an arbitrary identity string (email address, phone number, domain) — the recipient obtains a private key from a trusted authority and decrypts.
-
-**Architecture:** A trusted **Private Key Generator (PKG)** holds a master secret key (msk) and publishes a master public key (mpk). Anyone can encrypt to an identity string using mpk. The recipient contacts the PKG, authenticates, and receives their identity-specific secret key via `Extract(msk, id) → sk_id`. **Key escrow problem:** the PKG can decrypt all messages — motivating [Registration-Based Encryption](#registration-based-encryption-rbe) which removes this trust assumption.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Boneh-Franklin IBE** | 2001 | Bilinear pairings | First practical IBE; Weil pairing on elliptic curves [[1]](https://eprint.iacr.org/2001/090) |
-| **Waters IBE** | 2005 | Pairings | Selective-ID secure without random oracles [[1]](https://eprint.iacr.org/2004/180) |
-| **HIBE (Gentry-Silverberg)** | 2002 | Pairings | Hierarchical IBE; delegatable to sub-authorities [[1]](https://eprint.iacr.org/2002/107) |
-| **Lattice IBE (Gentry-Peikert-Vaikuntanathan)** | 2008 | LWE | Post-quantum IBE [[1]](https://eprint.iacr.org/2007/432) |
-| **Revocable IBE (Boldyreva-Goyal-Kumar)** | 2008 | Pairings + binary tree | Efficient revocation: PKG publishes periodic updates; revoked users can't decrypt new ciphertexts [[1]](https://eprint.iacr.org/2008/013) |
-
-**State of the art:** Boneh-Franklin (widely taught), lattice IBE (PQ setting), revocable IBE for deployments requiring key revocation.
-
-**Production readiness:** Mature
-Boneh-Franklin IBE has production implementations; deployed in Voltage SecureMail and some enterprise email systems
-
-**Implementations:**
-- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, includes Boneh-Franklin, Waters, and lattice IBE
-- [MIRACL Core](https://github.com/miracl/core) ⭐ 238 — C/C++/Rust/Go, pairing-based crypto including IBE primitives
-- [relic](https://github.com/relic-toolkit/relic) ⭐ 508 — C, efficient pairing library used for IBE implementations
-
-**Security status:** Secure
-Boneh-Franklin secure under BDH in random oracle model; Waters IBE without random oracles; lattice IBE post-quantum secure under LWE
-
-**Community acceptance:** Widely trusted
-IBE is a textbook primitive; Boneh-Franklin won multiple awards; IEEE P1363.3 standardization effort; widely taught and researched
-
----
-
-## Multi-Authority ABE
-
-**Goal:** Decentralized access control. Multiple independent attribute authorities each manage a subset of attributes — no single authority can decrypt alone. Eliminates single point of trust in ABE systems.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Chase Multi-Authority ABE** | 2007 | Pairings | First multi-authority CP-ABE; central authority + attribute authorities [[1]](https://eprint.iacr.org/2007/010) |
-| **Chase-Chow (no central authority)** | 2009 | Pairings | Removes central authority; fully decentralized [[1]](https://eprint.iacr.org/2009/094) |
-| **Lewko-Waters Decentralized ABE** | 2011 | Pairings (dual system) | Any party can become an authority; no global setup [[1]](https://eprint.iacr.org/2011/414) |
-| **MAABE for Large Universe (Rouselakis-Waters)** | 2015 | Pairings | Large attribute universe; efficient multi-authority [[1]](https://eprint.iacr.org/2015/016) |
-
-**State of the art:** Lewko-Waters (2011) for fully decentralized; Rouselakis-Waters for large universes. Extends [ABE/FE](#attribute-based--functional-encryption) to remove single trust assumptions.
-
-**Production readiness:** Research
-Academic prototypes; limited production deployment outside of research testbeds
-
-**Implementations:**
-- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, includes multi-authority ABE schemes
-- [OpenABE](https://github.com/zeutro/openabe) ⭐ 274 — C++, supports multi-authority configurations
-
-**Security status:** Secure
-Lewko-Waters proven secure under dual-system technique; Rouselakis-Waters under standard pairings assumptions
-
-**Community acceptance:** Niche
-Important for decentralized access control; published at top venues (EUROCRYPT 2011); growing interest for blockchain and IoT but limited deployment
-
----
-
-## Registration-Based Encryption (RBE)
-
-**Goal:** IBE without trusted authority. Like [IBE](#identity-based-encryption-ibe) but replaces the trusted PKG with a transparent public bulletin board. Users register their own public keys; anyone can encrypt to an identity; no single party holds a master secret.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Garg-Hajiabadi-Mahmoody-Rahimi** | 2018 | Lattices / iO | First RBE construction; removes key escrow [[1]](https://eprint.iacr.org/2018/040) |
-| **Efficient RBE (Glaeser et al.)** | 2022 | Pairings + accumulators | Practical: O(log N) ciphertext from accumulator-based approach [[1]](https://eprint.iacr.org/2022/1505) |
-
-**State of the art:** pairing + accumulator RBE (practical); resolves IBE's key escrow problem.
-
-**Production readiness:** Research
-Theoretical constructions; no production implementations available
-
-**Implementations:**
-- No production-quality open-source implementations available; reference code in papers' supplementary materials
-
-**Security status:** Secure
-Proven secure under lattice/pairing assumptions; removes key escrow — a security improvement over IBE
-
-**Community acceptance:** Emerging
-Active research area; pairing+accumulator RBE (2022) makes practical deployment plausible; solves key escrow problem of IBE
-
----
-
-## Anonymous IBE
-
-**Goal:** Recipient privacy in IBE. The ciphertext hides not just the message but also the identity of the intended recipient. An eavesdropper cannot determine who can decrypt — even given the master public key.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Boyen-Waters Anonymous IBE** | 2006 | Pairings | First efficient anonymous IBE; ciphertext hides recipient identity [[1]](https://eprint.iacr.org/2005/029) |
-| **Gentry Anonymous IBE** | 2006 | Pairings | Anonymous + CCA-secure; tight reduction [[1]](https://eprint.iacr.org/2006/077) |
-| **Lattice Anonymous IBE (Agrawal et al.)** | 2010 | LWE | Post-quantum anonymous IBE from lattices [[1]](https://eprint.iacr.org/2010/383) |
-| **Anonymous HIBE (Ducas-Lyubashevsky)** | 2018 | LWE | Hierarchical + anonymous + post-quantum [[1]](https://eprint.iacr.org/2018/088) |
-
-**State of the art:** Lattice-based anonymous IBE (PQ-secure); extends [IBE](#identity-based-encryption-ibe) with recipient anonymity. Useful for anonymous broadcast and PIR-like scenarios.
-
-**Production readiness:** Research
-Academic constructions; no widely deployed production systems
-
-**Implementations:**
-- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, includes anonymous IBE implementations
-
-**Security status:** Secure
-Pairing-based variants secure under standard assumptions; lattice variants provide post-quantum security under LWE
-
-**Community acceptance:** Niche
-Published at top venues (CCS, EUROCRYPT); important for anonymous communication but limited practical deployment
-
----
-
-## Broadcast Encryption
-
-**Goal:** Selective confidentiality. Encrypt to an arbitrary subset of *N* registered users so only authorized members can decrypt. Efficient revocation without re-keying all users. Used in DRM (Blu-ray AACS), pay-TV, multicast.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Fiat-Naor BE** | 1993 | Combinatorial | First formal broadcast encryption scheme [[1]](https://link.springer.com/chapter/10.1007/3-540-48329-2_40) |
-| **NNL (Subset-Difference)** | 2001 | Key trees | Used in AACS (Blu-ray); O(r log(N/r)) header size [[1]](https://link.springer.com/chapter/10.1007/3-540-44647-8_4) |
-| **Boneh-Gentry-Waters** | 2005 | Bilinear pairings | O(1) ciphertext header; short keys [[1]](https://eprint.iacr.org/2005/018) |
-| **Traitor Tracing (BSW)** | 2006 | Pairings | Identify leakers of decryption keys; combines with BE [[1]](https://eprint.iacr.org/2006/056) |
-
-**State of the art:** NNL (industry standard in AACS/CPPM), Boneh-Gentry-Waters (short ciphertexts).
-
-**Production readiness:** Production
-NNL subset-difference scheme deployed in AACS (Blu-ray) and CPPM (DVD Audio) at massive scale
-
-**Implementations:**
-- [libaacs](https://code.videolan.org/videolan/libaacs) — C, AACS implementation for Blu-ray
-
-**Security status:** Secure
-NNL proven secure; Boneh-Gentry-Waters secure under DBDH; practical parameter choices well-studied
-
-**Community acceptance:** Standard
-AACS is an industry standard deployed on billions of Blu-ray discs; broadcast encryption is a well-established area
-
----
-
-## Access Control Encryption (ACE)
-
-**Goal:** Enforced communication policy. A sanitizer mediates all communication — it enforces who can send messages to whom according to a policy, without learning message contents. Neither sender nor receiver can bypass the policy. Unlike ABE (controls who reads), ACE controls who communicates.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Damgård-Haagh-Orlandi ACE** | 2016 | iO / witness encryption | First ACE; sanitizer enforces access graph without learning content [[1]](https://eprint.iacr.org/2016/106) |
-| **ACE from Pairings (Fuchsbauer et al.)** | 2017 | Pairings + NIZK | Practical ACE without iO; disjunctive normal form policies [[1]](https://eprint.iacr.org/2017/457) |
-| **ACE with Accountability** | 2019 | ACE + tracing | Identify policy violators; accountable sanitizer [[1]](https://eprint.iacr.org/2019/904) |
-
-**State of the art:** Pairing-based ACE (2017); combines ideas from [ABE](#attribute-based--functional-encryption), [Proxy Re-Encryption](#proxy-re-encryption-pre), and network access control.
-
-**Production readiness:** Research
-Theoretical constructions; original scheme requires iO; pairing-based variant is more practical but not deployed
-
-**Implementations:**
-- No production-quality open-source implementations available; proof-of-concept code in academic papers
-
-**Security status:** Secure
-Pairing-based ACE (2017) proven secure under standard assumptions; iO-based original requires stronger assumptions
-
-**Community acceptance:** Niche
-Published at TCC 2016 and ASIACRYPT 2017; novel communication-control primitive but limited adoption
-
----
-
-## Matchmaking Encryption
-
-**Goal:** Dual-policy encryption. Message is decryptable only when BOTH the sender's attributes match the receiver's policy AND the receiver's attributes match the sender's policy. Neither party learns if decryption failed due to the other's policy.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Ateniese et al. ME** | 2019 | ABE + ZK | First matchmaking encryption; bilateral access control [[1]](https://eprint.iacr.org/2018/1094) |
-| **Efficient ME (Chen et al.)** | 2021 | Pairings | Practical construction with shorter ciphertexts [[1]](https://eprint.iacr.org/2021/680) |
-
-**State of the art:** pairing-based ME; applications in dating platforms, classified communication, bilateral credential matching.
-
-**Production readiness:** Research
-Academic prototypes only; not deployed in production
-
-**Implementations:**
-- No production-quality open-source implementations available; reference implementations in paper appendices
-
-**Security status:** Secure
-Proven secure under pairing-based assumptions; bilateral policy hiding guaranteed by construction
-
-**Community acceptance:** Niche
-Published at CRYPTO 2019; novel dual-policy concept but limited real-world deployment
-
----
-
-## Key-Aggregate Encryption
-
-**Goal:** Compact delegation for cloud storage. Encrypt N files under N different keys; delegate access to any chosen subset S with a single short aggregate key — regardless of |S|. The aggregate key is constant-size (one group element), not proportional to the number of shared files.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Chu-Chow-Tzeng-Zhou KAE** | 2014 | Pairings | First KAE; constant-size aggregate key for any subset of ciphertexts [[1]](https://eprint.iacr.org/2013/679) |
-| **KAE with Authentication** | 2016 | Pairings + signatures | Authenticated KAE; detect tampering of delegated ciphertexts [[1]](https://doi.org/10.1016/j.jisa.2016.09.001) |
-| **Lattice KAE** | 2019 | LWE | Post-quantum key-aggregate encryption [[1]](https://eprint.iacr.org/2019/494) |
-
-**State of the art:** Pairing-based KAE (Chu et al. 2014); lattice KAE for PQ. Useful for cloud access control; related to [Broadcast Encryption](#broadcast-encryption) and [ABE](#attribute-based--functional-encryption).
-
-**Production readiness:** Research
-Academic constructions with limited prototype implementations; not widely deployed
-
-**Implementations:**
-- No widely used open-source implementations; reference code available in supplementary materials of original papers
-
-**Security status:** Secure
-Pairing-based KAE proven secure under DBDH; lattice variant under LWE; no known practical attacks
-
-**Community acceptance:** Niche
-Published at CCS 2014; useful for cloud storage delegation but niche compared to ABE-based access control
-
----
-
-## Proxy Re-Encryption (PRE)
-
-**Goal:** Delegated confidentiality. A semi-trusted proxy can re-encrypt Alice's ciphertext so Bob can decrypt it — without the proxy ever seeing the plaintext. Used in cloud storage access delegation.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Blaze-Bleumer-Strauss PRE** | 1998 | ElGamal | First scheme; bidirectional re-encryption [[1]](https://link.springer.com/chapter/10.1007/BFb0054122) |
-| **AFGH PRE** | 2006 | Pairings | Unidirectional, non-interactive; CPA-secure [[1]](https://eprint.iacr.org/2005/028) |
-| **Umbral (NuCypher)** | 2018 | EC + AFGH | Threshold PRE: *t-of-n* proxies needed [[1]](https://eprint.iacr.org/2017/206) |
-| **CCA-secure PRE (Libert-Vergnaud)** | 2008 | Pairings | CCA2-secure unidirectional PRE; needed for real-world deployment [[1]](https://eprint.iacr.org/2008/286) |
-
-**State of the art:** AFGH (single-hop, CPA), CCA-secure PRE (Libert-Vergnaud), Umbral (threshold, deployed in NuCypher/Threshold network).
-
-**Production readiness:** Production
-Umbral PRE deployed in the NuCypher/Threshold Network for decentralized access control
-
-**Implementations:**
-- [pyUmbral](https://github.com/nucypher/pyUmbral) ⭐ 300 — Python, Umbral threshold PRE (NuCypher)
-- [nucypher](https://github.com/nucypher/nucypher) ⭐ 709 — Python, decentralized PRE network
-- [recrypt](https://github.com/IronCoreLabs/recrypt) ⭐ 36 — Rust, transform encryption library
-
-**Security status:** Secure
-AFGH CPA-secure under DBDH; Libert-Vergnaud CCA2-secure; Umbral threshold variant adds fault tolerance
-
-**Community acceptance:** Widely trusted
-Well-studied primitive with 25+ years of research; deployed in production blockchain systems; active standardization discussions
-
----
-
-## Transciphering / FHE-friendly Ciphers
+### Transciphering / FHE-friendly Ciphers
 
 **Goal:** Efficient client-to-FHE bridge. Client encrypts data with a lightweight symmetric cipher; the server homomorphically evaluates the cipher's decryption circuit to switch into the FHE domain. Avoids sending massive FHE ciphertexts over the network.
 
@@ -818,33 +425,7 @@ Active research area at WAHC and FHE.org workshops; Kreyvium and HERA gaining tr
 
 ---
 
-## Hidden Vector Encryption (HVE)
-
-**Goal:** Conjunctive search on encrypted attributes. Encrypt a vector of attributes (a₁, ..., aₙ); a key for pattern (p₁, ..., pₙ) with wildcards (*) decrypts iff aᵢ = pᵢ for all non-wildcard positions. Enables expressive encrypted search without revealing the query pattern.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Boneh-Waters HVE** | 2007 | Pairings (composite order) | First HVE; conjunctive, subset, and range queries on encrypted data [[1]](https://eprint.iacr.org/2007/013) |
-| **Park-Lee-Lee HVE** | 2011 | Pairings (prime order) | Efficient HVE in prime-order groups; shorter ciphertexts [[1]](https://doi.org/10.1007/978-3-642-21554-4_4) |
-| **Lattice HVE (Agrawal-Freeman)** | 2013 | LWE | Post-quantum HVE from lattice assumptions [[1]](https://eprint.iacr.org/2013/328) |
-
-**State of the art:** Lattice HVE for PQ; prime-order pairing HVE for efficiency. Generalizes [Searchable Encryption](#key-aggregate-encryption) and specializes [Predicate Encryption](#attribute-based--functional-encryption).
-
-**Production readiness:** Research
-Academic constructions; limited practical deployment
-
-**Implementations:**
-- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, includes predicate encryption schemes including HVE
-
-**Security status:** Secure
-Boneh-Waters HVE proven secure under composite-order bilinear assumptions; prime-order and lattice variants under standard assumptions
-
-**Community acceptance:** Niche
-Published at CRYPTO 2007; foundational for predicate encryption but largely superseded by more general ABE constructions in practice
-
----
-
-## FHE over the Integers (DGHV)
+### FHE over the Integers (DGHV)
 
 **Goal:** Fully homomorphic encryption whose security reduces to arithmetic over the integers — conceptually simpler than lattice-based schemes — using the approximate GCD problem as the hardness assumption.
 
@@ -874,40 +455,7 @@ Important historically as the first non-lattice FHE; widely taught in graduate c
 
 ---
 
-## NTRU-Based Encryption
-
-**Goal:** Lattice-based public-key encryption with practical performance, predating modern LWE/RLWE schemes. NTRU operates over polynomial rings and achieves small key sizes and fast arithmetic, motivating much of modern lattice cryptography.
-
-Proposed by Hoffstein, Pipher, and Silverman (NTRU Cryptosystems Inc., 1996; published ANTS 1998), NTRU is a polynomial-ring encryption scheme. The public key is **h** = *p* · **g** · **f**⁻¹ mod *q* in the ring ℤ[X]/(Xⁿ − 1); the secret key is the short polynomial **f** (with **f**⁻¹ mod *p* and **f**⁻¹ mod *q* precomputed). Encryption pads the message **m** with a random blinding polynomial **r** as **e** = **r** · **h** + **m** mod *q*; decryption multiplies by **f** and reduces mod *p*. Security relies on the *NTRU problem* — recovering short (**f**, **g**) from **h** — which is related to the shortest vector problem on NTRU lattices.
-
-NTRU influenced the design of RLWE-based schemes (BFV, CKKS) and multi-key FHE (López-Alt et al. 2012 used NTRU as the underlying ring problem). NTRUEncrypt was submitted to the NIST PQC standardization process (NIST Round 3 finalist, not selected for standardization in 2022 due to conservative security analysis concerns). NTRU Prime variants (Bernstein et al.) use the ring ℤ[X]/(Xⁿ − X − 1) to avoid the algebraic structure exploits that affect power-of-two cyclotomics.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **NTRU (HPS)** | 1998 | Polynomial ring, short vectors | Original NTRU encryption; small keys (700 B at λ=128) [[1]](https://link.springer.com/chapter/10.1007/BFb0054868) |
-| **NTRUSign** | 2001 | NTRU lattice | Signature scheme (later broken; full transcript attack) [[1]](https://eprint.iacr.org/2001/014) |
-| **NTRU Prime (Bernstein et al.)** | 2017 | Non-cyclotomic ring | Resists subfield and algebraic attacks; NIST PQC finalist [[1]](https://ntruprime.cr.yp.to/) |
-| **Multi-Key FHE from NTRU (López-Alt et al.)** | 2012 | NTRU lattice | First multi-key FHE; joint decryption by N parties [[1]](https://eprint.iacr.org/2011/613) |
-
-**State of the art:** NTRU Prime (Bernstein et al.) is actively maintained; NTRUEncrypt was a NIST PQC Round 3 finalist (not standardized). Modern lattice PQC (ML-KEM/Kyber) favors module-LWE, but NTRU's short-key design and ring structure remain influential. Related to [Multi-Key / Threshold FHE](#multi-key--threshold-fhe) and lattice schemes in [Post-Quantum Cryptography](15-quantum-cryptography.md#post-quantum-cryptography).
-
-**Production readiness:** Mature
-NTRU has had commercial implementations since the 1990s; NTRU Prime is actively maintained; NTRUEncrypt was a NIST PQC Round 3 finalist
-
-**Implementations:**
-- [ntru (NTRU Open Source Project)](https://github.com/jschanck/ntru) ⭐ 51 — C, NIST PQC submission implementation
-- [NTRU Prime](https://ntruprime.cr.yp.to/) — C/Python, Bernstein et al. reference implementation
-- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, includes NTRU implementations
-
-**Security status:** Caution
-NTRUEncrypt not selected for NIST standardization due to conservative security margin concerns; NTRU Prime addresses algebraic structure attacks; NTRUSign is broken
-
-**Community acceptance:** Widely trusted
-One of the oldest lattice-based schemes (1996); NTRU Prime endorsed by Bernstein et al.; IEEE P1363.1 standardization; influential in post-quantum research
-
----
-
-## FHE Amortization & Batching (SIMD Packing)
+### FHE Amortization & Batching (SIMD Packing)
 
 **Goal:** Reduce the per-element cost of homomorphic computation by encoding many independent plaintexts into a single ciphertext and operating on all of them in parallel — analogous to SIMD vectorization for conventional arithmetic.
 
@@ -946,7 +494,7 @@ SIMD batching (Smart-Vercauteren 2011) is universally adopted; BSGS rotation (Ha
 
 ---
 
-## Single-Key vs. Multi-Key FHE
+### Single-Key vs. Multi-Key FHE
 
 **Goal:** Understand the design space between standard FHE (one key pair, one data owner) and multi-key FHE (data encrypted under independent keys can be jointly computed on). The choice determines deployment model, decryption trust assumptions, and performance.
 
@@ -980,114 +528,7 @@ Single-key is standard; multi-key and threshold FHE are active research with gro
 
 ---
 
-## Paillier Additively Homomorphic Encryption
-
-**Goal:** Compute encrypted sums without decryption. Paillier (1999) is a public-key scheme supporting unbounded additions and scalar multiplications on ciphertexts, with security based on the Decisional Composite Residuosity (DCR) assumption. It remains one of the most widely deployed partially homomorphic schemes due to its simplicity, provable security, and efficient aggregation properties.
-
-Pascal Paillier's scheme operates in ℤ_n² where n = pq is an RSA modulus. The public key is n (and generator g = n+1); the secret key is the Carmichael function λ(n). Encrypting a plaintext m ∈ ℤ_n: choose random r ∈ ℤ_n*, output c = gᵐ · rⁿ mod n². Decryption uses the discrete logarithm in the subgroup generated by g (easily computed given λ). The homomorphic properties follow from the group structure: c₁ · c₂ mod n² decrypts to m₁ + m₂ mod n, and c₁ᵏ mod n² decrypts to k·m₁ mod n (scalar multiplication). The scheme is *additively homomorphic* — arbitrary additions and free scalar multiplications, but no multiplication of two ciphertexts.
-
-The IND-CPA security of Paillier is tightly equivalent to the DCR assumption: the difficulty of distinguishing n-th power residues mod n² from non-residues. The scheme is CPA-secure and can be made CCA2-secure via standard transforms.
-
-Paillier's additive homomorphism is ideal for privacy-preserving aggregation: secure summation in federated learning, e-voting tallying (each ballot is an encryption of 0 or 1; votes are multiplied homomorphically, then decrypted to obtain the sum), and input-aggregating MPC subprotocols. The Damgård-Jurik generalization (2001) lifts the scheme to ℤ_nˢ for larger plaintext spaces with the same DCR security.
-
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Paillier** | 1999 | DCR (ℤ_n²) | Additive HE; unbounded additions; widely deployed [[1]](https://link.springer.com/chapter/10.1007/3-540-48910-X_16) |
-| **Damgård-Jurik generalization** | 2001 | DCR (ℤ_nˢ) | Larger plaintext space; same DCR security; batch decryption [[1]](https://eprint.iacr.org/2000/072) |
-| **Threshold Paillier (Fouque-Poupard-Stern)** | 2000 | DCR + Shamir | Distributed decryption; no single key holder; used in MPC [[1]](https://link.springer.com/chapter/10.1007/3-540-46035-7_20) |
-| **Paillier in Federated Learning** | 2017 | DCR | Additive aggregation of encrypted model updates; practical FL [[1]](https://arxiv.org/abs/1702.07476) |
-
-**State of the art:** Paillier and Threshold Paillier (Fouque-Poupard-Stern) are production-grade and deployed in e-voting systems, privacy-preserving analytics, and federated learning pipelines. For richer computation (multiplications) see [BGV/BFV](#homomorphic-encryption-he); for the multiplicative analogue see [ElGamal & Multiplicatively Homomorphic Encryption](#elgamal--multiplicatively-homomorphic-encryption).
-
-**Production readiness:** Production
-Deployed in e-voting systems, federated learning (FATE/WeBank), and privacy-preserving analytics at scale
-
-**Implementations:**
-- [python-paillier](https://github.com/data61/python-paillier) ⭐ 634 — Python, CSIRO Data61 implementation
-- [rust-paillier](https://github.com/KZen-networks/rust-paillier) ⭐ 37 — Rust, Paillier with serialization
-- [libpaillier](https://github.com/mortendahl/libpaillier) ⭐ 7 — C, Paillier with threshold support
-
-**Security status:** Secure
-IND-CPA secure under Decisional Composite Residuosity (DCR) assumption; well-studied for 25+ years; no known practical attacks
-
-**Community acceptance:** Widely trusted
-One of the most widely deployed partially homomorphic schemes; used in ISO 20008 electronic voting; extensively peer-reviewed
-
----
-
-## ElGamal & Multiplicatively Homomorphic Encryption
-
-**Goal:** Compute encrypted products without decryption. Several classical schemes — ElGamal (1985), RSA textbook encryption, and Goldwasser-Micali (1982) — each support exactly one type of homomorphic operation, providing historically important partially homomorphic building blocks used in mix-nets, e-voting, and blind computation.
-
-**ElGamal (multiplicative HE).** In a prime-order group G of order q with generator g, a public key is h = gˢ (secret key s). Encryption of m: choose random r, output (gʳ, mhʳ). The product of two ciphertexts (gʳ¹, m₁hʳ¹) · (gʳ², m₂hʳ²) = (gʳ¹⁺ʳ², m₁m₂ · hʳ¹⁺ʳ²) decrypts to m₁m₂ — unbounded homomorphic multiplication over the plaintext group. Decryption requires solving a discrete log if m is large, so ElGamal HE is typically used with small plaintexts or via lookup tables. Security relies on the Decisional Diffie-Hellman (DDH) assumption. Elliptic-curve variants (ElGamal over E(𝔽_p)) are standard in mix-net re-encryption schemes (Wikström, Bayer-Groth shuffles).
-
-**Textbook RSA (multiplicative HE).** RSA ciphertexts satisfy c₁ · c₂ mod n = (m₁m₂)ᵉ mod n — encrypting the product. This is purely educational: textbook RSA is deterministic, not semantically secure, and subject to many attacks. It demonstrates that RSA's group structure implies multiplicative homomorphism, but is never used directly for computation.
-
-**Goldwasser-Micali (XOR / bit-level HE).** Proposed at STOC 1982 and the first provably secure public-key encryption scheme, Goldwasser-Micali (GM) is probabilistic and bit-by-bit. The public key includes n = pq and a quadratic non-residue x mod n. Encrypting a bit b: choose random r, output c = xᵇ r² mod n. The product of two ciphertexts encrypts b₁ ⊕ b₂ (XOR) because quadratic residues form a subgroup — multiplying two encryptions of bits is equivalent to XOR of plaintexts. GM is semantically secure under the Quadratic Residuosity (QR) assumption. It is *XOR-homomorphic*: supports unbounded additions mod 2 (XOR), but no AND. Historically, GM was the first IND-CPA scheme; it is superseded in efficiency by Paillier (larger plaintexts) and modern FHE, but remains a textbook reference for semantic security.
-
-| Scheme | Year | Basis | Homomorphism | Note |
-|--------|------|-------|-------------|------|
-| **Goldwasser-Micali** | 1982 | QR (quadratic residuosity) | XOR (bit-level) | First IND-CPA scheme; bit-by-bit; large ciphertext expansion [[1]](https://dl.acm.org/doi/10.1145/800070.802212) |
-| **ElGamal** | 1985 | DDH | Multiplicative (group) | Re-randomizable; used in mix-nets and e-voting [[1]](https://link.springer.com/chapter/10.1007/3-540-39799-X_31) |
-| **EC-ElGamal** | 1987 | ECDLP / DDH on curves | Multiplicative | Shorter keys; used in Bayer-Groth mix-nets and PVSS [[1]](https://eprint.iacr.org/2012/377) |
-| **Textbook RSA** | 1977 | RSA / factoring | Multiplicative | Educational only; not IND-CPA; illustrates mod-n structure [[1]](https://dl.acm.org/doi/10.1145/359340.359342) |
-| **Benaloh** | 1994 | Higher residuosity | Additive (mod r) | Generalizes GM to larger plaintext space; basis of some e-voting schemes [[1]](https://link.springer.com/chapter/10.1007/3-540-39799-X_29) |
-
-**State of the art:** ElGamal (EC variant) is deployed in mix-nets (Verificatum, Bayer-Groth shuffles) and threshold decryption systems. Goldwasser-Micali is foundational but not practical (1-bit ciphertexts). For additive HE with larger plaintexts see [Paillier](#paillier-additively-homomorphic-encryption); for fully homomorphic computation see [HE (FHE/SHE)](#homomorphic-encryption-he).
-
-**Production readiness:** Production
-EC-ElGamal deployed in mix-nets (Verificatum), e-voting systems, and threshold decryption protocols
-
-**Implementations:**
-- [Verificatum](https://www.verificatum.org/) — Java, mix-net with ElGamal re-encryption
-- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, includes Ristretto255 ElGamal
-- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, ElGamal and variants
-
-**Security status:** Caution
-ElGamal IND-CPA secure under DDH; textbook RSA is NOT semantically secure; Goldwasser-Micali is secure but impractical; EC-ElGamal requires careful group selection
-
-**Community acceptance:** Standard
-ElGamal (1985) is a textbook standard; EC-ElGamal widely used in e-voting and mix-nets; Goldwasser-Micali is historically foundational (first IND-CPA scheme)
-
----
-
-## Inner-Product Functional Encryption (IPFE)
-
-**Goal:** Reveal only the inner product ⟨**x**, **y**⟩ of an encrypted vector **x** with a key vector **y**, nothing more. A decryptor holding a functional key for **y** learns the linear combination Σ xᵢyᵢ from the ciphertext encrypting **x** — but cannot recover individual components of **x** or evaluate any other function.
-
-Abdalla, Bourse, De Caro, and Pointcheval (PKC 2015) gave the first practical constructions of secret-key and public-key IPFE for integer vectors over ℤ. Their DDH-based public-key scheme is straightforward: the master public key includes group elements {gˢⁱ} for a secret vector **s**; encrypting **x** produces a ciphertext encoding {gˣⁱ} with DDH-blinding; a functional key for **y** is dk_y = g^{⟨**s**,**y**⟩}; decryption computes g^{⟨**x**,**y**⟩} via the pairing structure, then recovers ⟨**x**,**y**⟩ by discrete-log lookup (feasible for small output range). LWE-based IPFE (same paper) supports larger plaintext spaces without discrete-log extraction.
-
-IPFE sits at the base of the functional encryption hierarchy: it is *degree-1* FE (linear functions), efficiently instantiated from standard assumptions (DDH, LWE, DCR), selectively or adaptively secure, and has tight reductions in several constructions. It is the building block for [Quadratic FE](#quadratic--degree-2-functional-encryption), [Function-Hiding IPFE](#function-hiding-inner-product-functional-encryption-fh-ipfe), [DMCFE](#decentralized-multi-client-functional-encryption-dmcfe), and structured output ML (secure dot-product computation).
-
-The Agrawal-Libert-Stehlé (CRYPTO 2016) construction achieved adaptive security under the LWE assumption, closing the selective-vs-adaptive gap. Kim and Lewi (2018) gave tight constructions under DDH. The multi-input variant (Goldwasser et al. 2014; Abdalla et al. 2019) allows separate encrypting parties whose ciphertexts combine to reveal joint inner products.
-
-| Scheme | Year | Assumption | Security | Note |
-|--------|------|------------|----------|------|
-| **Abdalla-Bourse-De Caro-Pointcheval IPFE** | 2015 | DDH, LWE, DCR | Selective | First practical IPFE; secret-key and public-key variants [[1]](https://eprint.iacr.org/2015/017) |
-| **Agrawal-Libert-Stehlé IPFE** | 2016 | LWE | Adaptive | Adaptively secure IPFE from LWE; tight reduction [[1]](https://eprint.iacr.org/2015/608) |
-| **Tight DDH IPFE (Kim-Lewi)** | 2018 | DDH | Tight adaptive | Tight adaptive security from DDH; no LWE required [[1]](https://eprint.iacr.org/2018/943) |
-| **Multi-Input IPFE (Abdalla et al.)** | 2019 | DDH / LWE | Selective | Multiple encryptors; joint inner product; practical [[1]](https://eprint.iacr.org/2017/972) |
-| **IPFE with Function Privacy (FH-IPFE)** | 2015 | SXDH | Selective | Hides key vector y as well; see [FH-IPFE](#function-hiding-inner-product-functional-encryption-fh-ipfe) [[1]](https://eprint.iacr.org/2015/672) |
-
-**State of the art:** DDH-based IPFE (Abdalla et al. 2015) for practical deployments; LWE-based IPFE (Agrawal et al. 2016) for post-quantum. Deployed in privacy-preserving statistics, biometric authentication, and encrypted ML inference pipelines. See [FH-IPFE](#function-hiding-inner-product-functional-encryption-fh-ipfe) when the key vector must also be hidden, and [Quadratic FE](#quadratic--degree-2-functional-encryption) for degree-2 generalization.
-
-**Production readiness:** Experimental
-Working implementations in CiFEr and GoFE libraries; deployed in privacy-preserving statistics research prototypes
-
-**Implementations:**
-- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, IPFE from DDH and LWE (FENTEC project)
-- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, IPFE with DDH, LWE, and DCR instantiations
-- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, includes IPFE implementations
-
-**Security status:** Secure
-Proven secure under DDH (selective), LWE (adaptive), and DCR assumptions; tight reductions available
-
-**Community acceptance:** Widely trusted
-Foundational FE primitive; published at PKC 2015 and CRYPTO 2016; basis for the FENTEC EU Horizon project; growing adoption in privacy-preserving ML
-
----
-
-## FHE Benchmarks & Performance
+### FHE Benchmarks & Performance
 
 **Goal:** Quantify practical costs of FHE operations across schemes and libraries so practitioners can select the right scheme for a workload. Benchmarks measure latency, throughput, and memory for representative operations: ciphertext multiplication, bootstrapping, linear transforms, and end-to-end ML inference.
 
@@ -1135,7 +576,7 @@ HE.org community benchmark suite is the authoritative reference; endorsed by Mic
 
 ---
 
-## Obfuscation-Based & General-Circuit Functional Encryption
+### Obfuscation-Based & General-Circuit Functional Encryption
 
 **Goal:** Support functional decryption for arbitrary polynomial-size circuits — the most general class of functional encryption. Given a ciphertext encrypting **x** and a functional key for any circuit C, a decryptor recovers C(**x**) without learning anything else. General-circuit FE is the apex of the FE hierarchy and is closely tied to indistinguishability obfuscation (iO).
 
@@ -1169,7 +610,7 @@ Foundational theoretical work (TCC 2011, FOCS 2013); FE-iO equivalence is a land
 
 ---
 
-## Number Theoretic Transform (NTT) in FHE
+### Number Theoretic Transform (NTT) in FHE
 
 **Goal:** Accelerate polynomial multiplication — the bottleneck operation in all RLWE-based FHE schemes — from O(n²) naive multiplication to O(n log n) using the Number Theoretic Transform, the finite-field analogue of the Fast Fourier Transform.
 
@@ -1211,7 +652,7 @@ NTT is universally used in all RLWE-based FHE and post-quantum lattice schemes; 
 
 ---
 
-## Parameter Selection for BFV / BGV / CKKS
+### Parameter Selection for BFV / BGV / CKKS
 
 **Goal:** Choose cryptographic parameters (ring degree n, ciphertext modulus Q, plaintext modulus t, scaling factor Δ) that simultaneously achieve a target security level, a sufficient noise budget or arithmetic precision, and acceptable performance — without overprovisioning resources.
 
@@ -1256,7 +697,7 @@ HE Standardization consortium (HES) parameters are the authoritative reference; 
 
 ---
 
-## HE for Healthcare & Genomics
+### HE for Healthcare & Genomics
 
 **Goal:** Enable computation on sensitive biomedical data — patient records, genomic sequences, clinical statistics — while the data remains encrypted, so research institutions and cloud services never see individual plaintext health information.
 
@@ -1297,7 +738,7 @@ Annual iDASH competition drives progress; published in Nature Communications and
 
 ---
 
-## FHE Applications in Cloud Computing
+### FHE Applications in Cloud Computing
 
 **Goal:** Allow cloud providers to perform useful computation — database queries, search, analytics, and ML serving — on customer data that remains encrypted end-to-end, so even a compromised or untrusted cloud sees only ciphertexts throughout.
 
@@ -1339,7 +780,7 @@ Active research and early deployment; SealPIR/SimplePIR from Microsoft/academic 
 
 ---
 
-## FHE for Private Neural Network Training
+### FHE for Private Neural Network Training
 
 **Goal:** Train a machine learning model on private data without the training server ever seeing plaintext inputs, labels, or intermediate gradients — enabling cross-institution model training where data cannot be legally or contractually shared.
 
@@ -1379,57 +820,7 @@ Active research area; FATE deployed at WeBank; federated learning with HE aggreg
 
 ---
 
-## Lattigo (Multiparty HE in Go)
-
-**Goal:** Provide a pure-Go library for lattice-based homomorphic encryption with native support for multiparty (threshold) protocols, targeting distributed systems and microservice architectures.
-
-| Algorithm | Year | Type/Basis | Note |
-|-----------|------|------------|------|
-| **Lattigo v5** | 2020 | RLWE (BFV, BGV, CKKS) | Full-RNS implementation with multiparty key generation, threshold decryption, and interactive bootstrapping [[1]](https://github.com/tuneinsight/lattigo) |
-| **Multiparty CKKS bootstrapping** | 2022 | Threshold CKKS | Distributed bootstrapping with secret-shared keys; enables multi-party approximate-arithmetic FHE [[1]](https://homomorphicencryption.org/wp-content/uploads/2020/12/wahc20_demo_christian.pdf) |
-
-**State of the art:** Lattigo v5 is the leading Go-native HE library, actively maintained by Tune Insight (EPFL spin-off). Its pure-Go implementation enables cross-platform builds including WASM for browser clients. Performance is competitive with C++ libraries for single-threaded workloads. Complements [OpenFHE](#homomorphic-encryption-he) (C++) and [Microsoft SEAL](#microsoft-seal) (C++) by serving the Go/distributed-systems ecosystem.
-
-**Production readiness:** Mature
-Production-quality Go library maintained by Tune Insight (EPFL spin-off); used in distributed systems and WASM deployments
-
-**Implementations:**
-- [Lattigo](https://github.com/tuneinsight/lattigo) ⭐ 1.4k — Go, Apache 2.0, BFV/BGV/CKKS with multiparty support
-
-**Security status:** Secure
-Implements BFV/BGV/CKKS at HES-recommended parameters; full RNS implementation; no known vulnerabilities
-
-**Community acceptance:** Widely trusted
-Developed by EPFL cryptography researchers; actively maintained; used in academic publications and commercial products by Tune Insight
-
----
-
-## TenSEAL (Encrypted Tensor Operations)
-
-**Goal:** Provide a Python-first library for homomorphic encryption on tensors, enabling privacy-preserving machine learning with minimal cryptographic expertise by wrapping Microsoft SEAL in a NumPy-like API.
-
-| Algorithm | Year | Type/Basis | Note |
-|-----------|------|------------|------|
-| **TenSEAL** | 2021 | CKKS, BFV (via SEAL) | Python/C++ library; encrypted CNN inference on MNIST in under 1 second [[1]](https://arxiv.org/abs/2104.03152) |
-| **CKKSVector / BFVVector** | 2021 | RLWE tensors | Supports encrypted dot products, matrix multiplication, and convolutions for ML workloads [[1]](https://github.com/OpenMined/TenSEAL) |
-
-**State of the art:** TenSEAL (OpenMined) is the most widely used Python HE library for ML prototyping, presented at ICLR 2021 DPML Workshop [[1]](https://dp-ml.github.io/2021-workshop-ICLR/files/18.pdf). Integrates with PySyft for federated learning. Limited to leveled HE (no bootstrapping). For production deployment, see [Concrete ML](#concrete--concrete-ml-zama) (which includes a compiler) or [Microsoft SEAL](#microsoft-seal) (C++ back-end).
-
-**Production readiness:** Experimental
-Widely used for ML prototyping; wraps Microsoft SEAL but not independently production-hardened
-
-**Implementations:**
-- [TenSEAL](https://github.com/OpenMined/TenSEAL) ⭐ 1.0k — Python/C++, Apache 2.0, CKKS/BFV tensor operations
-
-**Security status:** Secure
-Inherits Microsoft SEAL's security at recommended parameters; leveled HE only (no bootstrapping)
-
-**Community acceptance:** Widely trusted
-Developed by OpenMined; presented at ICLR 2021 DPML Workshop; widely used in privacy-preserving ML research
-
----
-
-## PhantomFHE (GPU-Accelerated HE)
+### PhantomFHE (GPU-Accelerated HE)
 
 **Goal:** Accelerate word-wise homomorphic encryption (BFV, BGV, CKKS) on NVIDIA GPUs using CUDA, achieving order-of-magnitude speedups over CPU-only libraries for large-scale encrypted computation.
 
@@ -1454,7 +845,7 @@ Published in IEEE TDSC 2024; one of the fastest GPU HE implementations; growing 
 
 ---
 
-## HEonGPU (GPU FHE Library)
+### HEonGPU (GPU FHE Library)
 
 **Goal:** Provide a high-performance, multi-stream CUDA library for fully homomorphic encryption (BFV, CKKS, TFHE) that minimizes CPU-GPU data transfer overhead and supports collective bootstrapping.
 
@@ -1479,7 +870,7 @@ Published at ePrint 2024; developed at Sabanci University; unique in supporting 
 
 ---
 
-## Apple Swift Homomorphic Encryption
+### Apple Swift Homomorphic Encryption
 
 **Goal:** Production-grade, open-source Swift library for BFV homomorphic encryption, designed for Apple ecosystem deployment including iOS 18 Live Caller ID Lookup via private information retrieval (PIR).
 
@@ -1504,33 +895,7 @@ Developed and deployed by Apple; first HE deployment in a consumer OS; open-sour
 
 ---
 
-## Covercrypt (Quantum-Safe ABE KEM)
-
-**Goal:** Efficient attribute-based key encapsulation mechanism (KEM) with hidden access policies, post-quantum security via DDH+LWE hybridization, and user traceability — enabling fine-grained encrypted access control without revealing who the intended recipients are.
-
-| Algorithm | Year | Type/Basis | Note |
-|-----------|------|------------|------|
-| **Covercrypt** | 2023 | DDH + LWE hybrid | Early-abort KEM for hidden CP-ABE policies with traceability; hundreds of microseconds per encapsulation [[1]](https://eprint.iacr.org/2023/836) |
-| **ETSI TS 104 015** | 2025 | Standardization | ETSI standard for quantum-safe hybrid KEMAC; formal security analysis with ECDH + ML-KEM instantiation [[1]](https://eprint.iacr.org/2025/544) |
-
-**State of the art:** Covercrypt is developed by Cosmian and standardized by ETSI as TS 104 015 [[1]](https://link.springer.com/chapter/10.1007/978-3-032-07891-9_5). It is the first attribute-based encryption scheme to achieve an ETSI standard with explicit post-quantum guarantees. Open-source Rust implementation available [[2]](https://github.com/Cosmian/cover_crypt). Related to [Attribute-Based & Functional Encryption](#attribute-based--functional-encryption) and [Multi-Authority ABE](#multi-authority-abe).
-
-**Production readiness:** Mature
-Standardized as ETSI TS 104 015; open-source Rust implementation by Cosmian deployed in enterprise products
-
-**Implementations:**
-- [cover_crypt](https://github.com/Cosmian/cover_crypt) ⭐ 22 — Rust, open-source Covercrypt implementation
-- [cloudproof_rust](https://github.com/Cosmian/cloudproof_rust) ⭐ 2 — Rust, Cosmian's privacy framework including Covercrypt
-
-**Security status:** Secure
-Hybrid DDH+LWE provides classical and post-quantum security; ETSI formal security analysis; early-abort design prevents timing attacks
-
-**Community acceptance:** Standard
-First ABE scheme standardized by ETSI (TS 104 015); developed by Cosmian with formal verification; growing enterprise adoption
-
----
-
-## Sunscreen (Rust FHE Compiler)
+### Sunscreen (Rust FHE Compiler)
 
 **Goal:** Developer-friendly Rust compiler that automatically transforms annotated Rust functions into optimized FHE circuits, lowering the barrier to building privacy-preserving applications without deep cryptographic knowledge.
 
@@ -1555,32 +920,7 @@ Novel developer-experience approach to FHE; small but active open-source communi
 
 ---
 
-## Intel HEXL (HE Hardware Acceleration)
-
-**Goal:** Accelerate the low-level modular polynomial arithmetic at the core of all RLWE-based HE schemes by exploiting Intel AVX-512 and IFMA52 instructions, providing a drop-in acceleration layer for HE libraries.
-
-| Algorithm | Year | Type/Basis | Note |
-|-----------|------|------------|------|
-| **Intel HEXL** | 2021 | AVX-512 / IFMA52 | Up to 7.2x NTT speedup and 6.0x modular multiplication speedup over native C++ on Ice Lake Xeon [[1]](https://eprint.iacr.org/2021/420) |
-| **HEXL integration** | 2021 | Library plugin | Adopted by Microsoft SEAL, PALISADE (now OpenFHE), and HElib as optional acceleration back-end [[1]](https://github.com/IntelLabs/hexl) |
-
-**State of the art:** Intel HEXL is the standard CPU-side acceleration layer for RLWE-based HE, available under Apache 2.0. It targets 3rd-generation Intel Xeon Scalable Processors and later. Best performance requires AVX-512-IFMA52 support. Complements GPU acceleration approaches like [PhantomFHE](#phantomfhe-gpu-accelerated-he) and [HEonGPU](#heongpu-gpu-fhe-library). Related to [NTT in FHE](#number-theoretic-transform-ntt-in-fhe) and [Parameter Selection for BFV/BGV/CKKS](#parameter-selection-for-bfv--bgv--ckks).
-
-**Production readiness:** Production
-Integrated into Microsoft SEAL and OpenFHE as the standard CPU acceleration layer; deployed wherever those libraries are used
-
-**Implementations:**
-- [Intel HEXL](https://github.com/intel/hexl) ⭐ 256 — C++, Apache 2.0, AVX-512 NTT acceleration
-
-**Security status:** Secure
-Hardware acceleration layer; does not affect cryptographic security; constant-time implementations for side-channel resistance
-
-**Community acceptance:** Standard
-Developed by Intel Labs; adopted by SEAL and OpenFHE; published in IEEE Micro 2021; standard CPU-side FHE acceleration
-
----
-
-## FHERMA (FHE Components Platform)
+### FHERMA (FHE Components Platform)
 
 **Goal:** Open challenge platform and reusable component library for fully homomorphic encryption, fostering practical FHE development by crowd-sourcing optimized implementations of common FHE building blocks.
 
@@ -1606,34 +946,7 @@ Joint effort by Fair Math and OpenFHE team; IBM researchers publishing challenge
 
 ---
 
-## Multi-Input Quadratic Functional Encryption (MIQFE)
-
-**Goal:** Enable computation of quadratic functions (degree-2 polynomials) over encrypted inputs from multiple independent data sources, supporting applications such as differentially private encrypted analytics and biometric matching.
-
-| Algorithm | Year | Type/Basis | Note |
-|-----------|------|------------|------|
-| **MIQFE from pairings (Agrawal et al.)** | 2021 | Bilinear maps | First multi-input FE for quadratic functions from pairings; simulation-secure in fine-grained corruption model [[1]](https://link.springer.com/chapter/10.1007/978-3-030-84259-8_8) |
-| **Stronger MIQFE (Agrawal et al.)** | 2022 | Bilinear maps | Extended functionality and stronger security model for multi-input quadratic FE [[1]](https://eprint.iacr.org/2022/1168.pdf) |
-| **Simulation-secure MIQFE (SAC 2024)** | 2024 | Bilinear maps + IPFE | First simulation-secure secret-key MIQFE; application to differentially private quadratic queries on encrypted databases [[1]](https://eprint.iacr.org/2024/2050) |
-
-**State of the art:** Multi-input quadratic FE extends [Quadratic / Degree-2 Functional Encryption](#quadratic--degree-2-functional-encryption) to the multi-client setting, enabling each data owner to encrypt independently while an analyst computes cross-client quadratic statistics. The SAC 2024 simulation-secure construction is the strongest security result to date. Practical implementations exist for small input dimensions. Related to [DMCFE](#decentralized-multi-client-functional-encryption-dmcfe) and [Inner-Product Functional Encryption](#inner-product-functional-encryption-ipfe).
-
-**Production readiness:** Research
-Academic constructions only; practical implementations limited to small input dimensions
-
-**Implementations:**
-- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, includes multi-input FE primitives (FENTEC project)
-- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, multi-input functional encryption
-
-**Security status:** Secure
-Proven secure under bilinear map assumptions; simulation-secure variant (SAC 2024) provides strongest guarantees
-
-**Community acceptance:** Niche
-Published at ASIACRYPT 2021 and SAC 2024; extends quadratic FE to multi-client settings; limited to academic community
-
----
-
-## FHEW — Fastest Homomorphic Encryption in the West
+### FHEW — Fastest Homomorphic Encryption in the West
 
 **Goal:** Evaluate arbitrary Boolean gates on LWE-encrypted bits and bootstrap the result in under one second, making "refresh after every gate" workable for the first time.
 
@@ -1658,7 +971,7 @@ Published at EUROCRYPT 2015; foundational for all TFHE-family schemes; Ducas and
 
 ---
 
-## Programmable Bootstrapping (PBS / CGGI Functional Bootstrapping)
+### Programmable Bootstrapping (PBS / CGGI Functional Bootstrapping)
 
 **Goal:** During TFHE's mandatory noise-reduction bootstrapping, evaluate any arbitrary univariate function encoded as a lookup table "for free" — transforming bootstrapping from pure noise management into a computation primitive.
 
@@ -1685,31 +998,156 @@ Core technique behind Zama's commercial FHE stack; published at ASIACRYPT 2020; 
 
 ---
 
-## Fuzzy Identity-Based Encryption (Fuzzy IBE)
 
-**Goal:** Encrypt to an identity that is a set of attributes, allowing decryption by any holder of a key whose identity overlaps by at least a threshold d — tolerating noise in biometric measurements.
+## Attribute-Based Encryption (ABE)
 
-| Scheme | Year | Basis | Note |
-|--------|------|-------|------|
-| **Sahai-Waters Fuzzy IBE** | 2005 | Bilinear maps, threshold overlap | Historical origin of all ABE; unique biometric application; ePrint 2004/086 [[1]](https://eprint.iacr.org/2004/086) |
+---
+### Decentralized Multi-Client Functional Encryption (DMCFE)
 
-**State of the art:** Only encryption scheme where the decryption key is literally a noisy biometric measurement. Error-tolerant: two fingerprint scans are never bit-identical, but if features overlap by ≥ d, decryption succeeds. Predates and generalizes all ABE.
+**Goal:** Compute a joint function (e.g., an inner product) over data contributed by multiple independent parties without any central trusted authority — neither a master-key holder nor a single encryptor.
+
+Standard [Multi-Input FE](#attribute-based--functional-encryption) requires a central authority to issue all functional keys. Multi-Client FE (MCFE) allows multiple senders but still requires a central key authority. **Decentralized MCFE (DMCFE)**, introduced by Chotard, Dufour-Sans, Gay, Phan, and Pointcheval (ASIACRYPT 2018), removes the central authority entirely: each client independently holds a share of the master secret, and functional decryption keys are generated *non-interactively* (only setup requires interaction) by the clients themselves using a distributed key-generation protocol.
+
+The practical DMCFE construction for inner products operates as follows. Each client *i* holds a local secret key `sk_i`. To encrypt input `x_i`, client *i* produces a ciphertext `ct_i`. To generate a functional decryption key for weight vector **y** = (y₁, …, yₙ), each client *i* independently computes a key share `dk_i^y` from `sk_i` and `y_i` (no interaction). The aggregator combines `{dk_i^y}` and `{ct_i}` to recover ⟨**x**, **y**⟩ = Σ xᵢ · yᵢ without learning any individual `x_i`. Security relies on the DDH assumption over prime-order groups (the 2018/1021 improvement) or pairings (the original 2017/989 version).
+
+| Scheme | Year | Assumption | Note |
+|--------|------|------------|------|
+| **DMCFE-IP (Chotard et al.)** | 2018 | MDDH / pairings | First DMCFE; inner product; setup interaction only [[1]](https://eprint.iacr.org/2017/989) |
+| **DMCFE-IP from DDH (Chotard et al.)** | 2018 | DDH | Pairing-free variant; practical over standard groups [[1]](https://eprint.iacr.org/2018/1021) |
+| **Decentralizing IPFE (Chotard-Dufour-Sans-Gay-Pointcheval)** | 2019 | DDH / MDDH | Framework with stronger security notions; PKC 2019 [[1]](https://link.springer.com/chapter/10.1007/978-3-030-17259-6_5) |
+| **Verifiable DMCFE (ASIACRYPT 2023)** | 2023 | MDDH | Adds output verifiability; malicious-client resilience [[1]](https://eprint.iacr.org/2023/268) |
+
+**State of the art:** DDH-based DMCFE (Chotard et al. 2018) for practical deployments; verifiable DMCFE (2023) for settings with potentially malicious clients. Combines [Multi-Input FE](#attribute-based--functional-encryption) and [Multi-Authority ABE](#multi-authority-abe) ideas to achieve fully decentralized fine-grained computation on encrypted data.
 
 **Production readiness:** Research
-Academic construction; foundational for ABE but not independently deployed in production biometric systems
+Academic prototypes only; no production deployments
 
 **Implementations:**
-- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, includes Sahai-Waters Fuzzy IBE
+- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, includes DMCFE for inner products
+- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, DMCFE implementation (FENTEC project)
 
 **Security status:** Secure
-Proven secure under DBDH assumption; threshold overlap parameter d controls error tolerance
+Proven secure under DDH/MDDH assumptions; verifiable variant (2023) handles malicious clients
 
-**Community acceptance:** Widely trusted
-Published at EUROCRYPT 2005 by Sahai and Waters; universally recognized as the origin of attribute-based encryption; highly cited
+**Community acceptance:** Niche
+Published at ASIACRYPT 2018 and PKC 2019; important for decentralized privacy-preserving analytics but limited real-world deployment
 
 ---
 
-## Decentralized Attribute-Based Encryption (No Central Trust)
+### Attribute-Based & Functional Encryption
+
+**Goal:** Fine-grained access control embedded in ciphertext. Decrypt only if your attributes/key satisfy a policy. Provides access control + confidentiality.
+
+| Scheme | Year | Type | Note |
+|--------|------|------|------|
+| **CP-ABE (Bethencourt-Sahai-Waters)** | 2007 | Ciphertext-Policy ABE | Policy in ciphertext; key has attributes [[1]](https://eprint.iacr.org/2006/309) |
+| **KP-ABE (Goyal-Pandey-Sahai-Waters)** | 2006 | Key-Policy ABE | Policy in key; ciphertext has attributes [[1]](https://eprint.iacr.org/2006/309) |
+| **FAME** | 2017 | CP-ABE (prime-order) | Fast, prime-order groups; practical [[1]](https://eprint.iacr.org/2017/807) |
+| **Inner-Product FE (Abdalla et al.)** | 2015 | Functional Encryption | Decrypt inner product of attribute vectors [[1]](https://eprint.iacr.org/2015/017) |
+| **Multi-Input FE** | 2014 | Functional Encryption | Multiple encryptors, joint function [[1]](https://eprint.iacr.org/2013/774) |
+| **Predicate Encryption (KSW)** | 2008 | Pairings | Generalization of ABE: decrypt iff predicate(key attrs, ct attrs) = true [[1]](https://eprint.iacr.org/2008/290) |
+
+**State of the art:** FAME (practical ABE), Inner-Product FE (ML applications).
+
+**Production readiness:** Mature
+CP-ABE and KP-ABE have production-quality implementations; deployed in access-control and DRM systems
+
+**Implementations:**
+- [OpenABE](https://github.com/zeutro/openabe) ⭐ 274 — C++, CP-ABE and KP-ABE (Zeutro/Northwestern)
+- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, pairing-based crypto framework with ABE schemes
+- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, functional encryption library including IPFE and quadratic FE
+- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, functional encryption library
+- [FAME (reference)](https://github.com/sagrawal87/ABE) ⭐ 206 — Python/Charm, FAME CP-ABE implementation
+
+**Security status:** Secure
+CP-ABE/KP-ABE proven secure under DBDH/DLIN assumptions; FAME under prime-order pairings; well-studied
+
+**Community acceptance:** Widely trusted
+ABE is a well-established research area with hundreds of papers; CP-ABE (BSW 2007) and FAME (2017) are widely referenced and implemented
+
+---
+
+### Multi-Authority ABE
+
+**Goal:** Decentralized access control. Multiple independent attribute authorities each manage a subset of attributes — no single authority can decrypt alone. Eliminates single point of trust in ABE systems.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chase Multi-Authority ABE** | 2007 | Pairings | First multi-authority CP-ABE; central authority + attribute authorities [[1]](https://eprint.iacr.org/2007/010) |
+| **Chase-Chow (no central authority)** | 2009 | Pairings | Removes central authority; fully decentralized [[1]](https://eprint.iacr.org/2009/094) |
+| **Lewko-Waters Decentralized ABE** | 2011 | Pairings (dual system) | Any party can become an authority; no global setup [[1]](https://eprint.iacr.org/2011/414) |
+| **MAABE for Large Universe (Rouselakis-Waters)** | 2015 | Pairings | Large attribute universe; efficient multi-authority [[1]](https://eprint.iacr.org/2015/016) |
+
+**State of the art:** Lewko-Waters (2011) for fully decentralized; Rouselakis-Waters for large universes. Extends [ABE/FE](#attribute-based--functional-encryption) to remove single trust assumptions.
+
+**Production readiness:** Research
+Academic prototypes; limited production deployment outside of research testbeds
+
+**Implementations:**
+- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, includes multi-authority ABE schemes
+- [OpenABE](https://github.com/zeutro/openabe) ⭐ 274 — C++, supports multi-authority configurations
+
+**Security status:** Secure
+Lewko-Waters proven secure under dual-system technique; Rouselakis-Waters under standard pairings assumptions
+
+**Community acceptance:** Niche
+Important for decentralized access control; published at top venues (EUROCRYPT 2011); growing interest for blockchain and IoT but limited deployment
+
+---
+
+### Access Control Encryption (ACE)
+
+**Goal:** Enforced communication policy. A sanitizer mediates all communication — it enforces who can send messages to whom according to a policy, without learning message contents. Neither sender nor receiver can bypass the policy. Unlike ABE (controls who reads), ACE controls who communicates.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Damgård-Haagh-Orlandi ACE** | 2016 | iO / witness encryption | First ACE; sanitizer enforces access graph without learning content [[1]](https://eprint.iacr.org/2016/106) |
+| **ACE from Pairings (Fuchsbauer et al.)** | 2017 | Pairings + NIZK | Practical ACE without iO; disjunctive normal form policies [[1]](https://eprint.iacr.org/2017/457) |
+| **ACE with Accountability** | 2019 | ACE + tracing | Identify policy violators; accountable sanitizer [[1]](https://eprint.iacr.org/2019/904) |
+
+**State of the art:** Pairing-based ACE (2017); combines ideas from [ABE](#attribute-based--functional-encryption), [Proxy Re-Encryption](#proxy-re-encryption-pre), and network access control.
+
+**Production readiness:** Research
+Theoretical constructions; original scheme requires iO; pairing-based variant is more practical but not deployed
+
+**Implementations:**
+- No production-quality open-source implementations available; proof-of-concept code in academic papers
+
+**Security status:** Secure
+Pairing-based ACE (2017) proven secure under standard assumptions; iO-based original requires stronger assumptions
+
+**Community acceptance:** Niche
+Published at TCC 2016 and ASIACRYPT 2017; novel communication-control primitive but limited adoption
+
+---
+
+### Covercrypt (Quantum-Safe ABE KEM)
+
+**Goal:** Efficient attribute-based key encapsulation mechanism (KEM) with hidden access policies, post-quantum security via DDH+LWE hybridization, and user traceability — enabling fine-grained encrypted access control without revealing who the intended recipients are.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Covercrypt** | 2023 | DDH + LWE hybrid | Early-abort KEM for hidden CP-ABE policies with traceability; hundreds of microseconds per encapsulation [[1]](https://eprint.iacr.org/2023/836) |
+| **ETSI TS 104 015** | 2025 | Standardization | ETSI standard for quantum-safe hybrid KEMAC; formal security analysis with ECDH + ML-KEM instantiation [[1]](https://eprint.iacr.org/2025/544) |
+
+**State of the art:** Covercrypt is developed by Cosmian and standardized by ETSI as TS 104 015 [[1]](https://link.springer.com/chapter/10.1007/978-3-032-07891-9_5). It is the first attribute-based encryption scheme to achieve an ETSI standard with explicit post-quantum guarantees. Open-source Rust implementation available [[2]](https://github.com/Cosmian/cover_crypt). Related to [Attribute-Based & Functional Encryption](#attribute-based--functional-encryption) and [Multi-Authority ABE](#multi-authority-abe).
+
+**Production readiness:** Mature
+Standardized as ETSI TS 104 015; open-source Rust implementation by Cosmian deployed in enterprise products
+
+**Implementations:**
+- [cover_crypt](https://github.com/Cosmian/cover_crypt) ⭐ 22 — Rust, open-source Covercrypt implementation
+- [cloudproof_rust](https://github.com/Cosmian/cloudproof_rust) ⭐ 2 — Rust, Cosmian's privacy framework including Covercrypt
+
+**Security status:** Secure
+Hybrid DDH+LWE provides classical and post-quantum security; ETSI formal security analysis; early-abort design prevents timing attacks
+
+**Community acceptance:** Standard
+First ABE scheme standardized by ETSI (TS 104 015); developed by Cosmian with formal verification; growing enterprise adoption
+
+---
+
+### Decentralized Attribute-Based Encryption (No Central Trust)
 
 **Goal:** Allow any party to independently become an ABE authority and issue attribute keys with no global trusted coordinator, enabling ad hoc, collusion-resistant access control.
 
@@ -1735,7 +1173,7 @@ Published at EUROCRYPT 2011; essential for consortium and cross-organizational s
 
 ---
 
-## Registered Attribute-Based Encryption (Reg-ABE)
+### Registered Attribute-Based Encryption (Reg-ABE)
 
 **Goal:** Replace the trusted key authority in ABE with a transparent key curator that only aggregates public keys — users generate their own secret keys, eliminating key escrow.
 
@@ -1756,5 +1194,601 @@ Proven secure under k-Lin assumption on composite-order groups; eliminates key e
 
 **Community acceptance:** Emerging
 Published at EUROCRYPT 2023 by Hohenberger, Lu, Waters, and Wu; recognized as a significant advance in access-control cryptography; early-stage adoption
+
+---
+
+
+## Identity-Based Encryption (IBE)
+
+---
+### Identity-Based Encryption (IBE)
+
+**Goal:** Confidentiality without PKI. Encrypt to an arbitrary identity string (email address, phone number, domain) — the recipient obtains a private key from a trusted authority and decrypts.
+
+**Architecture:** A trusted **Private Key Generator (PKG)** holds a master secret key (msk) and publishes a master public key (mpk). Anyone can encrypt to an identity string using mpk. The recipient contacts the PKG, authenticates, and receives their identity-specific secret key via `Extract(msk, id) → sk_id`. **Key escrow problem:** the PKG can decrypt all messages — motivating [Registration-Based Encryption](#registration-based-encryption-rbe) which removes this trust assumption.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boneh-Franklin IBE** | 2001 | Bilinear pairings | First practical IBE; Weil pairing on elliptic curves [[1]](https://eprint.iacr.org/2001/090) |
+| **Waters IBE** | 2005 | Pairings | Selective-ID secure without random oracles [[1]](https://eprint.iacr.org/2004/180) |
+| **HIBE (Gentry-Silverberg)** | 2002 | Pairings | Hierarchical IBE; delegatable to sub-authorities [[1]](https://eprint.iacr.org/2002/107) |
+| **Lattice IBE (Gentry-Peikert-Vaikuntanathan)** | 2008 | LWE | Post-quantum IBE [[1]](https://eprint.iacr.org/2007/432) |
+| **Revocable IBE (Boldyreva-Goyal-Kumar)** | 2008 | Pairings + binary tree | Efficient revocation: PKG publishes periodic updates; revoked users can't decrypt new ciphertexts [[1]](https://eprint.iacr.org/2008/013) |
+
+**State of the art:** Boneh-Franklin (widely taught), lattice IBE (PQ setting), revocable IBE for deployments requiring key revocation.
+
+**Production readiness:** Mature
+Boneh-Franklin IBE has production implementations; deployed in Voltage SecureMail and some enterprise email systems
+
+**Implementations:**
+- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, includes Boneh-Franklin, Waters, and lattice IBE
+- [MIRACL Core](https://github.com/miracl/core) ⭐ 238 — C/C++/Rust/Go, pairing-based crypto including IBE primitives
+- [relic](https://github.com/relic-toolkit/relic) ⭐ 508 — C, efficient pairing library used for IBE implementations
+
+**Security status:** Secure
+Boneh-Franklin secure under BDH in random oracle model; Waters IBE without random oracles; lattice IBE post-quantum secure under LWE
+
+**Community acceptance:** Widely trusted
+IBE is a textbook primitive; Boneh-Franklin won multiple awards; IEEE P1363.3 standardization effort; widely taught and researched
+
+---
+
+### Registration-Based Encryption (RBE)
+
+**Goal:** IBE without trusted authority. Like [IBE](#identity-based-encryption-ibe) but replaces the trusted PKG with a transparent public bulletin board. Users register their own public keys; anyone can encrypt to an identity; no single party holds a master secret.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Garg-Hajiabadi-Mahmoody-Rahimi** | 2018 | Lattices / iO | First RBE construction; removes key escrow [[1]](https://eprint.iacr.org/2018/040) |
+| **Efficient RBE (Glaeser et al.)** | 2022 | Pairings + accumulators | Practical: O(log N) ciphertext from accumulator-based approach [[1]](https://eprint.iacr.org/2022/1505) |
+
+**State of the art:** pairing + accumulator RBE (practical); resolves IBE's key escrow problem.
+
+**Production readiness:** Research
+Theoretical constructions; no production implementations available
+
+**Implementations:**
+- No production-quality open-source implementations available; reference code in papers' supplementary materials
+
+**Security status:** Secure
+Proven secure under lattice/pairing assumptions; removes key escrow — a security improvement over IBE
+
+**Community acceptance:** Emerging
+Active research area; pairing+accumulator RBE (2022) makes practical deployment plausible; solves key escrow problem of IBE
+
+---
+
+### Anonymous IBE
+
+**Goal:** Recipient privacy in IBE. The ciphertext hides not just the message but also the identity of the intended recipient. An eavesdropper cannot determine who can decrypt — even given the master public key.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boyen-Waters Anonymous IBE** | 2006 | Pairings | First efficient anonymous IBE; ciphertext hides recipient identity [[1]](https://eprint.iacr.org/2005/029) |
+| **Gentry Anonymous IBE** | 2006 | Pairings | Anonymous + CCA-secure; tight reduction [[1]](https://eprint.iacr.org/2006/077) |
+| **Lattice Anonymous IBE (Agrawal et al.)** | 2010 | LWE | Post-quantum anonymous IBE from lattices [[1]](https://eprint.iacr.org/2010/383) |
+| **Anonymous HIBE (Ducas-Lyubashevsky)** | 2018 | LWE | Hierarchical + anonymous + post-quantum [[1]](https://eprint.iacr.org/2018/088) |
+
+**State of the art:** Lattice-based anonymous IBE (PQ-secure); extends [IBE](#identity-based-encryption-ibe) with recipient anonymity. Useful for anonymous broadcast and PIR-like scenarios.
+
+**Production readiness:** Research
+Academic constructions; no widely deployed production systems
+
+**Implementations:**
+- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, includes anonymous IBE implementations
+
+**Security status:** Secure
+Pairing-based variants secure under standard assumptions; lattice variants provide post-quantum security under LWE
+
+**Community acceptance:** Niche
+Published at top venues (CCS, EUROCRYPT); important for anonymous communication but limited practical deployment
+
+---
+
+### Fuzzy Identity-Based Encryption (Fuzzy IBE)
+
+**Goal:** Encrypt to an identity that is a set of attributes, allowing decryption by any holder of a key whose identity overlaps by at least a threshold d — tolerating noise in biometric measurements.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Sahai-Waters Fuzzy IBE** | 2005 | Bilinear maps, threshold overlap | Historical origin of all ABE; unique biometric application; ePrint 2004/086 [[1]](https://eprint.iacr.org/2004/086) |
+
+**State of the art:** Only encryption scheme where the decryption key is literally a noisy biometric measurement. Error-tolerant: two fingerprint scans are never bit-identical, but if features overlap by ≥ d, decryption succeeds. Predates and generalizes all ABE.
+
+**Production readiness:** Research
+Academic construction; foundational for ABE but not independently deployed in production biometric systems
+
+**Implementations:**
+- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, includes Sahai-Waters Fuzzy IBE
+
+**Security status:** Secure
+Proven secure under DBDH assumption; threshold overlap parameter d controls error tolerance
+
+**Community acceptance:** Widely trusted
+Published at EUROCRYPT 2005 by Sahai and Waters; universally recognized as the origin of attribute-based encryption; highly cited
+
+---
+
+
+## Functional Encryption
+
+---
+### Quadratic / Degree-2 Functional Encryption
+
+**Goal:** Decrypt a *quadratic function* of the plaintext — i.e., a bilinear map of the form f(x) = xᵀ · M · y for encrypted vectors — without revealing the vectors themselves. Goes beyond linear inner-product FE to support quadratic features useful in ML and statistics.
+
+Baltico, Catalano, Fiore, and Gay (CRYPTO 2017) gave the first practically efficient FE for the class of bilinear maps on encrypted vectors: given an encryption of vector **x**, a secret key for matrix **M** (or, in the two-input variant, encryptions of both **x** and **y**) allows computing **xᵀM y** mod p. Their constructions over asymmetric bilinear groups are *linear in n* in ciphertext and key size — a public key of 2n+1 group elements, keys of 2 group elements — and are proven selectively secure under Matrix-DDH or adaptively secure in the generic group model.
+
+Degree-2 FE captures a rich class of statistics: Euclidean norms, dot products, chi-squared statistics, second-order features, and polynomial classifiers. The work also yields efficient predicate encryption for degree-2 polynomial predicates.
+
+| Scheme | Year | Security | Note |
+|--------|------|----------|------|
+| **IPFE (Abdalla et al.)** | 2015 | Selective, DDH/LWE | Inner-product FE (degree 1); practical; used in privacy-preserving data analysis [[1]](https://eprint.iacr.org/2015/017) |
+| **Quadratic FE (Baltico-Catalano-Fiore-Gay)** | 2017 | Selective (Matrix-DDH) / adaptive (GGM) | Bilinear map FE; ciphertext size O(n); pairings [[1]](https://eprint.iacr.org/2017/151) |
+| **FE for Quadratic Functions from k-Lin (Gay)** | 2020 | Adaptive, standard assumptions | Fully adaptive security from k-Lin without generic group model [[1]](https://eprint.iacr.org/2019/728) |
+| **Multi-Client IPFE** | 2019 | Selective, DDH | Multiple encryptors; joint inner product; no interaction [[1]](https://eprint.iacr.org/2017/972) |
+
+**State of the art:** Quadratic FE from pairings (Baltico et al.) is the most practical for single-input second-order functions. Adaptive security from k-Lin (Gay 2020) provides stronger guarantees. These schemes bridge [Inner-Product FE](#attribute-based--functional-encryption) and [Multi-Input FE](#attribute-based--functional-encryption) in the functional encryption hierarchy.
+
+**Production readiness:** Research
+Academic constructions with proof-of-concept implementations; not deployed in production systems
+
+**Implementations:**
+- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, functional encryption library including quadratic FE (FENTEC project)
+- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, functional encryption library with quadratic FE support
+
+**Security status:** Secure
+Proven secure under Matrix-DDH (selective) or k-Lin (adaptive); standard pairing-based assumptions
+
+**Community acceptance:** Niche
+Active academic research area; practical for specific use cases (second-order statistics, polynomial classifiers) but limited adoption outside research
+
+---
+
+### Function-Hiding Inner-Product Functional Encryption (FH-IPFE)
+
+**Goal:** Compute the inner product ⟨**x**, **y**⟩ between an encrypted vector **x** and a key vector **y** while hiding *both* vectors — the decryptor learns only the inner product, nothing about either input individually.
+
+Standard [Inner-Product FE (IPFE)](#quadratic--degree-2-functional-encryption) hides the plaintext vector **x** but reveals the key vector **y** (which is in the functional decryption key). Bishop, Jain, and Kowalczyk (ASIACRYPT 2015) introduced **function-hiding** IPFE: the decryption key for **y** is itself a *ciphertext* under a secret-key IPFE scheme, so **y** is computationally hidden from any party that cannot decrypt. The construction uses bilinear groups under the Symmetric External Diffie-Hellman (SXDH) assumption.
+
+Applications are numerous wherever the *query vector* is also sensitive: biometric authentication (template vector must stay private), nearest-neighbour search (query embedding must stay private), private neural-network inference (weight vectors are the model owner's intellectual property). The practical follow-up by Bishop, Jain, and Kowalczyk (SCN 2018, ePrint 2016/440) halved parameter sizes and demonstrated real-world performance.
+
+| Scheme | Year | Security | Note |
+|--------|------|----------|------|
+| **Bishop-Jain-Kowalczyk FH-IPFE** | 2015 | Selective, SXDH | First function-hiding IPFE; secret-key scheme; bilinear groups [[1]](https://eprint.iacr.org/2015/672) |
+| **FH-IPFE is Practical (Bishop et al.)** | 2018 | Selective, SXDH | Halved parameters; biometric auth and NN inference demo [[1]](https://eprint.iacr.org/2016/440) |
+| **Tightly Secure Multi-Input FH-IPFE (Tomida)** | 2019 | Tight, k-Lin | Tight security reduction; multi-input extension [[1]](https://link.springer.com/chapter/10.1007/978-3-030-34618-8_16) |
+
+**State of the art:** Bishop et al. (2018) for practical single-key FH-IPFE; Tomida (2019) for tight multi-input security. Extends [IPFE](#quadratic--degree-2-functional-encryption) to protect the function key as well as the data, enabling private ML model inference on encrypted inputs.
+
+**Production readiness:** Research
+Proof-of-concept implementations exist; not yet deployed in production
+
+**Implementations:**
+- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, includes FH-IPFE implementation
+- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, functional encryption library with FH-IPFE
+
+**Security status:** Secure
+Proven secure under SXDH assumption; selective security model; no known attacks
+
+**Community acceptance:** Niche
+Published at ASIACRYPT 2015 and SCN 2018; important for private ML inference but limited to research community adoption
+
+---
+
+### Inner-Product Functional Encryption (IPFE)
+
+**Goal:** Reveal only the inner product ⟨**x**, **y**⟩ of an encrypted vector **x** with a key vector **y**, nothing more. A decryptor holding a functional key for **y** learns the linear combination Σ xᵢyᵢ from the ciphertext encrypting **x** — but cannot recover individual components of **x** or evaluate any other function.
+
+Abdalla, Bourse, De Caro, and Pointcheval (PKC 2015) gave the first practical constructions of secret-key and public-key IPFE for integer vectors over ℤ. Their DDH-based public-key scheme is straightforward: the master public key includes group elements {gˢⁱ} for a secret vector **s**; encrypting **x** produces a ciphertext encoding {gˣⁱ} with DDH-blinding; a functional key for **y** is dk_y = g^{⟨**s**,**y**⟩}; decryption computes g^{⟨**x**,**y**⟩} via the pairing structure, then recovers ⟨**x**,**y**⟩ by discrete-log lookup (feasible for small output range). LWE-based IPFE (same paper) supports larger plaintext spaces without discrete-log extraction.
+
+IPFE sits at the base of the functional encryption hierarchy: it is *degree-1* FE (linear functions), efficiently instantiated from standard assumptions (DDH, LWE, DCR), selectively or adaptively secure, and has tight reductions in several constructions. It is the building block for [Quadratic FE](#quadratic--degree-2-functional-encryption), [Function-Hiding IPFE](#function-hiding-inner-product-functional-encryption-fh-ipfe), [DMCFE](#decentralized-multi-client-functional-encryption-dmcfe), and structured output ML (secure dot-product computation).
+
+The Agrawal-Libert-Stehlé (CRYPTO 2016) construction achieved adaptive security under the LWE assumption, closing the selective-vs-adaptive gap. Kim and Lewi (2018) gave tight constructions under DDH. The multi-input variant (Goldwasser et al. 2014; Abdalla et al. 2019) allows separate encrypting parties whose ciphertexts combine to reveal joint inner products.
+
+| Scheme | Year | Assumption | Security | Note |
+|--------|------|------------|----------|------|
+| **Abdalla-Bourse-De Caro-Pointcheval IPFE** | 2015 | DDH, LWE, DCR | Selective | First practical IPFE; secret-key and public-key variants [[1]](https://eprint.iacr.org/2015/017) |
+| **Agrawal-Libert-Stehlé IPFE** | 2016 | LWE | Adaptive | Adaptively secure IPFE from LWE; tight reduction [[1]](https://eprint.iacr.org/2015/608) |
+| **Tight DDH IPFE (Kim-Lewi)** | 2018 | DDH | Tight adaptive | Tight adaptive security from DDH; no LWE required [[1]](https://eprint.iacr.org/2018/943) |
+| **Multi-Input IPFE (Abdalla et al.)** | 2019 | DDH / LWE | Selective | Multiple encryptors; joint inner product; practical [[1]](https://eprint.iacr.org/2017/972) |
+| **IPFE with Function Privacy (FH-IPFE)** | 2015 | SXDH | Selective | Hides key vector y as well; see [FH-IPFE](#function-hiding-inner-product-functional-encryption-fh-ipfe) [[1]](https://eprint.iacr.org/2015/672) |
+
+**State of the art:** DDH-based IPFE (Abdalla et al. 2015) for practical deployments; LWE-based IPFE (Agrawal et al. 2016) for post-quantum. Deployed in privacy-preserving statistics, biometric authentication, and encrypted ML inference pipelines. See [FH-IPFE](#function-hiding-inner-product-functional-encryption-fh-ipfe) when the key vector must also be hidden, and [Quadratic FE](#quadratic--degree-2-functional-encryption) for degree-2 generalization.
+
+**Production readiness:** Experimental
+Working implementations in CiFEr and GoFE libraries; deployed in privacy-preserving statistics research prototypes
+
+**Implementations:**
+- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, IPFE from DDH and LWE (FENTEC project)
+- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, IPFE with DDH, LWE, and DCR instantiations
+- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, includes IPFE implementations
+
+**Security status:** Secure
+Proven secure under DDH (selective), LWE (adaptive), and DCR assumptions; tight reductions available
+
+**Community acceptance:** Widely trusted
+Foundational FE primitive; published at PKC 2015 and CRYPTO 2016; basis for the FENTEC EU Horizon project; growing adoption in privacy-preserving ML
+
+---
+
+### Multi-Input Quadratic Functional Encryption (MIQFE)
+
+**Goal:** Enable computation of quadratic functions (degree-2 polynomials) over encrypted inputs from multiple independent data sources, supporting applications such as differentially private encrypted analytics and biometric matching.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **MIQFE from pairings (Agrawal et al.)** | 2021 | Bilinear maps | First multi-input FE for quadratic functions from pairings; simulation-secure in fine-grained corruption model [[1]](https://link.springer.com/chapter/10.1007/978-3-030-84259-8_8) |
+| **Stronger MIQFE (Agrawal et al.)** | 2022 | Bilinear maps | Extended functionality and stronger security model for multi-input quadratic FE [[1]](https://eprint.iacr.org/2022/1168.pdf) |
+| **Simulation-secure MIQFE (SAC 2024)** | 2024 | Bilinear maps + IPFE | First simulation-secure secret-key MIQFE; application to differentially private quadratic queries on encrypted databases [[1]](https://eprint.iacr.org/2024/2050) |
+
+**State of the art:** Multi-input quadratic FE extends [Quadratic / Degree-2 Functional Encryption](#quadratic--degree-2-functional-encryption) to the multi-client setting, enabling each data owner to encrypt independently while an analyst computes cross-client quadratic statistics. The SAC 2024 simulation-secure construction is the strongest security result to date. Practical implementations exist for small input dimensions. Related to [DMCFE](#decentralized-multi-client-functional-encryption-dmcfe) and [Inner-Product Functional Encryption](#inner-product-functional-encryption-ipfe).
+
+**Production readiness:** Research
+Academic constructions only; practical implementations limited to small input dimensions
+
+**Implementations:**
+- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 89 — C, includes multi-input FE primitives (FENTEC project)
+- [GoFE](https://github.com/fentec-project/gofe) ⭐ 195 — Go, multi-input functional encryption
+
+**Security status:** Secure
+Proven secure under bilinear map assumptions; simulation-secure variant (SAC 2024) provides strongest guarantees
+
+**Community acceptance:** Niche
+Published at ASIACRYPT 2021 and SAC 2024; extends quadratic FE to multi-client settings; limited to academic community
+
+---
+
+
+## Broadcast and Special Encryption
+
+---
+### Broadcast Encryption
+
+**Goal:** Selective confidentiality. Encrypt to an arbitrary subset of *N* registered users so only authorized members can decrypt. Efficient revocation without re-keying all users. Used in DRM (Blu-ray AACS), pay-TV, multicast.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Fiat-Naor BE** | 1993 | Combinatorial | First formal broadcast encryption scheme [[1]](https://link.springer.com/chapter/10.1007/3-540-48329-2_40) |
+| **NNL (Subset-Difference)** | 2001 | Key trees | Used in AACS (Blu-ray); O(r log(N/r)) header size [[1]](https://link.springer.com/chapter/10.1007/3-540-44647-8_4) |
+| **Boneh-Gentry-Waters** | 2005 | Bilinear pairings | O(1) ciphertext header; short keys [[1]](https://eprint.iacr.org/2005/018) |
+| **Traitor Tracing (BSW)** | 2006 | Pairings | Identify leakers of decryption keys; combines with BE [[1]](https://eprint.iacr.org/2006/056) |
+
+**State of the art:** NNL (industry standard in AACS/CPPM), Boneh-Gentry-Waters (short ciphertexts).
+
+**Production readiness:** Production
+NNL subset-difference scheme deployed in AACS (Blu-ray) and CPPM (DVD Audio) at massive scale
+
+**Implementations:**
+- [libaacs](https://code.videolan.org/videolan/libaacs) — C, AACS implementation for Blu-ray
+
+**Security status:** Secure
+NNL proven secure; Boneh-Gentry-Waters secure under DBDH; practical parameter choices well-studied
+
+**Community acceptance:** Standard
+AACS is an industry standard deployed on billions of Blu-ray discs; broadcast encryption is a well-established area
+
+---
+
+### Matchmaking Encryption
+
+**Goal:** Dual-policy encryption. Message is decryptable only when BOTH the sender's attributes match the receiver's policy AND the receiver's attributes match the sender's policy. Neither party learns if decryption failed due to the other's policy.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ateniese et al. ME** | 2019 | ABE + ZK | First matchmaking encryption; bilateral access control [[1]](https://eprint.iacr.org/2018/1094) |
+| **Efficient ME (Chen et al.)** | 2021 | Pairings | Practical construction with shorter ciphertexts [[1]](https://eprint.iacr.org/2021/680) |
+
+**State of the art:** pairing-based ME; applications in dating platforms, classified communication, bilateral credential matching.
+
+**Production readiness:** Research
+Academic prototypes only; not deployed in production
+
+**Implementations:**
+- No production-quality open-source implementations available; reference implementations in paper appendices
+
+**Security status:** Secure
+Proven secure under pairing-based assumptions; bilateral policy hiding guaranteed by construction
+
+**Community acceptance:** Niche
+Published at CRYPTO 2019; novel dual-policy concept but limited real-world deployment
+
+---
+
+### Key-Aggregate Encryption
+
+**Goal:** Compact delegation for cloud storage. Encrypt N files under N different keys; delegate access to any chosen subset S with a single short aggregate key — regardless of |S|. The aggregate key is constant-size (one group element), not proportional to the number of shared files.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Chu-Chow-Tzeng-Zhou KAE** | 2014 | Pairings | First KAE; constant-size aggregate key for any subset of ciphertexts [[1]](https://eprint.iacr.org/2013/679) |
+| **KAE with Authentication** | 2016 | Pairings + signatures | Authenticated KAE; detect tampering of delegated ciphertexts [[1]](https://doi.org/10.1016/j.jisa.2016.09.001) |
+| **Lattice KAE** | 2019 | LWE | Post-quantum key-aggregate encryption [[1]](https://eprint.iacr.org/2019/494) |
+
+**State of the art:** Pairing-based KAE (Chu et al. 2014); lattice KAE for PQ. Useful for cloud access control; related to [Broadcast Encryption](#broadcast-encryption) and [ABE](#attribute-based--functional-encryption).
+
+**Production readiness:** Research
+Academic constructions with limited prototype implementations; not widely deployed
+
+**Implementations:**
+- No widely used open-source implementations; reference code available in supplementary materials of original papers
+
+**Security status:** Secure
+Pairing-based KAE proven secure under DBDH; lattice variant under LWE; no known practical attacks
+
+**Community acceptance:** Niche
+Published at CCS 2014; useful for cloud storage delegation but niche compared to ABE-based access control
+
+---
+
+### Hidden Vector Encryption (HVE)
+
+**Goal:** Conjunctive search on encrypted attributes. Encrypt a vector of attributes (a₁, ..., aₙ); a key for pattern (p₁, ..., pₙ) with wildcards (*) decrypts iff aᵢ = pᵢ for all non-wildcard positions. Enables expressive encrypted search without revealing the query pattern.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Boneh-Waters HVE** | 2007 | Pairings (composite order) | First HVE; conjunctive, subset, and range queries on encrypted data [[1]](https://eprint.iacr.org/2007/013) |
+| **Park-Lee-Lee HVE** | 2011 | Pairings (prime order) | Efficient HVE in prime-order groups; shorter ciphertexts [[1]](https://doi.org/10.1007/978-3-642-21554-4_4) |
+| **Lattice HVE (Agrawal-Freeman)** | 2013 | LWE | Post-quantum HVE from lattice assumptions [[1]](https://eprint.iacr.org/2013/328) |
+
+**State of the art:** Lattice HVE for PQ; prime-order pairing HVE for efficiency. Generalizes [Searchable Encryption](#key-aggregate-encryption) and specializes [Predicate Encryption](#attribute-based--functional-encryption).
+
+**Production readiness:** Research
+Academic constructions; limited practical deployment
+
+**Implementations:**
+- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, includes predicate encryption schemes including HVE
+
+**Security status:** Secure
+Boneh-Waters HVE proven secure under composite-order bilinear assumptions; prime-order and lattice variants under standard assumptions
+
+**Community acceptance:** Niche
+Published at CRYPTO 2007; foundational for predicate encryption but largely superseded by more general ABE constructions in practice
+
+---
+
+
+## Proxy Re-Encryption and Homomorphic Signatures
+
+---
+### Proxy Re-Encryption (PRE)
+
+**Goal:** Delegated confidentiality. A semi-trusted proxy can re-encrypt Alice's ciphertext so Bob can decrypt it — without the proxy ever seeing the plaintext. Used in cloud storage access delegation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Blaze-Bleumer-Strauss PRE** | 1998 | ElGamal | First scheme; bidirectional re-encryption [[1]](https://link.springer.com/chapter/10.1007/BFb0054122) |
+| **AFGH PRE** | 2006 | Pairings | Unidirectional, non-interactive; CPA-secure [[1]](https://eprint.iacr.org/2005/028) |
+| **Umbral (NuCypher)** | 2018 | EC + AFGH | Threshold PRE: *t-of-n* proxies needed [[1]](https://eprint.iacr.org/2017/206) |
+| **CCA-secure PRE (Libert-Vergnaud)** | 2008 | Pairings | CCA2-secure unidirectional PRE; needed for real-world deployment [[1]](https://eprint.iacr.org/2008/286) |
+
+**State of the art:** AFGH (single-hop, CPA), CCA-secure PRE (Libert-Vergnaud), Umbral (threshold, deployed in NuCypher/Threshold network).
+
+**Production readiness:** Production
+Umbral PRE deployed in the NuCypher/Threshold Network for decentralized access control
+
+**Implementations:**
+- [pyUmbral](https://github.com/nucypher/pyUmbral) ⭐ 300 — Python, Umbral threshold PRE (NuCypher)
+- [nucypher](https://github.com/nucypher/nucypher) ⭐ 709 — Python, decentralized PRE network
+- [recrypt](https://github.com/IronCoreLabs/recrypt) ⭐ 36 — Rust, transform encryption library
+
+**Security status:** Secure
+AFGH CPA-secure under DBDH; Libert-Vergnaud CCA2-secure; Umbral threshold variant adds fault tolerance
+
+**Community acceptance:** Widely trusted
+Well-studied primitive with 25+ years of research; deployed in production blockchain systems; active standardization discussions
+
+---
+
+### NTRU-Based Encryption
+
+**Goal:** Lattice-based public-key encryption with practical performance, predating modern LWE/RLWE schemes. NTRU operates over polynomial rings and achieves small key sizes and fast arithmetic, motivating much of modern lattice cryptography.
+
+Proposed by Hoffstein, Pipher, and Silverman (NTRU Cryptosystems Inc., 1996; published ANTS 1998), NTRU is a polynomial-ring encryption scheme. The public key is **h** = *p* · **g** · **f**⁻¹ mod *q* in the ring ℤ[X]/(Xⁿ − 1); the secret key is the short polynomial **f** (with **f**⁻¹ mod *p* and **f**⁻¹ mod *q* precomputed). Encryption pads the message **m** with a random blinding polynomial **r** as **e** = **r** · **h** + **m** mod *q*; decryption multiplies by **f** and reduces mod *p*. Security relies on the *NTRU problem* — recovering short (**f**, **g**) from **h** — which is related to the shortest vector problem on NTRU lattices.
+
+NTRU influenced the design of RLWE-based schemes (BFV, CKKS) and multi-key FHE (López-Alt et al. 2012 used NTRU as the underlying ring problem). NTRUEncrypt was submitted to the NIST PQC standardization process (NIST Round 3 finalist, not selected for standardization in 2022 due to conservative security analysis concerns). NTRU Prime variants (Bernstein et al.) use the ring ℤ[X]/(Xⁿ − X − 1) to avoid the algebraic structure exploits that affect power-of-two cyclotomics.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **NTRU (HPS)** | 1998 | Polynomial ring, short vectors | Original NTRU encryption; small keys (700 B at λ=128) [[1]](https://link.springer.com/chapter/10.1007/BFb0054868) |
+| **NTRUSign** | 2001 | NTRU lattice | Signature scheme (later broken; full transcript attack) [[1]](https://eprint.iacr.org/2001/014) |
+| **NTRU Prime (Bernstein et al.)** | 2017 | Non-cyclotomic ring | Resists subfield and algebraic attacks; NIST PQC finalist [[1]](https://ntruprime.cr.yp.to/) |
+| **Multi-Key FHE from NTRU (López-Alt et al.)** | 2012 | NTRU lattice | First multi-key FHE; joint decryption by N parties [[1]](https://eprint.iacr.org/2011/613) |
+
+**State of the art:** NTRU Prime (Bernstein et al.) is actively maintained; NTRUEncrypt was a NIST PQC Round 3 finalist (not standardized). Modern lattice PQC (ML-KEM/Kyber) favors module-LWE, but NTRU's short-key design and ring structure remain influential. Related to [Multi-Key / Threshold FHE](#multi-key--threshold-fhe) and lattice schemes in [Post-Quantum Cryptography](15-quantum-cryptography.md#post-quantum-cryptography).
+
+**Production readiness:** Mature
+NTRU has had commercial implementations since the 1990s; NTRU Prime is actively maintained; NTRUEncrypt was a NIST PQC Round 3 finalist
+
+**Implementations:**
+- [ntru (NTRU Open Source Project)](https://github.com/jschanck/ntru) ⭐ 51 — C, NIST PQC submission implementation
+- [NTRU Prime](https://ntruprime.cr.yp.to/) — C/Python, Bernstein et al. reference implementation
+- [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, includes NTRU implementations
+
+**Security status:** Caution
+NTRUEncrypt not selected for NIST standardization due to conservative security margin concerns; NTRU Prime addresses algebraic structure attacks; NTRUSign is broken
+
+**Community acceptance:** Widely trusted
+One of the oldest lattice-based schemes (1996); NTRU Prime endorsed by Bernstein et al.; IEEE P1363.1 standardization; influential in post-quantum research
+
+---
+
+### TenSEAL (Encrypted Tensor Operations)
+
+**Goal:** Provide a Python-first library for homomorphic encryption on tensors, enabling privacy-preserving machine learning with minimal cryptographic expertise by wrapping Microsoft SEAL in a NumPy-like API.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **TenSEAL** | 2021 | CKKS, BFV (via SEAL) | Python/C++ library; encrypted CNN inference on MNIST in under 1 second [[1]](https://arxiv.org/abs/2104.03152) |
+| **CKKSVector / BFVVector** | 2021 | RLWE tensors | Supports encrypted dot products, matrix multiplication, and convolutions for ML workloads [[1]](https://github.com/OpenMined/TenSEAL) |
+
+**State of the art:** TenSEAL (OpenMined) is the most widely used Python HE library for ML prototyping, presented at ICLR 2021 DPML Workshop [[1]](https://dp-ml.github.io/2021-workshop-ICLR/files/18.pdf). Integrates with PySyft for federated learning. Limited to leveled HE (no bootstrapping). For production deployment, see [Concrete ML](#concrete--concrete-ml-zama) (which includes a compiler) or [Microsoft SEAL](#microsoft-seal) (C++ back-end).
+
+**Production readiness:** Experimental
+Widely used for ML prototyping; wraps Microsoft SEAL but not independently production-hardened
+
+**Implementations:**
+- [TenSEAL](https://github.com/OpenMined/TenSEAL) ⭐ 1.0k — Python/C++, Apache 2.0, CKKS/BFV tensor operations
+
+**Security status:** Secure
+Inherits Microsoft SEAL's security at recommended parameters; leveled HE only (no bootstrapping)
+
+**Community acceptance:** Widely trusted
+Developed by OpenMined; presented at ICLR 2021 DPML Workshop; widely used in privacy-preserving ML research
+
+---
+
+### Homomorphic Encryption (HE)
+
+**Goal:** Compute on encrypted data without decrypting it. The result, when decrypted, matches computation on plaintext. Provides confidentiality during processing.
+
+| Scheme | Year | Type | Supported Operations | Note |
+|--------|------|------|---------------------|------|
+| **BFV** | 2012 | Leveled HE (integer arith.) | add, mul (leveled), SIMD batching | Batch integer computation via SIMD [[1]](https://eprint.iacr.org/2012/144) |
+| **BGV** | 2011 | Leveled HE (integer arith.) | add, mul (leveled), mod switching | Modulus switching for noise control [[1]](https://eprint.iacr.org/2011/277) |
+| **CKKS** | 2017 | Approximate HE (real/complex) | add, mul (approx. real/complex), SIMD | ML-friendly; approximate fixed-point [[1]](https://eprint.iacr.org/2016/421) |
+| **TFHE** | 2016 | Fully HE (Boolean/small int) | any Boolean gate, small int add/mul, fast bootstrapping | Fast bootstrapping (~10 ms); gate-by-gate [[1]](https://eprint.iacr.org/2018/421) |
+| **OpenFHE** | 2022 | Library | all of above (library) | Implements BFV, BGV, CKKS, TFHE (successor to PALISADE, HElib, HEAAN) [[1]](https://eprint.iacr.org/2022/915) |
+| **Paillier** | 1999 | Additive HE only | add only, scalar mul | Simple; used in e-voting, MPC, federated learning [[1]](https://link.springer.com/chapter/10.1007/3-540-48910-X_16) |
+| **TFHE-rs** | 2022 | TFHE (Rust) | Production FHE library | Programmable bootstrapping; used in Zama's fhEVM for encrypted smart contracts [[1]](https://github.com/zama-ai/tfhe-rs) |
+
+**State of the art:** TFHE (fast bootstrapping), CKKS (ML on encrypted data), OpenFHE (reference library), TFHE-rs (production Rust impl.).
+
+**Production readiness:** Production
+OpenFHE, SEAL, and TFHE-rs are deployed in production systems including encrypted smart contracts and privacy-preserving analytics
+
+**Implementations:**
+- [OpenFHE](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, supports BFV/BGV/CKKS/TFHE
+- [Microsoft SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, BFV/BGV/CKKS with AVX-512 via HEXL
+- [TFHE-rs](https://github.com/zama-ai/tfhe-rs) ⭐ 1.6k — Rust, production TFHE with programmable bootstrapping
+- [HElib](https://github.com/homenc/HElib) ⭐ 3.2k — C++, BGV/CKKS with bootstrapping
+- [HEAAN](https://github.com/kimandrik/HEAAN) ⭐ 66 — C++, original CKKS implementation
+
+**Security status:** Secure
+RLWE-based schemes at recommended parameters (128-bit security per HE Standard) have no known practical attacks
+
+**Community acceptance:** Standard
+Homomorphic Encryption Standardization (HES) consortium backed by Microsoft, Google, Intel, Samsung, and others; RLWE hardness assumption widely accepted
+
+---
+
+### Paillier Additively Homomorphic Encryption
+
+**Goal:** Compute encrypted sums without decryption. Paillier (1999) is a public-key scheme supporting unbounded additions and scalar multiplications on ciphertexts, with security based on the Decisional Composite Residuosity (DCR) assumption. It remains one of the most widely deployed partially homomorphic schemes due to its simplicity, provable security, and efficient aggregation properties.
+
+Pascal Paillier's scheme operates in ℤ_n² where n = pq is an RSA modulus. The public key is n (and generator g = n+1); the secret key is the Carmichael function λ(n). Encrypting a plaintext m ∈ ℤ_n: choose random r ∈ ℤ_n*, output c = gᵐ · rⁿ mod n². Decryption uses the discrete logarithm in the subgroup generated by g (easily computed given λ). The homomorphic properties follow from the group structure: c₁ · c₂ mod n² decrypts to m₁ + m₂ mod n, and c₁ᵏ mod n² decrypts to k·m₁ mod n (scalar multiplication). The scheme is *additively homomorphic* — arbitrary additions and free scalar multiplications, but no multiplication of two ciphertexts.
+
+The IND-CPA security of Paillier is tightly equivalent to the DCR assumption: the difficulty of distinguishing n-th power residues mod n² from non-residues. The scheme is CPA-secure and can be made CCA2-secure via standard transforms.
+
+Paillier's additive homomorphism is ideal for privacy-preserving aggregation: secure summation in federated learning, e-voting tallying (each ballot is an encryption of 0 or 1; votes are multiplied homomorphically, then decrypted to obtain the sum), and input-aggregating MPC subprotocols. The Damgård-Jurik generalization (2001) lifts the scheme to ℤ_nˢ for larger plaintext spaces with the same DCR security.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Paillier** | 1999 | DCR (ℤ_n²) | Additive HE; unbounded additions; widely deployed [[1]](https://link.springer.com/chapter/10.1007/3-540-48910-X_16) |
+| **Damgård-Jurik generalization** | 2001 | DCR (ℤ_nˢ) | Larger plaintext space; same DCR security; batch decryption [[1]](https://eprint.iacr.org/2000/072) |
+| **Threshold Paillier (Fouque-Poupard-Stern)** | 2000 | DCR + Shamir | Distributed decryption; no single key holder; used in MPC [[1]](https://link.springer.com/chapter/10.1007/3-540-46035-7_20) |
+| **Paillier in Federated Learning** | 2017 | DCR | Additive aggregation of encrypted model updates; practical FL [[1]](https://arxiv.org/abs/1702.07476) |
+
+**State of the art:** Paillier and Threshold Paillier (Fouque-Poupard-Stern) are production-grade and deployed in e-voting systems, privacy-preserving analytics, and federated learning pipelines. For richer computation (multiplications) see [BGV/BFV](#homomorphic-encryption-he); for the multiplicative analogue see [ElGamal & Multiplicatively Homomorphic Encryption](#elgamal--multiplicatively-homomorphic-encryption).
+
+**Production readiness:** Production
+Deployed in e-voting systems, federated learning (FATE/WeBank), and privacy-preserving analytics at scale
+
+**Implementations:**
+- [python-paillier](https://github.com/data61/python-paillier) ⭐ 634 — Python, CSIRO Data61 implementation
+- [rust-paillier](https://github.com/KZen-networks/rust-paillier) ⭐ 37 — Rust, Paillier with serialization
+- [libpaillier](https://github.com/mortendahl/libpaillier) ⭐ 7 — C, Paillier with threshold support
+
+**Security status:** Secure
+IND-CPA secure under Decisional Composite Residuosity (DCR) assumption; well-studied for 25+ years; no known practical attacks
+
+**Community acceptance:** Widely trusted
+One of the most widely deployed partially homomorphic schemes; used in ISO 20008 electronic voting; extensively peer-reviewed
+
+---
+
+### ElGamal & Multiplicatively Homomorphic Encryption
+
+**Goal:** Compute encrypted products without decryption. Several classical schemes — ElGamal (1985), RSA textbook encryption, and Goldwasser-Micali (1982) — each support exactly one type of homomorphic operation, providing historically important partially homomorphic building blocks used in mix-nets, e-voting, and blind computation.
+
+**ElGamal (multiplicative HE).** In a prime-order group G of order q with generator g, a public key is h = gˢ (secret key s). Encryption of m: choose random r, output (gʳ, mhʳ). The product of two ciphertexts (gʳ¹, m₁hʳ¹) · (gʳ², m₂hʳ²) = (gʳ¹⁺ʳ², m₁m₂ · hʳ¹⁺ʳ²) decrypts to m₁m₂ — unbounded homomorphic multiplication over the plaintext group. Decryption requires solving a discrete log if m is large, so ElGamal HE is typically used with small plaintexts or via lookup tables. Security relies on the Decisional Diffie-Hellman (DDH) assumption. Elliptic-curve variants (ElGamal over E(𝔽_p)) are standard in mix-net re-encryption schemes (Wikström, Bayer-Groth shuffles).
+
+**Textbook RSA (multiplicative HE).** RSA ciphertexts satisfy c₁ · c₂ mod n = (m₁m₂)ᵉ mod n — encrypting the product. This is purely educational: textbook RSA is deterministic, not semantically secure, and subject to many attacks. It demonstrates that RSA's group structure implies multiplicative homomorphism, but is never used directly for computation.
+
+**Goldwasser-Micali (XOR / bit-level HE).** Proposed at STOC 1982 and the first provably secure public-key encryption scheme, Goldwasser-Micali (GM) is probabilistic and bit-by-bit. The public key includes n = pq and a quadratic non-residue x mod n. Encrypting a bit b: choose random r, output c = xᵇ r² mod n. The product of two ciphertexts encrypts b₁ ⊕ b₂ (XOR) because quadratic residues form a subgroup — multiplying two encryptions of bits is equivalent to XOR of plaintexts. GM is semantically secure under the Quadratic Residuosity (QR) assumption. It is *XOR-homomorphic*: supports unbounded additions mod 2 (XOR), but no AND. Historically, GM was the first IND-CPA scheme; it is superseded in efficiency by Paillier (larger plaintexts) and modern FHE, but remains a textbook reference for semantic security.
+
+| Scheme | Year | Basis | Homomorphism | Note |
+|--------|------|-------|-------------|------|
+| **Goldwasser-Micali** | 1982 | QR (quadratic residuosity) | XOR (bit-level) | First IND-CPA scheme; bit-by-bit; large ciphertext expansion [[1]](https://dl.acm.org/doi/10.1145/800070.802212) |
+| **ElGamal** | 1985 | DDH | Multiplicative (group) | Re-randomizable; used in mix-nets and e-voting [[1]](https://link.springer.com/chapter/10.1007/3-540-39799-X_31) |
+| **EC-ElGamal** | 1987 | ECDLP / DDH on curves | Multiplicative | Shorter keys; used in Bayer-Groth mix-nets and PVSS [[1]](https://eprint.iacr.org/2012/377) |
+| **Textbook RSA** | 1977 | RSA / factoring | Multiplicative | Educational only; not IND-CPA; illustrates mod-n structure [[1]](https://dl.acm.org/doi/10.1145/359340.359342) |
+| **Benaloh** | 1994 | Higher residuosity | Additive (mod r) | Generalizes GM to larger plaintext space; basis of some e-voting schemes [[1]](https://link.springer.com/chapter/10.1007/3-540-39799-X_29) |
+
+**State of the art:** ElGamal (EC variant) is deployed in mix-nets (Verificatum, Bayer-Groth shuffles) and threshold decryption systems. Goldwasser-Micali is foundational but not practical (1-bit ciphertexts). For additive HE with larger plaintexts see [Paillier](#paillier-additively-homomorphic-encryption); for fully homomorphic computation see [HE (FHE/SHE)](#homomorphic-encryption-he).
+
+**Production readiness:** Production
+EC-ElGamal deployed in mix-nets (Verificatum), e-voting systems, and threshold decryption protocols
+
+**Implementations:**
+- [Verificatum](https://www.verificatum.org/) — Java, mix-net with ElGamal re-encryption
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, includes Ristretto255 ElGamal
+- [Charm](https://github.com/JHUISI/charm) ⭐ 633 — Python, ElGamal and variants
+
+**Security status:** Caution
+ElGamal IND-CPA secure under DDH; textbook RSA is NOT semantically secure; Goldwasser-Micali is secure but impractical; EC-ElGamal requires careful group selection
+
+**Community acceptance:** Standard
+ElGamal (1985) is a textbook standard; EC-ElGamal widely used in e-voting and mix-nets; Goldwasser-Micali is historically foundational (first IND-CPA scheme)
+
+---
+
+### Lattigo (Multiparty HE in Go)
+
+**Goal:** Provide a pure-Go library for lattice-based homomorphic encryption with native support for multiparty (threshold) protocols, targeting distributed systems and microservice architectures.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Lattigo v5** | 2020 | RLWE (BFV, BGV, CKKS) | Full-RNS implementation with multiparty key generation, threshold decryption, and interactive bootstrapping [[1]](https://github.com/tuneinsight/lattigo) |
+| **Multiparty CKKS bootstrapping** | 2022 | Threshold CKKS | Distributed bootstrapping with secret-shared keys; enables multi-party approximate-arithmetic FHE [[1]](https://homomorphicencryption.org/wp-content/uploads/2020/12/wahc20_demo_christian.pdf) |
+
+**State of the art:** Lattigo v5 is the leading Go-native HE library, actively maintained by Tune Insight (EPFL spin-off). Its pure-Go implementation enables cross-platform builds including WASM for browser clients. Performance is competitive with C++ libraries for single-threaded workloads. Complements [OpenFHE](#homomorphic-encryption-he) (C++) and [Microsoft SEAL](#microsoft-seal) (C++) by serving the Go/distributed-systems ecosystem.
+
+**Production readiness:** Mature
+Production-quality Go library maintained by Tune Insight (EPFL spin-off); used in distributed systems and WASM deployments
+
+**Implementations:**
+- [Lattigo](https://github.com/tuneinsight/lattigo) ⭐ 1.4k — Go, Apache 2.0, BFV/BGV/CKKS with multiparty support
+
+**Security status:** Secure
+Implements BFV/BGV/CKKS at HES-recommended parameters; full RNS implementation; no known vulnerabilities
+
+**Community acceptance:** Widely trusted
+Developed by EPFL cryptography researchers; actively maintained; used in academic publications and commercial products by Tune Insight
+
+---
+
+### Intel HEXL (HE Hardware Acceleration)
+
+**Goal:** Accelerate the low-level modular polynomial arithmetic at the core of all RLWE-based HE schemes by exploiting Intel AVX-512 and IFMA52 instructions, providing a drop-in acceleration layer for HE libraries.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Intel HEXL** | 2021 | AVX-512 / IFMA52 | Up to 7.2x NTT speedup and 6.0x modular multiplication speedup over native C++ on Ice Lake Xeon [[1]](https://eprint.iacr.org/2021/420) |
+| **HEXL integration** | 2021 | Library plugin | Adopted by Microsoft SEAL, PALISADE (now OpenFHE), and HElib as optional acceleration back-end [[1]](https://github.com/IntelLabs/hexl) |
+
+**State of the art:** Intel HEXL is the standard CPU-side acceleration layer for RLWE-based HE, available under Apache 2.0. It targets 3rd-generation Intel Xeon Scalable Processors and later. Best performance requires AVX-512-IFMA52 support. Complements GPU acceleration approaches like [PhantomFHE](#phantomfhe-gpu-accelerated-he) and [HEonGPU](#heongpu-gpu-fhe-library). Related to [NTT in FHE](#number-theoretic-transform-ntt-in-fhe) and [Parameter Selection for BFV/BGV/CKKS](#parameter-selection-for-bfv--bgv--ckks).
+
+**Production readiness:** Production
+Integrated into Microsoft SEAL and OpenFHE as the standard CPU acceleration layer; deployed wherever those libraries are used
+
+**Implementations:**
+- [Intel HEXL](https://github.com/intel/hexl) ⭐ 256 — C++, Apache 2.0, AVX-512 NTT acceleration
+
+**Security status:** Secure
+Hardware acceleration layer; does not affect cryptographic security; constant-time implementations for side-channel resistance
+
+**Community acceptance:** Standard
+Developed by Intel Labs; adopted by SEAL and OpenFHE; published in IEEE Micro 2021; standard CPU-side FHE acceleration
 
 ---
