@@ -15,6 +15,21 @@
 
 **State of the art:** AES-256-GCM (standard), AEGIS (speed record on AES-NI), Ascon (constrained devices).
 
+**Production readiness:** Production
+Deployed at scale in TLS 1.3, WireGuard, IPsec, disk encryption, and virtually all modern encrypted communications.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) — C, AES-GCM and ChaCha20-Poly1305 with hardware acceleration
+- [libsodium](https://github.com/jedisct1/libsodium) — C, XChaCha20-Poly1305 and AES-256-GCM
+- [BoringSSL](https://boringssl.googlesource.com/boringssl/) — C, Google's OpenSSL fork with AES-GCM-SIV
+- [liboqs-ascon](https://github.com/ascon/ascon-c) — C, reference Ascon implementation
+
+**Security status:** Secure
+All listed schemes are secure at recommended parameters; AES-GCM requires unique nonces (nonce reuse is catastrophic).
+
+**Community acceptance:** Standard
+AES-GCM and ChaCha20-Poly1305 are NIST/IETF standards; AES-GCM-SIV is RFC 8452; Ascon is NIST SP 800-232.
+
 ---
 
 ## Key-Committing AEAD
@@ -33,6 +48,20 @@
 
 **State of the art:** AEAD-CMT-4 (2022) for strongest binding; HtE as simple transform over existing AEAD. Being adopted in new messaging protocols and cloud backup encryption.
 
+**Production readiness:** Experimental
+Active adoption in messaging protocols (Signal, Matrix) and cloud backup; no standalone NIST standard yet.
+
+**Implementations:**
+- [libsignal](https://github.com/signalapp/libsignal) — Rust, key-committing AEAD in Signal protocol
+- [miscreant](https://github.com/miscreant/miscreant.rb) — Ruby/JS/Rust, AES-SIV (partially committing)
+- [committing-ae](https://github.com/AlessandroZanatta/committing-aead) — Python, research implementations of HtE and CMT transforms
+
+**Security status:** Secure
+Provably secure transforms; HtE and CMT-4 add minimal overhead to base AEAD with formal proofs.
+
+**Community acceptance:** Emerging
+Active standardization discussion at NIST Block Cipher Modes Workshop (2023); adopted by Signal and cloud backup systems.
+
 ---
 
 ## Key Encapsulation Mechanism (KEM) / DEM Paradigm
@@ -48,6 +77,20 @@
 
 **State of the art:** all modern encryption standards use KEM/DEM (HPKE, ML-KEM, ECIES). The paradigm is the default design pattern.
 
+**Production readiness:** Production
+KEM/DEM is the foundation of HPKE (RFC 9180), ML-KEM (FIPS 203), and all modern hybrid encryption deployed in TLS, MLS, and QUIC.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) — C, RSA-KEM, DHKEM, ML-KEM support
+- [hpke](https://github.com/cisco/go-hpke) — Go, HPKE implementation with DHKEM
+- [aws-lc](https://github.com/aws/aws-lc) — C, ML-KEM (Kyber) in production at AWS
+
+**Security status:** Secure
+The KEM/DEM paradigm has clean, well-understood security reductions; IND-CCA2 KEM + IND-CPA DEM = IND-CCA2 hybrid.
+
+**Community acceptance:** Standard
+NIST FIPS 203 (ML-KEM), IETF RFC 9180 (HPKE), ISO 18033-2; the universal paradigm for public-key encryption.
+
 ---
 
 ## Format-Preserving Encryption (FPE)
@@ -61,6 +104,21 @@
 | **BPS (Bellare-Pian-Shi)** | 2010 | Feistel | Theoretical foundation for FPE security [[1]](https://eprint.iacr.org/2009/251) |
 
 **State of the art:** FF1 (general), FF3-1 (tweakable, NIST standard).
+
+**Production readiness:** Production
+Deployed in PCI-DSS tokenization systems, payment processing, and legacy database encryption at major enterprises.
+
+**Implementations:**
+- [pyffx](https://github.com/emulbreh/pyffx) — Python, FF1 implementation
+- [format-preserving-encryption](https://github.com/capitalone/fpe) — Go, FF1 implementation by Capital One
+- [Mysto FPE](https://github.com/mysto/java-fpe) — Java, FF1 and FF3-1 implementations
+- [OpenSSL](https://github.com/openssl/openssl) — C, FF1 support (via EVP API)
+
+**Security status:** Caution
+FF1 and FF3-1 are secure for sufficiently large domains; small-domain FPE has inherent leakage. FF3 (original) is broken and must not be used.
+
+**Community acceptance:** Standard
+NIST SP 800-38G (FF1) and SP 800-38G Rev.1 (FF3-1); widely adopted in PCI-DSS tokenization.
 
 ---
 
@@ -77,6 +135,20 @@
 
 **State of the art:** XTS-AES (BitLocker, FileVault, LUKS), Adiantum (low-end Android), AES-HCTR2 (modern Android).
 
+**Production readiness:** Production
+XTS-AES is deployed in BitLocker, FileVault, LUKS, and Android FBE on billions of devices.
+
+**Implementations:**
+- [Linux kernel dm-crypt](https://gitlab.com/cryptsetup/cryptsetup) — C, XTS-AES, Adiantum, AES-HCTR2 in kernel
+- [OpenSSL](https://github.com/openssl/openssl) — C, XTS-AES mode
+- [Adiantum (Android)](https://android.googlesource.com/kernel/common/+/refs/heads/android-mainline/crypto/adiantum.c) — C, kernel implementation by Google
+
+**Security status:** Secure
+XTS-AES provides sector-level confidentiality but not authentication; Adiantum and HCTR2 are secure wide-block alternatives.
+
+**Community acceptance:** Standard
+IEEE 1619 (XTS-AES); NIST approved for storage encryption; Adiantum and HCTR2 deployed by Google in Android.
+
 ---
 
 ## Order-Preserving / Order-Revealing Encryption (OPE / ORE)
@@ -90,6 +162,20 @@
 | **Lewi-Wu Practical ORE** | 2016 | PRF | Efficient; used in CryptDB-like systems [[1]](https://eprint.iacr.org/2016/612) |
 
 **State of the art:** Lewi-Wu ORE (practical), but SSE/FHE approaches preferred when leakage is unacceptable.
+
+**Production readiness:** Experimental
+Used in encrypted database research (CryptDB-like systems); limited real-world deployment due to inherent leakage.
+
+**Implementations:**
+- [ore.rs](https://github.com/nicola/ore-rs) — Rust, Lewi-Wu ORE implementation
+- [CryptDB](https://github.com/CryptDB/CryptDB) — C++, OPE used in encrypted database queries
+- [pyope](https://github.com/tonyo/pyope) — Python, Boldyreva OPE implementation
+
+**Security status:** Caution
+All OPE/ORE inherently leaks order (and sometimes distance); inference attacks can reconstruct plaintext distributions from ciphertext order.
+
+**Community acceptance:** Niche
+No standardization; used in academic encrypted database research. Widely criticized for leakage in practice.
 
 ---
 
@@ -105,6 +191,20 @@
 
 **State of the art:** AES-SIV (misuse-resistant AEAD, RFC 5297), MLE (cloud deduplication).
 
+**Production readiness:** Production
+AES-SIV is deployed in cloud storage, key wrapping, and encrypted databases; convergent encryption is used in deduplication systems.
+
+**Implementations:**
+- [miscreant](https://github.com/miscreant/miscreant.rb) — Ruby/JS/Rust/Go, AES-SIV (RFC 5297)
+- [Tink](https://github.com/tink-crypto/tink) — Java/Go/C++/Python, AES-SIV (deterministic AEAD)
+- [OpenSSL](https://github.com/openssl/openssl) — C, AES-SIV support
+
+**Security status:** Caution
+AES-SIV is secure but deterministic (leaks plaintext equality). Convergent encryption is vulnerable to offline brute-force on low-entropy data.
+
+**Community acceptance:** Standard
+AES-SIV is IETF RFC 5297; MLE is a well-studied framework. Convergent encryption is deployed but with known limitations.
+
 ---
 
 ## Updatable Encryption
@@ -118,6 +218,19 @@
 | **Klooß-Lehmann-Rupp** | 2019 | Forward-secure enc | Forward + post-compromise security [[1]](https://eprint.iacr.org/2019/043) |
 
 **State of the art:** Klooß-Lehmann-Rupp (strongest security guarantees), BLMR (foundational).
+
+**Production readiness:** Research
+Academic constructions; no widely deployed production system uses formal updatable encryption schemes.
+
+**Implementations:**
+- [updatable-encryption](https://github.com/nicola/updatable-encryption) — Rust, research prototype of BLMR-style updatable encryption
+- [Recrypt](https://github.com/nicola/recrypt-rs) — Rust, proxy re-encryption (related primitive)
+
+**Security status:** Secure
+Klooß-Lehmann-Rupp provides forward and post-compromise security; formal proofs in standard model.
+
+**Community acceptance:** Niche
+Active academic research; no NIST or IETF standardization. Cloud key rotation typically uses simpler re-encryption approaches.
 
 ---
 
@@ -133,6 +246,20 @@
 
 **State of the art:** Groth RCCA (provable security), ElGamal (practical in mixnets/voting).
 
+**Production readiness:** Mature
+ElGamal rerandomization is deployed in mixnets and e-voting systems; RCCA schemes remain research constructions.
+
+**Implementations:**
+- [Verificatum](https://www.verificatum.org/) — Java, ElGamal-based mixnet for e-voting
+- [libsodium](https://github.com/jedisct1/libsodium) — C, ElGamal primitives (via Ristretto255)
+- [Helios](https://github.com/benadida/helios-server) — Python, rerandomizable ElGamal in e-voting
+
+**Security status:** Secure
+ElGamal rerandomization is secure under DDH; Groth RCCA has formal proofs under pairing assumptions.
+
+**Community acceptance:** Niche
+ElGamal rerandomization is well-established in e-voting and mixnet communities; RCCA is a specialized academic notion.
+
 ---
 
 ## Signcryption
@@ -146,6 +273,19 @@
 | **Signcryption KEM/DEM** | 2004 | Hybrid | Modular: KEM provides authenticated key + DEM encrypts [[1]](https://eprint.iacr.org/2004/075) |
 
 **State of the art:** Hybrid signcryption KEM/DEM (provable security), used in secure messaging design.
+
+**Production readiness:** Mature
+Signcryption concepts are used in secure messaging and CMS; standalone signcryption schemes have limited direct deployment.
+
+**Implementations:**
+- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, signcryption primitives
+- [IEEE 1363-2000](https://standards.ieee.org/ieee/1363/835/) — Standard, includes ECSC signcryption
+
+**Security status:** Secure
+Provably secure (IND-CCA2 + EUF-CMA) in the hybrid KEM/DEM model; EC-based schemes are well-studied.
+
+**Community acceptance:** Niche
+IEEE 1363 includes signcryption; not widely adopted as a standalone primitive — most systems use separate sign-then-encrypt.
 
 ---
 
@@ -162,6 +302,18 @@
 
 **State of the art:** DDH-based NCE (Choi et al.); essential for UC-secure [Secure Channels](#secure-channels--protocol-constructions) and [MPC](#multi-party-computation-mpc) in the adaptive corruption model.
 
+**Production readiness:** Research
+Academic primitive; used as a building block in UC-secure protocol proofs but not deployed as a standalone scheme.
+
+**Implementations:**
+- No widely available standalone open-source implementations; NCE appears as a component in UC-secure MPC frameworks.
+
+**Security status:** Secure
+DDH-based NCE (Choi et al.) is provably secure under standard assumptions; constructions are well-studied.
+
+**Community acceptance:** Niche
+Essential in UC-security theory; understood by the MPC/secure-channels research community but not standardized.
+
 ---
 
 ## Honey Encryption
@@ -175,6 +327,19 @@
 | **Honey Encryption for Genomic Data** | 2016 | Genomic DTE | Domain-specific for protecting genome sequences [[1]](https://doi.org/10.1145/2976749.2978370) |
 
 **State of the art:** Juels-Ristenpart HE (2014) with domain-specific DTEs; adopted in password vault research. Key challenge: designing accurate DTEs for arbitrary domains.
+
+**Production readiness:** Research
+Academic proposals and prototypes; no mainstream production deployment beyond research password vault experiments.
+
+**Implementations:**
+- [honey-encryption](https://github.com/AlessandroZanatta/honey-encryption) — Python, research implementation of Juels-Ristenpart HE
+- [honeywords](https://github.com/rreichel3/honeywords) — Python, related honeyword generation for password databases
+
+**Security status:** Caution
+Security depends entirely on the quality of the DTE (distribution-transforming encoder); poor DTEs provide no meaningful protection.
+
+**Community acceptance:** Niche
+Well-regarded academic concept; limited practical adoption due to difficulty of constructing accurate DTEs for real-world data.
 
 ---
 
@@ -192,6 +357,19 @@
 
 **General framework:** Pandey-Rouselakis (2012) [[1]](https://eprint.iacr.org/2012/141) formalized PPE; Boldyreva-Chenette-O'Neill (2011) [[1]](https://eprint.iacr.org/2011/005) analyzed leakage. **Warning:** all PPE inherently leaks — weaker than semantic security. Use only when the leakage-functionality tradeoff is acceptable.
 
+**Production readiness:** Experimental
+Individual PPE schemes (OPE, deterministic encryption) are deployed in encrypted databases; the unifying PPE framework is academic.
+
+**Implementations:**
+- [CryptDB](https://github.com/CryptDB/CryptDB) — C++, uses multiple PPE schemes for encrypted SQL queries
+- [Arx](https://github.com/ArkDB) — research encrypted database using PPE primitives
+
+**Security status:** Caution
+All PPE inherently leaks the preserved property; inference attacks have been demonstrated against deployed encrypted databases.
+
+**Community acceptance:** Niche
+Academic framework; individual PPE schemes are used in encrypted database research but criticized for practical leakage.
+
 ---
 
 ## Puncturable Encryption
@@ -205,6 +383,19 @@
 | **0-RTT with Puncturable Enc** | 2017 | TLS + puncturable enc | Replay-resistant 0-RTT key exchange without server state [[1]](https://eprint.iacr.org/2017/004) |
 
 **State of the art:** Bloom Filter Encryption (practical), 0-RTT puncturable (TLS optimization).
+
+**Production readiness:** Research
+Academic constructions; 0-RTT puncturable encryption concepts influence TLS design but no standalone deployment.
+
+**Implementations:**
+- [punc-enc](https://github.com/AlessandroZanatta/puncturable-encryption) — research prototype implementations
+- No production-quality standalone libraries; concepts integrated into TLS 1.3 anti-replay research.
+
+**Security status:** Secure
+Provably secure under IBE/HIBE assumptions; Bloom Filter Encryption provides efficient puncturing with well-understood false-positive rates.
+
+**Community acceptance:** Niche
+Active research area; influences TLS 0-RTT anti-replay design but no IETF or NIST standardization of puncturable encryption itself.
 
 ---
 
@@ -220,6 +411,19 @@
 
 **State of the art:** DupLESS (server-aided OPRF-based dedup); extends [Deterministic Encryption](#deterministic-encryption--convergent-encryption) with formal security and [OPRF](#oblivious-prf-oprf).
 
+**Production readiness:** Experimental
+DupLESS is a research prototype; convergent encryption concepts are used in production cloud storage (e.g., Tahoe-LAFS) but without formal security guarantees.
+
+**Implementations:**
+- [DupLESS](https://github.com/srinathsetty/dupless) — research prototype
+- [Tahoe-LAFS](https://github.com/tahoe-lafs/tahoe-lafs) — Python, convergent encryption for distributed storage
+
+**Security status:** Caution
+Convergent encryption is vulnerable to offline brute-force on predictable files; DupLESS mitigates this via server-aided OPRF.
+
+**Community acceptance:** Niche
+Academic research; convergent encryption is deployed in some cloud storage but secure deduplication with formal guarantees remains research-stage.
+
 ---
 
 ## White-Box Cryptography
@@ -233,6 +437,19 @@
 | **WBC Challenge (CHES)** | 2017 | Competition | Ongoing competitions show no WBC scheme survives long-term attack [[1]](https://www.whiteboxcrypto.com/) |
 
 **State of the art:** no provably secure WBC exists; practical deployments rely on obfuscation + tamper-detection layers. Active research area.
+
+**Production readiness:** Experimental
+Deployed in commercial DRM and mobile payment SDKs (e.g., Apple Pay, content protection) despite lack of provable security.
+
+**Implementations:**
+- [SideChannelMarvels/Deadpool](https://github.com/SideChannelMarvels/Deadpool) — C/Python, white-box AES attack tools and challenge implementations
+- [WhibOx](https://www.whiteboxcrypto.com/) — competition platform with reference white-box implementations
+
+**Security status:** Broken
+No published white-box AES scheme has survived sustained cryptanalysis; all CHES competition entries broken within weeks to months.
+
+**Community acceptance:** Controversial
+Widely used commercially (DRM, payments) despite academic consensus that provable white-box security is currently unachievable.
 
 ---
 
@@ -253,6 +470,21 @@ CCM design tradeoffs versus GCM:
 - **Nonce misuse:** not misuse-resistant — nonce reuse breaks both confidentiality and authenticity.
 
 **State of the art:** AES-CCM remains the mandatory AEAD in WPA2 (CCMP) and Bluetooth LE, and is available in TLS 1.2/1.3 for IoT stacks. Superseded by AES-GCM for general-purpose use but irreplaceable in constrained hardware where only AES-encrypt logic fits.
+
+**Production readiness:** Production
+Mandatory in WPA2, Bluetooth LE, and available in TLS 1.2/1.3; deployed on billions of wireless devices.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) — C, AES-CCM cipher suites
+- [mbedTLS](https://github.com/Mbed-TLS/mbedtls) — C, AES-CCM for embedded/IoT
+- [wpa_supplicant](https://w1.fi/wpa_supplicant/) — C, CCMP implementation for Wi-Fi
+- [Linux kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git) — C, AES-CCM in wireless and Bluetooth subsystems
+
+**Security status:** Secure
+Provably secure (IND-CPA + INT-CTXT) under PRP assumption for AES; nonce reuse is catastrophic (same as GCM).
+
+**Community acceptance:** Standard
+NIST SP 800-38C; IEEE 802.11i (WPA2); Bluetooth Core Specification; RFC 6655 (TLS).
 
 ---
 
@@ -284,6 +516,20 @@ Tag    = Tag_N ⊕ Tag_H ⊕ Tag_C
 
 **State of the art:** EAX is not a NIST standard but is widely implemented (OpenSSL, Bouncy Castle, Crypto++). It filled an important role before OCB patents expired (2021) and GCM became ubiquitous. Still preferred in some IoT/embedded stacks for its simplicity and online property.
 
+**Production readiness:** Mature
+Widely implemented in cryptographic libraries; used in some IoT and embedded stacks but not a primary NIST standard.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) — C, AES-EAX (via EVP)
+- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, EAX mode
+- [Crypto++](https://github.com/weidai11/cryptopp) — C++, EAX mode implementation
+
+**Security status:** Secure
+Provably secure (IND-CCA2 + INT-CTXT) under standard block-cipher assumptions; patent-free.
+
+**Community acceptance:** Widely trusted
+Not a NIST standard but well-studied, patent-free, and implemented in all major cryptographic libraries.
+
 ---
 
 ## Hybrid Public Key Encryption (HPKE)
@@ -310,6 +556,21 @@ Tag    = Tag_N ⊕ Tag_H ⊕ Tag_C
 **Deployed in:** TLS Encrypted Client Hello (ECH) [[1]](https://datatracker.ietf.org/doc/html/draft-ietf-tls-esni), Oblivious HTTP (RFC 9458) [[1]](https://datatracker.ietf.org/doc/html/rfc9458), Oblivious DoH, Message Layer Security (MLS/RFC 9420), Privacy Preserving Measurement (PPM).
 
 **State of the art:** RFC 9180 (2022) [[1]](https://www.rfc-editor.org/rfc/rfc9180). The default public-key encryption primitive for new IETF protocols. Post-quantum variants with ML-KEM are being standardized in draft-irtf-cfrg-hpke-pq.
+
+**Production readiness:** Production
+Deployed in TLS Encrypted Client Hello (ECH), Oblivious HTTP, MLS, and Privacy Preserving Measurement protocols.
+
+**Implementations:**
+- [hpke (Cloudflare)](https://github.com/cloudflare/circl) — Go, HPKE in CIRCL library
+- [rust-hpke](https://github.com/rozbb/rust-hpke) — Rust, HPKE RFC 9180 implementation
+- [BoringSSL](https://boringssl.googlesource.com/boringssl/) — C, HPKE for ECH in Chrome
+- [OpenSSL](https://github.com/openssl/openssl) — C, HPKE support (3.2+)
+
+**Security status:** Secure
+Formally verified security proofs; modular composition of well-studied KEM, KDF, and AEAD components.
+
+**Community acceptance:** Standard
+IETF RFC 9180; mandated for ECH (draft-ietf-tls-esni), MLS (RFC 9420), and Oblivious HTTP (RFC 9458).
 
 ---
 
@@ -338,6 +599,20 @@ The capacity portion (not XOR'd with input) acts as the secret state providing a
 **Security:** Security bound is 2^(capacity/2) against generic attacks. Nonce-respecting security; nonce reuse breaks confidentiality but authentication holds if the same (nonce, key) pair is not reused with different messages.
 
 **State of the art:** Ascon (NIST LWC standard, 2025) is the primary deployment target for constrained devices. Keccak-based SpongeWrap variants appear in Keyak. The duplex paradigm underlies the majority of sponge-based CAESAR and NIST LWC competition submissions.
+
+**Production readiness:** Production
+Ascon (the primary duplex AEAD) is NIST-standardized; Keccak sponge construction underlies SHA-3 deployed everywhere.
+
+**Implementations:**
+- [ascon-c](https://github.com/ascon/ascon-c) — C, reference Ascon implementation
+- [Keccak Team XKCP](https://github.com/XKCP/XKCP) — C/assembly, extended Keccak code package including SpongeWrap
+- [Keyak](https://keccak.team/keyak.html) — reference implementation by Keccak team
+
+**Security status:** Secure
+Security bound is 2^(capacity/2) against generic attacks; Ascon has no known shortcut attacks on full rounds.
+
+**Community acceptance:** Standard
+Ascon is NIST SP 800-232 (2025); SpongeWrap/duplex paradigm is the foundation of SHA-3 and NIST LWC.
 
 ---
 
@@ -368,6 +643,20 @@ The capacity portion (not XOR'd with input) acts as the secret state providing a
 
 **State of the art:** AES-SIV (RFC 5297) and AES-GCM-SIV (RFC 8452) are the deployed MRAE standards. AES-GCM-SIV is preferred for its efficiency (single-key, hardware-friendly). McOE-G remains a research reference for online misuse-resistant AE; no online MRAE scheme has been standardized as of 2026.
 
+**Production readiness:** Production
+AES-SIV and AES-GCM-SIV are deployed in Google infrastructure, TLS, and cloud key management; OAE schemes are research-only.
+
+**Implementations:**
+- [BoringSSL](https://boringssl.googlesource.com/boringssl/) — C, AES-GCM-SIV (used in Google production)
+- [Tink](https://github.com/tink-crypto/tink) — Java/Go/C++, AES-GCM-SIV and AES-SIV
+- [miscreant](https://github.com/miscreant/miscreant.rb) — Ruby/JS/Rust, AES-SIV
+
+**Security status:** Secure
+AES-SIV and AES-GCM-SIV are provably MRAE-secure; nonce reuse leaks only plaintext equality, not authenticity.
+
+**Community acceptance:** Standard
+AES-SIV is IETF RFC 5297; AES-GCM-SIV is RFC 8452. OAE remains an academic security model without standardization.
+
 ---
 
 ## OCB Mode (Offset Codebook Mode)
@@ -393,6 +682,21 @@ Tag = E_K(Checksum ⊕ Δ_final ⊕ L_$) ⊕ HASH_K(AD)
 **Performance:** OCB3 achieves ~1.0 cpb on AES-NI hardware — roughly 2× faster than AES-GCM (which requires GHASH in addition to AES). Supports parallelism: blocks are independent given the offset sequence.
 
 **State of the art:** OCB3 (RFC 7253, 2013) [[1]](https://www.rfc-editor.org/rfc/rfc7253). Patent-free since 2021. Implemented in OpenSSL, libsodium, Botan. Fastest standardized AEAD from AES alone (without CLMUL). Not a NIST standard (NIST standardized GCM instead), but widely available. OCB2 must not be used — a practical forgery attack was published in 2019.
+
+**Production readiness:** Mature
+Patent-free since 2021; implemented in major libraries but limited deployment compared to AES-GCM due to late patent resolution.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) — C, OCB mode (EVP_aes_*_ocb)
+- [libsodium](https://github.com/jedisct1/libsodium) — C, AES-256-OCB
+- [Botan](https://github.com/randombit/botan) — C++, OCB mode
+- [ocb-ref](https://www.cs.ucdavis.edu/~rogaway/ocb/code.htm) — C, reference implementation by Rogaway
+
+**Security status:** Caution
+OCB3 is secure; OCB2 is broken (practical forgery attack, 2019). Must use OCB3 only.
+
+**Community acceptance:** Widely trusted
+RFC 7253; CAESAR finalist; well-studied but not NIST-standardized. Patent-free since 2021 removes adoption barrier.
 
 ---
 
@@ -423,6 +727,20 @@ Ciphertext block = M_i ⊕ (S1 ⊕ S4 ⊕ (S2 & S3))
 
 **State of the art:** AEGIS-128L is the fastest software AEAD on AES-NI hardware, at approximately 0.48 cycles/byte for 4 KB messages — roughly 3× faster than AES-GCM. IETF CFRG is progressing toward RFC. Being adopted in high-throughput TLS implementations and storage encryption where raw speed on modern CPUs is the primary constraint.
 
+**Production readiness:** Mature
+CAESAR winner; IETF CFRG draft in progress; adopted in high-throughput TLS and storage systems but not yet an RFC.
+
+**Implementations:**
+- [libsodium](https://github.com/jedisct1/libsodium) — C, AEGIS-128L and AEGIS-256
+- [libaegis](https://github.com/jedisct1/libaegis) — C, dedicated AEGIS library with AVX-512/VAES support
+- [rust-aegis](https://github.com/jedisct1/rust-aegis) — Rust, AEGIS bindings
+
+**Security status:** Secure
+128/256-bit security; minor linear biases found (Minaud, 2018) do not break the scheme. Nonce misuse is catastrophic.
+
+**Community acceptance:** Emerging
+CAESAR high-performance winner; IETF CFRG draft progressing toward RFC; endorsed by libsodium maintainer.
+
 ---
 
 ## SNOW-V and SNOW-V-GCM
@@ -447,6 +765,19 @@ Ciphertext block = M_i ⊕ (S1 ⊕ S4 ⊕ (S2 & S3))
 **Context:** 5G networks process hundreds of Gbps of user-plane traffic per base station. Software-defined networking (SDN) and network function virtualization (NFV) require high-speed encryption on standard server hardware rather than dedicated ASICs. SNOW-V was presented at IETF SAAG (2019) as a candidate for 5G encryption standardization.
 
 **State of the art:** SNOW-V remains a research proposal; no formal IETF or 3GPP standardization has occurred as of 2026. Hardware implementations exceed 100 Gbps. 3GPP for 5G standardized 128-EEA3/128-EIA3 (based on ZUC, not SNOW-V) for radio-layer encryption, but SNOW-V targets the transport/virtualization layer.
+
+**Production readiness:** Experimental
+Research proposal from Ericsson/Lund University; hardware prototypes exist but no formal standardization or production deployment.
+
+**Implementations:**
+- [SNOW-V reference](https://github.com/ArikaChen/snow-v) — C, reference implementation
+- [Ericsson SNOW-V](https://eprint.iacr.org/2018/1143) — paper includes reference code
+
+**Security status:** Secure
+256-bit security; extensive cryptanalysis by Ericsson and academic community; no practical attacks on full SNOW-V.
+
+**Community acceptance:** Niche
+Presented at IETF SAAG (2019); 3GPP chose ZUC for 5G radio layer instead. SNOW-V targets virtualized transport layer.
 
 ---
 
@@ -478,6 +809,19 @@ The design targets VAES (vectorized AES-NI on AVX-512) for 4-lane parallel AES e
 
 **State of the art:** Rocca-S is the highest-throughput AEAD in software (>200 Gbps on AVX-512 VAES) and hardware (>2 Tbps). It is a research candidate for 6G infrastructure encryption. Deployment is premature pending deeper cryptanalysis and resolution of the key-commitment vulnerability. For comparison: AES-256-GCM reaches ~4–10 Gbps in software; AEGIS-128L reaches ~30–50 Gbps; Rocca-S targets a different performance tier entirely.
 
+**Production readiness:** Research
+IETF informational Internet-Draft; no standardization or production deployment. Premature for use pending deeper cryptanalysis.
+
+**Implementations:**
+- [Rocca-S reference](https://datatracker.ietf.org/doc/draft-nakano-rocca-s/) — IETF draft includes reference code
+- No standalone open-source library as of 2026.
+
+**Security status:** Caution
+256-bit security target but practical key-committing attacks demonstrated (2025); not yet peer-reviewed to the depth of AES-GCM.
+
+**Community acceptance:** Niche
+IETF informational draft; research candidate for 6G. No 3GPP or NIST standardization; limited independent cryptanalysis.
+
 ---
 
 ## ECIES (Elliptic Curve Integrated Encryption Scheme)
@@ -500,6 +844,20 @@ The design targets VAES (vectorized AES-NI on AVX-512) for 4-lane parallel AES e
 
 **State of the art:** ECIES remains widely deployed in TLS 1.2 handshakes, S/MIME, OpenPGP, and hardware security modules. New protocols should prefer HPKE (RFC 9180), which has a cleaner security proof, explicit mode separation, and IETF standardization. ECIES is still the default in many HSM and PKI vendor APIs as of 2026.
 
+**Production readiness:** Production
+Deployed in TLS 1.2, S/MIME, OpenPGP, Ethereum (eciesjs), Apple/Google payment systems, and HSMs worldwide.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) — C, ECIES via EVP_PKEY_derive
+- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, ECIES (ANSI X9.63 and ISO 18033-2)
+- [eciesjs](https://github.com/nicola/eciesjs) — JavaScript, ECIES for Ethereum and Web3
+
+**Security status:** Superseded
+Technically secure (IND-CCA2 under CDH) but fragmented across incompatible variants. HPKE (RFC 9180) is the recommended successor.
+
+**Community acceptance:** Standard
+ANSI X9.63, IEEE 1363a, ISO 18033-2; widely standardized but superseded by HPKE for new protocol designs.
+
 ---
 
 ## XSalsa20 and XChaCha20 (Extended-Nonce Stream Ciphers)
@@ -521,6 +879,21 @@ The design targets VAES (vectorized AES-NI on AVX-512) for 4-lane parallel AES e
 
 **State of the art:** XSalsa20 is the stream cipher underlying libsodium's `crypto_secretbox_xsalsa20poly1305`. XChaCha20-Poly1305 is the preferred modern variant, supported in libsodium, OpenSSL 3.x, and Tink. An IRTF CFRG Internet-Draft for XChaCha20 exists but has not been published as an RFC as of 2026.
 
+**Production readiness:** Production
+XChaCha20-Poly1305 is the default AEAD in libsodium (used by Signal, Wireguard-related tools, age encryption); XSalsa20 in NaCl.
+
+**Implementations:**
+- [libsodium](https://github.com/jedisct1/libsodium) — C, XChaCha20-Poly1305 (crypto_aead) and XSalsa20-Poly1305 (crypto_secretbox)
+- [NaCl](https://nacl.cr.yp.to/) — C, original XSalsa20-Poly1305 by Bernstein
+- [OpenSSL](https://github.com/openssl/openssl) — C, XChaCha20-Poly1305 (3.x)
+- [Tink](https://github.com/tink-crypto/tink) — Java/Go/C++, XChaCha20-Poly1305
+
+**Security status:** Secure
+256-bit key, 192-bit nonce eliminates birthday-bound nonce collision risk; secure under standard PRF assumptions.
+
+**Community acceptance:** Widely trusted
+IRTF CFRG draft (not yet RFC); de facto standard via libsodium adoption; endorsed by Bernstein and the NaCl community.
+
 ---
 
 ## AES-CCM* (IEEE 802.15.4 / ZigBee)
@@ -539,6 +912,20 @@ The design targets VAES (vectorized AES-NI on AVX-512) for 4-lane parallel AES e
 **Nonce construction:** The 13-byte CCM* nonce is constructed from the source IEEE 802.15.4 address (8 bytes) concatenated with the frame counter (4 bytes) and the security level (1 byte), preventing nonce reuse across devices and security modes.
 
 **State of the art:** AES-CCM* remains the mandatory link-layer cipher in IEEE 802.15.4 and all its derived stacks (ZigBee, Thread, Matter, 6LoWPAN). Hardware AES-128 accelerators in 802.15.4 radio chips (TI CC26xx, Nordic nRF52/nRF53, Silicon Labs EFR32) implement CCM* natively in the radio MAC hardware. Not suitable for general-purpose use — prefer [AES-CCM](#aes-ccm-counter-with-cbc-mac) (NIST) or AES-GCM for non-constrained environments.
+
+**Production readiness:** Production
+Mandatory in IEEE 802.15.4, ZigBee, Thread, and Matter; implemented in hardware on billions of IoT radio chips.
+
+**Implementations:**
+- [Zephyr RTOS](https://github.com/zephyrproject-rtos/zephyr) — C, AES-CCM* in IEEE 802.15.4 subsystem
+- [RIOT-OS](https://github.com/RIOT-OS/RIOT) — C, AES-CCM* for 802.15.4
+- [Nordic nRF SDK](https://github.com/nrfconnect/sdk-nrf) — C, hardware-accelerated CCM* on nRF52/nRF53
+
+**Security status:** Caution
+Secure when used with authentication (security levels 5-7); encryption-only mode (level 4) provides no integrity and must not be used.
+
+**Community acceptance:** Standard
+IEEE 802.15.4-2006 Annex B; mandated in ZigBee, Thread, and Matter specifications.
 
 ---
 
@@ -561,6 +948,20 @@ The design targets VAES (vectorized AES-NI on AVX-512) for 4-lane parallel AES e
 
 **State of the art:** ACORN and GIFT-COFB are deployed in academic hardware prototypes and some IoT security chips. For new constrained-device designs, Ascon-128 (NIST SP 800-232, 2025) is now the preferred target — it has broader tooling, more implementation variants, and active standardization. GIFT-128 (the underlying block cipher) continues as a building block in other lightweight constructions.
 
+**Production readiness:** Experimental
+CAESAR winners with academic hardware prototypes; superseded by Ascon (NIST LWC) for new designs.
+
+**Implementations:**
+- [GIFT-COFB reference](https://giftcipher.github.io/gift/) — C, reference implementation
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, ACORN and GIFT-COFB benchmarking implementations
+- [NIST LWC submissions](https://csrc.nist.gov/projects/lightweight-cryptography) — reference code for all candidates
+
+**Security status:** Secure
+Both ACORN and GIFT-COFB are secure at design parameters; nonce reuse breaks ACORN confidentiality.
+
+**Community acceptance:** Niche
+CAESAR lightweight winners (2019); superseded by Ascon (NIST SP 800-232) for standardized lightweight AEAD.
+
 ---
 
 ## Camellia-GCM and ARIA-GCM
@@ -580,6 +981,20 @@ The design targets VAES (vectorized AES-NI on AVX-512) for 4-lane parallel AES e
 **GCM compatibility:** GCM's authentication component (GHASH) is cipher-agnostic — it requires only a 128-bit block cipher to derive the authentication subkey H. Camellia-GCM and ARIA-GCM therefore inherit all of GCM's properties (parallelisable CTR encryption, single-pass, associated data support) with an identical API to AES-GCM. All nonce-misuse vulnerabilities of GCM apply equally.
 
 **State of the art:** Camellia-GCM and ARIA-GCM are deployed in TLS 1.2 stacks within Japanese and Korean government, financial, and defense networks. TLS 1.3 did not include Camellia or ARIA cipher suites in its mandatory set (only AES-GCM and ChaCha20-Poly1305), limiting these ciphers to TLS 1.2 and proprietary protocol stacks. OpenSSL ships Camellia support; ARIA is available in NSS and Korean-market TLS libraries.
+
+**Production readiness:** Production
+Deployed in Japanese and Korean government/financial TLS 1.2 stacks; Camellia in OpenSSL, ARIA in NSS.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) — C, Camellia-GCM cipher suites
+- [NSS (Mozilla)](https://hg.mozilla.org/projects/nss) — C, ARIA-GCM cipher suites
+- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, both Camellia and ARIA
+
+**Security status:** Secure
+Both Camellia and ARIA have equivalent security margins to AES; extensively analyzed with no practical attacks.
+
+**Community acceptance:** Standard
+Camellia: ISO 18033-3, RFC 3713, CRYPTREC (Japan). ARIA: KCMVP (Korea), RFC 5794. Not in TLS 1.3 mandatory set.
 
 ---
 
@@ -611,6 +1026,21 @@ Initialization: state ← Ascon-p^12(IV ‖ Key ‖ Nonce). Processing: each 64-
 
 **State of the art:** NIST SP 800-232 (2025) designates Ascon-128 as the primary AEAD for constrained devices, with Ascon-128a as an approved faster alternative. Ascon-80pq is recommended where 128-bit post-quantum key security is required. The Ascon family supersedes ad-hoc lightweight AEAD constructions for new IoT designs.
 
+**Production readiness:** Production
+NIST SP 800-232 (2025); deployed in Nordic nRF9160, RIOT-OS, Zephyr RTOS, and ARM Cortex-M reference implementations.
+
+**Implementations:**
+- [ascon-c](https://github.com/ascon/ascon-c) — C, official reference implementation
+- [ascon-python](https://github.com/meichlseder/pyascon) — Python, reference implementation by designers
+- [RIOT-OS](https://github.com/RIOT-OS/RIOT) — C, Ascon in constrained-device RTOS
+- [Zephyr RTOS](https://github.com/zephyrproject-rtos/zephyr) — C, Ascon crypto subsystem
+
+**Security status:** Secure
+128-bit security; no known shortcut attacks on full 12-round initialization; extensive NIST LWC competition cryptanalysis.
+
+**Community acceptance:** Standard
+NIST SP 800-232 (2025); NIST LWC winner (2023); endorsed by NIST, Graz University of Technology, and Infineon.
+
 ---
 
 ## CWC Mode (Carter-Wegman + CTR)
@@ -638,6 +1068,18 @@ Initialization: state ← Ascon-p^12(IV ‖ Key ‖ Nonce). Processing: each 64-
 
 **State of the art:** CWC is not deployed in any current standard or widely-used library. It is historically important as one of three patent-free AEAD modes (with EAX and GCM) submitted to NIST consideration in 2004 and directly influenced GCM's design. For deployed alternatives see [Authenticated Encryption (AEAD)](#authenticated-encryption-aead).
 
+**Production readiness:** Deprecated
+Historically proposed alongside GCM and EAX; no current deployment or library support. Superseded by AES-GCM.
+
+**Implementations:**
+- No actively maintained implementations; original reference code in the FSE 2004 paper appendix.
+
+**Security status:** Superseded
+Provably secure (IND-CCA2 + INT-CTXT) but superseded by AES-GCM, which benefits from hardware CLMUL acceleration.
+
+**Community acceptance:** Niche
+Historical significance as a patent-free AEAD proposal; never standardized by NIST or IETF. Superseded by GCM (SP 800-38D).
+
 ---
 
 ## AES Key Wrap (KW / KWP, RFC 5649 / NIST SP 800-38F)
@@ -660,6 +1102,20 @@ Initialization: state ← Ascon-p^12(IV ‖ Key ‖ Nonce). Processing: each 64-
 **Deployments:** PKCS #7 / CMS EnvelopedData key transport; XML Encryption; JWE; KMIP (Key Management Interoperability Protocol); ANSI X9.73; every PKCS#11-compliant HSM (`C_WrapKey` / `C_UnwrapKey` mechanisms). OpenSSL implements KW as `AES_wrap_key` / `AES_unwrap_key`.
 
 **State of the art:** AES-KWP (RFC 5649) is the current standard for symmetric key transport. AES-KW (RFC 3394) is deprecated for inputs not a multiple of 8 bytes — use KWP. For public-key key transport see [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem--dem-paradigm) and [Hybrid Public Key Encryption (HPKE)](#hybrid-public-key-encryption-hpke).
+
+**Production readiness:** Production
+Deployed in PKCS#11 HSMs, CMS/PKCS#7, XML Encryption, JWE, and KMIP key management systems worldwide.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) — C, AES_wrap_key / AES_unwrap_key
+- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, AES Key Wrap (RFC 3394 and RFC 5649)
+- [Go stdlib](https://pkg.go.dev/crypto/cipher) — Go, AES Key Wrap support
+
+**Security status:** Secure
+Proven IND-CPA and INT-CTXT under PRP assumption for AES; deterministic output is acceptable for uniformly random key material.
+
+**Community acceptance:** Standard
+NIST SP 800-38F; IETF RFC 3394 (KW) and RFC 5649 (KWP); mandated in PKCS#11, KMIP, and JWE.
 
 ---
 
@@ -689,6 +1145,20 @@ Decryption reverses the process: the receiver reconstructs the zero-padded P_n f
 
 **State of the art:** CTS is deployed in Kerberos (RFC 3962, RFC 8009) for AES-encrypted tickets and in XTS-AES for partial-sector disk encryption. For new designs, AEAD modes are strongly preferred. CTS remains useful only when ciphertext expansion is structurally prohibited (e.g., fixed-size Kerberos ticket fields or fixed-sector-size storage media).
 
+**Production readiness:** Production
+Deployed in Kerberos (RFC 3962, RFC 8009) and XTS-AES disk encryption on all major operating systems.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) — C, AES-CBC-CTS via EVP API
+- [Linux kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git) — C, CTS in dm-crypt and fscrypt subsystems
+- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, CBC-CTS mode
+
+**Security status:** Caution
+Confidentiality-only; provides no authentication. Must be combined with a MAC or used inside an authenticated mode.
+
+**Community acceptance:** Standard
+NIST SP 800-38A Addendum (CS3); RFC 3962 and RFC 8009 (Kerberos); IEEE 1619 (XTS-AES with CTS).
+
 ---
 
 ## CBC Mode Padding and Padding Oracle Attacks
@@ -714,6 +1184,19 @@ Decryption reverses the process: the receiver reconstructs the zero-padded P_n f
 **Implementation pitfalls:** Constant-time padding validation is required even with EtM (to avoid timing oracles in the MAC-then-decrypt path). OpenSSL's pre-2013 TLS implementation had non-constant-time padding checks exploited by Lucky Thirteen. The correct fix is to always process the MAC over a fully zero-padded block and use `CRYPTO_memcmp`.
 
 **State of the art:** PKCS#7 + CBC is strictly legacy. TLS 1.3 (deployed everywhere), modern AEAD APIs (AES-GCM, ChaCha20-Poly1305, Ascon-128), and all recommended cryptographic libraries eliminate CBC padding entirely. See [Authenticated Encryption (AEAD)](#authenticated-encryption-aead) and [Ciphertext Stealing (CTS)](#ciphertext-stealing-cts) for alternatives that avoid padding.
+
+**Production readiness:** Deprecated
+CBC + PKCS#7 padding is legacy; TLS 1.3 removed all CBC cipher suites. Remains in TLS 1.2 legacy deployments.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) — C, AES-CBC with PKCS#7 padding (legacy support)
+- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, CBC padding modes
+
+**Security status:** Broken
+Padding oracle attacks (Vaudenay, BEAST, Lucky Thirteen, POODLE) make CBC + MAC-then-Encrypt practically vulnerable without extreme care.
+
+**Community acceptance:** Standard
+PKCS#7 is RFC 5652; CBC is NIST SP 800-38A. Universally understood but deprecated for new designs in favor of AEAD.
 
 ---
 
@@ -742,6 +1225,19 @@ Decryption reverses the process: the receiver reconstructs the zero-padded P_n f
 **NIST LWC competition:** Romulus was one of ten finalists in the NIST Lightweight Cryptography competition (2019–2023). It was not selected as the winner (Ascon was chosen); however, NIST noted Romulus-M's unique combination of misuse resistance and formal leakage security as a distinguishing strength. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
 
 **State of the art:** Romulus implementations are available in the NIST LWC test framework and supercop. Romulus-T remains the most formally rigorous leakage-resilient lightweight AEAD as of 2026. For new constrained-device designs without side-channel requirements, Ascon-128 (NIST SP 800-232) is the standardized choice; Romulus-T is the research reference when leakage resilience is required.
+
+**Production readiness:** Experimental
+NIST LWC finalist with reference implementations; not selected as the standard. Romulus-T is a research reference for leakage resilience.
+
+**Implementations:**
+- [Romulus reference](https://romulusae.github.io/romulus/) — C, official reference implementations of Romulus-N, -M, -T
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, Romulus benchmarking implementations
+
+**Security status:** Secure
+Provably secure under SKINNY-128-384+ assumptions; Romulus-T provides formal leakage resilience. No known attacks on full construction.
+
+**Community acceptance:** Niche
+NIST LWC finalist (2023); well-regarded for leakage resilience but not standardized. Superseded by Ascon for general lightweight AEAD.
 
 ---
 
@@ -783,6 +1279,19 @@ Squeeze(128 bits)    // authentication tag
 
 **State of the art:** Xoodyak is not standardized. Reference implementations are in the NIST LWC repository and the Keccak team's GitHub. Xoofff (the Farfalle construction over Xoodoo) provides high-throughput modes for non-constrained settings. For standardized use, Ascon-128 is preferred; Xoodyak remains a clean research reference and is well-suited to hardware co-design studies.
 
+**Production readiness:** Experimental
+NIST LWC finalist with reference implementations; not selected as the standard. Research reference for unified permutation-based crypto.
+
+**Implementations:**
+- [XKCP](https://github.com/XKCP/XKCP) — C/assembly, Xoodoo permutation and Xoodyak by the Keccak team
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, Xoodyak benchmarking implementations
+
+**Security status:** Secure
+No known attacks on full 12-round Xoodoo; strong design heritage from Keccak/SHA-3 team. Well-analyzed during NIST LWC competition.
+
+**Community acceptance:** Niche
+NIST LWC finalist (2023); designed by Keccak/SHA-3 authors. Not standardized; superseded by Ascon for NIST-compliant deployments.
+
 ---
 
 ## ISAP (NIST LWC Finalist, Side-Channel Resistant)
@@ -822,6 +1331,19 @@ Km = isap_rk(K, Tag_candidate)
 
 **State of the art:** ISAP is not standardized. Reference implementations (including masked hardware implementations) are published by the designers. For applications requiring side-channel resistance in constrained hardware — e.g., payment terminals, TPM-adjacent logic — ISAP-A-128 is the most rigorous published design as of 2026.
 
+**Production readiness:** Experimental
+NIST LWC finalist with reference and masked hardware implementations; not selected as the standard. Research reference for side-channel-resistant AEAD.
+
+**Implementations:**
+- [ISAP reference](https://isap.iaik.tugraz.at/) — C, official reference implementations of ISAP-A-128 and ISAP-K-128
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, ISAP benchmarking implementations
+
+**Security status:** Secure
+Provably secure with formal leakage resilience; designed to tolerate side-channel leakage without masking. No known attacks on full construction.
+
+**Community acceptance:** Niche
+NIST LWC finalist (2023); reference design for inherent side-channel resistance. Not standardized; Ascon selected with recommendation to apply masking.
+
 ---
 
 ## Photon-Beetle (NIST LWC Finalist)
@@ -858,6 +1380,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 
 **State of the art:** Photon-Beetle is not standardized. It is the reference design for sub-1000 GE authenticated encryption as of 2026. For standard compliance, Ascon-128 is mandated by NIST SP 800-232; Photon-Beetle remains relevant for ultra-constrained custom silicon designs.
 
+**Production readiness:** Experimental
+NIST LWC finalist with reference implementations; not selected as the standard. Reference for sub-1000 GE AEAD in custom silicon.
+
+**Implementations:**
+- [Photon-Beetle reference](https://photon-beetle.github.io/) — C, official reference implementations
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, Photon-Beetle benchmarking implementations
+
+**Security status:** Secure
+Based on well-analyzed PHOTON permutation (2011); no known attacks on full construction. Extensively analyzed during NIST LWC competition.
+
+**Community acceptance:** Niche
+NIST LWC finalist (2023); recognized for smallest hardware footprint. Not standardized; superseded by Ascon for NIST-compliant deployments.
+
 ---
 
 ## Combined AEAD Constructions: Encrypt-then-MAC, MAC-then-Encrypt, Encrypt-and-MAC
@@ -883,6 +1418,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 
 **State of the art:** EtM is the correct composition if a legacy MAC + cipher must be combined, but all new protocols should use an integrated AEAD primitive. TLS 1.3 (deployed universally), SSH with EtM cipher suites (RFC 6668), and IPsec ESP (RFC 4303) with AES-GCM represent the current state. MtE and E&M are considered deprecated.
 
+**Production readiness:** Deprecated
+EtM is deployed in TLS 1.2 (RFC 7366), SSH, and IPsec but superseded by integrated AEAD modes. MtE and E&M are deprecated.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) — C, EtM cipher suites for TLS 1.2
+- [OpenSSH](https://github.com/openssh/openssh-portable) — C, EtM MAC modes (RFC 6668)
+
+**Security status:** Caution
+Only EtM is provably IND-CCA2 + INT-CTXT; MtE and E&M are generically insecure. All compositions are superseded by integrated AEAD.
+
+**Community acceptance:** Standard
+EtM is well-established (RFC 7366, IPsec ESP); MtE/E&M are understood as insecure. All are superseded by AEAD for new designs.
+
 ---
 
 ## STREAM: Online Authenticated Encryption with Segmented Ciphertexts
@@ -907,6 +1455,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 
 **State of the art:** The STREAM framework (2015) [[1]](https://eprint.iacr.org/2015/189) is the academic reference for online AEAD composition. Its pattern is deployed in TLS 1.3, QUIC (RFC 9001), and MLS (RFC 9420) record-layer constructions. See also [MRAE and Online Authenticated Encryption (OAE)](#mrae-and-online-authenticated-encryption-oae).
 
+**Production readiness:** Production
+The STREAM segmentation pattern is deployed in TLS 1.3, QUIC, and MLS record layers, though not as a standalone named primitive.
+
+**Implementations:**
+- [Tink](https://github.com/tink-crypto/tink) — Java/Go/C++, streaming AEAD API implementing STREAM-like segmentation
+- TLS 1.3, QUIC, and MLS implementations embed STREAM-style record-layer segmentation internally.
+
+**Security status:** Secure
+Provably secure (OAE2) when instantiated with a nonce-based AEAD; formal proofs by Hoang et al. (2015).
+
+**Community acceptance:** Widely trusted
+The STREAM pattern underlies TLS 1.3, QUIC, and MLS record layers; well-studied academic framework adopted implicitly in major protocols.
+
 ---
 
 ## Forkcipher (ForkAES, ForkSkinny)
@@ -926,6 +1487,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 **Security model:** Forkciphers are analyzed as tweakable block ciphers with two outputs; the standard security notion requires that `c₀` and `c₁` are pseudorandom and independent given the key, with the tweak providing domain separation. Attacks on reduced-round ForkAES (differential/linear) have been published but do not threaten the full-round construction [[1]](https://eprint.iacr.org/2019/1099).
 
 **State of the art:** Forkciphers remain a research primitive; no forkcipher-based AEAD has been standardized as of 2026. ForkSkinny-based submissions were NIST LWC candidates but did not reach the finalist round. The forkcipher concept continues to influence lightweight AEAD design by showing that dedicated two-output primitives can outperform generic AEAD composition in hardware throughput.
+
+**Production readiness:** Research
+Academic primitive; NIST LWC candidate (did not reach finalist round). No production deployment or standardization.
+
+**Implementations:**
+- [ForkAE reference](https://www.esat.kuleuven.be/cosic/forkae/) — C, reference implementations of ForkAES and ForkSkinny-based AEAD
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, ForkAE benchmarking implementations
+
+**Security status:** Secure
+Provably secure as a tweakable block cipher with two outputs; no attacks on full-round ForkAES or ForkSkinny constructions.
+
+**Community acceptance:** Niche
+Research primitive; NIST LWC candidate. Influential concept but no standardization or significant adoption beyond academia.
 
 ---
 
@@ -947,6 +1521,20 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 **Applications:** Backup encryption (where nonce management is impractical), encrypted key-value stores, deterministic database encryption, and any context where the sender cannot guarantee nonce freshness but must limit ciphertext expansion.
 
 **State of the art:** AES-SIV (RFC 5297) is the deployed DAEAD standard. Deoxys-II (CAESAR defense-in-depth winner, 2019) [[1]](https://sites.google.com/view/deoxyscipher) provides a tweakable-block-cipher-based alternative with strong security margins. ANYDAE remains a theoretical framework; no ANYDAE-specific IETF standard exists as of 2026. See [MRAE and Online Authenticated Encryption (OAE)](#mrae-and-online-authenticated-encryption-oae).
+
+**Production readiness:** Mature
+AES-SIV (RFC 5297) is deployed in production; Deoxys-II is a CAESAR winner with implementations. ANYDAE is a theoretical framework.
+
+**Implementations:**
+- [Tink](https://github.com/tink-crypto/tink) — Java/Go/C++, AES-SIV (deterministic AEAD)
+- [miscreant](https://github.com/miscreant/miscreant.rb) — Ruby/JS/Rust, AES-SIV
+- [Deoxys reference](https://sites.google.com/view/deoxyscipher) — C, Deoxys-II reference implementation
+
+**Security status:** Secure
+AES-SIV and Deoxys-II are provably MRAE-secure; nonce reuse leaks only plaintext equality, not authenticity.
+
+**Community acceptance:** Standard
+AES-SIV is IETF RFC 5297; Deoxys-II is a CAESAR defense-in-depth winner. ANYDAE is an academic framework without separate standardization.
 
 ---
 
@@ -970,6 +1558,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 
 **State of the art:** No wide-block cipher has been standardized by NIST or IETF; all remain research proposals. AES-HCTR2 (deployed in Android for file-based encryption) is the closest to a practical wide-block-inspired mode in production, though it is based on a hash-counter structure rather than a full Feistel or EME construction. See [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers).
 
+**Production readiness:** Research
+No wide-block cipher has been standardized; EME/XCB/HCH/TET remain academic proposals. AES-HCTR2 (deployed in Android) is the closest practical descendant.
+
+**Implementations:**
+- [AES-HCTR2 (Android)](https://android.googlesource.com/kernel/common/) — C, wide-block-inspired mode deployed in Android kernel
+- No standalone open-source implementations of EME, XCB, HCH, or TET in production libraries.
+
+**Security status:** Secure
+EME, XCB, HCH, TET are provably secure as pseudorandom permutations under standard block-cipher assumptions. No practical attacks.
+
+**Community acceptance:** Niche
+Academic research; no NIST or IETF standardization. AES-HCTR2 (Google) is the closest to deployed use in the wide-block paradigm.
+
 ---
 
 ## Robust KEM + DEM (REACT, OAEP+)
@@ -991,6 +1592,20 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 **Fujisaki-Okamoto:** The FO transform is the canonical generic method and underpins all NIST PQC KEM standards (ML-KEM/Kyber, HQC, BIKE) — it converts a CPA-secure lattice KEM into a CCA2-secure one by hashing both the random coins and the message together and re-encrypting to verify. REACT and OAEP+ address the same problem for classical (RSA/ElGamal) PKE.
 
 **State of the art:** RSA-OAEP (RFC 8017) is the deployed standard for RSA-based hybrid encryption. ML-KEM (FIPS 203) applies a variant of the FO transform to Kyber. REACT remains a research reference for clean IND-CCA2 construction proofs. For new systems, HPKE (RFC 9180) provides a standardized, modular public-key encryption framework on top of modern KEMs. See [Hybrid Public Key Encryption (HPKE)](#hybrid-public-key-encryption-hpke).
+
+**Production readiness:** Production
+RSA-OAEP (RFC 8017) is deployed everywhere; the FO transform underpins ML-KEM (FIPS 203). REACT and OAEP+ are theoretical references.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) — C, RSA-OAEP (PKCS#1 v2.1)
+- [Bouncy Castle](https://www.bouncycastle.org/) — Java/C#, RSA-OAEP and OAEP+
+- [liboqs](https://github.com/open-quantum-safe/liboqs) — C, ML-KEM (FO transform applied to Kyber)
+
+**Security status:** Secure
+RSA-OAEP is provably IND-CCA2 in ROM; OAEP+ has a tight reduction. FO transform is provably CCA2-secure from CPA-secure KEMs.
+
+**Community acceptance:** Standard
+RSA-OAEP is PKCS#1 v2.1 (RFC 8017); FO transform is implicit in NIST FIPS 203 (ML-KEM). REACT/OAEP+ are well-studied academic constructions.
 
 ---
 
@@ -1016,6 +1631,20 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 
 **State of the art:** LRAE is an active research area; no dedicated LRAE scheme has been standardized. TEDT/TEDT2 and Romulus-T are the most concrete recent constructions. For deployed leakage-resistant AEAD in constrained hardware, ISAP-A-128 remains the reference. In high-security environments (HSMs, smartcards), masking is still the primary countermeasure, but LRAE theory informs which algorithm structures are inherently more leakage-tolerant. See [Romulus AEAD (NIST LWC Finalist)](#romulus-aead-nist-lwc-finalist).
 
+**Production readiness:** Research
+Academic constructions; no standardization or production deployment. ISAP and Romulus-T are the closest to practical leakage-resilient AEAD.
+
+**Implementations:**
+- [ISAP reference](https://isap.iaik.tugraz.at/) — C, practical leakage-resilient AEAD (related primitive)
+- [Romulus-T reference](https://romulusae.github.io/romulus/) — C, leakage-resilient lightweight AEAD
+- No standalone LRAE library; constructions appear in academic prototype code.
+
+**Security status:** Secure
+Formal proofs under bounded or leveled leakage models; TEDT/TEDT2 and Romulus-T have well-studied security reductions.
+
+**Community acceptance:** Niche
+Active academic research area; influences side-channel-resistant design but no NIST or IETF standardization of LRAE as a category.
+
 ---
 
 ## GCM-SST (Galois/Counter Mode with Secure Short Tags)
@@ -1035,6 +1664,18 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 **Deployment context:** IEEE P1619.1 (the standard for authenticated encryption of storage media) includes GCM-SST as an option for block storage devices with bandwidth constraints. Industrial protocols (IEC 62351 for power systems, ISO 21434 for automotive) have considered short-tag AE for CAN bus and low-power sensor networks where 16-byte tags are a significant overhead on 8–64 byte payloads.
 
 **State of the art:** GCM-SST is specified in IEEE P1619.1 (draft, 2022–2024) [[1]](https://eprint.iacr.org/2022/1441). It is the recommended approach when short authentication tags are operationally required. For applications where full 128-bit tags are feasible, standard AES-GCM or AES-GCM-SIV remains preferable. NIST has not issued a separate standard for GCM-SST as of 2026.
+
+**Production readiness:** Experimental
+IEEE P1619.1 draft (2022-2024); no finalized standard or widespread production deployment as of 2026.
+
+**Implementations:**
+- No widely available standalone open-source implementations; reference code in the ePrint paper (2022/1441).
+
+**Security status:** Secure
+Provably secure short-tag AEAD; per-message mask prevents GHASH key recovery from truncated tags. Nonce misuse remains catastrophic.
+
+**Community acceptance:** Emerging
+IEEE P1619.1 draft inclusion; recommended for constrained-bandwidth protocols. No NIST standard; limited adoption outside storage and IoT research.
 
 ---
 
@@ -1061,6 +1702,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 
 **State of the art:** Robust AE is a design principle rather than a single standardized scheme. Key-committing AEAD (AEAD-CMT-4, 2022) addresses the multi-key dimension. TLS 1.3 (RFC 8446) addresses partial decryption leakage by mandating that no plaintext is released until the tag is verified. The nonce-masking in TLS 1.3 record layer addresses nonce-hiding. See [Key-Committing AEAD](#key-committing-aead) and [MRAE and Online Authenticated Encryption (OAE)](#mrae-and-online-authenticated-encryption-oae).
 
+**Production readiness:** Experimental
+Robustness principles are adopted in TLS 1.3 and key-committing AEAD; no standalone "Robust AE" scheme is deployed as a named primitive.
+
+**Implementations:**
+- Robust AE principles are embedded in TLS 1.3 implementations (constant-time verification, no partial plaintext release).
+- [committing-ae](https://github.com/AlessandroZanatta/committing-aead) — Python, key-committing AEAD transforms (related)
+
+**Security status:** Secure
+Formal robustness definitions are well-established; achieving robustness requires constant-time verification, key commitment, and nonce hiding.
+
+**Community acceptance:** Emerging
+Robustness is a design principle adopted in TLS 1.3 and discussed at NIST Block Cipher Modes Workshop (2023); no standalone standard.
+
 ---
 
 ## COLM (COPA + ELmD Merge)
@@ -1073,6 +1727,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 | **COLMt** | 2016 | AES-128 dual-layer + intermediate tags | Variant with periodic intermediate tag verification for constrained devices and streaming applications [[1]](https://link.springer.com/article/10.1007/s00145-024-09492-8) |
 
 **State of the art:** COLM was selected as one of the two defense-in-depth winners of the CAESAR competition (2019) alongside Deoxys-II. Its nonce-misuse resistance makes it suitable for environments where nonce uniqueness cannot be guaranteed. For new deployments, AES-GCM-SIV (RFC 8452) or Deoxys-II are more commonly adopted, but COLM remains a strong academic reference for dual-layer AEAD design. See [Deterministic AEAD with Any Nonce (DAEAD / ANYDAE)](#deterministic-aead-with-any-nonce-daead--anydae).
+
+**Production readiness:** Experimental
+CAESAR defense-in-depth winner with reference implementations; no standardization or significant production deployment.
+
+**Implementations:**
+- [COLM reference](https://competitions.cr.yp.to/caesar-submissions.html) — C, reference implementation from CAESAR submission
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, COLM benchmarking implementations
+
+**Security status:** Secure
+Provably nonce-misuse resistant; nonce reuse leaks only plaintext equality. Well-analyzed during CAESAR competition.
+
+**Community acceptance:** Niche
+CAESAR defense-in-depth co-winner (2019); well-regarded but no NIST or IETF standardization. AES-GCM-SIV is more widely adopted.
 
 ---
 
@@ -1088,6 +1755,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 
 **State of the art:** MORUS was not selected for the final CAESAR portfolio due to the discovery of a linear correlation in the full keystream by Kales et al. (Asiacrypt 2018), which enables distinguishing attacks and partial plaintext recovery in broadcast settings [[1]](https://eprint.iacr.org/2018/464). Despite this, the attack requires extremely large data volumes and MORUS remains of academic interest for its state-update design paradigm. AEGIS-128L (which was selected) offers similar throughput with stronger security margins. See [AEGIS (A Fast Authenticated Encryption Algorithm)](#aegis-a-fast-authenticated-encryption-algorithm).
 
+**Production readiness:** Deprecated
+CAESAR finalist but not selected due to keystream linear correlation attack; superseded by AEGIS-128L for high-speed AEAD.
+
+**Implementations:**
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, MORUS benchmarking implementations
+- [MORUS reference](https://competitions.cr.yp.to/caesar-submissions.html) — C, reference implementation from CAESAR submission
+
+**Security status:** Broken
+Linear correlation attack (Kales et al., Asiacrypt 2018) enables distinguishing and partial plaintext recovery in broadcast settings.
+
+**Community acceptance:** Niche
+CAESAR third-round finalist; not selected due to cryptanalytic weakness. Academic interest only; superseded by AEGIS.
+
 ---
 
 ## NORX (Parallel Sponge-Based AEAD)
@@ -1100,6 +1780,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 | **NORX-8 / NORX-16** | 2015 | 8/16-bit word NORX | Lightweight variants targeting 8-bit and 16-bit microcontrollers [[1]](https://eprint.iacr.org/2015/1154) |
 
 **State of the art:** NORX was eliminated after CAESAR Round 3 following a state-recovery attack on NORX v2.0 by Chaigneau and Gilbert (Journal of Cryptology, 2019) [[1]](https://link.springer.com/article/10.1007/s00145-018-9297-9). The v3.0 specification addressed this attack, but the design was not selected for the final portfolio. NORX's parallel sponge approach influenced later permutation-based AEAD designs. See [SpongeWrap / Duplex-Based AEAD](#spongewrap--duplex-based-aead).
+
+**Production readiness:** Deprecated
+CAESAR Round 3 candidate; eliminated after state-recovery attack on v2.0. Not selected for final portfolio; no production use.
+
+**Implementations:**
+- [NORX reference](https://norx.io/) — C, reference implementation of NORX v3.0
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, NORX benchmarking implementations
+
+**Security status:** Broken
+State-recovery attack on NORX v2.0 (Chaigneau-Gilbert, 2019); v3.0 addressed this but was not selected. Should not be used.
+
+**Community acceptance:** Niche
+CAESAR Round 3 candidate; eliminated due to cryptanalysis. Historical interest for parallel sponge design; no standardization.
 
 ---
 
@@ -1115,6 +1808,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 
 **State of the art:** Elephant was one of ten NIST LWC finalists (2021) but was not selected as the winner — Ascon was chosen instead (2023). Elephant's key distinguishing feature is its parallelizable mode of operation (the only finalist offering this), making it attractive for high-throughput hardware implementations. Dumbo and Jumbo use the well-analyzed Spongent permutation family, while Delirium leverages the Keccak permutation. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
 
+**Production readiness:** Experimental
+NIST LWC finalist with reference implementations; not selected as the standard. Research reference for parallelizable lightweight AEAD.
+
+**Implementations:**
+- [Elephant reference](https://csrc.nist.gov/projects/lightweight-cryptography) — C, NIST LWC submission reference code
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, Elephant benchmarking implementations
+
+**Security status:** Secure
+No known attacks on full Dumbo/Jumbo/Delirium constructions; based on well-analyzed Spongent and Keccak permutations.
+
+**Community acceptance:** Niche
+NIST LWC finalist (2023); recognized for parallelizable mode. Not standardized; superseded by Ascon for NIST-compliant deployments.
+
 ---
 
 ## TinyJAMBU (NIST LWC Finalist)
@@ -1128,6 +1834,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 | **TinyJAMBU-256** | 2019 | 128-bit keyed permutation, 256-bit key | 256-bit key variant; highest security margin [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-round/updated-spec-doc/tinyjambu-spec-final.pdf) |
 
 **State of the art:** TinyJAMBU was a NIST LWC finalist but was not selected as the winner. Its keyed-permutation approach (as opposed to unkeyed permutation + sponge) gives it an unusually small state, but the 64-bit tag limits forgery resistance compared to Ascon's 128-bit tag. Post-competition analysis revealed beyond-full-round integral distinguishers [[1]](https://eprint.iacr.org/2023/960), though these do not directly break the full cipher. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
+
+**Production readiness:** Experimental
+NIST LWC finalist with reference implementations; not selected as the standard. Ultra-compact design for most constrained IoT devices.
+
+**Implementations:**
+- [TinyJAMBU reference](https://csrc.nist.gov/projects/lightweight-cryptography) — C, NIST LWC submission reference code
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, TinyJAMBU benchmarking implementations
+
+**Security status:** Caution
+64-bit tag limits forgery resistance; post-competition integral distinguishers on beyond-full-round variants. Full cipher not broken.
+
+**Community acceptance:** Niche
+NIST LWC finalist (2023); smallest state among finalists. Not standardized; superseded by Ascon for NIST-compliant deployments.
 
 ---
 
@@ -1144,6 +1863,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 
 **State of the art:** Schwaemm was a NIST LWC finalist (2021) but lost to Ascon. On ARM Cortex-M3/M4 microcontrollers, Schwaemm256-128 is roughly 5x faster than AES-GCM and 2x faster than Ascon, making it the fastest software AEAD among the finalists on these platforms. The underlying Sparkle permutation family uses only ARX operations, enabling efficient constant-time software implementations without needing lookup tables or hardware accelerators. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
 
+**Production readiness:** Experimental
+NIST LWC finalist with reference implementations; not selected as the standard. Fastest software AEAD on ARM Cortex-M among finalists.
+
+**Implementations:**
+- [Sparkle reference](https://sparkle-lwc.github.io/) — C, official reference implementations of Schwaemm and Esch
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, Schwaemm benchmarking implementations
+
+**Security status:** Secure
+No known attacks on full Sparkle permutation; ARX design enables constant-time implementations. Well-analyzed during NIST LWC competition.
+
+**Community acceptance:** Niche
+NIST LWC finalist (2023); fastest software lightweight AEAD on ARM Cortex-M. Not standardized; superseded by Ascon for NIST compliance.
+
 ---
 
 ## Pyjamask (Masking-Optimized AEAD)
@@ -1156,6 +1888,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 | **Pyjamask-96-AEAD** | 2019 | Pyjamask-96 block cipher + OCB mode | 96-bit block; even fewer AND gates; hardware-oriented [[1]](https://tosc.iacr.org/index.php/ToSC/article/view/8617) |
 
 **State of the art:** Pyjamask was a NIST LWC Round 2 candidate (not advanced to the finalist round). Its primary contribution is demonstrating that a block cipher can be designed from the ground up for efficient masking — achieving high-order masked implementations at a fraction of the cost of masking AES or GIFT. The bitslice construction evaluates all nonlinear gates in parallel, enabling efficient masking up to order 128 in software. Pyjamask's design principles have influenced subsequent masking-friendly cipher research. See [Leakage-Resilient AEAD (LRAE)](#leakage-resilient-aead-lrae).
+
+**Production readiness:** Research
+NIST LWC Round 2 candidate (not advanced to finalist round); academic demonstration of masking-optimized cipher design.
+
+**Implementations:**
+- [Pyjamask reference](https://csrc.nist.gov/projects/lightweight-cryptography) — C, NIST LWC submission reference code
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, Pyjamask benchmarking implementations
+
+**Security status:** Secure
+No known attacks on full Pyjamask; bitslice design with lowest AND-depth enables efficient high-order masking.
+
+**Community acceptance:** Niche
+NIST LWC Round 2 candidate; influential for masking-friendly cipher design principles. Not advanced to finalist round.
 
 ---
 
@@ -1171,6 +1916,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 
 **State of the art:** Spook was a NIST LWC Round 2 candidate (not advanced to the finalist round). Its distinguishing contribution is the formalization of leakage resilience in the duplex sponge setting: a fresh key derivation at the start of each message ensures that side-channel leakage from one message cannot be used to attack another. Spook also provides nonce-misuse resilience and beyond-birthday-bound security relative to the TBC block size. See [Leakage-Resilient AEAD (LRAE)](#leakage-resilient-aead-lrae) and [ISAP (NIST LWC Finalist, Side-Channel Resistant)](#isap-nist-lwc-finalist-side-channel-resistant).
 
+**Production readiness:** Research
+NIST LWC Round 2 candidate (not advanced to finalist round); academic demonstration of leakage-resilient sponge-based AEAD.
+
+**Implementations:**
+- [Spook reference](https://www.spook.dev/) — C, official reference implementation of Spook, Clyde-128, and Shadow
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, Spook benchmarking implementations
+
+**Security status:** Secure
+Provably leakage-resilient and nonce-misuse resistant; fresh key derivation per message limits side-channel exposure.
+
+**Community acceptance:** Niche
+NIST LWC Round 2 candidate; well-regarded for leakage resilience formalization. Not advanced to finalist round; ISAP is the closer-to-practice alternative.
+
 ---
 
 ## ESTATE (Energy-Efficient Short-Tweak TBC-Based AEAD)
@@ -1184,6 +1942,19 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 | **sESTATE[TweAES-6]** | 2019 | Reduced-round TweAES-6 + MAC-then-Encrypt | Aggressive performance variant with 6-round AES [[1]](https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/round-2/spec-doc-rnd2/estate-spec-round2.pdf) |
 
 **State of the art:** ESTATE was a NIST LWC Round 2 candidate (not advanced to the finalist round). Its primary innovation is demonstrating that a 4-bit tweak is sufficient to build a provably secure AEAD mode — enabling extremely compact TBC instantiations. ESTATE improves upon the earlier SUNDAE design by reducing the number of block cipher calls by one and eliminating the need for a multiplication circuit, reducing both hardware area and energy consumption. The TweGIFT instantiation achieves nonce-misuse resistance at a circuit size competitive with the smallest AEAD implementations. See [CAESAR Lightweight Winners (ACORN, GIFT-COFB)](#caesar-lightweight-winners-acorn-gift-cofb).
+
+**Production readiness:** Research
+NIST LWC Round 2 candidate (not advanced to finalist round); academic demonstration of short-tweak TBC-based AEAD.
+
+**Implementations:**
+- [ESTATE reference](https://csrc.nist.gov/projects/lightweight-cryptography) — C, NIST LWC submission reference code
+- [SUPERCOP](https://bench.cr.yp.to/supercop.html) — C, ESTATE benchmarking implementations
+
+**Security status:** Secure
+Provably secure nonce-misuse resistant AEAD; 4-bit tweak suffices for security. No known attacks on full TweGIFT or TweAES instantiations.
+
+**Community acceptance:** Niche
+NIST LWC Round 2 candidate; innovative short-tweak design. Not advanced to finalist round; limited adoption beyond academia.
 
 ---
 
@@ -1199,5 +1970,18 @@ The key insight of Beetle is a *ratchet* at the AD/message boundary: the state i
 | **Flexible PBE** | 2023 | Password-based encryption | Provably resists partitioning oracle attacks in cloud storage setting [[1]](https://www.researchgate.net/publication/370120732_Flexible_Password-Based_Encryption_Securing_Cloud_Storage_and_Provably_Resisting_Partitioning-Oracle_Attacks) |
 
 **State of the art:** Partitioning oracle attacks (Len, Grubbs, Ristenpart; USENIX Security 2021) demonstrated that non-committing AEAD is a practical vulnerability, not just a theoretical concern — particularly in password-based encryption and anonymous messaging. The Bellare-Hoang line of work (Eurocrypt 2022, Crypto 2024) provides efficient generic transforms (CTX, CCX) that add key commitment to any AEAD with minimal overhead. The NIST Block Cipher Modes Workshop (2023) discussed standardizing committing AEAD modes. See [Key-Committing AEAD](#key-committing-aead) and [Robust Authenticated Encryption (RAE / Beyond INT-CTXT)](#robust-authenticated-encryption-rae--beyond-int-ctxt).
+
+**Production readiness:** Experimental
+CTX and CCX transforms are implementable over any AEAD; adoption in Signal and cloud backup systems is underway. No standalone NIST standard yet.
+
+**Implementations:**
+- [committing-ae](https://github.com/AlessandroZanatta/committing-aead) — Python, research implementations of CTX and committing AEAD transforms
+- [libsignal](https://github.com/signalapp/libsignal) — Rust, key-committing AEAD adopted in Signal protocol (related)
+
+**Security status:** Secure
+CTX and CCX transforms are provably secure with minimal overhead; partitioning oracle attacks are fully mitigated by key-committing AEAD.
+
+**Community acceptance:** Emerging
+NIST Block Cipher Modes Workshop (2023) discussed standardization; adopted by Signal and cloud backup systems. Active standardization trajectory.
 
 ---

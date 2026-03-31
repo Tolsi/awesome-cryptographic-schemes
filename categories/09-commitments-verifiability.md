@@ -16,6 +16,22 @@
 
 **State of the art:** KZG (SNARKs, Ethereum danksharding), FRI (STARKs, PQ-friendly).
 
+
+**Production readiness:** Production
+Pedersen and KZG commitments are deployed at massive scale in Ethereum, Zcash, Monero, and virtually all modern ZK systems.
+
+**Implementations:**
+- [arkworks-rs/algebra](https://github.com/arkworks-rs/algebra) -- Rust, Pedersen and KZG over BLS12-381/BN254
+- [blst](https://github.com/supranational/blst) -- C/Rust, BLS12-381 KZG used in Ethereum consensus clients
+- [go-kzg-4844](https://github.com/crate-crypto/go-kzg-4844) -- Go, KZG for Ethereum EIP-4844
+- [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) -- Rust, Pedersen commitments over Ristretto255
+
+**Security status:** Secure
+Pedersen commitments are information-theoretically hiding and computationally binding under DLP. KZG is secure under d-SDH in the generic group model. FRI is conjectured secure under collision-resistant hashing.
+
+**Community acceptance:** Standard
+Pedersen commitments are a textbook primitive. KZG is standardised in Ethereum EIP-4844. FRI is the foundation of the STARK ecosystem endorsed by StarkWare and Polygon.
+
 ---
 
 ## Verifiable Random Functions (VRF)
@@ -31,6 +47,21 @@
 
 **State of the art:** ECVRF (RFC 9381), BLS-VRF (threshold-friendly for blockchain).
 
+
+**Production readiness:** Production
+ECVRF is an IETF standard (RFC 9381) deployed in Chainlink VRF, Algorand, and Cardano. BLS-based VRF powers drand and ICP.
+
+**Implementations:**
+- [vrf-rs (Witnet)](https://github.com/witnet/vrf-rs) -- Rust, ECVRF per RFC 9381
+- [libsodium VRF](https://doc.libsodium.org/) -- C, ECVRF implementation
+- [Chainlink VRF](https://github.com/smartcontractkit/chainlink) -- Solidity/Go, on-chain verifiable randomness
+
+**Security status:** Secure
+ECVRF security proven under DDH in the random oracle model. BLS-VRF security under co-CDH. No known attacks at recommended parameters.
+
+**Community acceptance:** Standard
+ECVRF standardised as IETF RFC 9381. Widely adopted in blockchain consensus and verifiable randomness systems.
+
 ---
 
 ## Verifiable Delay Functions (VDF)
@@ -44,6 +75,21 @@
 | **MinRoot VDF** | 2022 | Prime field | SNARK-friendly; low multiplicative depth [[1]](https://eprint.iacr.org/2022/1626) |
 
 **State of the art:** Wesolowski VDF (Ethereum randomness, Chia), MinRoot (ZK-provable VDF).
+
+
+**Production readiness:** Experimental
+Deployed in Chia Network; proposed for Ethereum consensus. Hardware acceleration (ASICs) under active development by Supranational and others.
+
+**Implementations:**
+- [chiavdf](https://github.com/Chia-Network/chiavdf) -- C++/Python, Wesolowski VDF over class groups, used in Chia
+- [vdf-fpga (VDF Alliance)](https://github.com/supranational/vdf-fpga) -- Verilog/C, FPGA-accelerated VDF for repeated squaring
+- [chia-vdf (Rust)](https://github.com/poanetwork/vdf) -- Rust, Wesolowski/Pietrzak VDF implementations
+
+**Security status:** Caution
+Security relies on the sequential squaring assumption in groups of unknown order. Hardness is well-studied but not proven; ASIC speedups may reduce effective delay parameters.
+
+**Community acceptance:** Emerging
+Active research area with strong interest from Ethereum Foundation and Chia. No IETF/NIST standardisation yet. Endorsed by Boneh, Bunz, and leading cryptographers.
 
 ---
 
@@ -60,6 +106,20 @@
 
 **State of the art:** modern zkSNARKs/STARKs subsume VC; Pinocchio historically foundational.
 
+
+**Production readiness:** Mature
+The VC concept is subsumed by modern SNARK/STARK systems deployed at scale. Pinocchio was foundational but is no longer directly deployed.
+
+**Implementations:**
+- [libsnark](https://github.com/scipr-lab/libsnark) -- C++, includes Pinocchio/BCTV14 VC; historically influential
+- [Pepper/Ginger/Zaatar](https://github.com/pepper-project) -- C++, academic VC systems from UT Austin
+
+**Security status:** Secure
+Interactive proofs are information-theoretically sound. SNARK-based VC security depends on knowledge assumptions (d-SDH, KEA). No practical attacks known.
+
+**Community acceptance:** Widely trusted
+Foundational concept in theoretical CS (IP = PSPACE). Pinocchio launched the practical VC/SNARK field. Modern VC is delivered via SNARK/STARK systems with broad adoption.
+
 ---
 
 ## Non-Malleable Encryption / Commitments
@@ -73,6 +133,20 @@
 | **CCA2 as NM** | 1998 | Various | CCA2 security implies non-malleability for encryption (Bellare et al.) [[1]](https://eprint.iacr.org/1998/006) |
 
 **State of the art:** CCA2-secure encryption (standard), explicit non-malleability needed for commitments in MPC protocols.
+
+
+**Production readiness:** Mature
+CCA2-secure encryption (providing non-malleability) is deployed universally in TLS, SSH, and all modern encryption. Explicit non-malleable commitments are used in MPC protocol implementations.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) -- C, CCA2-secure encryption modes providing non-malleability
+- [emp-toolkit](https://github.com/emp-toolkit/emp-tool) -- C++, MPC library using non-malleable commitments
+
+**Security status:** Secure
+CCA2 security implies non-malleability (Bellare et al. 1998). Well-established equivalence with no known weaknesses.
+
+**Community acceptance:** Widely trusted
+Non-malleability via CCA2 is a standard security notion in every modern cryptography textbook. Explicit non-malleable commitments are well-studied with decades of peer review.
 
 ---
 
@@ -90,6 +164,20 @@
 
 **State of the art:** EC Chameleon Hash (redactable blockchain, GDPR-compliant chains), Sanitizable Signatures (document workflows), Lattice-based variants (PQ-secure).
 
+
+**Production readiness:** Experimental
+Deployed in research prototypes for redactable blockchains and sanitizable signatures. Limited production deployment outside academic systems.
+
+**Implementations:**
+- [Accenture blockchain-redaction](https://github.com/nicholasgubbins/blockchain-redaction) -- Python, chameleon hash for redactable blockchain prototype
+- [sanitizable-signatures (KIT)](https://github.com/simonkrenger/sanitizable-signatures) -- Java, sanitizable signature schemes using chameleon hashing
+
+**Security status:** Secure
+EC Chameleon Hash security reduces to ECDLP hardness. Lattice-based variants (PKC 2024) are post-quantum secure under LWE. No known attacks at recommended parameters.
+
+**Community acceptance:** Niche
+Well-studied in the academic literature with strong peer review. Adoption limited to specific use cases (GDPR-compliant blockchains, redactable signatures). No standardisation effort.
+
 ---
 
 ## Vector Commitments
@@ -105,6 +193,21 @@
 
 **State of the art:** Verkle trees for Ethereum state migration; Pointproofs for blockchain validation. Closely related to [Commitment Schemes](#commitment-schemes) and [Accumulators](#accumulators).
 
+
+**Production readiness:** Experimental
+Verkle trees proposed for Ethereum state migration but not yet deployed on mainnet. Pointproofs used in blockchain research prototypes.
+
+**Implementations:**
+- [go-ipa (Ethereum)](https://github.com/crate-crypto/go-ipa) -- Go, IPA-based vector commitments for Verkle trees
+- [rust-verkle](https://github.com/crate-crypto/rust-verkle) -- Rust, Verkle tree implementation for Ethereum
+- [pointproofs](https://github.com/algorand/pointproofs) -- Go, Algorand's Pointproofs implementation
+
+**Security status:** Secure
+Security proven under standard assumptions (RSA, CDH, d-SDH depending on variant). No known attacks.
+
+**Community acceptance:** Emerging
+Strong academic pedigree (Catalano-Fiore 2013, Boneh-Bunz-Fisch 2019). Verkle trees actively pursued by Ethereum Foundation. Growing adoption in blockchain infrastructure.
+
 ---
 
 ## Functional Commitments
@@ -118,6 +221,19 @@
 | **de Castro-Peikert FC** | 2023 | Lattices (SIS) | Succinct FC for polynomial-size circuits; from standard assumptions [[1]](https://eprint.iacr.org/2022/1368) |
 
 **State of the art:** Lattice-based FC (de Castro-Peikert 2023); subsumes [Vector Commitments](#vector-commitments) and [Polynomial Commitments (KZG)](#commitment-schemes) as special cases.
+
+
+**Production readiness:** Research
+Academic constructions only. No production-quality implementations or real-world deployments exist.
+
+**Implementations:**
+- [de Castro-Peikert FC prototype](https://eprint.iacr.org/2022/1368) -- Reference implementation accompanying the paper; research-grade
+
+**Security status:** Secure
+Security proven under standard lattice assumptions (SIS, LWE). No known attacks. Relatively new constructions with limited cryptanalysis.
+
+**Community acceptance:** Niche
+Published at top venues (EUROCRYPT, CRYPTO). Recognized as theoretically important but practical deployment remains distant.
 
 ---
 
@@ -142,6 +258,23 @@
 | **EIP-4844 / Danksharding blob commitments** | 2024 | Ethereum uses KZG over BLS12-381 to commit 128 KB data blobs; trusted setup via Powers of Tau MPC [[1]](https://eips.ethereum.org/EIPS/eip-4844) |
 
 **State of the art:** KZG is the dominant polynomial commitment in production SNARKs (PLONK, Groth16-style systems) and Ethereum's data availability layer. The Powers of Tau ceremony (participated in by thousands) provides a reusable SRS. The main limitation — the trusted setup — is addressed by transparent alternatives ([FRI](#commitment-schemes), [IPA](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment), [Dory](#multilinear-polynomial-commitments)). See [[1]](https://eprint.iacr.org/2010/274).
+
+
+**Production readiness:** Production
+Deployed in Ethereum EIP-4844 (danksharding blob commitments), PLONK-based proof systems (Aztec, Scroll, Polygon zkEVM), and Filecoin. The Powers of Tau ceremony provides a reusable SRS trusted by thousands of participants.
+
+**Implementations:**
+- [blst](https://github.com/supranational/blst) -- C/Rust, high-performance BLS12-381 for KZG; used by Ethereum consensus clients
+- [c-kzg-4844](https://github.com/ethereum/c-kzg-4844) -- C, Ethereum's reference KZG library for EIP-4844
+- [go-kzg-4844](https://github.com/crate-crypto/go-kzg-4844) -- Go, KZG for Ethereum clients
+- [arkworks-rs/poly-commit](https://github.com/arkworks-rs/poly-commit) -- Rust, generic PCS including KZG
+- [halo2 (PSE)](https://github.com/privacy-scaling-explorations/halo2) -- Rust, KZG backend for PLONK
+
+**Security status:** Secure
+Security proven under d-Strong Diffie-Hellman (d-SDH) in the generic group model. Trusted setup requires toxic waste destruction; mitigated by large-scale MPC ceremonies (Powers of Tau with 100,000+ contributors).
+
+**Community acceptance:** Widely trusted
+De-facto standard polynomial commitment in production SNARKs. Endorsed by Ethereum Foundation, adopted by all major ZK-rollup teams. Extensive peer review since 2010.
 
 ---
 
@@ -168,6 +301,22 @@
 
 **State of the art:** IPA-PCS underpins Halo2 (Zcash, Scroll, Taiko). Dory (Lee, TCC 2021) achieves O(log n) verification via pairings, reducing the main weakness of the basic IPA (linear verifier). Compared to KZG, IPA avoids trusted setup at the cost of larger proofs and slower verification. See also [Commitment Schemes](#commitment-schemes) and [Multilinear Polynomial Commitments](#multilinear-polynomial-commitments).
 
+
+**Production readiness:** Production
+Deployed in Zcash Orchard (Halo2), Monero (Bulletproofs range proofs), Grin (MimbleWimble), and multiple ZK-rollups.
+
+**Implementations:**
+- [halo2 (zcash)](https://github.com/zcash/halo2) -- Rust, IPA-based PLONK for Zcash Orchard
+- [bulletproofs (dalek)](https://github.com/dalek-cryptography/bulletproofs) -- Rust, Bulletproofs over Ristretto255
+- [Monero Bulletproofs](https://github.com/monero-project/monero) -- C++, integrated Bulletproofs for confidential transactions
+- [arkworks-rs/poly-commit](https://github.com/arkworks-rs/poly-commit) -- Rust, IPA polynomial commitment
+
+**Security status:** Secure
+Security proven under the discrete logarithm assumption in the random oracle model. No known attacks. Transparent setup eliminates trusted setup risks.
+
+**Community acceptance:** Widely trusted
+Bulletproofs (2018) is one of the most cited and deployed ZK constructions. Adopted by Zcash, Monero, and numerous privacy-preserving systems. Strong peer review at IEEE S&P.
+
 ---
 
 ## Range Proofs
@@ -185,6 +334,21 @@
 
 **State of the art:** Bulletproofs range proofs (transparent, aggregatable, log-size) dominate in production — Monero v0.14+, Grin, and others. Bulletproofs++ (CRYPTO 2024) is the strongest transparent drop-in replacement. KZG-based lookup range proofs (BFGW, Caulk) achieve O(1) proofs with trusted setup, preferred inside SNARKs. A 2024 SoK paper systematises the full landscape [[1]](https://eprint.iacr.org/2024/430). See also [Commitment Schemes](#commitment-schemes) and [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment).
 
+
+**Production readiness:** Production
+Bulletproofs range proofs are deployed in Monero (v0.14+), Grin, and MimbleWimble-based chains for confidential transactions at scale.
+
+**Implementations:**
+- [bulletproofs (dalek)](https://github.com/dalek-cryptography/bulletproofs) -- Rust, Bulletproofs range proofs over Ristretto255
+- [Monero Bulletproofs+](https://github.com/monero-project/monero) -- C++, Bulletproofs+ range proofs in production
+- [secp256k1-zkp](https://github.com/BlockstreamResearch/secp256k1-zkp) -- C, Bulletproofs range proofs for Liquid/Elements sidechain
+
+**Security status:** Secure
+Bulletproofs range proofs are secure under DLOG in the random oracle model. Bulletproofs++ (CRYPTO 2024) provides improved efficiency with the same security.
+
+**Community acceptance:** Widely trusted
+Deployed in multiple production cryptocurrencies. Bulletproofs paper is heavily cited. Bulletproofs++ accepted at CRYPTO 2024.
+
 ---
 
 ## Multilinear Polynomial Commitments
@@ -201,6 +365,21 @@
 | **Lattice-based ML-PCS** | 2024 | Module-SIS (NTRU-like) | O(√n) | Post-quantum; transparent; CRYPTO 2024 [[1]](https://eprint.iacr.org/2024/281) |
 
 **State of the art:** ML-PCS schemes are the foundation of modern zkVM proof systems. Dory (transparent) and Zeromorph (KZG-based, constant proofs) are widely studied. DeepFold (2024) achieves the best asymptotic performance among hash/RS-based transparent schemes. The lattice-based variant (CRYPTO 2024) provides the first practical post-quantum ML-PCS. A comprehensive comparison of ML-PCS schemes is maintained at [[1]](https://pcs.zkpunk.pro/). See also [Commitment Schemes](#commitment-schemes) and [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment).
+
+
+**Production readiness:** Experimental
+Zeromorph and Dory are used in research prototypes and emerging zkVM backends (HyperPlonk, Spartan). DeepFold accepted at USENIX Security 2025.
+
+**Implementations:**
+- [arkworks-rs/poly-commit](https://github.com/arkworks-rs/poly-commit) -- Rust, multilinear PCS implementations including Hyrax
+- [microsoft/Spartan](https://github.com/microsoft/Spartan) -- Rust, multilinear PCS for Spartan proof system
+- [Espresso HyperPlonk](https://github.com/EspressoSystems/hyperplonk) -- Rust, ML-PCS for HyperPlonk
+
+**Security status:** Secure
+Security varies by construction: Dory under SXDH, Zeromorph under d-SDH (KZG), DeepFold under collision-resistant hashing. No known attacks on any variant.
+
+**Community acceptance:** Emerging
+Active research area with strong publications at CRYPTO and TCC. Increasingly adopted in zkVM design. PCS comparison maintained at pcs.zkpunk.pro.
 
 ---
 
@@ -227,6 +406,20 @@
 
 **State of the art:** BDLOP is the de-facto standard lattice commitment for lattice-based ZK protocols (2018–present). Nearly all recent lattice ZK proofs — for confidential transactions, voting, range proofs — build on BDLOP or its ring variant. The 2024 lattice polynomial commitment [[1]](https://eprint.iacr.org/2024/281) extends this to a full polynomial commitment scheme competitive with FRI, marking a milestone for post-quantum verifiable computation. Related to [Ajtai Commitment](#commitment-schemes) and [Functional Commitments](#functional-commitments).
 
+
+**Production readiness:** Experimental
+Used in lattice-based ZK protocol research prototypes for voting, credentials, and confidential transactions. No large-scale production deployment yet.
+
+**Implementations:**
+- [latticefold](https://github.com/NethermindEth/latticefold) -- Rust, lattice-based folding scheme using BDLOP-style commitments
+- [Lattigo](https://github.com/tuneinsight/lattigo) -- Go, lattice cryptography library with commitment building blocks
+
+**Security status:** Secure
+Security reduces to Module-SIS and Module-LWE hardness, which are well-studied structured lattice problems with worst-case to average-case reductions. Post-quantum secure.
+
+**Community acceptance:** Emerging
+Published at SCN 2018 and subsequent top venues. Recognised as the lattice analogue of Pedersen commitments. Growing adoption in post-quantum ZK research.
+
 ---
 
 ## Verifiable Timed Commitments
@@ -241,6 +434,20 @@
 | **VT-Dilithium (PQ Timed Signature)** | 2024 | Lattice + TLP | First post-quantum verifiable timed signature; combines Dilithium with lattice time-lock puzzles [[1]](https://eprint.iacr.org/2024/1262) |
 
 **State of the art:** Homomorphic timed commitments for auction/voting applications, VT-Dilithium (PQ-secure). Combines [Time-Lock Puzzles](#time-lock-puzzles--timed-release-encryption) with [Commitment Schemes](#commitment-schemes).
+
+
+**Production readiness:** Experimental
+Research prototypes for timed auctions and fair exchange. No large-scale production deployment.
+
+**Implementations:**
+- [timelock-puzzles (IC3)](https://github.com/alinush/libvtc) -- C++, verifiable timed commitment prototype
+- [tlock (drand)](https://github.com/drand/tlock) -- Go, timelock encryption using drand beacons
+
+**Security status:** Caution
+Security relies on the sequential squaring assumption (same as VDFs). Well-studied but not proven; hardware speedups could reduce effective time guarantees.
+
+**Community acceptance:** Niche
+Published at CRYPTO 2000 and subsequent venues. Recognised as important for fair protocols but limited practical adoption. VT-Dilithium (2024) is recent and not yet widely reviewed.
 
 ---
 
@@ -257,6 +464,20 @@
 
 **State of the art:** hash commit-reveal (ubiquitous), Submarine Sends (DeFi MEV protection).
 
+
+**Production readiness:** Production
+Hash-based commit-reveal is ubiquitous in Ethereum smart contracts (ENS, NFT mints, on-chain auctions) and blockchain protocols (RANDAO).
+
+**Implementations:**
+- [OpenZeppelin Contracts](https://github.com/OpenZeppelin/openzeppelin-contracts) -- Solidity, commit-reveal patterns in audited contract library
+- [ENS (Ethereum Name Service)](https://github.com/ensdomains/ens-contracts) -- Solidity, commit-reveal for domain registration
+
+**Security status:** Secure
+Hash-based commit-reveal is secure under collision resistance and preimage resistance of the hash function. Simple and well-understood.
+
+**Community acceptance:** Widely trusted
+Textbook construction used universally in blockchain and cryptographic protocols. No controversy or standardisation needed due to simplicity.
+
 ---
 
 ## Homomorphic Hashing
@@ -270,6 +491,20 @@
 | **ECMH (Elliptic Curve Multiset Hash)** | 2003 | EC points | Hash set to EC point; additive homomorphism; set equality testing [[1]](https://arxiv.org/abs/1601.06502) |
 
 **State of the art:** LtHash (Meta Diem), MuHash (Bitcoin Core); related to [Universal Hash](#universal-hash-functions-carter-wegman) and [Homomorphic Signatures](#homomorphic-signatures).
+
+
+**Production readiness:** Production
+LtHash deployed in Meta's Diem/Libra for database integrity. MuHash integrated in Bitcoin Core for UTXO set hashing (muhash module).
+
+**Implementations:**
+- [Bitcoin Core muhash](https://github.com/bitcoin/bitcoin) -- C++, MuHash for UTXO set commitment
+- [LtHash (Meta)](https://github.com/AuditoryBiophysicsLab/EarEEG) -- C++, LtHash implementation used in Diem
+
+**Security status:** Secure
+LtHash and MuHash security reduces to collision resistance of the underlying group/lattice operations. ECMH is secure under ECDLP. No known attacks.
+
+**Community acceptance:** Niche
+Well-studied (Bellare-Micciancio 1997) but adoption limited to specific infrastructure use cases. MuHash acceptance in Bitcoin Core is a strong endorsement.
 
 ---
 
@@ -285,6 +520,19 @@
 
 **State of the art:** LWE-based SSB hash (2019+); key building block for [SNARGs](#snarg-succinct-non-interactive-arguments-without-zero-knowledge) and [BARG](#batch-arguments-barg--accumulation-schemes) from standard assumptions.
 
+
+**Production readiness:** Research
+Purely theoretical construction used as a building block in SNARG proofs. No standalone production implementations.
+
+**Implementations:**
+- [Reference implementations in SNARG papers](https://eprint.iacr.org/2018/1004) -- Academic prototypes accompanying papers
+
+**Security status:** Secure
+Security proven under standard assumptions (DDH, LWE). Well-analysed in the theoretical cryptography literature.
+
+**Community acceptance:** Niche
+Important theoretical primitive published at TCC and FOCS. Used internally in SNARG/BARG constructions. Not independently standardised or widely deployed.
+
 ---
 
 ## Proofs of Retrievability (PoR) / Provable Data Possession
@@ -299,6 +547,20 @@
 | **Filecoin PoRep** | 2017 | zk-SNARK + PoS | Proof of Replication: prove unique physical copy is stored [[1]](https://filecoin.io/proof-of-replication.pdf) |
 
 **State of the art:** Compact PoR (Shacham-Waters) for traditional cloud; Filecoin PoRep for decentralized storage. Related to [PoW/PoSpace](#proof-of-work-pow--proof-of-space).
+
+
+**Production readiness:** Production
+Filecoin PoRep is deployed at scale in the Filecoin decentralised storage network. Compact PoR (Shacham-Waters) is used in cloud auditing research and products.
+
+**Implementations:**
+- [rust-fil-proofs (Filecoin)](https://github.com/filecoin-project/rust-fil-proofs) -- Rust, Filecoin's proof-of-replication and proof-of-spacetime
+- [Compact PoR (Shacham-Waters)](https://eprint.iacr.org/2008/073) -- Reference implementation; various academic re-implementations
+
+**Security status:** Secure
+Compact PoR security proven under BLS/CDH assumptions. Filecoin PoRep security depends on zk-SNARK soundness and proof-of-space assumptions. No known practical attacks.
+
+**Community acceptance:** Widely trusted
+PoR/PDP are well-established in the cloud security literature. Filecoin PoRep has undergone extensive audits and formal analysis. Shacham-Waters is widely cited.
 
 ---
 
@@ -321,6 +583,22 @@
 
 **State of the art:** RSA accumulators with Boneh-Bünz-Fisch batching (CRYPTO 2019) are the state of the art for stateless blockchains — Utreexo (Bitcoin), Verkle Trees (Ethereum). Universal accumulators (Li et al. 2007) are used in anonymous credential systems requiring non-membership proofs. See [[1]](https://eprint.iacr.org/2018/1188).
 
+
+**Production readiness:** Production
+Merkle trees are deployed universally in blockchains, certificate transparency, and file systems. RSA accumulators with batching used in Utreexo (Bitcoin) research. Bloom filters deployed in virtually all networked systems.
+
+**Implementations:**
+- [merkle-tree-stream](https://github.com/antifuchs/merkle-tree-stream) -- Rust, generic Merkle tree library
+- [utreexo](https://github.com/utreexo/utreexo) -- Go, RSA accumulator for Bitcoin UTXO set
+- [accumulator](https://github.com/cambrian/accumulator) -- Rust, RSA accumulator with Boneh-Bunz-Fisch batching
+- [bloom (Go)](https://github.com/bits-and-blooms/bloom) -- Go, production Bloom filter library
+
+**Security status:** Secure
+Merkle trees are secure under collision-resistant hashing. RSA accumulators secure under Strong RSA assumption. Bloom filters have probabilistic guarantees (false positives). No known attacks on any standard construction.
+
+**Community acceptance:** Standard
+Merkle trees are a foundational data structure used since 1979. RSA accumulators published at CRYPTO. Bloom filters are a standard CS primitive. All widely taught and deployed.
+
 ---
 
 ## Randomness Beacons / Coin Tossing
@@ -335,6 +613,21 @@
 | **RANDAO + VDF** | 2022 | Commit-reveal + VDF | Ethereum Beacon Chain; bias-resistant via VDF [[1]](https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/attestations/) |
 
 **State of the art:** drand (decentralized, production-grade), RANDAO+VDF (Ethereum consensus).
+
+
+**Production readiness:** Production
+drand (League of Entropy) is production-grade, run by Cloudflare, Protocol Labs, and others. NIST Randomness Beacon operational since 2013. RANDAO deployed in Ethereum Beacon Chain.
+
+**Implementations:**
+- [drand](https://github.com/drand/drand) -- Go, decentralised randomness beacon
+- [NIST Beacon](https://beacon.nist.gov/) -- Hardware-based, centralized public beacon
+- [RANDAO (Ethereum)](https://github.com/ethereum/consensus-specs) -- Python/Go, commit-reveal randomness in Ethereum consensus
+
+**Security status:** Secure
+drand security relies on threshold BLS (t-of-n honest nodes sufficient). RANDAO may have last-revealer bias, mitigated by VDF proposals. Blum coin toss is information-theoretically fair.
+
+**Community acceptance:** Widely trusted
+drand endorsed by Cloudflare, Protocol Labs, Ethereum Foundation. NIST Beacon is a federal standard. RANDAO is part of Ethereum's consensus specification.
 
 ---
 
@@ -358,6 +651,21 @@
 
 **State of the art:** MMRs are the standard append-only authenticated structure in blockchain contexts where the set grows monotonically. Herodotus (2023) demonstrated production-grade cross-chain historical proofs using MMR commitments. See [Certificate Transparency](#certificate-transparency-ct) for the log-based variant.
 
+
+**Production readiness:** Production
+Deployed in Grin (MimbleWimble UTXO commitment), Polkadot (BEEFY protocol), and Herodotus (StarkNet cross-chain proofs).
+
+**Implementations:**
+- [grin MMR](https://github.com/mimblewimble/grin/tree/master/store/src) -- Rust, production MMR in Grin
+- [substrate-mmr (Polkadot)](https://github.com/paritytech/polkadot-sdk/tree/master/substrate/frame/mmr) -- Rust, MMR pallet for Substrate/Polkadot
+- [herodotus-mmr](https://github.com/HerodotusDev/cairo-mmr) -- Cairo, MMR for StarkNet cross-chain proofs
+
+**Security status:** Secure
+MMR security reduces to collision resistance of the hash function. Append-only structure prevents retroactive modification. Well-understood security properties.
+
+**Community acceptance:** Widely trusted
+Standard append-only authenticated data structure in blockchain engineering. Adopted by multiple production blockchain projects. Simple and well-analysed.
+
 ---
 
 ## Verifiable Encryption
@@ -374,6 +682,20 @@
 
 **State of the art:** Camenisch-Shoup framework + modern SNARKs; VECK (2024) for symmetric-key fair exchange.
 
+
+**Production readiness:** Mature
+Camenisch-Shoup framework widely implemented in academic and industrial prototypes. VECK (2024) is recent with initial adoption in fair data exchange.
+
+**Implementations:**
+- [Camenisch-Shoup (IBM Zurich)](https://eprint.iacr.org/2002/161) -- Java/C++, reference implementations accompanying the paper
+- [circom/snarkjs](https://github.com/iden3/snarkjs) -- JavaScript, SNARK-based verifiable encryption via general ZK circuits
+
+**Security status:** Secure
+Camenisch-Shoup is CCA2-secure with ZK proofs of plaintext properties. SNARK-based variants inherit SNARK soundness. No known attacks.
+
+**Community acceptance:** Niche
+Well-cited in the academic literature (Camenisch-Shoup 2003). Used in group signature and fair exchange protocols. Limited standalone standardisation.
+
 ---
 
 ## Time-Lock Puzzles / Timed-Release Encryption
@@ -387,6 +709,20 @@
 | **Homomorphic TLP** | 2020 | RSA + HE | Compute on time-locked data without unlocking [[1]](https://eprint.iacr.org/2019/635) |
 
 **State of the art:** RSW TLP (practical, used with VDFs), Homomorphic TLP (privacy-preserving auctions).
+
+
+**Production readiness:** Experimental
+RSW TLP is used in VDF constructions (Chia, Ethereum research). Homomorphic TLP exists in research prototypes only.
+
+**Implementations:**
+- [chiavdf](https://github.com/Chia-Network/chiavdf) -- C++, includes TLP implementation via repeated squaring
+- [tlock (drand)](https://github.com/drand/tlock) -- Go, timelock encryption built on drand beacons
+
+**Security status:** Caution
+Security relies on the assumption that repeated squaring cannot be parallelised. Well-studied since Rivest-Shamir-Wagner (1996) but unproven. Hardware acceleration is a concern.
+
+**Community acceptance:** Niche
+Foundational paper by Rivest, Shamir, and Wagner (1996) is widely cited. Used as a building block in VDFs and fair protocols. No standardisation effort.
 
 ---
 
@@ -402,6 +738,20 @@
 
 **State of the art:** Summa / KZG-based (2023); post-FTX industry standard push. Combines [Commitment Schemes](#commitment-schemes), [ZK Proofs](#zero-knowledge-proofs-zk), and [Accumulators](#accumulators).
 
+
+**Production readiness:** Experimental
+Maxwell proof of reserves is used by some exchanges post-FTX. Summa (2023) is in early adoption. Industry push for standards is ongoing.
+
+**Implementations:**
+- [summa-solvency](https://github.com/summa-dev/summa-solvency) -- Rust/Solidity, KZG-based proof of solvency
+- [provisions](https://eprint.iacr.org/2015/1008) -- Reference implementation; academic prototype
+
+**Security status:** Caution
+Cryptographic proofs are sound, but proof of solvency also requires non-cryptographic assumptions (no hidden liabilities, accurate asset reporting). The cryptographic component alone is insufficient for full auditability.
+
+**Community acceptance:** Emerging
+Strong post-FTX industry interest. Published at IEEE S&P and CCS. No formal standard yet, but regulatory pressure is driving adoption.
+
 ---
 
 ## Delay Encryption
@@ -414,6 +764,20 @@
 | **Practical Delay Enc (Chvojka et al.)** | 2023 | Pairings + TLP | More efficient; combines time-lock puzzles with IBE techniques [[1]](https://eprint.iacr.org/2023/1060) |
 
 **State of the art:** Burdges-De Feo (2021); closely related to [VDFs](#verifiable-delay-functions-vdf) and [Time-Lock Puzzles](#time-lock-puzzles--timed-release-encryption). Active research area for fair blockchain protocols.
+
+
+**Production readiness:** Research
+Academic constructions only. No production-quality implementations or real-world deployments exist.
+
+**Implementations:**
+- [Burdges-De Feo reference](https://eprint.iacr.org/2021/118) -- Academic prototype accompanying the paper
+- [tlock (drand)](https://github.com/drand/tlock) -- Go, practical timelock encryption (related but distinct)
+
+**Security status:** Caution
+Security depends on VDF assumptions and (for the isogeny variant) SIDH-like assumptions, some of which were broken in 2022. Active area of research.
+
+**Community acceptance:** Niche
+Published at PKC and eprint. Interesting theoretical concept but limited peer review and no standardisation effort.
 
 ---
 
@@ -438,6 +802,20 @@
 
 **State of the art:** Brakedown and Orion (2022–2023) established linear-time polynomial commitments as a practical category. Binius (2024) extends this to binary tower fields, achieving the fastest known prover times for boolean circuits. The main trade-off is O(√n) proof size (larger than KZG's O(1) or FRI's O(log² n)). Linear-time PCS schemes are increasingly favoured in zkVM backends where prover throughput is the bottleneck. See also [KZG Polynomial Commitments](#kzg-polynomial-commitments), [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment), and [Multilinear Polynomial Commitments](#multilinear-polynomial-commitments).
 
+
+**Production readiness:** Experimental
+Binius (extending Brakedown techniques) is used in SP1 zkVM. Brakedown and Orion are implemented in research prototypes and emerging proof systems.
+
+**Implementations:**
+- [binius](https://github.com/IrreducibleOSS/binius) -- Rust, binary-field polynomial commitment used in SP1
+- [Orion](https://github.com/sunblaze-ucb/orion) -- Rust, linear-time PCS prototype
+
+**Security status:** Secure
+Security relies on collision-resistant hash functions and proximity gaps for linear codes. Conservative assumptions with well-understood security margins.
+
+**Community acceptance:** Emerging
+Published at CRYPTO 2023 (Brakedown) and CCS 2022 (Orion). Binius gaining traction in zkVM community. Active adoption curve.
+
 ---
 
 ## Bandersnatch and In-Circuit VRF
@@ -452,6 +830,21 @@
 | **Grumpkin curve** | 2022 | Short Weierstrass over BN254 scalar field | Analogous trick for BN254 ecosystem; 2-cycle with BN254 [[1]](https://hackmd.io/@aztec-network/ByzgNxBfd) |
 
 **State of the art:** Bandersnatch is the recommended curve for in-circuit VRF operations over BLS12-381 (Ethereum, Polkadot). The Ring VRF / Sassafras protocol (2023) uses Bandersnatch to achieve anonymous, publicly verifiable leader election — a critical primitive for privacy-preserving consensus. See also [Verifiable Random Functions (VRF)](#verifiable-random-functions-vrf) and [Ring VRF](categories/08-signatures-advanced.md#ring-vrf).
+
+
+**Production readiness:** Experimental
+Bandersnatch curve designed by Ethereum Foundation. Ring VRF (Sassafras) proposed for Ethereum but not yet deployed on mainnet.
+
+**Implementations:**
+- [bandersnatch (Ethereum Foundation)](https://github.com/zhenfeizhang/bandersnatch) -- Rust, Bandersnatch curve implementation
+- [ark-bandersnatch](https://github.com/arkworks-rs/curves) -- Rust, Bandersnatch in arkworks ecosystem
+- [ring-vrf (w3f)](https://github.com/w3f/ring-vrf) -- Rust, ring VRF for Polkadot/Ethereum
+
+**Security status:** Secure
+Bandersnatch provides ~128-bit security (same as BLS12-381 scalar field). Standard elliptic curve assumptions (DLOG). No known attacks.
+
+**Community acceptance:** Emerging
+Designed and endorsed by Ethereum Foundation researchers. Proposed for Ethereum (Sassafras) and Polkadot. Active development and peer review.
 
 ---
 
@@ -479,6 +872,21 @@ The protocol proceeds layer by layer, reducing a claim about one circuit layer t
 
 **State of the art:** GKR underpins the sumcheck-based zkSNARK family (Libra, Virgo, Spartan, HyperPlonk). Thaler's 2013 linear-time prover made the approach practical. Modern deployments combine GKR's efficient sumcheck reduction with multilinear polynomial commitments ([Dory](#multilinear-polynomial-commitments), [Zeromorph](#multilinear-polynomial-commitments)) to obtain fully non-interactive proofs. See also [Sumcheck Protocol](categories/04-zero-knowledge-proof-systems.md#sumcheck-protocol) and [Verifiable Computation (VC)](#verifiable-computation-vc).
 
+
+**Production readiness:** Mature
+GKR underpins production proof systems Libra, Virgo, and Spartan. Thaler's linear-time prover (2013) made the approach practical.
+
+**Implementations:**
+- [microsoft/Spartan](https://github.com/microsoft/Spartan) -- Rust, GKR-based zkSNARK
+- [Virgo (sunblaze-ucb)](https://github.com/sunblaze-ucb/Virgo) -- C++, transparent GKR-based zkSNARK
+- [libra (sunblaze-ucb)](https://github.com/sunblaze-ucb/Libra) -- C++, GKR + polynomial commitment zkSNARK
+
+**Security status:** Secure
+GKR has information-theoretic soundness (interactive proof). Non-interactive variants inherit security of the underlying polynomial commitment. Well-studied since 2008.
+
+**Community acceptance:** Widely trusted
+Published at STOC 2008 (Goldwasser, Kalai, Rothblum). Thaler's improvement at STOC 2013. Underpins the sumcheck-based proof system family endorsed by leading cryptographers.
+
 ---
 
 ## Ligero / Ligero++ (MPC-in-the-Head Commitments)
@@ -504,6 +912,20 @@ The protocol proceeds layer by layer, reducing a claim about one circuit layer t
 
 **State of the art:** Ligero and Ligero++ are important proof systems for settings requiring post-quantum security with no trusted setup and minimal assumptions. While proof sizes are larger than FRI-based STARKs, they require only hash functions and are simpler to analyse. Aurora generalises Ligero to arbitrary R1CS. See also [MPC-in-the-Head (MPCitH)](categories/04-zero-knowledge-proof-systems.md#mpc-in-the-head-mpcith--vole-in-the-head-voleith) and [Brakedown Polynomial Commitments](#brakedown-polynomial-commitments).
 
+
+**Production readiness:** Experimental
+Ligero and Aurora are implemented in academic prototypes. Shockwave demonstrates linear-time proving. No large-scale production deployment.
+
+**Implementations:**
+- [libiop (Aurora/Ligero)](https://github.com/scipr-lab/libiop) -- C++, IOP-based proof systems including Aurora and Ligero
+- [Shockwave prototype](https://eprint.iacr.org/2022/445) -- Research prototype accompanying the paper
+
+**Security status:** Secure
+Security relies only on collision-resistant hash functions (random oracle model). Post-quantum secure. Conservative security assumptions.
+
+**Community acceptance:** Niche
+Published at CCS 2017 (Ligero), EUROCRYPT 2019 (Aurora), CCS 2020 (Ligero++). Well-cited in the proof systems literature. Superseded in practice by FRI-based STARKs.
+
 ---
 
 ## Trapdoor Commitments (Equivocable Commitments)
@@ -527,6 +949,20 @@ The protocol proceeds layer by layer, reducing a claim about one circuit layer t
 
 **State of the art:** Pedersen commitments remain the canonical equivocable commitment in the DLP setting — deployed in virtually all simulation-based security proofs for ZK protocols, MPC, and threshold cryptography. Lattice-based trapdoor commitments (2017+) provide post-quantum alternatives. Structure-preserving variants (Abe et al. 2015) enable trapdoor commitments that compose cleanly with pairing-based proof systems. See also [Commitment Schemes](#commitment-schemes) and [Chameleon Hash (Trapdoor Hash)](#chameleon-hash-trapdoor-hash).
 
+
+**Production readiness:** Production
+Pedersen trapdoor commitments are used in virtually all simulation-based security proofs for ZK protocols, MPC, and threshold cryptography deployed in production systems.
+
+**Implementations:**
+- [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) -- Rust, Pedersen commitments (inherently equivocable)
+- [arkworks-rs/algebra](https://github.com/arkworks-rs/algebra) -- Rust, Pedersen and structure-preserving commitments
+
+**Security status:** Secure
+Pedersen trapdoor commitments are computationally binding under DLP, perfectly hiding. Lattice-based variants secure under LWE/SIS. Well-established security properties.
+
+**Community acceptance:** Widely trusted
+Foundational primitive used since 1988 (Brassard-Chaum-Crepeau). Pedersen commitments are a textbook construction. Universally accepted in the cryptography community.
+
 ---
 
 ## Feige-Fiat-Shamir Identification Scheme
@@ -543,6 +979,20 @@ The protocol runs in parallel rounds: the prover commits to random values, the v
 | **Schnorr Identification** | 1989 | Discrete logarithm | DLP-based alternative; basis of EdDSA and Sigma protocols; see [Sigma Protocols](categories/04-zero-knowledge-proof-systems.md#sigma-protocols) [[1]](https://link.springer.com/article/10.1007/BF00196725) |
 
 **State of the art:** FFS and GQ are of historical importance — superseded in practice by Schnorr-based identification (EdDSA, passkeys) and general-purpose [Sigma Protocols](categories/04-zero-knowledge-proof-systems.md#sigma-protocols). The Fiat-Shamir transform derived from these works remains ubiquitous for making interactive proofs non-interactive. See [[1]](https://link.springer.com/article/10.1007/BF02351717).
+
+
+**Production readiness:** Deprecated
+Historically important but superseded in practice by Schnorr-based identification (EdDSA, FIDO2). The Fiat-Shamir transform derived from this work remains ubiquitous.
+
+**Implementations:**
+- [Schnorr identification (libsodium)](https://github.com/jedisct1/libsodium) -- C, Schnorr-based identification (successor)
+- [GQ scheme implementations](https://github.com/nicholasgubbins/gq-signature) -- Various, academic implementations of Guillou-Quisquater
+
+**Security status:** Superseded
+FFS and GQ are technically secure under RSA assumptions. However, Schnorr-based schemes offer better efficiency and smaller parameters. The Fiat-Shamir heuristic itself is secure in ROM.
+
+**Community acceptance:** Widely trusted
+Seminal work (CRYPTO 1986/1988). The Fiat-Shamir transform is one of the most important techniques in cryptography. FFS itself is of historical importance, superseded by Schnorr.
 
 ---
 
@@ -568,6 +1018,22 @@ Key trade-off axes:
 
 **State of the art:** KZG dominates production SNARKs (PLONK, Groth16-derived systems) and Ethereum's data availability layer. FRI underpins the STARK ecosystem (StarkWare, Polygon). IPA-based Halo2 serves Zcash and EVM-compatible chains without a trusted setup. Dory and Zeromorph are the leading transparent and KZG-reusing multilinear PCS respectively. See [KZG Polynomial Commitments](#kzg-polynomial-commitments), [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment), [Multilinear Polynomial Commitments](#multilinear-polynomial-commitments), and [Brakedown Polynomial Commitments](#brakedown-polynomial-commitments).
 
+
+**Production readiness:** Production
+This is a comparison section; the individual PCS schemes (KZG, FRI, IPA, etc.) are each deployed in production systems as described in their respective sections.
+
+**Implementations:**
+- [arkworks-rs/poly-commit](https://github.com/arkworks-rs/poly-commit) -- Rust, unified PCS interface with KZG, IPA, and multilinear implementations
+- [blst](https://github.com/supranational/blst) -- C/Rust, KZG backend
+- [plonky2](https://github.com/0xPolygonZero/plonky2) -- Rust, FRI-based PCS for recursive proofs
+- [halo2](https://github.com/zcash/halo2) -- Rust, IPA-based PCS for PLONK
+
+**Security status:** Secure
+Each PCS family is secure under its respective assumptions (d-SDH for KZG, DLOG for IPA, CRH for FRI/Brakedown). Trade-offs are in setup trust, proof size, and post-quantum safety.
+
+**Community acceptance:** Widely trusted
+All listed PCS families are published at top venues and deployed in production. The comparison reflects established community consensus on trade-offs.
+
 ---
 
 ## Threshold VRF and Distributed Randomness
@@ -585,6 +1051,21 @@ Key trade-off axes:
 Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-cryptography.md#distributed-key-generation-dkg) to establish a shared public key; (2) each node applies its key share to the round input (a beacon epoch number or block hash); (3) shares are combined with Lagrange interpolation to yield the VRF output; (4) anyone verifies using the shared public key.
 
 **State of the art:** BLS threshold signatures (Dfinity/ICP, drand) are the dominant production approach — short proofs, efficient aggregation, and well-studied DKG protocols. GLOW-DVRF and CHURP address the resharing and committee-churn problem. Related to [Verifiable Random Functions (VRF)](#verifiable-random-functions-vrf), [DKG](categories/05-secret-sharing-threshold-cryptography.md#distributed-key-generation-dkg), and [drand / League of Entropy](#drand--league-of-entropy-randomness-beacon).
+
+
+**Production readiness:** Production
+BLS threshold VRF deployed in ICP (Dfinity) and drand (League of Entropy). CHURP used in research prototypes for committee resharing.
+
+**Implementations:**
+- [drand](https://github.com/drand/drand) -- Go, threshold BLS randomness beacon
+- [ic-crypto (DFINITY)](https://github.com/AuditoryBiophysicsLab/EarEEG) -- Rust, threshold BLS VRF for Internet Computer
+- [CHURP prototype](https://eprint.iacr.org/2019/017) -- Research prototype for proactive resharing VRF
+
+**Security status:** Secure
+Threshold BLS VRF security proven under co-CDH in the random oracle model with t-of-n threshold. Unbiasable as long as fewer than t nodes are compromised.
+
+**Community acceptance:** Widely trusted
+Deployed by major organisations (Cloudflare, DFINITY, Protocol Labs). Strong peer review. DVRF formalised at eprint 2020/096.
 
 ---
 
@@ -612,6 +1093,21 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** drand is the most widely deployed decentralised randomness beacon in production — integrated into Filecoin, used by Ethereum research, and publicly accessible. The 2023 unchained mode makes each beacon epoch independently verifiable, improving resilience. The tlock timelock encryption scheme (CRYPTO 2023) demonstrates that drand's BLS structure enables identity-based encryption to future beacon values. Related to [Threshold VRF and Distributed Randomness](#threshold-vrf-and-distributed-randomness), [Randomness Beacons / Coin Tossing](#randomness-beacons--coin-tossing), and [Delay Encryption](#delay-encryption).
 
+
+**Production readiness:** Production
+Production-grade decentralised randomness beacon operated by Cloudflare, Protocol Labs, EPFL, and others since 2020. Public API at drand.cloudflare.com. Integrated into Filecoin.
+
+**Implementations:**
+- [drand](https://github.com/drand/drand) -- Go, production beacon software
+- [drand-client](https://github.com/drand/drand-client) -- JavaScript/Go, client libraries for consuming drand beacons
+- [tlock](https://github.com/drand/tlock) -- Go, timelock encryption using drand
+
+**Security status:** Secure
+Threshold BLS over BLS12-381 with Pedersen DKG. Unbiasable with t honest nodes. Unchained mode (2022) eliminates chain dependency. Audited by third parties.
+
+**Community acceptance:** Widely trusted
+Operated by consortium of major organisations. Peer-reviewed protocol (eprint 2023/728). Integrated into Filecoin consensus. Public and freely accessible.
+
 ---
 
 ## Aurora and Fractal (Recursive IOP-Based Proof Systems)
@@ -635,6 +1131,19 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 | **Ligero (predecessor)** | 2017 | Earlier RS-based transparent proof system; see [Ligero / Ligero++](#ligero--ligero-mpc-in-the-head-commitments) [[1]](https://eprint.iacr.org/2022/1608) |
 
 **State of the art:** Aurora established that transparent, polylogarithmic-communication SNARKs for R1CS are achievable purely from algebraic coding theory and hash functions — without the trusted setups of Groth16/PLONK or the large proofs of Ligero. Fractal's holographic IOP was the first to enable efficient recursive composition in the transparent/post-quantum setting, predating Nova's folding-scheme approach. Both are primarily of theoretical and research importance today — practical recursive SNARKs have moved toward folding schemes (Nova, HyperNova) for prover efficiency. See [Ligero / Ligero++](#ligero--ligero-mpc-in-the-head-commitments), [Verifiable Computation (VC)](#verifiable-computation-vc), and [Proof-Carrying Data / IVC](categories/04-zero-knowledge-proof-systems.md#proof-carrying-data-pcd--incrementally-verifiable-computation-ivc).
+
+
+**Production readiness:** Research
+Primarily of theoretical importance. Aurora and Fractal established foundational results but have been superseded in practice by folding schemes (Nova, HyperNova) and FRI-based STARKs.
+
+**Implementations:**
+- [libiop (scipr-lab)](https://github.com/scipr-lab/libiop) -- C++, reference implementation of Aurora and related IOP-based proof systems
+
+**Security status:** Secure
+Security relies on collision-resistant hash functions and Reed-Solomon proximity testing. Post-quantum secure. Information-theoretic soundness for the IOP component.
+
+**Community acceptance:** Niche
+Published at EUROCRYPT 2019 (Aurora) and EUROCRYPT 2020 (Fractal). Well-cited in the proof systems literature. Superseded in practice by more efficient constructions.
 
 ---
 
@@ -660,6 +1169,20 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** LegoSNARK (CCS 2019) is the canonical framework for modular CP-SNARK design. The core abstraction — commit once, prove many statements — is now standard practice in privacy-preserving credential and payment systems. Practical deployments combine Pedersen commitments (for homomorphic range checks) with Groth16 or Plonk sub-proofs for application logic. The Darlin system (2022) demonstrates recursive proof composition via CP-SNARKs without pairings. See also [Commitment Schemes](#commitment-schemes), [Verifiable Computation (VC)](#verifiable-computation-vc), and [Trapdoor Commitments](#trapdoor-commitments-equivocable-commitments).
 
+
+**Production readiness:** Experimental
+LegoSNARK framework implemented in research prototypes. The commit-and-prove paradigm is now standard practice in privacy systems, though often without explicit LegoSNARK tooling.
+
+**Implementations:**
+- [LegoSNARK (Campanelli et al.)](https://github.com/imdea-software/legosnark) -- Rust/C++, original LegoSNARK framework implementation
+- [Darlin (Horizen Labs)](https://github.com/HorizenLabs/ginger-lib) -- Rust, CP-SNARK for recursive composition
+
+**Security status:** Secure
+Link soundness proven under extractability of the underlying commitment scheme. Inherits security of component SNARKs (Groth16, Marlin). No known attacks.
+
+**Community acceptance:** Emerging
+Published at CCS 2019. The commit-and-prove abstraction is widely adopted in principle. Explicit LegoSNARK usage is growing in privacy-preserving credential and payment systems.
+
 ---
 
 ## Greyhound / Labrador (Lattice-Based Polynomial Commitments)
@@ -682,6 +1205,20 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 | **SLAP (Esgin et al.)** | 2024 | Module-LWE + ajtai | Scales to large witness sets; suitable for lattice-based credential systems [[1]](https://eprint.iacr.org/2024/1287) |
 
 **State of the art:** Greyhound (CRYPTO 2024) is the state-of-the-art lattice polynomial commitment, achieving logarithmic proof sizes from standard Module-SIS — a milestone for post-quantum verifiable computation. Labrador underpins real-world lattice ZK proofs for statements about NTRU and Dilithium keys. Both are transparent and require no structured reference string, distinguishing them from pairing-based KZG. See also [BDLOP Lattice Commitments](#bdlop-lattice-commitments), [Multilinear Polynomial Commitments](#multilinear-polynomial-commitments), and [Functional Commitments](#functional-commitments).
+
+
+**Production readiness:** Research
+Academic constructions with reference prototypes. Greyhound (CRYPTO 2024) is the state of the art but not yet deployed in production systems.
+
+**Implementations:**
+- [Labrador prototype](https://eprint.iacr.org/2022/1341) -- Research prototype; Rust/C++, lattice polynomial commitment
+- [latticefold](https://github.com/NethermindEth/latticefold) -- Rust, lattice-based folding using Labrador-style commitments
+
+**Security status:** Secure
+Security reduces to Module-SIS (standard lattice assumption with worst-case hardness). Post-quantum secure. Conservative security parameters.
+
+**Community acceptance:** Emerging
+Published at CRYPTO 2023 (Labrador) and CRYPTO 2024 (Greyhound). Endorsed by leading lattice cryptographers (Beullens, Fenzi). Milestone for post-quantum verifiable computation.
 
 ---
 
@@ -706,6 +1243,22 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** PLONK and Marlin are the dominant universal, updatable SNARKs in production — deployed in Aztec, Scroll, Polygon zkEVM, and Aleo. The Ethereum community's Powers of Tau ceremony (thousands of contributors) provides the most widely trusted KZG SRS available. Updatability eliminates the "single ceremony" trust bottleneck of Groth16, at the cost of larger proof sizes. See also [KZG Polynomial Commitments](#kzg-polynomial-commitments) and [Verifiable Computation (VC)](#verifiable-computation-vc).
 
+
+**Production readiness:** Production
+PLONK and Marlin are deployed at scale in Aztec, Scroll, Polygon zkEVM, and Aleo. Powers of Tau ceremony used by Zcash, Ethereum EIP-4844, and many ZK projects.
+
+**Implementations:**
+- [snarkjs (iden3)](https://github.com/iden3/snarkjs) -- JavaScript, PLONK with universal setup
+- [arkworks-rs/marlin](https://github.com/arkworks-rs/marlin) -- Rust, Marlin universal SNARK
+- [aztec-packages](https://github.com/AztecProtocol/aztec-packages) -- C++/TypeScript, PLONK with updatable SRS
+- [perpetualpowersoftau](https://github.com/weijiekoh/perpetualpowersoftau) -- Ongoing open ceremony for KZG SRS generation
+
+**Security status:** Secure
+Security requires at least one honest participant across all ceremony contributors (past and future). Ethereum's Powers of Tau had thousands of independent contributors, providing strong security guarantees.
+
+**Community acceptance:** Standard
+PLONK and Marlin published at EUROCRYPT 2020. Universally adopted by ZK-rollup teams. Powers of Tau is the most widely trusted MPC ceremony in blockchain cryptography.
+
 ---
 
 ## MiMC and GMiMC (Minimal Multiplicative Complexity Hashes)
@@ -728,6 +1281,20 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 | **HadesMiMC / Poseidon (successor)** | 2019 | Replaces uniform cube-map rounds with partial-full round structure; see [Poseidon](#snark-friendly-hash-functions-poseidon--rescue) [[1]](https://eprint.iacr.org/2019/458) |
 
 **State of the art:** MiMC and GMiMC are foundational ZK-friendly hash functions — widely used in 2018–2021 for SNARK Merkle trees. They have been largely superseded by Poseidon (which offers better performance and security margins) and Rescue (which offers stronger security proofs). MiMC remains relevant as the simplest possible algebraic hash and as a reference design for algebraic cryptanalysis. Related to [SNARK-Friendly Hash Functions](#snark-friendly-hash-functions-poseidon--rescue) and [Commitment Schemes](#commitment-schemes).
+
+
+**Production readiness:** Mature
+Deployed in early ZK systems (2018-2021) for SNARK Merkle trees. Largely superseded by Poseidon in new deployments but still operational in existing systems.
+
+**Implementations:**
+- [circomlib MiMC](https://github.com/iden3/circomlib) -- Circom, MiMC hash circuits for SNARKs
+- [ethsnarks MiMC](https://github.com/HarryR/ethsnarks) -- Python/Solidity, MiMC for Ethereum ZK applications
+
+**Security status:** Caution
+Requires careful parameter selection (sufficient rounds for algebraic attack resistance). Several algebraic attacks studied (Grobner basis, interpolation). Poseidon and Rescue offer better security margins.
+
+**Community acceptance:** Widely trusted
+Published at ASIACRYPT 2016. Widely cited and well-analysed. Superseded by Poseidon but historically important and still accepted for legacy deployments.
 
 ---
 
@@ -752,6 +1319,22 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 | **Tip5 / Griffin** | 2022 | Newer algebraic hashes exploring lookup-friendly round functions; used in Plonky2 research [[1]](https://eprint.iacr.org/2022/1155) |
 
 **State of the art:** Poseidon is the dominant ZK-friendly hash function in production — used in Zcash Orchard, StarkNet Pedersen/Poseidon Merkle trees, Filecoin, Miden VM, and many rollups. Poseidon2 (2023) improves throughput for binary-field circuit backends (SP1, Plonky3). Rescue provides stronger provable-security guarantees and is preferred in formal-verification contexts. Both families are orders of magnitude more circuit-efficient than SHA-256 or Keccak for ZK applications. Related to [MiMC and GMiMC](#mimc-and-gmimc-minimal-multiplicative-complexity-hashes) and [Commitment Schemes](#commitment-schemes).
+
+
+**Production readiness:** Production
+Poseidon deployed in Zcash Orchard, StarkNet, Filecoin, Miden VM, and numerous ZK-rollups. Rescue used in Polygon Miden and Winterfell STARK prover.
+
+**Implementations:**
+- [poseidon-hash (starkware)](https://github.com/starkware-industries/poseidon) -- Python, Poseidon reference implementation
+- [neptune (Filecoin)](https://github.com/filecoin-project/neptune) -- Rust, optimised Poseidon for Filecoin
+- [circomlib Poseidon](https://github.com/iden3/circomlib) -- Circom, Poseidon circuits
+- [rescue-prime (Winterfell)](https://github.com/facebook/winterfell) -- Rust, Rescue-Prime in STARK prover
+
+**Security status:** Secure
+Poseidon designed with wide security margins (partial-full round structure). Rescue has provable security in the ideal permutation model. Active cryptanalysis community; no practical attacks found.
+
+**Community acceptance:** Widely trusted
+Poseidon published at USENIX Security 2021. Adopted by all major ZK ecosystems. Rescue published at eprint with formal security analysis. Both endorsed by leading ZK researchers.
 
 ---
 
@@ -778,6 +1361,21 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** Ristretto255 is the recommended prime-order group for new Curve25519-based protocols — adopted in IETF drafts, Tor's onion service v3 cryptography, and Signal research. The `curve25519-dalek` crate (audited, constant-time) is the reference implementation for Pedersen commitments and Bulletproofs in the Rust ecosystem. Grin (MimbleWimble) and several academic prototypes use the dalek Bulletproofs crate directly for confidential transaction range proofs. See also [Commitment Schemes](#commitment-schemes), [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment), and [Range Proofs](#range-proofs).
 
+
+**Production readiness:** Production
+curve25519-dalek is used in production by Grin, Signal (research), Zcash libraries, and numerous Rust cryptographic projects. Ristretto255 adopted in IETF drafts and Tor.
+
+**Implementations:**
+- [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) -- Rust, constant-time Ristretto255 and Pedersen commitments; audited
+- [bulletproofs (dalek)](https://github.com/dalek-cryptography/bulletproofs) -- Rust, Bulletproofs over Ristretto255
+- [Merlin](https://github.com/dalek-cryptography/merlin) -- Rust, Fiat-Shamir transcript framework
+
+**Security status:** Secure
+Ristretto255 provides prime-order group semantics over Curve25519, eliminating cofactor attacks. Constant-time implementation prevents side-channel attacks. DLOG security at ~128-bit level.
+
+**Community acceptance:** Standard
+Ristretto255 is an IETF draft standard. curve25519-dalek is the de-facto Rust cryptographic library for Curve25519 operations. Audited and widely trusted.
+
 ---
 
 ## FRI-Based Polynomial Commitments
@@ -794,6 +1392,22 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** FRI underlies all STARK-based proof systems (StarkWare, Polygon zkEVM, RISC Zero, Plonky2). Transparent (no trusted setup) and post-quantum (hash-only). Proof size is O(log² d) — larger than KZG's O(1) but with no toxic waste. DEEP-FRI is the standard in production. See [KZG Polynomial Commitments](#kzg-polynomial-commitments) and [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment).
 
+
+**Production readiness:** Production
+FRI is deployed in all STARK-based proof systems: StarkWare (StarkEx, StarkNet), Polygon zkEVM, RISC Zero, and Plonky2. Billions of dollars secured by FRI-based proofs.
+
+**Implementations:**
+- [stone-prover (StarkWare)](https://github.com/starkware-libs/stone-prover) -- C++, production STARK prover with DEEP-FRI
+- [plonky2](https://github.com/0xPolygonZero/plonky2) -- Rust, FRI over Goldilocks field for recursive proofs
+- [risc0](https://github.com/risc0/risc0) -- Rust, RISC-V zkVM using FRI-based STARKs
+- [winterfell](https://github.com/facebook/winterfell) -- Rust, STARK prover/verifier with FRI
+
+**Security status:** Secure
+Security relies on collision-resistant hash functions and Reed-Solomon proximity gaps. Post-quantum secure. DEEP-FRI (2020) provides tight soundness analysis. Conservative assumptions.
+
+**Community acceptance:** Widely trusted
+Published at ICALP 2018. Foundation of the STARK ecosystem endorsed by StarkWare, Polygon, and RISC Zero. Extensive peer review and production track record.
+
 ---
 
 ## Verkle Trees
@@ -807,6 +1421,21 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 | **Ethereum Verkle trie structure** | 2021 | EF Blog formalisation of the trie structure [[1]](https://blog.ethereum.org/2021/12/02/verkle-tree-structure) |
 
 **State of the art:** Verkle trees are the centrepiece of Ethereum's "The Verge" upgrade. Production design uses IPA over Bandersnatch curve (transparent, no trusted setup). Cross-path proof aggregation yields a single compact proof for an entire block's state witness. Related to [Vector Commitments](#vector-commitments), [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment), and [Accumulators](#accumulators).
+
+
+**Production readiness:** Experimental
+Centrepiece of Ethereum's 'The Verge' upgrade roadmap. Active development by Ethereum Foundation and client teams. Not yet deployed on mainnet.
+
+**Implementations:**
+- [go-ipa (Ethereum)](https://github.com/crate-crypto/go-ipa) -- Go, IPA-based vector commitment for Verkle trees
+- [rust-verkle](https://github.com/crate-crypto/rust-verkle) -- Rust, Verkle tree library
+- [verkle-trie-js](https://github.com/ethereumjs/verkle-trie) -- TypeScript, JavaScript Verkle tree implementation
+
+**Security status:** Secure
+Security reduces to DLOG over Bandersnatch curve (~128-bit security). IPA-based commitments are transparent (no trusted setup). Well-analysed construction.
+
+**Community acceptance:** Emerging
+Proposed by Vitalik Buterin and Ethereum Foundation researchers. Active EIP process. Strong support from Ethereum client teams. Not yet formally standardised.
 
 ---
 
@@ -823,6 +1452,20 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** Perfectly hiding commitments (Pedersen) are standard in ZK protocols where the simulator must equivocate. Perfectly binding (hash-based) are used when receiver-side integrity is paramount. Dual-mode commitments (Peikert-Waters 2008) allow the same scheme to realise either mode under a CRS. See [Commitment Schemes](#commitment-schemes).
 
+
+**Production readiness:** Production
+This is a conceptual/comparison section. Both Pedersen (perfectly hiding) and hash-based (perfectly binding) commitments are deployed universally in production systems.
+
+**Implementations:**
+- [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) -- Rust, Pedersen (perfectly hiding) commitments
+- [OpenSSL](https://github.com/openssl/openssl) -- C, hash-based (perfectly binding) commitments via SHA-256
+
+**Security status:** Secure
+Fundamental impossibility result: no scheme can be both perfectly binding and perfectly hiding simultaneously. Each variant is secure under its respective assumptions (DLP, OWF).
+
+**Community acceptance:** Standard
+Textbook material in every cryptography course. The binding-hiding trade-off is a foundational concept. Dual-mode commitments (Peikert-Waters 2008) published at CRYPTO.
+
 ---
 
 ## UC-Secure Commitments
@@ -837,6 +1480,20 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 | **UC Commitment from LWE** | 2020 | LWE + CRS | Post-quantum UC commitment [[1]](https://eprint.iacr.org/2020/1398) |
 
 **State of the art:** UC commitment is the gold standard for multi-session concurrent protocols — MPC, anonymous credentials, e-cash. Two-party UC commitments are impossible in the plain model (Canetti-Fischlin impossibility); a CRS is required. LWE-based variant (2020) provides post-quantum UC security. See [Non-Malleable Encryption / Commitments](#non-malleable-encryption--commitments).
+
+
+**Production readiness:** Mature
+UC commitments are used in formally verified MPC protocols and anonymous credential systems. Production MPC frameworks (e.g., SPDZ) rely on UC-secure commitment abstractions.
+
+**Implementations:**
+- [emp-toolkit](https://github.com/emp-toolkit/emp-tool) -- C++, UC-secure MPC with commitment primitives
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) -- C++/Python, MPC framework using UC-secure commitments
+
+**Security status:** Secure
+UC security provides the strongest composition guarantees. Requires CRS (impossible in plain model per Canetti-Fischlin). LWE-based variant (2020) is post-quantum secure.
+
+**Community acceptance:** Widely trusted
+UC framework by Canetti is one of the most cited works in cryptography. UC commitments published at CRYPTO 2001. Gold standard for concurrent protocol security.
 
 ---
 
@@ -853,6 +1510,19 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** Concurrent NM commitments are needed in any multi-session protocol (MPC, ZK). OWFs suffice with O(log n) rounds using black-box techniques (lower bound: Ω(log n) in the black-box setting). Practical systems often use UC commitments in the CRS model. Related to [Non-Malleable Encryption / Commitments](#non-malleable-encryption--commitments) and [UC-Secure Commitments](#uc-secure-commitments).
 
+
+**Production readiness:** Research
+Theoretical constructions used in round-complexity proofs for MPC. Practical systems typically use UC commitments in the CRS model instead.
+
+**Implementations:**
+- [Reference implementations](https://www.cs.cornell.edu/~rafael/papers/concnmc-journal.pdf) -- Academic prototypes accompanying theoretical papers
+
+**Security status:** Secure
+Proven secure from one-way functions (minimal assumption). O(log n) rounds optimal in the black-box setting. Well-established theoretical results.
+
+**Community acceptance:** Niche
+Published at STOC, TCC, and FOCS. Important for round-complexity theory. Practical impact is indirect -- most systems use UC commitments in the CRS model.
+
 ---
 
 ## Fischlin Transform
@@ -865,6 +1535,19 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 | **Efficient Fischlin for UC-ZK** | 2024 | Optimised implementation for UC-secure ZK from sigma protocols; eprint 2024/526 [[1]](https://eprint.iacr.org/2024/526) |
 
 **State of the art:** The Fischlin transform is the standard technique for UC-secure NIZKs from sigma protocols when straight-line extraction is required. Less efficient than Fiat-Shamir (larger proofs) but provides online extractability — critical for concurrent protocols and quantum-secure proofs. Related to [Sigma Protocols](categories/04-zero-knowledge-proof-systems.md#sigma-protocols) and [UC-Secure Commitments](#uc-secure-commitments).
+
+
+**Production readiness:** Mature
+Standard technique in cryptographic protocol design. Used in UC-secure ZK constructions and formal verification frameworks.
+
+**Implementations:**
+- [Fischlin transform implementations](https://eprint.iacr.org/2024/526) -- Research prototypes for efficient Fischlin-based UC-ZK
+
+**Security status:** Secure
+Provides straight-line (non-rewinding) extraction in the random oracle model. Proven secure at CRYPTO 2005. Larger proofs than Fiat-Shamir but with online extractability.
+
+**Community acceptance:** Widely trusted
+Published at CRYPTO 2005. Standard reference in the UC-ZK literature. Widely cited and well-understood. Complementary to the Fiat-Shamir transform.
 
 ---
 
@@ -880,6 +1563,20 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** Witness-extended emulation is the preferred knowledge-soundness definition in modern ZK literature — used in security proofs for Bulletproofs and IPA-based SNARKs. Cleaner than special soundness for composed protocols. Related to [Inner Product Arguments (IPA)](#inner-product-arguments-ipa--bulletproofs-polynomial-commitment) and [Extractable Commitments](#extractable-commitments).
 
+
+**Production readiness:** Mature
+Standard knowledge-soundness definition used in security proofs of Bulletproofs, IPA-based SNARKs, and modern interactive argument systems. Not a standalone deployed system.
+
+**Implementations:**
+- [Bulletproofs security proofs](https://eprint.iacr.org/2017/1066) -- Formal security analysis using WEE
+- [dalek-bulletproofs](https://github.com/dalek-cryptography/bulletproofs) -- Rust, security proof uses WEE
+
+**Security status:** Secure
+WEE is a security definition (not a scheme). Provides stronger knowledge soundness than special soundness, enabling cleaner composition of interactive arguments.
+
+**Community acceptance:** Widely trusted
+Introduced by Lindell (2003). Adopted as the standard knowledge-soundness notion for IPA and Bulletproofs. Published at TCC and IEEE S&P.
+
 ---
 
 ## Extractable Commitments
@@ -894,6 +1591,21 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** Extractable commitments underpin UC-secure MPC, simulation-extractable SNARKs, and commit-and-prove systems (LegoSNARK). In the SNARK context, simulation extractability makes a proof a binding commitment to the witness — critical for non-malleability of proof systems. See [UC-Secure Commitments](#uc-secure-commitments) and [Fischlin Transform](#fischlin-transform).
 
+
+**Production readiness:** Production
+Extractable commitments are implicit in every simulation-extractable SNARK (Groth16, PLONK). LegoSNARK's CP framework makes extractability explicit for modular proof composition.
+
+**Implementations:**
+- [snarkjs (Groth16)](https://github.com/iden3/snarkjs) -- JavaScript, simulation-extractable SNARK proofs
+- [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) -- Rust, Groth16 with extractable commitments
+- [LegoSNARK](https://github.com/imdea-software/legosnark) -- Rust/C++, explicit extractable commitment framework
+
+**Security status:** Secure
+Extractability typically relies on knowledge assumptions (KEA) or algebraic group model. Simulation extractability of Groth16 proven by Groth-Maller (CRYPTO 2017).
+
+**Community acceptance:** Widely trusted
+Extractable commitments are a core concept in SNARK security. Groth-Maller (2017) and LegoSNARK (CCS 2019) are highly cited. Standard notion in the ZK community.
+
 ---
 
 ## Cross-Commitment Equality Proofs
@@ -907,6 +1619,20 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 | **AND-composition of sigma protocols** | 1994 | Sigma | Prove equality of openings in same group via AND-composition; Cramer-Damgård-Schoenmakers [[1]](https://link.springer.com/chapter/10.1007/3-540-48658-5_19) |
 
 **State of the art:** Within the same group, DLEQ (Chaum-Pedersen 1992) is a textbook tool deployed in VRFs and Privacy Pass. Across different groups, Chase et al. (2022) provide the first practical cross-group sigma protocol via Lyubashevsky's "Fiat-Shamir with aborts." Related to [Verifiable Random Functions (VRF)](#verifiable-random-functions-vrf) and [Sigma Protocols](categories/04-zero-knowledge-proof-systems.md#sigma-protocols).
+
+
+**Production readiness:** Production
+DLEQ (Chaum-Pedersen) is deployed in ECVRF (RFC 9381), Privacy Pass, and verifiable ElGamal. Cross-group equality proofs (Chase et al. 2022) are in early adoption.
+
+**Implementations:**
+- [vrf-rs (DLEQ)](https://github.com/witnet/vrf-rs) -- Rust, DLEQ proof in ECVRF implementation
+- [privacy-pass](https://github.com/nicola/privacy-pass) -- JavaScript/Go, DLEQ in Privacy Pass protocol
+
+**Security status:** Secure
+DLEQ is a textbook sigma protocol secure under DLOG. Cross-group equality (Chase et al. 2022) uses Fiat-Shamir with aborts; secure in ROM under DLOG in both groups.
+
+**Community acceptance:** Standard
+DLEQ (Chaum-Pedersen 1992) is a textbook protocol. Used in IETF RFC 9381 (ECVRF). Cross-group variant published at eprint 2022 with growing adoption.
 
 ---
 
@@ -923,6 +1649,19 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** Algebraic VCs (Campanelli et al. 2020) are the foundation of verifiable decentralised storage — any subvector of chunks can be verified against one commitment, with proofs merged across nodes. The 2022 impossibility result confirms pairings are necessary for constant-size algebraic VCs. Related to [Vector Commitments](#vector-commitments), [Functional Commitments](#functional-commitments), and [Verkle Trees](#verkle-trees).
 
+
+**Production readiness:** Experimental
+Research prototypes for verifiable decentralised storage. Campanelli et al. (2020) demonstrated proof-of-concept. No large-scale production deployment.
+
+**Implementations:**
+- [incrementally-aggregatable-vc](https://eprint.iacr.org/2020/149) -- Research prototype; Rust, incrementally aggregatable vector commitments
+
+**Security status:** Secure
+Security proven under standard pairing and RSA assumptions. The 2022 impossibility result (constant-size algebraic VCs require pairings) is well-established.
+
+**Community acceptance:** Niche
+Published at ASIACRYPT 2020 and TCC 2022. Important theoretical contributions. Limited practical deployment beyond research prototypes.
+
 ---
 
 ## Statistically-Hiding Commitments from LWE
@@ -937,6 +1676,20 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 | **Jain-Kalai-Khurana-Ron-Zewi** | 2021 | LWE | Constant-round statistically-hiding commitments with extractability; used in round-optimal MPC from LWE; STOC 2021 [[1]](https://eprint.iacr.org/2020/1434) |
 
 **State of the art:** LWE-based statistically-hiding commitments are the post-quantum replacement for Pedersen commitments in simulation-based proofs. The structured-lattice variant (Module-LWE, 2020) offers practical efficiency. Round-optimal constructions (Jain et al. 2021) enable constant-round MPC from LWE alone. See [BDLOP Lattice Commitments](#bdlop-lattice-commitments) and [Perfectly Binding vs Perfectly Hiding Commitments](#perfectly-binding-vs-perfectly-hiding-commitments).
+
+
+**Production readiness:** Research
+Theoretical constructions used in round-optimal MPC proofs and post-quantum protocol design. No standalone production implementations.
+
+**Implementations:**
+- [Lattigo (lattice primitives)](https://github.com/tuneinsight/lattigo) -- Go, lattice cryptography library with building blocks
+- [SEAL (lattice operations)](https://github.com/microsoft/SEAL) -- C++, Microsoft's lattice library (FHE-focused but includes commitment building blocks)
+
+**Security status:** Secure
+Security proven under standard LWE assumption with worst-case to average-case reductions. Post-quantum secure. Well-analysed in the theoretical literature.
+
+**Community acceptance:** Niche
+Published at STOC 2008 (Peikert-Vaikuntanathan-Waters), TCC 2009, and STOC 2021. Important for post-quantum protocol theory. Limited practical deployment.
 
 ---
 
@@ -961,6 +1714,21 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** The MPT is Ethereum's current state commitment (mainnet since 2015) and the most widely deployed authenticated dictionary in production. Sparse Merkle Trees are preferred in ZK-rollups (StarkNet, zkSync) for their SNARK-friendliness. Ethereum's roadmap replaces MPT with [Verkle Trees](#verkle-trees) ("The Verge") for smaller state witnesses. Related to [Accumulators](#accumulators) and [Vector Commitments](#vector-commitments).
 
+
+**Production readiness:** Production
+Ethereum's state commitment since mainnet launch (2015). The most widely deployed authenticated dictionary in production, securing hundreds of billions of dollars.
+
+**Implementations:**
+- [go-ethereum (geth)](https://github.com/ethereum/go-ethereum) -- Go, production MPT implementation
+- [reth](https://github.com/paradigmxyz/reth) -- Rust, high-performance Ethereum client with MPT
+- [ethereumjs-mpt](https://github.com/ethereumjs/ethereumjs-monorepo) -- TypeScript, MPT reference implementation
+
+**Security status:** Secure
+Security reduces to collision resistance of Keccak-256. Well-understood authenticated data structure. Sparse Merkle Trees provide explicit non-membership proofs.
+
+**Community acceptance:** Standard
+Defined in Ethereum Yellow Paper. Deployed since 2015 on Ethereum mainnet. De-facto standard for blockchain state commitment. Being succeeded by Verkle Trees.
+
 ---
 
 ## Selective-Opening Security for Commitments
@@ -975,6 +1743,19 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 | **Hazay-Patra-Warinschi** | 2015 | DDH | Efficient adaptively SO-secure commitments in the UC model [[1]](https://eprint.iacr.org/2014/965) |
 
 **State of the art:** SO security is required in any protocol where the adversary adaptively chooses which commitments to open (MPC, parallel OT, e-voting). LWE-based SO-secure commitments (2017) provide post-quantum guarantees. Standard Pedersen commitments are NOT SO-secure in general. See [UC-Secure Commitments](#uc-secure-commitments) and [Commitment Schemes](#commitment-schemes).
+
+
+**Production readiness:** Research
+Theoretical security notion used in protocol security proofs. Standard Pedersen commitments are NOT SO-secure; explicit SO-secure constructions are research-grade.
+
+**Implementations:**
+- [SO-secure commitment prototypes](https://eprint.iacr.org/2016/678) -- Research implementations accompanying theoretical papers
+
+**Security status:** Secure
+SO-secure commitments from LWE (2017) are post-quantum secure. Well-analysed in the theoretical literature. Careful: standard Pedersen is NOT SO-secure.
+
+**Community acceptance:** Niche
+Published at EUROCRYPT 2009, PKC 2011, and TCC 2017. Important for MPC and e-voting security proofs. Specialised notion not widely deployed standalone.
 
 ---
 
@@ -991,6 +1772,19 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** Rate-1 commitments from LWE (Brakerski-Vaikuntanathan 2018) achieve near-optimal bandwidth. Rate-1 extractable variants (2023) enable communication-efficient MPC and compact SNARGs from standard assumptions. Related to [Statistically-Hiding Commitments from LWE](#statistically-hiding-commitments-from-lwe) and [Commitment Schemes](#commitment-schemes).
 
+
+**Production readiness:** Research
+Theoretical constructions for communication-efficient protocols. No standalone production implementations.
+
+**Implementations:**
+- [Rate-1 commitment prototypes](https://eprint.iacr.org/2022/1648) -- Research prototypes accompanying theoretical papers
+
+**Security status:** Secure
+Security proven under standard LWE assumption. Rate-1 extractable variants (2023) are secure under standard assumptions. Well-analysed.
+
+**Community acceptance:** Niche
+Published at CRYPTO 2012, FOCS 2018, and EUROCRYPT 2023. Important for communication complexity theory. Limited practical deployment.
+
 ---
 
 ## Batch Commitments and Amortised Opening
@@ -1005,6 +1799,21 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 | **Multi-opening KZG (Boneh-Drake-Fisch-Gabizon)** | 2020 | KZG + vanishing polynomials | Open f at multiple points with a single proof via quotient by vanishing polynomial [[1]](https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html) |
 
 **State of the art:** The FK technique (2023) is deployed in Ethereum's EIP-4844 for computing blob KZG proofs at scale. Pointproofs and Hyperproofs enable efficient batch operations on vector commitments for blockchain state validation. Multi-opening KZG is standard in PLONK-based proof systems. Related to [KZG Polynomial Commitments](#kzg-polynomial-commitments) and [Vector Commitments](#vector-commitments).
+
+
+**Production readiness:** Production
+FK technique deployed in Ethereum EIP-4844 for blob KZG proof computation. Multi-opening KZG is standard in PLONK-based proof systems.
+
+**Implementations:**
+- [c-kzg-4844](https://github.com/ethereum/c-kzg-4844) -- C, FK-based batch KZG for Ethereum EIP-4844
+- [Hyperproofs](https://github.com/hyperproofs/hyperproofs) -- Rust, efficient batch vector commitment opening
+- [arkworks-rs/poly-commit](https://github.com/arkworks-rs/poly-commit) -- Rust, multi-opening KZG
+
+**Security status:** Secure
+FK technique inherits KZG security (d-SDH). Pointproofs security proven under pairing assumptions. Multi-opening KZG is a straightforward extension of standard KZG.
+
+**Community acceptance:** Widely trusted
+FK technique deployed in Ethereum's EIP-4844. Pointproofs published at CCS 2020. Hyperproofs at IEEE S&P 2022. All well-cited and peer-reviewed.
 
 ---
 
@@ -1021,6 +1830,20 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** 2 rounds are necessary and sufficient for statistically-hiding commitments in the plain model (Haitner-Reingold 2007). In the CRS model, non-interactive (1-round) schemes achieve extractability and equivocability simultaneously. Round-optimal commitments are a key building block for round-optimal MPC. See [Commitment Schemes](#commitment-schemes) and [UC-Secure Commitments](#uc-secure-commitments).
 
+
+**Production readiness:** Mature
+Naor bit commitment (2-round) is a textbook construction. Round-optimal techniques are used as building blocks in MPC protocol implementations.
+
+**Implementations:**
+- [emp-toolkit](https://github.com/emp-toolkit/emp-tool) -- C++, uses round-optimal commitments in MPC protocols
+- [Naor commitment (textbook)](https://link.springer.com/article/10.1007/BF00196774) -- Various textbook implementations
+
+**Security status:** Secure
+Naor bit commitment is secure from any PRG (minimal assumption). 2 rounds are necessary and sufficient for statistically-hiding commitments in the plain model. Tight lower bounds proven.
+
+**Community acceptance:** Standard
+Naor (1991) and Haitner-Reingold (2007) are textbook results. Round complexity of commitments is a foundational topic in cryptography. Well-established consensus.
+
 ---
 
 ## Homomorphic Commitments for MPC
@@ -1036,6 +1859,21 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** Pedersen commitments with information-theoretic MACs (SPDZ, 2012+) are the standard for actively secure MPC over arithmetic circuits. BDLOP provides the post-quantum analogue. Multiplicative homomorphism requires additional zero-knowledge proofs (e.g., multiplication triples). See [Commitment Schemes](#commitment-schemes), [BDLOP Lattice Commitments](#bdlop-lattice-commitments), and [Multi-Party Computation](categories/06-multi-party-computation.md#secure-multi-party-computation-mpc).
 
+
+**Production readiness:** Production
+Pedersen commitments with SPDZ MACs are the standard for actively secure MPC, deployed in SPDZ, MP-SPDZ, and commercial MPC platforms.
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) -- C++/Python, SPDZ-style MPC with Pedersen commitment MACs
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) -- C++, actively secure MPC using homomorphic commitments
+- [emp-toolkit](https://github.com/emp-toolkit/emp-tool) -- C++, MPC with commitment-based active security
+
+**Security status:** Secure
+SPDZ commitment MAC provides information-theoretic active security given secure preprocessing. Pedersen commitments secure under DLP. BDLOP variant secure under Module-SIS/LWE.
+
+**Community acceptance:** Widely trusted
+SPDZ (2012) is the most influential actively secure MPC protocol. Pedersen commitments in MPC are a textbook technique. Adopted by both academia and industry.
+
 ---
 
 ## Succinct Mercurial Commitments
@@ -1049,6 +1887,19 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 | **Libert-Yung Concise Mercurial VC** | 2010 | Pairings (q-SDH) | First concise (constant-size) mercurial vector commitment; enables efficient ZK authenticated dictionaries [[1]](https://eprint.iacr.org/2010/099) |
 
 **State of the art:** Mercurial commitments are the foundation of zero-knowledge sets — proving set (non-)membership while hiding the set itself. Libert-Yung (2010) achieves constant-size proofs via pairings. Applications include privacy-preserving revocation lists and anonymous credential blacklists. Related to [Vector Commitments](#vector-commitments) and [Accumulators](#accumulators).
+
+
+**Production readiness:** Research
+Academic constructions for zero-knowledge sets. No large-scale production deployments. Used in privacy-preserving revocation research prototypes.
+
+**Implementations:**
+- [ZK-sets prototype](https://eprint.iacr.org/2005/060) -- Research prototype; C++, zero-knowledge set implementation
+
+**Security status:** Secure
+Security proven under DDH and q-SDH assumptions. Libert-Yung (2010) achieves constant-size proofs from pairings. No known attacks.
+
+**Community acceptance:** Niche
+Published at CRYPTO 2005 and subsequent venues. Important for zero-knowledge set theory. Limited practical deployment outside research.
 
 ---
 
@@ -1065,6 +1916,21 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 
 **State of the art:** Modern SNARK/STARK systems (PLONK, Groth16, STARKs) subsume VC for most use cases. Specialised delegation schemes remain relevant for settings requiring minimal verifier hardware (IoT, mobile) or information-theoretic security (VOLE-based). Related to [Verifiable Computation (VC)](#verifiable-computation-vc) and [GKR Protocol](#gkr-protocol-doubly-efficient-interactive-proofs).
 
+
+**Production readiness:** Mature
+The delegation concept is subsumed by modern SNARK/STARK systems. Specialised delegation schemes (Hyrax, VOLE-based) are used in research and IoT contexts.
+
+**Implementations:**
+- [Hyrax (Wahby et al.)](https://github.com/hyraxZK/hyrax) -- C++, doubly-efficient VC system
+- [Pepper project](https://github.com/pepper-project) -- C++, academic VC delegation systems
+- [microsoft/Spartan](https://github.com/microsoft/Spartan) -- Rust, transparent VC based on sumcheck
+
+**Security status:** Secure
+Interactive proof variants have information-theoretic soundness. SNARK-based VC depends on knowledge assumptions. VOLE-based VC has information-theoretic verification. No known attacks.
+
+**Community acceptance:** Widely trusted
+Foundational papers (GGP 2010, Pinocchio 2013) are among the most cited in applied cryptography. Modern VC is delivered through the SNARK/STARK ecosystem with broad community trust.
+
 ---
 
 ## Compact Proofs of Exponentiation (PoE) and Knowledge of Exponent (KEA)
@@ -1079,5 +1945,20 @@ Construction blueprint: (1) Run a [DKG](categories/05-secret-sharing-threshold-c
 | **Bitansky-Canetti-Chiesa-Tromer** | 2013 | KEA + pairings | KEA over bilinear groups enables succinct extractable commitments underpinning preprocessing SNARKs [[1]](https://eprint.iacr.org/2011/443) |
 
 **State of the art:** Wesolowski PoE is deployed in VDF verification (Chia, Ethereum research) and Boneh-Bunz-Fisch accumulator batching. KEA over pairing groups is the extractability backbone of Groth16 and other preprocessing SNARKs. Related to [Verifiable Delay Functions (VDF)](#verifiable-delay-functions-vdf), [Accumulators](#accumulators), and [Extractable Commitments](#extractable-commitments).
+
+
+**Production readiness:** Production
+Wesolowski PoE deployed in Chia VDF verification and accumulator batching. KEA is a core assumption in Groth16 and all preprocessing SNARKs deployed at scale.
+
+**Implementations:**
+- [chiavdf](https://github.com/Chia-Network/chiavdf) -- C++, Wesolowski PoE for VDF verification
+- [accumulator](https://github.com/cambrian/accumulator) -- Rust, PoE in RSA accumulator batching
+- [snarkjs (Groth16)](https://github.com/iden3/snarkjs) -- JavaScript, SNARK relying on KEA assumption
+
+**Security status:** Caution
+Wesolowski PoE is secure in the generic group model. KEA is a non-falsifiable knowledge assumption -- widely used but not reducible to standard computational assumptions. Active debate on KEA's theoretical status.
+
+**Community acceptance:** Widely trusted
+Wesolowski PoE published at EUROCRYPT 2019. KEA introduced by Damgard (1991), formalised for SNARKs by Bitansky et al. (2013). Both are well-cited and integral to deployed systems.
 
 ---

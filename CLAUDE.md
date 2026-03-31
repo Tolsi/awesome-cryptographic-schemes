@@ -59,6 +59,46 @@ Each scheme/protocol appears as a `##` section inside exactly one category file.
 - Citations use inline footnote style: `[[1]](url)` — numbered per row, restarting at 1 per row (not globally).
 - Year is the publication/standardization year (use `—` if not applicable).
 
+### Mandatory assessment fields
+
+Every `##` section MUST include the following fields after the table and "State of the art" line:
+
+```markdown
+**Production readiness:** <One of: Production / Mature / Experimental / Research / Deprecated>
+<Brief explanation — e.g. "Deployed in TLS 1.3 on all major browsers" or "Academic prototype only, no production use">
+
+**Implementations:** <List of notable open-source implementations with URLs>
+- [Library/tool name](url) — language, brief note
+
+**Security status:** <One of: Secure / Caution / Broken / Superseded>
+<Brief explanation — known attacks, parameter recommendations, or reason for deprecation>
+
+**Community acceptance:** <One of: Standard / Widely trusted / Emerging / Niche / Controversial>
+<Brief explanation — standardization body endorsement, peer review status, adoption by major organizations, notable endorsements or criticisms from cryptographers>
+```
+
+Field value definitions:
+
+**Production readiness** levels:
+- `Production` — deployed at scale in real-world systems (TLS, Signal, Ethereum, etc.)
+- `Mature` — well-studied, production-quality implementations exist, but limited large-scale deployment
+- `Experimental` — working implementations but not yet battle-tested or standardized
+- `Research` — academic/prototype stage, no production-quality implementations
+- `Deprecated` — was once used but now superseded or discouraged
+
+**Security status** levels:
+- `Secure` — no known practical attacks at recommended parameters
+- `Caution` — secure at recommended parameters but requires careful implementation or has known edge cases
+- `Broken` — practical attacks exist; should not be used
+- `Superseded` — technically secure but replaced by better alternatives
+
+**Community acceptance** levels:
+- `Standard` — NIST, IETF RFC, ISO, or equivalent standardization
+- `Widely trusted` — strong peer review, broad adoption, endorsed by major cryptographers
+- `Emerging` — active standardization or growing adoption, positive expert reception
+- `Niche` — well-studied but limited to specific domains or communities
+- `Controversial` — disputed security claims, patent issues, or community disagreement
+
 ## Cross-References
 
 Sections cross-reference each other using Markdown anchor links of the form:

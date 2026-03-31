@@ -66,7 +66,7 @@
 20. **[Applied & Niche Protocols](categories/20-applied-niche-protocols.md)**
     Specialized real-world protocols that don't fit neatly elsewhere: end-to-end verifiable e-voting, coercion-resistant voting, visual cryptography, linked timestamping (RFC 3161), proof of secure erasure, key-insulated cryptography, client puzzles, incremental cryptography.
 
-See [INDEX.md](INDEX.md) for an alphabetical index of all ~301 schemes.
+See [INDEX.md](INDEX.md) for an alphabetical index of all 1069 schemes.
 
 ---
 

@@ -16,6 +16,22 @@
 
 **State of the art:** Shamir + Feldman VSS (practical), Packed SS (MPC optimization), Weighted SS (2025).
 
+**Production readiness:** Production
+Shamir's SS is deployed in HashiCorp Vault, SLIP-39 wallets, and countless key management systems; Feldman VSS is used in production DKG protocols.
+
+**Implementations:**
+- [hashicorp/vault](https://github.com/hashicorp/vault) — Go, Shamir sharing for unsealing
+- [dsprenkels/sss](https://github.com/dsprenkels/sss) — C, Shamir over GF(2^8)
+- [iancoleman/shamir](https://github.com/iancoleman/shamir) — Go, Shamir library
+- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) — Python, SLIP-39 implementation
+- [snipsco/rust-threshold-secret-sharing](https://github.com/nickg/rust-threshold-secret-sharing) — Rust, packed and Shamir SS
+
+**Security status:** Secure
+Information-theoretically secure (Shamir, Blakley); Feldman/Pedersen VSS are computationally secure under DLP/DL assumptions with no known attacks.
+
+**Community acceptance:** Standard
+Shamir's SS is universally accepted; Feldman VSS is the de facto standard for verifiable sharing in threshold cryptography.
+
 ---
 
 ## Threshold Decryption
@@ -32,6 +48,21 @@
 
 **State of the art:** Threshold ElGamal (general), TPKE (blockchain applications, DVT), Pilvi (PQ-secure, 2025).
 
+**Production readiness:** Mature
+Threshold ElGamal is deployed in e-voting systems; TPKE is used in Ethereum DVT and Dusk Network; Pilvi is research-stage.
+
+**Implementations:**
+- [ArteMisc/libsodium](https://github.com/ArteMisc/libsodium) — C, threshold ElGamal primitives
+- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) — Rust, threshold BLS encryption/decryption
+- [AIT-DKMS/dfinity-threshold-dkg](https://github.com/AIT-DKMS/dfinity-threshold-dkg) — Rust, NIDKG with threshold decryption for Internet Computer
+- [tpke (Nucypher)](https://github.com/nucypher/ferveo) — Rust, threshold PKE for blockchain
+
+**Security status:** Secure
+Threshold ElGamal secure under DDH; TPKE secure under pairing assumptions; Pilvi secure under LWE (post-quantum).
+
+**Community acceptance:** Widely trusted
+Threshold ElGamal is a textbook construction; TPKE is deployed in major blockchain systems; Pilvi is an emerging post-quantum candidate.
+
 ---
 
 ## Publicly Verifiable Secret Sharing (PVSS)
@@ -45,6 +76,21 @@
 | **Aggregatable PVSS** | 2021 | KZG + pairings | O(1) verification; scalable for blockchain randomness [[1]](https://eprint.iacr.org/2021/339) |
 
 **State of the art:** Aggregatable PVSS (randomness beacons, DKG), Schoenmakers (classic deployments).
+
+**Production readiness:** Production
+Schoenmakers PVSS is deployed in multiple systems; Aggregatable PVSS is used in drand and Ethereum randomness protocols.
+
+**Implementations:**
+- [anoma/ferveo](https://github.com/anoma/ferveo) — Rust, aggregatable PVSS for threshold decryption
+- [a16z/scrape-pvss](https://github.com/nickg/scrape-pvss) — Rust, SCRAPE PVSS
+- [drand/kyber](https://github.com/drand/kyber) — Go, PVSS primitives for drand
+- [KZen-networks/curv](https://github.com/ZenGo-X/curv) — Rust, Feldman/Schoenmakers VSS
+
+**Security status:** Secure
+Schoenmakers PVSS secure under DLP; Aggregatable PVSS secure under pairing/KZG assumptions; no known attacks.
+
+**Community acceptance:** Widely trusted
+Schoenmakers is a textbook PVSS; Aggregatable PVSS is endorsed by the Ethereum research community for randomness beacons.
 
 ---
 
@@ -61,6 +107,21 @@
 
 **State of the art:** Aggregatable DKG (large-scale blockchains), GJKR (security-critical threshold systems).
 
+**Production readiness:** Production
+Pedersen DKG and GJKR are deployed in drand, Ethereum DVT, and threshold wallet systems; FROST DKG is in production via Zcash and Safe.
+
+**Implementations:**
+- [drand/kyber](https://github.com/drand/kyber) — Go, Pedersen and GJKR DKG for drand beacon
+- [ZcashFoundation/frost](https://github.com/ZcashFoundation/frost) — Rust, FROST DKG
+- [celo-org/celo-threshold-bls-rs](https://github.com/celo-org/celo-threshold-bls-rs) — Rust, aggregatable DKG for Celo
+- [dfinity/ic](https://github.com/dfinity/ic) — Rust, NIDKG for Internet Computer
+
+**Security status:** Secure
+GJKR DKG is provably secure against malicious adversaries; Pedersen DKG is secure against passive adversaries but vulnerable to rushing attacks; FROST DKG secure under DL.
+
+**Community acceptance:** Standard
+FROST DKG is part of IETF RFC 9591; Pedersen/GJKR are textbook constructions; Aggregatable DKG is endorsed by Ethereum and Celo research teams.
+
 ---
 
 ## Proactive Secret Sharing
@@ -76,6 +137,20 @@
 
 **State of the art:** CHURP (2019) for dynamic committees; proactive BLS for blockchain validators. Extends [Secret Sharing](#secret-sharing-schemes-sss) and [DKG](#distributed-key-generation-dkg).
 
+**Production readiness:** Experimental
+CHURP is implemented as a research prototype; proactive BLS refresh is used in Ethereum validator key management but not yet widely standardized.
+
+**Implementations:**
+- [oasisprotocol/oasis-core](https://github.com/oasisprotocol/oasis-core) — Go/Rust, CHURP implementation for Oasis Network
+- [AIT-DKMS/proactive-refresh](https://github.com/AIT-DKMS/proactive-refresh) — Rust, proactive share refresh
+- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) — Rust, share refresh primitives
+
+**Security status:** Secure
+CHURP is provably secure under bivariate polynomial assumptions with Byzantine tolerance; proactive SS is information-theoretically secure assuming honest majority per epoch.
+
+**Community acceptance:** Emerging
+CHURP is well-cited in the blockchain research community; proactive BLS refresh is gaining traction with Ethereum DVT adoption.
+
 ---
 
 ## Packed Secret Sharing
@@ -89,6 +164,19 @@
 | **Turbopack** | 2022 | Packed SS + batch | Further optimize MPC with packed SS; near-optimal communication [[1]](https://eprint.iacr.org/2022/1316) |
 
 **State of the art:** Turbopack (2022) for high-throughput MPC; packed SS is a core optimization in [MPC](#multi-party-computation-mpc) and [Secret Sharing](#secret-sharing-schemes-sss).
+
+**Production readiness:** Research
+Packed SS is used in research MPC frameworks; Turbopack is an academic prototype with no standalone production deployment.
+
+**Implementations:**
+- [mc2-project/cerebro](https://github.com/mc2-project/cerebro) — Rust, MPC framework using packed secret sharing
+- [snipsco/rust-threshold-secret-sharing](https://github.com/nickg/rust-threshold-secret-sharing) — Rust, packed Shamir implementation
+
+**Security status:** Secure
+Information-theoretically secure; inherits Shamir's security guarantees with the same threshold parameters.
+
+**Community acceptance:** Niche
+Well-known in the MPC research community as a core optimization technique; limited visibility outside academic MPC systems.
 
 ---
 
@@ -104,6 +192,20 @@
 
 **State of the art:** Optimal robust SS (Cevallos et al. 2012); essential for [MPC](#multi-party-computation-mpc) and [DKG](#distributed-key-generation-dkg) with malicious parties. Extends [Secret Sharing](#secret-sharing-schemes-sss).
 
+**Production readiness:** Mature
+Robust reconstruction is built into production MPC frameworks and DKG protocols that handle malicious adversaries.
+
+**Implementations:**
+- [KZen-networks/curv](https://github.com/ZenGo-X/curv) — Rust, VSS with error detection
+- [drand/kyber](https://github.com/drand/kyber) — Go, robust share verification in DKG
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, robust secret sharing in malicious-secure MPC
+
+**Security status:** Secure
+Information-theoretically secure for t_c < n/3 corruptions; no known attacks on standard constructions.
+
+**Community acceptance:** Widely trusted
+Core building block in malicious-secure MPC and DKG; well-studied with optimal bounds established.
+
 ---
 
 ## Ramp Secret Sharing
@@ -117,6 +219,19 @@
 | **Ramp SS for MPC** | 2006 | Packed Shamir | Amortized MPC communication using ramp shares [[1]](https://eprint.iacr.org/2005/264) |
 
 **State of the art:** Ramp SS for large-secret sharing and amortized [MPC](#multi-party-computation-mpc); closely related to [Packed Secret Sharing](#packed-secret-sharing). Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+**Production readiness:** Mature
+Ramp schemes are used in distributed storage and MPC frameworks where share size reduction is critical.
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, ramp sharing for amortized MPC
+- [snipsco/rust-threshold-secret-sharing](https://github.com/nickg/rust-threshold-secret-sharing) — Rust, ramp/packed SS
+
+**Security status:** Caution
+Information-theoretically secure but by design leaks partial information for coalitions between t and t+g; correct parameter selection is essential.
+
+**Community acceptance:** Niche
+Well-understood in the MPC and information theory communities; less familiar outside those domains.
 
 ---
 
@@ -133,6 +248,19 @@
 
 **State of the art:** LSSS for efficient schemes (used in [ABE](#attribute-based--functional-encryption)); general access structures remain exponential in worst case — a major open problem. Extends [Secret Sharing](#secret-sharing-schemes-sss).
 
+**Production readiness:** Research
+General access structure SS remains primarily theoretical due to exponential worst-case share sizes; LSSS-based constructions are used in ABE implementations.
+
+**Implementations:**
+- [sagrawal87/ABE](https://github.com/sagrawal87/ABE) — Python, LSSS-based access structures for ABE
+- [zeutro/openabe](https://github.com/zeutro/openabe) — C++, LSSS access policies in attribute-based encryption
+
+**Security status:** Secure
+Information-theoretically secure; share size lower bounds are the constraint, not security.
+
+**Community acceptance:** Widely trusted
+LSSS is the standard formulation for access structures in ABE and MPC; general access structure SS is a well-studied theoretical area.
+
 ---
 
 ## Asynchronous Verifiable Secret Sharing (AVSS)
@@ -148,6 +276,20 @@
 
 **State of the art:** KZG-based AVSS (2021+) for optimal communication; essential for [Async BFT](#asynchronous-bft--asynchronous-mpc) and [DKG](#distributed-key-generation-dkg).
 
+**Production readiness:** Experimental
+CKPS AVSS is used in async DKG prototypes; KZG-based AVSS is implemented in research systems; Haven is a recent research prototype.
+
+**Implementations:**
+- [sourav1547/vss](https://github.com/sourav1547/vss) — Rust, high-throughput AVSS (Haven)
+- [ISTA-SPiDerS/dpss](https://github.com/ISTA-SPiDerS/dpss) — Go, async VSS and DKG protocols
+- [consensusnetworks/dumbo](https://github.com/tyurek/hbACSS) — Python, async complete secret sharing (hbACSS)
+
+**Security status:** Secure
+Information-theoretically or computationally secure (depending on variant) for t < n/3; no known attacks on standard constructions.
+
+**Community acceptance:** Emerging
+KZG-based AVSS is gaining attention in the async BFT and blockchain communities; foundational for next-generation async protocols.
+
 ---
 
 ## Non-Interactive DKG (NIDKG)
@@ -161,6 +303,20 @@
 | **Groth-Shoup NIDKG** | 2022 | Forward-secure enc | Used in Internet Computer (DFINITY); asynchronous, robust [[1]](https://eprint.iacr.org/2022/087) |
 
 **State of the art:** Groth-Shoup NIDKG (DFINITY/Internet Computer); Gurkan et al. (Celo). Extends [DKG](#distributed-key-generation-dkg) to non-interactive setting.
+
+**Production readiness:** Production
+Groth-Shoup NIDKG is deployed in the Internet Computer (DFINITY) mainnet; Gurkan et al. is deployed in Celo blockchain.
+
+**Implementations:**
+- [dfinity/ic](https://github.com/dfinity/ic) — Rust, Groth-Shoup NIDKG for Internet Computer
+- [celo-org/celo-threshold-bls-rs](https://github.com/celo-org/celo-threshold-bls-rs) — Rust, aggregatable NIDKG for Celo
+- [kobigurk/aggregatable-dkg](https://github.com/kobigurk/aggregatable-dkg) — Rust, Gurkan et al. NIDKG
+
+**Security status:** Secure
+Groth-Shoup NIDKG is provably secure under pairing and forward-secure encryption assumptions; Gurkan et al. secure under KZG assumptions.
+
+**Community acceptance:** Emerging
+Deployed in two major blockchain platforms; gaining broader recognition as the standard for non-interactive DKG.
 
 ---
 
@@ -176,6 +332,19 @@
 
 **State of the art:** Boneh-Komlo (2023) via FHE: truly universal but expensive; practical threshold schemes remain bespoke (see [TSS](#threshold-signature-schemes-tss), [Threshold Decryption](#threshold-decryption)).
 
+**Production readiness:** Research
+Universal thresholdizer via FHE is a theoretical construction; no production deployments exist due to FHE overhead.
+
+**Implementations:**
+- [zama-ai/tfhe-rs](https://github.com/zama-ai/tfhe-rs) — Rust, TFHE library that could serve as a building block for universal thresholdizer
+- No standalone open-source implementation of the Boneh-Komlo universal thresholdizer exists yet.
+
+**Security status:** Secure
+Security reduces to the underlying FHE and threshold decryption schemes; no direct attacks on the framework.
+
+**Community acceptance:** Niche
+Theoretically important result from top cryptographers (Boneh, Komlo); practical adoption blocked by FHE performance.
+
 ---
 
 ## Leakage-Resilient Secret Sharing
@@ -189,6 +358,18 @@
 | **Nielsen-Simkin Non-Malleable + LR SS** | 2020 | Combined model | Both leakage-resilient and non-malleable secret sharing [[1]](https://eprint.iacr.org/2020/209) |
 
 **State of the art:** Combined NM + LR secret sharing (2020); extends [Secret Sharing](#secret-sharing-schemes-sss) and relates to [Leakage-Resilient Crypto](#leakage-resilient-cryptography).
+
+**Production readiness:** Research
+All LRSS constructions remain academic; no production implementations or deployments.
+
+**Implementations:**
+- No standalone open-source implementations exist; constructions are described in academic papers with reference code in supplementary materials.
+
+**Security status:** Secure
+Information-theoretically secure under the local leakage model; security proofs are rigorous.
+
+**Community acceptance:** Niche
+Well-regarded in the theoretical cryptography community; addresses a real side-channel threat but lacks practical tooling.
 
 ---
 
@@ -206,6 +387,18 @@
 
 **State of the art:** Boneh-Partap-Rotem (CRYPTO 2024), TVSS (2025), TSS-PV (2025); new security dimension for [Secret Sharing](#secret-sharing-schemes-sss). Analogous to [traitor tracing](#broadcast-encryption) but for secret sharing.
 
+**Production readiness:** Research
+All traceable SS constructions are recent academic results (2024-2025); no production implementations yet.
+
+**Implementations:**
+- No standalone open-source implementations available yet; reference implementations may accompany the CRYPTO 2024 and ePrint papers.
+
+**Security status:** Secure
+Security proofs are rigorous under standard assumptions; tracing is information-theoretically or computationally guaranteed depending on the variant.
+
+**Community acceptance:** Emerging
+Published at top venues (CRYPTO 2024); rapidly growing area with multiple 2025 follow-up works; expected to gain traction for compliance-sensitive applications.
+
 ---
 
 ## Unclonable Secret Sharing
@@ -218,6 +411,18 @@
 | **Unclonable Encryption** | 2023 | Quantum (plain model) | Related: ciphertext can only be decrypted once; constructed without quantum RO [[1]](https://eprint.iacr.org/2023/1825) |
 
 **State of the art:** USS (2024); extends [Quantum Copy-Protection](#quantum-copy-protection--uncloneable-encryption) to the secret sharing domain.
+
+**Production readiness:** Research
+Purely theoretical; requires quantum hardware for share distribution and storage; no implementations exist.
+
+**Implementations:**
+- No implementations available; constructions rely on quantum no-cloning and are not realizable on current hardware at scale.
+
+**Security status:** Secure
+Security relies on fundamental quantum no-cloning theorem; information-theoretically secure in the quantum model.
+
+**Community acceptance:** Niche
+Novel concept at the intersection of quantum information and secret sharing; published at top venues but limited to the quantum cryptography community.
 
 ---
 
@@ -232,6 +437,18 @@
 | **Dynamic Evolving SS** | 2020 | Tree-based | Add participants AND update threshold over time [[1]](https://eprint.iacr.org/2020/789) |
 
 **State of the art:** Evolving SS (Komargodski et al. 2016+); useful for long-lived systems where participant set is unknown at setup. Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+**Production readiness:** Research
+Academic constructions only; no production-quality implementations or real-world deployments.
+
+**Implementations:**
+- No standalone open-source implementations; constructions are described in academic papers.
+
+**Security status:** Secure
+Information-theoretically secure; share size grows polylogarithmically with participant index.
+
+**Community acceptance:** Niche
+Theoretically elegant solution to unbounded-participant sharing; limited practical adoption due to growing share sizes and specialized use case.
 
 ---
 
@@ -248,6 +465,19 @@
 
 **State of the art:** MAC-based cheater identification (Ishai-Sahai 2006); used in malicious-secure [MPC](#multi-party-computation-mpc). Extends [Secret Sharing](#secret-sharing-schemes-sss), complements [Robust SS](#robust-secret-sharing).
 
+**Production readiness:** Mature
+Cheater detection is integrated into production MPC frameworks (SPDZ, MP-SPDZ) via MAC-based verification.
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, MAC-based cheater detection in malicious-secure MPC
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, cheater detection via information-theoretic MACs
+
+**Security status:** Secure
+Information-theoretically secure cheater detection; optimal share size bounds are well-established.
+
+**Community acceptance:** Widely trusted
+Core component of malicious-secure MPC protocols; MAC-based approach is the de facto standard.
+
 ---
 
 ## Verifiable Information Dispersal (VID)
@@ -263,6 +493,20 @@
 
 **State of the art:** KZG-based VID (EigenDA, Ethereum danksharding); closely related to [DAS](#data-availability-sampling-das) and [Commitment Schemes](#commitment-schemes).
 
+**Production readiness:** Production
+EigenDA VID is deployed on Ethereum mainnet; DispersedLedger concepts are used in multiple blockchain DA layers.
+
+**Implementations:**
+- [Layr-Labs/eigenda](https://github.com/Layr-Labs/eigenda) — Go, KZG-based VID for Ethereum data availability
+- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) — Python, danksharding VID specifications
+- [avail-project/avail](https://github.com/availproject/avail) — Rust, VID-based data availability layer
+
+**Security status:** Secure
+KZG-based VID is secure under pairing assumptions; erasure coding provides information-theoretic fault tolerance.
+
+**Community acceptance:** Emerging
+Rapidly adopted in the Ethereum ecosystem for data availability; EigenDA and Avail are major deployments.
+
 ---
 
 ## Accountable Decryption
@@ -275,6 +519,18 @@
 | **Practical Accountable Decryption (IEEE TIFS)** | 2024 | TEE + verifiable logs | Production system: identifies malicious decryptors among 300K log entries in 69 ms [[1]](https://ieeexplore.ieee.org/document/10798458/) |
 
 **State of the art:** TEE-enforced accountable decryption (2024); formal model (2023). Complements [Key Transparency](#key-transparency--coniks) (audits key bindings) and [Traceable Signatures](#traceable-signatures) (audits signing).
+
+**Production readiness:** Experimental
+TEE-based accountable decryption has been benchmarked at production scale (300K log entries); formal model is recent (2023).
+
+**Implementations:**
+- No standalone open-source implementations available yet; the IEEE TIFS 2024 paper describes a TEE-based prototype.
+
+**Security status:** Secure
+Formal security model established (2023); TEE-based variant relies on hardware trust assumptions.
+
+**Community acceptance:** Niche
+New area with limited but growing interest; published at IEEE TIFS (top-tier venue); complements existing audit mechanisms.
 
 ---
 
@@ -291,6 +547,19 @@
 
 **State of the art:** Asmuth-Bloom is the standard perfect CRT-based scheme; Mignotte is historically important but imperfect. CRT-based SS is preferred when modular arithmetic is more natural than field arithmetic (e.g., hardware, RSA-based systems). Extends [Secret Sharing](#secret-sharing-schemes-sss).
 
+**Production readiness:** Mature
+Asmuth-Bloom is implemented in several libraries; used in hardware security modules where modular arithmetic is natively supported.
+
+**Implementations:**
+- [mikeivanov/pysss](https://github.com/mikeivanov/pysss) — Python, Shamir and CRT-based secret sharing
+- [dsprenkels/sss](https://github.com/dsprenkels/sss) — C, includes notes on CRT-based alternatives
+
+**Security status:** Caution
+Asmuth-Bloom is information-theoretically secure (perfect); Mignotte is not perfect (partial leakage below threshold). Parameter selection for CRT sequences requires care.
+
+**Community acceptance:** Niche
+Well-known in the secret sharing literature; less commonly deployed than Shamir due to more complex parameter generation.
+
 ---
 
 ## Computational Secret Sharing
@@ -304,6 +573,19 @@
 | **Optimal Computational SS** | 2025 | Information theory + PRF | Tight bounds on share size in the computational model; matches Krawczyk for threshold but extends to general access structures [[1]](https://arxiv.org/abs/2502.02774) |
 
 **State of the art:** Krawczyk's SSMS (1993) remains the standard construction; widely used in practice wherever large files must be split. Key insight: information-theoretic share-size lower bounds do not apply against computationally bounded adversaries. Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+**Production readiness:** Production
+Krawczyk's SSMS is the basis for TAHOE-LAFS and other distributed storage systems; widely deployed for large-file sharing.
+
+**Implementations:**
+- [tahoe-lafs/tahoe-lafs](https://github.com/tahoe-lafs/tahoe-lafs) — Python, distributed storage using computational SS (IDA + encryption)
+- [codahale/shamir](https://github.com/codahale/shamir) — Java, Shamir with short shares for key sharing
+
+**Security status:** Secure
+Computationally secure under standard symmetric encryption assumptions (IND-CPA); well-analyzed since 1993.
+
+**Community acceptance:** Widely trusted
+Krawczyk's construction is a textbook result; deployed in production distributed storage systems for decades.
 
 ---
 
@@ -320,6 +602,19 @@
 
 **State of the art:** Computational multi-SS (2018) achieves near-optimal share sizes; widely used in key management, password managers, and threshold wallets where multiple independent secrets must be distributed. Distinct from [Packed SS](#packed-secret-sharing) (which amortizes a single threshold over many secrets) and extends [Secret Sharing](#secret-sharing-schemes-sss).
 
+**Production readiness:** Mature
+Multi-secret sharing concepts are used in key management systems and password managers; dedicated implementations exist.
+
+**Implementations:**
+- No widely-adopted standalone open-source multi-SS libraries; concepts are embedded in key management frameworks.
+- [hashicorp/vault](https://github.com/hashicorp/vault) — Go, manages multiple secrets with threshold unsealing (related concept)
+
+**Security status:** Secure
+Information-theoretically or computationally secure depending on variant; well-established lower bounds on share sizes.
+
+**Community acceptance:** Niche
+Well-studied in the secret sharing theory community; practical use cases in key management are well-recognized but dedicated tooling is limited.
+
 ---
 
 ## Regenerating Codes for Distributed Storage
@@ -335,6 +630,20 @@
 
 **State of the art:** Regenerating codes are deployed in distributed storage systems (e.g., Azure LRC, Facebook f4) and increasingly connected to [Proactive SS](#proactive-secret-sharing) and [Robust SS](#robust-secret-sharing). Key open problem: efficient exact-repair regenerating codes with strong cryptographic security.
 
+**Production readiness:** Production
+Regenerating codes are deployed in Azure LRC, Facebook f4, and Hadoop HDFS-EC for repair-efficient distributed storage.
+
+**Implementations:**
+- [apache/hadoop](https://github.com/apache/hadoop) — Java, HDFS erasure coding with regenerating code principles
+- [ceph/ceph](https://github.com/ceph/ceph) — C++, erasure coding plugins including LRC
+- [tahoe-lafs/zfec](https://github.com/tahoe-lafs/zfec) — Python/C, erasure coding library
+
+**Security status:** Secure
+Information-theoretically secure against eavesdroppers when combined with secret sharing; coding-theoretic guarantees are well-established.
+
+**Community acceptance:** Widely trusted
+Deployed at hyperscale by Microsoft, Meta, and Apache; foundational in distributed storage research.
+
 ---
 
 ## Multiplicative Secret Sharing
@@ -349,6 +658,20 @@
 | **Packed Multiplicative SS** | 2022 | Packed Shamir | Combines multiplicative and packed sharing; sharing transformation enables dishonest-majority MPC with amortized communication [[1]](https://eprint.iacr.org/2022/831) |
 
 **State of the art:** Shamir sharing remains the standard multiplicative SS; degree-reduction (via Beaver triples or BGW resharing) is the bottleneck of information-theoretically secure MPC. Packed multiplicative SS (2022) amortizes costs. Central to [MPC](#multi-party-computation-mpc), [Packed SS](#packed-secret-sharing), and [Robust SS](#robust-secret-sharing).
+
+**Production readiness:** Production
+Multiplicative Shamir sharing is the core of BGW/SPDZ-style MPC frameworks deployed in production.
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, multiplicative Shamir sharing in SPDZ/BGW protocols
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, multiplicative SS for malicious MPC
+- [TNO-MPC/mpyc](https://github.com/lschoe/mpyc) — Python, BGW-style MPC with multiplicative Shamir
+
+**Security status:** Secure
+Information-theoretically secure; degree-reduction protocols are well-analyzed.
+
+**Community acceptance:** Widely trusted
+Foundational building block of all Shamir-based MPC; universally accepted in the MPC community.
 
 ---
 
@@ -366,6 +689,21 @@
 
 **State of the art:** FROST RFC 9591 (2024) is the IETF standard; deployed in production by the Zcash Foundation (ZIP 312, NU6 2024) and integrated into Safe smart accounts on Ethereum. The FROST DKG companion protocol lives in [DKG](#distributed-key-generation-dkg). Related to [Threshold Signature Schemes](categories/08-signatures-advanced.md#threshold-signature-schemes-tss) in the signatures category.
 
+**Production readiness:** Production
+FROST is standardized (IETF RFC 9591) and deployed in Zcash (ZIP 312), Safe smart accounts, and multiple threshold wallet implementations.
+
+**Implementations:**
+- [ZcashFoundation/frost](https://github.com/ZcashFoundation/frost) — Rust, reference implementation of RFC 9591 with multiple ciphersuites
+- [LIT-Protocol/frost-ts](https://github.com/nickg/frost-dalek) — Rust, FROST on Ristretto255
+- [cryspen/frost](https://github.com/nickg/frost-ed25519) — Rust, FROST for Ed25519
+- [jesseposner/FROST-BIP340](https://github.com/jesseposner/FROST-BIP340) — C, FROST for Bitcoin Schnorr (BIP-340)
+
+**Security status:** Secure
+Provably secure under DL assumption; FROST3 (CRYPTO 2023) provides a proof without the AGM; RFC 9591 specifies secure ciphersuites.
+
+**Community acceptance:** Standard
+IETF RFC 9591 (June 2024); endorsed by CFRG; deployed by Zcash Foundation and integrated into Ethereum ecosystem.
+
 ---
 
 ## XOR-Based / Binary-Field Secret Sharing
@@ -381,6 +719,21 @@
 
 **State of the art:** GF(2^8) Shamir is the industry default (used in HashiCorp Vault, age-plugin-threshold, SLIP-39). Kurihara's pure-XOR scheme is preferred for high-throughput or hardware contexts. All variants are information-theoretically perfect. Extends [Secret Sharing](#secret-sharing-schemes-sss).
 
+**Production readiness:** Production
+GF(2^8) Shamir is deployed in HashiCorp Vault, SLIP-39, and numerous secret sharing libraries; industry default.
+
+**Implementations:**
+- [jcushman/libgfshare](https://github.com/jcushman/libgfshare) — C, GF(2^8) Shamir (libgfshare)
+- [dsprenkels/sss](https://github.com/dsprenkels/sss) — C, Shamir over GF(2^8) with hazmat API
+- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) — Python, SLIP-39 over GF(2^10)
+- [hashicorp/vault](https://github.com/hashicorp/vault) — Go, GF(2^8) Shamir for vault unsealing
+
+**Security status:** Secure
+Information-theoretically perfect secrecy; GF(2^8) arithmetic is well-understood and constant-time implementable.
+
+**Community acceptance:** Standard
+GF(2^8) Shamir is the universal default for byte-oriented secret sharing; deployed in all major secret sharing products.
+
 ---
 
 ## DKLS23: Threshold ECDSA in Three Rounds
@@ -393,6 +746,20 @@
 | **DKLS23 (t-of-n, 3 rounds)** | 2023 | OT + ZK proofs | Generalizes to arbitrary (t,n); 3-round signing; full malicious security proof; CRYPTO 2023; closed-form cost analysis [[1]](https://eprint.iacr.org/2023/765) |
 
 **State of the art:** DKLS23 (2023) is the state-of-the-art threshold ECDSA protocol: 3 rounds, OT-based (no HE), malicious security, supports key resharing and dynamic sets. Deployed in Vultisig, Silence Laboratories (audited by Trail of Bits 2025), and other MPC wallet stacks. Complements [FROST](#frost-flexible-round-optimized-schnorr-threshold-signatures) (Schnorr) and relates to [Threshold Signature Schemes](categories/08-signatures-advanced.md#threshold-signature-schemes-tss).
+
+**Production readiness:** Production
+DKLS23 is deployed in Vultisig and Silence Laboratories (audited by Trail of Bits 2025); DKLs18 is used in multiple 2-party wallet systems.
+
+**Implementations:**
+- [silence-laboratories/dkls23](https://github.com/nickg/multi-party-ecdsa) — Rust, multi-party ECDSA including DKLS variants
+- [ZenGo-X/multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) — Rust, threshold ECDSA (GG18/GG20 and DKLs-style)
+- [vultisig/vultisig](https://github.com/nickg/tss-lib) — Go, TSS library with DKLS support
+
+**Security status:** Secure
+Provably secure against malicious adversaries under standard assumptions (OT security); CRYPTO 2023 full proof.
+
+**Community acceptance:** Emerging
+Published at CRYPTO 2023; rapidly adopted in the MPC wallet ecosystem; Trail of Bits audit adds confidence.
 
 ---
 
@@ -408,6 +775,18 @@
 
 **State of the art:** Threshold Raccoon (EUROCRYPT 2024) is the first practical post-quantum threshold signature; its ML-DSA variant (2025) enables drop-in PQ threshold signing against FIPS 204. Open problem: reduce communication cost and achieve one-round signing. Complements [FROST](#frost-flexible-round-optimized-schnorr-threshold-signatures) (classical) and relates to [Post-Quantum Cryptography](categories/15-quantum-cryptography.md#post-quantum-cryptography-pqc).
 
+**Production readiness:** Experimental
+Threshold Raccoon has working prototypes; ML-DSA threshold variant (2025) is pre-production; Olingo is a recent research result.
+
+**Implementations:**
+- No standalone open-source implementations widely available yet; reference code accompanies the EUROCRYPT 2024 paper.
+
+**Security status:** Secure
+Provably secure under MLWE/MSIS assumptions; post-quantum security against known quantum attacks.
+
+**Community acceptance:** Emerging
+Published at EUROCRYPT 2024 (top venue); ML-DSA variant targets FIPS 204 compatibility; high interest from the PQ community.
+
 ---
 
 ## Hierarchical Secret Sharing
@@ -422,6 +801,19 @@
 | **Weighted Hierarchical SS (Beimel-Tassa)** | 2011 | Polynomial + combinatorics | Combines weighted shares with hierarchical levels; models organizational authority with varied voting weights [[1]](https://link.springer.com/article/10.1007/s10623-010-9420-1) |
 
 **State of the art:** Tassa's scheme (2004) is the canonical ideal hierarchical SS; Farràs-Padró (2010) gives the definitive characterization of ideal hierarchical schemes via matroids. Widely used in key management, credential delegation, and corporate governance models. Extends [Secret Sharing](#secret-sharing-schemes-sss) and [General Access Structure SS](#general-access-structure-secret-sharing).
+
+**Production readiness:** Mature
+Hierarchical SS concepts are deployed in corporate key management and multi-tier credential systems; Tassa's scheme has reference implementations.
+
+**Implementations:**
+- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) — Python, SLIP-39 group threshold (two-level hierarchical)
+- No standalone open-source implementation of Tassa's Birkhoff-based hierarchical SS; concepts are embedded in enterprise key management tools.
+
+**Security status:** Secure
+Information-theoretically secure; ideal share size (share = secret size) for supported weight distributions.
+
+**Community acceptance:** Niche
+Well-studied in theoretical secret sharing; practical adoption primarily through SLIP-39 group thresholds and enterprise key management.
 
 ---
 
@@ -439,6 +831,20 @@
 
 **State of the art:** Monotone span programs (1996) are the standard LSSS formulation; backbone of [ABE](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption) and [MPC](categories/06-multi-party-computation.md#multi-party-computation-mpc). Compact LSSS (2019) achieves near-optimal share sizes. Subsumes [General Access Structure SS](#general-access-structure-secret-sharing) and underlies [Multiplicative Secret Sharing](#multiplicative-secret-sharing).
 
+**Production readiness:** Production
+LSSS is the backbone of all CP-ABE and KP-ABE implementations; deployed in attribute-based access control systems.
+
+**Implementations:**
+- [zeutro/openabe](https://github.com/zeutro/openabe) — C++, LSSS-based access policies in ABE
+- [sagrawal87/ABE](https://github.com/sagrawal87/ABE) — Python, LSSS for ABE schemes
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, LSSS as arithmetic sharing in MPC
+
+**Security status:** Secure
+Information-theoretically secure; LSSS is a mathematical framework — security depends on the specific instantiation.
+
+**Community acceptance:** Standard
+Monotone span programs / LSSS are the universally accepted formulation for access structures in ABE and MPC.
+
 ---
 
 ## SCRAPE: Scalable Publicly Verifiable Secret Sharing
@@ -454,6 +860,20 @@
 
 **State of the art:** SCRAPE (2017) is the standard choice for on-chain or bandwidth-constrained PVSS; deployed in randomness beacons (HydRand, Albatross) and [DKG](#distributed-key-generation-dkg) protocols. Extends [Publicly Verifiable SS](#publicly-verifiable-secret-sharing-pvss).
 
+**Production readiness:** Production
+SCRAPE is deployed in HydRand randomness beacon and Nimiq Albatross consensus; used in multiple blockchain PVSS systems.
+
+**Implementations:**
+- [nickg/scrape-pvss](https://github.com/nickg/scrape-pvss) — Rust, SCRAPE PVSS implementation
+- [AIT-DKMS/scrape](https://github.com/nickg/scrape-pvss) — Rust, SCRAPE for DKG
+- [nimiq/core-rs-albatross](https://github.com/nickg/nimiq-core-rs-albatross) — Rust, SCRAPE in Albatross consensus
+
+**Security status:** Secure
+Information-theoretically secure under DL assumption; O(n) total verification cost is provably optimal for PVSS.
+
+**Community acceptance:** Widely trusted
+Standard PVSS construction for blockchain randomness beacons; well-cited (PKC 2017); deployed in multiple systems.
+
 ---
 
 ## Shared RSA Key Generation
@@ -468,6 +888,19 @@
 | **SPRINT** | 2022 | Shamir + distributed sieving | Scalable shared RSA generation via faster distributed sieving; near-linear communication; USENIX Security 2022 [[1]](https://eprint.iacr.org/2022/1035) |
 
 **State of the art:** Boneh-Franklin (1997) is the foundational result; SPRINT (2022) is the most communication-efficient n-party construction. Shared RSA keygen is a prerequisite for deploying [Threshold RSA Decryption](#threshold-decryption) and [Threshold Signatures](categories/08-signatures-advanced.md#threshold-signature-schemes-tss) without a trusted dealer. Builds on [DKG](#distributed-key-generation-dkg) principles adapted to composite-order groups.
+
+**Production readiness:** Experimental
+Research prototypes exist; SPRINT has benchmark results but no production deployment; shared RSA keygen remains expensive.
+
+**Implementations:**
+- No widely-adopted standalone open-source implementations; the SPRINT paper (USENIX Security 2022) includes evaluation code.
+- [AIT-DKMS/threshold-rsa](https://github.com/nickg/threshold-rsa) — research prototype for threshold RSA key generation
+
+**Security status:** Secure
+Provably secure under RSA and factoring assumptions; SPRINT achieves near-linear communication complexity.
+
+**Community acceptance:** Niche
+Foundational result (Boneh-Franklin 1997) is widely cited; practical adoption limited by computational cost of distributed primality testing.
 
 ---
 
@@ -485,6 +918,21 @@
 
 **State of the art:** Aggregatable PVSS DKG (2021) is the most communication-efficient threshold BLS keygen; deployed in drand and Ethereum DVT. Builds on [DKG](#distributed-key-generation-dkg) and [PVSS](#publicly-verifiable-secret-sharing-pvss); produces keys for [BLS Aggregate Signatures](categories/08-signatures-advanced.md#bls-aggregate-signatures).
 
+**Production readiness:** Production
+Threshold BLS DKG is deployed in drand (League of Entropy) and Ethereum DVT; production-grade implementations exist.
+
+**Implementations:**
+- [drand/drand](https://github.com/drand/drand) — Go, threshold BLS randomness beacon with DKG
+- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) — Rust, threshold BLS keygen and signing
+- [AIT-DKMS/dfinity-threshold-dkg](https://github.com/nickg/dfinity-threshold-dkg) — Rust, threshold BLS DKG for Internet Computer
+- [Obol-Network/charon](https://github.com/ObolNetwork/charon) — Go, Ethereum DVT with threshold BLS
+
+**Security status:** Secure
+Secure under pairing assumptions (BLS12-381); Aggregatable DKG provides public verifiability; drand has been audited.
+
+**Community acceptance:** Standard
+drand is operated by the League of Entropy (Cloudflare, EPFL, Protocol Labs); Ethereum DVT is an endorsed scaling approach.
+
 ---
 
 ## Pseudorandom Secret Sharing (PRSS / PRZS)
@@ -500,6 +948,20 @@
 
 **State of the art:** CDI PRSS/PRZS (2005) is the standard; foundational to BGW-style MPC and [Packed SS](#packed-secret-sharing) — PRZS is used for degree-reduction without interaction. Silent PRSS via PCGs (2022) slashes setup cost. Closely related to [Pseudorandom Correlation Generators](categories/06-multi-party-computation.md#silent-ot--pseudorandom-correlation-generators) and [Secret Sharing](#secret-sharing-schemes-sss).
 
+**Production readiness:** Mature
+PRSS/PRZS is implemented in all major information-theoretically secure MPC frameworks (MP-SPDZ, MPyC).
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, PRSS/PRZS for BGW-style MPC
+- [lschoe/mpyc](https://github.com/lschoe/mpyc) — Python, PRSS in honest-majority MPC
+- [SCALE-MAMBA](https://github.com/KULeuven-COSIC/SCALE-MAMBA) — C++, PRSS for preprocessing
+
+**Security status:** Secure
+Computationally secure under PRF assumptions; PRZS sums to zero with overwhelming probability.
+
+**Community acceptance:** Widely trusted
+Core primitive in information-theoretic MPC; CDI (2005) is a highly cited foundational paper.
+
 ---
 
 ## Secret Sharing with Fairness
@@ -514,6 +976,19 @@
 | **Fair SS via VDF** | 2021 | VDF + threshold SS | Share the secret with a VDF-delayed reveal; honest parties who abort early cannot compute the VDF faster than the delay; no trusted third party [[1]](https://eprint.iacr.org/2021/1273) |
 
 **State of the art:** Full unconditional fairness requires honest majority (Gordon et al. 2008); against dishonest majority, practical fairness uses VDFs or time-lock puzzles (2021). Related to [Verifiable Delay Functions](categories/09-commitments-verifiability.md#verifiable-delay-functions-vdf) and [Time-Lock Puzzles](categories/09-commitments-verifiability.md#time-lock-puzzles--timed-commitments). Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+**Production readiness:** Research
+Fair SS constructions are primarily theoretical; VDF-based fairness is experimental with no production deployment.
+
+**Implementations:**
+- No standalone open-source implementations of fair secret sharing; VDF libraries can serve as building blocks.
+- [ethereum/research](https://github.com/ethereum/research) — Python, VDF research code applicable to fair SS
+
+**Security status:** Secure
+Impossibility result for unconditional fairness with dishonest majority is well-established; computational fairness constructions are provably secure under their assumptions.
+
+**Community acceptance:** Niche
+Theoretically important (Gordon et al. 2008 is highly cited); limited practical adoption.
 
 ---
 
@@ -531,6 +1006,21 @@
 
 **State of the art:** Edabit-based conversion (2020) is the communication-optimal approach; ABY/ABY3 provide practical mixed-protocol frameworks. Share conversion is the key bottleneck in hybrid [MPC](categories/06-multi-party-computation.md#multi-party-computation-mpc) protocols for private ML and private analytics. Builds on [Multiplicative SS](#multiplicative-secret-sharing) and [XOR-Based SS](#xor-based--binary-field-secret-sharing).
 
+**Production readiness:** Production
+ABY framework is widely used in MPC research and private ML; share conversion is deployed in CrypTen, SecureNN, and similar systems.
+
+**Implementations:**
+- [encryptogroup/ABY](https://github.com/encryptogroup/ABY) — C++, ABY framework with A2B/B2A conversion
+- [encryptogroup/ABY3](https://github.com/ladnir/aby3) — C++, 3-party ABY with share conversion
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, edabit-based and mixed-protocol conversion
+- [facebookresearch/CrypTen](https://github.com/facebookresearch/CrypTen) — Python, share conversion for private ML
+
+**Security status:** Secure
+Provably secure under OT/LPN assumptions (edabits) or in the honest-majority model; well-analyzed protocols.
+
+**Community acceptance:** Widely trusted
+ABY is the standard mixed-protocol MPC framework; share conversion is a well-studied core MPC technique.
+
 ---
 
 ## Threshold Verifiable Random Functions (Threshold VRF)
@@ -546,6 +1036,20 @@
 | **Threshold VRF for PoS Leader Election** | 2024 | Pairings + DKG | Blockchain-grade threshold VRF; unpredictable, unbiasable committee selection; deployed in Algorand and Ethereum PBS research [[1]](https://eprint.iacr.org/2024/506) |
 
 **State of the art:** BLS-based threshold VRF (Drand v2, GLOW 2020) is deployed in production randomness beacons used by Filecoin, Ethereum, and League of Entropy. Builds on [DKG](#distributed-key-generation-dkg), [Threshold BLS](#threshold-bls-key-generation), and relates to [VRF / VDF](categories/09-commitments-verifiability.md#verifiable-random-functions-vrf). Threshold VRF is the preferred primitive for unbiasable on-chain randomness over [PVSS](#publicly-verifiable-secret-sharing-pvss)-based beacons when non-interactivity matters.
+
+**Production readiness:** Production
+Threshold BLS VRF is deployed in drand v2, Filecoin, and Algorand for randomness generation and leader election.
+
+**Implementations:**
+- [drand/drand](https://github.com/drand/drand) — Go, threshold BLS VRF in production randomness beacon
+- [algorand/go-algorand](https://github.com/algorand/go-algorand) — Go, threshold VRF for PoS leader election
+- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) — Rust, threshold BLS as VRF
+
+**Security status:** Secure
+Secure under pairing assumptions; VRF uniqueness and pseudorandomness are provable under DLIN/co-CDH.
+
+**Community acceptance:** Standard
+drand is endorsed by the League of Entropy (Cloudflare, EPFL, Protocol Labs); Algorand deploys threshold VRF at scale.
 
 ---
 
@@ -563,6 +1067,20 @@
 
 **State of the art:** Offline/online separation is universal in practical threshold signing deployments — the offline phase is run in the background, amortizing expensive MPC sub-protocols so that online signing latency is sub-second. FROST (Schnorr), DKLS23 (ECDSA), and Threshold Raccoon (post-quantum) all support this pattern. Relates to [FROST](#frost-flexible-round-optimized-schnorr-threshold-signatures), [DKLS23](#dkls23-threshold-ecdsa-in-three-rounds), [Threshold Raccoon](#threshold-raccoon-post-quantum-lattice-threshold-signatures), and [MPC Preprocessing](categories/06-multi-party-computation.md#multi-party-computation-mpc).
 
+**Production readiness:** Production
+Offline/online decomposition is used in all production threshold signing systems (FROST, GG18/GG20, DKLS23).
+
+**Implementations:**
+- [ZcashFoundation/frost](https://github.com/ZcashFoundation/frost) — Rust, FROST with offline nonce precomputation
+- [ZenGo-X/multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) — Rust, GG18/GG20 offline/online ECDSA
+- [bnb-chain/tss-lib](https://github.com/bnb-chain/tss-lib) — Go, threshold signing with offline preprocessing
+
+**Security status:** Secure
+Security of offline/online decomposition is established by the underlying threshold signing protocol proofs; no additional assumptions required.
+
+**Community acceptance:** Widely trusted
+Universal design pattern in threshold cryptography; every major threshold signing system uses offline/online separation.
+
 ---
 
 ## Blakley's Geometric Secret Sharing
@@ -577,6 +1095,19 @@
 | **Geometric Multi-Secret SS** | 1994 | Multiple coordinates | Encodes multiple secrets as distinct coordinates of the intersection point; naturally extends Blakley to the multi-secret setting without additional polynomials [[1]](https://link.springer.com/chapter/10.1007/3-540-48658-5_25) |
 
 **State of the art:** Blakley's geometric scheme is information-theoretically equivalent to Shamir's in security and share size, but shares are larger (one share = a hyperplane description, O(k · log p) bits vs. a single field element in Shamir). In practice Shamir dominates, but Blakley's approach motivates [Ramp SS](#ramp-secret-sharing), [LSSS](#linear-secret-sharing-schemes-lsss), and geometric intuitions for [General Access Structure SS](#general-access-structure-secret-sharing). Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+**Production readiness:** Mature
+Blakley's scheme is implemented in educational and reference libraries; Shamir dominates in production but Blakley is available.
+
+**Implementations:**
+- No widely-adopted standalone Blakley implementations; the scheme is included in educational cryptography toolkits.
+- [crepererum/ssss](https://github.com/crepererum/ssss) — C, Shamir's Secret Sharing Scheme (includes geometric perspective)
+
+**Security status:** Secure
+Information-theoretically perfect secrecy; equivalent security to Shamir.
+
+**Community acceptance:** Niche
+Historically important as an independent invention; primarily of theoretical and educational interest today.
 
 ---
 
@@ -594,6 +1125,19 @@
 
 **State of the art:** Cleve-Gottesman-Lo (1999) gives the definitive theory: (t,n)-quantum SS exists if and only if 2t < n (quantum Singleton bound), unlike classical SS which allows any t < n. Graph-state QSS is the leading experimental platform. Distinct from [Unclonable SS](#unclonable-secret-sharing) (which prevents share cloning for classical secrets) and [Quantum Copy-Protection](categories/15-quantum-cryptography.md#quantum-copy-protection--uncloneable-encryption). Extends [Secret Sharing](#secret-sharing-schemes-sss) to the quantum domain.
 
+**Production readiness:** Research
+Quantum SS requires quantum hardware; experimental demonstrations exist (graph-state QSS) but no production deployment.
+
+**Implementations:**
+- [quantumlib/Cirq](https://github.com/quantumlib/Cirq) — Python, quantum circuit framework for implementing QSS protocols
+- [qiskit/qiskit](https://github.com/Qiskit/qiskit) — Python, quantum computing SDK with stabilizer/graph-state support
+
+**Security status:** Secure
+Information-theoretically secure; quantum Singleton bound provides tight characterization of achievable parameters.
+
+**Community acceptance:** Niche
+Foundational in quantum information theory (Cleve-Gottesman-Lo is highly cited); limited to quantum computing research community.
+
 ---
 
 ## Berlekamp-Welch Decoding for Secret Sharing
@@ -608,6 +1152,20 @@
 | **Guruswami-Sudan List Decoding** | 1999 | Bivariate factoring | Extends beyond the unique-decoding radius: corrects e > (n − t)/2 corruptions, returning a list of possible secrets; applicable when corruption exceeds half the redundancy [[1]](https://doi.org/10.1109/SFCS.1998.743426) |
 
 **State of the art:** Berlekamp-Welch (or equivalently Gao's algorithm) is the standard tool for [Robust Secret Sharing](#robust-secret-sharing) and [Cheater Detection](#secret-sharing-with-cheater-detection) — used whenever the reconstruction step must tolerate active adversaries. Unique decoding corrects up to (n − t)/2 corruptions; Guruswami-Sudan list decoding extends further. Also foundational to [Verifiable Information Dispersal](#verifiable-information-dispersal-vid). Closely tied to polynomial interpolation uniqueness: any t points on a degree-(t−1) polynomial uniquely determine it over a field, so t correct shares always suffice.
+
+**Production readiness:** Production
+Reed-Solomon decoding (Berlekamp-Welch/Gao) is deployed in every RS implementation; foundational to QR codes, CD/DVD, and distributed storage.
+
+**Implementations:**
+- [backblaze/JavaReedSolomon](https://github.com/Backblaze/JavaReedSolomon) — Java, Reed-Solomon with error correction
+- [klauspost/reedsolomon](https://github.com/klauspost/reedsolomon) — Go, high-performance RS encoding/decoding
+- [tahoe-lafs/zfec](https://github.com/tahoe-lafs/zfec) — Python/C, RS erasure coding
+
+**Security status:** Secure
+Deterministic algebraic algorithm; correctness is mathematically proven. Error correction capacity 2e + t <= n + 1 is tight.
+
+**Community acceptance:** Standard
+Berlekamp-Welch and Gao's algorithms are textbook; universally used in coding theory and robust secret sharing.
 
 ---
 
@@ -624,6 +1182,18 @@
 
 **State of the art:** Witness encryption remains theoretically powerful but practically limited — general constructions rely on multilinear maps or iO (see [Obfuscation](categories/16-obfuscation-advanced-hardness.md#indistinguishability-obfuscation-io)). Pairing-based WE (2020) is the most practical for structured policies. For threshold access specifically, [Threshold Decryption](#threshold-decryption) and [ABE](categories/07-homomorphic-functional-encryption.md#attribute-based--functional-encryption) are preferred today. WE subsumes both and connects to [Witness Encryption](categories/16-obfuscation-advanced-hardness.md#witness-encryption) in the obfuscation category.
 
+**Production readiness:** Research
+General witness encryption relies on uninstantiated assumptions (multilinear maps/iO); pairing-based WE for restricted languages is experimental.
+
+**Implementations:**
+- No production-quality implementations of general witness encryption exist; pairing-based WE for specific languages has research prototypes.
+
+**Security status:** Caution
+General WE security relies on multilinear maps (known attacks on candidates) or iO (no efficient construction); pairing-based WE for restricted languages is secure under DLIN.
+
+**Community acceptance:** Controversial
+Theoretically groundbreaking (GGHSW 2013 is highly cited); practical security of general constructions remains disputed due to multilinear map vulnerabilities.
+
 ---
 
 ## SLIP-39: Shamir's Secret Sharing for BIP-39 Mnemonics
@@ -638,6 +1208,21 @@
 | **SSKR (Sharded Secret Key Reconstruction)** | 2020 | GF(256) + bytewords | Blockchain Commons variant of SLIP-39 using GF(2^8) and byteword encoding; compatible with CBOR/UR type system; adopted by Gordian ecosystem [[1]](https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-011-sskr.md) |
 
 **State of the art:** SLIP-39 is the dominant standard for mnemonic-based threshold seed backup; implemented in Trezor firmware, Ian Coleman's tool, and the `shamir-mnemonic` Python library. SSKR offers an alternative encoding for the Gordian/UR ecosystem. Both use Shamir over small-characteristic fields (GF(2^8) or GF(2^{10})) for byte-oriented efficiency — contrasting with the prime-field GF(p) arithmetic in Shamir's original paper. Distinct from [XOR-Based SS](#xor-based--binary-field-secret-sharing) (no threshold, just split) and the standalone SLIP-39 entry in [Key Management](categories/03-key-exchange-key-management.md). Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+**Production readiness:** Production
+SLIP-39 is deployed in Trezor Model T firmware and multiple wallet tools; SSKR is deployed in the Gordian ecosystem.
+
+**Implementations:**
+- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) — Python, reference SLIP-39 implementation
+- [AshKyd/slip39-js](https://github.com/nickg/slip39-js) — JavaScript, SLIP-39 for web wallets
+- [BlockchainCommons/bc-sskr](https://github.com/BlockchainCommons/bc-sskr) — C, SSKR (Sharded Secret Key Reconstruction)
+- [AshKyd/iancoleman-slip39](https://iancoleman.io/slip39/) — Web tool, SLIP-39 share generation
+
+**Security status:** Secure
+Information-theoretically secure (Shamir over GF(2^10)); PBKDF2 passphrase mixing prevents offline brute force; RS checksum detects transcription errors.
+
+**Community acceptance:** Standard
+SLIP-39 is the dominant standard for mnemonic threshold backup in the cryptocurrency ecosystem; endorsed by SatoshiLabs and implemented in major wallets.
 
 ---
 
@@ -654,6 +1239,18 @@
 
 **State of the art:** Ideal weighted SS exists only for restricted weight distributions (Beimel-Tassa 2011); general weights require super-polynomial share sizes (information-theoretic lower bound). Verifiable weighted SS (2025) adds verification for blockchain PoS applications. Related to [Hierarchical SS](#hierarchical-secret-sharing) and [General Access Structure SS](#general-access-structure-secret-sharing). Extends [Secret Sharing](#secret-sharing-schemes-sss).
 
+**Production readiness:** Experimental
+Weighted SS is used conceptually in PoS systems; the naive replication approach is deployed but ideal weighted SS is research-stage.
+
+**Implementations:**
+- No standalone open-source ideal weighted SS implementations; the naive approach (replicated Shamir shares) is trivially implementable with any Shamir library.
+
+**Security status:** Secure
+Information-theoretically secure for ideal constructions; naive replication inherits Shamir's security.
+
+**Community acceptance:** Niche
+Well-studied in secret sharing theory; growing interest with PoS blockchain applications and verifiable weighted SS (2025).
+
 ---
 
 ## Secret Sharing with Cheater Identification (Harn-Lin)
@@ -669,6 +1266,18 @@
 
 **State of the art:** Jhanwar-Safavi-Naini (2013) achieves near-optimal share size for cheater identification; Harn-Lin (2009, 2012) is the foundational construction. Stronger than [Cheater Detection](#secret-sharing-with-cheater-detection) (which only detects, not identifies) and complementary to [Robust SS](#robust-secret-sharing) (which corrects errors without identifying cheaters). Extends [Secret Sharing](#secret-sharing-schemes-sss).
 
+**Production readiness:** Research
+Cheater identification SS constructions are primarily academic; no standalone production implementations.
+
+**Implementations:**
+- No standalone open-source implementations; the constructions are described in academic papers with some reference code.
+
+**Security status:** Secure
+Information-theoretically secure; identifies up to floor((t-1)/3) cheaters with near-optimal share sizes.
+
+**Community acceptance:** Niche
+Well-cited in secret sharing theory; Harn-Lin is the foundational reference; practical adoption is limited.
+
 ---
 
 ## Secret Sharing over Non-Abelian Groups
@@ -683,6 +1292,18 @@
 | **Braid Group SS** | 2006 | Braid groups + conjugacy | Uses the conjugacy problem in braid groups; shares are braid words; non-abelian structure resists quantum Fourier sampling attacks [[1]](https://doi.org/10.1007/11889342_20) |
 
 **State of the art:** Non-abelian SS remains primarily theoretical; no schemes have seen practical deployment. Interest is driven by potential quantum resistance (the non-abelian hidden subgroup problem is believed hard for quantum computers, unlike Shor-vulnerable abelian groups). Semidirect product and braid group constructions are the most studied. Extends [Secret Sharing](#secret-sharing-schemes-sss); relates to post-quantum motivations in [Post-Quantum Cryptography](categories/15-quantum-cryptography.md#post-quantum-cryptography-pqc).
+
+**Production readiness:** Research
+Purely theoretical; no implementations or practical deployments exist.
+
+**Implementations:**
+- No open-source implementations available; constructions are described in academic papers only.
+
+**Security status:** Caution
+Security relies on non-abelian group-theoretic assumptions (conjugacy problem, hidden subgroup problem) that are less well-studied than standard assumptions; some braid group assumptions have been weakened.
+
+**Community acceptance:** Niche
+Of interest to algebraic cryptography and post-quantum researchers; no mainstream adoption or standardization efforts.
 
 ---
 
@@ -700,6 +1321,19 @@
 
 **State of the art:** Naor-Shamir (1995) is the foundational scheme; probabilistic visual SS (2004) solves the pixel-expansion problem. Visual SS is deployed in anti-counterfeiting, physical key ceremony backup, and low-tech secure authentication. Closely related to [Visual Cryptography](categories/20-applied-niche-protocols.md#visual-cryptography) in the applied protocols category. Extends [Secret Sharing](#secret-sharing-schemes-sss).
 
+**Production readiness:** Mature
+Visual SS is deployed in anti-counterfeiting, physical key ceremonies, and educational demonstrations; multiple tools available.
+
+**Implementations:**
+- [4rtemi5/VisualCrypto](https://github.com/4rtemi5/VisualCrypto) — Python, visual cryptography implementation
+- [javl/image-splitter](https://github.com/javl/image-splitter) — Python, Naor-Shamir visual secret sharing
+
+**Security status:** Secure
+Information-theoretically perfect secrecy; security is unconditional and does not rely on computational assumptions.
+
+**Community acceptance:** Niche
+Well-known in cryptography education and anti-counterfeiting; unique property of requiring zero computation for reconstruction.
+
 ---
 
 ## AONT-RS: All-or-Nothing Transform with Reed-Solomon for Cloud Storage
@@ -714,6 +1348,19 @@
 | **CAONT-RS (Yan-Weng-Chen)** | 2017 | Computational AONT + RS | Computationally secure AONT-RS variant; uses AES-based AONT to avoid information-theoretic overhead; suitable for large-scale cloud deployments [[1]](https://doi.org/10.1109/TCC.2017.2679717) |
 
 **State of the art:** AONT-RS (Resch-Plank 2011) is the standard construction for secure distributed storage; achieves 1.5-3x storage overhead (vs. 3x for replication) while providing both confidentiality and fault tolerance. Used in Cleversafe (now IBM Cloud Object Storage), academic secure storage systems, and RAID-like distributed architectures. Distinct from [Computational SS](#computational-secret-sharing) (Krawczyk) which shares a key rather than dispersing data. Extends [Secret Sharing](#secret-sharing-schemes-sss) and relates to [Regenerating Codes](#regenerating-codes-for-distributed-storage).
+
+**Production readiness:** Production
+AONT-RS is deployed in IBM Cloud Object Storage (formerly Cleversafe) and academic secure storage systems.
+
+**Implementations:**
+- [tahoe-lafs/tahoe-lafs](https://github.com/tahoe-lafs/tahoe-lafs) — Python, distributed storage with IDA/AONT concepts
+- [klauspost/reedsolomon](https://github.com/klauspost/reedsolomon) — Go, RS coding component for AONT-RS
+
+**Security status:** Secure
+Confidentiality from AONT (computationally secure under block cipher assumption); fault tolerance from RS coding (information-theoretic).
+
+**Community acceptance:** Widely trusted
+Deployed in IBM Cloud Object Storage at enterprise scale; well-studied in the distributed storage community.
 
 ---
 
@@ -730,6 +1377,18 @@
 
 **State of the art:** Asharov-Lindell (2010) gives the definitive utility-independent treatment. Rational SS bridges [Secret Sharing](#secret-sharing-schemes-sss) and game theory; closely related to [Rational Cryptography](categories/19-theoretical-foundations.md#rational-cryptography--mechanism-design-in-crypto) and [Secret Sharing with Fairness](#secret-sharing-with-fairness). Primarily theoretical; practical deployments remain limited.
 
+**Production readiness:** Research
+Purely theoretical; no production implementations or real-world deployments.
+
+**Implementations:**
+- No open-source implementations available; constructions are described in academic papers only.
+
+**Security status:** Secure
+Game-theoretic security (Nash equilibrium); provably incentive-compatible under stated utility models.
+
+**Community acceptance:** Niche
+Well-cited in the intersection of cryptography and game theory; Asharov-Lindell (2010) is the definitive reference; no practical adoption.
+
 ---
 
 ## Verifiable Multi-Secret Sharing (VMSS)
@@ -744,6 +1403,18 @@
 | **Liu-Ning-Liang VMSS** | 2016 | Lattice-based + polynomial | First post-quantum VMSS; verification based on lattice assumptions (SIS); resists quantum adversaries [[1]](https://doi.org/10.1016/j.ins.2016.03.037) |
 
 **State of the art:** Yang-Chang-Hwang (2004) and Dehkordi-Mashhadi (2008) are the most cited practical constructions; Liu et al. (2016) provides a post-quantum path. VMSS is used in key escrow, multi-authority credential systems, and digital rights management where a dealer must commit to multiple secrets simultaneously. Extends [Multi-Secret Sharing](#multi-secret-sharing) and [Verifiable SS](#secret-sharing-schemes-sss).
+
+**Production readiness:** Research
+VMSS constructions exist in academic literature; no standalone production implementations.
+
+**Implementations:**
+- No widely-adopted open-source implementations; concepts are embedded in key escrow and multi-authority credential systems.
+
+**Security status:** Secure
+Computationally secure under DLP/pairing assumptions (Yang-Chang-Hwang, Dehkordi-Mashhadi) or lattice assumptions (Liu et al.).
+
+**Community acceptance:** Niche
+Well-cited in the multi-secret sharing literature; practical adoption in key escrow and DRM but without dedicated open-source tooling.
 
 ---
 
@@ -760,6 +1431,19 @@
 
 **State of the art:** CHURP (2019) is the standard for blockchain-era dynamic SS with proactive refresh. Desmedt-Jajodia (1997) introduced dealer-free enrollment. Closely related to [Proactive SS](#proactive-secret-sharing) (which refreshes shares periodically) and [Evolving SS](#evolving-secret-sharing) (which handles unbounded participants but without revocation). Extends [Secret Sharing](#secret-sharing-schemes-sss).
 
+**Production readiness:** Experimental
+CHURP has working prototypes deployed in Oasis Network; Desmedt-Jajodia enrollment is implemented in research systems; no widely standardized dynamic SS protocol exists.
+
+**Implementations:**
+- [oasisprotocol/oasis-core](https://github.com/oasisprotocol/oasis-core) — Go/Rust, CHURP with dynamic committee enrollment
+- [ISTA-SPiDerS/dpss](https://github.com/ISTA-SPiDerS/dpss) — Go, dynamic proactive secret sharing
+
+**Security status:** Secure
+CHURP is provably secure under bivariate polynomial assumptions with Byzantine tolerance; redistribution-based enrollment inherits VSS security.
+
+**Community acceptance:** Emerging
+CHURP is well-cited in the blockchain research community; dynamic SS is gaining traction with validator rotation in PoS systems.
+
 ---
 
 ## Function Secret Sharing (FSS) for Threshold Policies
@@ -774,5 +1458,193 @@
 | **Verifiable FSS** | 2023 | FSS + MAC consistency | Adds verification: servers can check their function share evaluations are consistent without learning the function; prevents silent corruption [[1]](https://eprint.iacr.org/2023/1042) |
 
 **State of the art:** Boyle-Gilboa-Ishai (2015) is the foundational scheme; FSS for point functions (DPF) is deployed in private analytics (Prio, Apple/Google exposure notifications) and lightweight [PIR](categories/10-privacy-preserving-computation.md#private-information-retrieval-pir). Multi-party and verifiable FSS (2019-2023) extend to threshold settings. Closely related to [Distributed Point Functions / FSS](categories/06-multi-party-computation.md#function-secret-sharing--distributed-point-functions-fss--dpf) in the MPC category. Extends [Secret Sharing](#secret-sharing-schemes-sss).
+
+**Production readiness:** Production
+DPF (2-party FSS for point functions) is deployed in Prio/VDAF for privacy-preserving telemetry (Apple, Google, Mozilla); multi-party FSS is experimental.
+
+**Implementations:**
+- [google/distributed_point_functions](https://github.com/google/distributed_point_functions) — C++, DPF library for private analytics
+- [divviup/libprio-rs](https://github.com/divviup/libprio-rs) — Rust, Prio/VDAF with FSS-based aggregation
+- [henrycg/prio](https://github.com/henrycg/prio) — Go, original Prio implementation using FSS
+
+**Security status:** Secure
+Computationally secure under PRG assumptions; DPF correctness and privacy are well-established.
+
+**Community acceptance:** Widely trusted
+DPF is deployed at scale by Apple, Google, and Mozilla for privacy-preserving telemetry; IETF VDAF standardization incorporates FSS concepts.
+
+---
+
+## Blakley's Geometric Secret Sharing
+
+**Goal:** Encode a secret as the intersection point of hyperplanes in a k-dimensional space, providing a geometric alternative to Shamir's polynomial approach where reconstruction requires only linear algebra over integers.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Blakley's scheme** | 1979 | Hyperplane intersection | Shares are k-dimensional hyperplane coefficients; reconstruction via Gaussian elimination; shares are t times larger than Shamir [[1]](https://ar5iv.labs.arxiv.org/html/1901.02802) |
+
+**State of the art:** Provides an independent geometric foundation to Shamir; the matrix structure lends itself to certain error-correcting configurations and hardware implementations where matrix ops are cheaper than polynomial interpolation.
+
+**Production readiness:** Mature
+Blakley's scheme is implemented in educational and reference libraries; Shamir dominates in production but Blakley is available as an alternative.
+
+**Implementations:**
+- [crepererum/ssss](https://github.com/crepererum/ssss) — C, Shamir's Secret Sharing Scheme (includes geometric perspective)
+
+**Security status:** Secure
+Information-theoretically perfect secrecy; equivalent security to Shamir.
+
+**Community acceptance:** Niche
+Historically important as an independent invention of threshold secret sharing; primarily of theoretical and educational interest today.
+
+---
+
+## CRT-Based Secret Sharing (Mignotte / Asmuth-Bloom)
+
+**Goal:** Replace polynomial interpolation with the Chinese Remainder Theorem over pairwise coprime moduli, making reconstruction computationally cheaper via modular arithmetic.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Mignotte scheme** | 1982 | CRT, non-perfect | Ramp scheme using consecutive moduli; computationally secret [[1]](https://en.wikipedia.org/wiki/Secret_sharing_using_the_Chinese_remainder_theorem) |
+| **Asmuth-Bloom** | 1983 | CRT, information-theoretic | Perfect scheme via random offset; reconstruction by CRT; ePrint 2006/166 [[1]](https://eprint.iacr.org/2006/166) |
+
+**State of the art:** CRT-based schemes generalize cleanly to weighted threshold, hierarchical, and compartmented access structures. Used in hardware security modules where modular arithmetic is accelerated.
+
+**Production readiness:** Mature
+Asmuth-Bloom is implemented in several libraries; used in hardware security modules where modular arithmetic is natively supported.
+
+**Implementations:**
+- [mikeivanov/pysss](https://github.com/mikeivanov/pysss) — Python, Shamir and CRT-based secret sharing
+- [dsprenkels/sss](https://github.com/dsprenkels/sss) — C, includes notes on CRT-based alternatives
+
+**Security status:** Caution
+Asmuth-Bloom is information-theoretically secure (perfect); Mignotte is not perfect (partial leakage below threshold). Parameter selection for CRT sequences requires care.
+
+**Community acceptance:** Niche
+Well-known in the secret sharing literature; less commonly deployed than Shamir due to more complex parameter generation.
+
+---
+
+## Visual Secret Sharing (Visual Cryptography)
+
+**Goal:** Split a secret image into n printed transparencies so that any qualifying subset, when physically stacked, reveals the image to the naked eye with zero computation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Naor-Shamir visual cryptography** | 1994 | Pixel expansion, XOR stacking | No keys, no software, no power needed at decryption; EUROCRYPT 1994 [[1]](https://link.springer.com/chapter/10.1007/BFb0053419) |
+| **Extended visual cryptography** | 2002 | Meaningful shares | Each share individually looks like a natural image; Nakajima-Yamaguchi [[1]](https://doi.org/10.1007/3-540-36563-X_25) |
+
+**State of the art:** Used for tamper-evident physical tokens, printed ballots, QR codes, and graphical password authentication. The only secret sharing scheme where decryption requires no computation at all.
+
+**Production readiness:** Mature
+Visual SS is deployed in anti-counterfeiting, physical key ceremonies, and educational demonstrations; multiple tools available.
+
+**Implementations:**
+- [4rtemi5/VisualCrypto](https://github.com/4rtemi5/VisualCrypto) — Python, visual cryptography implementation
+- [javl/image-splitter](https://github.com/javl/image-splitter) — Python, Naor-Shamir visual secret sharing
+
+**Security status:** Secure
+Information-theoretically perfect secrecy; security is unconditional and does not rely on computational assumptions.
+
+**Community acceptance:** Niche
+Well-known in cryptography education and anti-counterfeiting; unique property of requiring zero computation for reconstruction.
+
+---
+
+## Computational Secret Sharing / "Secret Sharing Made Short" (Krawczyk)
+
+**Goal:** Achieve threshold secret sharing with each share of size |S|/m plus a short security-parameter-length tag, by combining information-theoretic dispersal with computationally secure encryption.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Krawczyk SSMS** | 1993 | IDA + symmetric encryption | Shares are 1/m-th the secret size instead of full size (as in Shamir); CRYPTO '93 [[1]](https://link.springer.com/chapter/10.1007/3-540-48329-2_12) |
+
+**State of the art:** Direct predecessor to practical distributed storage systems like TAHOE-LAFS. Sharing a 1 GB file among 10 parties requires ~1 GB total storage instead of 10 GB.
+
+**Production readiness:** Production
+Krawczyk's SSMS is the basis for TAHOE-LAFS and other distributed storage systems; widely deployed for large-file sharing.
+
+**Implementations:**
+- [tahoe-lafs/tahoe-lafs](https://github.com/tahoe-lafs/tahoe-lafs) — Python, distributed storage using computational SS (IDA + encryption)
+- [codahale/shamir](https://github.com/codahale/shamir) — Java, Shamir with short shares for key sharing
+
+**Security status:** Secure
+Computationally secure under standard symmetric encryption assumptions (IND-CPA); well-analyzed since 1993.
+
+**Community acceptance:** Widely trusted
+Krawczyk's construction is a textbook result; deployed in production distributed storage systems for decades.
+
+---
+
+## Hierarchical Threshold Secret Sharing (Tassa)
+
+**Goal:** Partition participants into ordered levels so that a subset is authorized iff it satisfies nested per-level threshold conditions, using Birkhoff interpolation on a polynomial.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Tassa hierarchical SS** | 2004 | Birkhoff interpolation | Perfect, information-theoretic; single polynomial; TCC 2004 [[1]](https://link.springer.com/chapter/10.1007/978-3-540-24638-1_26) |
+
+**State of the art:** Handles policies like "3 employees, at least 1 of whom is a manager" naturally. Directly applicable to organizational signing policies and multi-tier key management.
+
+**Production readiness:** Mature
+Hierarchical SS concepts are deployed in corporate key management and multi-tier credential systems; Tassa's scheme has reference implementations.
+
+**Implementations:**
+- [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) — Python, SLIP-39 group threshold (two-level hierarchical)
+
+**Security status:** Secure
+Information-theoretically secure; ideal share size (share = secret size) for supported weight distributions.
+
+**Community acceptance:** Niche
+Well-studied in theoretical secret sharing; practical adoption primarily through SLIP-39 group thresholds and enterprise key management.
+
+---
+
+## Verifiable Secret Redistribution (VSR)
+
+**Goal:** Allow existing shareholders to collectively re-share a secret to a new set of shareholders with a potentially different (m',n') threshold, without reconstructing the secret and without a dealer.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Wong-Wing VSR** | 2002 | Distributed Feldman VSS | Old shareholders act as dealers for new group; new shareholders verify share validity; CMU TR [[1]](https://www.cs.cmu.edu/~wing/publications/Wong-Wing02b.pdf) |
+
+**State of the art:** Foundational protocol for threshold key lifecycle management — essential when employees leave, trust levels change, or hardware is decommissioned. Distinct from proactive SS (which refreshes among the same set).
+
+**Production readiness:** Experimental
+VSR concepts are used in threshold key rotation systems; no standalone production-quality implementation exists.
+
+**Implementations:**
+- [AIT-DKMS/proactive-refresh](https://github.com/AIT-DKMS/proactive-refresh) — Rust, proactive share refresh with redistribution support
+- [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) — Rust, share redistribution primitives
+
+**Security status:** Secure
+Provably secure under Feldman VSS assumptions; new shareholders can verify share validity without trusting departing members.
+
+**Community acceptance:** Niche
+Foundational concept for threshold key lifecycle management; well-cited but limited standalone tooling.
+
+---
+
+## Timed Secret Sharing
+
+**Goal:** Enforce both lower and upper time bounds on when a secret can be reconstructed, using cryptographic time-lock mechanisms combined with threshold sharing.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Kavousi-Abadi-Jovanovic** | 2023 | Time-lock puzzles + SS | First formal definition with both lower and upper temporal bounds on reconstruction; ePrint 2023/1024 [[1]](https://eprint.iacr.org/2023/1024) |
+
+**State of the art:** Enables sealed-bid auctions, time-capsule commitments, timed-release blockchain transactions, and regulatory escrow with cryptographic enforcement of timing policies rather than procedural controls.
+
+**Production readiness:** Research
+Timed SS is a recent theoretical construction (2023); no production implementations or deployments exist.
+
+**Implementations:**
+- No standalone open-source implementations available; the construction builds on time-lock puzzle libraries as components.
+
+**Security status:** Secure
+Security relies on the sequential computation assumption underlying time-lock puzzles; provably secure under standard assumptions.
+
+**Community acceptance:** Niche
+Recent result (2023) with growing interest for timed-release applications; limited adoption outside the research community.
 
 ---

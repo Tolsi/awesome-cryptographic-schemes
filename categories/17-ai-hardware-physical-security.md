@@ -12,6 +12,19 @@
 
 **State of the art:** zkLLM (CCS 2024) for full LLM proofs; lightweight sampling (2026) for practical deployment. Extends [zkML](#zkml-zero-knowledge-machine-learning) to production-scale models.
 
+**Production readiness:** Research
+Academic prototypes only; zkLLM proving time (~15 min for 13B params) precludes production use
+
+**Implementations:**
+- [zkLLM (official)](https://github.com/jvhs0706/zkllm-ccs2024) — Python/Rust, reference implementation from CCS 2024 paper
+- [zkPyTorch (PolyhedraZK)](https://github.com/PolyhedraZK/ExpanderCompilerCollection) — Rust, Expander proof engine for PyTorch inference
+
+**Security status:** Caution
+Proof systems are sound under stated assumptions but have not undergone large-scale adversarial audit; parameter choices are evolving
+
+**Community acceptance:** Emerging
+Active academic interest (CCS 2024); no standardization effort yet; growing blockchain community adoption via zkML tooling
+
 ---
 
 ## Cryptographic Watermarking for AI / Pseudorandom Codes
@@ -25,6 +38,19 @@
 | **Google SynthID-Text** | 2024 | Tournament sampling | Production watermark in Gemini; quality-preserving via speculative sampling [[1]](https://www.nature.com/articles/s41586-024-08025-4) |
 
 **State of the art:** Christ-Gunn pseudorandom codes (CRYPTO 2024); SynthID deployed in production. Emerging primitive at intersection of [PRF](#pseudorandom-functions-prf--pseudorandom-permutations-prp) and coding theory.
+
+**Production readiness:** Experimental
+Google SynthID-Text deployed in Gemini production; academic schemes (Christ-Gunn) are prototype-only
+
+**Implementations:**
+- [SynthID-Text (Google DeepMind)](https://github.com/google-deepmind/synthid-text) — Python, production watermarking library used in Gemini
+- [KGW Watermark (Kirchenbauer et al.)](https://github.com/jwkirchenbauer/lm-watermarking) — Python/PyTorch, reference implementation of token-level watermarking
+
+**Security status:** Caution
+Watermarks can be removed or weakened by paraphrasing; undetectability proofs hold under idealized models but practical robustness varies
+
+**Community acceptance:** Emerging
+CRYPTO 2024 best paper (Christ-Gunn); active policy interest (EU AI Act); no formal standard yet
 
 ---
 
@@ -40,6 +66,19 @@
 
 **State of the art:** C2PA-integrated cameras (Nikon, Leica, Sony); PUF-based sensor crypto (2025). Extends [PUF](#physical-unclonable-functions-puf) and [Provenance Attestation](#cryptographic-provenance-attestation-c2pa--slsa).
 
+**Production readiness:** Experimental
+Nikon Z9 and Leica M11-P ship with C2PA signing; general in-sensor PUF crypto remains lab-stage
+
+**Implementations:**
+- [C2PA Rust SDK](https://github.com/contentauth/c2pa-rs) — Rust, Content Authenticity Initiative reference implementation
+- [c2patool CLI](https://github.com/contentauth/c2patool) — Rust CLI, create and verify C2PA manifests
+
+**Security status:** Caution
+C2PA signing is cryptographically sound but does not prevent capture of a fake scene; PUF-based sensor binding is unaudited at scale
+
+**Community acceptance:** Emerging
+C2PA is a published standard (Coalition for Content Provenance and Authenticity); adopted by Adobe, Microsoft, Nikon, Leica; broader sensor-level crypto is niche
+
 ---
 
 ## Physical Unclonable Functions (PUF)
@@ -53,6 +92,19 @@
 | **Ring Oscillator PUF** | 2003 | Frequency differences | Compare oscillation frequencies of identically-designed rings [[1]](https://dl.acm.org/doi/10.1145/611892.611996) |
 
 **State of the art:** SRAM PUF (commercial: NXP, Intrinsic ID), combined with fuzzy extractors for stable key derivation.
+
+**Production readiness:** Production
+SRAM PUFs deployed in hundreds of millions of MCUs (NXP, Microchip, Renesas) via Intrinsic ID BroadKey
+
+**Implementations:**
+- [Intrinsic ID BroadKey](https://www.intrinsic-id.com/broadkey/) — Commercial IP core for SRAM PUF key generation
+- [PUFlib (TU Darmstadt)](https://github.com/siweisun/pypuf) — Python, PUF simulation and ML attack framework for research
+
+**Security status:** Caution
+SRAM PUFs are secure for key storage; Arbiter PUFs broken by ML modeling attacks (see ML Modeling Attacks section); requires fuzzy extractors for reliability
+
+**Community acceptance:** Widely trusted
+Commercial deployment by NXP, Infineon, Microchip; NIST-validated entropy sources; well-studied in academic literature
 
 ---
 
@@ -69,6 +121,19 @@
 
 **State of the art:** CKKS-based encrypted LQG (2020); TFHE for nonlinear control (2023); MPC for power flow (2024). Bridges [HE](#homomorphic-encryption-he), [MPC](#secure-multi-party-computation-mpc), and control theory.
 
+**Production readiness:** Research
+Academic demonstrations on small-scale control loops; no production-grade encrypted controller deployed
+
+**Implementations:**
+- [OpenFHE](https://github.com/openfheorg/openfhe-development) — C++, general-purpose FHE library used for encrypted control research
+- [SEAL (Microsoft)](https://github.com/microsoft/SEAL) — C++, BFV/CKKS HE library applicable to encrypted control
+
+**Security status:** Caution
+Underlying HE schemes are secure; real-time control constraints may force parameter choices that weaken security margins
+
+**Community acceptance:** Niche
+Active academic community (IFAC, CDC conferences); no standardization; limited industry adoption
+
 ---
 
 ## Wiretap Channel / Physical-Layer Security
@@ -84,6 +149,19 @@
 
 **State of the art:** Physical-layer security in 5G/wireless; theoretically beautiful but hard to guarantee channel advantage in practice. Complements [QKD](#quantum-key-distribution-qkd) and [OTP](#one-time-pad--information-theoretic-security).
 
+**Production readiness:** Research
+Foundational information-theoretic results; practical deployment limited to niche wireless scenarios
+
+**Implementations:**
+- [GNU Radio](https://github.com/gnuradio/gnuradio) — C++/Python, SDR framework used for physical-layer security research
+- [Wiretap Channel Polar Codes (MATLAB)](https://github.com/tavildar/Polar-Code-Wiretap) — MATLAB, research implementation of polar codes for wiretap channels
+
+**Security status:** Caution
+Information-theoretically secure when channel advantage holds; guaranteeing channel advantage in practice is the fundamental challenge
+
+**Community acceptance:** Niche
+Well-established in information theory (Shannon tradition); 5G standards include some physical-layer security features; not a replacement for computational crypto
+
 ---
 
 ## Proof of Location / Spatial Proofs
@@ -97,6 +175,19 @@
 | **Girish-Gluch-Goldwasser Private Proofs of When and Where** | 2025 | ZK proofs | Formal ZK proofs for spatiotemporal claims; composable with other ZK [[1]](https://arxiv.org/abs/2601.18961) |
 
 **State of the art:** ZK spatial proofs (Girish et al. 2025); combines [ZK Proofs](#zero-knowledge-proofs-zk) with location verification.
+
+**Production readiness:** Research
+Academic prototypes; no production ZK proof-of-location system deployed at scale
+
+**Implementations:**
+- [Astral Protocol](https://github.com/AstralProtocol) — TypeScript/Solidity, decentralized location proof framework
+- [FOAM Proof of Location](https://github.com/f-o-a-m) — Solidity/Haskell, blockchain-based location proof protocol
+
+**Security status:** Caution
+ZK proofs are sound but location verification depends on trusted hardware (GPS) or witness infrastructure; spoofing attacks remain a concern
+
+**Community acceptance:** Emerging
+Growing blockchain and logistics interest; no formal standard; active academic research (CRYPTO, Eurocrypt workshops)
 
 ---
 
@@ -114,6 +205,19 @@
 
 **State of the art:** DOM and higher-order TI are the current design standards for masked hardware; SILVER and similar tools verify implementations formally. Extending masking to PQC (ML-KEM, ML-DSA) is an active research frontier. Closely related to [Side-Channel Attacks](#speculative-execution--cache-timing-side-channel-attacks) and [PUF](#physical-unclonable-functions-puf).
 
+**Production readiness:** Production
+Masking is mandatory in Common Criteria EAL 4+ certified hardware; DOM and TI deployed in commercial payment and identity chips
+
+**Implementations:**
+- [SILVER](https://github.com/Chair-for-Security-Engineering/SILVER) — Python, automated verification of masked hardware implementations
+- [ChipWhisperer](https://github.com/newaetech/chipwhisperer) — Python/C, open-source side-channel analysis platform for DPA/SPA
+
+**Security status:** Secure
+Higher-order masking is provably secure in the d-probing model; practical security depends on implementation quality and glitch behavior
+
+**Community acceptance:** Standard
+Required by Common Criteria (AVA_VAN.5), FIPS 140-3 Level 4, and EMVCo security evaluation; well-studied with decades of peer review
+
 ---
 
 ## Fault Injection Attacks & Countermeasures
@@ -129,6 +233,19 @@
 | **MDPL / Dual-Rail Precharge Logic** | 2005 | Balanced hardware | Dual-rail circuits balance switching activity and detect faults by checking complementary rails [[1]](https://ieeexplore.ieee.org/document/1490438) |
 
 **State of the art:** Combined countermeasures (redundancy + infective computation + error detection codes) are standard in certified cryptographic hardware (Common Criteria EAL 5+). Fault attacks on lattice-based PQC signatures are an active research area (2024–2025). Complements [Masking](#power-analysis-attacks--masking-countermeasures) and [PUF](#physical-unclonable-functions-puf).
+
+**Production readiness:** Production
+Redundancy, infective computation, and error detection are standard in certified cryptographic hardware (EAL 5+)
+
+**Implementations:**
+- [ChipWhisperer](https://github.com/newaetech/chipwhisperer) — Python/C, open-source fault injection and side-channel analysis platform
+- [Riscure FiPy (commercial)](https://www.riscure.com/security-tools/inspector-fi/) — Commercial fault injection analysis toolsuite
+
+**Security status:** Caution
+Combined countermeasures are effective against known attacks; new fault vectors (laser, EM) continue to emerge; PQC fault resistance is an open area
+
+**Community acceptance:** Standard
+Fault resistance is mandated by Common Criteria, EMVCo, and FIPS 140-3 Level 4 evaluations; extensive peer review at CHES and FDTC workshops
 
 ---
 
@@ -146,6 +263,20 @@
 
 **State of the art:** Hardware mitigations (IBRS, STIBP, page-table isolation) are deployed in all major OS kernels; constant-time coding is mandatory in modern crypto libraries (OpenSSL, BoringSSL, libsodium). Spectre-class variants continue to emerge; microcode updates remain the primary defense. Related to [Masking](#power-analysis-attacks--masking-countermeasures).
 
+**Production readiness:** Production
+Hardware mitigations (IBRS, STIBP, KPTI) deployed in all major OS kernels; constant-time coding enforced in production crypto libraries
+
+**Implementations:**
+- [ctgrind](https://github.com/agl/ctgrind) — C, Valgrind-based constant-time verification tool
+- [TIMECOP](https://post-quantum-cryptography.org/timecop/) — C, automated constant-time testing for crypto implementations
+- [spectector](https://github.com/spectector/spectector) — OCaml, symbolic executor for detecting Spectre vulnerabilities
+
+**Security status:** Caution
+Known Spectre/Meltdown variants are mitigated; new transient-execution variants continue to be discovered; microcode updates are ongoing
+
+**Community acceptance:** Standard
+CVE-assigned vulnerabilities with vendor coordination; mitigations shipped by Intel, AMD, ARM, and all major OS vendors; constant-time coding is an industry norm
+
 ---
 
 ## Hardware True Random Number Generators (TRNGs)
@@ -162,6 +293,19 @@
 
 **State of the art:** Intel RDRAND/RDSEED in every modern x86 CPU; ARM TrustZone includes dedicated TRNG hardware; NIST SP 800-90B defines the certification baseline. Feeds into [DRBG / PRNG](categories/01-foundational-primitives.md#drbg--cryptographic-pseudorandom-number-generators) and all key generation. See also [PUF](#physical-unclonable-functions-puf) for device-unique entropy.
 
+**Production readiness:** Production
+Intel RDRAND/RDSEED, ARM TRNG, and dedicated TRNG IP cores deployed in billions of devices
+
+**Implementations:**
+- [jitterentropy-library](https://github.com/smuellerDD/jitterentropy-library) — C, CPU jitter-based entropy source used in Linux kernel
+- [NIST SP 800-90B Entropy Assessment](https://github.com/usnistgov/SP800-90B_EntropyAssessment) — Python/C++, NIST tool for validating entropy sources
+
+**Security status:** Secure
+Hardware entropy sources pass NIST SP 800-90B and BSI AIS-31 validation; RDRAND includes online health testing
+
+**Community acceptance:** Standard
+NIST SP 800-90B and BSI AIS-31 define certification baselines; Intel, ARM, and FPGA vendors ship certified implementations
+
 ---
 
 ## Confidential ML / TEE-Based Inference
@@ -177,6 +321,20 @@
 | **AMD SEV-SNP / Intel TDX VM Isolation** | 2022+ | Full-VM memory encryption | Encrypts VM memory from hypervisor; supports confidential ML at VM granularity; benchmarked in 2024 [[1]](https://arxiv.org/abs/2408.00443) |
 
 **State of the art:** Intel TDX and AMD SEV-SNP offer VM-level isolation deployable on major cloud providers (Azure, GCP, AWS); GPU TEEs (NVIDIA H100 CC) extend coverage to accelerator workloads. Interacts with [TEE Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation), [zkLLM](#zkllm--verifiable-ai-inference), and [FHE-based encrypted inference](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-he).
+
+**Production readiness:** Production
+Intel TDX and AMD SEV-SNP deployed on Azure, GCP, and AWS; NVIDIA H100 CC available for GPU workloads
+
+**Implementations:**
+- [Gramine (LibOS for SGX/TDX)](https://github.com/gramineproject/gramine) — C, library OS for running unmodified Linux applications in enclaves
+- [Occlum](https://github.com/occlum/occlum) — Rust/C, memory-safe LibOS for Intel SGX enclaves
+- [Confidential Containers](https://github.com/confidential-containers) — Go/Rust, cloud-native framework for confidential VMs
+
+**Security status:** Caution
+TEE isolation is hardware-enforced; known side-channel attacks exist against SGX (but mitigated in TDX); TCB size varies by platform
+
+**Community acceptance:** Widely trusted
+Supported by Intel, AMD, ARM, NVIDIA, and all major cloud providers; active standardization via Confidential Computing Consortium (Linux Foundation)
 
 ---
 
@@ -195,6 +353,19 @@ EM side-channel attacks were first formalised by Gandolfi, Mourtel, and Olivier 
 
 **State of the art:** CEMA is a standard evaluation methodology in Common Criteria and FIPS 140-3 lab testing; shielded packaging and balanced logic styles (from [Masking / TI](#power-analysis-attacks--masking-countermeasures)) also reduce EM leakage. Closely related to [Power Analysis Attacks & Masking Countermeasures](#power-analysis-attacks--masking-countermeasures) and [Fault Injection Attacks](#fault-injection-attacks--countermeasures).
 
+**Production readiness:** Production
+CEMA is a standard evaluation methodology in Common Criteria and FIPS 140-3 security labs worldwide
+
+**Implementations:**
+- [ChipWhisperer](https://github.com/newaetech/chipwhisperer) — Python/C, open-source side-channel analysis platform with EM probe support
+- [Riscure Inspector (commercial)](https://www.riscure.com/security-tools/inspector-sca/) — Commercial EM side-channel analysis toolsuite
+
+**Security status:** Caution
+EM attacks are a proven threat; countermeasures (shielding, masking) are effective but must be validated per implementation
+
+**Community acceptance:** Standard
+Required evaluation methodology in Common Criteria (AVA_VAN.5) and FIPS 140-3 lab testing; decades of academic and industry validation at CHES
+
 ---
 
 ## Side-Channel Resistant AES Implementations
@@ -210,6 +381,21 @@ EM side-channel attacks were first formalised by Gandolfi, Mourtel, and Olivier 
 | **AES-NI + Constant-Time (libsodium/BoringSSL)** | 2010+ | Hardware AES instructions | x86 AES-NI instructions are inherently constant-time and table-free; universally adopted in crypto libraries as the preferred resistant implementation [[1]](https://www.intel.com/content/www/us/en/developer/articles/technical/advanced-encryption-standard-instructions-aes-ni.html) |
 
 **State of the art:** AES-NI (available on all modern x86 and ARM cores) is the recommended constant-time implementation; bitslicing is used where hardware AES is absent. Masking techniques from [Power Analysis Attacks & Masking Countermeasures](#power-analysis-attacks--masking-countermeasures) are layered on top when DPA resistance is also required. Resistant AES implementations underpin [AEAD](categories/02-authenticated-structured-encryption.md#authenticated-encryption-with-associated-data-aead) and [Disk Encryption](categories/02-authenticated-structured-encryption.md#disk-encryption--volume-encryption).
+
+**Production readiness:** Production
+AES-NI and ARM Crypto Extensions are universally deployed; bitsliced and masked implementations used in embedded contexts
+
+**Implementations:**
+- [OpenSSL AES-NI](https://github.com/openssl/openssl) — C/ASM, constant-time AES-NI dispatch in production TLS library
+- [libsodium](https://github.com/jedisct1/libsodium) — C, uses AES-NI when available; portable constant-time fallback
+- [BoringSSL](https://github.com/google/boringssl) — C/ASM, Google's TLS library with constant-time AES
+- [fixslicing AES (Alexandre Adomnicai)](https://github.com/aadomn/aes) — C/ASM, bitsliced AES for ARM Cortex-M
+
+**Security status:** Secure
+AES-NI implementations are inherently constant-time; software bitsliced implementations require careful validation but are provably side-channel free
+
+**Community acceptance:** Standard
+AES-NI is the universal standard for resistant AES; mandated in FIPS-validated modules; adopted by every major crypto library
 
 ---
 
@@ -228,6 +414,20 @@ EM side-channel attacks were first formalised by Gandolfi, Mourtel, and Olivier 
 
 **State of the art:** Hybrid HE+MPC frameworks (Cheetah, BOLT) achieve practical latency for image classification; transformer-scale private inference (Iron, BumbleBee) remains expensive but feasible. Active area bridging [HE](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-he), [MPC](categories/06-multi-party-computation.md#secure-multi-party-computation-mpc), and [Confidential ML / TEE-Based Inference](#confidential-ml--tee-based-inference).
 
+**Production readiness:** Experimental
+Working implementations exist (CrypTen, Cheetah) but latency and communication overhead limit production use to small models
+
+**Implementations:**
+- [CrypTen (Meta AI)](https://github.com/facebookresearch/CrypTen) — Python/C++, PyTorch-based MPC framework for private ML
+- [Cheetah (Alibaba)](https://github.com/Alibaba-Gemini-Lab/OpenCheetah) — C++, efficient HE+OT private inference
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, versatile MPC framework supporting multiple protocols
+
+**Security status:** Secure
+Underlying MPC and HE protocols have formal security proofs; practical security depends on correct implementation and parameter choices
+
+**Community acceptance:** Emerging
+Active academic research (USENIX, NeurIPS, CCS); industry prototypes from Meta, Alibaba, Microsoft; no formal standard for private ML inference
+
 ---
 
 ## Federated Learning Security: Poisoning & Byzantine Robustness
@@ -244,6 +444,20 @@ EM side-channel attacks were first formalised by Gandolfi, Mourtel, and Olivier 
 | **FLGUARD / Secure Aggregation + DP** | 2023 | MPC + DP | Combines cryptographic secure aggregation (Bonawitz et al.) with DP noise; hides individual updates and provides poisoning resistance [[1]](https://arxiv.org/abs/2101.02281) |
 
 **State of the art:** Byzantine-robust aggregation (Krum, FLTrust) and secure aggregation with DP are the main defenses; no single scheme handles all attack vectors simultaneously. Gradient inversion remains an open problem without DP or compression. Interacts with [Differential Privacy in ML](#differential-privacy-in-ml-dp-sgd) and [Secure Aggregation](categories/06-multi-party-computation.md#secure-multi-party-computation-mpc).
+
+**Production readiness:** Experimental
+FedAvg deployed at scale (Google Gboard); robust aggregation rules (Krum, FLTrust) are research prototypes
+
+**Implementations:**
+- [Flower (FL framework)](https://github.com/adap/flower) — Python, production FL framework with pluggable aggregation strategies
+- [FedML](https://github.com/FedML-AI/FedML) — Python, open-source FL platform supporting robust aggregation
+- [IBM FL](https://github.com/IBM/federated-learning-lib) — Python, IBM's federated learning library
+
+**Security status:** Caution
+No single defense handles all attack vectors (poisoning, backdoor, gradient inversion) simultaneously; DP + robust aggregation provides partial coverage
+
+**Community acceptance:** Emerging
+Active research area (NeurIPS, ICML, USENIX Security); Google deploys FedAvg+SecAgg in production; IEEE P3652.1 FL standard in development
 
 ---
 
@@ -262,6 +476,19 @@ EM side-channel attacks were first formalised by Gandolfi, Mourtel, and Olivier 
 
 **State of the art:** No defense simultaneously prevents extraction and maintains full utility; watermarking-based ownership verification (SEAT, fingerprinting) is the pragmatic approach. Cryptographic ZK-based model ownership proofs remain nascent. Related to [Cryptographic Watermarking for AI / Pseudorandom Codes](#cryptographic-watermarking-for-ai--pseudorandom-codes) and [Confidential ML / TEE-Based Inference](#confidential-ml--tee-based-inference).
 
+**Production readiness:** Research
+Attack tools are research prototypes; defenses (watermarking, rate limiting) are partially deployed in commercial ML APIs
+
+**Implementations:**
+- [Knockoff Nets](https://github.com/tribhuvanesh/knockoffnets) — Python/PyTorch, model extraction attack implementation
+- [ModelGuard (query detection)](https://github.com/minka-ai/modelguard) — Python, framework for detecting model extraction queries
+
+**Security status:** Caution
+No defense simultaneously prevents extraction and maintains full API utility; watermarking provides post-hoc attribution rather than prevention
+
+**Community acceptance:** Emerging
+Active research at top security venues (USENIX, IEEE S&P, CVPR); growing industry concern but no standard defense methodology
+
 ---
 
 ## Differential Privacy in ML (DP-SGD)
@@ -279,6 +506,21 @@ EM side-channel attacks were first formalised by Gandolfi, Mourtel, and Olivier 
 
 **State of the art:** DP-SGD with RDP accounting and privacy amplification by subsampling is the standard approach; Opacus and TensorFlow Privacy are the main libraries. Typical deployments target ε ∈ [1, 10] with meaningful utility. DP and robustness are orthogonal — see [Federated Learning Security](#federated-learning-security-poisoning--byzantine-robustness). Foundational to [Differential Privacy](categories/10-privacy-preserving-computation.md#differential-privacy) in the broader privacy-preserving computation context.
 
+**Production readiness:** Production
+Deployed at Apple (iOS), Google (RAPPOR, FL), and Meta (internal ML systems); Opacus and TensorFlow Privacy are production-grade
+
+**Implementations:**
+- [Opacus (Meta)](https://github.com/pytorch/opacus) — Python/PyTorch, production DP-SGD training library
+- [TensorFlow Privacy](https://github.com/tensorflow/privacy) — Python/TensorFlow, DP training library with RDP accounting
+- [Google DP Library](https://github.com/google/differential-privacy) — C++/Java/Go, Google's differential privacy building blocks
+- [OpenDP](https://github.com/opendp/opendp) — Rust/Python, open-source DP framework with formal verification
+
+**Security status:** Secure
+Differential privacy provides mathematically proven privacy guarantees; security depends on correct epsilon accounting and noise calibration
+
+**Community acceptance:** Standard
+NIST SP 800-226 (draft); US Census Bureau deployment; endorsed by major tech companies; foundational privacy primitive with broad peer review
+
 ---
 
 ## Acoustic Cryptanalysis
@@ -294,6 +536,19 @@ Genkin, Shamir, and Tromer (CRYPTO 2014) demonstrated that a laptop performing R
 | **RSA Blinding Countermeasure (GnuPG CVE-2013-4576)** | 2014 | Algorithmic blinding | Randomise intermediate values so power (and hence acoustic) signal is key-independent; now mandatory in constant-time RSA [[1]](https://eprint.iacr.org/2013/857) |
 
 **State of the art:** Acoustic cryptanalysis motivated the hardening of GnuPG and libgcrypt; constant-time, blinded implementations now dominate. Acoustic attacks remain relevant against legacy or embedded systems where blinding is absent. Related to [Power Analysis Attacks & Masking Countermeasures](#power-analysis-attacks--masking-countermeasures) and [Electromagnetic Side-Channel Analysis](#electromagnetic-side-channel-analysis-emca).
+
+**Production readiness:** Research
+Academic demonstration of novel side channel; motivated hardening of GnuPG/libgcrypt but no standalone acoustic defense products
+
+**Implementations:**
+- [GnuPG (hardened)](https://github.com/gpg/gnupg) — C, includes RSA blinding countermeasure motivated by acoustic attack
+- [libgcrypt](https://github.com/gpg/libgcrypt) — C, constant-time and blinded implementations addressing acoustic/power side channels
+
+**Security status:** Caution
+Acoustic attacks are demonstrated on legacy software; modern blinded and constant-time implementations are resistant; threat remains for unpatched systems
+
+**Community acceptance:** Niche
+Landmark research (CRYPTO 2014, Shamir et al.); motivates constant-time coding discipline; not a primary evaluation criterion in Common Criteria
 
 ---
 
@@ -311,6 +566,19 @@ Halderman et al. (USENIX Security 2008) showed that DRAM chips retain data with 
 | **Intel Total Memory Encryption (TME)** | 2019+ | AES-XTS memory bus | Encrypts all DRAM traffic on-the-fly at the memory controller; renders cold-boot images ciphertext [[1]](https://www.intel.com/content/www/us/en/developer/articles/news/runtime-encryption-of-memory-with-intel-tme-mktme.html) |
 
 **State of the art:** Intel TME/MKTME and AMD SME/SEV encrypt DRAM contents, substantially mitigating cold-boot threats; full adoption in cloud and mobile platforms is ongoing. Interaction with [Confidential ML / TEE](#confidential-ml--tee-based-inference) and [Fault Injection Attacks](#fault-injection-attacks--countermeasures).
+
+**Production readiness:** Production
+Intel TME and AMD SME are deployed in current server and client CPUs; software mitigations in all major OS kernels
+
+**Implementations:**
+- [TRESOR (Linux kernel AES in registers)](https://github.com/mtalbi/tresor_kmod) — C, Linux kernel module storing AES keys in CPU registers instead of RAM
+- [aeskeyfind](https://github.com/makomk/aeskeyfind) — C, tool for finding AES keys in memory dumps (cold boot forensics)
+
+**Security status:** Caution
+Full-memory encryption (TME/SME) effectively mitigates cold-boot attacks; legacy systems without memory encryption remain vulnerable
+
+**Community acceptance:** Widely trusted
+Seminal USENIX Security 2008 paper; TME/SME/SEV adopted by Intel, AMD; Microsoft BitLocker and Apple FileVault include cold-boot mitigations
 
 ---
 
@@ -330,6 +598,20 @@ Kim et al. (ISCA 2014) discovered that hammering a DRAM row (accessing it tens o
 
 **State of the art:** DDR4/5 mandates TRR; ECC DRAM reduces but does not eliminate risk (multi-bit flips bypass single-bit ECC). Rowhammer on PQC keys (lattice schemes) is an open research frontier. Related to [Cold Boot Attacks](#cold-boot-attacks-on-dram) and [Fault Injection Attacks](#fault-injection-attacks--countermeasures).
 
+**Production readiness:** Experimental
+DDR4/5 TRR is deployed but bypassable; comprehensive software defenses remain experimental
+
+**Implementations:**
+- [TRRespass (rowhammer test)](https://github.com/vusec/trrespass) — C, tool for testing DRAM modules for TRR-bypassing rowhammer
+- [Blacksmith (rowhammer fuzzer)](https://github.com/comsec-group/blacksmith) — C++, rowhammer pattern fuzzer for DDR4
+- [DRAMA (reverse engineering DRAM)](https://github.com/IAIK/drama) — C, DRAM address mapping reverse engineering tool
+
+**Security status:** Caution
+TRR reduces but does not eliminate risk; multi-sided rowhammer bypasses TRR in many DDR4 modules; ECC DRAM can be bypassed with multi-bit flips
+
+**Community acceptance:** Widely trusted
+ISCA 2014 landmark paper; active research at top venues (IEEE S&P, USENIX, CCS); JEDEC DDR5 includes improved mitigations
+
 ---
 
 ## Hardware Security Modules (HSM) & FIPS 140-3
@@ -345,6 +627,20 @@ Kim et al. (ISCA 2014) discovered that hammering a DRAM row (accessing it tens o
 | **AWS CloudHSM / Azure Dedicated HSM** | 2018+ | FIPS 140-2 Level 3 | Cloud-hosted, customer-owned HSM partitions; no cloud-provider key access; supports PKCS#11, JCE, CNG APIs [[1]](https://aws.amazon.com/cloudhsm/) |
 
 **State of the art:** FIPS 140-3 is the current validation target; all new CMVP certificates are issued under it. Cloud HSM-as-a-service (AWS, Azure, GCP) makes FIPS 140-3 Level 3 hardware accessible without on-premises deployment. Post-quantum algorithm support in HSMs (ML-KEM, ML-DSA) is an active 2024–2025 integration effort. Complements [Anti-Tamper & Zeroization](#anti-tamper--zeroization-mechanisms) and [Hardware TRNGs](#hardware-true-random-number-generators-trngs).
+
+**Production readiness:** Production
+HSMs are mandatory infrastructure for banking, PKI, and cloud key management; FIPS 140-3 is the current certification standard
+
+**Implementations:**
+- [SoftHSM](https://github.com/opendnssec/SoftHSMv2) — C++, software PKCS#11 HSM for development and testing
+- [pkcs11-tool (OpenSC)](https://github.com/OpenSC/OpenSC) — C, PKCS#11 command-line tool for HSM interaction
+- [Nitrokey HSM](https://github.com/OpenSC/OpenSC/wiki/Nitrokey-HSM) — Open-source smart card HSM with PKCS#11 interface
+
+**Security status:** Secure
+FIPS 140-3 Level 3/4 certified HSMs undergo rigorous CMVP evaluation; tamper-evidence and zeroization provide strong physical security
+
+**Community acceptance:** Standard
+NIST FIPS 140-3 / ISO 19790 is the global certification standard; mandated for US federal systems; adopted by banking (PCI DSS) and PKI globally
 
 ---
 
@@ -368,6 +664,19 @@ Kim et al. (ISCA 2014) discovered that hammering a DRAM row (accessing it tens o
 
 **State of the art:** ML modeling attacks have rendered classic Strong PUFs cryptographically broken for most authentication use cases; SRAM PUF with fuzzy extractors and helper-data schemes (see [PUF](#physical-unclonable-functions-puf)) are the current standard. For ML model privacy, DP-SGD is the de-facto training-time defence; model watermarking addresses post-theft attribution. Intersects [PUF](#physical-unclonable-functions-puf), [AI Watermarking](#cryptographic-watermarking-for-ai--pseudorandom-codes), and [Speculative Execution Side-Channel Attacks](#speculative-execution--cache-timing-side-channel-attacks).
 
+**Production readiness:** Research
+Attack tools and defenses are academic research prototypes; Strong PUF authentication is largely abandoned in practice due to these attacks
+
+**Implementations:**
+- [pypuf](https://github.com/nils-wisiol/pypuf) — Python, PUF simulation and ML attack library (LR, DNN attacks)
+- [ART (Adversarial Robustness Toolbox)](https://github.com/Trusted-AI/adversarial-robustness-toolbox) — Python, includes membership inference and model extraction attacks
+
+**Security status:** Broken
+Classic Strong PUFs (Arbiter, XOR-Arbiter) are broken by ML modeling attacks; membership inference is a proven privacy threat against undefended models
+
+**Community acceptance:** Widely trusted
+CCS 2010 and USENIX Security 2016 landmark papers; well-established threat models; results drove shift to SRAM PUFs and DP-SGD
+
 ---
 
 ## White-Box Cryptography (WBC)
@@ -386,6 +695,19 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 
 **State of the art:** No practically efficient WBC construction with a concrete security proof against all known attacks exists; the CHES 2016 DCA attack broke the entire table-based paradigm. Industry deployments rely on renewability (frequent key updates), code diversity, and LLVM-level obfuscation passes. Provably secure WBC from iO remains a theoretical landmark. Related to [Obfuscation / iO](categories/16-obfuscation-advanced-hardness.md#indistinguishability-obfuscation-io) and [Power Analysis Attacks & Masking Countermeasures](#power-analysis-attacks--masking-countermeasures).
 
+**Production readiness:** Experimental
+Deployed in DRM (Apple FairPlay, Widevine L3) via security-by-obscurity; no provably secure practical construction exists
+
+**Implementations:**
+- [SideChannelMarvels WB tools](https://github.com/SideChannelMarvels/Deadpool) — Python/C, DCA and DFA attack tools for white-box implementations
+- [CHES 2016 WB challenge solutions](https://github.com/SideChannelMarvels/JeanGrey) — Python, automated DCA attack on white-box AES
+
+**Security status:** Broken
+All published table-based WB-AES constructions are broken by DCA (CHES 2016); practical deployments rely on obscurity and renewability, not cryptographic proofs
+
+**Community acceptance:** Controversial
+No construction with both practical efficiency and concrete security proof; CHES WB challenges consistently broken; industry uses it despite lack of provable security
+
 ---
 
 ## Smart Card & Secure Element Cryptography
@@ -401,6 +723,20 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 | **Apple Secure Enclave Processor (SEP)** | 2013+ | Dedicated security core | On-SoC AES engine + UID key fused at manufacture; Face/Touch ID templates and payment keys isolated from application processor; never exposed via software API [[1]](https://support.apple.com/guide/security/secure-enclave-sec59b0b31ff/web) |
 
 **State of the art:** Common Criteria EAL 5+ (with AVA_VAN.5 attack potential) is the standard certification target for payment and passport SEs; the NXP P71 and Infineon SLx 9xxx families are representative. eSIM (GSMA SGP.02/22) extends SE concepts to remotely provisioned SIM profiles. Complements [HSM & FIPS 140-3](#hardware-security-modules-hsm--fips-140-3), [PUF](#physical-unclonable-functions-puf), and [Anti-Tamper & Zeroization](#anti-tamper--zeroization-mechanisms).
+
+**Production readiness:** Production
+Billions of smart cards deployed for EMV payments, SIM/eSIM, passports, and government ID worldwide
+
+**Implementations:**
+- [JavaCard SDK](https://github.com/nicpottier/javacard-gradle-template) — Java, JavaCard applet development framework
+- [GlobalPlatformPro](https://github.com/martinpaljak/GlobalPlatformPro) — Java, command-line tool for managing GlobalPlatform smart cards
+- [OpenSC](https://github.com/OpenSC/OpenSC) — C, PKCS#11/15 tool for smart card and secure element access
+
+**Security status:** Secure
+Common Criteria EAL 5+ with AVA_VAN.5 provides strong assurance; decades of real-world deployment with few successful attacks on certified products
+
+**Community acceptance:** Standard
+ISO 7816, EMVCo, GlobalPlatform, and Common Criteria define the ecosystem; universal deployment in banking, telecom, and government identity
 
 ---
 
@@ -418,6 +754,21 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 
 **State of the art:** AES-NI is universal in x86 and ARM server/mobile CPUs; AVX-512 VAES achieves line-rate encryption on 100 GbE NICs. OpenSSL, BoringSSL, and libsodium automatically dispatch to hardware paths. NTT accelerators for ML-KEM are entering commercial silicon (2024–2025). Closely related to [Speculative Execution & Cache-Timing Side-Channel Attacks](#speculative-execution--cache-timing-side-channel-attacks) (hardware acceleration eliminates the table-lookup timing channel) and [Hardware TRNGs](#hardware-true-random-number-generators-trngs).
 
+**Production readiness:** Production
+AES-NI and ARM Crypto Extensions present in every modern x86 and ARM CPU; AVX-512 VAES in server processors since 2019
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) — C/ASM, automatic AES-NI/SHA-NI dispatch
+- [BoringSSL](https://github.com/google/boringssl) — C/ASM, hardware-accelerated AES/SHA/GHASH
+- [libsodium](https://github.com/jedisct1/libsodium) — C, AES-256-GCM via AES-NI
+- [Intel IPP Cryptography](https://github.com/intel/ipp-crypto) — C/ASM, optimized crypto for Intel platforms including AVX-512 VAES
+
+**Security status:** Secure
+Hardware instructions are constant-time by design; eliminates table-lookup timing channel; formally verified execution for AES-NI
+
+**Community acceptance:** Standard
+Intel, AMD, and ARM ship hardware crypto in all current CPUs; NIST SP 800-175B recommends hardware acceleration; universal adoption in crypto libraries
+
 ---
 
 ## Anti-Tamper Mechanisms & Cryptographic Zeroization
@@ -434,6 +785,19 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 
 **State of the art:** Modern FIPS 140-3 Level 3/4 HSMs combine mesh sensing, voltage/temperature monitoring, and cryptographic erasure of key RAM in under 1 ms. The IBM 4765 and Thales payShield 10K are representative certified platforms. Zeroization is complementary to [Fault Injection Countermeasures](#fault-injection-attacks--countermeasures) and [HSM & FIPS 140-3](#hardware-security-modules-hsm--fips-140-3); both address the physical attack surface of deployed cryptographic hardware.
 
+**Production readiness:** Production
+Mandatory in FIPS 140-3 Level 3/4 certified HSMs; deployed in banking, military, and government hardware
+
+**Implementations:**
+- [IBM 4769 Crypto Coprocessor](https://www.ibm.com/products/pcie-cryptographic-coprocessor) — Hardware, FIPS 140-2 Level 4 certified with zeroization
+- [Zymbit HSM6](https://www.zymbit.com/hsm6/) — Hardware, tamper-detect + zeroization module for embedded Linux
+
+**Security status:** Secure
+Zeroization in < 1 ms on tamper detection is effective against known physical attacks; validated under FIPS 140-3 and Common Criteria
+
+**Community acceptance:** Standard
+FIPS 140-3 Level 3/4 mandates zeroization; Common Criteria EAL 4+ requires tamper evidence; universal requirement for payment and government crypto modules
+
 ---
 
 ## GPU-Based Cryptographic Acceleration (CUDA AES, GPU FHE)
@@ -449,6 +813,20 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 | **cuBLAS-Lattice / NTT on H100** | 2025 | Tensor Core repurposing | Repurposes H100 Tensor Cores for NTT-based lattice arithmetic; orders-of-magnitude speedup for ML-KEM/ML-DSA key generation in cloud settings [[1]](https://eprint.iacr.org/2025/131) |
 
 **State of the art:** NVIDIA H100 GPUs with custom CUDA NTT kernels currently deliver the fastest FHE throughputs available; TFHE-rs and OpenFHE both ship GPU backends. GPU FHE acceleration is central to making [HE-based private ML inference](#secure-mpc--he-for-private-ml-inference) practical. Complements [Cryptographic Hardware Accelerators](#cryptographic-hardware-accelerators-aes-ni-sha-ni-avx-512-vaes) (CPU-centric) and [Confidential ML / TEE-Based Inference](#confidential-ml--tee-based-inference).
+
+**Production readiness:** Experimental
+GPU FHE backends (TFHE-rs, OpenFHE) are functional; GPU AES is niche due to CPU AES-NI sufficiency; H100-based CKKS is cutting-edge
+
+**Implementations:**
+- [TFHE-rs (Zama)](https://github.com/zama-ai/tfhe-rs) — Rust/CUDA, TFHE library with GPU-accelerated bootstrapping
+- [OpenFHE GPU](https://github.com/openfheorg/openfhe-development) — C++/CUDA, OpenFHE with optional GPU backend for NTT
+- [cuFHE](https://github.com/vernamlab/cuFHE) — CUDA, GPU-accelerated TFHE gate bootstrapping
+
+**Security status:** Secure
+Underlying cryptographic operations are identical to CPU versions; GPU memory isolation (H100 CC) addresses GPU-specific attack surface
+
+**Community acceptance:** Emerging
+Active research area; NVIDIA and Zama driving GPU FHE; no formal standard for GPU crypto; growing adoption in private AI inference
 
 ---
 
@@ -467,6 +845,20 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 
 **State of the art:** BadNets-style training-time trojans remain a potent supply-chain threat; detection methods (STRIP, Neural Cleanse, DeepInspect) achieve good detection rates but no universal defense exists. Hardware-level trojan detection for AI accelerator ASICs (NPUs, TPUs) via side-channel fingerprinting is an active research area (2024–2025). Related to [Supply Chain Attacks on Cryptographic Hardware](#supply-chain-attacks-on-cryptographic-hardware) and [Federated Learning Security](#federated-learning-security-poisoning--byzantine-robustness).
 
+**Production readiness:** Research
+Attack demonstrations and detection tools are academic prototypes; no production-grade trojan detection for AI accelerators exists
+
+**Implementations:**
+- [TrojAI (IARPA/NIST)](https://github.com/usnistgov/trojai) — Python, NIST trojan detection evaluation framework
+- [Neural Cleanse](https://github.com/bolunwang/backdoor) — Python/PyTorch, backdoor detection via trigger reverse-engineering
+- [ABS (Artificial Brain Stimulation)](https://github.com/naiyeleo/ABS) — Python, trojan detection by neuron stimulation analysis
+
+**Security status:** Caution
+No universal trojan detection method exists; detection tools achieve good rates on known trigger types but adversarial evasion is possible
+
+**Community acceptance:** Emerging
+IARPA TrojAI program and NIST evaluation track; active IEEE S&P and USENIX research; growing supply-chain security concern
+
 ---
 
 ## Supply Chain Attacks on Cryptographic Hardware
@@ -482,6 +874,20 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 | **DICE / RIoT Device Identity** | 2021 | HW attestation + PKI | Devices carry manufacturer-provisioned identity certificates enabling cryptographic verification of device provenance before deployment; embedded in TPM 2.0 and Azure IoT supply chains [[1]](https://www.microsoft.com/en-us/research/project/dice-device-identifier-composition-engine/) |
 
 **State of the art:** NIST SP 800-161r1 and CISA Supply Chain Risk Management guidelines are the operative U.S. standards; DICE/RIoT attestation chains are now embedded in TPM 2.0 and Azure Sphere. Hardware-rooted identity (see [TEE Remote Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation)) is the primary cryptographic defense. Intersects [Anti-Tamper & Zeroization](#anti-tamper--zeroization-mechanisms), [HSM & FIPS 140-3](#hardware-security-modules-hsm--fips-140-3), and [AI Hardware Trojans](#ai-hardware-trojans-backdoor-attacks-on-neural-accelerators).
+
+**Production readiness:** Mature
+NIST SP 800-161r1 and DICE/RIoT attestation are operational frameworks; hardware-rooted identity deployed in TPM 2.0 and Azure Sphere
+
+**Implementations:**
+- [OpenTitan (open-source RoT)](https://github.com/lowRISC/opentitan) — SystemVerilog/C, open-source silicon root of trust with supply-chain integrity features
+- [in-toto](https://github.com/in-toto/in-toto) — Python, software supply-chain integrity framework applicable to firmware
+- [DICE Engine (TCG spec)](https://trustedcomputinggroup.org/work-groups/dice-architectures/) — Specification, TCG Device Identifier Composition Engine
+
+**Security status:** Caution
+Hardware-rooted attestation is effective when available; physical supply-chain attacks (interdiction, implants) remain difficult to detect post-deployment
+
+**Community acceptance:** Standard
+NIST SP 800-161r1 is the US federal standard; CISA Supply Chain Risk Management; TCG DICE standardized; growing international adoption
 
 ---
 
@@ -500,6 +906,21 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 
 **State of the art:** Jasmin/Formosa gives end-to-end verified, constant-time software crypto; SILVER verifies masked hardware netlists against the d-probing model. Formal verification of complete cryptographic ASICs remains computationally challenging — bounded methods cover large designs but cannot rule out bugs beyond the bounded depth. Interaction with [Power Analysis Attacks & Masking Countermeasures](#power-analysis-attacks--masking-countermeasures), [Fault Injection Attacks & Countermeasures](#fault-injection-attacks--countermeasures), and [Speculative Execution & Cache-Timing Side-Channel Attacks](#speculative-execution--cache-timing-side-channel-attacks).
 
+**Production readiness:** Mature
+Jasmin/Formosa and EasyCrypt produce verified crypto code; SILVER verifies masked hardware; full ASIC verification remains bounded
+
+**Implementations:**
+- [Jasmin compiler](https://github.com/jasmin-lang/jasmin) — OCaml, verified compiler for constant-time cryptographic assembly
+- [Formosa Crypto](https://github.com/formosa-crypto) — Coq/Jasmin, machine-checked verified crypto implementations
+- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) — OCaml, computer-aided cryptographic proof framework
+- [SILVER](https://github.com/Chair-for-Security-Engineering/SILVER) — Python, automated verification of masked hardware
+
+**Security status:** Secure
+Formally verified implementations have machine-checked correctness and side-channel freedom proofs; verification is sound under the formal model used
+
+**Community acceptance:** Widely trusted
+Published at top venues (USENIX, CCS, S&P); Formosa Crypto endorsed for PQC verification; growing adoption in NIST PQC reference implementations
+
 ---
 
 ## Confidential GPU Computing (NVIDIA H100 CC, Azure Confidential GPU)
@@ -515,6 +936,20 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 | **Google Confidential GKE + A3 GPUs** | 2024 | GCP Confidential VMs + H100 | Google Kubernetes Engine confidential node pools with H100 GPUs; hardware-attested GPU isolation for GenAI workloads [[1]](https://cloud.google.com/blog/products/identity-security/confidential-computing-with-nvidia-gpus) |
 
 **State of the art:** NVIDIA H100 in Confidential Computing mode is the current production standard; ~2–5% performance overhead from memory encryption is the cost of GPU-level isolation. Azure, Google, and AWS all offer confidential GPU VMs as of 2024. Interaction with [Confidential ML / TEE-Based Inference](#confidential-ml--tee-based-inference), [GPU-Based Cryptographic Acceleration](#gpu-based-cryptographic-acceleration-cuda-aes-gpu-fhe), and [TEE Remote Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation).
+
+**Production readiness:** Production
+NVIDIA H100 CC mode generally available on Azure, GCP, and AWS; 2-5% performance overhead
+
+**Implementations:**
+- [NVIDIA Confidential Computing docs](https://github.com/NVIDIA/gpu-operator) — Go/Python, NVIDIA GPU Operator with CC mode support for Kubernetes
+- [Azure Confidential GPU VMs](https://github.com/Azure/confidential-computing-cvm-guest-attestation) — C++, guest attestation library for Azure confidential VMs including GPU
+- [Veraison attestation verifier](https://github.com/veraison/veraison) — Go, CNCF attestation verifier supporting NVIDIA GPU attestation
+
+**Security status:** Caution
+Memory encryption and attestation are hardware-enforced; GPU TEE is a newer technology than CPU TEEs with less adversarial evaluation history
+
+**Community acceptance:** Emerging
+NVIDIA, Microsoft, Google backing; Confidential Computing Consortium includes GPU workloads; still maturing compared to CPU TEEs
 
 ---
 
@@ -532,6 +967,20 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 
 **State of the art:** Bonawitz SecAgg is deployed in Google's production FL system (Gboard, Android); SecAgg+ reduces communication overhead for large federations. Verifiable variants (2024) add integrity guarantees. Bridges [Secret Sharing](categories/05-secret-sharing-threshold-cryptography.md#shamirs-secret-sharing-sss) and [Federated Learning Security](#federated-learning-security-poisoning--byzantine-robustness).
 
+**Production readiness:** Production
+Bonawitz SecAgg deployed in Google's production FL system (Gboard keyboard, Android); SecAgg+ reduces overhead
+
+**Implementations:**
+- [Flower SecAgg](https://github.com/adap/flower) — Python, FL framework with built-in SecAgg protocol support
+- [TensorFlow Federated](https://github.com/google-parfait/tensorflow-federated) — Python, Google's FL framework with SecAgg integration
+- [FedML SecAgg](https://github.com/FedML-AI/FedML) — Python, federated learning with secure aggregation support
+
+**Security status:** Secure
+Cryptographic SecAgg protocols have formal security proofs (CCS 2017); tolerates up to 1/3 dropout; pairwise masking ensures individual update privacy
+
+**Community acceptance:** Widely trusted
+CCS 2017 landmark paper; deployed at Google scale; implemented in major FL frameworks; growing standardization (IEEE P3652.1)
+
 ---
 
 ## Encrypted ML Frameworks (CrypTen, TF Encrypted, PySyft)
@@ -547,6 +996,22 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 | **HELayers (IBM)** | 2023 | HElib + CKKS | Production-grade HE inference library; tile-tensor abstraction maps neural-network layers to CKKS ciphertext packing; supports CNNs and transformers [[1]](https://github.com/IBM/helayers) |
 
 **State of the art:** CrypTen and Concrete ML are the most actively maintained frameworks (2024); Concrete ML uniquely compiles standard ML models to pure FHE without MPC. HELayers targets enterprise HE inference. All build on [HE](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-he) and [MPC](categories/06-multi-party-computation.md#secure-multi-party-computation-mpc).
+
+**Production readiness:** Experimental
+CrypTen and Concrete ML actively maintained; PySyft and TF Encrypted less active; none widely deployed in production ML pipelines
+
+**Implementations:**
+- [CrypTen (Meta AI)](https://github.com/facebookresearch/CrypTen) — Python/C++, PyTorch-based encrypted ML framework
+- [PySyft (OpenMined)](https://github.com/OpenMined/PySyft) — Python, privacy-preserving ML with MPC and DP
+- [Concrete ML (Zama)](https://github.com/zama-ai/concrete-ml) — Python, compile ML models to FHE
+- [TF Encrypted](https://github.com/tf-encrypted/tf-encrypted) — Python, encrypted ML on TensorFlow
+- [HELayers (IBM)](https://github.com/IBM/helayers) — C++/Python, HE inference library
+
+**Security status:** Secure
+Underlying MPC/HE/SS protocols have formal security proofs; framework-level bugs are possible but protocols are sound
+
+**Community acceptance:** Emerging
+Active open-source communities (Meta, OpenMined, Zama, IBM); no formal standard for encrypted ML APIs; growing adoption in healthcare and finance research
 
 ---
 
@@ -564,6 +1029,20 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 
 **State of the art:** EZKL is the most widely deployed zkML toolkit (2024); zkLLM extends to billion-parameter models but proving time remains minutes-scale. Optimistic approaches (opML) trade latency for cost. Extends [ZK Proof Systems](categories/04-zero-knowledge-proof-systems.md#zk-proof-systems) and [Verifiable AI Inference](#zkllm--verifiable-ai-inference).
 
+**Production readiness:** Experimental
+EZKL is the most deployed zkML toolkit; proving time for large models remains minutes-scale; used in blockchain verification
+
+**Implementations:**
+- [EZKL](https://github.com/zkonduit/ezkl) — Rust/Python, compile ONNX models to Halo2 ZK circuits
+- [Remainder (Modulus Labs)](https://github.com/remainder-labs) — Rust, GKR-based zkML prover
+- [opML](https://github.com/ora-io/opml) — Solidity/TypeScript, optimistic ML verification on-chain
+
+**Security status:** Caution
+ZK proof systems are sound under standard assumptions; circuit compilation from ONNX introduces potential for soundness bugs; active auditing
+
+**Community acceptance:** Emerging
+Growing blockchain/Web3 adoption; active academic research; no formal standard; Ethereum community interest in on-chain ML verification
+
 ---
 
 ## Model Watermarking & Fingerprinting for IP Protection
@@ -579,6 +1058,19 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 | **Proof-of-Learning (Jia et al.)** | 2021 | Training transcript | Record cryptographic snapshots during training; prover demonstrates they performed the actual computation; S&P 2021 [[1]](https://ieeexplore.ieee.org/document/9519402) |
 
 **State of the art:** Backdoor-based watermarking (Adi et al.) is the most robust to model modification; fingerprinting (Lukas et al.) requires no model modification at all. Proof-of-Learning addresses the complementary problem of proving training provenance. Related to [Cryptographic Watermarking for AI / Pseudorandom Codes](#cryptographic-watermarking-for-ai--pseudorandom-codes) and [Model Extraction Attacks & Defenses](#model-extraction-attacks--defenses).
+
+**Production readiness:** Research
+Academic prototypes; some commercial deployments (e.g., IBM AI watermarking); no universal standard or widely deployed system
+
+**Implementations:**
+- [Adi et al. backdoor watermark](https://github.com/adiyoss/WatermarkNN) — Python/PyTorch, backdoor-based DNN watermarking
+- [DNN Fingerprinting (Lukas et al.)](https://github.com/szegedai/robust-fingerprint) — Python/PyTorch, adversarial example-based model fingerprinting
+
+**Security status:** Caution
+Watermarks can be removed by fine-tuning, pruning, or distillation; fingerprints are more robust but require careful adversarial example generation
+
+**Community acceptance:** Emerging
+Active research at USENIX, IEEE S&P, NeurIPS; industry interest growing due to model theft concerns; no formal standard
 
 ---
 
@@ -596,6 +1088,19 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 
 **State of the art:** Intrinsic ID BroadKey is the dominant commercial SRAM PUF solution, deployed in hundreds of millions of MCUs. Lattice PUF (2023) adds post-quantum security to the helper-data scheme. Extends [Physical Unclonable Functions (PUF)](#physical-unclonable-functions-puf) and uses [Fuzzy Extractors](categories/01-foundational-primitives.md#randomness-extractors--fuzzy-extractors).
 
+**Production readiness:** Production
+Intrinsic ID BroadKey deployed in hundreds of millions of MCUs; commercial IP core from Intrinsic ID, Synopsys
+
+**Implementations:**
+- [Intrinsic ID BroadKey](https://www.intrinsic-id.com/broadkey/) — Commercial, SRAM PUF IP core for MCU key generation
+- [pypuf (fuzzy extractor research)](https://github.com/nils-wisiol/pypuf) — Python, PUF simulation including fuzzy extractor helpers
+
+**Security status:** Secure
+SRAM PUFs with fuzzy extractors provide reliable, unique keys; helper data is provably information-theoretically secure; NIST-validated entropy
+
+**Community acceptance:** Widely trusted
+Deployed by NXP, Microchip, Renesas; Intrinsic ID is market leader; well-studied theory (Dodis et al. fuzzy extractors); NIST-validated
+
 ---
 
 ## Arbiter PUF Protocols & Advanced Compositions
@@ -611,6 +1116,19 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 | **Lockdown Protocol (Yu et al.)** | 2016 | Rate limiting + CRP refresh | Protocol-level defense: limit the number of CRPs exposed per session and refresh CRP space; makes modeling infeasible within CRP budget [[1]](https://ieeexplore.ieee.org/document/7495542) |
 
 **State of the art:** Interpose PUF (2019) and Lockdown Protocol (2016) represent the best combined hardware-protocol defense against ML attacks on Arbiter PUFs. Pure Arbiter PUFs without protocol-level protection are considered broken. Related to [Physical Unclonable Functions (PUF)](#physical-unclonable-functions-puf) and [ML Modeling Attacks on Strong PUFs](#ml-modeling-attacks-on-strong-pufs--ml-based-privacy-attacks).
+
+**Production readiness:** Research
+Academic research into ML-resistant compositions; basic Arbiter PUFs are broken; Interpose PUF and protocol-level defenses are prototypes
+
+**Implementations:**
+- [pypuf](https://github.com/nils-wisiol/pypuf) — Python, Arbiter PUF simulation and ML attack library
+- [Interpose PUF (reference)](https://github.com/nils-wisiol/pypuf) — Python, includes Interpose PUF simulation
+
+**Security status:** Broken
+Basic Arbiter PUFs and simple XOR compositions are broken by ML attacks; Interpose PUF resists known attacks but unproven against future ML methods
+
+**Community acceptance:** Niche
+Active academic niche at CCS, CHES, and ACM CCS; PUF authentication largely shifted to SRAM PUFs for practical deployments
 
 ---
 
@@ -628,6 +1146,20 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 
 **State of the art:** Scalar crypto extensions (Zkn, Zks) are ratified and shipping in SiFive, T-Head, and Andes cores (2023+). Vector crypto (Zvk*) was ratified in 2023 and enables throughputs competitive with ARM Crypto Extensions and Intel AES-NI. The open specification model allows any foundry to implement without licensing. Complements [Cryptographic Hardware Accelerators](#cryptographic-hardware-accelerators-aes-ni-sha-ni-avx-512-vaes) and [Side-Channel Resistant AES](#side-channel-resistant-aes-implementations).
 
+**Production readiness:** Production
+Scalar crypto extensions ratified and shipping in SiFive, T-Head, and Andes cores; vector crypto ratified in 2023
+
+**Implementations:**
+- [riscv-crypto (official spec + tests)](https://github.com/riscv/riscv-crypto) — C/ASM, RISC-V crypto extension specification and test vectors
+- [OpenSSL RISC-V crypto](https://github.com/openssl/openssl) — C/ASM, OpenSSL with RISC-V Zkn/Zvk dispatch (upstream since 3.1)
+- [SAIL RISC-V model](https://github.com/riscv/sail-riscv) — Sail, formal ISA model including crypto extensions
+
+**Security status:** Secure
+Hardware instructions are constant-time by specification; eliminates software timing channels; equivalent security to AES-NI and ARM Crypto Extensions
+
+**Community acceptance:** Standard
+Ratified RISC-V ISA extensions; open specification freely implementable; adopted by SiFive, Andes, T-Head; growing Linux and OpenSSL support
+
 ---
 
 ## ARM Confidential Compute Architecture (CCA)
@@ -643,6 +1175,19 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 | **Veraison Attestation Verifier** | 2023 | Open-source verifier | CNCF project for verifying CCA (and other TEE) attestation tokens; interoperates with Azure, GCP, and ARM reference implementations [[1]](https://github.com/veraison/veraison) |
 
 **State of the art:** ARM CCA is shipping in ARMv9.2-A silicon (Cortex-X4, Neoverse V2) and supported in Linux 6.x kernels; cloud deployment expected 2025-2026 on ARM-based instances. The RMM's small TCB and formal verification effort (Certus) distinguish CCA from Intel TDX's larger firmware base. Interacts with [Confidential ML / TEE-Based Inference](#confidential-ml--tee-based-inference) and [TEE Remote Attestation](categories/14-applied-infrastructure-pki.md#tee-remote-attestation).
+
+**Production readiness:** Experimental
+Shipping in ARMv9.2-A silicon (Cortex-X4, Neoverse V2); cloud deployment expected 2025-2026; Linux 6.x kernel support
+
+**Implementations:**
+- [Veraison (CCA attestation verifier)](https://github.com/veraison/veraison) — Go, CNCF project for verifying ARM CCA attestation tokens
+- [ARM CCA documentation](https://www.arm.com/architecture/security-features/arm-confidential-compute-architecture) — ARM's official CCA architecture specification and resources
+
+**Security status:** Caution
+Hardware isolation via Granule Protection Tables is architecturally strong; RMM formal verification (Certus) in progress; less adversarial testing than SGX/TDX
+
+**Community acceptance:** Emerging
+ARM-backed with silicon shipping; Linux upstream support; Confidential Computing Consortium member; expected to rival TDX for ARM cloud
 
 ---
 
@@ -660,6 +1205,21 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 
 **State of the art:** TDX 1.0 is generally available on 4th/5th Gen Xeon (Sapphire/Emerald Rapids) and deployed on Azure, GCP, and AWS. TDX Connect (2024) extends confidential computing to accelerators. Linux 6.2+ includes upstream TDX guest support. Complements [ARM CCA](#arm-confidential-compute-architecture-cca), [Confidential GPU Computing](#confidential-gpu-computing-nvidia-h100-cc-azure-confidential-gpu), and [Confidential ML / TEE-Based Inference](#confidential-ml--tee-based-inference).
 
+**Production readiness:** Production
+Generally available on 4th/5th Gen Xeon; deployed on Azure, GCP, and AWS; Linux 6.2+ upstream support
+
+**Implementations:**
+- [Intel TDX Module (source)](https://github.com/intel/tdx-module) — C, published TDX Module firmware source for audit
+- [Gramine-TDX](https://github.com/gramineproject/gramine) — C, LibOS enabling unmodified applications in TDX TDs
+- [Confidential Containers](https://github.com/confidential-containers) — Go/Rust, cloud-native framework supporting TDX
+- [Intel Trust Authority](https://github.com/intel/trustauthority-client-for-go) — Go, client for Intel Trust Authority attestation
+
+**Security status:** Caution
+Per-TD AES-XTS memory encryption and hardware-signed attestation; TDX Module TCB (~100 KLOC) is larger than ARM RMM; ongoing security research
+
+**Community acceptance:** Widely trusted
+Intel-backed; deployed by Azure, GCP, AWS; Confidential Computing Consortium; Linux upstream; active NIST and industry engagement
+
 ---
 
 ## CKKS-Based Homomorphic Encryption for ML Training
@@ -676,5 +1236,172 @@ White-box cryptography was introduced by Chow, Eisen, Johnson, and van Oorschot 
 | **HE-Transformer (Intel)** | 2023 | CKKS + ONNX | Compile ONNX model graphs to CKKS homomorphic operations; enables encrypted inference on standard model formats [[1]](https://github.com/IntelAI/he-transformer) |
 
 **State of the art:** CKKS with bootstrapping enables encrypted training on small-to-medium models (logistic regression, shallow CNNs); encrypted training of deep networks remains 10,000-100,000x slower than plaintext. GPU acceleration of CKKS (see [GPU-Based Cryptographic Acceleration](#gpu-based-cryptographic-acceleration-cuda-aes-gpu-fhe)) is narrowing the gap. Extends [Homomorphic Encryption](categories/07-homomorphic-functional-encryption.md#homomorphic-encryption-he) and complements [Secure MPC / HE for Private ML Inference](#secure-mpc--he-for-private-ml-inference).
+
+**Production readiness:** Experimental
+Encrypted training demonstrated on small models (logistic regression, shallow CNNs); 10,000-100,000x slower than plaintext for deep networks
+
+**Implementations:**
+- [OpenFHE](https://github.com/openfheorg/openfhe-development) — C++, production-grade CKKS with bootstrapping support
+- [SEAL (Microsoft)](https://github.com/microsoft/SEAL) — C++, BFV/CKKS HE library
+- [HE-Transformer (Intel)](https://github.com/IntelAI/he-transformer) — C++, compile ONNX graphs to CKKS operations
+- [Lattigo](https://github.com/tuneinsight/lattigo) — Go, CKKS/BFV HE library with bootstrapping
+
+**Security status:** Caution
+CKKS approximate arithmetic introduces a known ciphertext-dependent noise pattern (Li-Micciancio 2021); IND-CPA-D security model addresses this; parameter selection requires care
+
+**Community acceptance:** Emerging
+ISO/IEC 18033-6 HE standard in development; HomomorphicEncryption.org community standard; active research at CRYPTO, Eurocrypt, ASIACRYPT
+
+---
+
+## Caliptra — Open-Source Silicon Root of Trust
+
+**Goal:** Embed a standardized, open-source, auditable cryptographic root-of-trust block inside every datacenter SoC, giving each chip a verifiable cryptographic identity from wafer to decommission.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Caliptra v1.0** | 2022 | DICE + measured boot | Open Compute Project spec; immutable identity + firmware integrity attestation [[1]](https://caliptra.io/) |
+| **Caliptra 2.0 + Adams Bridge** | 2024 | Post-quantum accelerator | First open-source RoT with hardened PQC (ML-KEM, ML-DSA) [[1]](https://techcommunity.microsoft.com/blog/azureinfrastructureblog/caliptra-2-1-an-open-source-silicon-root-of-trust-with-enhanced-protection-of-da/4460758) |
+
+**State of the art:** Microsoft and Google committed Caliptra as mandatory for first-party cloud silicon. Addresses hardware supply chain threat — all software-layer security depends on firmware integrity.
+
+**Production readiness:** Experimental
+Caliptra 1.0 spec published by OCP; 2.0 with PQC in development; Microsoft and Google committed for first-party cloud silicon
+
+**Implementations:**
+- [Caliptra RTL](https://github.com/chipsalliance/caliptra-rtl) — SystemVerilog, open-source hardware root of trust RTL
+- [Caliptra Software](https://github.com/chipsalliance/caliptra-sw) — Rust, firmware for Caliptra RoT
+- [Adams Bridge PQC accelerator](https://github.com/chipsalliance/adams-bridge) — SystemVerilog, open-source ML-DSA/ML-KEM accelerator for Caliptra 2.0
+
+**Security status:** Caution
+Open-source design enables broad audit; DICE-based identity is cryptographically sound; silicon-level validation still ongoing
+
+**Community acceptance:** Emerging
+Open Compute Project specification; backed by Microsoft, Google, AMD, NVIDIA; CHIPS Alliance stewardship; expected to become datacenter standard
+
+---
+
+## Zero-Knowledge Proofs of Training (zkPoT / zkDL)
+
+**Goal:** Allow an ML trainer to prove in zero-knowledge that a specific model was trained by honest SGD on a committed dataset, without revealing weights or data.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **zkDL** | 2023 | GPU-accelerated ZK proofs | Under 1 second per batch for 10M-parameter networks; 1000-10000x over naive zkML; ePrint 2023/1174 [[1]](https://eprint.iacr.org/2023/1174) |
+| **zkPoT (CCS 2024)** | 2024 | Formal training verification | Proves training procedure was followed; ACM CCS 2024 [[1]](https://dl.acm.org/doi/10.1145/3658644.3670316) |
+
+**State of the art:** Only known route to trustless third-party audits of proprietary AI training. Addresses AI regulatory compliance (EU AI Act) — vendor can prove model wasn't trained on prohibited data.
+
+**Production readiness:** Research
+Academic prototypes (zkDL, zkPoT); proving time is practical for small networks but not yet for production-scale training
+
+**Implementations:**
+- [zkDL (reference)](https://github.com/jvhs0706/zkdl-train) — Python/Rust, GPU-accelerated ZK proofs for training verification
+
+**Security status:** Caution
+ZK proof systems are sound under stated assumptions; training verification is a new application with limited adversarial evaluation
+
+**Community acceptance:** Emerging
+CCS 2024 paper; growing interest for EU AI Act compliance; no formal standard; niche but potentially high-impact for AI governance
+
+---
+
+## Cryptographic Fairness Auditing / Fairness-as-a-Service
+
+**Goal:** Allow a third-party auditor to verify ML model fairness metrics (demographic parity, equalized odds) on private data using ZK proofs and commitments, without seeing model weights or data.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **FaaS (Springer IJIS)** | 2023 | ZK proofs + commitments | Model-agnostic; no trusted third party; cryptographically attested compliance [[1]](https://link.springer.com/article/10.1007/s10207-023-00774-z) |
+
+**State of the art:** Bridges "trust our internal audit" to cryptographically verifiable compliance. Required for high-risk AI under EU AI Act and US Executive Orders.
+
+**Production readiness:** Research
+Academic prototype; no production deployment of cryptographic fairness auditing
+
+**Implementations:**
+- [IBM AI Fairness 360](https://github.com/Trusted-AI/AIF360) — Python, fairness metrics toolkit (non-cryptographic but related)
+- [Fairlearn (Microsoft)](https://github.com/fairlearn/fairlearn) — Python, fairness assessment and mitigation (non-cryptographic but related)
+
+**Security status:** Caution
+Underlying ZK proofs are sound; fairness metrics themselves are debated (demographic parity vs equalized odds); cryptographic layer adds complexity
+
+**Community acceptance:** Niche
+Single publication; aligns with EU AI Act requirements; no standardization; intersection of cryptography and AI ethics is very new
+
+---
+
+## Verifiable Machine Unlearning (FHorgEt)
+
+**Goal:** Give data subjects cryptographic proof that their training data has been removed from a model, using FHE+MPC so neither the model nor data is ever in plaintext at any single server.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **FHorgEt** | 2026 | FHE + multi-server MPC | Server cryptographically cannot retain original model post-unlearning; ePrint 2026/510 [[1]](https://eprint.iacr.org/2026/510) |
+
+**State of the art:** Turns GDPR Article 17 (right to erasure) from a legal obligation into an enforceable cryptographic guarantee. Essential for enterprise AI in regulated sectors.
+
+**Production readiness:** Research
+Single academic paper (ePrint 2026); no implementation available; purely theoretical at this stage
+
+**Implementations:**
+- [OpenFHE](https://github.com/openfheorg/openfhe-development) — C++, FHE library that could serve as basis for implementation
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) — C++, MPC framework applicable to multi-server unlearning protocol
+
+**Security status:** Caution
+Theoretical construction is sound under FHE+MPC assumptions; no implementation exists to evaluate practical security
+
+**Community acceptance:** Niche
+Single ePrint 2026 paper; addresses GDPR Article 17 but no peer review beyond preprint; very early stage
+
+---
+
+## Dataset Watermarking for Training Data Provenance
+
+**Goal:** Embed imperceptible signals in training data so that any model trained on it inherits detectable traces, enabling copyright holders to prove dataset usage without access to model weights.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Radioactive Data (Facebook AI)** | 2020 | Feature-space perturbation | Detectable traces inherited by any trained model [[1]](https://arxiv.org/abs/2002.11497) |
+| **STAMP (paraphrase-based)** | 2025 | LLM training data watermark | Watermarks text data via paraphrase; survives training pipeline [[1]](https://arxiv.org/abs/2504.13416) |
+
+**State of the art:** Only viable path for proving training data usage when model weights are opaque (API-only). Addresses NYT v. OpenAI, Getty v. Stability AI type disputes. Categorically distinct from output watermarking.
+
+**Production readiness:** Research
+Academic prototypes (Radioactive Data, STAMP); no production dataset watermarking system deployed at scale
+
+**Implementations:**
+- [Radioactive Data (Facebook AI)](https://github.com/facebookresearch/radioactive_data) — Python/PyTorch, feature-space dataset watermarking
+
+**Security status:** Caution
+Watermark survival through training is demonstrated empirically; adversarial robustness against deliberate removal is limited; active research
+
+**Community acceptance:** Emerging
+Growing legal relevance (NYT v. OpenAI); active research at NeurIPS, ICML; no formal standard; distinct from output watermarking
+
+---
+
+## Post-Quantum FIDO2 / Passkey Attestation
+
+**Goal:** Replace ECDSA in FIDO2 hardware security keys with NIST PQ algorithms (ML-DSA) so device-bound authentication remains secure against quantum adversaries.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **PQ-FIDO2 (Google/Yubico prototype)** | 2023–2024 | ML-DSA on security key | Only ~10ms overhead; IANA COSE PQC algorithm registration April 2025 [[1]](https://cryptographycaffe.sandboxaq.com/posts/pq-fido/) |
+
+**State of the art:** FIDO2/passkeys are the dominant phishing-resistant auth standard. All existing deployments rely on ECC broken by Shor's algorithm. PQ-FIDO2 is the physical-device-authentication migration path.
+
+**Production readiness:** Experimental
+Google/Yubico prototype demonstrated; IANA COSE PQC algorithm registration in progress (April 2025); not yet in shipping security keys
+
+**Implementations:**
+- [libfido2 (Yubico)](https://github.com/Yubico/libfido2) — C, FIDO2 client library (PQ integration planned)
+- [OpenSK (Google)](https://github.com/google/OpenSK) — Rust, open-source FIDO2 security key firmware on Nordic nRF52840
+
+**Security status:** Caution
+ML-DSA is NIST-standardized and quantum-resistant; integration into constrained security key hardware is new and needs validation
+
+**Community acceptance:** Emerging
+FIDO Alliance engaged on PQ migration; IANA COSE registration in progress; Google and Yubico prototyping; expected to become standard within 2-3 years
 
 ---
