@@ -69,6 +69,7 @@ Every `##` section MUST include the following fields after the table and "State 
 
 **Implementations:** <List of notable open-source implementations with URLs>
 - [Library/tool name](url) ⭐ <star count> — language, brief note
+- [Library/tool name](url) ⭐ <star count> [archived] — language, brief note  *(if repo is archived on GitHub)*
 
 **Security status:** <One of: Secure / Caution / Broken / Superseded>
 <Brief explanation — known attacks, parameter recommendations, or reason for deprecation>
@@ -91,6 +92,16 @@ Star count formatting:
 - `≥ 10000`: no decimal (e.g. `⭐ 29k`)
 
 Non-GitHub links (GitLab, Bitbucket, official sites, etc.) do not require star counts. Star counts should be periodically updated using the script in `scripts/update_stars.sh`.
+
+### Archived repository marker
+
+If a GitHub repository is archived (read-only), add `[archived]` between the star count and the em-dash:
+
+```markdown
+- [Library](https://github.com/owner/repo) ⭐ 126 [archived] — language, note
+```
+
+This signals that the code is no longer maintained. Check archive status via the GitHub API (`isArchived` field) or the repository page.
 
 Field value definitions:
 
