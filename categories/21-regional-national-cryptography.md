@@ -7,26 +7,33 @@ Cross-references to foundational concepts: [Symmetric Encryption](01-foundationa
 <!-- TOC -->
 ## Contents (11 schemes)
 
-- [SM4 / Chinese National Standard Block Ciphers](#sm4-chinese-national-standard-block-ciphers)
+**[🇨🇳 China (OSCCA / GM/T)](#-china-oscca--gmt)**
+- [SM4 / Chinese National Standard Block Ciphers](#sm4--chinese-national-standard-block-ciphers)
 - [SM3 Hash Function](#sm3-hash-function)
 - [SM2 Digital Signatures (Chinese National Standard)](#sm2-digital-signatures-chinese-national-standard)
-- [GOST R 34.12-2015 Block Ciphers (Grasshopper / Magma)](#gost-r-3412-2015-block-ciphers-grasshopper-magma)
+
+**[🇷🇺 Russia (GOST)](#-russia-gost)**
+- [GOST R 34.12-2015 Block Ciphers (Grasshopper / Magma)](#gost-r-3412-2015-block-ciphers-grasshopper--magma)
 - [GOST R 34.11-2012 (Streebog) and GOST R 34.10-2012](#gost-r-3411-2012-streebog-and-gost-r-3410-2012)
 - [GOST R 34.10-2012 (Russian Digital Signature Standard)](#gost-r-3410-2012-russian-digital-signature-standard)
+
+**[🇰🇷 South Korea (KISA / NIS)](#-south-korea-kisa--nis)**
 - [ARIA Block Cipher](#aria-block-cipher)
 - [ARIA and SEED (Korean Standard Block Ciphers)](#aria-and-seed-korean-standard-block-ciphers)
 - [LSH (Korean Lightweight Secure Hash)](#lsh-korean-lightweight-secure-hash)
+
+**[🇯🇵 Japan (CRYPTREC)](#-japan-cryptrec)**
 - [Camellia-GCM and ARIA-GCM](#camellia-gcm-and-aria-gcm)
 - [CLEFIA and MISTY1 (Japanese Industry Ciphers)](#clefia-and-misty1-japanese-industry-ciphers)
 <!-- /TOC -->
 
 ---
 
-**🇨🇳 China (OSCCA / GM/T)**
+## 🇨🇳 China (OSCCA / GM/T)
 
 ---
 
-## SM4 / Chinese National Standard Block Ciphers
+### SM4 / Chinese National Standard Block Ciphers
 
 **Goal:** Sovereign symmetric encryption. China's national commercial cryptography standards define a family of block ciphers and stream ciphers that serve as mandatory alternatives to AES in Chinese critical infrastructure, finance, and government systems — and increasingly in international standards via ISO/IEC.
 
@@ -57,7 +64,7 @@ SM4 is Chinese national standard GB/T 32907-2016 and ISO/IEC 18033-3:2010/Amd.1:
 
 ---
 
-## SM3 Hash Function
+### SM3 Hash Function
 
 **Goal:** Sovereign cryptographic hash for Chinese national standards. SM3 is the Chinese national standard hash function (GM/T 0004-2012 / GB/T 32905-2016), producing 256-bit digests. Mandatory in Chinese government, finance, and 5G systems; increasingly adopted in international standards as an alternative to SHA-256.
 
@@ -87,7 +94,7 @@ Chinese national standard GB/T 32905-2016; ISO/IEC 10118-3:2018; IETF RFC 8998. 
 
 ---
 
-## SM2 Digital Signatures (Chinese National Standard)
+### SM2 Digital Signatures (Chinese National Standard)
 
 **Goal:** Elliptic-curve digital signature scheme standardized by the Chinese government (GB/T 32918.2-2016, ISO/IEC 14888-3:2018). Provides authentication and non-repudiation using a Chinese-designed 256-bit elliptic curve over F_p. Mandated for government and financial systems in China.
 
@@ -118,11 +125,11 @@ Chinese national standard GB/T 32918.2-2016; ISO/IEC 14888-3:2018; IETF RFC 8998
 
 ---
 
-**🇷🇺 Russia (GOST)**
+## 🇷🇺 Russia (GOST)
 
 ---
 
-## GOST R 34.12-2015 Block Ciphers (Grasshopper / Magma)
+### GOST R 34.12-2015 Block Ciphers (Grasshopper / Magma)
 
 **Goal:** Russian national symmetric encryption standard. GOST R 34.12-2015 defines two block ciphers mandatory for Russian federal information systems: Kuznyechik ("Grasshopper"), a 128-bit block / 256-bit key SPN cipher, and Magma, a 64-bit block / 256-bit key Feistel update of the original 1989 GOST 28147-89. Together they replace the aging single-algorithm standard with a two-cipher portfolio covering both modern (128-bit block) and legacy (64-bit block) requirements.
 
@@ -155,7 +162,7 @@ Russian national standard GOST R 34.12-2015; IETF RFCs 7801, 8891, and 9058 for 
 
 ---
 
-## GOST R 34.11-2012 (Streebog) and GOST R 34.10-2012
+### GOST R 34.11-2012 (Streebog) and GOST R 34.10-2012
 
 **Goal:** Russian national cryptographic standards for hashing and digital signatures, replacing the 1994-era GOST R 34.11-94 hash and GOST R 34.10-2001 signature. Streebog provides 256-bit and 512-bit hash outputs; GOST R 34.10-2012 defines ECDSA-like signatures over Russian standardized elliptic curves. Both are mandatory for Russian government use and specified in IETF RFCs.
 
@@ -185,7 +192,7 @@ Russian national standard (GOST R 34.11-2012, GOST R 34.10-2012); IETF RFCs 6986
 
 ---
 
-## GOST R 34.10-2012 (Russian Digital Signature Standard)
+### GOST R 34.10-2012 (Russian Digital Signature Standard)
 
 **Goal:** Elliptic-curve digital signature scheme standardized by the Russian Federation (GOST R 34.10-2012, RFC 7091). Provides authentication using Russian-designed elliptic curves at 256-bit and 512-bit security levels. Mandated for Russian government communications and e-document systems.
 
@@ -216,11 +223,11 @@ Russian national standard GOST R 34.10-2012; IETF RFCs 7091 and 9189. Not adopte
 
 ---
 
-**🇰🇷 South Korea (KISA / NIS)**
+## 🇰🇷 South Korea (KISA / NIS)
 
 ---
 
-## ARIA Block Cipher
+### ARIA Block Cipher
 
 **Goal:** Sovereign symmetric encryption (Korea). A national-standard 128-bit block cipher for Korean government and public-sector cryptography, designed as an independent alternative to AES while matching its security levels and supporting the same key sizes.
 
@@ -250,7 +257,7 @@ Korean national standard KS X 1213:2004; IETF RFC 5794 (algorithm) and RFC 6209 
 
 ---
 
-## ARIA and SEED (Korean Standard Block Ciphers)
+### ARIA and SEED (Korean Standard Block Ciphers)
 
 **Goal:** Symmetric encryption using South Korean national standard block ciphers, developed as alternatives to AES for Korean government and telecommunications use.
 
@@ -277,7 +284,7 @@ Korean national standards (KS X 1213 for ARIA, KISA/TTA for SEED); IETF RFCs 579
 
 ---
 
-## LSH (Korean Lightweight Secure Hash)
+### LSH (Korean Lightweight Secure Hash)
 
 **Goal:** High-performance cryptographic hash function designed for wide-pipe Merkle-Damgard construction, standardized as a Korean national hash algorithm optimized for modern 64-bit and SIMD architectures.
 
@@ -303,11 +310,11 @@ Korean national standard KS X 3262. Not standardized by NIST or IETF; adoption l
 
 ---
 
-**🇯🇵 Japan (CRYPTREC)**
+## 🇯🇵 Japan (CRYPTREC)
 
 ---
 
-## Camellia-GCM and ARIA-GCM
+### Camellia-GCM and ARIA-GCM
 
 **Goal:** GCM-mode AEAD using non-AES 128-bit block ciphers — Camellia (Japanese national standard) and ARIA (Korean national standard) — providing cryptographic diversity, regulatory compliance in Japan and South Korea, and an alternative cipher path in environments where reliance on a single cipher is undesirable.
 
@@ -341,7 +348,7 @@ Camellia: ISO 18033-3, RFC 3713, CRYPTREC (Japan). ARIA: KCMVP (Korea), RFC 5794
 
 ---
 
-## CLEFIA and MISTY1 (Japanese Industry Ciphers)
+### CLEFIA and MISTY1 (Japanese Industry Ciphers)
 
 **Goal:** Symmetric encryption using block ciphers developed by Japanese corporations, designed with provable resistance to differential and linear cryptanalysis via the theory of decorrelation and MISTY structure.
 
