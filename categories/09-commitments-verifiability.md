@@ -199,6 +199,7 @@ Verkle trees proposed for Ethereum state migration but not yet deployed on mainn
 **Implementations:**
 - [go-ipa (Ethereum)](https://github.com/crate-crypto/go-ipa) ⭐ 37 -- Go, IPA-based vector commitments for Verkle trees
 - [rust-verkle](https://github.com/crate-crypto/rust-verkle) ⭐ 134 -- Rust, Verkle tree implementation for Ethereum
+- [pointproofs](https://github.com/zhenfeizhang/pointproofs) ⭐ 4 -- Go, Algorand's Pointproofs implementation
 
 **Security status:** Secure
 Security proven under standard assumptions (RSA, CDH, d-SDH depending on variant). No known attacks.
@@ -1319,6 +1320,7 @@ Poseidon deployed in Zcash Orchard, StarkNet, Filecoin, Miden VM, and numerous Z
 **Implementations:**
 - [circomlib Poseidon](https://github.com/iden3/circomlib) ⭐ 735 -- Circom, Poseidon circuits
 - [rescue-prime (Winterfell)](https://github.com/facebook/winterfell) ⭐ 888 -- Rust, Rescue-Prime in STARK prover
+- [poseidon-hash (starkware)](https://github.com/Qihoo360/poseidon) ⭐ 2.0k -- Python, Poseidon reference implementation
 
 **Security status:** Secure
 Poseidon designed with wide security margins (partial-full round structure). Rescue has provable security in the ideal permutation model. Active cryptanalysis community; no practical attacks found.

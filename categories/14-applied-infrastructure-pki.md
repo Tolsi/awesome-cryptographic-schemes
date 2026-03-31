@@ -52,6 +52,7 @@ Deployed at scale in EU Digital Identity Wallet (eIDAS 2.0, 450M citizens), Appl
 - [Walt.id SSI Kit](https://github.com/walt-id/waltid-ssikit) ⭐ 112 — Kotlin, enterprise SSI library
 - [Veramo](https://github.com/decentralized-identity/veramo) ⭐ 533 — TypeScript, DIF-maintained DID framework
 - [Hyperledger Aries](https://github.com/hyperledger/aries-framework-go) ⭐ 240 — Go, enterprise agent framework
+- [Microsoft ION](https://github.com/koush/ion) ⭐ 6.3k — TypeScript, Sidetree-based DID on Bitcoin
 
 **Security status:** Caution
 Core cryptography is sound (Ed25519, BBS+, ECDSA), but security depends heavily on the DID method chosen; `did:web` inherits DNS/TLS risks, and BBS+ implementations are still maturing.
@@ -157,6 +158,7 @@ Intel DCAP and AWS Nitro Attestation are deployed at scale in cloud confidential
 - [aws-nitro-enclaves-sdk](https://github.com/aws/aws-nitro-enclaves-sdk-c) ⭐ 113 — C, AWS Nitro Enclaves attestation SDK
 - [Keylime](https://github.com/keylime/keylime) ⭐ 522 — Python, CNCF remote attestation framework for TPM/TEE
 - [virtee/sev](https://github.com/virtee/sev) ⭐ 138 — Rust, AMD SEV-SNP attestation library
+- [Microsoft Azure Attestation](https://github.com/microsoft/Azure-DCAP-Client) ⭐ 67 — C, Azure DCAP client library
 
 **Security status:** Caution
 Attestation protocols are cryptographically sound, but TEE vulnerabilities (SGX side-channels, microcode bugs) require continuous patching; security depends on vendor TCB update discipline.
@@ -1613,6 +1615,7 @@ Mandatory in ISO 18013-5 (mobile driver's license), EU EUDI Wallet, FIDO2/WebAut
 - [python-cwt](https://github.com/dajiaji/python-cwt) ⭐ 29 — Python, CWT/COSE library
 - [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, comprehensive crypto library with COSE/CWT support
 - [COSE-C](https://github.com/cose-wg/COSE-C) ⭐ 31 — C, reference COSE implementation from the IETF working group
+- [cose-js](https://github.com/erdtman/cose-js) ⭐ 30 — JavaScript, COSE signing and encryption
 
 **Security status:** Secure
 Built on well-established algorithms (ECDSA P-256, EdDSA, AES-GCM, HMAC-SHA-256); binary CBOR encoding avoids JSON canonicalization vulnerabilities present in JOSE.
@@ -1701,6 +1704,7 @@ Deployed in Azure Confidential VMs (DCasv5/ECasv5), Google Cloud Confidential VM
 - [AMD SEV Tool](https://github.com/AMDESE/sev-tool) ⭐ 87 — C++, AMD SEV platform management utilities
 - [sev-snp-measure](https://github.com/virtee/sev-snp-measure) ⭐ 74 — Python, pre-compute expected SEV-SNP guest measurements
 - [coconut-svsm](https://github.com/coconut-svsm/svsm) ⭐ 210 — Rust, Secure VM Service Module for SEV-SNP guests
+- [Azure DCAP Client](https://github.com/microsoft/Azure-DCAP-Client) ⭐ 67 — C, Azure attestation client supporting SEV-SNP
 
 **Security status:** Caution
 ECDSA P-384 attestation cryptography is sound; security depends on AMD PSP firmware integrity and timely TCB updates; side-channel attacks on earlier SEV generations (CacheWarp, 2023) have been mitigated in SNP but require vigilance.
@@ -1798,6 +1802,7 @@ Azure Confidential Computing GA since 2022; SGX enclaves (DCsv3), TDX VMs (DCesv
 - [Open Enclave SDK](https://github.com/openenclave/openenclave) ⭐ 1.2k — C/C++, cross-platform TEE SDK (SGX + TrustZone)
 - [Gramine](https://github.com/gramineproject/gramine) ⭐ 755 — C, library OS for running unmodified Linux apps in SGX enclaves
 - [Confidential Containers](https://github.com/confidential-containers) — Go/Rust, CNCF project for Kata + TDX/SNP container isolation
+- [Azure DCAP Client](https://github.com/microsoft/Azure-DCAP-Client) ⭐ 67 — C, Intel DCAP client for Azure attestation
 
 **Security status:** Caution
 Attestation protocols are cryptographically sound (ECDSA P-256 quotes, Intel PCK cert chains); security depends on Intel microcode patching cadence and SGX side-channel mitigations (LVI, MMIO stale data).
@@ -2206,6 +2211,8 @@ SCP03 is mandatory for all GlobalPlatform 2.3+ compliant cards; deployed on bill
 - [OpenSC](https://github.com/OpenSC/OpenSC) ⭐ 3.0k — C, smart card middleware with GlobalPlatform support
 - [YubiKey Manager](https://github.com/Yubico/yubikey-manager) ⭐ 1.1k — Python, YubiKey configuration (uses SCP03 for management)
 - [pyscard](https://github.com/LudovicRousseau/pyscard) ⭐ 458 — Python, PC/SC smart card library for SCP03 communication
+- [GlobalPlatformPro](https://github.com/martinpaljak/GlobalPlatformPro) ⭐ 873 — Java, open-source GlobalPlatform card management tool
+- [JCAlgTest](https://github.com/crocs-muni/JCAlgTest) ⭐ 136 — Java, JavaCard cryptographic algorithm testing tool
 
 **Security status:** Secure
 AES-128/256-CBC + CMAC is cryptographically sound; mutual authentication prevents unauthorized card management; SCP03 replaces legacy SCP02 (3DES) with modern symmetric primitives.
@@ -2413,6 +2420,7 @@ Foundation of all TLS, code signing, S/MIME, and VPN trust decisions; implemente
 - [rustls/webpki](https://github.com/rustls/webpki) ⭐ 142 — Rust, memory-safe X.509 path validation library
 - [Go x509](https://pkg.go.dev/crypto/x509) — Go, standard library X.509 certificate verification
 - [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, comprehensive X.509 path building and validation
+- [NSS (Network Security Services)](https://github.com/nss-dev/nss) ⭐ 178 — C, Mozilla's crypto library used by Firefox for path validation
 
 **Security status:** Caution
 Algorithm is well-defined (Internet Standard since 2008); security depends on correct implementation — common pitfalls include hostname mismatch, soft-fail OCSP, and missing intermediate certificates.
@@ -2537,6 +2545,9 @@ Over 200 PSA Certified products; deployed on Nordic Semiconductor, STMicroelectr
 **Implementations:**
 - [Mbed TLS](https://github.com/Mbed-TLS/mbedtls) ⭐ 6.6k — C, implements PSA Crypto API as primary interface
 - [Zephyr RTOS](https://github.com/zephyrproject-rtos/zephyr) ⭐ 14k — C, RTOS with PSA Crypto API and TF-M integration
+- [TF-M (Trusted Firmware-M)](https://github.com/zephyrproject-rtos/trusted-firmware-m) ⭐ 43 — C, Arm reference secure firmware for Cortex-M
+- [TF-M Tests](https://github.com/zephyrproject-rtos/tf-m-tests) ⭐ 3 — C, PSA API compliance test suite
+- [PSA Arch Tests](https://github.com/ARM-software/psa-arch-tests) ⭐ 75 — C, Arm PSA architecture compliance test suite
 
 **Security status:** Secure
 PSA Crypto API wraps well-established algorithms (ECDSA P-256, AES-GCM, SHA-256) with hardware-backed key isolation; PSA Certified Level 3 requires resistance to hardware side-channel and fault injection attacks.

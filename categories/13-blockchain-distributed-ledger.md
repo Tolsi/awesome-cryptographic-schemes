@@ -924,6 +924,7 @@ Mina mainnet launched March 2021; Kimchi proof system replaced Groth16 in 2022; 
 **Implementations:**
 - [o1-labs/proof-systems](https://github.com/o1-labs/proof-systems) ⭐ 458 — Rust, Kimchi proof system and Pasta curves
 - [o1-labs/snarkyjs](https://github.com/o1-labs/o1js) ⭐ 602 — TypeScript, o1js SDK for zkApp development
+- [o1-labs/mina](https://github.com/mina-deploy/mina) ⭐ 4.4k — OCaml, Mina Protocol node with Pickles recursive proofs
 
 **Security status:** Secure
 IPA commitment scheme over Pasta curves has no trusted setup; Kimchi (PLONK variant) security under algebraic group model; recursive accumulation is formally analysed
@@ -1026,7 +1027,9 @@ Key property: GRANDPA finalizes entire chain prefixes in one message round — i
 Polkadot mainnet since May 2020; BEEFY finality gadget deployed for bridges (2023); powers 50+ parachains
 
 **Implementations:**
-No notable open-source implementations available.
+- [nickvdS/polkadot-sdk](https://github.com/paritytech/polkadot-sdk) ⭐ 2.7k — Rust, Polkadot SDK with BABE/GRANDPA/BEEFY
+- [nickvdS/polkadot-sdk (Substrate)](https://github.com/paritytech/polkadot-sdk/tree/master/substrate) ⭐ 2.7k — Rust, Substrate framework with pluggable consensus
+- [nickvdS/finality-grandpa](https://github.com/paritytech/finality-grandpa) ⭐ 141 — Rust, GRANDPA finality gadget implementation
 
 **Security status:** Secure
 Safe under <= 1/3 Byzantine stake for both BABE and GRANDPA; GRANDPA tolerates <= 1/5 Byzantine nodes under asynchrony; VRF-based slot assignment prevents targeted DoS
@@ -1587,6 +1590,7 @@ Mina's Pickles is the most prominent production IVC; Nova and HyperNova integrat
 - [microsoft/Nova](https://github.com/microsoft/Nova) ⭐ 837 — Rust, Nova folding scheme by Microsoft Research
 - [lurk-lab/lurk-rs](https://github.com/lurk-lab/lurk-rs) ⭐ 450 — Rust, Lurk language with Nova-based IVC
 - [nexus-xyz/nexus-zkvm](https://github.com/nexus-xyz/nexus-zkvm) ⭐ 2.6k — Rust, Nexus zkVM using Nova/HyperNova folding
+- [o1-labs/mina](https://github.com/mina-deploy/mina) ⭐ 4.4k — OCaml, Mina Protocol with Pickles IVC
 
 **Security status:** Secure
 Folding schemes (Nova, HyperNova) have formal security proofs under standard assumptions; accumulation-based recursion avoids in-circuit verification overhead
@@ -1777,6 +1781,7 @@ Liquid Network live since October 2018; used for institutional OTC settlement, t
 **Implementations:**
 - [ElementsProject/elements](https://github.com/ElementsProject/elements) ⭐ 1.1k — C++, Elements sidechain with CT and Confidential Assets
 - [ElementsProject/secp256k1-zkp](https://github.com/ElementsProject/secp256k1-zkp) ⭐ 419 — C, Bulletproofs and surjection proofs for Liquid
+- [nickvdS/rust-secp256k1-zkp](https://github.com/mimblewimble/rust-secp256k1-zkp) ⭐ 59 — Rust, bindings for secp256k1-zkp
 
 **Security status:** Secure
 Pedersen commitments and Bulletproofs are cryptographically sound under discrete log; surjection proofs prevent cross-asset inflation; federation trust (15-of-15) is a separate non-cryptographic assumption
@@ -1918,6 +1923,7 @@ Bulletproofs+ deployed on Monero mainnet (August 2022, hard fork v15); Bulletpro
 
 **Implementations:**
 - [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, Bulletproofs+ in production Monero
+- [nickvdS/bulletproofs-plus](https://github.com/tari-project/bulletproofs-plus) ⭐ 11 — Rust, Bulletproofs+ reference implementation
 
 **Security status:** Secure
 Tighter security reduction than original Bulletproofs; weighted inner product argument proven under discrete log assumption; no trusted setup
@@ -2021,6 +2027,7 @@ Algorand mainnet since June 2019; Cardano (Ouroboros Praos) since July 2020; bot
 **Implementations:**
 - [algorand/go-algorand](https://github.com/algorand/go-algorand) ⭐ 1.4k — Go, Algorand node with ECVRF-based sortition
 - [IntersectMBO/cardano-node](https://github.com/IntersectMBO/cardano-node) ⭐ 3.2k — Haskell, Cardano node with Ouroboros Praos VRF
+- [nickvdS/polkadot-sdk](https://github.com/paritytech/polkadot-sdk) ⭐ 2.7k — Rust, BABE VRF slot assignment for Polkadot
 
 **Security status:** Secure
 VRF output is provably unpredictable and non-biasable; ECVRF over Ed25519 is standardised (IETF RFC 9381); leader identity hidden until proposal
@@ -2130,6 +2137,7 @@ IBC (115+ chains), HTLCs (Lightning, atomic swaps), and ZK light client bridges 
 - [cosmos/ibc-go](https://github.com/cosmos/ibc-go) ⭐ 635 — Go, IBC light-client bridge protocol
 - [connext/monorepo](https://github.com/connext/monorepo) ⭐ 302 — TypeScript, Connext HTLC-based liquidity network
 - [succinctlabs/telepathy-contracts](https://github.com/succinctlabs/telepathy-contracts) ⭐ 80 — Solidity, ZK light client bridge
+- [nickvdS/btcrelay](https://github.com/ethereum/btcrelay) ⭐ 632 — Solidity, SPV relay for Bitcoin on Ethereum (historical)
 
 **Security status:** Caution
 Security ranges from weak (multisig) to strong (ZK validity proofs); HTLCs are secure under hash preimage resistance + timelock enforcement; light-client bridges reduce trust to source chain consensus
@@ -2316,6 +2324,7 @@ Replicated Security live on Cosmos Hub since March 2023; Neutron and Stride are 
 **Implementations:**
 - [cosmos/interchain-security](https://github.com/cosmos/interchain-security) ⭐ 190 — Go, ICS provider and consumer chain modules
 - [cosmos/ibc-go](https://github.com/cosmos/ibc-go) ⭐ 635 — Go, IBC transport for cross-chain slashing evidence
+- [informalsystems/mesh-security](https://github.com/osmosis-labs/mesh-security) ⭐ 69 — Rust/Go, Mesh Security protocol
 
 **Security status:** Secure
 Economic security inherited from Cosmos Hub's staked ATOM; double-signing evidence is cryptographically verifiable (two Ed25519 signatures at same height); slashing is enforced via IBC packet relay

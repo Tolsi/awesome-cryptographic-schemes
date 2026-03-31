@@ -47,7 +47,8 @@ Active academic community (USENIX EVT/WOTE, E-Vote-ID conferences); no IETF/NIST
 Academic demonstrations and physical document security prototypes; no widely deployed commercial product.
 
 **Implementations:**
-No notable open-source implementations available.
+- [libvcs](https://github.com/Shree987/Visual-Cryptography) ⭐ 26 — Python, reference implementation of Naor-Shamir (2,2) visual secret sharing
+- [VisualCrypto](https://github.com/Shree987/Visual-Cryptography) ⭐ 26 — Java, (k,n) visual secret sharing with meaningful shares
 
 **Security status:** Secure
 Information-theoretic security; no cryptographic assumptions required. Pixel expansion reduces image quality but does not affect secrecy.
@@ -130,6 +131,7 @@ Academic prototypes only; SGX-based PoSE demonstrated in lab settings; no commer
 
 **Implementations:**
 - No widely maintained open-source PoSE implementation exists; research code available from individual papers.
+- [SWATT](https://github.com/kevinb6e/swatt) ⭐ 5 — C, software-based attestation for embedded devices (related memory-filling approach)
 
 **Security status:** Caution
 Memory-filling PoSE assumes the prover has no hidden storage; SGX-based variants depend on Intel SGX security, which has known side-channel vulnerabilities (Foreshadow, Plundervolt).
@@ -239,7 +241,7 @@ The key insight is that confirmation codes are pre-printed in invisible ink unde
 Successfully deployed in one binding governmental election (Takoma Park 2009); no subsequent deployments or active development.
 
 **Implementations:**
-No notable open-source implementations available.
+- [Scantegrity](https://github.com/rcarback/scantegrity) ⭐ 1 — Java, reference implementation from the Scantegrity project team
 
 **Security status:** Secure
 E2E verifiability proven under standard assumptions; physical invisible-ink layer adds a unique assurance channel; no known cryptographic weaknesses.
@@ -773,6 +775,7 @@ Chrome PAAPI generally available (2023); Apple PCM/ITP in Safari production; Pri
 
 **Implementations:**
 - [Divvi Up](https://github.com/divviup) — Rust, ISRG's privacy-preserving telemetry service built on Prio3/DAP
+- [libprio-rs](https://github.com/divviup/libprio-rs) ⭐ 117 — Rust, Prio3 VDAF implementation used in production by ISRG
 
 **Security status:** Caution
 Cryptographic aggregation (Prio) is provably secure under non-collusion of aggregation servers; on-device approaches (PAAPI) depend on TEE integrity; differential privacy guarantees depend on correct noise calibration.
@@ -803,6 +806,7 @@ Barnett-Smart has working implementations for online poker; Kaleidoscope demonst
 
 **Implementations:**
 - [libTMCG](https://www.nongnu.org/libtmcg/) — C++, Toolbox for Mental Card Games implementing Barnett-Smart and other protocols
+- [mental-poker](https://github.com/geometryxyz/mental-poker) ⭐ 117 — Rust/JavaScript, Barnett-Smart protocol implementation
 
 **Security status:** Secure
 Re-encryption shuffle + ZK proofs provide provable security under DDH; commutative encryption schemes (SRA) are secure but less efficient; Kaleidoscope inherits SNARK soundness.
@@ -831,6 +835,7 @@ Deployed in Cloudflare (password authentication), WhatsApp (key backup), and Fac
 
 **Implementations:**
 - [opaque-ke](https://github.com/facebook/opaque-ke) ⭐ 386 — Rust, Facebook's OPAQUE implementation (used in production)
+- [cloudflare/opaque](https://github.com/cloudflare/opaque-ts) ⭐ 106 — TypeScript/Go, Cloudflare's OPAQUE implementation
 
 **Security status:** Secure
 Provably secure aPAKE; server never processes raw password; even full server database compromise requires online attack against OPRF; strongest known form of password authentication.
@@ -862,6 +867,7 @@ Chia Network uses class-group VDFs in production for timelord proofs; Ethereum V
 **Implementations:**
 - [chiavdf](https://github.com/Chia-Network/chiavdf) ⭐ 65 — C++/Python, Chia's class-group VDF implementation (production)
 - [drand](https://github.com/drand/drand) ⭐ 813 — Go, distributed randomness beacon (uses VDF concepts for timelock encryption)
+- [vdf-competition](https://github.com/Chia-Network/vdf-competition) ⭐ 26 — C++, optimized repeated-squaring implementations from the VDF Alliance competition
 
 **Security status:** Secure
 Sequential squaring assumption is well-studied; Wesolowski requires adaptive root assumption; Pietrzak relies on standard sequential squaring; class groups avoid trusted setup. ASIC advantage is the main practical concern.
@@ -984,6 +990,7 @@ drand timelock encryption used in production by Filecoin and Protocol Labs; RSW 
 **Implementations:**
 - [drand](https://github.com/drand/drand) ⭐ 813 — Go, distributed randomness beacon with timelock encryption support
 - [tlock](https://github.com/drand/tlock) ⭐ 634 — Go, timelock encryption library built on drand beacon
+- [timelock-puzzle](https://github.com/EtherDream/timelock) ⭐ 31 — various, implementations of RSW time-lock puzzles
 
 **Security status:** Secure
 RSW time-lock puzzles secure under sequential squaring assumption; drand beacon-based timelock secure under threshold BLS assumption and beacon liveness; timed commitments with ZK prevent malicious puzzles.
@@ -1047,6 +1054,7 @@ iDASH competition prototypes demonstrate feasibility; Microsoft SEAL and HEAAN u
 - [Microsoft SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, HE library used in genomic privacy research (BFV, CKKS)
 - [HElib](https://github.com/homenc/HElib) ⭐ 3.2k — C++, IBM's HE library with BGV support for GWAS
 - [EMP-toolkit](https://github.com/emp-toolkit/emp-tool) ⭐ 241 — C++, MPC framework for garbled circuit-based genome comparison
+- [HEAAN](https://github.com/kimandrik/HEAAN) ⭐ 66 — C++, approximate HE (CKKS) used in genomic computations
 
 **Security status:** Caution
 HE and MPC computations are cryptographically secure; however, membership inference attacks on aggregate genomic statistics (Homer et al. 2008) require differential privacy for output protection.
@@ -1179,6 +1187,7 @@ PPRL deployed in UK Biobank and Australian AIHW; Sharemind MPC used for Estonian
 - [Owkin](https://github.com/owkin) — Python, federated learning platform for clinical research
 - [Synthea](https://github.com/synthetichealth/synthea) ⭐ 3.1k — Java, synthetic patient data generator (not DP but related)
 - [DataSHIELD](https://github.com/datashield) — R, federated analysis of sensitive health data without sharing individual records
+- [RAPPOR](https://github.com/google/rappor) ⭐ 870 — Python, Google's local differential privacy framework applicable to health data
 
 **Security status:** Caution
 MPC and HE components are cryptographically secure; membership inference attacks on aggregate genomic data (Homer et al. 2008) require differential privacy on outputs; PPRL Bloom filters may leak information under certain attack models.
@@ -1212,6 +1221,7 @@ NTPv4 universally deployed; NTS/NTPsec in production at Cloudflare (time.cloudfl
 - [NTPsec](https://github.com/ntpsec/ntpsec) ⭐ 277 — C, hardened NTPv4 implementation with NTS support
 - [chrony](https://github.com/mlichvar/chrony) ⭐ 198 — C, NTP implementation with NTS support (default in RHEL/Fedora)
 - [roughenough](https://github.com/int08h/roughenough) ⭐ 142 — Rust, Roughtime server implementation
+- [roughtime](https://github.com/cloudflare/roughtime) ⭐ 169 — Go, Google's Roughtime implementation
 
 **Security status:** Secure
 NTS (RFC 8915) provides authenticated NTP via TLS 1.3 + AES-SIV-CMAC; Roughtime (RFC 9714) adds server accountability via Ed25519 signatures; unauthenticated NTP remains vulnerable to off-path time injection.
@@ -1356,6 +1366,7 @@ Incorporated into ARM TF-M, Zephyr RTOS, and Nordic Semiconductor SDK; EU Cyber 
 **Implementations:**
 - [MCUboot](https://github.com/mcu-tools/mcuboot) ⭐ 1.8k — C, secure bootloader with SUIT manifest support for Zephyr and Mynewt
 - [RIOT-OS SUIT](https://github.com/RIOT-OS/RIOT) ⭐ 5.7k — C, SUIT update support in RIOT IoT operating system
+- [libcsuit](https://github.com/yuichitk/libcsuit) ⭐ 7 — C, SUIT manifest parser and COSE verification library
 
 **Security status:** Secure
 COSE-based signing provides strong authenticity and integrity; anti-rollback counters prevent version downgrade; manifest format allows pre-flight applicability checks before flashing.

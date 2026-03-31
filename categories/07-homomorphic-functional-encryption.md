@@ -24,6 +24,7 @@ OpenFHE, SEAL, and TFHE-rs are deployed in production systems including encrypte
 - [Microsoft SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, BFV/BGV/CKKS with AVX-512 via HEXL
 - [TFHE-rs](https://github.com/zama-ai/tfhe-rs) ⭐ 1.6k — Rust, production TFHE with programmable bootstrapping
 - [HElib](https://github.com/homenc/HElib) ⭐ 3.2k — C++, BGV/CKKS with bootstrapping
+- [HEAAN](https://github.com/kimandrik/HEAAN) ⭐ 66 — C++, original CKKS implementation
 
 **Security status:** Secure
 RLWE-based schemes at recommended parameters (128-bit security per HE Standard) have no known practical attacks
@@ -291,6 +292,7 @@ Implemented in SEAL, OpenFHE, HElib, HEAAN, and Lattigo; deployed for privacy-pr
 - [Microsoft SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, production CKKS
 - [OpenFHE](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, CKKS with bootstrapping
 - [Lattigo](https://github.com/tuneinsight/lattigo) ⭐ 1.4k — Go, CKKS with multiparty support
+- [HEAAN](https://github.com/kimandrik/HEAAN) ⭐ 66 — C++, original CKKS authors' implementation
 
 **Security status:** Caution
 Li and Micciancio (2021) showed IND-CPA-D (approximate decryption) vulnerability; mitigated by noise flooding in CKKS bootstrapping; requires careful parameter selection
@@ -438,7 +440,7 @@ Active research area; threshold FHE gaining traction for federated ML and blockc
 Academic prototypes; no production-grade verifiable FHE systems deployed
 
 **Implementations:**
-No notable open-source implementations available.
+- [Rinocchio (reference)](https://github.com/aucrypto/rinocchio) ⭐ 3 — Sage/Python, proof-of-concept SNARK over rings
 
 **Security status:** Secure
 Combines FHE security (RLWE) with SNARK soundness; both components well-studied independently
@@ -716,6 +718,7 @@ Umbral PRE deployed in the NuCypher/Threshold Network for decentralized access c
 **Implementations:**
 - [pyUmbral](https://github.com/nucypher/pyUmbral) ⭐ 300 — Python, Umbral threshold PRE (NuCypher)
 - [nucypher](https://github.com/nucypher/nucypher) ⭐ 709 — Python, decentralized PRE network
+- [recrypt](https://github.com/IronCoreLabs/recrypt) ⭐ 36 — Rust, transform encryption library
 
 **Security status:** Secure
 AFGH CPA-secure under DBDH; Libert-Vergnaud CCA2-secure; Umbral threshold variant adds fault tolerance
@@ -967,6 +970,7 @@ Deployed in e-voting systems, federated learning (FATE/WeBank), and privacy-pres
 **Implementations:**
 - [python-paillier](https://github.com/data61/python-paillier) ⭐ 634 — Python, CSIRO Data61 implementation
 - [rust-paillier](https://github.com/KZen-networks/rust-paillier) ⭐ 37 — Rust, Paillier with serialization
+- [libpaillier](https://github.com/mortendahl/libpaillier) ⭐ 7 — C, Paillier with threshold support
 
 **Security status:** Secure
 IND-CPA secure under Decisional Composite Residuosity (DCR) assumption; well-studied for 25+ years; no known practical attacks
@@ -1248,6 +1252,7 @@ Demonstrated in iDASH competitions and academic studies; pilot deployments in ho
 **Implementations:**
 - [OpenFHE](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, used in iDASH competition submissions
 - [Microsoft SEAL](https://github.com/microsoft/SEAL) ⭐ 4.0k — C++, used for encrypted GWAS
+- [HEAAN](https://github.com/kimandrik/HEAAN) ⭐ 66 — C++, original CKKS for genomics workloads
 
 **Security status:** Secure
 Underlying CKKS/BFV schemes are secure at recommended parameters; healthcare-specific risks are around data leakage from output, not scheme breaks

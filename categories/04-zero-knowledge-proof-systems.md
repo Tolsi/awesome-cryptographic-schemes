@@ -339,6 +339,8 @@ Picnic was a NIST PQ signature candidate. Banquet and ZKBoo have working impleme
 
 **Implementations:**
 - [Picnic](https://github.com/microsoft/Picnic) ⭐ 168 — C — NIST PQ signature candidate (Microsoft)
+- [ZKBoo](https://github.com/Sobuno/ZKBoo) ⭐ 52 — C — practical MPCitH implementation
+- [Banquet](https://github.com/dkales/banquet) ⭐ 14 — C — MPCitH with algebraic hashes
 
 **Security status:** Secure
 Security reduces to the underlying symmetric primitives (AES, LowMC). Post-quantum secure when using appropriate hash functions.
@@ -786,6 +788,7 @@ Working implementations exist with competitive benchmarks. Used as PCS component
 
 **Implementations:**
 - [Orion](https://github.com/sunblaze-ucb/orion) ⭐ 31 — Rust — linear-time SNARK prover
+- [Brakedown (reference)](https://github.com/alexyu132/brakedown) ⭐ 3 — Rust — Brakedown polynomial commitment implementation
 
 **Security status:** Caution
 Brakedown (CRYPTO 2023) has clean security proofs. Original Orion had a soundness issue fixed in Orion+ (2024). Use the corrected version.
@@ -1427,6 +1430,7 @@ Primarily academic and pilot deployments. ING's zkrp library is open-source. No 
 
 **Implementations:**
 - [Baseline Protocol](https://github.com/eea-oasis/baseline) ⭐ 574 — TypeScript — enterprise ZK coordination protocol
+- [zkrp (ING)](https://github.com/developerblockchain/zkrp) ⭐ 6 — Go — zero-knowledge range proofs for trade finance
 
 **Security status:** Secure
 Underlying ZK proofs (Bulletproofs, PLONK) are secure. Supply chain attestation security depends on the trust model for certifying authorities.

@@ -409,7 +409,7 @@ Selected by NIST for FIPS 207 standardization (March 2025). Positioned as a code
 Laboratory demonstrations over 833 km fiber; plug-and-play architectures demonstrated (2025). No commercial products yet.
 
 **Implementations:**
-No notable open-source implementations available.
+- [OpenQKDSecurity](https://github.com/Optical-Quantum-Communication-Theory/openQKDsecurity) ⭐ 59 — Python, security analysis framework for QKD including TF-QKD
 
 **Security status:** Secure
 Composable finite-key security proofs against general attacks for SNS-TF-QKD and variants. Information-theoretically secure. Phase synchronization requirements introduce implementation challenges.
@@ -482,6 +482,7 @@ Commercial CV-QKD systems available from Toshiba and ID Quantique. Composable se
 
 **Implementations:**
 - [ID Quantique Cerberis](https://www.idquantique.com/) — commercial CV-QKD system
+- [OpenQKDSecurity](https://github.com/Optical-Quantum-Communication-Theory/openQKDsecurity) ⭐ 59 — Python, CV-QKD security analysis tools
 
 **Security status:** Secure
 Composable security proven against general coherent attacks (2022). Information-theoretically secure. Implementation requires careful calibration of shot noise and excess noise.
@@ -889,6 +890,7 @@ CTIDH-512/1024 provide constant-time implementations. Research-grade; no product
 **Implementations:**
 - [CTIDH reference](https://ctidh.isogeny.org/) — C, constant-time CSIDH implementation
 - [SageMath](https://www.sagemath.org/) — Python, extensive isogeny computation support
+- [sibc](https://github.com/JJChiDguez/sibc) ⭐ 52 — Python, supersingular isogeny-based cryptography library
 
 **Security status:** Caution
 CSIDH faces sub-exponential quantum attacks (Kuperberg's algorithm). Security parameter debate ongoing (CSIDH-512 vs. CSIDH-1024). Distinct from broken SIDH — CSIDH does not expose torsion points.
@@ -926,6 +928,7 @@ CASCADE deployed in commercial QKD systems. LDPC reconciliation is the current b
 
 **Implementations:**
 - [Cascade-CPP](https://github.com/brunorijsman/cascade-cpp) ⭐ 22 — C++, open-source CASCADE implementation
+- [OpenQKDSecurity](https://github.com/Optical-Quantum-Communication-Theory/openQKDsecurity) ⭐ 59 — Python, QKD security and reconciliation analysis
 
 **Security status:** Secure
 Information reconciliation is a classical post-processing step; security depends on the underlying QKD protocol. Reconciliation efficiency directly affects secret key rate.

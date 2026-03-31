@@ -221,7 +221,7 @@ AES-SIV is IETF RFC 5297; MLE is a well-studied framework. Convergent encryption
 Academic constructions; no widely deployed production system uses formal updatable encryption schemes.
 
 **Implementations:**
-No notable open-source implementations available.
+- [Recrypt](https://github.com/IronCoreLabs/recrypt-rs) ⭐ 166 — Rust, proxy re-encryption (related primitive)
 
 **Security status:** Secure
 Klooß-Lehmann-Rupp provides forward and post-compromise security; formal proofs in standard model.
@@ -329,7 +329,8 @@ Essential in UC-security theory; understood by the MPC/secure-channels research 
 Academic proposals and prototypes; no mainstream production deployment beyond research password vault experiments.
 
 **Implementations:**
-No notable open-source implementations available.
+- [honey-encryption](https://github.com/victornguyen75/honey-encryption) ⭐ 12 — Python, research implementation of Juels-Ristenpart HE
+- [honeywords](https://github.com/maheshmb13/Honeywords) ⭐ 3 — Python, related honeyword generation for password databases
 
 **Security status:** Caution
 Security depends entirely on the quality of the DTE (distribution-transforming encoder); poor DTEs provide no meaningful protection.
@@ -411,6 +412,7 @@ DupLESS is a research prototype; convergent encryption concepts are used in prod
 
 **Implementations:**
 - [Tahoe-LAFS](https://github.com/tahoe-lafs/tahoe-lafs) ⭐ 1.4k — Python, convergent encryption for distributed storage
+- [DupLESS](https://github.com/FadyMohareb/dupless) ⭐ 2 — research prototype
 
 **Security status:** Caution
 Convergent encryption is vulnerable to offline brute-force on predictable files; DupLESS mitigates this via server-aided OPRF.

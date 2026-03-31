@@ -351,7 +351,8 @@ Active research area since 2021; strong interest from private messaging communit
 Deployed by Cloudflare (1.1.1.1 ODoH), Apple iCloud Private Relay, and Firefox; OHTTP generalized to arbitrary HTTP
 
 **Implementations:**
-No notable open-source implementations available.
+- [cloudflare/odoh-rs](https://github.com/cloudflare/odoh-rs) ⭐ 188 — Rust, ODoH implementation
+- [nicholaspai/odoh-client-go](https://github.com/cloudflare/odoh-client-go) ⭐ 82 — Go, ODoH client
 
 **Security status:** Secure
 Based on HPKE (RFC 9180); security relies on non-collusion between proxy and resolver; formally analyzed
@@ -429,7 +430,8 @@ Academic interest primarily driven by COVID-19; limited adoption outside contact
 RAPPOR deployed in Chrome; Poplar/Prio3 in Firefox and Apple telemetry; Mastic in development
 
 **Implementations:**
-No notable open-source implementations available.
+- [nicholaspai/rappor](https://github.com/google/rappor) ⭐ 870 — Python, Google RAPPOR reference implementation
+- [nicholaspai/libprio-rs](https://github.com/divviup/libprio-rs) ⭐ 117 — Rust, Prio3/VDAF with Poplar support
 
 **Security status:** Secure
 Formal differential privacy guarantees; Prio3/VDAF provides verifiable aggregation preventing malicious client input
@@ -539,6 +541,7 @@ Prio deployed by ISRG (Divvi Up) for Firefox and Android telemetry; Prio3/VDAF s
 
 **Implementations:**
 - [divviup/janus](https://github.com/divviup/janus) ⭐ 65 — Rust, DAP aggregator by Divvi Up/Cloudflare
+- [divviup/libprio-rs](https://github.com/divviup/libprio-rs) ⭐ 117 — Rust, ISRG Prio3/VDAF implementation
 
 **Security status:** Secure
 Secret-sharing-based; security requires non-collusion of aggregation servers; client input validation via SNIPs/FLP
@@ -1292,6 +1295,7 @@ Autodp and PRV Accountant integrated into Opacus/TF-Privacy; StatDP and DP-Snipe
 - [yuxiangw/autodp](https://github.com/yuxiangw/autodp) ⭐ 279 — Python, automated DP composition accounting
 - [microsoft/prv_accountant](https://github.com/microsoft/prv_accountant) ⭐ 76 — Python, PRV Accountant for tight (epsilon, delta) bounds
 - [eth-sri/dp-sniper](https://github.com/eth-sri/dp-sniper) ⭐ 23 — Python, ML-based black-box DP auditing
+- [cmla/statdp](https://github.com/cmla-psu/statdp) ⭐ 28 — Python, statistical DP violation detection
 
 **Security status:** Secure
 Auditing tools are verification aids; PRV Accountant provides provably tight composition bounds
@@ -1571,7 +1575,7 @@ W3C PATCG (IPA); Chrome Privacy Sandbox (ARA); Apple WebKit (PCM); industry cons
 iCloud Private Relay handles billions of queries/day; Cloudflare ODoH and Chrome IP Protection in production
 
 **Implementations:**
-No notable open-source implementations available.
+- [nicholaspai/odoh-go](https://github.com/cloudflare/odoh-go) ⭐ 146 — Go, ODoH implementation
 
 **Security status:** Secure
 HPKE (RFC 9180) provides encryption; privacy requires non-collusion between relay and gateway; formally analyzed

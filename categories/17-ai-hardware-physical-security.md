@@ -98,6 +98,7 @@ SRAM PUFs deployed in hundreds of millions of MCUs (NXP, Microchip, Renesas) via
 
 **Implementations:**
 - [Intrinsic ID BroadKey](https://www.intrinsic-id.com/broadkey/) — Commercial IP core for SRAM PUF key generation
+- [PUFlib (TU Darmstadt)](https://github.com/nils-wisiol/pypuf) ⭐ 92 — Python, PUF simulation and ML attack framework for research
 
 **Security status:** Caution
 SRAM PUFs are secure for key storage; Arbiter PUFs broken by ML modeling attacks (see ML Modeling Attacks section); requires fuzzy extractors for reliability
@@ -479,6 +480,7 @@ Attack tools are research prototypes; defenses (watermarking, rate limiting) are
 
 **Implementations:**
 - [Knockoff Nets](https://github.com/tribhuvanesh/knockoffnets) ⭐ 115 — Python/PyTorch, model extraction attack implementation
+- [ModelGuard (query detection)](https://github.com/Yoruko-Tang/ModelGuard) ⭐ 23 — Python, framework for detecting model extraction queries
 
 **Security status:** Caution
 No defense simultaneously prevents extraction and maintains full API utility; watermarking provides post-hoc attribution rather than prevention
@@ -726,6 +728,7 @@ Billions of smart cards deployed for EMV payments, SIM/eSIM, passports, and gove
 **Implementations:**
 - [GlobalPlatformPro](https://github.com/martinpaljak/GlobalPlatformPro) ⭐ 873 — Java, command-line tool for managing GlobalPlatform smart cards
 - [OpenSC](https://github.com/OpenSC/OpenSC) ⭐ 3.0k — C, PKCS#11/15 tool for smart card and secure element access
+- [JavaCard SDK](https://github.com/ph4r05/javacard-gradle-template) ⭐ 64 — Java, JavaCard applet development framework
 
 **Security status:** Secure
 Common Criteria EAL 5+ with AVA_VAN.5 provides strong assurance; decades of real-world deployment with few successful attacks on certified products

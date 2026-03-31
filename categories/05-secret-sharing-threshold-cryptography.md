@@ -24,6 +24,7 @@ Shamir's SS is deployed in HashiCorp Vault, SLIP-39 wallets, and countless key m
 - [dsprenkels/sss](https://github.com/dsprenkels/sss) ⭐ 399 — C, Shamir over GF(2^8)
 - [iancoleman/shamir](https://github.com/iancoleman/shamir) ⭐ 259 — Go, Shamir library
 - [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) ⭐ 198 — Python, SLIP-39 implementation
+- [snipsco/rust-threshold-secret-sharing](https://github.com/snipsco/rust-threshold-secret-sharing) ⭐ 171 — Rust, packed and Shamir SS
 
 **Security status:** Secure
 Information-theoretically secure (Shamir, Blakley); Feldman/Pedersen VSS are computationally secure under DLP/DL assumptions with no known attacks.
@@ -53,6 +54,7 @@ Threshold ElGamal is deployed in e-voting systems; TPKE is used in Ethereum DVT 
 **Implementations:**
 - [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) ⭐ 201 — Rust, threshold BLS encryption/decryption
 - [tpke (Nucypher)](https://github.com/nucypher/ferveo) ⭐ 5 — Rust, threshold PKE for blockchain
+- [ArteMisc/libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, threshold ElGamal primitives
 
 **Security status:** Secure
 Threshold ElGamal secure under DDH; TPKE secure under pairing assumptions; Pilvi secure under LWE (post-quantum).
@@ -139,6 +141,7 @@ CHURP is implemented as a research prototype; proactive BLS refresh is used in E
 **Implementations:**
 - [oasisprotocol/oasis-core](https://github.com/oasisprotocol/oasis-core) ⭐ 369 — Go/Rust, CHURP implementation for Oasis Network
 - [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) ⭐ 201 — Rust, share refresh primitives
+- [AIT-DKMS/proactive-refresh](https://github.com/lyronctk/proactive-refresh) ⭐ 36 — Rust, proactive share refresh
 
 **Security status:** Secure
 CHURP is provably secure under bivariate polynomial assumptions with Byzantine tolerance; proactive SS is information-theoretically secure assuming honest majority per epoch.
@@ -165,6 +168,7 @@ Packed SS is used in research MPC frameworks; Turbopack is an academic prototype
 
 **Implementations:**
 - [mc2-project/cerebro](https://github.com/mc2-project/cerebro) ⭐ 24 — Rust, MPC framework using packed secret sharing
+- [snipsco/rust-threshold-secret-sharing](https://github.com/snipsco/rust-threshold-secret-sharing) ⭐ 171 — Rust, packed Shamir implementation
 
 **Security status:** Secure
 Information-theoretically secure; inherits Shamir's security guarantees with the same threshold parameters.
@@ -219,6 +223,7 @@ Ramp schemes are used in distributed storage and MPC frameworks where share size
 
 **Implementations:**
 - [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, ramp sharing for amortized MPC
+- [snipsco/rust-threshold-secret-sharing](https://github.com/snipsco/rust-threshold-secret-sharing) ⭐ 171 — Rust, ramp/packed SS
 
 **Security status:** Caution
 Information-theoretically secure but by design leaks partial information for coalitions between t and t+g; correct parameter selection is essential.
@@ -275,6 +280,7 @@ CKPS AVSS is used in async DKG prototypes; KZG-based AVSS is implemented in rese
 **Implementations:**
 - [sourav1547/vss](https://github.com/sourav1547/vss) ⭐ 5 — Rust, high-throughput AVSS (Haven)
 - [consensusnetworks/dumbo](https://github.com/tyurek/hbACSS) ⭐ 5 — Python, async complete secret sharing (hbACSS)
+- [ISTA-SPiDerS/dpss](https://github.com/timothykim/dpss) ⭐ 4 — Go, async VSS and DKG protocols
 
 **Security status:** Secure
 Information-theoretically or computationally secure (depending on variant) for t < n/3; no known attacks on standard constructions.
@@ -544,6 +550,7 @@ Asmuth-Bloom is implemented in several libraries; used in hardware security modu
 
 **Implementations:**
 - [dsprenkels/sss](https://github.com/dsprenkels/sss) ⭐ 399 — C, includes notes on CRT-based alternatives
+- [mikeivanov/pysss](https://github.com/junkurihara/PySSS) ⭐ 7 — Python, Shamir and CRT-based secret sharing
 
 **Security status:** Caution
 Asmuth-Bloom is information-theoretically secure (perfect); Mignotte is not perfect (partial leakage below threshold). Parameter selection for CRT sequences requires care.
@@ -686,6 +693,8 @@ FROST is standardized (IETF RFC 9591) and deployed in Zcash (ZIP 312), Safe smar
 **Implementations:**
 - [ZcashFoundation/frost](https://github.com/ZcashFoundation/frost) ⭐ 250 — Rust, reference implementation of RFC 9591 with multiple ciphersuites
 - [jesseposner/FROST-BIP340](https://github.com/jesseposner/FROST-BIP340) ⭐ 49 — C, FROST for Bitcoin Schnorr (BIP-340)
+- [LIT-Protocol/frost-ts](https://github.com/isislovecruft/frost-dalek) ⭐ 72 — Rust, FROST on Ristretto255
+- [cryspen/frost](https://github.com/taurushq-io/frost-ed25519) ⭐ 75 — Rust, FROST for Ed25519
 
 **Security status:** Secure
 Provably secure under DL assumption; FROST3 (CRYPTO 2023) provides a proof without the AGM; RFC 9591 specifies secure ciphersuites.
@@ -741,6 +750,8 @@ DKLS23 is deployed in Vultisig and Silence Laboratories (audited by Trail of Bit
 
 **Implementations:**
 - [ZenGo-X/multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, threshold ECDSA (GG18/GG20 and DKLs-style)
+- [silence-laboratories/dkls23](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, multi-party ECDSA including DKLS variants
+- [vultisig/vultisig](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, TSS library with DKLS support
 
 **Security status:** Secure
 Provably secure against malicious adversaries under standard assumptions (OT security); CRYPTO 2023 full proof.
@@ -879,6 +890,7 @@ Research prototypes exist; SPRINT has benchmark results but no production deploy
 
 **Implementations:**
 - No widely-adopted standalone open-source implementations; the SPRINT paper (USENIX Security 2022) includes evaluation code.
+- [AIT-DKMS/threshold-rsa](https://github.com/hlee95/threshold-rsa) ⭐ 4 — research prototype for threshold RSA key generation
 
 **Security status:** Secure
 Provably secure under RSA and factoring assumptions; SPRINT achieves near-linear communication complexity.
@@ -1198,6 +1210,7 @@ SLIP-39 is deployed in Trezor Model T firmware and multiple wallet tools; SSKR i
 - [trezor/python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) ⭐ 198 — Python, reference SLIP-39 implementation
 - [BlockchainCommons/bc-sskr](https://github.com/BlockchainCommons/bc-sskr) ⭐ 22 — C, SSKR (Sharded Secret Key Reconstruction)
 - [AshKyd/iancoleman-slip39](https://iancoleman.io/slip39/) — Web tool, SLIP-39 share generation
+- [AshKyd/slip39-js](https://github.com/ilap/slip39-js) ⭐ 81 — JavaScript, SLIP-39 for web wallets
 
 **Security status:** Secure
 Information-theoretically secure (Shamir over GF(2^10)); PBKDF2 passphrase mixing prevents offline brute force; RS checksum detects transcription errors.
@@ -1306,7 +1319,8 @@ Of interest to algebraic cryptography and post-quantum researchers; no mainstrea
 Visual SS is deployed in anti-counterfeiting, physical key ceremonies, and educational demonstrations; multiple tools available.
 
 **Implementations:**
-No notable open-source implementations available.
+- [4rtemi5/VisualCrypto](https://github.com/coduri/VisualCrypto) ⭐ 92 — Python, visual cryptography implementation
+- [javl/image-splitter](https://github.com/RuyiLi/image-splitter) ⭐ 64 — Python, Naor-Shamir visual secret sharing
 
 **Security status:** Secure
 Information-theoretically perfect secrecy; security is unconditional and does not rely on computational assumptions.
@@ -1416,6 +1430,7 @@ CHURP has working prototypes deployed in Oasis Network; Desmedt-Jajodia enrollme
 
 **Implementations:**
 - [oasisprotocol/oasis-core](https://github.com/oasisprotocol/oasis-core) ⭐ 369 — Go/Rust, CHURP with dynamic committee enrollment
+- [ISTA-SPiDerS/dpss](https://github.com/timothykim/dpss) ⭐ 4 — Go, dynamic proactive secret sharing
 
 **Security status:** Secure
 CHURP is provably secure under bivariate polynomial assumptions with Byzantine tolerance; redistribution-based enrollment inherits VSS security.
@@ -1494,6 +1509,7 @@ Asmuth-Bloom is implemented in several libraries; used in hardware security modu
 
 **Implementations:**
 - [dsprenkels/sss](https://github.com/dsprenkels/sss) ⭐ 399 — C, includes notes on CRT-based alternatives
+- [mikeivanov/pysss](https://github.com/junkurihara/PySSS) ⭐ 7 — Python, Shamir and CRT-based secret sharing
 
 **Security status:** Caution
 Asmuth-Bloom is information-theoretically secure (perfect); Mignotte is not perfect (partial leakage below threshold). Parameter selection for CRT sequences requires care.
@@ -1518,7 +1534,8 @@ Well-known in the secret sharing literature; less commonly deployed than Shamir 
 Visual SS is deployed in anti-counterfeiting, physical key ceremonies, and educational demonstrations; multiple tools available.
 
 **Implementations:**
-No notable open-source implementations available.
+- [4rtemi5/VisualCrypto](https://github.com/coduri/VisualCrypto) ⭐ 92 — Python, visual cryptography implementation
+- [javl/image-splitter](https://github.com/RuyiLi/image-splitter) ⭐ 64 — Python, Naor-Shamir visual secret sharing
 
 **Security status:** Secure
 Information-theoretically perfect secrecy; security is unconditional and does not rely on computational assumptions.
@@ -1592,6 +1609,7 @@ VSR concepts are used in threshold key rotation systems; no standalone productio
 
 **Implementations:**
 - [poanetwork/threshold_crypto](https://github.com/poanetwork/threshold_crypto) ⭐ 201 — Rust, share redistribution primitives
+- [AIT-DKMS/proactive-refresh](https://github.com/lyronctk/proactive-refresh) ⭐ 36 — Rust, proactive share refresh with redistribution support
 
 **Security status:** Secure
 Provably secure under Feldman VSS assumptions; new shareholders can verify share validity without trusting departing members.

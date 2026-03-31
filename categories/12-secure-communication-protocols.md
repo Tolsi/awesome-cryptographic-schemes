@@ -427,6 +427,7 @@ Academic proposal with experimental implementations; not deployed in production.
 
 **Implementations:**
 - [Open Quantum Safe (liboqs)](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C; PQ KEM library used in KEMTLS prototypes
+- [KEMTLS experiment (rustls fork)](https://github.com/thomwiggers/kemtls-experiment) ⭐ 34 — Rust; experimental KEMTLS in rustls
 
 **Security status:** Secure
 Formally analysed (Schwabe-Stebila-Wiggers 2020). No known attacks; relies on the security of ML-KEM and the KEMTLS proof.
@@ -453,6 +454,7 @@ Deployed in Chrome, Firefox, and Cloudflare since 2024. RFC 9849 finalized.
 **Implementations:**
 - [BoringSSL](https://boringssl.googlesource.com/boringssl/) — C; Google's TLS library; ECH support in Chrome
 - [Cloudflare ECH](https://blog.cloudflare.com/encrypted-client-hello/) — deployed on Cloudflare edge
+- [NSS](https://github.com/nss-dev/nss) ⭐ 178 — C; Mozilla's TLS library; ECH support in Firefox
 
 **Security status:** Secure
 Based on HPKE (RFC 9180). Encrypts entire ClientHello including SNI. No known attacks at recommended parameters.
@@ -1280,6 +1282,7 @@ Deployed at scale by Apple (iCloud Private Relay), Cloudflare, Google, and Meta.
 
 **Implementations:**
 - [Fastly OHTTP relay](https://www.fastly.com/documentation/reference/api/) — production relay service
+- [ohttp (Cloudflare)](https://github.com/martinthomson/ohttp) ⭐ 53 — Rust; Cloudflare OHTTP client/relay/gateway
 
 **Security status:** Secure
 Based on HPKE (RFC 9180). Provides request unlinkability and content confidentiality. Forward secrecy via ephemeral HPKE encapsulation.
@@ -1403,6 +1406,7 @@ Deployed by WhatsApp (2023) for ~2 billion users. Google Key Transparency operat
 
 **Implementations:**
 - [akd (Meta)](https://github.com/facebook/akd) ⭐ 314 — Rust; Auditable Key Directory library (open-source)
+- [key-transparency (Google)](https://github.com/google/keytransparency) ⭐ 1.6k — Go; Google's key transparency server
 
 **Security status:** Secure
 Merkle tree + VRF construction is well-analysed. Provides verifiable key consistency without revealing the user directory.
@@ -1764,6 +1768,7 @@ Deployed by all major DNS resolvers (Cloudflare, Google, Quad9). Firefox default
 - [Unbound](https://github.com/NLnetLabs/unbound) ⭐ 4.4k — C; recursive resolver with DoT and DoH support
 - [CoreDNS](https://github.com/coredns/coredns) ⭐ 13k — Go; DNS server with DoT and DoH plugins
 - [dnscrypt-proxy](https://github.com/DNSCrypt/dnscrypt-proxy) ⭐ 13k — Go; DNS proxy supporting DoH, DoT, DNSCrypt, ODoH
+- [dns-over-https (Facebook)](https://github.com/facebookarchive/doh-proxy) ⭐ 462 — Python/Go; DoH proxy implementations
 
 **Security status:** Secure
 Encrypts DNS queries via TLS 1.3. DoH is indistinguishable from HTTPS traffic. Resolver still learns all queries; ODoH (RFC 9230) addresses this.
@@ -1834,6 +1839,7 @@ The modern I2P session layer replaces the legacy ElGamal+AES-256-CBC+SessionTag 
 
 **Implementations:**
 - [i2pd](https://github.com/PurpleI2P/i2pd) ⭐ 4.0k — C++; lightweight I2P router; actively maintained
+- [I2P (Java)](https://github.com/i2p/i2p.i2p) ⭐ 2.5k — Java; original reference router implementation
 
 **Security status:** Secure
 ECIES-X25519-AEAD-Ratchet (2020) provides forward secrecy with modern primitives. NTCP2 uses Noise XK + ChaCha20-Poly1305. Legacy ElGamal/AES-CBC deprecated.
@@ -2160,7 +2166,7 @@ Funded by NLnet/NGI. Formally verified. Growing interest in the WireGuard/VPN co
 - **Payload:** file key encrypts payload via HKDF-SHA-256 -> ChaCha20-Poly1305; split into 64 KiB chunks, each independently authenticated; final chunk flagged to detect truncation
 
 **Implementations:** Go (reference, `filippo.io/age`), Rust (`rage` by str4d), TypeScript (`typage`), Java (`jagged`). Plugin system for hardware tokens (age-plugin-yubikey).
-No notable open-source implementations available.
+- [typage](https://github.com/FiloSottile/typage) ⭐ 411 — TypeScript; age in the browser
 
 **State of the art:** age v1.2+ (2024); specification maintained at C2SP [[1]](https://github.com/C2SP/C2SP/blob/main/age.md). Adopted by SOPS, chezmoi, and infrastructure tooling. Not a protocol for interactive communication — strictly offline file encryption. See [OpenPGP](#openpgp-rfc-9580).
 
@@ -2204,6 +2210,7 @@ Deployed in Keybase Chat and Keybase filesystem. Spec is open but Keybase produc
 
 **Implementations:**
 - [saltpack (Go)](https://github.com/keybase/saltpack) ⭐ 1.0k — Go; Keybase reference implementation
+- [keys.pub saltpack](https://github.com/keys-pub/keys-ext) ⭐ 65 — Go; alternative Saltpack client
 
 **Security status:** Secure
 Built on NaCl primitives (X25519 + XSalsa20-Poly1305 + Ed25519). Chunk-based streaming with truncation detection and splice prevention. Well-designed.
@@ -2267,6 +2274,7 @@ Public servers operated by Google and Cloudflare. IETF draft (not yet RFC). Limi
 **Implementations:**
 - [roughenough](https://github.com/int08h/roughenough) ⭐ 142 — Rust; Roughtime server and client
 - [roughtime (Google)](https://roughtime.googlesource.com/roughtime/) — Go/C++; Google's reference implementation
+- [cloudflare-roughtime](https://github.com/cloudflare/roughtime) ⭐ 169 — Go; Cloudflare Roughtime server
 
 **Security status:** Secure
 Ed25519 signatures on time responses. Merkle tree batching for efficiency. Ecosystem auditing enables detection of misbehaving servers.

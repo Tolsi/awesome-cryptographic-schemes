@@ -612,7 +612,8 @@ MPC-based ML is an active research area with growing industry interest; CrypTen 
 Mental poker protocols are implemented in blockchain-based card game platforms; traditional (non-blockchain) implementations are rare.
 
 **Implementations:**
-No notable open-source implementations available.
+- [mental-poker](https://github.com/geometryxyz/mental-poker) ⭐ 117 — JavaScript, implementation of Barnett-Smart mental poker
+- [zkPoker](https://github.com/ottodevs/zkpoker) ⭐ 4 — Rust, zero-knowledge poker using ZK proofs
 
 **Security status:** Secure
 Barnett-Smart protocol is proven secure under DDH; blockchain variants inherit smart contract security assumptions.
@@ -809,6 +810,7 @@ DKLS19 and GG20 are deployed in production MPC wallets (Fireblocks, ZenGo, Coinb
 **Implementations:**
 - [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, GG18/GG20 threshold ECDSA (ZenGo)
 - [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, threshold ECDSA/EdDSA library (Binance)
+- [DKLS](https://github.com/ArnaudBrousseau/dkls) ⭐ 1 — Rust, DKLS18/19 2PC ECDSA implementation
 
 **Security status:** Secure
 GG20 and DKLS19 have UC-secure proofs; deployed implementations are audited by professional security firms.
@@ -836,7 +838,7 @@ Threshold ECDSA (GG20, DKLS) is the industry standard for MPC-based cryptocurren
 Blockchain-enforced fairness is deployed in atomic swap protocols; purely cryptographic fairness via gradual release is rarely used in practice.
 
 **Implementations:**
-No notable open-source implementations available.
+- [FairSwap](https://github.com/lEthDev/FairSwap) ⭐ 28 — Solidity, fair exchange via smart contracts
 
 **Security status:** Secure
 Gradual release provides provable fairness guarantees; blockchain-enforced fairness assumes rational adversaries and smart contract correctness.
@@ -1131,6 +1133,8 @@ Belenios is deployed in real elections (French universities, IACR elections); He
 
 **Implementations:**
 - [Helios](https://github.com/benadida/helios-server) ⭐ 888 — Python, web-based verifiable voting
+- [Belenios](https://github.com/glondu/belenios) ⭐ 147 — OCaml, verifiable voting system with threshold decryption
+- [Civitas](https://github.com/eastcoastcrypto/Civitas) ⭐ 13 — Java, coercion-resistant e-voting prototype
 
 **Security status:** Caution
 Voting systems are secure under their threat models but require careful operational deployment; coercion resistance remains challenging in practice.
@@ -1301,6 +1305,7 @@ LowMC is used in Picnic (NIST PQC alternate candidate); MiMC and Poseidon are de
 **Implementations:**
 - [Picnic](https://github.com/microsoft/Picnic) ⭐ 168 — C, uses LowMC as the underlying block cipher
 - [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes MPC-friendly cipher evaluations
+- [Ciminion reference](https://github.com/ongetekend/ciminion) ⭐ 5 — Sage, reference implementation of Ciminion
 
 **Security status:** Caution
 LowMC and MiMC have been subject to algebraic attacks; parameter recommendations have been updated. Newer designs (Ciminion) are less studied.

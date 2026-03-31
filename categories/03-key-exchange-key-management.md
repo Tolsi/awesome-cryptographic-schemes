@@ -97,6 +97,7 @@ BIP32/44 is deployed in every major cryptocurrency wallet; billions of dollars s
 - [python-bip32](https://github.com/darosior/python-bip32) ⭐ 51 — Python, BIP32 key derivation
 - [rust-bitcoin](https://github.com/rust-bitcoin/rust-bitcoin) ⭐ 2.6k — Rust, BIP32 support
 - [go-hdwallet](https://github.com/btcsuite/btcutil/tree/master/hdkeychain) ⭐ 483 — Go, BIP32 HD key chains
+- [slip10](https://github.com/wusyong/slip10) ⭐ 9 — JavaScript, SLIP-10 key derivation
 
 **Security status:** Secure
 No known attacks on the HD derivation scheme; hardened derivation prevents child key compromise from revealing parent keys.
@@ -154,6 +155,8 @@ Static DH is production, but true NIKE protocols (FHKP, CSIDH) remain academic; 
 
 **Implementations:**
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, static ECDH
+- [libcsidh](https://github.com/JJChiDguez/csidh) ⭐ 21 — C, reference CSIDH implementation
+- [sibc](https://github.com/JJChiDguez/sibc) ⭐ 52 — Python, CSIDH and isogeny-based crypto
 
 **Security status:** Caution
 Static DH is secure but lacks forward secrecy; CSIDH security is still actively studied with ongoing cryptanalytic improvements.
@@ -459,6 +462,7 @@ Deployed on Trezor hardware wallets (Model T, Safe 3, Safe 5); limited support i
 **Implementations:**
 - [python-shamir-mnemonic](https://github.com/trezor/python-shamir-mnemonic) ⭐ 198 — Python, SatoshiLabs SLIP-39 reference implementation
 - [trezor-firmware](https://github.com/trezor/trezor-firmware) ⭐ 1.7k — C/Python, SLIP-39 in Trezor firmware
+- [slip39-js](https://github.com/ilap/slip39-js) ⭐ 81 — JavaScript, SLIP-39 library
 
 **Security status:** Secure
 Information-theoretic security from Shamir SSS; passphrase protection via PBKDF2; no known attacks.
@@ -632,6 +636,7 @@ Deployed in WireGuard, Lightning Network, WhatsApp media transport, and many oth
 - [noise-java](https://github.com/rweather/noise-java) ⭐ 143 — Java, Noise protocol library
 - [wireguard-go](https://github.com/WireGuard/wireguard-go) ⭐ 4.1k — Go, Noise_IKpsk2 in WireGuard
 - [noise-c](https://github.com/rweather/noise-c) ⭐ 364 — C, portable Noise implementation
+- [NoiseSocket](https://github.com/go-noisesocket/noisesocket) ⭐ 63 — Go, length-prefixed Noise over TCP
 
 **Security status:** Secure
 Formally verified in ProVerif and Tamarin; no known attacks on the framework at recommended parameters.
@@ -1014,6 +1019,7 @@ Registered as IANA TLS NamedGroup codepoints; supported in all major TLS librari
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RFC 7919 named FFDHE groups
 - [GnuTLS](https://gitlab.com/gnutls/gnutls) — C, FFDHE group support
 - [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C++, FFDHE support in TLS
+- [NSS](https://github.com/nss-dev/nss) ⭐ 178 — C, Mozilla's TLS library with FFDHE
 
 **Security status:** Secure
 Nothing-up-my-sleeve primes derived from digits of e; 2048-bit minimum provides 112-bit security; eliminates Logjam-style weak-group attacks.
@@ -1523,6 +1529,7 @@ Deployed in high-assurance government PKI, automotive (Siemens, BMW V2X), and in
 **Implementations:**
 - [OpenSSL 3.x (openssl-cmp)](https://github.com/openssl/openssl) ⭐ 29k — C, CMP client built into OpenSSL 3.x
 - [EJBCA](https://github.com/Keyfactor/ejbca-ce) ⭐ 896 — Java, open-source CA with full CMP support
+- [cryptlib](https://github.com/cryptlib/cryptlib) ⭐ 51 — C, CMP implementation by Peter Gutmann
 
 **Security status:** Secure
 Supports signature-based and MAC-based protection; proof-of-possession for all key types; comprehensive lifecycle management.
@@ -1606,6 +1613,7 @@ Universal interchange format supported by every OS, browser, and TLS server; the
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, PKCS#12 creation and parsing
 - [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, comprehensive PKCS#12 support
 - [Go x/crypto/pkcs12](https://github.com/golang/crypto) ⭐ 3.3k — Go, PKCS#12 parsing
+- [NSS](https://github.com/nss-dev/nss) ⭐ 178 — C, Mozilla's PKCS#12 handling
 
 **Security status:** Caution
 Legacy PKCS#12-KDF and RC2/3DES encryption are weak; RFC 9579 mandates PBES2 with PBKDF2-SHA256 + AES-256; use long random passwords.
@@ -2036,6 +2044,7 @@ Deployed in CMS/S/MIME key agreement (RFC 5753) and NIST-approved key establishm
 **Implementations:**
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, one-pass ECDH for CMS EnvelopedData
 - [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, SP 800-56A key agreement schemes
+- [NSS](https://github.com/nss-dev/nss) ⭐ 178 — C, CMS ECDH key agreement
 
 **Security status:** Caution
 Secure for its intended use cases but provides only responder-side authentication; no forward secrecy from the initiator's side.
@@ -2209,6 +2218,7 @@ BD and TGDH are foundational but largely superseded by MLS (RFC 9420) for produc
 **Implementations:**
 - [openmls](https://github.com/openmls/openmls) ⭐ 905 — Rust, MLS group key agreement (modern successor)
 - No maintained standalone BD implementations; academic prototypes only
+- [mls-rs](https://github.com/awslabs/mls-rs) ⭐ 213 — Rust, MLS protocol library
 
 **Security status:** Secure
 BD is passively secure under DDH; authenticated BD requires signatures; MLS provides active security with forward secrecy and post-compromise security.
@@ -2263,6 +2273,7 @@ ISO/IEC 11770 is the normative reference in Common Criteria evaluations, BSI, AN
 **Implementations:**
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, implements mechanisms covered by ISO/IEC 11770-3 (ECDH, ECMQV)
 - [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, key agreement schemes aligned with ISO/IEC 11770-3
+- [cryptlib](https://github.com/cryptlib/cryptlib) ⭐ 51 — C, ISO-referenced key establishment mechanisms
 
 **Security status:** Secure
 Normative standard covering well-analyzed mechanisms (ECDH, ECMQV, PAKE); security depends on correct parameter selection per each part.
@@ -2487,6 +2498,7 @@ FIPS 203 standardized (August 2024); deployed in Chrome (BoringSSL), AWS-LC, Go 
 - [AWS-LC](https://github.com/aws/aws-lc) ⭐ 731 — C, FIPS 203 ML-KEM
 - [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, ML-KEM-512/768/1024
 - [Go crypto/mlkem](https://github.com/golang/go/tree/master/src/crypto/mlkem) ⭐ 133k — Go, standard library ML-KEM (Go 1.23+)
+- [pqcrypto](https://github.com/rustpq/pqcrypto) ⭐ 390 — Rust, ML-KEM implementations
 
 **Security status:** Secure
 NIST-standardized (FIPS 203); extensive cryptanalysis over 7+ years; no known practical attacks on MLWE at recommended parameters.
@@ -2628,6 +2640,7 @@ Not NIST-standardized but endorsed by BSI, ANSSI, and NLNCSA/AIVD; undergoing IS
 **Implementations:**
 - [liboqs](https://github.com/open-quantum-safe/liboqs) ⭐ 2.8k — C, FrodoKEM-640/976/1344
 - [frodo-kem-rs](https://crates.io/crates/frodo-kem) — Rust, FrodoKEM implementation
+- [PQCrypto-LWEKE](https://github.com/microsoft/PQCrypto-LWEKE) ⭐ 160 — C, FrodoKEM reference implementation (Microsoft)
 
 **Security status:** Secure
 Based on unstructured LWE (most conservative lattice assumption); no known attacks; European agencies endorse as a fallback to ML-KEM.
@@ -2713,6 +2726,7 @@ Used in SOPS, chezmoi, and infrastructure automation; audited implementations in
 **Implementations:**
 - [age](https://github.com/FiloSottile/age) ⭐ 21k — Go, reference implementation by Filippo Valsorda
 - [rage](https://github.com/str4d/rage) ⭐ 3.4k — Rust, age-compatible implementation
+- [pyage](https://github.com/jojonas/pyage) ⭐ 34 — Python, age implementation
 
 **Security status:** Secure
 X25519 + HKDF + ChaCha20-Poly1305; no algorithm negotiation eliminates downgrade attacks; no known vulnerabilities.
@@ -2739,6 +2753,7 @@ Deployed in Cisco Webex and WebRTC-based conferencing platforms for end-to-end e
 
 **Implementations:**
 - [sframe (Cisco)](https://github.com/cisco/sframe) ⭐ 8 — C++, Cisco reference SFrame implementation
+- [sframe-rs](https://github.com/TobTheRock/sframe-rs) ⭐ 6 — Rust, SFrame implementation
 
 **Security status:** Secure
 AEAD-based per-frame encryption with HKDF-derived keys; no known attacks; forward secrecy when combined with MLS ratcheting.
@@ -2764,7 +2779,9 @@ IETF RFC 9605 (August 2024); designed to pair with MLS (RFC 9420); deployed in C
 Deployed by Google Safe Browsing, Apple Private Relay, and Mozilla Firefox in production.
 
 **Implementations:**
-No notable open-source implementations available.
+- [ohttp (Cloudflare)](https://github.com/martinthomson/ohttp) ⭐ 53 — Rust, OHTTP relay and gateway
+- [ohttp-go](https://github.com/chris-wood/ohttp-go) ⭐ 32 — Go, OHTTP implementation
+- [Firefox NSS](https://github.com/nss-dev/nss) ⭐ 178 — C, OHTTP support in Firefox
 
 **Security status:** Secure
 HPKE-based encapsulation with relay-gateway separation; no known attacks; formal privacy analysis by Cloudflare.

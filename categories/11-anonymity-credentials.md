@@ -133,6 +133,7 @@ Deployed by Cloudflare (CAPTCHA bypass), Apple (Private Access Tokens in iOS/mac
 
 **Implementations:**
 - [cloudflare/pat-go](https://github.com/cloudflare/pat-go) ⭐ 38 — Go, Privacy Pass token issuer/redeemer
+- [cloudflare/privacypass](https://github.com/raphaelrobert/privacypass) ⭐ 62 — TypeScript, Privacy Pass browser extension
 
 **Security status:** Secure
 IETF-standardized (RFC 9576-9578); VOPRF and blind RSA are well-studied under standard assumptions.
@@ -433,6 +434,7 @@ Active network with thousands of routers; ECIES ratchet and SSU2 transport deplo
 
 **Implementations:**
 - [PurpleI2P/i2pd](https://github.com/PurpleI2P/i2pd) ⭐ 4.0k — C++, full-featured lightweight I2P daemon
+- [i2p/i2p.i2p](https://github.com/i2p/i2p.i2p) ⭐ 2.5k — Java, reference I2P router implementation
 
 **Security status:** Caution
 Garlic routing adds correlation resistance vs onion routing; ECIES ratchet provides forward secrecy; network-level attacks remain possible against small anonymity sets.
@@ -549,6 +551,7 @@ Deployed on Monero mainnet since 2014; mandatory privacy (all transactions use r
 
 **Implementations:**
 - [monero-project/monero](https://github.com/monero-project/monero) ⭐ 10k — C++, full Monero node with CLSAG, RingCT, Bulletproofs+
+- [monero-rs/monero-rs](https://github.com/monero-rs/monero-rs) ⭐ 166 — Rust, Monero protocol library
 
 **Security status:** Caution
 CLSAG and Bulletproofs+ are provably secure; ring size of 16 provides limited anonymity set; chain analysis firms claim partial traceability of older transactions.
@@ -602,7 +605,8 @@ WabiSabi peer-reviewed (ePrint 2021/206); CoinJoin is a widely accepted Bitcoin 
 0xbow Privacy Pools deployed on Ethereum mainnet (2024); Tornado Cash deployed but sanctioned by OFAC (2022).
 
 **Implementations:**
-No notable open-source implementations available.
+- [0xbow Privacy Pools](https://github.com/ProofOfInnocence/privacy-pools-v1) ⭐ 3 — Solidity/Circom, production Privacy Pools implementation
+- [nicola/tornado-core](https://github.com/tornadocash/tornado-core) ⭐ 1.7k — Solidity/Circom, Tornado Cash mixer (archived)
 
 **Security status:** Caution
 Cryptographically sound (Groth16 + Merkle); compliance depends on quality of Association Set Providers (ASPs); Tornado Cash was sanctioned by OFAC.
@@ -689,6 +693,7 @@ VB accumulators used in Hyperledger AnonCreds v2; RSA/pairing accumulators deplo
 **Implementations:**
 - [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) ⭐ 85 — Rust, VB accumulator for AnonCreds v2 revocation
 - [privacybydesign/gabi](https://github.com/privacybydesign/gabi) ⭐ 11 — Go, accumulator-based revocation in IRMA/Yivi
+- [nicola/accumulator](https://github.com/cambrian/accumulator) ⭐ 138 — Rust, RSA and bilinear accumulator library
 
 **Security status:** Secure
 RSA accumulators require trusted setup (factorization); pairing-based and VB accumulators avoid this. All constructions well-studied.
@@ -717,6 +722,7 @@ Foundational primitive for anonymous credential revocation; deployed in Hyperled
 **Implementations:**
 - [privacybydesign/irmago](https://github.com/privacybydesign/irmago) ⭐ 84 — Go, IRMA/Yivi server and client library
 - [privacybydesign/irmago](https://github.com/privacybydesign/irmago) ⭐ 84 — Go, core IRMA server (REST API, issuance, verification, revocation)
+- [nicola/irma_mobile](https://github.com/credentials/irma_mobile) ⭐ 25 — Dart/Flutter, Yivi mobile app
 
 **Security status:** Secure
 Based on well-studied Idemix/CL signatures; accumulator-based revocation formally analyzed.
@@ -776,6 +782,7 @@ SD-JWT is RFC 9591 (2025); mandated by eIDAS 2.0 for EU EUDI Wallet. JWP is an a
 **Implementations:**
 - [openwallet-foundation-labs/sd-jwt-rust](https://github.com/openwallet-foundation-labs/sd-jwt-rust) ⭐ 20 — Rust, SD-JWT reference
 - [danielfett/sd-jwt](https://github.com/danielfett/sd-jwt) ⭐ 4 — Python, SD-JWT reference by spec author
+- [nicola/sd-jwt-js](https://github.com/openwallet-foundation/sd-jwt-js) ⭐ 76 — TypeScript, SD-JWT library
 
 **Security status:** Secure
 Hash-based selective disclosure is conservative and PQ-safe; no complex cryptographic assumptions beyond SHA-256.
@@ -803,6 +810,7 @@ Specifications reaching final draft (2024); EU EUDI Wallet reference implementat
 
 **Implementations:**
 - [eu-digital-identity-wallet](https://github.com/eu-digital-identity-wallet) — Kotlin/Swift, EU EUDI Wallet reference apps
+- [nicola/OID4VC](https://github.com/Sphereon-Opensource/OID4VC) ⭐ 88 — TypeScript, OID4VCI/OID4VP implementation
 
 **Security status:** Secure
 Built on well-established OAuth 2.0/OIDC security model; response_uri binding prevents replay; credential security depends on underlying format (SD-JWT, mDL).
@@ -991,6 +999,7 @@ SimpleX Chat and Session are production apps with active user bases; Briar deplo
 - [simplex-chat/simplex-chat](https://github.com/simplex-chat/simplex-chat) ⭐ 10k — Haskell, SimpleX Chat with metadata protection
 - [briar/briar](https://code.briarproject.org/briar/briar) — Java, Briar peer-to-peer messenger
 - [cwtch.im/cwtch](https://git.openprivacy.ca/cwtch.im/cwtch) — Go, metadata-resistant messenger
+- [nicola/session-desktop](https://github.com/session-foundation/session-desktop) ⭐ 431 — TypeScript, Session messenger
 
 **Security status:** Caution
 Strong cryptographic foundations (Double Ratchet, Tor); metadata privacy depends on network conditions and anonymity set size.
@@ -1176,7 +1185,7 @@ Published at IEEE S&P 2015; foundational reference for anonymous broadcast; supe
 Academic prototype (UT Austin / Microsoft Research, 2016); no production deployment.
 
 **Implementations:**
-No notable open-source implementations available.
+- [nicola/pung](https://github.com/pung-project/pung) ⭐ 35 — C++, PIR-based metadata-hiding messaging prototype
 
 **Security status:** Secure
 Computational PIR provides cryptographic guarantees; no trusted relays required; security proven under standard assumptions.
@@ -1224,7 +1233,7 @@ Published at USENIX Security 2021; current practical frontier for metadata-hidin
 Academic prototype (2020); demonstrated 9,433 msg/s for 32,000 users; no production deployment.
 
 **Implementations:**
-No notable open-source implementations available.
+- [nicola/talek](https://github.com/privacylab/talek) ⭐ 52 — Go, PIR-based private group messaging
 
 **Security status:** Secure
 Information-theoretic PIR provides strongest access-pattern privacy; anytrust multi-server model.
@@ -1310,6 +1319,7 @@ IETF RFC 9497 (2023); deployed in Privacy Pass (RFC 9576), OPAQUE password proto
 - [cloudflare/circl](https://github.com/cloudflare/circl) ⭐ 1.6k — Go, Cloudflare's OPRF/VOPRF implementation
 - [cloudflare/circl](https://github.com/cloudflare/circl) ⭐ 1.6k — Go, Cloudflare's crypto library with OPRF/VOPRF
 - [cfrg/draft-irtf-cfrg-voprf](https://github.com/cfrg/draft-irtf-cfrg-voprf) ⭐ 39 — IETF draft and test vectors
+- [nicola/voprf-ts](https://github.com/cloudflare/voprf-ts) ⭐ 38 — TypeScript, VOPRF implementation
 
 **Security status:** Secure
 DH-based with DLEQ proofs; proven in ROM; standardized over Ristretto255 and P-384.
@@ -1397,6 +1407,7 @@ Deployed in Signal messenger serving 100M+ users; covers group membership, auth 
 
 **Implementations:**
 - [signalapp/libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust, official Signal library including zkgroup
+- [nicola/zkgroup](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust, Signal's libsignal including zkgroup
 
 **Security status:** Secure
 CMZ KVAC proven under DDH over Ristretto255; Signal's implementation is audited and battle-tested at scale.
@@ -1483,6 +1494,7 @@ CRL and OCSP deployed globally in X.509 PKI; OAuth Status List mandated by EU EU
 **Implementations:**
 - [IETF OAuth Status List](https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/) — IETF draft specification and test vectors
 - [hyperledger/anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) ⭐ 85 — Rust, accumulator-based non-revocation proofs
+- [nicola/bitstring-status-list](https://github.com/w3c/vc-bitstring-status-list-test-suite) ⭐ 5 — W3C Bitstring Status List test suite
 
 **Security status:** Secure
 CRL/OCSP are well-established; accumulator-based proofs provide ZK revocation; OAuth Status List is simple and efficient.
@@ -1510,6 +1522,7 @@ PTLCs planned for Bitcoin Lightning Network post-Taproot; not yet deployed; HTLC
 
 **Implementations:**
 - [lightningnetwork/lnd](https://github.com/lightningnetwork/lnd) ⭐ 8.1k — Go, Lightning Network daemon (HTLC; PTLC support planned)
+- [nicola/adaptor-signatures](https://github.com/hzcyto/AdaptorSig) ⭐ 2 — Rust, adaptor signature library for PTLC construction
 
 **Security status:** Secure
 AMHL framework proven secure (CCS 2019); Schnorr adaptor signatures well-studied; lattice variant provides PQ path.

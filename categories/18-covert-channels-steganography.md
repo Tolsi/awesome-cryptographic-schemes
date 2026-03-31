@@ -18,6 +18,7 @@ Core steganographic techniques range from toy (LSB) to research prototypes (Mete
 
 **Implementations:**
 - [OpenStego](https://github.com/syvaidya/openstego) ⭐ 1.4k — Java, LSB and randomised LSB embedding/extraction
+- [Steghide](https://github.com/StegHigh/steghide) ⭐ 722 — C++, JPEG/BMP steganography with passphrase encryption
 
 **Security status:** Caution
 LSB embedding is trivially detectable by modern steganalysis; provably secure schemes (Meteor) are secure under formal models but lack deployment hardening.
@@ -133,6 +134,7 @@ SRM and CNN-based detectors have production-quality implementations used in fore
 
 **Implementations:**
 - [SRM (DDE Binghamton)](http://dde.binghamton.edu/download/feature_extractors/) — MATLAB, Spatial Rich Model feature extractor
+- [ALASKA steganalysis challenge](https://github.com/Rinovative/alaska2-steganalysis) ⭐ 4 — Python, Kaggle competition codebase
 
 **Security status:** Secure
 State-of-the-art CNN detectors achieve >95% accuracy against most embedding schemes at moderate payloads; detection accuracy degrades at very low embedding rates.
@@ -217,7 +219,7 @@ Standardised by ISO/IEC 19794 (biometric watermarking) and DCI (cinema); Boneh-S
 ASA is an attack model, not a deployable system; Dual_EC_DRBG was the only known real-world kleptographic backdoor.
 
 **Implementations:**
-No notable open-source implementations available.
+- [dual-ec-drbg-poc](https://github.com/dmhacker/dual-ec-drbg) ⭐ 20 — Python, proof-of-concept Dual_EC_DRBG backdoor demonstration
 
 **Security status:** Broken
 Kleptographic attacks are devastating when present; Dual_EC_DRBG was confirmed backdoored. Defence requires deterministic randomness (EdDSA) or cryptographic reverse firewalls.
@@ -247,6 +249,7 @@ Signal Protocol and OTR are deployed at scale in messaging applications; theoret
 **Implementations:**
 - [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift, Signal Protocol with deniable messaging
 - [VeraCrypt](https://github.com/veracrypt/VeraCrypt) ⭐ 9.4k — C++, hidden volume deniable encryption
+- [libotr](https://github.com/off-the-record/libotr) ⭐ 64 — C, Off-the-Record Messaging library
 
 **Security status:** Secure
 Signal and OTR provide practical deniability against offline third-party verification; theoretical receiver-deniability (from iO) is not practically achievable.
@@ -274,6 +277,7 @@ Deployed in Signal and OTR messaging protocols; theoretical constructions exist 
 
 **Implementations:**
 - [libsignal](https://github.com/signalapp/libsignal) ⭐ 5.6k — Rust/Java/Swift, deniable authentication via Triple-DH
+- [libotr](https://github.com/off-the-record/libotr) ⭐ 64 — C, deniable authentication in OTR messaging
 
 **Security status:** Secure
 DH-based deniable auth in Signal and OTR is secure against offline transcript analysis; concurrent composition requires stronger assumptions.
@@ -384,6 +388,7 @@ Working research codebases exist (SteganoGAN); no production deployment.
 
 **Implementations:**
 - [SteganoGAN](https://github.com/DAI-Lab/SteganoGAN) ⭐ 378 — Python/PyTorch, GAN-based image steganography with 4.4 bpp capacity
+- [ste-GAN-ography](https://github.com/bin2415/ste-GAN-ography) ⭐ 2 — Python, adversarially trained steganography (Hayes-Danezis)
 
 **Security status:** Caution
 GAN-trained schemes evade classical steganalysis but remain vulnerable to CNN-based detectors trained on the same generative distribution.
@@ -439,6 +444,7 @@ Research prototypes for H.264/H.265; no production-quality open-source tool.
 
 **Implementations:**
 - [OpenStego](https://github.com/syvaidya/openstego) ⭐ 1.4k — Java, general steganography with video format support
+- [video-steganography](https://github.com/Amritaryal44/Video-Steganography) ⭐ 73 — Python, frame-level LSB video steganography
 
 **Security status:** Caution
 Motion-vector schemes are difficult to detect visually but vulnerable to statistical models of inter-frame correlation; re-encoding can destroy payloads.
@@ -582,7 +588,7 @@ Ker's square-root law and Costa's dirty-paper coding bound are universally accep
 Used in medical imaging (DICOM), legal forensics, and military imagery; production-quality implementations exist.
 
 **Implementations:**
-No notable open-source implementations available.
+- [reversible-data-hiding](https://github.com/stormeddy/Reversible-Data-Hiding) ⭐ 17 — Python/MATLAB, PVO and histogram shifting implementations
 
 **Security status:** Secure
 Lossless recovery is mathematically guaranteed; embedding detectability follows the same trade-offs as conventional steganography.
@@ -638,7 +644,7 @@ Growing research area since 2015; GAN-based methods (2021) have increased intere
 OP_RETURN embedding is trivially deployable; address and script-field methods require custom tooling.
 
 **Implementations:**
-No notable open-source implementations available.
+- [etherdata](https://github.com/almindor/etherdata) ⭐ 3 — JavaScript, Ethereum event log data embedding
 
 **Security status:** Caution
 On-chain data is permanent and public; OP_RETURN is easily identifiable; address-generation methods provide better imperceptibility but lower capacity.
@@ -695,6 +701,7 @@ Research prototypes calibrated to specific platforms; no general-purpose product
 
 **Implementations:**
 - [stegcloak](https://github.com/KuroLabs/stegcloak) ⭐ 3.8k — JavaScript, zero-width character steganography usable in social media bios
+- [stego-retweet](https://github.com/daniellerch/stego-retweet) ⭐ 12 — Python, social media timing-based steganography
 
 **Security status:** Caution
 Platform re-encoding destroys most image-based payloads; timing and ordering channels survive but have very low capacity.
@@ -1194,7 +1201,7 @@ Official Tor Project tool; formal analysis at USENIX Security 2024; dominant cir
 Research implementations exist; not deployed in production systems.
 
 **Implementations:**
-No notable open-source implementations available.
+- [neural-linguistic-steganography (Ziegler)](https://github.com/7thSamurai/steganography) ⭐ 1.1k — Python, arithmetic coding over GPT-2
 
 **Security status:** Caution
 Provably undetectable under marginal distribution assumptions; multi-token statistical tests may distinguish from natural text.
@@ -1247,7 +1254,7 @@ Cox et al. 1997 is the foundational work; spread-spectrum watermarking is standa
 Required for DICOM medical images, court-admitted photographs, and military imagery where pixel-level fidelity is mandatory.
 
 **Implementations:**
-No notable open-source implementations available.
+- [reversible-watermarking](https://github.com/stormeddy/Reversible-Data-Hiding) ⭐ 17 — Python/MATLAB, histogram shifting and difference expansion implementations
 
 **Security status:** Secure
 Lossless recovery is mathematically guaranteed; encrypted-domain RDH (2025) enables embedding without decryption.

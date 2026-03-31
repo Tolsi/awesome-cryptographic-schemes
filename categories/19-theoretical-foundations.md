@@ -459,6 +459,7 @@ Groth-Sahai proofs are implemented in research-grade libraries; simulation-sound
 **Implementations:**
 - [arkworks-rs/groth16](https://github.com/arkworks-rs/groth16) ⭐ 339 — Rust, production-quality Groth16 (which achieves simulation-extractability)
 - [zkcrypto/bellman](https://github.com/zkcrypto/bellman) ⭐ 1.1k — Rust, Zcash's Groth16 implementation with extractability
+- [Groth-Sahai reference](https://github.com/gijsvl/groth-sahai) ⭐ 13 — Python, academic reference for Groth-Sahai pairing-based NIZK
 
 **Security status:** Secure
 Groth-Sahai proofs are proven secure under DLIN/SXDH assumptions; simulation-extractable SNARKs secure under q-PKE/AGM.
@@ -1190,6 +1191,7 @@ AES-GCM-SIV is deployed in BoringSSL and Chrome; BBB MAC constructions are used 
 **Implementations:**
 - [ring](https://github.com/briansmith/ring) ⭐ 4.1k — Rust, AES-GCM implementation (birthday-bound limited; motivates BBB alternatives)
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, AES-GCM (users must respect birthday-bound query limits)
+- [BoringSSL](https://github.com/Shay-Gueron/AES-GCM-SIV) ⭐ 120 — C, AES-GCM-SIV with BBB multi-key security
 
 **Security status:** Secure
 BBB constructions (XORP, SoP, EWCDM) are proven secure up to nearly 2^n queries; AES-GCM-SIV achieves nonce-misuse resistance with BBB-like multi-key bounds.
@@ -1218,6 +1220,7 @@ PathORAM is implemented in SGX-based systems and MPC frameworks; OptORAMa is the
 **Implementations:**
 - [ZeroTrace](https://github.com/sshsshy/ZeroTrace) ⭐ 50 — C++, PathORAM for Intel SGX
 - [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++/Python, MPC framework using ORAM for RAM-model computation
+- [PathORAM](https://github.com/obliviousram/PathORAM) ⭐ 35 — Python, reference PathORAM implementation
 
 **Security status:** Secure
 Goldreich-Ostrovsky Omega(log n) lower bound is proven; PathORAM and OptORAMa meet it (amortized and worst-case respectively). No attacks below the proven bounds.

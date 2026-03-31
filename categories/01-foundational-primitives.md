@@ -52,6 +52,7 @@ RSA-OAEP and ECIES are deployed at massive scale; HPKE is in TLS ECH, MLS, and O
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RSA-OAEP, ECIES, HPKE (3.2+)
 - [BoringSSL](https://github.com/google/boringssl) ⭐ 2.1k — C, HPKE used in Chrome ECH
 - [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, crypto_box (X25519+XSalsa20-Poly1305)
+- [hpke-rs](https://github.com/cryspen/hpke-rs) ⭐ 48 — Rust, RFC 9180 implementation
 
 **Security status:** Secure
 RSA-OAEP requires 2048+ bit keys; ECIES and HPKE are secure at recommended parameters. Cramer-Shoup provides CCA2 without random oracles.
@@ -264,6 +265,7 @@ Deployed in some biometric authentication systems and PUF key generation, but no
 
 **Implementations:**
 - [NIST SP 800-90B](https://csrc.nist.gov/publications/detail/sp/800-90b/final) — entropy source validation (related framework)
+- [fuzzy-extractor](https://github.com/hbhdytf/Fuzzy-extractor) ⭐ 9 — Python, reference implementation of Gen/Rep
 
 **Security status:** Secure
 Information-theoretically sound (Dodis-Reyzin-Smith) or computationally secure under standard assumptions. Security depends on accurate min-entropy estimation of the biometric source.
@@ -461,6 +463,7 @@ ASCON is the NIST Lightweight Cryptography standard (2023). PRESENT is ISO-stand
 **Implementations:**
 - [Ascon](https://github.com/ascon/ascon-c) ⭐ 276 — C, official reference implementation
 - [SIMON/SPECK](https://github.com/nsacyber/simon-speck-supercop) ⭐ 50 — C, NSA reference implementations
+- [PRESENT](https://github.com/Pepton21/present-cipher) ⭐ 8 — C/Python, reference implementations
 
 **Security status:** Secure
 ASCON has no known practical attacks on full rounds. PRESENT and GIFT are unbroken. SIMON/SPECK are cryptanalytically sound but their NSA origin raises concerns for some users.
@@ -615,6 +618,7 @@ Ristretto255 is used in OPAQUE, Privacy Pass (VOPRF), Signal anonymous credentia
 **Implementations:**
 - [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, ristretto255 with full API
 - [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, ristretto255 (crypto_core_ristretto255)
+- [ristretto255-group](https://github.com/gtank/ristretto255) ⭐ 110 — Go, ristretto255 implementation
 
 **Security status:** Secure
 Ristretto255 provides a clean prime-order group abstraction, eliminating cofactor-related attacks. Security reduces to the hardness of the discrete log on Curve25519.
@@ -865,6 +869,7 @@ ZUC and SNOW 3G are deployed in every 4G/5G base station and handset globally. T
 **Implementations:**
 - [3GPP reference implementations](https://www.3gpp.org/) — C, SNOW 3G and ZUC for UEA2/UIA2 and EEA3/EIA3
 - [Trivium/Grain](https://www.ecrypt.eu.org/stream/) — C, eSTREAM reference implementations
+- [libsnow](https://github.com/TheSilverBoy/libsnow) ⭐ 1 — C, SNOW 3G reference
 
 **Security status:** Secure
 SNOW 3G, ZUC, and Trivium have no known practical attacks at full strength. ZUC-256 extends to 256-bit security for 5G. Grain-128a adds authentication.
@@ -1569,6 +1574,7 @@ EC-ElGamal is deployed in e-voting systems (Helios, Belenios) and confidential t
 **Implementations:**
 - [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, Ristretto255 group operations (ElGamal building block)
 - [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust, Ristretto255 ElGamal
+- [Helios](https://github.com/glondu/belenios) ⭐ 147 — OCaml, ElGamal-based e-voting
 
 **Security status:** Secure
 IND-CPA under DDH; requires CCA2 extension (e.g., Cramer-Shoup or HPKE) for chosen-ciphertext security. Additive homomorphism limited to small plaintext spaces.
@@ -1669,6 +1675,7 @@ RSA-CRT is the universal RSA implementation in all major libraries and HSMs. Mul
 **Implementations:**
 - [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, RSA-CRT and multi-prime RSA
 - [mbedTLS](https://github.com/Mbed-TLS/mbedtls) ⭐ 6.6k — C, RSA-CRT for embedded systems
+- [NSS](https://github.com/nss-dev/nss) ⭐ 178 — C, RSA-CRT in Firefox/Thunderbird
 
 **Security status:** Caution
 RSA-CRT is secure but requires fault-attack countermeasures (signature verification before output). The Bellcore attack recovers the private key from a single faulty CRT computation. Blinding is mandatory.

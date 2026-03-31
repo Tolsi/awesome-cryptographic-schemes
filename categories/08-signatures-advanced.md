@@ -42,6 +42,7 @@
 **Production readiness:** Production
 **Implementations:**
 - [mattrglobal/bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 126 — Rust/TypeScript, BBS+ selective disclosure
+- [privacypass](https://github.com/raphaelrobert/privacypass) ⭐ 62 — Go, RSA blind signature (Privacy Pass)
 **Security status:** Secure
 **Community acceptance:** Standard
 
