@@ -34,12 +34,59 @@ categories/
   21-regional-national-cryptography.md
 ```
 
+## Category File Structure
+
+Each category file is organized into **subcategories** (## level) containing **scheme entries** (### level):
+
+```
+# Category Title
+
+<!-- TOC -->
+## Contents (N schemes)
+
+**[Subcategory Name](#subcategory-name)**
+- [Scheme 1](#scheme-1)
+- [Scheme 2](#scheme-2)
+
+**[Another Subcategory](#another-subcategory)**
+- [Scheme 3](#scheme-3)
+<!-- /TOC -->
+
+## Subcategory Name
+
+---
+
+### Scheme 1
+...content...
+---
+
+### Scheme 2
+...content...
+---
+
+## Another Subcategory
+
+---
+
+### Scheme 3
+...content...
+---
+```
+
+### Subcategory rules
+
+- Each category file MUST have 4–8 subcategories grouping related schemes.
+- Subcategory headings are `##` level with a `---` separator after them.
+- Scheme entries are `###` level, each ending with `---`.
+- The TOC uses bold subcategory links with indented scheme entries.
+- When adding a new scheme, place it in the most appropriate existing subcategory. Create a new subcategory only if no existing one fits.
+
 ## Scheme Entry Format
 
-Each scheme/protocol appears as a `##` section inside exactly one category file. The format is:
+Each scheme/protocol appears as a `###` section inside a subcategory. The format is:
 
 ```markdown
-## Scheme Name
+### Scheme Name
 
 **Goal:** One-sentence plain-language purpose.
 
@@ -62,7 +109,7 @@ Each scheme/protocol appears as a `##` section inside exactly one category file.
 
 ### Mandatory assessment fields
 
-Every `##` section MUST include the following fields after the table and "State of the art" line:
+Every `###` scheme section MUST include the following fields after the table and "State of the art" line:
 
 ```markdown
 **Production readiness:** <One of: Production / Mature / Experimental / Research / Deprecated>
@@ -163,14 +210,16 @@ A validation script can be run with: `python3 scripts/validate_links.py` (if ava
 
 1. Identify the most appropriate category file (or propose a new one if none fits).
 2. **Check for duplicates:** search all category files for the scheme name before adding. Each scheme MUST appear in exactly ONE category file. If a related section exists elsewhere, add a cross-reference instead of duplicating.
-3. Add a new `##` section following the entry format above.
-4. Add a corresponding row to `INDEX.md` in alphabetical order.
-5. Add a cross-reference from related sections where useful.
-6. If creating a new category file, add it to `README.md`'s Contents list and update `CLAUDE.md`.
+3. Identify the correct **subcategory** within the file (or create one if needed).
+4. Add a new `###` section following the entry format above, inside the chosen subcategory.
+5. Add a corresponding row to `INDEX.md` in alphabetical order.
+6. Update the `<!-- TOC -->` block to include the new scheme under its subcategory.
+7. Add a cross-reference from related sections where useful.
+8. If creating a new category file, add it to `README.md`'s Contents list and update `CLAUDE.md`.
 
 ### No duplicates rule
 
-Every `##` scheme section MUST exist in exactly one category file. **Never duplicate a section across files.** If a scheme is relevant to multiple categories, place it in the most specific one and add a cross-reference from the other:
+Every `###` scheme section MUST exist in exactly one category file. **Never duplicate a section across files.** If a scheme is relevant to multiple categories, place it in the most specific one and add a cross-reference from the other:
 
 ```markdown
 > **Scheme Name** is covered in [Category — Scheme Name](NN-filename.md#scheme-name-slug).
@@ -180,13 +229,14 @@ Every `##` scheme section MUST exist in exactly one category file. **Never dupli
 
 Before committing changes, verify ALL of the following:
 
-1. **Required fields:** Every `##` section has `**Goal:**`, `**State of the art:**`, `**Production readiness:**`, `**Implementations:**`, `**Security status:**`, `**Community acceptance:**`.
+1. **Required fields:** Every `###` scheme section has `**Goal:**`, `**State of the art:**`, `**Production readiness:**`, `**Implementations:**`, `**Security status:**`, `**Community acceptance:**`.
 2. **Field explanations:** Each of Production readiness, Security status, and Community acceptance has a 1-line explanation on the line following the value.
-3. **Section separators:** Every `##` section ends with `---`.
-4. **No duplicates:** No `##` heading appears in more than one category file.
-5. **Valid links:** All internal cross-references point to existing anchors in existing files. Run `python3 scripts/validate_links.py` to check.
-6. **TOC up to date:** The `<!-- TOC -->` block at the top of each modified file lists all `##` sections.
-7. **INDEX.md:** New or renamed sections are reflected in `INDEX.md`.
+3. **Section separators:** Every `###` scheme section ends with `---`.
+4. **Subcategories:** Schemes are grouped under `##` subcategory headings (4–8 per file).
+5. **No duplicates:** No `###` scheme heading appears in more than one category file.
+6. **Valid links:** All internal cross-references point to existing anchors in existing files. Run `python3 scripts/validate_links.py` to check.
+7. **TOC up to date:** The `<!-- TOC -->` block lists subcategories (bold) with indented scheme entries.
+8. **INDEX.md:** New or renamed sections are reflected in `INDEX.md`.
 
 ## Category Summaries
 
