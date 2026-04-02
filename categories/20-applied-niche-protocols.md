@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (46 schemes)
+## Contents (47 schemes)
 
 **[Electronic Voting](#electronic-voting)**
 - [End-to-End Verifiable E-Voting](#end-to-end-verifiable-e-voting)
@@ -63,6 +63,7 @@
 - [IETF SUIT — Secure Firmware Update for IoT](#ietf-suit--secure-firmware-update-for-iot)
 - [TESLA — Timed Efficient Stream Loss-Tolerant Authentication](#tesla--timed-efficient-stream-loss-tolerant-authentication)
 - [Updatable Encryption (Key Rotation Protocols)](#updatable-encryption-key-rotation-protocols)
+- [Cashu](#cashu)
 
 <!-- /TOC -->
 
@@ -1493,5 +1494,32 @@ CCA-secure, ciphertext-independent UE (Kloos-Lehmann-Rupp 2019) provides strong 
 
 **Community acceptance:** Emerging
 Active research area (EUROCRYPT 2018-2019); cloud KMS providers implement related key rotation mechanisms; formal UE models gaining traction; no IETF/NIST standard for UE specifically.
+
+---
+
+### Cashu
+
+**Goal:** Implement Chaumian ecash as a layer on top of Bitcoin Lightning Network — enabling anonymous bearer tokens (e-cash notes) that are backed 1:1 by Lightning satoshis. Users can send and receive tokens without the mint (issuer) learning who holds which tokens, providing transaction privacy within the Bitcoin ecosystem.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Cashu (NUT protocol)** | 2022 | Blind signatures (David Wagner scheme) | Chaumian ecash mints backed by Lightning; blind signature issuance; multiple independent mints; NUT specification [[1]](https://github.com/cashubtc/nuts) |
+| **Fedimint** | 2022 | Federated Chaumian ecash | Federated (threshold) mint model; combines Chaumian ecash with federated custody; Lightning gateway [[1]](https://github.com/fedimint/fedimint) |
+
+**State of the art:** Cashu (2022-) implements the NUT (Notation, Usage, and Terminology) protocol specification for Chaumian ecash on Lightning. The mint issues blind-signed tokens; users unblind them to create bearer tokens redeemable for Lightning sats. Multiple independent mints operate, reducing single-point-of-failure risk. Fedimint extends the model with federated (threshold) mint custody. Key limitation: users must trust the mint for redemption (custodial model). Related to [Blind Signature-Based E-Cash (Chaum DigiCash)](#blind-signature-based-e-cash-chaum-digicash), [GNU Taler](#gnu-taler-practical-e-cash-with-income-transparency), and [Blind Signatures](08-signatures-advanced.md#blind-signatures).
+
+**Production readiness:** Experimental
+Multiple Cashu mints and wallets operational on Bitcoin mainnet. Active NUT specification development. Custodial trust model limits suitability for large amounts. Fedimint is in beta.
+
+**Implementations:**
+- [cashubtc/cashu](https://github.com/cashubtc/cashu) ⭐ 300 — Python — reference Cashu mint and wallet
+- [cashubtc/cashu-ts](https://github.com/cashubtc/cashu-ts) ⭐ 120 — TypeScript — Cashu library for web wallets
+- [fedimint/fedimint](https://github.com/fedimint/fedimint) ⭐ 1.8k — Rust — federated Chaumian ecash mint with Lightning
+
+**Security status:** Caution
+Blind signature scheme is cryptographically sound (Chaum's protocol). Security depends on mint honesty (custodial model) — a malicious mint can refuse redemption or inflate supply. Fedimint mitigates this with threshold trust.
+
+**Community acceptance:** Niche
+Growing adoption in Bitcoin privacy community. Multiple wallets and mints operational. NUT specification is community-driven (no formal standard body). Fedimint backed by significant venture funding. Not suitable for regulatory-compliant use cases due to anonymity properties.
 
 ---

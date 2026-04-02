@@ -2,11 +2,12 @@
 
 
 <!-- TOC -->
-## Contents (41 schemes)
+## Contents (43 schemes)
 
 **[Decentralized Identity (DID / VC)](#decentralized-identity-did--vc)**
 - [W3C Decentralized Identifiers (DID) and Verifiable Credentials](#w3c-decentralized-identifiers-did-and-verifiable-credentials)
 - [COSE / CWT — CBOR Object Signing and Encryption](#cose--cwt--cbor-object-signing-and-encryption)
+- [KERI (Key Event Receipt Infrastructure)](#keri-key-event-receipt-infrastructure)
 
 **[DNS Security](#dns-security)**
 - [DANE / DNS-Based Authentication of Named Entities](#dane--dns-based-authentication-of-named-entities)
@@ -34,6 +35,7 @@
 **[Software Supply Chain](#software-supply-chain)**
 - [Sigstore / Keyless Code Signing](#sigstore--keyless-code-signing)
 - [TUF / The Update Framework](#tuf--the-update-framework)
+- [SCITT (Supply Chain Integrity, Transparency, and Trust)](#scitt-supply-chain-integrity-transparency-and-trust)
 
 **[Certificate Management](#certificate-management)**
 - [RPKI / Resource Public Key Infrastructure](#rpki--resource-public-key-infrastructure)
@@ -228,6 +230,33 @@ Built on well-established algorithms (ECDSA P-256, EdDSA, AES-GCM, HMAC-SHA-256)
 
 **Community acceptance:** Standard
 IETF RFC 9052 (COSE), RFC 8392 (CWT), RFC 9528 (EAT); mandated by ISO 18013-5, W3C WebAuthn, and EU eIDAS 2.0; adopted by all major platform vendors.
+
+---
+
+### KERI (Key Event Receipt Infrastructure)
+
+**Goal:** Provide decentralized key management using hash-chained key event logs — self-certifying identifiers that do not depend on any blockchain, distributed ledger, or centralized authority. Each identifier is bound to a sequence of signed key events (inception, rotation, delegation) forming a verifiable append-only log.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **KERI (Smith)** | 2019 | Hash-chained event logs + pre-rotation | Self-certifying identifiers; key rotation via pre-committed next-key hash; IETF draft [[1]](https://weboftrust.github.io/ietf-keri/draft-ssmith-keri.html) |
+| **ACDC (Authentic Chained Data Containers)** | 2022 | KERI + SAID | Verifiable credential format built on KERI identifiers; chained provenance [[1]](https://trustoverip.github.io/tswg-acdc-specification/) |
+
+**State of the art:** KERI provides a novel "pre-rotation" mechanism: at inception, the controller commits to the hash of the next public key, so key rotation is verifiable without trusting any external authority. Witnesses (lightweight nodes) provide availability but not trust — the cryptographic chain is self-verifying. IETF drafts (draft-ssmith-keri) under review. Trust over IP Foundation standardization. Related to [W3C DID / VC](#w3c-decentralized-identifiers-did-and-verifiable-credentials).
+
+**Production readiness:** Experimental
+Working implementations exist (keripy, keria); used in pilot deployments for supply chain identity (GLEIF vLEI) and healthcare credentials. Not yet widely deployed.
+
+**Implementations:**
+- [WebOfTrust/keripy](https://github.com/WebOfTrust/keripy) ⭐ 200 — Python — reference KERI implementation
+- [WebOfTrust/keria](https://github.com/WebOfTrust/keria) ⭐ 35 — Python — KERI agent service
+- [WebOfTrust/signify-ts](https://github.com/WebOfTrust/signify-ts) ⭐ 25 — TypeScript — KERI signing client
+
+**Security status:** Caution
+Cryptographic foundations (hash chains, Ed25519/ECDSA signatures, pre-rotation commitments) are sound. The witness model and ambient verifiability are novel and less battle-tested than PKI-based approaches.
+
+**Community acceptance:** Emerging
+IETF draft in progress; Trust over IP Foundation endorses KERI; GLEIF (Global Legal Entity Identifier Foundation) uses KERI for vLEI. Growing interest but not yet an RFC or ISO standard.
 
 ---
 
@@ -1473,6 +1502,32 @@ Designed to be secure even against a fully compromised repository server; role s
 
 **Community acceptance:** Standard
 CNCF graduated project; adopted by PyPI, Docker, Kubernetes, and automotive (Uptane); specification maintained by academic-industry collaboration (NYU Tandon).
+
+---
+
+### SCITT (Supply Chain Integrity, Transparency, and Trust)
+
+**Goal:** Provide a vendor-neutral architecture for supply chain transparency using append-only ledgers and cryptographically signed statements — enabling any party to make verifiable claims about software artifacts (build provenance, vulnerability scans, compliance attestations) that are recorded in a tamper-evident transparency log.
+
+| Scheme | Year | Organization | Note |
+|--------|------|-------------|------|
+| **SCITT Architecture** | 2023 | IETF (draft-ietf-scitt-architecture) | Defines Transparency Service, signed statements (COSE Sign1), append-only ledger, receipts [[1]](https://datatracker.ietf.org/doc/draft-ietf-scitt-architecture/) |
+| **SCITT CCF Ledger** | 2023 | Microsoft | Reference implementation using Confidential Consortium Framework (CCF) for the transparency ledger [[1]](https://github.com/microsoft/scitt-ccf-ledger) |
+
+**State of the art:** SCITT defines a "Transparency Service" that accepts signed statements (COSE Sign1 envelopes) about supply chain artifacts, appends them to an immutable ledger, and returns receipts (inclusion proofs). Consumers can verify that a statement was registered without trusting the service operator. Microsoft leads the IETF working group; integration with Sigstore and in-toto is planned. Related to [Sigstore / Keyless Code Signing](#sigstore--keyless-code-signing), [TUF / The Update Framework](#tuf--the-update-framework), and [Cryptographic Provenance Attestation (C2PA / SLSA)](#cryptographic-provenance-attestation-c2pa--slsa).
+
+**Production readiness:** Experimental
+IETF drafts are active but not finalized. Microsoft's SCITT CCF Ledger is a reference implementation; no large-scale production deployment yet.
+
+**Implementations:**
+- [microsoft/scitt-ccf-ledger](https://github.com/microsoft/scitt-ccf-ledger) ⭐ 55 — C++/TypeScript — SCITT transparency service on CCF
+- [scitt-community/scitt-api-emulator](https://github.com/scitt-community/scitt-api-emulator) ⭐ 35 — Python — SCITT API reference emulator
+
+**Security status:** Caution
+Architecture relies on well-established cryptographic primitives (COSE, Merkle trees, CCF consensus). Security depends on the trust model of the transparency service operator; append-only guarantees are only as strong as the ledger implementation.
+
+**Community acceptance:** Emerging
+IETF SCITT working group active since 2022; Microsoft, Google, Intel, and the Linux Foundation participate. Complements Sigstore and SLSA. No finalized RFC yet.
 
 ---
 

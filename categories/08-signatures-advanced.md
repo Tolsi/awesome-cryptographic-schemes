@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (64 schemes)
+## Contents (65 schemes)
 
 **[Threshold Signatures](#threshold-signatures)**
 - [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss)
@@ -14,6 +14,7 @@
 - [CGGMP Threshold ECDSA](#cggmp-threshold-ecdsa)
 - [MuSig2 (Multi-Signatures for Bitcoin)](#musig2-multi-signatures-for-bitcoin)
 - [ROAST (Robust Asynchronous Threshold Signatures)](#roast-robust-asynchronous-threshold-signatures)
+- [ChillDKG](#chilldkg)
 
 **[Blind and Partially Blind Signatures](#blind-and-partially-blind-signatures)**
 - [Blind Signatures](#blind-signatures)
@@ -349,6 +350,30 @@ Robustness guaranteed as long as t honest signers are available; no additional c
 
 **Community acceptance:** Emerging
 Deployed in Blockstream Liquid; proposed for Bitcoin multisig custody and federated Lightning nodes.
+
+---
+
+### ChillDKG
+
+**Goal:** Simplify FROST distributed key generation (DKG) for Bitcoin wallets — provide a complete, self-contained protocol for generating threshold Schnorr signing keys that is compatible with BIP-340 (Taproot) and requires no external PKI or authenticated channels beyond what Bitcoin wallets already provide.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ChillDKG (Nick-Ruffing)** | 2024 | FROST DKG + encpedpop | BIP draft; simplifies FROST key generation for Bitcoin; deterministic key backup from seed; no PKI required [[1]](https://github.com/BlockstreamResearch/bip-frost-dkg) |
+
+**State of the art:** ChillDKG (2024) wraps the FROST DKG protocol with Bitcoin-specific design decisions: participants derive encryption keys from BIP-32 seeds (no separate PKI), the protocol uses a coordinator for message relay (but not trust), and the DKG output is deterministically recoverable from the original seed plus a compact backup blob. Designed by Jonas Nick and Tim Ruffing (Blockstream Research). BIP draft under review. Related to [FROST Threshold Schnorr Signatures](#frost-threshold-schnorr-signatures) and [MuSig2 (Multi-Signatures for Bitcoin)](#musig2-multi-signatures-for-bitcoin).
+
+**Production readiness:** Experimental
+BIP draft stage; reference implementation available. Not yet deployed in production Bitcoin wallets. Depends on FROST signing (also pre-standardization for Bitcoin).
+
+**Implementations:**
+- [BlockstreamResearch/bip-frost-dkg](https://github.com/BlockstreamResearch/bip-frost-dkg) ⭐ 65 — Python — reference ChillDKG implementation and BIP draft
+
+**Security status:** Caution
+Cryptographic core is FROST DKG (proven secure); Bitcoin-specific adaptations (seed-derived encryption, backup format) are new and under review. No formal security proof of the full composed protocol yet.
+
+**Community acceptance:** Emerging
+Authored by Blockstream Research cryptographers (Nick, Ruffing); active BIP process; Bitcoin developer community engaged. FROST itself is IETF RFC 9591; ChillDKG adapts it for Bitcoin's specific needs.
 
 ---
 

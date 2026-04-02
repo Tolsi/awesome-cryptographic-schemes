@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (56 schemes)
+## Contents (59 schemes)
 
 **[Foundational ZK Concepts](#foundational-zk-concepts)**
 - [Zero-Knowledge Proofs (ZK)](#zero-knowledge-proofs-zk)
@@ -65,6 +65,9 @@
 - [zkTLS / MPC-TLS](#zktls--mpc-tls)
 - [zkEVM Taxonomy and Ecosystem](#zkevm-taxonomy-and-ecosystem)
 - [ZK Proofs for Identity (Proof of Age / Nationality)](#zk-proofs-for-identity-proof-of-age--nationality)
+- [ZK Coprocessors (Axiom / Brevis / Herodotus)](#zk-coprocessors-axiom--brevis--herodotus)
+- [zkWASM](#zkwasm)
+- [OpenVM](#openvm)
 
 **[Bulletproofs and Range Proofs](#bulletproofs-and-range-proofs)**
 - [Bulletproofs Inner-Product Argument](#bulletproofs-inner-product-argument)
@@ -1634,6 +1637,84 @@ ZK proofs are sound, but passport chip authentication has known limitations (clo
 
 **Community acceptance:** Emerging
 Growing adoption. World ID has millions of users. PSE (Ethereum Foundation) backs anon-aadhaar. Active research on reducing RSA in-circuit costs.
+
+---
+
+### ZK Coprocessors (Axiom / Brevis / Herodotus)
+
+**Goal:** Enable verifiable off-chain computation with on-chain verification — a smart contract can trustlessly access historical blockchain data (storage slots, transaction receipts, block headers) without storing it on-chain, by verifying a ZK proof that the data was correctly read from the canonical chain.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Axiom** | 2023 | halo2 SNARKs | Proves Ethereum storage/transaction history; queries verified on-chain via SNARK; mainnet since 2023 [[1]](https://docs.axiom.xyz/) |
+| **Brevis** | 2023 | ZK circuits | Cross-chain data access proofs; supports multiple EVM chains; Celer Network project [[1]](https://brevis.network/) |
+| **Herodotus** | 2023 | Storage proofs | Ethereum storage proofs via hash-chain verification; StarkNet-native; mainnet 2023 [[1]](https://www.herodotus.dev/) |
+
+**State of the art:** Axiom V2 (2024) is the most mature, supporting arbitrary Ethereum historical queries with halo2-based proofs verified on-chain in ~400k gas. Brevis extends the model cross-chain. Herodotus focuses on StarkNet integration with storage proofs. All are production-deployed on Ethereum mainnet. Related to [zkEVM Taxonomy and Ecosystem](#zkevm-taxonomy-and-ecosystem) and [Halo and Halo2](04-zero-knowledge-proof-systems.md#halo-and-halo2).
+
+**Production readiness:** Production
+Axiom, Brevis, and Herodotus are deployed on Ethereum mainnet (2023-2024) with live DeFi integrations (Uniswap, Compound governance).
+
+**Implementations:**
+- [axiom-crypto/axiom-v2-contracts](https://github.com/axiom-crypto/axiom-eth) ⭐ 280 — Rust/Solidity — Axiom V2 proving and verification
+- [Brevis SDK](https://github.com/celer-network/brevis-contracts) ⭐ 45 — Solidity — Brevis on-chain verification contracts
+- [Herodotus](https://github.com/HerodotusDev/herodotus-evm) ⭐ 120 — Cairo/Solidity — storage proof verification
+
+**Security status:** Caution
+Underlying ZK proof systems (halo2, STARK) are secure; however, coprocessor correctness depends on correct circuit encoding of Ethereum state access rules. Axiom has been audited; others are newer.
+
+**Community acceptance:** Emerging
+Rapidly growing adoption in DeFi and governance. Axiom backed by Paradigm; Ethereum Foundation research engaged. No formal standard but converging on common verification patterns.
+
+---
+
+### zkWASM
+
+**Goal:** Generate zero-knowledge proofs for WebAssembly (WASM) execution — prove that a given WASM binary produced a specific output on a specific input without revealing the computation details. Enables verifiable off-chain computation for any language that compiles to WASM.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Delphinus Lab zkWASM** | 2023 | halo2 / PLONK | First general-purpose zkWASM; proves arbitrary WASM bytecode execution; continuations for large programs [[1]](https://github.com/DelphinusLab/zkWasm) |
+| **Polygon Miden** | 2023 | STARK (Winterfell) | WASM-like stack VM with STARK proofs; custom ISA inspired by WASM; Polygon zkRollup component [[1]](https://github.com/0xPolygonMiden/miden-vm) |
+
+**State of the art:** Delphinus Lab zkWASM is the most direct WASM-to-ZK approach, supporting standard WASM bytecode. Polygon Miden uses a WASM-inspired (but not byte-compatible) stack machine optimized for STARK proving. Both are experimental. The key challenge is WASM's complexity (200+ opcodes, memory model) which produces large circuits. Related to [General-Purpose zkVMs](#general-purpose-zkvms) and [zkEVM Taxonomy and Ecosystem](#zkevm-taxonomy-and-ecosystem).
+
+**Production readiness:** Experimental
+Working implementations exist but are not yet battle-tested or deployed at scale. Circuit overhead for full WASM compliance remains high.
+
+**Implementations:**
+- [DelphinusLab/zkWasm](https://github.com/DelphinusLab/zkWasm) ⭐ 750 — Rust — general-purpose zkWASM prover
+- [0xPolygonMiden/miden-vm](https://github.com/0xPolygonMiden/miden-vm) ⭐ 680 — Rust — STARK-based WASM-like VM
+
+**Security status:** Caution
+Proof systems (halo2, STARK) are well-studied; however, WASM opcode coverage and memory model encoding in circuits are complex and under active audit. No formal verification of circuit correctness yet.
+
+**Community acceptance:** Emerging
+Active development by Delphinus Lab and Polygon. Growing interest from the rollup ecosystem. Academic study of WASM-to-ZK compilation is nascent.
+
+---
+
+### OpenVM
+
+**Goal:** Provide a modular, extensible zkVM framework where developers can define custom opcode extensions — enabling domain-specific ZK proving without forking the entire VM. Built by Axiom as an open-source successor to their internal proving infrastructure.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **OpenVM** | 2024 | STARK (Plonky2-derived) | Modular ISA with pluggable opcode extensions; RISC-V base + custom chips; open-sourced by Axiom [[1]](https://github.com/openvm-org/openvm) |
+
+**State of the art:** OpenVM (2024) introduces a plugin architecture for zkVMs: a RISC-V base ISA is extended with custom "chips" (opcode modules) for specific operations (elliptic curve arithmetic, Keccak, etc.). This avoids the one-size-fits-all limitation of monolithic zkVMs like RISC Zero or SP1. STARK-based proving with FRI commitments. Related to [General-Purpose zkVMs](#general-purpose-zkvms) and [SP1 Hypercube](#sp1-hypercube-real-time-zkvm-proving).
+
+**Production readiness:** Experimental
+Open-sourced in 2024 by Axiom. Under active development; not yet deployed in production rollups but used in Axiom's own proving pipeline.
+
+**Implementations:**
+- [openvm-org/openvm](https://github.com/openvm-org/openvm) ⭐ 570 — Rust — modular zkVM framework with extensible ISA
+
+**Security status:** Caution
+STARK-based proving is well-founded; custom opcode extensions require per-chip security audits. Framework is new and has not undergone extensive third-party review.
+
+**Community acceptance:** Emerging
+Backed by Axiom (Paradigm-funded). Growing interest from zkVM developers seeking modularity. Open-source since 2024; early-stage ecosystem.
 
 ---
 

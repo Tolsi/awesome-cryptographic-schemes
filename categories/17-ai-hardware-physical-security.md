@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (47 schemes)
+## Contents (48 schemes)
 
 **[Verifiable AI and ML Security](#verifiable-ai-and-ml-security)**
 - [zkLLM / Verifiable AI Inference](#zkllm--verifiable-ai-inference)
@@ -12,6 +12,7 @@
 - [ML Modeling Attacks on Strong PUFs & ML-Based Privacy Attacks](#ml-modeling-attacks-on-strong-pufs--ml-based-privacy-attacks)
 - [Federated Learning Secure Aggregation (SecAgg)](#federated-learning-secure-aggregation-secagg)
 - [Model Watermarking & Fingerprinting for IP Protection](#model-watermarking--fingerprinting-for-ip-protection)
+- [Apple Private Cloud Compute](#apple-private-cloud-compute)
 
 **[Physical Unclonable Functions (PUF)](#physical-unclonable-functions-puf)**
 - [Physical Unclonable Functions (PUF)](#physical-unclonable-functions-puf)
@@ -271,6 +272,32 @@ Watermarks can be removed by fine-tuning, pruning, or distillation; fingerprints
 
 **Community acceptance:** Emerging
 Active research at USENIX, IEEE S&P, NeurIPS; industry interest growing due to model theft concerns; no formal standard
+
+---
+
+### Apple Private Cloud Compute
+
+**Goal:** Enable private AI inference in the cloud by ensuring that user data sent to cloud compute nodes is cryptographically protected — the cloud infrastructure cannot access user data at rest or in transit, compute nodes are stateless (no data persistence after request completion), and the entire software stack is publicly auditable via cryptographic attestation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Apple Private Cloud Compute (PCC)** | 2024 | Custom silicon (Apple M-series) + Secure Enclave + software attestation | Stateless compute nodes; no persistent storage; cryptographic attestation of software image; launched with Apple Intelligence [[1]](https://security.apple.com/blog/private-cloud-compute/) |
+
+**State of the art:** Apple PCC (2024) introduces a novel architecture: (1) custom Apple silicon with Secure Enclave provides hardware root of trust, (2) each compute node boots a cryptographically measured OS image published to a transparency log, (3) nodes are stateless — user data is encrypted in transit and never written to persistent storage, (4) security researchers can audit the published software images. The transparency log allows independent verification that deployed software matches published measurements. Related to [TEE Remote Attestation](14-applied-infrastructure-pki.md#tee-remote-attestation) and [zkLLM / Verifiable AI Inference](#zkllm--verifiable-ai-inference).
+
+**Production readiness:** Production
+Launched in 2024 with Apple Intelligence features across iOS 18, iPadOS 18, and macOS Sequoia. Deployed at Apple's global scale serving hundreds of millions of devices.
+
+**Implementations:**
+- Apple PCC is proprietary; no open-source implementation exists.
+- [Apple Security Research Blog](https://security.apple.com/blog/private-cloud-compute/) — architecture documentation and security audit invitation
+- Apple published PCC software images for independent security research verification.
+
+**Security status:** Caution
+Hardware root of trust (Apple Secure Enclave) and software attestation are well-designed. Novel architecture has not yet undergone extensive independent security audit. Transparency log approach is sound but requires ongoing public scrutiny.
+
+**Community acceptance:** Emerging
+Significant industry attention as the first major private cloud AI inference system. Apple invited security researchers to audit PCC. No formal standard; Apple-proprietary architecture. If successful, likely to influence industry approaches to private AI computation.
 
 ---
 

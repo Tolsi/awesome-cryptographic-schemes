@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (46 schemes)
+## Contents (47 schemes)
 
 **[Consensus Mechanisms](#consensus-mechanisms)**
 - [Casper FFG / Ethereum Proof-of-Stake Finality](#casper-ffg--ethereum-proof-of-stake-finality)
@@ -13,6 +13,7 @@
 - [Ethereum DVT — Distributed Validator Technology](#ethereum-dvt--distributed-validator-technology)
 - [RANDAO and VDF — Unbiasable Randomness Beacon for Ethereum](#randao-and-vdf--unbiasable-randomness-beacon-for-ethereum)
 - [VRF-Based Consensus and Leader Election (Algorand)](#vrf-based-consensus-and-leader-election-algorand)
+- [MACI (Minimum Anti-Collusion Infrastructure)](#maci-minimum-anti-collusion-infrastructure)
 
 **[Transaction Privacy](#transaction-privacy)**
 - [Encrypted Mempools / Threshold Encryption for Transaction Ordering](#encrypted-mempools--threshold-encryption-for-transaction-ordering)
@@ -419,6 +420,31 @@ VRF output is provably unpredictable and non-biasable; ECVRF over Ed25519 is sta
 
 **Community acceptance:** Widely trusted
 Algorand BA* published at SOSP 2017 (top systems venue); Ouroboros Praos peer-reviewed at EUROCRYPT 2018; VRF-based election is the standard approach for PoS leader selection
+
+---
+
+### MACI (Minimum Anti-Collusion Infrastructure)
+
+**Goal:** Prevent bribery and collusion in on-chain voting by making it impossible for a voter to prove to a third party how they voted — even if the voter wants to. Uses encryption so that votes are hidden from everyone except a trusted coordinator, combined with ZK proofs to verify correct tallying without revealing individual votes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **MACI v1** | 2020 | ECDH + Groth16 | Vitalik Buterin concept; voters encrypt votes to coordinator's key; ZK proof of correct tally; used in Gitcoin rounds [[1]](https://github.com/privacy-scaling-explorations/maci) |
+| **MACI v2 (3P-MACI)** | 2024 | ECDH + Groth16 + elGamal | Removes single coordinator trust assumption via threshold decryption; ETHGlobal deployments [[1]](https://maci.pse.dev/) |
+
+**State of the art:** MACI v1 is deployed in multiple Gitcoin quadratic funding rounds and ETHGlobal hackathon voting. MACI v2 (2024) introduces threshold coordinator keys to reduce trust assumptions. The core insight: voters can change their vote (re-encrypt to coordinator), so a briber cannot verify the final vote. ZK proofs ensure the coordinator tallied correctly. Related to [End-to-End Verifiable E-Voting](20-applied-niche-protocols.md#end-to-end-verifiable-e-voting) and [Coercion-Resistant Voting](20-applied-niche-protocols.md#coercion-resistant-voting--receipt-freeness).
+
+**Production readiness:** Experimental
+Deployed in Gitcoin grants rounds, ETHGlobal events, and clr.fund. Used with real funds but limited to Ethereum-based governance; not used in government elections.
+
+**Implementations:**
+- [privacy-scaling-explorations/maci](https://github.com/privacy-scaling-explorations/maci) ⭐ 900 — TypeScript/Solidity/Circom — reference MACI implementation (PSE/Ethereum Foundation)
+
+**Security status:** Caution
+Cryptographic core (ECDH encryption + Groth16 proofs) is sound. MACI v1 trusts a single coordinator not to collude; v2 mitigates this with threshold keys. Voter privacy depends on the coordinator not revealing decrypted votes.
+
+**Community acceptance:** Emerging
+Ethereum Foundation (PSE team) actively maintains MACI. Used in multiple public goods funding rounds. Growing academic interest in anti-collusion mechanisms. No formal standard.
 
 ---
 

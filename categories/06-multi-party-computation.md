@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (56 schemes)
+## Contents (57 schemes)
 
 **[Foundational MPC Protocols](#foundational-mpc-protocols)**
 - [Multi-Party Computation (MPC)](#multi-party-computation-mpc)
@@ -71,6 +71,7 @@
 - [Efficient Two-Party ECDSA (DKLS18 / Doerner et al.)](#efficient-two-party-ecdsa-dkls18--doerner-et-al)
 - [Secure Computation on Graphs (Private Graph Algorithms)](#secure-computation-on-graphs-private-graph-algorithms)
 - [Private Decision Trees and Random Forests (Bost et al., ABY3)](#private-decision-trees-and-random-forests-bost-et-al-aby3)
+- [SecretFlow](#secretflow)
 
 <!-- /TOC -->
 
@@ -1681,5 +1682,32 @@ Protocols are proven secure; the main challenge is efficiency of data-dependent 
 
 **Community acceptance:** Niche
 Private decision trees are well-studied in the PPML literature; practical for specific domains (medical diagnosis, credit scoring).
+
+---
+
+### SecretFlow
+
+**Goal:** Provide a unified, open-source framework for privacy-preserving computation — supporting MPC, federated learning, TEE-based computation, and differential privacy in a single platform. Developed by Ant Group for large-scale privacy-preserving data analytics and machine learning across organizational boundaries.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SecretFlow** | 2022 | SEMI2K, ABY3, Cheetah, TEE | Unified framework; MPC protocols (SEMI2K for semi-honest 2PC, ABY3 for 3PC, Cheetah for fast 2PC); federated learning; TEE integration [[1]](https://github.com/secretflow/secretflow) |
+| **SPU (Secret Processing Unit)** | 2022 | MPC VM | Virtual device abstracting MPC protocols; JIT compilation of computation graphs to MPC; part of SecretFlow [[1]](https://github.com/secretflow/spu) |
+
+**State of the art:** SecretFlow (2022-) is one of the most comprehensive open-source privacy-preserving computation frameworks. SPU provides a "virtual MPC device" that compiles NumPy/JAX computation graphs into MPC protocols (SEMI2K, ABY3, Cheetah). Also includes SCQL (Secure Collaborative Query Language) for SQL-like queries over secret-shared data. Used in financial and healthcare settings in China. Related to [SPDZ Protocol Family](#spdz-protocol-family-speedz), [ABY / ABY3](#aby--aby3-mixed-protocol-mpc-framework), and [Secure Aggregation (SecAgg)](#secure-aggregation-secagg).
+
+**Production readiness:** Mature
+Deployed in financial data collaboration scenarios (Ant Group, Chinese banks). Active open-source community with regular releases. Supports production-grade MPC, FL, and TEE workloads.
+
+**Implementations:**
+- [secretflow/secretflow](https://github.com/secretflow/secretflow) ⭐ 2.3k — Python — unified privacy-preserving computation framework
+- [secretflow/spu](https://github.com/secretflow/spu) ⭐ 800 — C++/Python — MPC virtual device (Secret Processing Unit)
+- [secretflow/scql](https://github.com/secretflow/scql) ⭐ 250 — Go/C++ — secure collaborative SQL query engine
+
+**Security status:** Caution
+Underlying MPC protocols (SEMI2K, ABY3, Cheetah) are well-studied and proven secure in their respective threat models. Framework composition and TEE integration introduce additional trust assumptions that require careful configuration.
+
+**Community acceptance:** Emerging
+Largest open-source MPC/FL framework by star count; backed by Ant Group; used in Chinese financial sector regulatory sandbox. Growing international adoption; academic publications at USENIX, VLDB.
 
 ---

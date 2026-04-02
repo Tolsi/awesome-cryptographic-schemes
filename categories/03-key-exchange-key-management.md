@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (51 schemes)
+## Contents (52 schemes)
 
 **[Diffie-Hellman and ECDH](#diffie-hellman-and-ecdh)**
 - [Non-Interactive Key Exchange (NIKE)](#non-interactive-key-exchange-nike)
@@ -48,6 +48,7 @@
 - [WireGuard Cryptographic Protocol](#wireguard-cryptographic-protocol)
 - [Auditable Key Directory (AKD) / Key Transparency v2](#auditable-key-directory-akd--key-transparency-v2)
 - [FrodoKEM (Conservative Lattice-Based KEM)](#frodokem-conservative-lattice-based-kem)
+- [Delegated Credentials (RFC 9345)](#delegated-credentials-rfc-9345)
 
 **[HD Keys and Wallet Key Management](#hd-keys-and-wallet-key-management)**
 - [SLIP-39 / Shamir Backup for Hardware Wallets](#slip-39--shamir-backup-for-hardware-wallets)
@@ -1975,6 +1976,32 @@ Not NIST-standardized; endorsed by European agencies (BSI, ANSSI); undergoing IS
 ---
 
 > **Classic McEliece (Code-Based KEM)** is covered in [Quantum Cryptography — Classic McEliece](15-quantum-cryptography.md#classic-mceliece-code-based-kem).
+
+---
+
+### Delegated Credentials (RFC 9345)
+
+**Goal:** Allow TLS server operators to issue short-lived sub-credentials (delegated credentials) signed by their long-lived CA-issued certificate — enabling ephemeral key rotation without involving the CA. The server generates a new signing key (e.g., daily), signs a delegated credential binding it to the CA cert, and presents both in the TLS handshake. Clients verify the chain: CA cert → delegated credential → TLS handshake signature.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Delegated Credentials for TLS (RFC 9345)** | 2023 | X.509 + TLS 1.3 extension | Short-lived (hours/days) sub-credentials; signed by leaf cert; no CA involvement for rotation [[1]](https://www.rfc-editor.org/rfc/rfc9345) |
+
+**State of the art:** RFC 9345 (2023) standardizes delegated credentials as a TLS 1.3 extension. Deployed by Cloudflare (all edge servers since 2021) and Meta/Facebook (global deployment). Key benefit: if an ephemeral key is compromised, the delegated credential expires within hours — no need for CRL/OCSP revocation. Also enables operators to use different key types (e.g., ECDSA P-256 delegated credential from an RSA CA cert). Related to [Certificate Transparency (CT)](14-applied-infrastructure-pki.md#certificate-transparency-ct) and [TLS 1.3 Key Schedule](#tls-13-key-schedule).
+
+**Production readiness:** Production
+Deployed at scale by Cloudflare and Meta/Facebook. RFC 9345 published 2023. Supported in BoringSSL, rustls, and Firefox (experimental).
+
+**Implementations:**
+- [cloudflare/go](https://github.com/cloudflare/go) ⭐ 150 — Go — Cloudflare's Go fork with delegated credentials support
+- [rustls](https://github.com/rustls/rustls) ⭐ 6.3k — Rust — TLS library with delegated credentials support
+- [BoringSSL](https://boringssl.googlesource.com/boringssl/) — C++ — Google's OpenSSL fork, delegated credentials implemented
+
+**Security status:** Secure
+Cryptographic construction is straightforward (signature delegation with short expiry). Security relies on the leaf certificate's signing key; delegated credential compromise is time-bounded by expiry. No known attacks.
+
+**Community acceptance:** Standard
+IETF RFC 9345 (2023); deployed by Cloudflare and Meta at global scale; supported in major TLS libraries. Growing adoption among CDN and cloud providers.
 
 ---
 
