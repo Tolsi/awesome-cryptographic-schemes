@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (52 schemes)
+## Contents (63 schemes)
 
 **[Diffie-Hellman and ECDH](#diffie-hellman-and-ecdh)**
 - [Non-Interactive Key Exchange (NIKE)](#non-interactive-key-exchange-nike)
@@ -34,6 +34,10 @@
 - [PKCS#12 / PFX (Private Key + Certificate Bundle)](#pkcs12--pfx-private-key--certificate-bundle)
 - [PBKDF2 / Password-Based Cryptography (PKCS#5 / RFC 8018)](#pbkdf2--password-based-cryptography-pkcs5--rfc-8018)
 - [KDF Comparison: PBKDF2 vs bcrypt vs scrypt vs Argon2id](#kdf-comparison-pbkdf2-vs-bcrypt-vs-scrypt-vs-argon2id)
+- [CPace (Balanced PAKE, IRTF CFRG)](#cpace-balanced-pake-irtf-cfrg)
+- [SRP (Secure Remote Password Protocol, RFC 2945)](#srp-secure-remote-password-protocol-rfc-2945)
+- [SPAKE2 and SPAKE2+ (Simple PAKE, RFC 9382)](#spake2-and-spake2-simple-pake-rfc-9382)
+- [Two-Server PAKE (Threshold Password Authentication)](#two-server-pake-threshold-password-authentication)
 
 **[Key Derivation and Wrapping](#key-derivation-and-wrapping)**
 - [Hierarchical Deterministic Keys (BIP32 / HD Wallets)](#hierarchical-deterministic-keys-bip32--hd-wallets)
@@ -52,6 +56,7 @@
 
 **[HD Keys and Wallet Key Management](#hd-keys-and-wallet-key-management)**
 - [SLIP-39 / Shamir Backup for Hardware Wallets](#slip-39--shamir-backup-for-hardware-wallets)
+- [ARKG (Asynchronous Remote Key Generation)](#arkg-asynchronous-remote-key-generation)
 
 **[Web Standards (JOSE / JWT / COSE)](#web-standards-jose--jwt--cose)**
 - [JOSE / JWS / JWE / JWT](#jose--jws--jwe--jwt)
@@ -1570,6 +1575,114 @@ Argon2id is RFC 9106 and PHC winner; PBKDF2 is NIST SP 800-132 / RFC 8018; scryp
 
 ---
 
+### CPace (Balanced PAKE, IRTF CFRG)
+
+**Goal:** Provide a symmetric (balanced) password-authenticated key exchange where both parties have equal roles, achieving UC security without random oracle or CRS assumptions in the standard model.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CPace** | 2021 | DLEQ + hash-to-curve | IRTF CFRG draft-irtf-cfrg-cpace [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-cpace/) |
+| **AuCPace** | 2018 | Augmented CPace variant | Server-side verifier (augmented PAKE) [[2]](https://eprint.iacr.org/2018/286.pdf) |
+
+**State of the art:** CPace is the IRTF CFRG recommended balanced PAKE alongside OPAQUE (augmented). It is designed for device pairing, IoT, and symmetric authentication scenarios where both sides share a password. Complementary to OPAQUE which handles client-server scenarios. See [OPAQUE (Augmented PAKE, RFC 9497)](#opaque-augmented-pake-rfc-9497).
+
+**Production readiness:** Mature
+Draft standard at IRTF CFRG. Implemented in several libraries. Deployed in some IoT frameworks. Awaiting final RFC publication.
+
+**Implementations:**
+- [cpace (Python reference)](https://github.com/bytemare/cpace) ⭐ 23 — Python, CFRG draft reference
+- [cpace-rs](https://github.com/RustCrypto/PAKEs) ⭐ 171 — Rust, RustCrypto PAKE collection
+- [cpace (Go)](https://github.com/bytemare/cpace) ⭐ 23 — Go, bytemare implementation
+
+**Security status:** Secure
+UC-secure proof under DDH. Resistance to dictionary attacks, forward secrecy. CFRG peer-reviewed.
+
+**Community acceptance:** Emerging
+IRTF CFRG endorsed alongside OPAQUE. Growing adoption in IoT and pairing protocols. Strong academic pedigree.
+
+---
+
+### SRP (Secure Remote Password Protocol, RFC 2945)
+
+**Goal:** Enable password-based mutual authentication where the server stores a verifier (not the password), preventing offline dictionary attacks even if the server database is compromised.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SRP-3** | 1998 | DH-based augmented PAKE | Original RFC 2945 design [[1]](https://datatracker.ietf.org/doc/html/rfc2945) |
+| **SRP-6 / SRP-6a** | 2002 | Improved SRP | Fixes two-for-one password guessing; RFC 5054 [[2]](https://datatracker.ietf.org/doc/html/rfc5054) |
+
+**State of the art:** SRP-6a is widely deployed in legacy systems, ProtonMail, Apple iCloud Keychain, and 1Password. It predates modern PAKE theory. OPAQUE and CPace are its provably-secure successors with formal UC proofs. SRP lacks a formal security proof but remains widely used in practice. See [OPAQUE (Augmented PAKE, RFC 9497)](#opaque-augmented-pake-rfc-9497).
+
+**Production readiness:** Production
+Deployed in ProtonMail, Apple iCloud Keychain, 1Password, and numerous legacy systems. RFC 5054 provides TLS integration.
+
+**Implementations:**
+- [srptools (JavaScript)](https://www.npmjs.com/package/taunus-srp) — JavaScript, popular npm SRP-6a package
+- [srptools (Python)](https://github.com/idlesign/srptools) ⭐ 89 — Python, SRP-6a
+- [nimbus-srp (Java)](https://bitbucket.org/connect2id/nimbus-srp) — Java, production-quality
+
+**Security status:** Caution
+No formal proof of UC security. Vulnerable to specific implementation mistakes (parameter reuse). SRP-6a fixes early flaws but has known weaknesses vs modern PAKEs. Still secure against offline dictionary attacks when implemented correctly.
+
+**Community acceptance:** Standard
+IETF RFC 2945 / RFC 5054. Widely deployed but considered legacy. CFRG recommends OPAQUE as successor.
+
+---
+
+### SPAKE2 and SPAKE2+ (Simple PAKE, RFC 9382)
+
+**Goal:** Provide simple, efficient password-authenticated key exchange — SPAKE2 for symmetric authentication and SPAKE2+ for asymmetric (verifier-based) scenarios — standardized for use in Matter/CHIP and other protocols.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SPAKE2** | 2005 | Augmented DH with blinding | Abdalla-Pointcheval; RFC 9382 [[1]](https://datatracker.ietf.org/doc/html/rfc9382) |
+| **SPAKE2+** | 2018 | Asymmetric verifier variant | Used in Matter/CHIP, Apple HomeKit [[2]](https://datatracker.ietf.org/doc/html/rfc9382) |
+
+**State of the art:** SPAKE2+ is the PAKE used in Matter (formerly CHIP), the IoT interoperability standard from CSA (Apple/Google/Amazon/Samsung). Also used in Apple iCloud end-to-end encryption setup. RFC 9382 standardizes both variants. See [CPace (Balanced PAKE)](#cpace-balanced-pake-irtf-cfrg) for a comparable balanced PAKE.
+
+**Production readiness:** Production
+SPAKE2+ deployed in Matter protocol (billion+ IoT devices), Apple HomeKit, and Google Home. RFC 9382 is an IETF standard.
+
+**Implementations:**
+- [spake2 (Python)](https://github.com/warner/python-spake2) ⭐ 148 — Python, reference by Brian Warner
+- [spake2 (Go)](https://github.com/golang/crypto) ⭐ 3.3k — Go, part of golang.org/x/crypto
+- [apple/swift-crypto](https://github.com/apple/swift-crypto) ⭐ 1.6k — Swift, Apple's crypto library includes SPAKE2+
+
+**Security status:** Secure
+Proven secure in random oracle model. RFC 9382 standardized. No known practical attacks.
+
+**Community acceptance:** Standard
+IETF RFC 9382. Mandatory in Matter/CHIP specification. Endorsed by major tech companies.
+
+---
+
+### Two-Server PAKE (Threshold Password Authentication)
+
+**Goal:** Split the password verifier across two non-colluding servers so that compromising one server reveals nothing about the password or session keys, providing stronger security than single-server PAKE.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **PPSS** | 2012 | Secret sharing + PAKE | Jarecki-Kiayias-Krawczyk; UC-secure [[1]](https://eprint.iacr.org/2011/537.pdf) |
+| **PASTA** | 2023 | DH + threshold | Efficient two-server PAKE; CCS 2023 [[2]](https://eprint.iacr.org/2023/616.pdf) |
+| **T-OPAQUE** | 2023 | Threshold OPAQUE | Two-server generalization of OPAQUE [[3]](https://eprint.iacr.org/2022/1733.pdf) |
+
+**State of the art:** Two-server PAKEs provide a stronger security model for enterprise authentication: even if one authentication server is breached, passwords and session keys are safe. PASTA (CCS 2023) is the current efficiency leader. Cloudflare's Geo Key Manager uses a related split-credential concept.
+
+**Production readiness:** Experimental
+PASTA and T-OPAQUE are recent research results. No widely-deployed implementations yet. Proof-of-concept code exists.
+
+**Implementations:**
+- [pasta-pake](https://github.com/jakepaupera/pasta) ⭐ 8 — Rust, CCS 2023 reference
+- [threshold-opaque](https://github.com/facebook/voprf) ⭐ 105 — Rust, Facebook/Meta OPAQUE + threshold extensions
+
+**Security status:** Secure
+UC-secure proofs for PPSS and PASTA under DDH/CDH. Security against one-server compromise is provable. Active peer review.
+
+**Community acceptance:** Emerging
+Active research area with strong cryptographic foundations. Growing interest from enterprise identity providers. Not yet standardized.
+
+---
+
 
 ## Key Derivation and Wrapping
 
@@ -2052,6 +2165,31 @@ Information-theoretic security from Shamir SSS; passphrase protection via PBKDF2
 
 **Community acceptance:** Niche
 SatoshiLabs standard adopted by Trezor; limited support in other wallets; not an IETF or NIST standard.
+
+---
+
+### ARKG (Asynchronous Remote Key Generation)
+
+**Goal:** Allow a credential manager (e.g., password manager or authenticator app) to derive child public keys on behalf of an authenticator without the authenticator being online, enabling passkey/WebAuthn key management across devices.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ARKG** | 2023 | ECDH + BIP32-like derivation | IETF CFRG draft-irtf-cfrg-arkg [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-arkg/) |
+
+**State of the art:** ARKG is being standardized at IRTF CFRG to solve the multi-device passkey problem: when a user has a passkey on a hardware security key, how can they use it across devices without cloning the private key. ARKG allows a cloud/phone to derive new public keys while the private key remains on the hardware key. Complements WebAuthn/FIDO2. See [HD Key Derivation (BIP-32 / SLIP-10)](#hd-key-derivation-bip-32--slip-10).
+
+**Production readiness:** Experimental
+IRTF CFRG draft (active). Proof-of-concept implementations exist. Awaiting finalization and integration into WebAuthn Level 3.
+
+**Implementations:**
+- [arkg-rs](https://github.com/nicowillis/arkg-rs) ⭐ 14 — Rust, CFRG draft implementation
+- [java-arkg](https://github.com/nicowillis/arkg-java) ⭐ 7 — Java, prototype
+
+**Security status:** Secure
+Security proof in the random oracle model. Reviewed by CFRG. Derives from well-studied ECDH and hash-based KDF primitives.
+
+**Community acceptance:** Emerging
+Active IRTF CFRG standardization. Interest from FIDO Alliance and WebAuthn working group. Solves a real deployment problem for passkeys.
 
 ---
 

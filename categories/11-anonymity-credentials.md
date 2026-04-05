@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (54 schemes)
+## Contents (59 schemes)
 
 **[Anonymous Credentials](#anonymous-credentials)**
 - [Anonymous Credentials](#anonymous-credentials)
@@ -39,11 +39,14 @@
 - [Riffle](#riffle)
 - [Riposte](#riposte)
 - [CBDC Privacy Architectures](#cbdc-privacy-architectures)
+- [Loopix Mix Protocol](#loopix-mix-protocol)
 
 **[Privacy Pass and Tokens](#privacy-pass-and-tokens)**
 - [Privacy Pass / Anonymous Tokens](#privacy-pass--anonymous-tokens)
 - [Semaphore / Anonymous Group Signaling (RLN)](#semaphore--anonymous-group-signaling-rln)
 - [Oblivious Pseudorandom Functions (OPRF / VOPRF / POPRF)](#oblivious-pseudorandom-functions-oprf--voprf--poprf)
+- [Pythia PRF Service](#pythia-prf-service)
+- [Blind PAKE + Anonymous Authentication](#blind-pake--anonymous-authentication)
 
 **[E-Cash and Anonymous Payments](#e-cash-and-anonymous-payments)**
 - [E-Cash / Chaumian Digital Cash](#e-cash--chaumian-digital-cash)
@@ -67,6 +70,8 @@
 - [Group Signatures with Verifier-Local Revocation (VLR)](#group-signatures-with-verifier-local-revocation-vlr)
 - [Credential Status Mechanisms (Revocation Transparency)](#credential-status-mechanisms-revocation-transparency)
 - [Anonymous Multi-Hop Locks (AMHL)](#anonymous-multi-hop-locks-amhl)
+- [Vuvuzela / Alpenhorn](#vuvuzela--alpenhorn)
+- [Waku Protocol (RLN Relay)](#waku-protocol-rln-relay)
 
 <!-- /TOC -->
 
@@ -996,6 +1001,35 @@ ECB, Bank of England, and multiple central banks exploring; regulatory and polit
 ---
 
 
+### Loopix Mix Protocol
+
+**Goal:** Continuous-time anonymous communication with provable resistance to traffic analysis. Loopix routes messages through a stratified mix network where each node delays packets according to an independent Poisson process, injects loop cover traffic to hide real-message timing, and uses pull-based message retrieval to decouple send and receive timing. The combination provides differential-privacy-style bounds on sender and receiver anonymity even against a global passive adversary — without the high latency of batching-based mixnets.
+
+| Component | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Loopix (Piotrowska et al.)** | 2017 | Poisson delays + Sphinx + stratified topology | Each hop independently delays packets by Exp(λ); continuous loop cover messages per node; pull-based message retrieval from provider; sender and receiver unobservable [[1]](https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/piotrowska) |
+| **Loopix Formal Analysis** | 2019 | Differential privacy bounds | Formalizes sender and receiver anonymity as DP guarantees; shows that Poisson delays compose across hops; provides tunable privacy-latency trade-offs [[1]](https://arxiv.org/abs/1808.00285) |
+| **Sphinx Packet Format (George-Danezis)** | 2009 | DH + HMAC + stream cipher | Compact provably-secure onion packet format used by Loopix; header hides routing info from each hop; payload size is fixed [[1]](https://eprint.iacr.org/2009/482) |
+
+**State of the art:** Loopix (USENIX Security 2017) is the theoretical foundation for all modern production mixnets. [Nym Network](#nym-network) and [Katzenpost](#katzenpost) are its two main deployed successors, both using Sphinx packets and Poisson delay mixing. Loopix improved upon earlier cascade mixnets by eliminating synchronous batching, which required all messages to wait for a full batch before forwarding. Builds on [Mix Networks (Mixnets)](#mix-networks-mixnets).
+
+**Production readiness:** Mature
+Theoretical foundation is production-proven via Nym and Katzenpost; the original UCL prototype is a reference implementation, not production software.
+
+**Implementations:**
+- [UCL-InfoSec/loopix](https://github.com/UCL-InfoSec/loopix) ⭐ 72 — Python, original Loopix prototype from the USENIX 2017 paper
+- [nymtech/nym](https://github.com/nymtech/nym) ⭐ 1.7k — Rust, production Loopix-based mixnet (Nym Network)
+- [katzenpost/katzenpost](https://github.com/katzenpost/katzenpost) ⭐ 147 — Go, production Loopix-based mixnet framework
+
+**Security status:** Secure
+Formal differential-privacy bounds proven for Poisson delay mixing; Sphinx packet format proven secure; cover traffic provides measurable anonymity guarantees.
+
+**Community acceptance:** Widely trusted
+Published at USENIX Security 2017; cited as the foundational modern mixnet design; deployed in Nym (production) and Katzenpost; endorsed by privacy researchers including Danezis, Diaz, and Piotrowska.
+
+---
+
+
 ## Privacy Pass and Tokens
 
 ---
@@ -1084,6 +1118,63 @@ DH-based with DLEQ proofs; proven in ROM; standardized over Ristretto255 and P-3
 
 **Community acceptance:** Standard
 IETF RFC 9497; deployed by Cloudflare, Apple, Google; foundational primitive for Privacy Pass and OPAQUE.
+
+---
+
+### Pythia PRF Service
+
+**Goal:** Breach-resistant password hardening with verifiable server-assisted key derivation. Pythia is a threshold PRF service: when a user authenticates, the client sends a blinded version of the password to a hardening server, which evaluates a keyed PRF on it and returns a verifiable result. Even if the password database is stolen, the attacker cannot crack passwords offline without also compromising the Pythia servers. Unlike traditional server-side key hardening (PHE), Pythia supports key rotation without re-hashing every password.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Pythia PRF (Everspaugh et al.)** | 2015 | Partially-oblivious PRF (prf-OPRF) + pairing | Client blinds password; server evaluates verifiable PRF; result used to derive encryption key; supports key rotation without touching stored hashes; UC-security proven [[1]](https://eprint.iacr.org/2015/644) |
+| **Pythia Key Rotation** | 2015 | Pairings + blinding | Server updates key from k to k' and publishes a re-blinding token; client updates stored verifier without sending plaintext password; O(1) server-side storage per key epoch [[1]](https://eprint.iacr.org/2015/644) |
+| **PEKS / PHE (Password Hardening Encryption)** | 2018 | Oblivious PRF + symmetric enc | Liberti-Vergnaud-Viet Triem Tong: symmetric-key analogue; server holds partial key; client/server jointly derive final key; breach of either alone reveals nothing; basis of EnPass [[1]](https://eprint.iacr.org/2018/885) |
+| **Threshold Pythia** | 2017 | Shamir SS + Pythia | Key split among t-of-n servers; single-server Pythia broken if server compromised; threshold variant retains security unless t servers collude [[1]](https://eprint.iacr.org/2017/455) |
+
+**State of the art:** Pythia (2015) is the first formally proved breach-resistant password hardening system. It inspired the IETF OPAQUE design and the commercial VMware Workspace ONE credential hardening. Threshold Pythia avoids single-server trust. The underlying partially-oblivious PRF is closely related to [OPRF / VOPRF / POPRF](#oblivious-pseudorandom-functions-oprf--voprf--poprf) standardized in RFC 9497. See also [PAKE / KDF](03-key-exchange-key-management.md#password-authenticated-key-exchange-pake).
+
+**Production readiness:** Experimental
+Pythia prototype demonstrated; PHE-based schemes deployed in commercial products (1Password SCIF, VMware); threshold variant is research-stage.
+
+**Implementations:**
+- [ace0/safeid](https://github.com/ace0/safeid) ⭐ 7 — Python, Pythia PRF reference implementation from the original paper authors
+- [cloudflare/opaque-ts](https://github.com/cloudflare/opaque-ts) ⭐ 107 — TypeScript, OPAQUE (Pythia-inspired server-assisted credential hardening)
+
+**Security status:** Secure
+Proven UC-secure under the random oracle model and q-DBDHI assumption; key rotation does not degrade security; threshold variant distributes trust.
+
+**Community acceptance:** Niche
+Published at USENIX Security 2015; influenced OPAQUE and commercial PHE products; well-cited in password security research; not widely deployed as a standalone service.
+
+---
+
+### Blind PAKE + Anonymous Authentication
+
+**Goal:** Password-based authentication that is anonymous to the server. A client authenticates with a password without the server learning which registered user is authenticating — the server gains only one bit of information (valid/invalid). Combines password-authenticated key exchange (PAKE) with anonymous credential or blind token techniques so that even the authentication server cannot correlate multiple login sessions to the same user, enabling privacy-preserving access control systems.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Blind PAKE (Jarecki-Kiayias-Krawczyk-Xu)** | 2018 | OPRF + PAKE + blind signature | Client uses OPRF to harden password without server learning the password; blind signature issues an anonymous access token after successful PAKE; server cannot link tokens to registration [[1]](https://eprint.iacr.org/2018/159) |
+| **Eke-OPRF (Anonymous Password-Authenticated KE)** | 2021 | VOPRF + anonymous credentials | Extends OPAQUE with an anonymous credential layer; server authenticates client without learning client identity; each session produces unlinkable auth token [[1]](https://eprint.iacr.org/2021/264) |
+| **OPAQUE + Privacy Pass** | 2023 | OPAQUE (RFC 9497) + Privacy Pass (RFC 9576) | Practical construction: OPAQUE performs breach-resistant password authentication; on success, server issues Privacy Pass token; client redeems token anonymously for services; token is unlinkable to the OPAQUE session [[1]](https://datatracker.ietf.org/doc/draft-irtf-cfrg-opaque/) |
+| **Onymous Authentication (Hanzlik et al.)** | 2022 | Blind sigs + ZK + PAKE | Anonymous authentication with revocability: server can revoke a user without learning which sessions were theirs; based on structure-preserving signatures and CRS-based ZK [[1]](https://eprint.iacr.org/2022/1197) |
+
+**State of the art:** The combination of OPAQUE (RFC 9497) + Privacy Pass (RFC 9576) represents the practical deployed path: OPAQUE provides breach-resistant password authentication; Privacy Pass provides anonymous token issuance after successful authentication. Purely anonymous PAKE schemes (Blind PAKE, Eke-OPRF) remain research-grade. Depends on [OPRF / VOPRF / POPRF](#oblivious-pseudorandom-functions-oprf--voprf--poprf), [Privacy Pass / Anonymous Tokens](#privacy-pass--anonymous-tokens), and [PAKE](03-key-exchange-key-management.md#password-authenticated-key-exchange-pake).
+
+**Production readiness:** Experimental
+OPAQUE + Privacy Pass combination is deployable using existing RFC-standardized components; pure anonymous PAKE schemes are research prototypes.
+
+**Implementations:**
+- [facebook/opaque-ke](https://github.com/facebook/opaque-ke) ⭐ 390 — Rust, OPAQUE protocol implementation
+- [serenity-kit/opaque](https://github.com/serenity-kit/opaque) ⭐ 108 — TypeScript, OPAQUE for web applications
+- [cloudflare/pat-go](https://github.com/cloudflare/pat-go) ⭐ 38 — Go, Privacy Pass token issuance (anonymization layer)
+
+**Security status:** Caution
+OPAQUE (RFC 9497) is well-studied and secure; the anonymous overlay (Blind PAKE, Eke-OPRF) adds complexity and requires careful composition; full anonymous PAKE schemes require trusted setup or pairings.
+
+**Community acceptance:** Emerging
+OPAQUE is IRTF CFRG recommended; Privacy Pass is IETF standardized; the anonymous authentication combination is an active research area gaining interest for privacy-preserving login systems.
 
 ---
 
@@ -1618,6 +1709,59 @@ AMHL framework proven secure (CCS 2019); Schnorr adaptor signatures well-studied
 
 **Community acceptance:** Emerging
 Malavolta et al. (CCS 2019) is the foundational paper; PTLCs are planned for Lightning Network; Bitcoin community supports Taproot-based deployment.
+
+---
+
+### Vuvuzela / Alpenhorn
+
+**Goal:** Metadata-private messaging with formal differential-privacy guarantees against a global adversary. Vuvuzela routes messages through a chain of servers that add calibrated Laplacian noise to traffic patterns, ensuring that an adversary observing all network links learns at most ε-differentially-private information about who is communicating with whom. Alpenhorn is the follow-on system that adds dialing (initial contact establishment) to Vuvuzela's conversation model — replacing out-of-band key exchange with a private, metadata-hiding channel for establishing new conversations.
+
+| System | Year | Basis | Note |
+|--------|------|-------|------|
+| **Vuvuzela** | 2015 | Dead-drop mailboxes + Laplacian DP noise + chained servers | Server chain: each server forwards shuffle with added noise; formal (ε, δ)-DP bound on metadata leakage; 1 M-user anonymity set with 37 s round-trip; 1.7 GB/s server bandwidth [[1]](https://dl.acm.org/doi/10.1145/2815400.2815417) |
+| **Alpenhorn** | 2016 | Vuvuzela metadata privacy + dialing protocol | Adds Vuvuzela-protected dialing channel for establishing new conversations without out-of-band exchange; users add contacts by sending a one-time dial request through the noise-protected channel; end-to-end encrypted via Vuvuzela conversation tunnels [[1]](https://www.usenix.org/conference/osdi16/technical-sessions/presentation/lazar-alpenhorn) |
+
+**State of the art:** Alpenhorn (OSDI 2016, Lazar-Chen-Zeldovich) provides the strongest formal metadata-privacy guarantee among systems targeting real-world users: proven DP bounds, no trusted relays, global-adversary resistance. [Karaoke](#karaoke) (OSDI 2018) improved latency 5–10× over Vuvuzela by using optimistic indistinguishability while retaining DP guarantees. Systems like [SimpleX Chat](#private-communication-with-metadata-protection) offer weaker but deployable metadata privacy. Related to [Differential Privacy](10-privacy-preserving-computation.md#differential-privacy) and [Mix Networks](#mix-networks-mixnets).
+
+**Production readiness:** Research
+Academic prototypes at MIT CSAIL; demonstrated million-user scale with formal DP guarantees; no production deployment.
+
+**Implementations:**
+- [vuvuzela/vuvuzela](https://github.com/vuvuzela/vuvuzela) ⭐ 2.5k — Go, Vuvuzela server and client implementation
+- [vuvuzela/alpenhorn](https://github.com/vuvuzela/alpenhorn) ⭐ 77 — Go, Alpenhorn dialing protocol on top of Vuvuzela
+
+**Security status:** Secure
+Formal (ε, δ)-differential-privacy bounds proven for server chain with Laplacian noise; end-to-end encryption via Signal-protocol-like ratchet; no trusted relays required.
+
+**Community acceptance:** Niche
+Published at SOSP 2015 (Vuvuzela) and OSDI 2016 (Alpenhorn); foundational references for metadata-private messaging with formal guarantees; well-cited but no adoption outside research community.
+
+---
+
+### Waku Protocol (RLN Relay)
+
+**Goal:** Decentralized censorship-resistant messaging with spam prevention. Waku is an open peer-to-peer messaging protocol for Web3 applications, derived from Ethereum's Whisper/devp2p stack. Its most cryptographically significant feature is the RLN (Rate-Limiting Nullifier) relay mode: participants prove membership in a credential set and commit to a rate limit via a zk-SNARK; sending more messages than allowed in an epoch exposes their private identity key through Shamir secret reconstruction, creating a cryptographic disincentive for spam without requiring a centralized server.
+
+| Component | Year | Basis | Note |
+|-----------|------|-------|------|
+| **Waku v2 (Vac/Status)** | 2021 | libp2p + GossipSub + Noise handshake | Modular p2p messaging protocol; relay, filter, store, light-push components; used by Status, Railgun, The Graph, Gnosis Safe [[1]](https://rfc.vac.dev/spec/10/) |
+| **Waku RLN Relay** | 2022 | Semaphore-style ZK + Shamir secret sharing | Nodes hold a Merkle-tree membership credential; each published message includes a ZK proof of membership and a nullifier; two messages per epoch from same key → key reconstruction via Lagrange interpolation → slashing [[1]](https://rfc.vac.dev/spec/17/) |
+| **Waku Privacy (Noise handshake)** | 2022 | Noise protocol framework (XX pattern) | Encrypted peer discovery and session establishment; prevents network observers from linking IP to message content; compatible with Tor/I2P transport [[1]](https://rfc.vac.dev/spec/43/) |
+
+**State of the art:** Waku v2 with RLN Relay is the first production-deployed system combining decentralized anonymous messaging with cryptographically enforced rate limiting. The RLN mechanism is a direct application of [Semaphore / RLN](#semaphore--anonymous-group-signaling-rln) in a live network. Complements [Privacy Pass / Anonymous Tokens](#privacy-pass--anonymous-tokens) (centralized issuance model) with a decentralized stake-based membership approach. Used in production by [Status messenger](https://status.im) and other Web3 applications.
+
+**Production readiness:** Experimental
+Waku v2 deployed in Status messenger and several Web3 apps; RLN relay is testnet-deployed; mainnet RLN rollout ongoing as of 2024.
+
+**Implementations:**
+- [logos-messaging/logos-delivery](https://github.com/logos-messaging/logos-delivery) ⭐ 239 — Nim, nwaku: the primary Waku v2 node implementation with RLN relay
+- [logos-messaging/logos-delivery-go](https://github.com/logos-messaging/logos-delivery-go) ⭐ 133 — Go, go-waku: Go library for Waku v2 with RLN support
+
+**Security status:** Caution
+RLN cryptography is sound (Groth16 over BN254); spam resistance depends on sufficient stake and rapid slashing enforcement; anonymity set depends on network participation size; Noise handshake is well-studied.
+
+**Community acceptance:** Emerging
+Waku is the messaging layer for the Status ecosystem and IFT (formerly Status); RLN is endorsed by the Ethereum PSE group; adopted in multiple Web3 protocols; not yet standardized by IETF or W3C.
 
 ---
 

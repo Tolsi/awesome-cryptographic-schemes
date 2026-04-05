@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (47 schemes)
+## Contents (52 schemes)
 
 **[Consensus Mechanisms](#consensus-mechanisms)**
 - [Casper FFG / Ethereum Proof-of-Stake Finality](#casper-ffg--ethereum-proof-of-stake-finality)
@@ -41,6 +41,7 @@
 - [ZK Rollups and Optimistic Rollups](#zk-rollups-and-optimistic-rollups)
 - [EIP-4844 Proto-Danksharding (Blob Transactions + KZG Ceremony)](#eip-4844-proto-danksharding-blob-transactions--kzg-ceremony)
 - [Recursive SNARKs for Rollups — Nova and ProtoStar Folding](#recursive-snarks-for-rollups--nova-and-protostar-folding)
+- [PeerDAS and Full Danksharding (2D KZG Data Availability Sampling)](#peerdas-and-full-danksharding-2d-kzg-data-availability-sampling)
 
 **[Smart Contract Standards](#smart-contract-standards)**
 - [EIP-712: Ethereum Typed Structured Data Signing](#eip-712-ethereum-typed-structured-data-signing)
@@ -62,6 +63,16 @@
 - [Penumbra — Private DEX with Threshold Encryption](#penumbra--private-dex-with-threshold-encryption)
 - [FHE-Based Encrypted DeFi (fhEVM)](#fhe-based-encrypted-defi-fhevm)
 - [Aztec Protocol — Private Smart Contracts (Noir / PLONK)](#aztec-protocol--private-smart-contracts-noir--plonk)
+- [Account Abstraction (ERC-4337, Programmable Signature Validation)](#account-abstraction-erc-4337-programmable-signature-validation)
+
+**[Blockchain Scalability / Layer 2 / Economic Security](#blockchain-scalability--layer-2--economic-security)**
+- [EigenLayer Restaking and Actively Validated Services (AVS)](#eigenlayer-restaking-and-actively-validated-services-avs)
+
+**[Transaction Ordering / Sequencing](#transaction-ordering--sequencing)**
+- [Preconfirmations (Cryptographic Sub-Second Transaction Commitments)](#preconfirmations-cryptographic-sub-second-transaction-commitments)
+
+**[Rollup Infrastructure / MEV](#rollup-infrastructure--mev)**
+- [Shared Sequencing and Decentralized Rollup Ordering](#shared-sequencing-and-decentralized-rollup-ordering)
 
 <!-- /TOC -->
 
@@ -1430,6 +1441,34 @@ Nova (Microsoft Research, 2021) and HyperNova (2023) published at top venues; Pr
 
 ---
 
+### PeerDAS and Full Danksharding (2D KZG Data Availability Sampling)
+
+**Goal:** Scale Ethereum's data availability by enabling light nodes to verify that rollup data was published using 2D KZG polynomial commitments and random sampling, without downloading the full data — enabling data throughput of 128+ blobs per block.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **PeerDAS (EIP-7594)** | 2024 | 1D KZG + p2p sampling | Ethereum Fusaka upgrade [[1]](https://eips.ethereum.org/EIPS/eip-7594) |
+| **Full Danksharding** | 2025+ | 2D KZG + DAS | Full Ethereum scalability endgame [[2]](https://notes.ethereum.org/@dankrad/new_sharding) |
+| **Proto-Danksharding (EIP-4844)** | 2024 | Blob transactions + KZG | Deployed in Cancun upgrade March 2024 [[3]](https://eips.ethereum.org/EIPS/eip-4844) |
+
+**State of the art:** EIP-4844 (proto-danksharding) shipped in Ethereum's Cancun upgrade (March 2024), providing 3 blobs per block and reducing L2 fees by 10-100×. PeerDAS (EIP-7594) is targeted for the Fusaka upgrade (2025), scaling to 128 blobs per block via peer-to-peer random sampling. Full danksharding is the long-term target. Related to [KZG Polynomial Commitments](../categories/09-commitments-verifiability.md#kzg-polynomial-commitments).
+
+**Production readiness:** Production
+EIP-4844 in production since Cancun (March 2024). PeerDAS (EIP-7594) targets Fusaka 2025. Full danksharding is a future goal.
+
+**Implementations:**
+- [c-kzg-4844](https://github.com/ethereum/c-kzg-4844) ⭐ 209 — C, reference KZG library for EIP-4844
+- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) ⭐ 3.6k — Python, includes PeerDAS spec
+- [grandine](https://github.com/grandinetech/grandine) ⭐ 421 — Rust, Ethereum consensus client with PeerDAS support
+
+**Security status:** Secure
+KZG security reduces to computational Diffie-Hellman in bilinear groups. Trusted setup ceremony (KZG Powers of Tau) completed with 140k+ contributors. Random sampling security proven.
+
+**Community acceptance:** Standard
+EIP-4844 is an Ethereum mainnet standard. PeerDAS (EIP-7594) is in Ethereum's official roadmap. Backed by Ethereum Foundation and all client teams.
+
+---
+
 
 ## Smart Contract Standards
 
@@ -2422,5 +2461,127 @@ UltraPlonk proof system is well-studied; Honk prover under active development; U
 
 **Community acceptance:** Emerging
 Noir language gaining adoption in ZK developer community; Aztec is a well-funded project with strong cryptographic team; private smart contract L2 is a novel and desired capability
+
+---
+
+### Account Abstraction (ERC-4337, Programmable Signature Validation)
+
+**Goal:** Decouple Ethereum transaction authorization from ECDSA signatures by allowing arbitrary smart contract logic to validate transactions, enabling social recovery, multi-sig, WebAuthn/passkey signing, and spending policies without protocol changes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ERC-4337** | 2023 | UserOperation + bundlers + EntryPoint | Smart account standard; no consensus changes [[1]](https://eips.ethereum.org/EIPS/eip-4337) |
+| **EIP-7702** | 2024 | EOA delegation to smart contract | Pectra upgrade; simpler AA for existing wallets [[2]](https://eips.ethereum.org/EIPS/eip-7702) |
+
+**State of the art:** ERC-4337 enables "smart accounts" — Ethereum accounts backed by smart contract logic. Users can use WebAuthn/passkeys (secp256r1) instead of secp256k1 ECDSA, enabling hardware-key signing from phones. Social recovery, spending limits, and gas sponsorship are other use cases. Deployed since March 2023. EIP-7702 (Pectra upgrade, 2025) extends AA to legacy EOAs. Related to [Social Recovery Wallets](../categories/05-secret-sharing-threshold-cryptography.md#social-recovery-wallets-guardian-based-threshold-key-recovery).
+
+**Production readiness:** Production
+ERC-4337 EntryPoint v0.6/v0.7 deployed on Ethereum mainnet and all major L2s since 2023. Major wallets (Coinbase Smart Wallet, ZeroDev, Biconomy) use ERC-4337.
+
+**Implementations:**
+- [account-abstraction](https://github.com/eth-infinitism/account-abstraction) ⭐ 2.2k — Solidity, ERC-4337 reference EntryPoint
+- [safe-smart-account](https://github.com/safe-global/safe-smart-account) ⭐ 2.3k — Solidity, Safe{Wallet} AA implementation
+- [zerodev-kernel](https://github.com/zerodevapp/kernel) ⭐ 431 — Solidity, ZeroDev smart account kernel
+
+**Security status:** Secure
+EntryPoint contract audited by OpenZeppelin and others. Core cryptographic security inherits from the validation logic chosen by the account (ECDSA, WebAuthn, BLS, etc.). Smart contract bugs are the primary risk.
+
+**Community acceptance:** Standard
+ERC-4337 is an Ethereum standard (ERC). Adopted by major wallets, L2s, and infrastructure providers. EIP-7702 included in Pectra upgrade (official Ethereum roadmap). Backed by Ethereum Foundation.
+
+---
+
+
+## Blockchain Scalability / Layer 2 / Economic Security
+
+---
+
+### EigenLayer Restaking and Actively Validated Services (AVS)
+
+**Goal:** Allow Ethereum validators to re-use their staked ETH to secure additional protocols (AVSs) via cryptoeconomic commitments, without requiring separate token staking — enabling trust inheritance from Ethereum's existing validator set.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **EigenLayer** | 2023 | Smart contract + restaking | Bhatt et al.; $10B+ TVL at launch [[1]](https://docs.eigenlayer.xyz/eigenlayer/overview/whitepaper) |
+| **AVS (Actively Validated Service)** | 2024 | EigenLayer + BLS/ECDSA attestations | EigenDA, Aligned Layer, AltLayer [[2]](https://docs.eigenlayer.xyz) |
+
+**State of the art:** EigenLayer launched on Ethereum mainnet in April 2024 with $10B+ TVL in the first weeks. It enables new protocols (DA layers, bridges, ZK verifiers) to bootstrap security from Ethereum validators. EigenDA (EigenLayer's own DA layer) provides 10 MB/s throughput. Controversial for adding systemic risk via restaking correlations. See also [Aligned Layer (Universal ZK Proof Verification)](04-zero-knowledge-proof-systems.md#aligned-layer-universal-zk-proof-verification-infrastructure).
+
+**Production readiness:** Production
+EigenLayer mainnet live since April 2024. $10B+ TVL. Multiple AVSs in production: EigenDA, Aligned Layer, Lagrange.
+
+**Implementations:**
+- [eigenlayer-contracts](https://github.com/Layr-Labs/eigenlayer-contracts) ⭐ 614 — Solidity, core restaking contracts
+- [eigenda](https://github.com/Layr-Labs/eigenda) ⭐ 361 — Go, EigenLayer data availability service
+
+**Security status:** Caution
+Restaking creates correlated slashing risk: an AVS bug can slash validators securing multiple protocols simultaneously. Novel cryptoeconomic model not yet stress-tested by a major incident. The "systemic risk" concern is actively debated.
+
+**Community acceptance:** Controversial
+$10B+ market adoption but Ethereum researchers (Vitalik Buterin, Dankrad Feist) have publicly warned about systemic risk from restaking. Not endorsed by Ethereum Foundation as a core primitive. Active debate in the community.
+
+---
+
+
+## Transaction Ordering / Sequencing
+
+---
+
+### Preconfirmations (Cryptographic Sub-Second Transaction Commitments)
+
+**Goal:** Allow Ethereum validators or rollup sequencers to provide cryptographically-binding inclusion commitments for transactions within milliseconds of submission, before the actual block is produced — enabling UX comparable to traditional payment networks.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Preconfirmations (based rollup)** | 2024 | Validator BLS signature + slashing | EIP-7547; inclusion lists + preconf [[1]](https://ethresear.ch/t/based-preconfirmations/17795) |
+| **Luban / Commit-Boost** | 2024 | MEV-Boost sidecar + BLS commitment | Commit-Boost PBS framework [[2]](https://commit-boost.github.io) |
+| **BOLT** | 2024 | BLS preconf + slashing condition | Chainbound preconfirmations [[3]](https://docs.boltprotocol.xyz) |
+
+**State of the art:** Preconfirmations (preconfs) are a major Ethereum roadmap item for improving user experience. Validators sign binding commitments to include specific transactions in their upcoming block slot, with slashing as enforcement. The Ethereum Pectra upgrade includes EIP-7547 (inclusion lists) as a step toward preconfs. Commit-Boost standardizes the MEV-Boost sidecar for preconf support.
+
+**Production readiness:** Experimental
+Commit-Boost launched on Ethereum mainnet in early 2025. Full preconfirmation slashing conditions are still in development. Testnet deployments exist.
+
+**Implementations:**
+- [commit-boost](https://github.com/Commit-Boost/commit-boost-client) ⭐ 278 — Rust, PBS sidecar for preconfirmations
+- [bolt](https://github.com/chainbound/bolt) ⭐ 192 — Rust, BOLT preconfirmation protocol
+
+**Security status:** Caution
+Novel economic security model relying on slashing conditions. If a validator violates a preconf commitment and slashing is not enforced, double-spend risk exists. Active research on slashing enforcement.
+
+**Community acceptance:** Emerging
+Active Ethereum research topic. Commit-Boost has broad validator operator support. EIP-7547 included in Ethereum's Pectra upgrade. Not yet standardized as a complete system.
+
+---
+
+
+## Rollup Infrastructure / MEV
+
+---
+
+### Shared Sequencing and Decentralized Rollup Ordering
+
+**Goal:** Replace single-operator centralized rollup sequencers with a decentralized ordering layer that enables atomic cross-rollup transactions, reduces MEV extraction opportunities, and provides credible neutrality and censorship resistance.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Espresso Sequencer** | 2023 | HotShot BFT + shared DA | Multi-rollup shared sequencing [[1]](https://docs.espressosys.com) |
+| **Astria** | 2023 | CometBFT + Celestia DA | Shared sequencer for OP/Arbitrum rollups [[2]](https://docs.astria.org) |
+| **Based Sequencing** | 2023 | Ethereum L1 proposer as sequencer | Justin Drake's L1-sequenced rollup model [[3]](https://ethresear.ch/t/based-rollups-superpowered-by-l1-sequencing/15016) |
+
+**State of the art:** Shared sequencing enables multiple rollups to have their transactions ordered by the same decentralized network, enabling atomic cross-rollup composability. Based sequencing uses Ethereum L1 block proposers directly, inheriting L1's decentralization. Espresso and Astria are building production shared sequencer networks. Related to [Preconfirmations](#preconfirmations-cryptographic-sub-second-transaction-commitments).
+
+**Production readiness:** Experimental
+Espresso and Astria have testnet deployments. Based sequencing is a design pattern with some early adopters. No production multi-rollup shared sequencers yet.
+
+**Implementations:**
+- [espresso-sequencer](https://github.com/EspressoSystems/espresso-sequencer) ⭐ 215 — Rust, Espresso shared sequencer
+- [astria](https://github.com/astriaorg/astria) ⭐ 235 — Rust, Astria sequencer
+
+**Security status:** Secure
+Security inherits from underlying BFT consensus (HotShot, CometBFT). Cross-rollup atomicity requires both rollups to accept the shared ordering. Novel threat model around MEV in shared sequencing.
+
+**Community acceptance:** Emerging
+Active research and development in the Ethereum rollup ecosystem. Backed by notable investors and Ethereum Foundation researchers. Not yet standardized.
 
 ---

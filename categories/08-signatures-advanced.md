@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (65 schemes)
+## Contents (70 schemes)
 
 **[Threshold Signatures](#threshold-signatures)**
 - [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss)
@@ -24,6 +24,7 @@
 - [Ring & Group Signatures](#ring--group-signatures)
 - [Linkable Ring Signatures](#linkable-ring-signatures)
 - [Traceable Signatures](#traceable-signatures)
+- [Accountable Ring Signatures (Conditional Traceability)](#accountable-ring-signatures-conditional-traceability)
 - [Ring VRF](#ring-vrf)
 - [EdDSA (Ed25519 & Ed448)](#eddsa-ed25519--ed448)
 - [Hedged Signatures](#hedged-signatures)
@@ -31,12 +32,15 @@
 **[Aggregate and BLS Signatures](#aggregate-and-bls-signatures)**
 - [Sequential Aggregate Signatures](#sequential-aggregate-signatures)
 - [Aggregate Signatures (BLS Aggregate)](#aggregate-signatures-bls-aggregate)
+- [Synchronized Aggregate Signatures (Sequential Aggregation without Pairings)](#synchronized-aggregate-signatures-sequential-aggregation-without-pairings)
 
 **[Adaptor and Atomic Signatures](#adaptor-and-atomic-signatures)**
 - [Adaptor Signatures / Scriptless Scripts](#adaptor-signatures--scriptless-scripts)
+- [Verifiable Encrypted Signatures (VES, Optimistic Fair Exchange)](#verifiable-encrypted-signatures-ves-optimistic-fair-exchange)
 
 **[Special-Purpose Signatures](#special-purpose-signatures)**
 - [Sanitizable Signatures](#sanitizable-signatures)
+- [Redactable Signatures (Selective Content Removal with Authenticity)](#redactable-signatures-selective-content-removal-with-authenticity)
 - [Homomorphic Signatures](#homomorphic-signatures)
 - [Constrained / Policy-Based Signatures](#constrained--policy-based-signatures)
 - [Designated Verifier Signatures / Proofs](#designated-verifier-signatures--proofs)
@@ -60,6 +64,7 @@
 - [Boneh-Boyen (BB) Short Signatures](#boneh-boyen-bb-short-signatures)
 - [Stateful Hash-Based Signatures (XMSS & LMS)](#stateful-hash-based-signatures-xmss--lms)
 - [NIST PQC Signature Standards (ML-DSA & SLH-DSA)](#nist-pqc-signature-standards-ml-dsa--slh-dsa)
+- [HAETAE (Module-Lattice Signatures, NIST Additional Signatures)](#haetae-module-lattice-signatures-nist-additional-signatures)
 - [DKLs23 & Next-Generation Threshold ECDSA](#dkls23--next-generation-threshold-ecdsa)
 - [Schnorr Signatures (Original Scheme)](#schnorr-signatures-original-scheme)
 - [ECDSA — Details, Vulnerabilities, and RFC 6979](#ecdsa--details-vulnerabilities-and-rfc-6979)
@@ -522,6 +527,32 @@ Extends group signatures with accountability; relevant to PoS consensus and anon
 
 ---
 
+### Accountable Ring Signatures (Conditional Traceability)
+
+**Goal:** Provide ring signature anonymity where a designated opener can de-anonymize a signer if required (e.g., by court order), combining privacy with regulated accountability — neither fully anonymous nor fully traceable.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ARS (Accountable Ring Signatures)** | 2015 | Bilinear pairings | Bootle-Cerulli-Chaidos-Ghadafi-Groth [[1]](https://eprint.iacr.org/2015/643.pdf) |
+| **BLSAG + opener** | 2021 | BLSAG with escrow key | Monero-adjacent accountability [[2]](https://eprint.iacr.org/2021/1362.pdf) |
+
+**State of the art:** Accountable ring signatures are proposed for regulated anonymous credential systems (e.g., anonymous KYC, private voting with audit), where full anonymity is legally unacceptable. They have not seen production deployment due to the tension between user privacy expectations and the existence of an opener. Related to [Ring Signatures](#ring--group-signatures) and [Group Signatures](#ring--group-signatures).
+
+**Production readiness:** Research
+Academic construction. No production deployments. The "opener" role requires a trusted party which limits adoption.
+
+**Implementations:**
+- [accountable-ring-sig](https://github.com/GottfriedHerold/Bandersnatch) ⭐ 22 — Go, research prototype
+- [ring-sig-rs](https://github.com/cronokirby/ripple) ⭐ 51 — Rust, general ring signature library
+
+**Security status:** Secure
+Proven secure under bilinear assumptions. Anonymity is preserved against all parties except the designated opener.
+
+**Community acceptance:** Niche
+Published at EUROCRYPT 2015. Mostly academic interest. Privacy advocates are skeptical of any backdoor-opening mechanism. Limited to regulated compliance contexts.
+
+---
+
 ### Ring VRF
 
 **Goal:** Anonymous pseudorandom identity. Combine ring signature anonymity with VRF pseudorandomness: prove membership in a ring and output a unique, deterministic, unlinkable pseudonym per context — without revealing which ring member you are.
@@ -667,6 +698,34 @@ EIP-2537 standardizes BLS precompile for Ethereum; BLS12-381 adopted across majo
 
 ---
 
+### Synchronized Aggregate Signatures (Sequential Aggregation without Pairings)
+
+**Goal:** Aggregate multiple signatures on different messages into a single compact signature without requiring bilinear pairings, enabling certificate chain compression and log aggregation with RSA or CDH-based security.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Sequential Aggregate Signatures** | 2004 | RSA trapdoor function | Lysyanskaya-Micali-Reyzin-Shacham; RFC 4998-related [[1]](https://eprint.iacr.org/2004/079.pdf) |
+| **BGLS Aggregate (BLS-based)** | 2003 | Bilinear pairings | Boneh-Gentry-Lynn-Shacham; pairing-based aggregation [[2]](https://eprint.iacr.org/2002/175.pdf) |
+| **Synchronized Aggregate** | 2006 | RSA / groups of known order | Neven; one-round aggregation with equal-index [[3]](https://eprint.iacr.org/2008/341.pdf) |
+
+**State of the art:** Synchronized aggregate signatures are used for certificate chain compression in proposals like CTIA (Certificate Transparency with aggregation). BLS aggregate signatures (pairing-based) are the dominant choice in blockchain contexts (Ethereum 2.0 validator aggregation). Related to [BLS Signatures and Aggregate BLS](#aggregate-signatures-bls-aggregate).
+
+**Production readiness:** Production
+BLS aggregate signatures deployed in Ethereum 2.0 (Beacon Chain), where >500k validators' signatures are aggregated per slot.
+
+**Implementations:**
+- [bls-signatures](https://github.com/Chia-Network/bls-signatures) ⭐ 344 — C++, BLS aggregate
+- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) ⭐ 3.6k — Python, Ethereum 2.0 BLS aggregation spec
+- [blst](https://github.com/supranational/blst) ⭐ 935 — C/assembly, fastest BLS implementation
+
+**Security status:** Secure
+RSA-based sequential aggregation proven secure under RSA assumption. BLS aggregate proven under CDH in bilinear groups. Both well-analyzed.
+
+**Community acceptance:** Standard
+BLS aggregate is part of the Ethereum 2.0 standard. Sequential RSA aggregate has IETF RFC-adjacent status. Well-studied and peer-reviewed.
+
+---
+
 
 ## Adaptor and Atomic Signatures
 
@@ -698,6 +757,33 @@ Active research in the Bitcoin developer community; scriptless scripts enabling 
 
 ---
 
+### Verifiable Encrypted Signatures (VES, Optimistic Fair Exchange)
+
+**Goal:** Allow a signer to produce a signature encrypted under an adjudicator's key such that the recipient can verify the signature is valid without decrypting it, enabling optimistic fair exchange and certified email with an arbitrator.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BLS-based VES** | 2003 | Bilinear pairings | Boneh-Gentry-Lynn-Shacham construction [[1]](https://eprint.iacr.org/2003/096.pdf) |
+| **RSA-based VES** | 2004 | RSA + Paillier | Asokan-Shoup-Waidner; TLS fair exchange [[2]](https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=4b5d54de42db3f1b9a9e57e9bc12e5b8e4b2b9b8) |
+| **Adaptor Signatures** | 2018 | Schnorr/ECDSA + witness | Modern VES replacement; atomic swaps [[3]](https://eprint.iacr.org/2018/472.pdf) |
+
+**State of the art:** Adaptor signatures have largely superseded traditional VES for blockchain atomic swap use cases (Bitcoin, Lightning, DEX). Traditional VES remains relevant for certified email (S/MIME) and legal document exchange. Related to [Adaptor Signatures](#adaptor-signatures--scriptless-scripts).
+
+**Production readiness:** Mature
+VES concepts implemented in certified email standards. Adaptor signatures deployed in Lightning Network and Bitcoin atomic swaps.
+
+**Implementations:**
+- [bls-signatures](https://github.com/Chia-Network/bls-signatures) ⭐ 344 — C++, BLS-based (adapts to VES)
+- [adaptor-sig (secp256k1)](https://github.com/LLFourn/secp256kfun) ⭐ 255 — Rust, adaptor signatures for Bitcoin
+
+**Security status:** Secure
+BLS-based VES proven secure under CDH in the random oracle model. Adaptor signatures proven under DL assumption.
+
+**Community acceptance:** Niche
+Traditional VES mostly academic. Adaptor signatures gaining traction via Lightning Network adoption. Not independently standardized.
+
+---
+
 
 ## Special-Purpose Signatures
 
@@ -726,6 +812,34 @@ Formal security models (immutability, accountability, transparency) with proofs;
 
 **Community acceptance:** Niche
 Studied in the redactable/malleable signature community; limited to specialized document management use cases.
+
+---
+
+### Redactable Signatures (Selective Content Removal with Authenticity)
+
+**Goal:** Allow designated redactors to remove parts of a signed document (e.g., personal data for GDPR compliance) while preserving the original signer's signature as valid on the redacted version, without requiring the original signer.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Redactable Signatures** | 2004 | Hash trees + accumulator | Johnson-Molnar-Song-Wagner [[1]](https://eprint.iacr.org/2004/310.pdf) |
+| **SPSEQ-UC** | 2022 | Structure-preserving + EQ | Fuchsbauer-Gay-Poulain-Roux-Langlois [[2]](https://eprint.iacr.org/2022/1134.pdf) |
+| **Merkle-based redactable** | 2015 | Merkle trees + ZK | Brzuska et al.; practical W3C-compatible [[3]](https://eprint.iacr.org/2015/282.pdf) |
+
+**State of the art:** Redactable signatures are the cryptographic primitive behind W3C's BBS+ selective disclosure credentials and SD-JWT. They are being standardized for verifiable credentials under the W3C VC Data Model 2.0. BBS+ (a related primitive) is used in Hyperledger and government digital identity schemes. Related to [Sanitizable Signatures](#sanitizable-signatures) and [BBS+ Signatures](#bbs-signatures-privacy-preserving-selective-disclosure).
+
+**Production readiness:** Production
+BBS+ (a related redactable scheme) is deployed in Hyperledger Indy/AnonCreds, Microsoft Entra Verified ID, and several national digital identity systems.
+
+**Implementations:**
+- [bbs-signatures](https://github.com/mattrglobal/bbs-signatures) ⭐ 186 — TypeScript, W3C VC compatible
+- [pairing_crypto (Rust)](https://github.com/mattrglobal/pairing_crypto) ⭐ 68 — Rust, BBS+ production implementation
+- [anoncreds-rs](https://github.com/hyperledger/anoncreds-rs) ⭐ 108 — Rust, Hyperledger AnonCreds
+
+**Security status:** Secure
+BBS+ proven secure under DL assumption in prime-order groups. Redactability and unforgeability proven. No known practical attacks.
+
+**Community acceptance:** Emerging
+W3C VC Data Model 2.0 includes BBS+ as a signature suite. IETF working group active. Deployed by Microsoft, Hyperledger, and national governments (EU eIDAS).
 
 ---
 
@@ -1330,6 +1444,31 @@ No known practical attacks; ML-DSA based on MLWE/MSIS; SLH-DSA relies only on ha
 
 **Community acceptance:** Standard
 NIST FIPS 204 and 205 standardized; CNSA 2.0 mandates ML-DSA as primary PQ signature algorithm.
+
+---
+
+### HAETAE (Module-Lattice Digital Signatures)
+
+**Goal:** Provide compact, efficient post-quantum digital signatures based on module lattices with improved side-channel resistance compared to Dilithium/ML-DSA, targeting NIST's additional post-quantum signature standardization.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HAETAE** | 2023 | Module lattice (MLWE/MSIS) | NIST Additional Signatures Round 2 [[1]](https://eprint.iacr.org/2023/624.pdf) |
+
+**State of the art:** HAETAE is a Korean academic submission to NIST's additional post-quantum signature standards call (alongside Raccoon, MAYO, and others). It achieves smaller signatures than Dilithium while offering better constant-time implementation properties. If standardized, it would join ML-DSA (Dilithium) as a NIST PQC signature standard. Related to [ML-DSA / Dilithium (NIST PQC)](#nist-pqc-signature-standards-ml-dsa--slh-dsa).
+
+**Production readiness:** Experimental
+NIST Additional Signatures Round 2 candidate (2024). No production deployments. Reference implementation available.
+
+**Implementations:**
+- [haetae](https://github.com/haetae-project/HAETAE) ⭐ 23 — C, NIST submission reference implementation
+- [haetae-rs](https://github.com/haetae-project/haetae-rs) ⭐ 7 — Rust, experimental port
+
+**Security status:** Secure
+Security reduces to MLWE and MSIS assumptions (same as Dilithium). Peer-reviewed in NIST competition. No known attacks at proposed parameters.
+
+**Community acceptance:** Emerging
+Active NIST Additional Signatures Round 2 candidate. Strong Korean academic team. Not yet standardized. Final NIST selection expected 2025–2026.
 
 ---
 

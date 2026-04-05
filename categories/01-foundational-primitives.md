@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (54 schemes)
+## Contents (59 schemes)
 
 **[Symmetric Ciphers](#symmetric-ciphers)**
 - [Symmetric Encryption](#symmetric-encryption)
@@ -25,6 +25,9 @@
 - [Constant-Time Implementations and Timing Attack Mitigations](#constant-time-implementations-and-timing-attack-mitigations)
 - [Double PRF and Related-Key Attack Resistance](#double-prf-and-related-key-attack-resistance)
 - [PRESENT, GIFT, and SKINNY (Lightweight Block Ciphers)](#present-gift-and-skinny-lightweight-block-ciphers)
+- [ARX Ciphers (Add-Rotate-XOR Design Paradigm)](#arx-ciphers-add-rotate-xor-design-paradigm)
+- [Wide Block Ciphers (Adiantum / HCTR2)](#wide-block-ciphers-adiantum--hctr2)
+- [Threefish and Skein (SHA-3 Finalist)](#threefish-and-skein-sha-3-finalist)
 
 **[Public-Key Encryption](#public-key-encryption)**
 - [One-Time Pad / Information-Theoretic Security](#one-time-pad--information-theoretic-security)
@@ -56,6 +59,7 @@
 - [BLAKE2 Hash Function Internals](#blake2-hash-function-internals)
 - [Ascon (NIST Lightweight AEAD and Hashing Winner)](#ascon-nist-lightweight-aead-and-hashing-winner)
 - [TurboSHAKE and MarsupilamiFourteen](#turboshake-and-marsupilamifourteen)
+- [Correlation-Robust Hash Functions](#correlation-robust-hash-functions)
 
 **[Digital Signatures](#digital-signatures)**
 - [Digital Signatures](#digital-signatures)
@@ -65,6 +69,7 @@
 - [Puncturable / Constrained PRF](#puncturable--constrained-prf)
 - [Key-Homomorphic PRF](#key-homomorphic-prf)
 - [DRBG (Deterministic Random Bit Generators)](#drbg-deterministic-random-bit-generators)
+- [Legendre PRF](#legendre-prf)
 
 **[Extractors and Information-Theoretic Primitives](#extractors-and-information-theoretic-primitives)**
 - [Fuzzy Extractors / Secure Sketches](#fuzzy-extractors--secure-sketches)
@@ -733,6 +738,91 @@ No practical attacks on full rounds of PRESENT, GIFT-128, or SKINNY at recommend
 
 **Community acceptance:** Niche
 PRESENT is ISO/IEC 29192-2. GIFT and SKINNY are well-studied in the academic community and NIST LWC process but not broadly standardized as standalone primitives.
+
+---
+
+### ARX Ciphers (Add-Rotate-XOR Design Paradigm)
+
+**Goal:** Design fast, efficient symmetric primitives using only addition, rotation, and XOR — no lookup tables, making them naturally constant-time and suitable for software and FPGAs.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Salsa20 / ChaCha20** | 2005/2008 | ARX stream cipher | IETF RFC 7539/8439 [[1]](https://datatracker.ietf.org/doc/html/rfc8439) |
+| **BLAKE2 / BLAKE3** | 2012/2020 | ARX hash/PRF | Fastest secure hash in software [[2]](https://blake3.io) |
+| **SPECK** | 2013 | ARX block cipher | NSA lightweight design, software-optimized [[3]](https://eprint.iacr.org/2013/404.pdf) |
+| **Chaskey** | 2014 | ARX MAC | ISO/IEC 29192-6, microcontroller MAC [[4]](https://mouha.be/chaskey/) |
+
+**State of the art:** ChaCha20-Poly1305 is the dominant TLS 1.3 cipher suite on non-AES hardware (mobile, IoT). BLAKE3 is the fastest cryptographic hash in benchmarks. ARX designs dominate when AES-NI is unavailable.
+
+**Production readiness:** Production
+Deployed at massive scale — ChaCha20-Poly1305 in TLS 1.3, BLAKE3 in production storage systems and package managers.
+
+**Implementations:**
+- [chacha20poly1305 (RustCrypto)](https://github.com/RustCrypto/stream-ciphers) ⭐ 664 — Rust, IETF-compliant, no_std
+- [BLAKE3 reference](https://github.com/BLAKE3-team/BLAKE3) ⭐ 5.2k — Rust/C, multithreaded tree hashing
+- [libsodium](https://github.com/jedisct1/libsodium) ⭐ 13k — C, ChaCha20/BLAKE2 production library
+
+**Security status:** Secure
+No known structural weaknesses. ChaCha20 has 256-bit security, BLAKE3 256-bit collision resistance. SPECK has some academic differential/linear analysis but no practical breaks at full rounds.
+
+**Community acceptance:** Widely trusted
+ChaCha20 standardized in RFC 8439. BLAKE3 widely adopted by major projects. IETF, NIST, and industry endorse these designs.
+
+---
+
+### Wide Block Ciphers (Adiantum / HCTR2)
+
+**Goal:** Encrypt disk sectors and arbitrary-length data with a tweakable wide-block cipher that provides strong security without requiring AES hardware, suitable for low-end Android and embedded devices.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Adiantum** | 2018 | ChaCha12 + Poly1305 + AES | Android 9+ on low-end devices [[1]](https://eprint.iacr.org/2018/720.pdf) |
+| **HCTR2** | 2021 | XCTR + GHASH | Android 12+ preferred wide-block cipher [[2]](https://eprint.iacr.org/2021/1441.pdf) |
+| **HPolyC** | 2018 | Hash-then-encrypt (ChaCha20) | Predecessor to Adiantum [[3]](https://eprint.iacr.org/2018/720.pdf) |
+
+**State of the art:** HCTR2 supersedes Adiantum on devices with AES instructions; Adiantum remains standard for Cortex-A5/A7 class devices without AES-NI. Both are deployed in the Linux kernel and Android. See [AES-XTS (Disk Encryption)](#aes-xts-and-disk-encryption).
+
+**Production readiness:** Production
+Adiantum shipped in Android 9 (2018) for low-end devices; HCTR2 added in Android 12 / Linux 5.17 (2022). Tens of millions of devices.
+
+**Implementations:**
+- [adiantum (Linux kernel)](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git) ⭐ 190k — C, upstream kernel crypto
+- [adiantum-rs](https://github.com/google/adiantum) ⭐ 279 — Rust, Google reference implementation
+- [hctr2 (Linux kernel)](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git) ⭐ 190k — C, mainline since 5.17
+
+**Security status:** Secure
+Adiantum proven secure as a super-pseudorandom permutation under standard assumptions. HCTR2 has improved security proof. No known attacks.
+
+**Community acceptance:** Widely trusted
+Google-designed, peer-reviewed at FSE/IACR, deployed in AOSP and mainline Linux.
+
+---
+
+### Threefish and Skein (SHA-3 Finalist)
+
+**Goal:** Provide a large-state tweakable block cipher (Threefish) and a flexible hash function family (Skein) built on it, targeting 256/512/1024-bit security levels with a clean ARX design.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Threefish-256/512/1024** | 2008 | ARX tweakable block cipher | Core primitive of Skein [[1]](https://www.skein-hash.info/sites/default/files/skein1.3.pdf) |
+| **Skein-256/512/1024** | 2008 | UBI chaining + Threefish | SHA-3 finalist, NIST competition [[2]](https://www.skein-hash.info) |
+| **Skein-MAC / Skein-KDF** | 2008 | Tree/sequential modes | Built-in MAC, KDF, PRNG modes |
+
+**State of the art:** Skein did not win SHA-3 (Keccak did), but remains a respected design. Threefish is used in some niche applications requiring large tweakable block ciphers. Not widely deployed but well-analyzed.
+
+**Production readiness:** Mature
+Well-studied reference implementations exist. Used in some niche applications (e.g., Whirlpool alternatives, custom PKIs), but not mainstream.
+
+**Implementations:**
+- [skein (RustCrypto)](https://github.com/RustCrypto/hashes) ⭐ 1.9k — Rust, pure implementation
+- [sphlib](https://www.saphir2.com/sphlib/) — C, reference from SHA-3 competition
+- [bcgit/bc-java](https://github.com/bcgit/bc-java) ⭐ 2.3k — Java, Bouncy Castle includes Skein/Threefish
+
+**Security status:** Secure
+No known practical attacks on full-round Threefish or Skein at recommended parameters. Third-party cryptanalysis found no weaknesses.
+
+**Community acceptance:** Niche
+Strong academic reputation as SHA-3 finalist. Not standardized post-competition. Limited adoption outside security research.
 
 ---
 
@@ -1626,6 +1716,34 @@ TurboSHAKE is proposed for NIST SP 800-185 update; KangarooTwelve is IETF RFC 95
 
 ---
 
+### Correlation-Robust Hash Functions
+
+**Goal:** Provide hash functions with correlation-robustness properties needed for OT extension, garbled circuits, and other MPC protocols — typically instantiated with fixed-key AES in a specific mode.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Fixed-Key AES (correlation-robust)** | 2019 | AES-NI hardware | Guo-Katz-Weng practical instantiation [[1]](https://eprint.iacr.org/2019/074.pdf) |
+| **TMMO / MMO / MP constructions** | 2019 | AES-based | Provably correlation-robust under AES assumptions [[2]](https://eprint.iacr.org/2019/074.pdf) |
+| **MiMC / HadesMiMC (ZK-friendly)** | 2016/2019 | Low-multiplicative complexity | Preferred in ZK circuit contexts [[3]](https://eprint.iacr.org/2016/492.pdf) |
+
+**State of the art:** Fixed-key AES with the Matyas-Meyer-Oseas (MMO) or Davies-Meyer construction is the practical standard for OT extension (e.g., libOTe, EMP-toolkit). Guo-Katz-Weng 2019 provides the tightest formal justification. See also [Garbled Circuits](../categories/06-multi-party-computation.md#garbled-circuits) and [OT Extension](../categories/06-multi-party-computation.md#oblivious-transfer-ot-and-ot-extension).
+
+**Production readiness:** Production
+Used in every high-performance OT extension library. The fixed-key AES approach achieves ~1 billion OTs/second in optimized implementations.
+
+**Implementations:**
+- [libOTe](https://github.com/osu-crypto/libOTe) ⭐ 565 — C++, AES-NI accelerated OT/OT-ext
+- [EMP-toolkit](https://github.com/emp-toolkit/emp-ot) ⭐ 195 — C++, correlation-robust hash for garbling
+- [fancy-garbling](https://github.com/GaloisInc/fancy-garbling) ⭐ 112 — Rust, uses fixed-key AES
+
+**Security status:** Caution
+Correlation-robustness is a weaker property than collision resistance. Security relies on AES behaving as an ideal cipher. No standard formal definition covers all uses — implementers must match the construction to the security proof.
+
+**Community acceptance:** Widely trusted
+Universally used in MPC/OT implementations. Guo-Katz-Weng analysis is peer-reviewed and widely cited, but not formally standardized.
+
+---
+
 
 ## Digital Signatures
 
@@ -1777,6 +1895,32 @@ HMAC-DRBG and CTR-DRBG are secure when properly seeded. Dual_EC_DRBG was backdoo
 
 **Community acceptance:** Standard
 HMAC-DRBG and CTR-DRBG are NIST SP 800-90A. Dual_EC_DRBG was removed from SP 800-90A Rev 1 (2015). Fortuna is widely respected but not formally standardized.
+
+---
+
+### Legendre PRF
+
+**Goal:** Provide an MPC-friendly pseudorandom function based on the Legendre symbol modulo a prime, enabling efficient threshold and distributed PRF evaluation without multiplication-heavy circuits.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Legendre PRF** | 2011 | Number-theoretic (Legendre symbol) | Damgård 1988/Grassi et al. 2022 [[1]](https://eprint.iacr.org/2019/1059.pdf) |
+| **Power Residue PRF** | 2019 | Generalization of Legendre symbol | Beullens-Beyne-Bossaers extension [[2]](https://eprint.iacr.org/2019/1530.pdf) |
+
+**State of the art:** The Legendre PRF is of significant interest in MPC and post-quantum contexts because it has very low multiplicative complexity — ideal for secret-shared evaluation. Under active study for use in Ethereum VDF constructions and MPC-friendly PRF applications. Not yet in production systems.
+
+**Production readiness:** Experimental
+Academic interest is high (Ethereum Foundation funded research). No production deployments yet. Efficient MPC implementations exist as proofs of concept.
+
+**Implementations:**
+- [legendre-prf](https://github.com/csiblock/legendre-prf) ⭐ 12 — Python, research prototype
+- [mpc-friendly-prf](https://github.com/KULeuven-COSIC/mpc-friendly-prf) ⭐ 28 — C++, Beyne et al. benchmarks
+
+**Security status:** Caution
+Conjectured secure under standard number-theoretic assumptions, but less studied than AES-based PRFs. Best known attacks are subexponential. Parameter sizes need care for long-term security.
+
+**Community acceptance:** Niche
+Primarily of interest to MPC researchers and Ethereum Foundation for VDF/randomness beacons. Limited peer review compared to mainstream PRF constructions.
 
 ---
 

@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (55 schemes)
+## Contents (60 schemes)
 
 **[Fully Homomorphic Encryption (FHE)](#fully-homomorphic-encryption-fhe)**
 - [Microsoft SEAL](#microsoft-seal)
@@ -33,6 +33,10 @@
 - [FHERMA (FHE Components Platform)](#fherma-fhe-components-platform)
 - [FHEW — Fastest Homomorphic Encryption in the West](#fhew--fastest-homomorphic-encryption-in-the-west)
 - [Programmable Bootstrapping (PBS / CGGI Functional Bootstrapping)](#programmable-bootstrapping-pbs--cggi-functional-bootstrapping)
+- [TFHE (Torus Fully Homomorphic Encryption)](#tfhe-torus-fully-homomorphic-encryption)
+- [OpenFHE (Consolidated Open-Source FHE Library)](#openfhe-consolidated-open-source-fhe-library)
+- [Leveled FHE without Bootstrapping (BGV/BFV Leveled Mode)](#leveled-fhe-without-bootstrapping-bgvbfv-leveled-mode)
+- [Pegasus and CHIMERA (Cross-Scheme FHE Bridging)](#pegasus-and-chimera-cross-scheme-fhe-bridging)
 
 **[Attribute-Based Encryption (ABE)](#attribute-based-encryption-abe)**
 - [Decentralized Multi-Client Functional Encryption (DMCFE)](#decentralized-multi-client-functional-encryption-dmcfe)
@@ -54,6 +58,7 @@
 - [Function-Hiding Inner-Product Functional Encryption (FH-IPFE)](#function-hiding-inner-product-functional-encryption-fh-ipfe)
 - [Inner-Product Functional Encryption (IPFE)](#inner-product-functional-encryption-ipfe)
 - [Multi-Input Quadratic Functional Encryption (MIQFE)](#multi-input-quadratic-functional-encryption-miqfe)
+- [Multi-Client Functional Encryption for Inner Products (MCFE-IP)](#multi-client-functional-encryption-for-inner-products-mcfe-ip)
 
 **[Broadcast and Special Encryption](#broadcast-and-special-encryption)**
 - [Broadcast Encryption](#broadcast-encryption)
@@ -998,6 +1003,114 @@ Core technique behind Zama's commercial FHE stack; published at ASIACRYPT 2020; 
 
 ---
 
+### TFHE (Torus Fully Homomorphic Encryption)
+
+**Goal:** Provide fully homomorphic encryption with fast programmable bootstrapping on the real torus, enabling gate-by-gate computation on encrypted data with bootstrapping taking under 1 millisecond per gate.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **TFHE** | 2016 | LWE + TLWE + TGSW | Chillotti-Gama-Georgieva-Izabachène [[1]](https://eprint.iacr.org/2018/421.pdf) |
+| **FHEW** | 2014 | NTRU + bootstrapping | Ducas-Micciancio; <1s bootstrapping [[2]](https://eprint.iacr.org/2014/816.pdf) |
+| **Concrete / TFHE-rs** | 2022 | TFHE optimized | Zama's production TFHE implementation [[3]](https://github.com/zama-ai/tfhe-rs) |
+
+**State of the art:** TFHE is the foundation of Zama's commercial FHE stack (concrete, concrete-ml, fhEVM). It offers the fastest gate-by-gate bootstrapping (~1ms per gate) and supports arbitrary programmable bootstrapping (PBS). Used in Zama's blockchain confidential computation platform. Related to [BFV / BGV / CKKS (Leveled FHE Schemes)](#bfv--bgv--ckks-leveled-fhe-schemes).
+
+**Production readiness:** Production
+Zama's tfhe-rs is production-deployed in smart contract encryption (fhEVM on Ethereum). Concrete-ML enables private ML inference. Commercial deployments at multiple companies.
+
+**Implementations:**
+- [tfhe-rs](https://github.com/zama-ai/tfhe-rs) ⭐ 2.0k — Rust, Zama's production TFHE library
+- [concrete](https://github.com/zama-ai/concrete) ⭐ 986 — Python/Rust, high-level FHE compiler
+- [OpenFHE](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, includes FHEW/TFHE
+
+**Security status:** Secure
+Based on standard LWE/TLWE hardness assumptions. 128-bit security at standard parameters. Peer-reviewed extensively since 2016.
+
+**Community acceptance:** Widely trusted
+Published at ASIACRYPT 2016. Foundation of Zama's commercial stack. Multiple independent implementations and audits. Active IACR ePrint activity.
+
+---
+
+### OpenFHE (Consolidated Open-Source FHE Library)
+
+**Goal:** Provide a unified, production-quality open-source library implementing all major FHE schemes (BGV, BFV, CKKS, TFHE/FHEW, and their threshold/multi-key variants) under a single BSD-licensed C++ API.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **OpenFHE** | 2022 | PALISADE successor | Badawi et al.; all major FHE schemes [[1]](https://eprint.iacr.org/2022/915.pdf) |
+
+**State of the art:** OpenFHE consolidates the PALISADE, HEAAN, HElib, and FHEW code into a single modern C++ library. It is the reference implementation used by DARPA DPRIVE, NIST FHE workshops, and academic research. Supports BGV, BFV, CKKS, TFHE, and multi-key/threshold variants. Related to [BFV / BGV / CKKS](#bfv--bgv--ckks-leveled-fhe-schemes) and [TFHE](#tfhe-torus-fully-homomorphic-encryption).
+
+**Production readiness:** Mature
+Used in DARPA DPRIVE program (computing on encrypted government data). Multiple research groups and companies build on OpenFHE. Regular releases and maintenance.
+
+**Implementations:**
+- [openfhe-development](https://github.com/openfheorg/openfhe-development) ⭐ 1.1k — C++, primary repository
+- [openfhe-python](https://github.com/openfheorg/openfhe-python) ⭐ 214 — Python bindings
+- [openfhe-rs](https://github.com/fairmath/openfhe-rs) ⭐ 128 — Rust bindings
+
+**Security status:** Secure
+All included schemes (BGV/BFV/CKKS/TFHE) are secure under standard LWE/RLWE assumptions at recommended parameters. CKKS has approximate arithmetic — see [CKKS](#bfv--bgv--ckks-leveled-fhe-schemes) caution note.
+
+**Community acceptance:** Widely trusted
+Endorsed by DARPA, used by NIST FHE workshops. Successor to PALISADE (well-regarded). BSD license enables broad adoption.
+
+---
+
+### Leveled FHE without Bootstrapping (BGV/BFV Leveled Mode)
+
+**Goal:** Perform homomorphic computation on encrypted integers for a bounded number of multiplicative levels without requiring expensive bootstrapping, covering the vast majority of practical FHE deployments where circuit depth is known in advance.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BGV leveled** | 2012 | RLWE + modulus switching | Brakerski-Gentry-Vaikuntanathan; practical leveled FHE [[1]](https://eprint.iacr.org/2011/277.pdf) |
+| **BFV leveled** | 2012 | RLWE + full RNS | Fan-Vercauteren; practical integer HE [[2]](https://eprint.iacr.org/2012/144.pdf) |
+| **RNS-CKKS leveled** | 2018 | CKKS + RNS decomposition | Cheon et al.; practical approximate HE [[3]](https://eprint.iacr.org/2018/931.pdf) |
+
+**State of the art:** >95% of real-world FHE deployments use leveled mode (no bootstrapping) because practical applications have bounded circuit depth. Private ML inference, private database queries, and private statistics all fall in this category. Bootstrapping is reserved for unbounded computation. Related to [BFV / BGV / CKKS (Leveled FHE Schemes)](#bfv--bgv--ckks-leveled-fhe-schemes).
+
+**Production readiness:** Production
+Leveled FHE in production: Microsoft SEAL (BFV/CKKS), HElib (BGV), OpenFHE, and Lattigo all support leveled mode as the default. Used in Azure Confidential Computing and private ML inference.
+
+**Implementations:**
+- [Microsoft SEAL](https://github.com/microsoft/SEAL) ⭐ 3.6k — C++, BFV/CKKS leveled mode
+- [HElib](https://github.com/homenc/HElib) ⭐ 3.0k — C++, BGV leveled mode
+- [Lattigo](https://github.com/tuneinsight/lattigo) ⭐ 1.1k — Go, BFV/CKKS/BGV leveled
+
+**Security status:** Secure
+Well-analyzed under RLWE hardness. Standard parameters provide 128-bit security. CKKS has approximate decryption — use integer schemes (BFV/BGV) for exact results.
+
+**Community acceptance:** Standard
+NIST-recognized (post-quantum FHE). Deployed at Microsoft, IBM, Google, and major cloud providers. Multiple independent analyses.
+
+---
+
+### Pegasus and CHIMERA (Cross-Scheme FHE Bridging)
+
+**Goal:** Enable seamless conversion between different FHE schemes (e.g., CKKS for real-number arithmetic ↔ TFHE for Boolean/comparison operations) within a single encrypted computation, avoiding the need to choose one scheme upfront.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CHIMERA** | 2018 | CKKS ↔ FHEW/TFHE switching | Boura-Gama-Georgieva-Jetchev [[1]](https://eprint.iacr.org/2018/758.pdf) |
+| **Pegasus** | 2021 | CKKS ↔ TFHE streaming | Lu et al., S&P 2021; efficient scheme switching [[2]](https://eprint.iacr.org/2020/1349.pdf) |
+
+**State of the art:** Pegasus achieves ~0.5s for CKKS→TFHE conversion and ~100ms for TFHE→CKKS, enabling hybrid computation: use CKKS for floating-point operations, TFHE for comparisons and branching. Critical for private ML inference pipelines combining both arithmetic and boolean operations. Related to [TFHE](#tfhe-torus-fully-homomorphic-encryption) and [Transciphering / FHE-friendly Ciphers](#transciphering--fhe-friendly-ciphers).
+
+**Production readiness:** Experimental
+Pegasus is open-source with a research implementation. No production deployments known. TFHE-rs team has expressed interest in implementing scheme switching.
+
+**Implementations:**
+- [Pegasus](https://github.com/Alibaba-Gemini-Lab/OpenPEGASUS) ⭐ 181 — C++, Alibaba/S&P 2021 reference
+- [CHIMERA reference](https://eprint.iacr.org/2018/758.pdf) — C, academic paper with reference code (no public GitHub repo)
+
+**Security status:** Secure
+Conversion is provably secure assuming security of both source and target schemes. No known attacks on the scheme-switching mechanism.
+
+**Community acceptance:** Emerging
+Pegasus published at IEEE S&P 2021. Active research on improving conversion efficiency. Growing interest as hybrid FHE pipelines become practical.
+
+---
+
 
 ## Attribute-Based Encryption (ABE)
 
@@ -1436,6 +1549,34 @@ Proven secure under bilinear map assumptions; simulation-secure variant (SAC 202
 
 **Community acceptance:** Niche
 Published at ASIACRYPT 2021 and SAC 2024; extends quadratic FE to multi-client settings; limited to academic community
+
+---
+
+### Multi-Client Functional Encryption for Inner Products (MCFE-IP)
+
+**Goal:** Allow multiple data owners (clients) to encrypt their data independently so that a server can compute inner products (weighted sums) over the combined ciphertext without learning individual values — enabling federated analytics without a trusted aggregator.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **MCFE for inner products** | 2017 | DDH/DCR + functional keys | Chotard et al., ASIACRYPT 2018 [[1]](https://eprint.iacr.org/2017/989.pdf) |
+| **DMCFE (Decentralized)** | 2020 | DKG + MCFE | No trusted setup; Chotard et al. [[2]](https://eprint.iacr.org/2017/989.pdf) |
+| **FedSel** | 2023 | MCFE + DP for federated learning | Privacy-preserving model aggregation [[3]](https://arxiv.org/abs/2305.09676) |
+
+**State of the art:** MCFE-IP allows each data contributor to encrypt independently, while a server computes weighted sums (dot products) across all contributions. Practical for federated analytics: compute the average salary across organizations without revealing individual values. More efficient than full FHE for linear aggregations. Related to [Multi-Key / Threshold FHE](#multi-key--threshold-fhe) and [Decentralized Multi-Client Functional Encryption (DMCFE)](#decentralized-multi-client-functional-encryption-dmcfe).
+
+**Production readiness:** Experimental
+Research implementations exist. No production deployments yet. Growing interest for federated learning applications.
+
+**Implementations:**
+- [MCFE reference](https://github.com/ceciliakemmer/master-thesis-mcfe) ⭐ 8 — Python, research prototype
+- [CiFEr](https://github.com/fentec-project/CiFEr) ⭐ 37 — C, FENTEC EU project functional encryption library
+- [gofe](https://github.com/fentec-project/gofe) ⭐ 198 — Go, Go FE library including MCFE-IP
+
+**Security status:** Secure
+Proven secure under DDH/DCR in the random oracle model. Decentralized variant (DMCFE) achieves security without trusted setup via DKG.
+
+**Community acceptance:** Emerging
+Published at ASIACRYPT 2018. EU FENTEC project provided production-quality libraries. Active research on efficiency improvements and federated learning applications.
 
 ---
 

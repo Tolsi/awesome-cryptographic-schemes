@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (45 schemes)
+## Contents (50 schemes)
 
 **[Steganography](#steganography)**
 - [Steganography](#steganography)
@@ -29,14 +29,17 @@
 - [Font and Glyph Steganography](#font-and-glyph-steganography)
 - [QUIC Protocol Steganography](#quic-protocol-steganography)
 - [Neural Linguistic Steganography (LLM-Based)](#neural-linguistic-steganography-llm-based)
+- [Public-Key Steganography (Provably Secure Steganographic Schemes)](#public-key-steganography-provably-secure-steganographic-schemes)
 
 **[Digital Watermarking and Fingerprinting](#digital-watermarking-and-fingerprinting)**
 - [Digital Watermarking / Fingerprinting](#digital-watermarking--fingerprinting)
 - [Robustness, Capacity, and Imperceptibility Trade-offs](#robustness-capacity-and-imperceptibility-trade-offs)
 - [Spread-Spectrum Watermarking](#spread-spectrum-watermarking)
+- [Geometric-Invariant Robust Watermarking (RST-Invariant, Cinema Forensics)](#geometric-invariant-robust-watermarking-rst-invariant-cinema-forensics)
 
 **[Steganalysis](#steganalysis)**
 - [Steganalysis](#steganalysis)
+- [Batch Steganography and Pooled Steganalysis (Ker's Square-Root Law)](#batch-steganography-and-pooled-steganalysis-kers-square-root-law)
 
 **[Kleptography and Subversion](#kleptography-and-subversion)**
 - [Kleptography / Algorithm-Substitution Attacks (ASA)](#kleptography--algorithm-substitution-attacks-asa)
@@ -60,6 +63,8 @@
 - [Format-Transforming Encryption (FTE)](#format-transforming-encryption-fte)
 - [Snowflake (WebRTC-Based Pluggable Transport)](#snowflake-webrtc-based-pluggable-transport)
 - [Reversible Data Hiding (RDH)](#reversible-data-hiding-rdh)
+- [DNS Covert Channels (NSTX, iodine, dnscat2)](#dns-covert-channels-nstx-iodine-dnscat2)
+- [Protocol Obfuscation Transports (obfs4, ScrambleSuit, Tor Pluggable Transports)](#protocol-obfuscation-transports-obfs4-scramblesuit-tor-pluggable-transports)
 
 <!-- /TOC -->
 
@@ -740,6 +745,31 @@ Active research frontier; builds on LLM proliferation; publications at EMNLP and
 
 ---
 
+### Public-Key Steganography (Provably Secure Steganographic Schemes)
+
+**Goal:** Provide steganographic schemes where anyone can embed messages in cover objects using a public key, but only the private key holder can extract them — analogous to public-key encryption but for hidden communication in cover media.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **von Ahn-Hopper PK-Steg** | 2004 | Rejection sampling + computational indistinguishability | First provably secure PK steganography [[1]](https://dl.acm.org/doi/10.1145/1030083.1030121) |
+| **Backes-Cachin Universal Steg** | 2005 | Information-theoretic + public channel | Universal steganography from any channel [[2]](https://eprint.iacr.org/2004/264.pdf) |
+
+**State of the art:** Von Ahn and Hopper's 2004 STOC paper established the first formal security definition for steganography (steganographic security = indistinguishability) and gave a provably secure construction. Backes and Cachin extended this to universal steganography from any channel distribution. These are primarily theoretical results; practical deployment requires efficient approximation of channel distributions. Related to [Steganography (Classical)](#steganography) and [Deniable Encryption](#deniable-encryption).
+
+**Production readiness:** Research
+Theoretical constructions. No production deployments — practical steganography tools use heuristic rather than provably secure approaches.
+
+**Implementations:**
+- No practical production implementations. Academic constructions only.
+
+**Security status:** Secure
+Provably secure under computational indistinguishability assumptions (von Ahn-Hopper). Universal construction is information-theoretically secure (Backes-Cachin).
+
+**Community acceptance:** Niche
+Foundational theoretical papers. STOC/EUROCRYPT publications. Limited practical impact due to efficiency constraints.
+
+---
+
 
 ## Digital Watermarking and Fingerprinting
 
@@ -828,6 +858,34 @@ Cox et al. 1997 is the foundational work; spread-spectrum watermarking is standa
 
 ---
 
+### Geometric-Invariant Robust Watermarking (RST-Invariant, Cinema Forensics)
+
+**Goal:** Embed digital watermarks that survive geometric transformations (rotation, scaling, translation — RST), cropping, and format conversion, enabling forensic identification of cinema recordings, leaked footage, and pirated content even after heavy post-processing.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **RST-Invariant Watermarking** | 2000 | Log-polar Fourier transform | Ruanaidh-Pun; rotation/scale/translation robustness [[1]](https://ieeexplore.ieee.org/document/843049) |
+| **Cinema Watermarking (DCI)** | 2004 | DCI forensic watermark standard | Digital Cinema Initiatives specification [[2]](https://www.dcimovies.com/specification/) |
+| **ContentID (YouTube)** | 2007 | Audio/video fingerprinting | YouTube content identification system [[3]](https://support.google.com/youtube/answer/2797370) |
+
+**State of the art:** Cinema forensic watermarking (per DCI specification) is mandatory for all digital cinema releases — every screening has a unique watermark. This enables forensic identification of cam recordings within hours of a leak. RST-invariant techniques use Fourier-Mellin transforms or log-polar mappings. YouTube ContentID uses audio/video fingerprinting rather than watermarking but achieves similar goals. Related to [Digital Watermarking and Fingerprinting](#digital-watermarking--fingerprinting).
+
+**Production readiness:** Production
+DCI cinema watermarking is mandated by all major studios since 2005. Dolby Cinema, IMAX, and standard DCP all embed forensic watermarks. ContentID processes 99% of YouTube content.
+
+**Implementations:**
+- [ffmpeg](https://github.com/FFmpeg/FFmpeg) ⭐ 45k — C, supports watermark overlay filters (not forensic)
+- [VideoWatermarking](https://github.com/Koutoulakis/VideoWatermarking) ⭐ 17 — Python, RST-invariant watermarking research
+- Commercial: Civolution (now Verimatrix), Irdeto, Denuvo forensic watermarking
+
+**Security status:** Secure
+DCI forensic watermarks survive re-recording with cinema cameras. RST-invariant schemes provably robust against affine transformations. Collusion attacks (averaging multiple watermarked copies) require forensic-grade analysis to defeat.
+
+**Community acceptance:** Standard
+DCI specification mandated by MPAA/major studios. ContentID is industry standard. IEEE, SPIE have published watermarking standards. Widely deployed in content distribution.
+
+---
+
 
 ## Steganalysis
 
@@ -858,6 +916,32 @@ State-of-the-art CNN detectors achieve >95% accuracy against most embedding sche
 
 **Community acceptance:** Widely trusted
 Steganalysis is a mature forensic discipline; SRM and CNN detectors are standard tools in digital forensics; BOSS and ALASKA challenges drive community benchmarking.
+
+---
+
+### Batch Steganography and Pooled Steganalysis (Ker's Square-Root Law)
+
+**Goal:** Understand the fundamental limits of steganography when an adversary (steganalyst) can pool multiple cover objects, and analyze how the safe message capacity scales with the number of covers and their size.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ker's Square-Root Law** | 2006 | Information theory + hypothesis testing | Ker; capacity scales as O(√n) per image [[1]](https://link.springer.com/chapter/10.1007/11767480_12) |
+| **Pooled Steganalysis** | 2007 | Likelihood ratio testing on pools | Ker; statistical detection across image pools [[2]](https://ieeexplore.ieee.org/document/4291614) |
+
+**State of the art:** Ker's 2006 square-root law established that the total safe payload across n cover objects scales as O(√n) — embedding the same message in many images does not proportionally increase security. This fundamental result constrains practical steganography system design. Pooled steganalysis enables more powerful detection by combining multiple suspected covers. Related to [Steganography (Classical)](#steganography) and [Steganalysis](#steganalysis).
+
+**Production readiness:** Research
+Theoretical results informing practical steganography system design. No direct production deployment.
+
+**Implementations:**
+- [aletheia](https://github.com/daniellerch/aletheia) ⭐ 396 — Python, steganalysis framework implementing pooled detection
+- [BOSS (Break Our Steganographic System)](http://agents.fel.cvut.cz/stegodata/) — benchmark dataset for steganalysis research
+
+**Security status:** Secure
+The square-root law is an information-theoretic result — it is a fundamental limit, not an attack. Systems designed within these bounds are provably secure.
+
+**Community acceptance:** Widely trusted
+Ker's square-root law is widely cited in steganography literature. Published at IEEE Transactions on Information Forensics and Security. Foundational result for all subsequent adaptive steganography research.
 
 ---
 
@@ -1347,5 +1431,62 @@ Lossless recovery is mathematically guaranteed; encrypted-domain RDH (2025) enab
 
 **Community acceptance:** Niche
 Legally and medically mandated in specific domains; active research community; Tian (2003) and Ni et al. (2006) are the foundational references.
+
+---
+
+### DNS Covert Channels (NSTX, iodine, dnscat2)
+
+**Goal:** Tunnel arbitrary data through DNS query/response traffic to bypass firewalls and network monitoring, exploiting the fact that DNS is typically allowed through all network boundaries, enabling command-and-control communication and data exfiltration.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **NSTX (IP-over-DNS)** | 2000 | IP tunneling via DNS TXT records | Early DNS tunnel; bypasses captive portals [[1]](http://thomer.com/howtos/nstx.html) |
+| **iodine** | 2006 | DNS tunnel for TCP/IP | Popular free WiFi bypass tool [[2]](https://github.com/yarrick/iodine) |
+| **dnscat2** | 2013 | Encrypted C2 over DNS | Skoudis; malware C2 channel; MITRE ATT&CK [[3]](https://github.com/iagox86/dnscat2) |
+
+**State of the art:** DNS covert channels are widely used in both legitimate (free WiFi bypass) and malicious (APT C2, data exfiltration) contexts. MITRE ATT&CK catalogs DNS tunneling as T1071.004 (C2 over DNS). Detection uses DNS traffic analysis (unusually long subdomain labels, high query rates, entropy analysis of subdomains). Modern DNS firewalls (Cisco Umbrella, Cloudflare Gateway) detect common DNS tunnel tools. Related to [Protocol Obfuscation Transports (obfs4, ScrambleSuit, Tor Pluggable Transports)](#protocol-obfuscation-transports-obfs4-scramblesuit-tor-pluggable-transports) and [Covert Channels](#covert-channels).
+
+**Production readiness:** Production
+iodine widely deployed for legitimate free WiFi bypass. dnscat2 and similar used in red team operations. Detection products in production at major enterprises.
+
+**Implementations:**
+- [iodine](https://github.com/yarrick/iodine) ⭐ 5.8k — C, IP-over-DNS tunnel
+- [dnscat2](https://github.com/iagox86/dnscat2) ⭐ 3.4k — C/Ruby, encrypted C2 over DNS
+- [dnschef](https://github.com/iphelix/dnschef) ⭐ 908 — Python, DNS proxy for penetration testing
+
+**Security status:** Caution
+DNS tunnels can be detected by modern DLP and DNS firewall solutions. Encrypted variants (dnscat2) resist content inspection but behavioral detection remains effective. Legitimate use (captive portal bypass) is distinct from malicious C2.
+
+**Community acceptance:** Niche
+Well-documented in security research (MITRE ATT&CK). Active in red team/pentesting communities. Defensive products exist. Legal in legitimate uses (captive portal bypass), illegal for unauthorized exfiltration.
+
+---
+
+### Protocol Obfuscation Transports (obfs4, ScrambleSuit, Tor Pluggable Transports)
+
+**Goal:** Disguise Tor traffic to look like random noise or benign protocols (HTTPS, QUIC) to defeat deep packet inspection (DPI) censorship systems in China (GFW), Iran, and Russia, while maintaining Tor's anonymity properties.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **obfs4** | 2014 | Elligator2 + NaCl + random padding | Tor Project; flow-shaped transport [[1]](https://gitlab.com/yawning/obfs4) |
+| **ScrambleSuit** | 2013 | PRNG-based polymorphic protocol | Winter et al.; adapts to traffic patterns [[2]](https://www.cs.kau.se/philwint/scramblesuit/) |
+| **Snowflake** | 2019 | WebRTC + domain fronting | Tor Project; DTLS-based pluggable transport [[3]](https://snowflake.torproject.org) |
+| **Meek** | 2014 | Domain fronting via CDN | Domain-fronted HTTPS through CDNs [[4]](https://trac.torproject.org/projects/tor/wiki/doc/meek) |
+
+**State of the art:** obfs4 is the default Tor pluggable transport for censored users. Snowflake (WebRTC-based) is the most censorship-resistant as it uses browser WebRTC to proxy traffic. These transports are used by millions of users in censored countries (China, Iran, Russia, Belarus). The Tor Project's pluggable transport framework standardizes how these work with Tor. Related to [DNS Covert Channels (NSTX, iodine, dnscat2)](#dns-covert-channels-nstx-iodine-dnscat2) and [Onion Routing](11-anonymity-credentials.md#onion-routing-and-mix-networks).
+
+**Production readiness:** Production
+obfs4 and Snowflake are production Tor bridges. Millions of daily users in censored regions. Active deployment and maintenance by Tor Project.
+
+**Implementations:**
+- [obfs4proxy](https://gitlab.com/yawning/obfs4) — Go, Tor's default PT implementation
+- [snowflake](https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake) — Go, WebRTC-based PT
+- [lyrebird](https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird) — Go, Tor PT toolbox (obfs4 successor)
+
+**Security status:** Secure
+obfs4 uses NaCl (Curve25519/Poly1305) for forward-secret key exchange. Elligator2 makes the handshake look random. Snowflake uses DTLS. Both resist DPI but not timing correlation attacks.
+
+**Community acceptance:** Widely trusted
+Official Tor Project transports. Used by millions of censored users daily. Published at USENIX Security, PETS. Open-source with public code review.
 
 ---

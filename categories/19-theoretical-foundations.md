@@ -2,11 +2,12 @@
 
 
 <!-- TOC -->
-## Contents (55 schemes)
+## Contents (60 schemes)
 
 **[Leakage and Side-Channel Models](#leakage-and-side-channel-models)**
 - [Leakage-Resilient Cryptography](#leakage-resilient-cryptography)
 - [Leftover Hash Lemma and Randomness Extraction](#leftover-hash-lemma-and-randomness-extraction)
+- [Bounded-Storage Model (Information-Theoretic Security from Memory Bounds)](#bounded-storage-model-information-theoretic-security-from-memory-bounds)
 
 **[Security Definitions and Models](#security-definitions-and-models)**
 - [Circular / KDM Security](#circular--kdm-security)
@@ -22,6 +23,7 @@
 - [Quantum Random Oracle Model (QROM)](#quantum-random-oracle-model-qrom)
 - [Gentry-Wichs Barrier (Non-Falsifiability of SNARGs)](#gentry-wichs-barrier-non-falsifiability-of-snargs)
 - [Game-Based vs. Simulation-Based Security Paradigms](#game-based-vs-simulation-based-security-paradigms)
+- [Modular Sequential Composition Theorem (UC Framework, Canetti 2000)](#modular-sequential-composition-theorem-uc-framework-canetti-2000)
 
 **[Zero-Knowledge Theory](#zero-knowledge-theory)**
 - [Witness Indistinguishability (WI) / Witness Hiding](#witness-indistinguishability-wi--witness-hiding)
@@ -34,6 +36,10 @@
 
 **[Lossy and Deniable Primitives](#lossy-and-deniable-primitives)**
 - [Lossy Encryption / Lossy Trapdoor Functions](#lossy-encryption--lossy-trapdoor-functions)
+
+**[MPC Theory](#mpc-theory)**
+- [Correlated Randomness Model and the Preprocessing Paradigm (Beaver 1991)](#correlated-randomness-model-and-the-preprocessing-paradigm-beaver-1991)
+- [Information-Theoretic Secure Computation (BGW, CCD, RB — 1988 Foundations)](#information-theoretic-secure-computation-bgw-ccd-rb--1988-foundations)
 
 **[Forward Security and Key Evolution](#forward-security-and-key-evolution)**
 - [Semantic Security and IND-CPA / IND-CCA Security](#semantic-security-and-ind-cpa--ind-cca-security)
@@ -70,6 +76,7 @@
 - [Communication Complexity of Secure Computation](#communication-complexity-of-secure-computation)
 - [Algebraic Group Model (AGM)](#algebraic-group-model-agm)
 - [Memory-Hard Functions (MHF) — Formal Theory](#memory-hard-functions-mhf--formal-theory)
+- [Cryptography in NC0 and NC1 (Constant-Depth Reductions)](#cryptography-in-nc0-and-nc1-constant-depth-reductions)
 
 <!-- /TOC -->
 
@@ -130,6 +137,32 @@ The LHL is an information-theoretic result with tight bounds; its security does 
 
 **Community acceptance:** Standard
 The LHL is universally accepted and cited in thousands of papers. HKDF (its practical instantiation) is standardized in RFC 5869 and used in all major protocol suites.
+
+---
+
+### Bounded-Storage Model (Information-Theoretic Security from Memory Bounds)
+
+**Goal:** Achieve information-theoretic security from the assumption that the adversary's memory is bounded (even if their computation is unlimited), enabling key agreement and symmetric encryption with information-theoretic secrecy using short keys against memory-bounded adversaries.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bounded-Storage Model** | 1992 | Information theory + memory bound | Maurer; foundational model [[1]](https://link.springer.com/article/10.1007/BF02351719) |
+| **BSM Key Agreement** | 1997 | Random oracle + storage bound | Cachin-Maurer; practical protocol [[2]](https://link.springer.com/chapter/10.1007/3-540-62212-1_31) |
+| **Streaming BSM** | 2002 | Extractors + memory bound | Dziembowski-Maurer; streaming security [[3]](https://link.springer.com/chapter/10.1007/3-540-45539-6_2) |
+
+**State of the art:** The bounded-storage model provides information-theoretic security from a physical assumption (adversary memory size) rather than computational hardness. If the adversary's storage is polynomially bounded and the honest party transmits superpolynomially many random bits (e.g., via satellite), security is unconditional. Related to [Leakage-Resilient Cryptography](#leakage-resilient-cryptography) and [Information-Theoretic Secure Computation](#information-theoretic-secure-computation-bgw-ccd-rb--1988-foundations).
+
+**Production readiness:** Research
+Theoretical model. Practical realization requires transmitting huge amounts of random data, limiting applications to specific scenarios (satellite key agreement, etc.).
+
+**Implementations:**
+- No practical implementations. Theoretical framework.
+
+**Security status:** Secure
+Information-theoretically proven secure assuming the storage bound holds. If the adversary has more memory than assumed, all security is lost.
+
+**Community acceptance:** Niche
+Maurer's 1992 paper is widely cited. Primarily academic. Specialized hardware scenarios may benefit. Not standardized.
 
 ---
 
@@ -505,6 +538,33 @@ Both paradigms are universally accepted; game-based dominates for standalone pri
 
 ---
 
+### Modular Sequential Composition Theorem (UC Framework, Canetti 2000)
+
+**Goal:** Provide a formal framework (Universal Composability) that guarantees protocols remain secure when composed with arbitrary other protocols, enabling modular security proofs where sub-protocols can be proved secure independently and combined freely.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **UC Framework** | 2001 | Real/ideal paradigm + environment | Canetti; FOCS 2001 [[1]](https://eprint.iacr.org/2000/067.pdf) |
+| **JUC (Joint UC)** | 2004 | Multi-party UC with shared setup | Canetti-Rabin; composing with shared CRS [[2]](https://eprint.iacr.org/2002/047.pdf) |
+| **GUC (Generalized UC)** | 2007 | Global state UC | Canetti-Dodis-Pass-Walfish; allows global setup [[3]](https://eprint.iacr.org/2006/432.pdf) |
+
+**State of the art:** The UC framework is the gold standard for composable security proofs in cryptography. Any protocol proven UC-secure can be safely combined with other UC-secure protocols in arbitrary environments. This is essential for building complex systems from simple primitives. PAKE (OPAQUE, CPace), OT, commitment schemes, and MPC protocols are typically proven UC-secure. Related to [Correlated Randomness Model](#correlated-randomness-model-and-the-preprocessing-paradigm-beaver-1991) and [Non-Malleable Codes](#non-malleable-codes).
+
+**Production readiness:** Research
+The UC framework itself is a proof technique, not a deployable scheme. Protocols proven UC-secure are deployed (OPAQUE, SPDZ).
+
+**Implementations:**
+- [EasyCrypt](https://github.com/EasyCrypt/easycrypt) ⭐ 308 — OCaml, formal verification tool for UC proofs
+- [CryptHOL](https://www.isa-afp.org/entries/CryptHOL.html) — Isabelle/HOL, formal UC framework
+
+**Security status:** Secure
+The UC framework itself is a definitional/proof framework. Protocols proven UC-secure achieve the strongest composable security notion.
+
+**Community acceptance:** Standard
+UC framework is the standard for composable security proofs. Taught in every graduate cryptography course. Referenced in virtually all modern MPC/protocol papers. Canetti received IACR fellowship for this work.
+
+---
+
 
 ## Zero-Knowledge Theory
 
@@ -676,6 +736,64 @@ Secure under DDH or LWE assumptions; the lossy/injective mode indistinguishabili
 
 **Community acceptance:** Widely trusted
 Peikert-Waters lossy TDFs are a standard tool in provable security; cited in hundreds of papers and used in security proofs of NIST PQC candidates.
+
+---
+
+
+## MPC Theory
+
+---
+
+### Correlated Randomness Model and the Preprocessing Paradigm (Beaver 1991)
+
+**Goal:** Separate secure computation into an offline preprocessing phase (generating correlated randomness like Beaver triples) and a fast online phase, enabling efficient MPC where the online phase uses only fast symmetric operations with no public-key cryptography.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Beaver Triples** | 1991 | Oblivious transfer + offline preprocessing | Beaver; enables linear-time online MPC [[1]](https://dl.acm.org/doi/10.1145/103418.103468) |
+| **SPDZ preprocessing** | 2012 | Paillier HE offline → fast online | Damgård-Pastro-Smart-Zakarias [[2]](https://eprint.iacr.org/2011/535.pdf) |
+| **Silent OT / PCG** | 2019 | LPN + pseudorandom correlation generators | Boyle et al.; sublinear communication preprocessing [[3]](https://eprint.iacr.org/2019/1159.pdf) |
+
+**State of the art:** The preprocessing paradigm (Beaver 1991) is the foundation of all modern practical MPC. SPDZ, MASCOT, and Overdrive are preprocessing-based MPC protocols used in production (Sharemind, MP-SPDZ). Silent OT (2019) dramatically reduces the communication cost of the preprocessing phase using pseudorandom correlation generators (PCGs). Related to [SPDZ / Malicious-Secure MPC](06-multi-party-computation.md#spdz--spdz2k-malicious-secure-mpc-with-preprocessing) and [OLE/VOLE](06-multi-party-computation.md#oblivious-linear-evaluation-ole--vole).
+
+**Production readiness:** Production
+Beaver triples / preprocessing MPC in production (MP-SPDZ, Sharemind, Carbyne Stack). Silent OT in recent optimized MPC frameworks.
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, comprehensive preprocessing MPC
+- [libOTe](https://github.com/osu-crypto/libOTe) ⭐ 565 — C++, Silent OT / PCG implementation
+
+**Security status:** Secure
+Beaver triple protocol proven secure under oblivious transfer. SPDZ proven malicious-secure. Silent OT proven under LPN assumption.
+
+**Community acceptance:** Standard
+Beaver triples are the universal tool in practical MPC. SPDZ is the dominant malicious-secure framework. Published at CRYPTO/EUROCRYPT/STOC. Industry standard.
+
+---
+
+### Information-Theoretic Secure Computation (BGW, CCD, RB — 1988 Foundations)
+
+**Goal:** Compute any function securely among n parties where t < n/2 (honest majority) or t < n/3 (with broadcast) are corrupted, using only information-theoretic primitives (secret sharing, linear algebra) — no cryptographic assumptions needed.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BGW (Ben-Or, Goldwasser, Wigderson)** | 1988 | Shamir SS + degree reduction | t < n/3 malicious, t < n/2 semi-honest [[1]](https://dl.acm.org/doi/10.1145/62212.62213) |
+| **CCD (Chaum, Crépeau, Damgård)** | 1988 | Verifiable SS + commitment | Independent construction [[2]](https://dl.acm.org/doi/10.1145/62212.62214) |
+| **RB (Rabin, Ben-Or)** | 1989 | Randomization + verifiable SS | Asynchronous setting [[3]](https://dl.acm.org/doi/10.1145/73007.73014) |
+
+**State of the art:** BGW and CCD are the foundational 1988 results that established MPC is possible in principle — any function can be computed securely with information-theoretic security. BGW's t < n/2 threshold for honest-majority remains the best possible. These works created the field of MPC. Modern protocols improve efficiency (communication, rounds) but use the same mathematical foundation. Related to [Correlated Randomness Model](#correlated-randomness-model-and-the-preprocessing-paradigm-beaver-1991) and [Shamir's Secret Sharing](05-secret-sharing-threshold-cryptography.md#shamirs-secret-sharing-sss).
+
+**Production readiness:** Research
+The original constructions are too inefficient for production (polynomial communication). Modern protocols (SPDZ, ABY) build on these ideas with practical efficiency.
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, includes BGW-style honest-majority protocols
+
+**Security status:** Secure
+Information-theoretically proven secure. No computational assumptions. Security is unconditional given honest majority.
+
+**Community acceptance:** Standard
+BGW and CCD are among the most cited cryptography papers ever (Turing Award 2012 — Goldwasser/Micali, related work). Foundational results that define the field.
 
 ---
 
@@ -1655,5 +1773,31 @@ Argon2id is provably memory-hard under the pebbling model (Alwen-Serbinenko); no
 
 **Community acceptance:** Standard
 Argon2 won the Password Hashing Competition (2015) and is recommended by NIST, OWASP, and IETF (RFC 9106). MHF theory is well-established in the pebbling complexity community.
+
+---
+
+### Cryptography in NC0 and NC1 (Constant-Depth Reductions)
+
+**Goal:** Study which cryptographic primitives can be computed by constant-depth circuits (NC0 — each output bit depends on O(1) input bits; NC1 — logarithmic depth), revealing fundamental connections between circuit complexity and cryptography.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **NC1 PRGs from one-way functions** | 1999 | PRG in logarithmic depth | Håstad-Impagliazzo-Levin-Luby [[1]](https://link.springer.com/article/10.1007/PL00004064) |
+| **Cryptography in NC0** | 2006 | Constant-depth PRG/OWF | Applebaum-Ishai-Kushilevitz; FOCS 2004 [[2]](https://dl.acm.org/doi/10.1145/1374376.1374431) |
+| **NC0 OWFs from NC0 → NC0** | 2004 | Expansion from local functions | AIK construction; XOR and threshold gates [[3]](https://eprint.iacr.org/2004/025.pdf) |
+
+**State of the art:** Applebaum, Ishai, and Kushilevitz showed that OWFs, PRGs, and symmetric encryption can all be computed in NC0 — each output bit depending on at most 4 input bits. This is tight: no PRG exists where each output bit depends on ≤3 input bits (unless P≠NP). These results establish that parallelism does not help break cryptographic security, and enable massively parallel hardware implementations. Related to [Pseudorandom Generators (PRG)](01-foundational-primitives.md#pseudorandom-generators-prg) and [Leakage-Resilient Cryptography](#leakage-resilient-cryptography).
+
+**Production readiness:** Research
+Theoretical results. NC0 constructions are not optimal for practical use (large constant factors). Used in theoretical MPC analysis to bound circuit complexity.
+
+**Implementations:**
+- No practical implementations. Theoretical complexity result.
+
+**Security status:** Secure
+Proven under standard one-way function assumptions. The local structure (small fan-in) is an asset for parallel hardware but does not weaken security.
+
+**Community acceptance:** Niche
+FOCS 2004 publication by top complexity/crypto theorists (Applebaum, Ishai, Kushilevitz). Widely cited in theoretical cryptography. Not relevant outside of complexity-theoretic crypto.
 
 ---

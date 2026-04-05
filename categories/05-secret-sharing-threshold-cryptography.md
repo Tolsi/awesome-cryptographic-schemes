@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (58 schemes)
+## Contents (63 schemes)
 
 **[Shamir and Basic Secret Sharing](#shamir-and-basic-secret-sharing)**
 - [Secret Sharing Schemes (SSS)](#secret-sharing-schemes-sss)
@@ -20,6 +20,7 @@
 - [Berlekamp-Welch Decoding for Secret Sharing](#berlekamp-welch-decoding-for-secret-sharing)
 - [SLIP-39: Shamir's Secret Sharing for BIP-39 Mnemonics](#slip-39-shamirs-secret-sharing-for-bip-39-mnemonics)
 - [Secret Sharing over Non-Abelian Groups](#secret-sharing-over-non-abelian-groups)
+- [Fuzzy Secret Sharing (Noisy Share Reconstruction)](#fuzzy-secret-sharing-noisy-share-reconstruction)
 
 **[Threshold Cryptography](#threshold-cryptography)**
 - [Threshold Decryption](#threshold-decryption)
@@ -31,12 +32,15 @@
 - [Threshold BLS Key Generation](#threshold-bls-key-generation)
 - [Online vs Offline Threshold Signing](#online-vs-offline-threshold-signing)
 - [Witness Encryption for Secret Sharing Policies](#witness-encryption-for-secret-sharing-policies)
+- [Threshold Cloud Key Management (MPC Custody)](#threshold-cloud-key-management-mpc-custody)
 
 **[Verifiable and Proactive Secret Sharing](#verifiable-and-proactive-secret-sharing)**
 - [Proactive Secret Sharing](#proactive-secret-sharing)
 - [Asynchronous Verifiable Secret Sharing (AVSS)](#asynchronous-verifiable-secret-sharing-avss)
 - [Traceable Secret Sharing](#traceable-secret-sharing)
 - [SCRAPE: Scalable Publicly Verifiable Secret Sharing](#scrape-scalable-publicly-verifiable-secret-sharing)
+- [Proactive Threshold Signatures (Key Refresh for Long-Lived Signing Keys)](#proactive-threshold-signatures-key-refresh-for-long-lived-signing-keys)
+- [Asynchronous Complete Secret Sharing (ACSS / hbACSS)](#asynchronous-complete-secret-sharing-acss--hbacss)
 
 **[Advanced Secret Sharing](#advanced-secret-sharing)**
 - [Unclonable Secret Sharing](#unclonable-secret-sharing)
@@ -69,6 +73,7 @@
 - [Hierarchical Threshold Secret Sharing (Tassa)](#hierarchical-threshold-secret-sharing-tassa)
 - [Verifiable Secret Redistribution (VSR)](#verifiable-secret-redistribution-vsr)
 - [Timed Secret Sharing](#timed-secret-sharing)
+- [Social Recovery Wallets (Guardian-Based Threshold Key Recovery)](#social-recovery-wallets-guardian-based-threshold-key-recovery)
 
 <!-- /TOC -->
 
@@ -503,6 +508,33 @@ Of interest to algebraic cryptography and post-quantum researchers; no mainstrea
 
 ---
 
+### Fuzzy Secret Sharing (Noisy Share Reconstruction)
+
+**Goal:** Share a secret such that it can be recovered from a noisy or approximate version of the shares, enabling biometric key derivation where biometric readings are never exactly identical.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Fuzzy Vault** | 2002 | Reed-Solomon over finite field | Juels-Sudan biometric key binding [[1]](https://eprint.iacr.org/2002/086.pdf) |
+| **Secure Sketch / Fuzzy Extractor** | 2004 | Error-correcting codes + hash | Dodis-Reyzin-Smith; noise-tolerant key derivation [[2]](https://eprint.iacr.org/2003/235.pdf) |
+| **Fuzzy IBE** | 2005 | Identity-based with fuzzy matching | Sahai-Waters; tolerance to Hamming distance [[3]](https://eprint.iacr.org/2004/086.pdf) |
+
+**State of the art:** Fuzzy extractors are the standard tool for biometric key derivation in academic literature. The fuzzy vault is used in fingerprint-based document security. Practical deployments use secure sketches over BCH/Reed-Solomon codes for fingerprint and iris biometrics. Related to [Fuzzy Extractors](../categories/01-foundational-primitives.md#fuzzy-extractors-and-biometric-key-derivation).
+
+**Production readiness:** Experimental
+Academic constructions well-studied. Limited production deployments — mostly in specialized biometric authentication hardware (smart cards, ePassports). Deployment challenges include side-channel leakage from the sketch.
+
+**Implementations:**
+- [fuzzy-extractor](https://github.com/carter-yagemann/python-fuzzy-extractor) ⭐ 84 — Python, Dodis-Reyzin-Smith reference
+- [secure-sketch](https://github.com/applied-crypto-lab/biom-auth) ⭐ 31 — C, biometric authentication
+
+**Security status:** Caution
+Fuzzy vault is vulnerable to correlation attacks when multiple vaults share biometric data. Fuzzy extractors require careful parameter selection. Side-channel leakage of the sketch is an implementation concern.
+
+**Community acceptance:** Niche
+Well-studied in academic cryptography. Limited standardization. IEEE 2410 (biometric fusion) touches related concepts. Primarily deployed in ePassport and smart card contexts.
+
+---
+
 
 ## Threshold Cryptography
 
@@ -766,6 +798,35 @@ Theoretically groundbreaking (GGHSW 2013 is highly cited); practical security of
 
 ---
 
+### Threshold Cloud Key Management (MPC Custody)
+
+**Goal:** Distribute private key custody across multiple cloud KMS instances or MPC parties so that no single cloud provider or insider can access or misuse private keys, particularly for cryptocurrency custody.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Fireblocks MPC-CMP** | 2020 | CGGMP20 threshold ECDSA | Production MPC custody; $6T+ in transactions [[1]](https://www.fireblocks.com/what-is-mpc/) |
+| **ZenGo threshold ECDSA** | 2018 | GG18/GG20 threshold ECDSA | Keyless wallet model [[2]](https://zengo.com/security/) |
+| **Coinbase Secure MPC** | 2022 | Custom threshold ECDSA | Institutional custody product [[3]](https://www.coinbase.com/cloud/products/waas) |
+| **AWS CloudHSM + TSS** | 2021 | FIPS 140-2 HSM + threshold | Cloud-HSM threshold integration [[4]](https://aws.amazon.com/cloudhsm/) |
+
+**State of the art:** Threshold ECDSA-based MPC custody is the dominant model for institutional cryptocurrency storage. Fireblocks, ZenGo, Coinbase WaaS, and Anchorage all use MPC-CMP or equivalent. The field has converged on CGGMP21-based protocols for threshold ECDSA. Related to [CGGMP / Threshold ECDSA](../categories/08-signatures-advanced.md#threshold-signatures-tss) and [DKLs23](#dkls23).
+
+**Production readiness:** Production
+Multiple production deployments managing billions in digital assets. Fireblocks alone has processed over $6T in transaction volume.
+
+**Implementations:**
+- [fireblocks-mpc](https://github.com/fireblocks/mpc-lib) ⭐ 437 — C++, open-sourced MPC-CMP library
+- [ZenGo/multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.0k — Rust, GG20 implementation
+- [tss-lib (go)](https://github.com/bnb-chain/tss-lib) ⭐ 1.2k — Go, Binance threshold ECDSA
+
+**Security status:** Secure
+Based on CGGMP21/GG20 protocols with published security proofs. Production implementations have been audited. Some implementations (pre-2022) had vulnerabilities in GG18/GG20 — fixed in subsequent releases.
+
+**Community acceptance:** Widely trusted
+Industry standard for institutional cryptocurrency custody. Multiple independent audits. NIST considers MPC-based key protection as valid HSM alternative in FIPS 140-3.
+
+---
+
 
 ## Verifiable and Proactive Secret Sharing
 
@@ -799,6 +860,33 @@ CHURP is well-cited in the blockchain research community; proactive BLS refresh 
 
 ---
 
+### Proactive Threshold Signatures (Key Refresh for Long-Lived Signing Keys)
+
+**Goal:** Periodically refresh threshold signature key shares so that an adversary who compromises fewer than t shares during any single epoch cannot recover the long-term key, limiting the window of exposure.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Proactive Secret Sharing (PSS)** | 1995 | Feldman VSS + refresh | Ostrovsky-Yung foundational paper [[1]](https://dl.acm.org/doi/10.1145/225058.225088) |
+| **CGGMP21 Key Refresh** | 2021 | Threshold ECDSA + ZK proofs | Built-in key refresh in CGGMP [[2]](https://eprint.iacr.org/2021/060.pdf) |
+| **DKR (Distributed Key Refresh)** | 2022 | BLS threshold + proactive | Canetti-Gennaro-Goldfeder-Makriyannis-Peled [[3]](https://eprint.iacr.org/2021/1656.pdf) |
+
+**State of the art:** Proactive key refresh is built into CGGMP21 (the dominant threshold ECDSA library) and used by Fireblocks for enterprise key management. Without refresh, compromising threshold shares over a long period breaks security. CGGMP21's aux-info refresh protocol is the current practical standard. Related to [Proactive Secret Sharing](05-secret-sharing-threshold-cryptography.md#proactive-secret-sharing).
+
+**Production readiness:** Production
+CGGMP21 key refresh deployed in Fireblocks, tss-lib (Binance), and similar production systems. Considered essential for long-lived institutional keys.
+
+**Implementations:**
+- [cggmp21 (Rust)](https://github.com/LFDT-Lockness/cggmp21) ⭐ 138 — Rust, full CGGMP21 including key refresh
+- [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.2k — Go, includes re-sharing/refresh
+
+**Security status:** Secure
+Proactive security model is well-studied. CGGMP21 refresh has been peer-reviewed. Security holds assuming the adversary compromises fewer than t parties per epoch.
+
+**Community acceptance:** Widely trusted
+Standard practice in enterprise MPC custody. Published at top venues. Multiple production deployments.
+
+---
+
 ### Asynchronous Verifiable Secret Sharing (AVSS)
 
 **Goal:** VSS without timing assumptions. The dealer shares a secret so that (1) all honest parties eventually receive valid shares, (2) a unique secret is determined even if the dealer is malicious, (3) no synchrony assumptions — messages can be arbitrarily delayed.
@@ -825,6 +913,33 @@ Information-theoretically or computationally secure (depending on variant) for t
 
 **Community acceptance:** Emerging
 KZG-based AVSS is gaining attention in the async BFT and blockchain communities; foundational for next-generation async protocols.
+
+---
+
+### Asynchronous Complete Secret Sharing (ACSS / hbACSS)
+
+**Goal:** Share a secret verifiably in an asynchronous network (where messages may be arbitrarily delayed) such that all honest parties receive valid shares, enabling robust DKG and MPC without synchrony assumptions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **hbACSS** | 2021 | Bivariate polynomial + KZG | Das-Xiang-Feng-Ren; CCS 2022 [[1]](https://eprint.iacr.org/2021/159.pdf) |
+| **Haven** | 2022 | hbACSS + BFT consensus | Practical async DKG for blockchain [[2]](https://eprint.iacr.org/2022/1523.pdf) |
+| **LS-ADKG** | 2022 | Low-threshold async DKG | Loss-Rossi-Stern async DKG [[3]](https://eprint.iacr.org/2022/1448.pdf) |
+
+**State of the art:** hbACSS (honest-but-covert Asynchronous CSS) was the first practical ACSS achieving O(κn²) communication. Haven extends it to a full asynchronous DKG suitable for blockchains. Used as the foundation for research-grade async BFT key generation. Related to [AVSS (Asynchronous VSS)](05-secret-sharing-threshold-cryptography.md#asynchronous-verifiable-secret-sharing-avss) and [DKG (Distributed Key Generation)](#distributed-key-generation-dkg).
+
+**Production readiness:** Experimental
+hbACSS and Haven are research-grade. Used in academic blockchain prototypes. No production deployments known yet.
+
+**Implementations:**
+- [hbACSS](https://github.com/tyurek/hbACSS) ⭐ 79 — Python, CCS 2022 reference implementation
+- haven-dkg — research prototype (anonymous submission; no public repository)
+
+**Security status:** Secure
+Security proven in the asynchronous communication model against adaptive adversaries. KZG-based batch verification ensures soundness.
+
+**Community acceptance:** Emerging
+Published at CCS 2022 (top venue). Active area of research for async BFT systems. Growing interest from blockchain L1s building robust DKG.
 
 ---
 
@@ -1705,5 +1820,33 @@ Security relies on the sequential computation assumption underlying time-lock pu
 
 **Community acceptance:** Niche
 Recent result (2023) with growing interest for timed-release applications; limited adoption outside the research community.
+
+---
+
+### Social Recovery Wallets (Guardian-Based Threshold Key Recovery)
+
+**Goal:** Allow a user to recover access to their wallet/account by enlisting a threshold of trusted guardians (friends, devices, or institutions) who each hold a key share, without any single guardian having unilateral access.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Argent Social Recovery** | 2020 | t-of-n guardian smart contract | Ethereum smart contract wallet [[1]](https://www.argent.xyz/blog/a-new-era-for-crypto-security/) |
+| **Safe{Wallet} Social Recovery** | 2023 | Gnosis Safe + guardian module | ERC-4337 compatible recovery [[2]](https://safe.global) |
+| **Shamir Social Recovery (ERC-4337)** | 2023 | SSS + smart contract escrow | Vitalik-proposed recovery scheme [[3]](https://vitalik.eth.limo/general/2021/01/11/recovery.html) |
+
+**State of the art:** Social recovery is becoming the dominant key management UX model for self-custodial wallets. Vitalik Buterin's 2021 proposal (using Shamir's secret sharing with guardian addresses) is influential. Argent's smart contract implementation is production-deployed with hundreds of thousands of users. ERC-4337 account abstraction makes social recovery more composable. Related to [Shamir's Secret Sharing (SSS)](05-secret-sharing-threshold-cryptography.md#shamirs-secret-sharing-sss).
+
+**Production readiness:** Production
+Argent deployed social recovery in production since 2020. Safe's recovery module is production-ready. Multiple ERC-4337 wallets implement guardian-based recovery.
+
+**Implementations:**
+- [argent-contracts](https://github.com/argentlabs/argent-contracts) ⭐ 455 — Solidity, production Argent wallet
+- [safe-modules](https://github.com/safe-global/safe-modules) ⭐ 327 — Solidity, Safe social recovery module
+- [erc-4337-wallet-recovery](https://github.com/eth-infinitism/account-abstraction) ⭐ 2.2k — Solidity, ERC-4337 reference
+
+**Security status:** Caution
+Security depends on the honesty of guardians (threshold assumption). Smart contract bugs have historically been the main risk. Guardians must be selected carefully to avoid collusion. Social engineering of guardians is a real threat vector.
+
+**Community acceptance:** Widely trusted
+Endorsed by Vitalik Buterin and the Ethereum Foundation. Multiple production deployments. Growing ecosystem of ERC-4337 compatible recovery modules.
 
 ---

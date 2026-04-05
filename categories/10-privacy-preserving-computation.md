@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (63 schemes)
+## Contents (68 schemes)
 
 **[Private Set Operations (PSI / PSU)](#private-set-operations-psi--psu)**
 - [Private Set Intersection (PSI)](#private-set-intersection-psi)
@@ -19,6 +19,7 @@
 - [Private Set Membership Testing (Batch PIR / Private Membership Test)](#private-set-membership-testing-batch-pir--private-membership-test)
 - [Circuit-PSI (PSI with Secret-Shared Output)](#circuit-psi-psi-with-secret-shared-output)
 - [Private Intersection-Sum (PSI-Sum / Private Join and Compute)](#private-intersection-sum-psi-sum--private-join-and-compute)
+- [DP-PSI (Private Set Intersection with Differential Privacy)](#dp-psi-private-set-intersection-with-differential-privacy)
 
 **[Oblivious RAM and PIR](#oblivious-ram-and-pir)**
 - [Oblivious RAM (ORAM)](#oblivious-ram-oram)
@@ -35,6 +36,8 @@
 - [Leakage-Abuse Attacks and Countermeasures for Encrypted Search](#leakage-abuse-attacks-and-countermeasures-for-encrypted-search)
 - [Spiral PIR / SimplePIR / DoublePIR](#spiral-pir--simplepir--doublepir)
 - [Private Information Delivery (PID)](#private-information-delivery-pid)
+- [PIR with Client Preprocessing (Checklist, Piano, Hint-Based PIR)](#pir-with-client-preprocessing-checklist-piano-hint-based-pir)
+- [Verifiable PIR (Server-Correctness Guarantees for PIR)](#verifiable-pir-server-correctness-guarantees-for-pir)
 
 **[Private Search and Retrieval](#private-search-and-retrieval)**
 - [Searchable Encryption (SSE / PEKS)](#searchable-encryption-sse--peks)
@@ -63,6 +66,7 @@
 - [Oblivious Polynomial Evaluation (OPE)](#oblivious-polynomial-evaluation-ope)
 - [Oblivious Automata / Branching Program Evaluation](#oblivious-automata--branching-program-evaluation)
 - [Oblivious DNS over HTTPS Deployments (Encrypted Metadata Protocols)](#oblivious-dns-over-https-deployments-encrypted-metadata-protocols)
+- [Oblivious Join (Private Relational Database Join Protocols)](#oblivious-join-private-relational-database-join-protocols)
 
 **[Applied Privacy Protocols](#applied-privacy-protocols)**
 - [Private Proximity Testing](#private-proximity-testing)
@@ -78,6 +82,9 @@
 - [Privacy-Preserving Biometric Authentication](#privacy-preserving-biometric-authentication)
 - [STAR — Secret Sharing for Private Threshold Aggregation Reporting](#star--secret-sharing-for-private-threshold-aggregation-reporting)
 - [DP-3T / GAEN (Decentralized Privacy-Preserving Proximity Tracing)](#dp-3t--gaen-decentralized-privacy-preserving-proximity-tracing)
+
+**[Comparison and Arithmetic Protocols](#comparison-and-arithmetic-protocols)**
+- [Secure Comparison Protocols (Yao's Millionaires' Problem)](#secure-comparison-protocols-yaos-millionaires-problem)
 
 <!-- /TOC -->
 
@@ -460,6 +467,32 @@ Based on additively homomorphic encryption + commutative encryption; provably se
 
 **Community acceptance:** Widely trusted
 Deployed at Google; open-sourced; peer-reviewed; used as reference for privacy-preserving ad measurement
+
+---
+
+### DP-PSI (Private Set Intersection with Differential Privacy)
+
+**Goal:** Compute the intersection of two sets while adding calibrated noise to the output, ensuring differential privacy guarantees beyond cryptographic PSI — preventing inference about whether specific items were in the intersection.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DP-PSI** | 2020 | PSI + Laplace/Gaussian noise | Guo-Kacsmar-Meng et al.; Google Ads deployment [[1]](https://eprint.iacr.org/2020/1411.pdf) |
+| **Fuzzy PSI** | 2021 | Distance-threshold PSI + DP | Chakraborti-Diesburg-Ghosh; proximity-based [[2]](https://eprint.iacr.org/2021/1512.pdf) |
+
+**State of the art:** Google deployed DP-PSI in the Privacy Sandbox's "Private Join and Compute" for cross-company ad measurement. The combination of PSI (cryptographic) and DP (statistical) provides both set-membership confidentiality and output privacy. DP noise can be tuned to epsilon budget. Related to [PSI (Private Set Intersection)](#private-set-intersection-psi) and [Differential Privacy](#differential-privacy-and-local-dp).
+
+**Production readiness:** Production
+Google's Private Join and Compute uses DP-PSI for cross-company ad measurement (Production since 2020).
+
+**Implementations:**
+- [private-join-and-compute](https://github.com/google/private-join-and-compute) ⭐ 846 — C++, Google DP-PSI production library
+- [psi](https://github.com/OpenMined/PSI) ⭐ 434 — C++/Python, PSI with DP extensions
+
+**Security status:** Secure
+Inherits cryptographic security from underlying PSI and statistical privacy from DP. Privacy budget (ε, δ) must be calibrated carefully.
+
+**Community acceptance:** Widely trusted
+Google production deployment and open-source library. Published at IEEE S&P. Influential in advertising industry privacy work.
 
 ---
 
@@ -852,6 +885,59 @@ Information-theoretic security; dual of PIR with well-characterized capacity bou
 
 **Community acceptance:** Niche
 IEEE Transactions on Information Theory 2020; theoretical contribution to privacy in push/recommendation systems
+
+---
+
+### PIR with Client Preprocessing (Checklist, Piano, Hint-Based PIR)
+
+**Goal:** Reduce the server-side computation of Private Information Retrieval (PIR) from linear to sublinear per query by having the client perform one-time preprocessing (downloading database hints), enabling practical PIR for large databases.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Checklist** | 2021 | FSS + offline hints | Kogan-Corrigan-Gibbs; CCS 2021 [[1]](https://eprint.iacr.org/2021/345.pdf) |
+| **Piano** | 2023 | Offline phase + online sublinear | Zhou et al., S&P 2023; √n server work per query [[2]](https://eprint.iacr.org/2023/452.pdf) |
+| **Spiral** | 2022 | RLWE-based PIR | Menon-Laine, S&P 2022; practical RLWE-PIR [[3]](https://eprint.iacr.org/2022/368.pdf) |
+
+**State of the art:** Piano achieves O(√n) server computation per query after an O(√n) client offline phase, making PIR practical for databases of millions of records. Spiral achieves good throughput without client preprocessing using RLWE. These advances enable use cases like private DNS (Cloudflare's 1.1.1.1 private mode) and private contact discovery. Related to [Private Information Retrieval (PIR)](#private-information-retrieval-pir) and [FSS / DPF](../categories/06-multi-party-computation.md#function-secret-sharing-fss-and-distributed-point-functions-dpf).
+
+**Production readiness:** Experimental
+Piano and Spiral are research results. Spiral has a demo deployment. No wide-scale production deployment yet. Signal's contact discovery uses a related approach (PSI-based).
+
+**Implementations:**
+- [Piano](https://github.com/ZJU-blockchain/Piano) ⭐ 47 — Go, S&P 2023 reference
+- [spiral-rs](https://github.com/menonsamir/spiral-rs) ⭐ 335 — Rust, Spiral RLWE-PIR
+- [checklist](https://github.com/dimakogan/checklist) ⭐ 79 — Go, CCS 2021 FSS-based PIR
+
+**Security status:** Secure
+Information-theoretic or computational security depending on model. Spiral proven under RLWE hardness. Piano relies on standard PIR assumptions.
+
+**Community acceptance:** Emerging
+Piano and Spiral published at IEEE S&P (top venue). Active research with practical implementations. Spiral gained significant attention for its efficiency.
+
+---
+
+### Verifiable PIR (Server-Correctness Guarantees for PIR)
+
+**Goal:** Extend PIR so that the client receives a cryptographic proof that the server returned the correct database record, preventing a malicious server from returning wrong answers while maintaining access-pattern privacy.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Verifiable PIR (VPIR)** | 2022 | Authenticated PIR + ZK proofs | Henry-Huang-Libert, CCS 2023 [[1]](https://eprint.iacr.org/2023/573.pdf) |
+| **MPIR (Maliciously Secure PIR)** | 2023 | MPC + PIR | Mughees et al., CCS 2023 [[2]](https://eprint.iacr.org/2023/1097.pdf) |
+
+**State of the art:** Standard PIR only hides the query index; a malicious server can still return garbage. Verifiable PIR adds a correctness proof. CCS 2023 saw multiple VPIR constructions with practical efficiency. Important for private DNS and certificate status checking where server malice is a real concern. Related to [PIR with Client Preprocessing](#pir-with-client-preprocessing-checklist-piano-hint-based-pir).
+
+**Production readiness:** Experimental
+CCS 2023 research results. No production deployments. Performance overhead (~2–10× over standard PIR) is acceptable for some use cases.
+
+**Implementations:**
+- [vpir-code](https://github.com/henrynash/vpir) ⭐ 6 — Go, CCS 2023 reference implementation
+
+**Security status:** Secure
+Correctness proven under standard cryptographic assumptions (RLWE or information-theoretic). Client learns nothing about other records beyond the queried one.
+
+**Community acceptance:** Emerging
+CCS 2023 publications. Active research area. Growing interest as PIR deployment matures and server-correctness becomes a concern.
 
 ---
 
@@ -1479,6 +1565,34 @@ IETF RFC 9230 (ODoH), RFC 9458 (OHTTP), RFC 9576-9578 (Privacy Pass); deployed b
 
 ---
 
+### Oblivious Join (Private Relational Database Join Protocols)
+
+**Goal:** Execute relational database join operations (inner join, semi-join) on secret-shared or encrypted tables without revealing which records matched, enabling privacy-preserving SQL analytics.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SMCQL** | 2017 | Garbled circuits + SQL | Bater et al., VLDB 2017; medical research [[1]](https://arxiv.org/abs/1606.06808) |
+| **SENATE** | 2021 | MPC + SQL semi-join | Poddar et al., USENIX 2021 [[2]](https://eprint.iacr.org/2021/1247.pdf) |
+| **SNAP** | 2021 | Shuffle-based join | Volgushev et al.; oblivious join without ORAM [[3]](https://eprint.iacr.org/2021/903.pdf) |
+
+**State of the art:** Oblivious joins are a key primitive for privacy-preserving databases. SENATE (USENIX 2021) achieves practical performance for semi-joins. SMCQL is used in real medical research collaborations. Proof of SQL (covered in [category 04](04-zero-knowledge-proof-systems.md#proof-of-sql-zk-proofs-for-sql-query-correctness)) addresses related problems via ZK proofs. Related to [ORAM](#oblivious-ram-oram).
+
+**Production readiness:** Experimental
+SMCQL used in research medical studies. SENATE and SNAP are research prototypes. No commercial production deployment yet.
+
+**Implementations:**
+- [smcql](https://github.com/smcql/smcql) ⭐ 87 — Java, privacy-preserving SQL on distributed data
+- [SENATE](https://github.com/rp3030/senate) ⭐ 21 — C++, USENIX 2021 reference
+- [EzPC](https://github.com/mpc-msri/EzPC) ⭐ 224 — C++, Microsoft Research MPC SQL framework
+
+**Security status:** Secure
+Security under honest-majority (SENATE) or garbled circuit assumptions (SMCQL). Access patterns to the join result can still leak some information in some constructions.
+
+**Community acceptance:** Emerging
+VLDB and USENIX publications. Medical research use cases drive adoption. Growing interest from regulated industries (finance, healthcare).
+
+---
+
 
 ## Applied Privacy Protocols
 
@@ -1841,5 +1955,39 @@ PRF-based rolling IDs; local matching prevents server from learning contact grap
 
 **Community acceptance:** Standard
 Apple/Google OS-level API; EPFL/ETH Zurich design; adopted by 40+ countries; peer-reviewed protocol
+
+---
+
+
+## Comparison and Arithmetic Protocols
+
+---
+
+### Secure Comparison Protocols (Yao's Millionaires' Problem)
+
+**Goal:** Allow two parties to determine which of their private values is larger (or whether they are equal) without revealing the values themselves — the foundational privacy-preserving comparison primitive.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Yao's Millionaires' Problem** | 1982 | Garbled circuits (original) | Andrew Yao; foundational MPC paper [[1]](https://ieeexplore.ieee.org/document/4568388) |
+| **DGK Comparison** | 2009 | Additively homomorphic encryption | Damgård-Geisler-Krøigaard; efficient protocol [[2]](https://eprint.iacr.org/2008/321.pdf) |
+| **ABY Comparison** | 2015 | Mixed protocol (A+B+Y) | Demmler-Schneider-Zohner; ABY framework [[3]](https://encrypto.de/papers/DSZ15.pdf) |
+| **CrypTFlow2 / Cheetah** | 2020/2022 | Secret sharing + beaver triples | ReLU/max for private ML [[4]](https://eprint.iacr.org/2020/1765.pdf) |
+
+**State of the art:** Secure comparison is a foundational primitive used in every MPC framework. ABY (2015) provides practical mixed-protocol comparison combining arithmetic, Boolean, and Yao sharing. CrypTFlow2 and Cheetah achieve efficient comparison for private ML inference (ReLU activation). Related to [Garbled Circuits](../categories/06-multi-party-computation.md#garbled-circuits) and [Secure Fixed-Point Arithmetic in MPC](../categories/06-multi-party-computation.md#secure-fixed-point-and-floating-point-arithmetic-in-mpc).
+
+**Production readiness:** Production
+ABY framework used in production MPC systems. CrypTFlow2 used in Microsoft CRYPTEN for private ML. Comparison protocols are foundational to all MPC deployments.
+
+**Implementations:**
+- [ABY](https://github.com/encryptogroup/ABY) ⭐ 506 — C++, arithmetic-Boolean-Yao mixed protocol
+- [CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.5k — Python, includes efficient comparison
+- [EzPC](https://github.com/mpc-msri/EzPC) ⭐ 224 — C++, Microsoft Research MPC including comparison
+
+**Security status:** Secure
+Yao's original protocol: semi-honest security under computational assumptions. DGK: semi-honest security under DDH. Maliciously-secure variants exist with additional overhead.
+
+**Community acceptance:** Standard
+Yao's 1982 paper is one of the most influential in cryptography (Turing Award 2000). ABY is the standard framework benchmark. Universally used in MPC literature and practice.
 
 ---

@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (57 schemes)
+## Contents (62 schemes)
 
 **[Authenticated Encryption (AEAD)](#authenticated-encryption-aead)**
 - [Authenticated Encryption (AEAD)](#authenticated-encryption-aead)
@@ -42,6 +42,10 @@
 - [Spook (Leakage-Resilient Sponge-Based AEAD)](#spook-leakage-resilient-sponge-based-aead)
 - [ESTATE (Energy-Efficient Short-Tweak TBC-Based AEAD)](#estate-energy-efficient-short-tweak-tbc-based-aead)
 - [Partitioning Oracle Attacks and Committing AEAD Landscape](#partitioning-oracle-attacks-and-committing-aead-landscape)
+- [XAES-256-GCM (Extended-Nonce AES-GCM)](#xaes-256-gcm-extended-nonce-aes-gcm)
+- [Kravatte (Farfalle-Based PRF and AEAD)](#kravatte-farfalle-based-prf-and-aead)
+- [SUNDAE-GIFT (Deterministic Nonce-Free AEAD)](#sundae-gift-deterministic-nonce-free-aead)
+- [COMET (Counter-based Mode with Tweakable Block Cipher)](#comet-counter-based-mode-with-tweakable-block-cipher)
 
 **[Key Encapsulation and Hybrid Encryption](#key-encapsulation-and-hybrid-encryption)**
 - [Key Encapsulation Mechanism (KEM) / DEM Paradigm](#key-encapsulation-mechanism-kem--dem-paradigm)
@@ -52,6 +56,7 @@
 **[Format-Preserving and Disk Encryption](#format-preserving-and-disk-encryption)**
 - [Format-Preserving Encryption (FPE)](#format-preserving-encryption-fpe)
 - [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers)
+- [HPolyC and HBSH (Hash-Poly-Cipher Wide-Block Constructions)](#hpolyc-and-hbsh-hash-poly-cipher-wide-block-constructions)
 - [Order-Preserving / Order-Revealing Encryption (OPE / ORE)](#order-preserving--order-revealing-encryption-ope--ore)
 - [Updatable Encryption](#updatable-encryption)
 - [Rerandomizable Encryption](#rerandomizable-encryption)
@@ -1413,6 +1418,111 @@ NIST Block Cipher Modes Workshop (2023) discussed standardization; adopted by Si
 
 ---
 
+### XAES-256-GCM (Extended-Nonce AES-GCM)
+
+**Goal:** Extend AES-256-GCM to accept 192-bit nonces (instead of 96-bit), eliminating nonce-reuse risk in applications that generate random nonces, while remaining fully compatible with standard AES hardware.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **XAES-256-GCM** | 2024 | AES-256 + GHASH | Google/C2SP specification, 192-bit random nonce [[1]](https://c2sp.org/XAES-256-GCM) |
+
+**State of the art:** Fills the gap between AES-128-GCM (96-bit nonce, random nonce collision risk at ~2^48 messages) and XChaCha20-Poly1305 (192-bit nonce, no AES-NI benefit). Designed for Go's `crypto/aead` and adopted by Google. Specified in the C2SP community specification. See [AES-GCM / AES-CCM / ChaCha20-Poly1305](#authenticated-encryption-aead).
+
+**Production readiness:** Production
+Deployed in Go standard library (crypto/aead), Google internal services, and C2SP-compliant implementations since 2024.
+
+**Implementations:**
+- [golang.org/x/crypto](https://github.com/golang/crypto) ⭐ 3.1k — Go, reference implementation
+- [xaes-256-gcm (RustCrypto)](https://github.com/RustCrypto/AEADs) ⭐ 767 — Rust, AEAD collection
+- [age (file encryption)](https://github.com/FiloSottile/age) ⭐ 18k — Go, uses XAES-256-GCM
+
+**Security status:** Secure
+Provably reduces to AES-256-GCM security. 192-bit nonces make random-nonce collision probability negligible even at 2^80 messages. Formally verified design.
+
+**Community acceptance:** Emerging
+Specified by C2SP (community cryptography specification project), endorsed by Go team and FiloSottile. Not yet an IETF or NIST standard but gaining traction rapidly.
+
+---
+
+### Kravatte (Farfalle-Based PRF and AEAD)
+
+**Goal:** Provide a fast, parallelizable PRF and AEAD scheme using the Farfalle construction on top of Keccak-p permutations, achieving high throughput on modern CPUs with SIMD.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Farfalle** | 2017 | Keccak-p[1600] permutation | Parallelizable PRF construction [[1]](https://eprint.iacr.org/2016/1188.pdf) |
+| **Kravatte** | 2017 | Farfalle instance | Concrete AEAD/PRF scheme by Keccak team [[2]](https://keccak.team/kravatte.html) |
+| **Kravatte-SIV / Kravatte-SAE** | 2017 | Farfalle modes | Nonce-misuse resistant variants [[3]](https://keccak.team/kravatte.html) |
+
+**State of the art:** Kravatte demonstrates that Farfalle enables competitive throughput versus AES-GCM while offering a nonce-misuse resistant mode. Not standardized but actively maintained by the Keccak team. Related to [Xoodyak (NIST LWC Finalist)](#xoodyak-nist-lwc-finalist) which uses the smaller Xoodoo permutation.
+
+**Production readiness:** Experimental
+Designed and analyzed by the Keccak/XKCP team. No production deployments; used primarily in research and as a design reference.
+
+**Implementations:**
+- [XKCP (Keccak Code Package)](https://github.com/XKCP/XKCP) ⭐ 651 — C/Assembly, reference by Keccak team
+- [KeccakTools](https://github.com/KeccakTeam/KeccakTools) ⭐ 131 — C++, analysis and reference
+
+**Security status:** Secure
+Security reduces to Keccak-p permutation assumptions. Farfalle construction has been peer-reviewed. No known attacks.
+
+**Community acceptance:** Niche
+Designed by the SHA-3/Keccak team (top-tier researchers), well-analyzed, but limited adoption outside research. Not in any NIST or IETF process.
+
+---
+
+### SUNDAE-GIFT (Deterministic Nonce-Free AEAD)
+
+**Goal:** Provide a nonce-free, deterministic AEAD scheme for constrained IoT environments where reliable nonce generation is impractical, built on the GIFT-128 block cipher.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SUNDAE-GIFT** | 2019 | GIFT-128 block cipher | NIST LWC Round 2 candidate [[1]](https://sundae-aead.github.io) |
+| **SUNDAE construction** | 2019 | Universal hash + tweakable BC | Deterministic, nonce-free design [[2]](https://eprint.iacr.org/2018/842.pdf) |
+
+**State of the art:** SUNDAE-GIFT reached NIST Lightweight Cryptography Round 2 but did not advance to the final. ASCON was selected instead. SUNDAE-GIFT remains a clean design study for nonce-free AEAD in IoT. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
+
+**Production readiness:** Research
+Did not advance past NIST LWC Round 2. No production deployments. Reference implementations exist.
+
+**Implementations:**
+- [SUNDAE-GIFT reference](https://github.com/mjosaarinen/lwaes_isa/tree/master/ref) ⭐ 38 — C, NIST competition reference code
+- [NIST LWC submissions](https://csrc.nist.gov/projects/lightweight-cryptography/finalists) — official submission packages
+
+**Security status:** Secure
+Security proven under standard assumptions on GIFT-128. No known attacks on the full scheme.
+
+**Community acceptance:** Niche
+Respected NIST LWC submission, well-documented, but superseded by Ascon for standardization.
+
+---
+
+### COMET (Counter-based Mode with Tweakable Block Cipher)
+
+**Goal:** Provide a lightweight AEAD mode for constrained devices using a tweakable block cipher in a counter-based mode, offering both encryption and authentication with a single primitive.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **COMET-CHAM** | 2019 | CHAM-64 tweakable block cipher | NIST LWC Round 2 candidate [[1]](https://comet-lwc.github.io) |
+| **COMET-AES** | 2019 | AES as tweakable cipher | AES-based variant for legacy hardware |
+
+**State of the art:** COMET reached NIST Lightweight Cryptography Round 2 but was not selected as a finalist. Ascon was the eventual winner. COMET demonstrates tweakable-cipher-based AEAD design principles. See [Ascon-128 / Ascon-128a (NIST LWC Standard)](#ascon-128--ascon-128a-nist-lwc-standard).
+
+**Production readiness:** Research
+Not selected beyond NIST LWC Round 2. No production deployments known.
+
+**Implementations:**
+- [COMET reference implementation](https://comet-lwc.github.io) — C, NIST submission package
+- [NIST LWC Round 2 candidates](https://csrc.nist.gov/projects/lightweight-cryptography) — all Round 2 code
+
+**Security status:** Secure
+No known attacks beyond generic bounds. Peer-reviewed as part of NIST LWC competition.
+
+**Community acceptance:** Niche
+Evaluated by NIST LWC review board. Solid design but not selected for standardization. Limited adoption.
+
+---
+
 
 ## Key Encapsulation and Hybrid Encryption
 
@@ -1603,6 +1713,32 @@ XTS-AES provides sector-level confidentiality but not authentication; Adiantum a
 
 **Community acceptance:** Standard
 IEEE 1619 (XTS-AES); NIST approved for storage encryption; Adiantum and HCTR2 deployed by Google in Android.
+
+---
+
+### HPolyC and HBSH (Hash-Poly-Cipher Wide-Block Constructions)
+
+**Goal:** Construct wide-block tweakable ciphers for disk sector encryption by composing a fast hash (Poly1305 or NH) with a stream cipher (ChaCha), enabling strong security without native AES instructions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HPolyC** | 2018 | Poly1305 + ChaCha20 | Hash-then-encrypt, simple construction [[1]](https://eprint.iacr.org/2018/720.pdf) |
+| **HBSH** | 2018 | NH-hash + ChaCha20 | Faster variant used in Adiantum [[2]](https://eprint.iacr.org/2018/720.pdf) |
+
+**State of the art:** HPolyC and HBSH are the constructions underlying Google's Adiantum and HCTR2 disk-encryption schemes. HBSH with ChaCha12 and NH is the specific instantiation used in Android's Adiantum. Largely superseded by Adiantum/HCTR2 as finished products. See also [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers).
+
+**Production readiness:** Mature
+The constructions are deployed via Adiantum in Android, but as an intermediate abstraction rather than a named primitive.
+
+**Implementations:**
+- [adiantum (Google)](https://github.com/google/adiantum) ⭐ 279 — Rust, contains HPolyC/HBSH implementations
+- [Linux kernel crypto/adiantum.c](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git) ⭐ 190k — C, production kernel implementation
+
+**Security status:** Secure
+Proven secure as a tweakable super-pseudorandom permutation. Security reduces to ChaCha20 stream cipher and Poly1305 universality.
+
+**Community acceptance:** Niche
+Known primarily through the Adiantum paper. Not independently standardized. Used as implementation detail of Android storage encryption.
 
 ---
 

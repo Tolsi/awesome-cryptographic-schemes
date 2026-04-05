@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (61 schemes)
+## Contents (66 schemes)
 
 **[Commitment Schemes](#commitment-schemes)**
 - [Commitment Schemes](#commitment-schemes)
@@ -32,6 +32,7 @@
 - [Merkle Mountain Ranges (MMR)](#merkle-mountain-ranges-mmr)
 - [Ligero / Ligero++ (MPC-in-the-Head Commitments)](#ligero--ligero-mpc-in-the-head-commitments)
 - [Algebraic Vector Commitments](#algebraic-vector-commitments)
+- [Sparse Merkle Trees (SMT, Key-Value State Commitments)](#sparse-merkle-trees-smt-key-value-state-commitments)
 
 **[Verifiable Random Functions and Delay Functions](#verifiable-random-functions-and-delay-functions)**
 - [Verifiable Random Functions (VRF)](#verifiable-random-functions-vrf)
@@ -48,9 +49,12 @@
 - [Proofs of Retrievability (PoR) / Provable Data Possession](#proofs-of-retrievability-por--provable-data-possession)
 - [Accumulators](#accumulators)
 - [Proof of Solvency / Proof of Reserves](#proof-of-solvency--proof-of-reserves)
+- [Authenticated Data Structures (ADS, Tamassia Framework)](#authenticated-data-structures-ads-tamassia-framework)
+- [Verifiable Log-Backed Maps (Trillian, Certificate Transparency Infrastructure)](#verifiable-log-backed-maps-trillian-certificate-transparency-infrastructure)
 
 **[Randomness Beacons](#randomness-beacons)**
 - [Randomness Beacons / Coin Tossing](#randomness-beacons--coin-tossing)
+- [Coin-Flipping Protocols (Blum's Protocol and RANDAO)](#coin-flipping-protocols-blums-protocol-and-randao)
 
 **[Verifiable Encryption](#verifiable-encryption)**
 - [Verifiable Encryption](#verifiable-encryption)
@@ -76,6 +80,7 @@
 - [Homomorphic Commitments for MPC](#homomorphic-commitments-for-mpc)
 - [Succinct Mercurial Commitments](#succinct-mercurial-commitments)
 - [Verifiable Computation Delegation (Succinct Arguments for Delegated Computation)](#verifiable-computation-delegation-succinct-arguments-for-delegated-computation)
+- [Shuffle Arguments (Verifiable Shuffles, Mix-Net Proofs)](#shuffle-arguments-verifiable-shuffles-mix-net-proofs)
 
 <!-- /TOC -->
 
@@ -913,6 +918,34 @@ Published at ASIACRYPT 2020 and TCC 2022. Important theoretical contributions. L
 
 ---
 
+### Sparse Merkle Trees (SMT, Key-Value State Commitments)
+
+**Goal:** Commit to a key-value map of sparse data (where most leaves are empty) using a Merkle tree over the full key space, enabling efficient non-membership proofs alongside membership proofs.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Sparse Merkle Tree** | 2016 | Binary Merkle + empty-leaf optimization | Laurie-Kasper; used in Certificate Transparency [[1]](https://eprint.iacr.org/2016/683.pdf) |
+| **Jellyfish Merkle Tree** | 2021 | SMT with versioning | Aptos/Diem blockchain state [[2]](https://developers.diem.com/papers/jellyfish-merkle-tree/2021-01-14.pdf) |
+| **Verkle Tree (Pedersen-based)** | 2021 | Vector commitments | Ethereum state tree replacement [[3]](https://vitalik.eth.limo/general/2021/06/18/verkle.html) |
+
+**State of the art:** SMTs are the standard for blockchain state commitments (Aptos, Sui, StarkNet, zkSync all use SMT variants). Verkle trees (using polynomial commitments instead of hashes) are planned for Ethereum's Pectra/future upgrades to reduce witness sizes. Non-membership proofs make SMTs preferable to standard Merkle trees for key-value state. Related to [Merkle Trees and Hashmaps](#merkle-trees-and-authenticated-data-structures).
+
+**Production readiness:** Production
+Aptos uses Jellyfish Merkle Tree in production. StarkNet, zkSync use SMT variants. Ethereum uses a Patricia Merkle Trie (transitioning to Verkle Trees).
+
+**Implementations:**
+- [jellyfish-merkle](https://github.com/aptos-labs/aptos-core/tree/main/storage/jellyfish-merkle) ⭐ 6.4k — Rust, Aptos production SMT
+- [ics23](https://github.com/cosmos/ics23) ⭐ 127 — Go/Rust, ICS-23 proof format for SMTs (Cosmos)
+- [smt](https://github.com/celestiaorg/smt) ⭐ 161 — Go, Celestia sparse Merkle tree
+
+**Security status:** Secure
+SMT is a standard Merkle tree over the key space; security reduces to collision resistance of the hash function. Verkle tree security reduces to DL assumption.
+
+**Community acceptance:** Widely trusted
+SMT is the de facto standard for blockchain key-value state. Cosmos ICS-23 standardizes SMT proof format. Verkle trees have Ethereum Foundation backing.
+
+---
+
 
 ## Verifiable Random Functions and Delay Functions
 
@@ -1289,6 +1322,61 @@ Strong post-FTX industry interest. Published at IEEE S&P and CCS. No formal stan
 
 ---
 
+### Authenticated Data Structures (ADS, Tamassia Framework)
+
+**Goal:** Allow an untrusted server to answer queries on a data structure (trees, graphs, dictionaries) with cryptographic proofs that the answer is correct relative to a trusted root digest, enabling verifiable outsourced data storage.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ADS Framework** | 2003 | Hash + digital signatures | Tamassia; foundational authenticated data structures [[1]](https://dl.acm.org/doi/10.1145/872035.872043) |
+| **Authenticated Skip Lists** | 2003 | Skip list + Merkle hashing | Goodrich-Tamassia-Schwerin [[2]](https://dl.acm.org/doi/10.5555/771268.771288) |
+| **Verifiable Databases (VDB)** | 2012 | Bilinear maps | Benabbas-Gennaro-Vahlis; outsourced DB with proofs [[3]](https://eprint.iacr.org/2011/132.pdf) |
+
+**State of the art:** ADS are the foundation of Certificate Transparency, QLDB (Amazon's verifiable ledger), and blockchain state storage. The Tamassia framework generalizes Merkle trees to arbitrary data structures. Authenticated skip lists and B-trees are used in filesystem verification. Related to [Sparse Merkle Trees](#sparse-merkle-trees-smt-key-value-state-commitments) and [Accumulators](#accumulators).
+
+**Production readiness:** Production
+Certificate Transparency uses Merkle-based ADS in production (all HTTPS certificates since 2018). Amazon QLDB uses ADS for verifiable ledger. Blockchain state trees are ADS instances.
+
+**Implementations:**
+- [trillian](https://github.com/google/trillian) ⭐ 3.4k — Go, Merkle-tree-based ADS for CT/Sigstore
+- [amazon-qldb-driver](https://github.com/awslabs/amazon-qldb-driver-java) ⭐ 64 — Java, QLDB ADS access
+- [authenticated-datastructures](https://github.com/alinush/authenticated-datastructures) ⭐ 52 — Python, Tamassia framework implementation
+
+**Security status:** Secure
+Hash-based ADS security reduces to collision resistance. Signature-based ADS reduces to signature unforgeability. Well-analyzed over 20+ years.
+
+**Community acceptance:** Standard
+Foundational paper (Tamassia 2003) widely cited. Certificate Transparency mandated by Apple, Google, Mozilla. AWS QLDB deployed at enterprise scale.
+
+---
+
+### Verifiable Log-Backed Maps (Trillian, Certificate Transparency Infrastructure)
+
+**Goal:** Combine an append-only Merkle log with a Merkle map (verified log-backed map) so that clients can verify both the history of map updates and the current state of key-value mappings, enabling key transparency for messaging systems.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Trillian** | 2016 | Merkle log + Merkle map | Google open-source CT backend [[1]](https://github.com/google/trillian) |
+| **Key Transparency (KT)** | 2017 | Trillian + user-facing API | Google's E2E key verification [[2]](https://github.com/google/keytransparency) |
+| **CONIKS** | 2015 | VRF-indexed Merkle map | Melara et al., USENIX 2015 [[3]](https://eprint.iacr.org/2014/1004.pdf) |
+
+**State of the art:** Trillian powers Certificate Transparency (all major browser CT logs) and Sigstore's Rekor transparency log. Key Transparency (using Trillian) is deployed by WhatsApp and Google Messages for end-to-end key verification. CONIKS is the academic predecessor. Related to [Key Transparency](03-key-exchange-key-management.md#key-transparency-and-certificate-transparency) and [Authenticated Data Structures](#authenticated-data-structures-ads-tamassia-framework).
+
+**Production readiness:** Production
+Trillian runs all major CT logs (Google, Cloudflare, DigiCert). Sigstore Rekor uses Trillian. WhatsApp key transparency uses a Trillian-inspired design.
+
+**Implementations:**
+- [trillian](https://github.com/google/trillian) ⭐ 3.4k — Go, production Merkle log/map server
+- [keytransparency](https://github.com/google/keytransparency) ⭐ 490 — Go, log-backed map for key transparency
+
+**Security status:** Secure
+Append-only log security reduces to hash collision resistance. Map security additionally requires VRF/PRF for index derivation. Trillian has been in production since 2016 without breaches.
+
+**Community acceptance:** Widely trusted
+Trillian is the infrastructure for Chrome/Firefox/Safari CT enforcement. Sigstore (Linux Foundation) uses Trillian. Google-backed, open source, widely peer-reviewed.
+
+---
+
 
 ## Randomness Beacons
 
@@ -1320,6 +1408,33 @@ drand security relies on threshold BLS (t-of-n honest nodes sufficient). RANDAO 
 
 **Community acceptance:** Widely trusted
 drand endorsed by Cloudflare, Protocol Labs, Ethereum Foundation. NIST Beacon is a federal standard. RANDAO is part of Ethereum's consensus specification.
+
+---
+
+### Coin-Flipping Protocols (Blum's Protocol and RANDAO)
+
+**Goal:** Allow two or more mutually distrusting parties to jointly generate unbiased random bits, such that no party can bias the output even if they act maliciously and abort early.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Blum Coin-Flipping** | 1981 | Commitment + reveal | Foundational 2-party protocol over phone [[1]](https://dl.acm.org/doi/10.1145/1008908.1008911) |
+| **RANDAO** | 2017 | XOR of committed reveals | Ethereum 2.0 beacon randomness [[2]](https://ethresear.ch/t/randao-beacon/406) |
+| **drand** | 2019 | Threshold BLS + chain | Decentralized randomness beacon; Cloudflare [[3]](https://drand.love) |
+
+**State of the art:** RANDAO is the randomness mechanism in Ethereum 2.0 Beacon Chain, generating verifiable randomness from validator commitments each epoch. drand by EPFL/Cloudflare uses threshold BLS signatures in a distributed league of entropy (LoE) to produce public verifiable randomness. Related to [Randomness Beacons](#randomness-beacons--coin-tossing) and [VRF (Verifiable Random Function)](#verifiable-random-functions-vrf).
+
+**Production readiness:** Production
+RANDAO runs on every Ethereum 2.0 epoch (production since 2020). drand operates continuously with Cloudflare, EPFL, and other League of Entropy members.
+
+**Implementations:**
+- [drand](https://github.com/drand/drand) ⭐ 958 — Go, League of Entropy production randomness beacon
+- [ethereum/consensus-specs](https://github.com/ethereum/consensus-specs) ⭐ 3.6k — Python, RANDAO specification
+
+**Security status:** Caution
+Blum's basic protocol: last-revealer bias is possible (1-bit advantage). RANDAO: validators can bias by up to 1 bit per round by selectively withholding reveals. drand: threshold BLS prevents single-node bias but requires honest threshold of nodes.
+
+**Community acceptance:** Widely trusted
+RANDAO is Ethereum production standard. drand is operated by a League of Entropy including Cloudflare, EPFL, and Protocol Labs. Blum's 1981 paper is foundational cryptography.
 
 ---
 
@@ -2052,5 +2167,33 @@ Interactive proof variants have information-theoretic soundness. SNARK-based VC 
 
 **Community acceptance:** Widely trusted
 Foundational papers (GGP 2010, Pinocchio 2013) are among the most cited in applied cryptography. Modern VC is delivered through the SNARK/STARK ecosystem with broad community trust.
+
+---
+
+### Shuffle Arguments (Verifiable Shuffles, Mix-Net Proofs)
+
+**Goal:** Prove in zero knowledge that a set of ciphertexts is a permutation and re-encryption of another set, enabling verifiable mix-nets for anonymous e-voting and anonymous communication without revealing the permutation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Bayer-Groth Shuffle** | 2012 | Multiexponentiation argument | Most efficient pairing-free shuffle [[1]](https://eprint.iacr.org/2012/277.pdf) |
+| **Verificatum** | 2009 | ElGamal re-encryption shuffle | Production mix-net for national elections [[2]](https://www.verificatum.org) |
+| **Groth Shuffle** | 2003 | Bilinear maps | Pairing-based compact shuffle argument [[3]](https://eprint.iacr.org/2003/174.pdf) |
+
+**State of the art:** Bayer-Groth (2012) is the most efficient verifiable shuffle without pairings, used in Verificatum — the production mix-net deployed in Norwegian, Swedish, and Estonian national elections. Shuffle arguments are essential for e-voting and privacy-preserving analytics. Related to [Secret-Shared Shuffle](06-multi-party-computation.md#secret-shared-shuffle) and [E-Voting](20-applied-niche-protocols.md#e-voting-systems).
+
+**Production readiness:** Production
+Verificatum deployed in Norwegian national elections (2011, 2013), Estonian elections, and other national deployments. Actively maintained.
+
+**Implementations:**
+- [verificatum-vcr](https://github.com/verificatum/verificatum-vcr) ⭐ 27 — Java, Verificatum core (Bayer-Groth)
+- [verificatum-vmgj](https://github.com/verificatum/verificatum-vmgj) ⭐ 15 — Java, VMG shuffle implementation
+- [neff-shuffle](https://github.com/nicowillis/neff-shuffle) ⭐ 8 — Python, academic reference
+
+**Security status:** Secure
+Bayer-Groth proven honest-verifier ZK; made non-interactive via Fiat-Shamir. Security under DDH assumption. Verificatum audited by independent cryptographers.
+
+**Community acceptance:** Widely trusted
+Deployed in binding national elections in Norway and Estonia. Verificatum is the reference implementation cited by election standards bodies. Bayer-Groth is the academic benchmark.
 
 ---

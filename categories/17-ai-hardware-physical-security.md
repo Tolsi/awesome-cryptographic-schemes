@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (48 schemes)
+## Contents (53 schemes)
 
 **[Verifiable AI and ML Security](#verifiable-ai-and-ml-security)**
 - [zkLLM / Verifiable AI Inference](#zkllm--verifiable-ai-inference)
@@ -29,11 +29,16 @@
 - [Rowhammer Attacks on DRAM](#rowhammer-attacks-on-dram)
 - [White-Box Cryptography (WBC)](#white-box-cryptography-wbc)
 - [Formal Verification of Cryptographic Hardware](#formal-verification-of-cryptographic-hardware)
+- [Logic Locking and IC Camouflage (SAT-Resistant IC IP Protection)](#logic-locking-and-ic-camouflage-sat-resistant-ic-ip-protection)
+- [CHERI (Capability Hardware Enhanced RISC Instructions)](#cheri-capability-hardware-enhanced-risc-instructions)
+- [ARM Pointer Authentication (PAC) and Memory Tagging Extension (MTE)](#arm-pointer-authentication-pac-and-memory-tagging-extension-mte)
+- [Total Memory Encryption (Intel TME/MKTME, AMD SME/TSME)](#total-memory-encryption-intel-tmemktme-amd-smetsme)
 
 **[Secure Hardware Platforms](#secure-hardware-platforms)**
 - [Hardware Security Modules (HSM) & FIPS 140-3](#hardware-security-modules-hsm--fips-140-3)
 - [Smart Card & Secure Element Cryptography](#smart-card--secure-element-cryptography)
 - [RISC-V Cryptography Extensions (Zbk*, Zkn*, Zks*, Zvk*)](#risc-v-cryptography-extensions-zbk-zkn-zks-zvk)
+- [RISC-V TEE Enclaves (Keystone, Penglai, Sanctum)](#risc-v-tee-enclaves-keystone-penglai-sanctum)
 
 **[Location and Physical Layer](#location-and-physical-layer)**
 - [Wiretap Channel / Physical-Layer Security](#wiretap-channel--physical-layer-security)
@@ -664,6 +669,117 @@ Published at top venues (USENIX, CCS, S&P); Formosa Crypto endorsed for PQC veri
 
 ---
 
+### Logic Locking and IC Camouflage (SAT-Resistant IC IP Protection)
+
+**Goal:** Protect integrated circuit (IC) intellectual property by inserting key-controlled logic gates (logic locking) or camouflaged cells that appear identical in layout (IC camouflage), preventing reverse engineering and IP theft by untrusted fabricators.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Logic Locking (SARLock/Anti-SAT)** | 2016 | SAT-resistant key gates | Yasin-Rajendran et al.; SAT attack resistant [[1]](https://eprint.iacr.org/2016/791.pdf) |
+| **SFLL (Stripped Functionality Logic Locking)** | 2017 | Partial unlock via key | Yasin et al., DAC 2017 [[2]](https://dl.acm.org/doi/10.1145/3061639.3062290) |
+| **IC Camouflage** | 2013 | Indistinguishable gate layouts | Rajendran et al.; foundry-proof design [[3]](https://ieeexplore.ieee.org/document/6519013) |
+
+**State of the art:** Logic locking is an active area of EDA security research. SAT-based attacks (2015) broke early schemes; Anti-SAT and SFLL resist them. IC camouflage uses custom standard cells with identical GDSII footprints but different logical functions. Both protect against untrusted foundries (China, Taiwan) reverse engineering US semiconductor IP. Used in military ICs and some commercial designs. Related to [Physical Unclonable Functions (PUF)](#physical-unclonable-functions-puf).
+
+**Production readiness:** Experimental
+Logic locking used in some defense/military IC designs. IC camouflage available from specialized foundries. Academic research very active (ICCAD, DAC papers). No civilian mass-market deployment.
+
+**Implementations:**
+- [RANE (Logic Locking)](https://github.com/dlbraunpu/RANE) ⭐ 18 — Python, logic locking tool
+- [OpenROAD](https://github.com/The-OpenROAD-Project/OpenROAD) ⭐ 2.0k — C++, EDA flow supporting locking research
+- [logic-locking-benchmark](https://github.com/sujata-bhide/logic-locking-benchmark) ⭐ 24 — Python, benchmark suite
+
+**Security status:** Caution
+Early logic locking schemes broken by SAT attacks. Anti-SAT and SFLL resist SAT but may leak information via other side channels. IC camouflage partially broken by machine-learning-based visual analysis. Active cat-and-mouse research.
+
+**Community acceptance:** Niche
+Active academic research (DAC, ICCAD, HOST conference). DARPA SHIELD and similar programs fund development. Not standardized. Limited to defense/high-value IC contexts.
+
+---
+
+### CHERI (Capability Hardware Enhanced RISC Instructions)
+
+**Goal:** Extend CPU instruction sets with hardware-enforced capabilities (fat pointers with bounds and permissions) to prevent memory safety vulnerabilities (buffer overflows, use-after-free, type confusion) at the hardware level, without runtime performance overhead.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CHERI** | 2014 | Capability-based memory model | Cambridge/SRI DARPA MRC project [[1]](https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/) |
+| **Arm Morello** | 2022 | ARMv8.2 + CHERI capabilities | ARM prototype chip; 256-bit capability pointers [[2]](https://www.arm.com/architecture/cpu/morello) |
+| **CheriBSD** | 2022 | FreeBSD + CHERI | Production OS on Morello hardware [[3]](https://www.cheribsd.org) |
+
+**State of the art:** CHERI is the most mature capability hardware project. Arm's Morello (2022) is a physical prototype chip. UKRI Digital Security by Design (DSbD) program funded £190M for CHERI adoption. Microsoft's Project Cheriot applies CHERI to IoT microcontrollers. CheriBSD runs on Morello. Memory safety at hardware level is expected to eliminate ~70% of CVEs (Microsoft/Google data). Related to [ARM Pointer Authentication (PAC) and Memory Tagging Extension (MTE)](#arm-pointer-authentication-pac-and-memory-tagging-extension-mte).
+
+**Production readiness:** Experimental
+Arm Morello prototype available (2022). CheriBSD production-quality. Commercial deployment: Microsoft Cheriot for IoT (2023). Not yet in mainstream CPUs.
+
+**Implementations:**
+- [cheribuild](https://github.com/CTSRD-CHERI/cheribuild) ⭐ 242 — Python, CHERI build infrastructure
+- [CheriBSD](https://github.com/CTSRD-CHERI/cheribsd) ⭐ 310 — C, CHERI-enabled FreeBSD
+- [cheriot-rtos](https://github.com/microsoft/cheriot-rtos) ⭐ 474 — C++, Microsoft CHERIoT RTOS
+
+**Security status:** Secure
+Hardware capability enforcement is formally verified (CHERI-MIPS formal model). Eliminates entire classes of memory safety vulnerabilities. Physical attacks on the chip remain.
+
+**Community acceptance:** Emerging
+UKRI DSbD program (£190M), Microsoft, ARM, Google involved. DARPA-funded research. Academic consensus that CHERI solves a real problem. Mainstream adoption awaits production silicon.
+
+---
+
+### ARM Pointer Authentication (PAC) and Memory Tagging Extension (MTE)
+
+**Goal:** Provide deployed hardware mechanisms on ARM CPUs to prevent return-oriented programming (ROP) attacks (PAC) and detect/prevent heap/stack memory corruption (MTE) using cryptographically-protected pointer metadata.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **PAC (Pointer Authentication Codes)** | 2017 | QARMA tweakable block cipher | ARMv8.3; Apple A12+ and Android [[1]](https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/pointer-auth-v7.pdf) |
+| **MTE (Memory Tagging Extension)** | 2019 | 4-bit address tag + allocator | ARMv8.5; Pixel 8 hardware support [[2]](https://developer.arm.com/documentation/102925/latest) |
+
+**State of the art:** PAC is deployed in Apple M-series (M1/M2/M3), Apple A12+, and Qualcomm Snapdragon since 2018. MTE is deployed in Google Pixel 8 (hardware, enabled in Android 14). PAC uses QARMA (a tweakable block cipher) to sign return addresses and function pointers, preventing ROP exploitation. MTE uses 4-bit address tags to detect heap/stack overflows and use-after-free. Related to [CHERI](#cheri-capability-hardware-enhanced-risc-instructions).
+
+**Production readiness:** Production
+PAC: Apple M-series and iPhone (billions of devices since 2018). MTE: Google Pixel 8 hardware support (2023), enabled in Android 14. Both are production-deployed at massive scale.
+
+**Implementations:**
+- [LLVM/Clang PAC support](https://github.com/llvm/llvm-project) ⭐ 31k — C++, compiler PAC instrumentation
+- [Android MTE](https://source.android.com/docs/security/test/memory-safety/mte) — documentation and AOSP support
+- [QARMA reference](https://eprint.iacr.org/2016/444.pdf) — tweakable cipher spec (not open-source)
+
+**Security status:** Secure
+PAC cryptographic strength: QARMA with 128-bit key, ~64-bit effective security for pointers. MTE: 4-bit tags provide 1/16 attack detection probability per attempt (probabilistic, not cryptographic). Both are defense-in-depth, not absolute security.
+
+**Community acceptance:** Widely trusted
+ARM architecture standard. Apple, Google, and Qualcomm ship PAC in all modern chips. Google MTE adoption in Pixel. Linux kernel, Android, iOS all support PAC/MTE. Major security improvement for deployed systems.
+
+---
+
+### Total Memory Encryption (Intel TME/MKTME, AMD SME/TSME)
+
+**Goal:** Encrypt all or selected regions of DRAM transparently using AES hardware in the memory controller, protecting against physical memory attacks (cold boot attacks, bus snooping, evil-maid attacks) without software changes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Intel TME** | 2019 | AES-XTS-128 in memory controller | Total Memory Encryption; Xeon Scalable [[1]](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-total-memory-encryption-api.html) |
+| **Intel MKTME** | 2019 | TME + per-VM key isolation | Multi-Key TME; VM memory isolation [[2]](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-total-memory-encryption-api.html) |
+| **AMD SME/TSME** | 2016 | AES-128 in AMD memory controller | Secure/Transparent Memory Encryption [[3]](https://developer.amd.com/wordpress/media/2013/12/AMD_Memory_Encryption_Whitepaper_v7-Public.pdf) |
+
+**State of the art:** AMD SME/TSME has been shipping since EPYC Naples (2017) and is standard on all modern AMD server/desktop CPUs. Intel TME shipped with Ice Lake Xeon (2019). Both encrypt all of DRAM transparently with a hardware-random key generated at boot. MKTME extends to per-VM isolation, foundational to Intel TDX (Trusted Domain Extensions). Used in confidential cloud VMs (Azure, GCP). Related to [TEE Attestation](14-applied-infrastructure-pki.md#tee-remote-attestation-sgx-trustzone-tdx) and [AES-XTS and Disk Encryption](02-authenticated-structured-encryption.md#aes-xts-and-disk-encryption).
+
+**Production readiness:** Production
+AMD TSME standard on all EPYC/Ryzen since 2017. Intel TME on Xeon Scalable (Ice Lake+) and Core (Alder Lake+, 2021). Azure Confidential VMs use MKTME/TDX. Widely deployed in servers.
+
+**Implementations:**
+- [AMD SME kernel docs](https://www.kernel.org/doc/html/latest/x86/amd-memory-encryption.html) — Linux kernel SME/TSME support
+- [TDX tools](https://github.com/intel/tdx-tools) ⭐ 296 — Python/Shell, Intel TDX (built on MKTME) tooling
+- [sevctl](https://github.com/virtee/sevctl) ⭐ 164 — Rust, AMD SEV management tool
+
+**Security status:** Caution
+TME/SME protect against physical DRAM attacks (bus snooping, cold boot) but do NOT protect against software-level attacks from a malicious hypervisor. The encryption key is hardware-random per boot and not attestable by software. MKTME/TDX add stronger isolation with attestation.
+
+**Community acceptance:** Widely trusted
+AMD SME/TSME shipped in all EPYC CPUs since Naples (2017). Intel TME in all modern Xeon/Core. Linux kernel supports both. Azure and GCP use MKTME for confidential VMs. Industry standard for data center memory protection.
+
+---
+
 
 ## Secure Hardware Platforms
 
@@ -755,6 +871,33 @@ Hardware instructions are constant-time by specification; eliminates software ti
 
 **Community acceptance:** Standard
 Ratified RISC-V ISA extensions; open specification freely implementable; adopted by SiFive, Andes, T-Head; growing Linux and OpenSSL support
+
+---
+
+### RISC-V TEE Enclaves (Keystone, Penglai, Sanctum)
+
+**Goal:** Provide trusted execution environments (TEEs) on open-source RISC-V processors, enabling hardware-isolated secure enclaves without relying on proprietary TEE implementations (Intel SGX, ARM TrustZone) from untrusted vendors.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Keystone** | 2020 | RISC-V PMP + M-mode security monitor | UC Berkeley; open-source TEE framework [[1]](https://keystone-enclave.org) |
+| **Penglai** | 2021 | RISC-V + SMMU + enclave manager | Fudan University; server-scale enclaves [[2]](https://penglai-enclave.systems) |
+| **Sanctum** | 2016 | RISC-V + hardware memory isolation | MIT CSAIL; cache-timing-resistant TEE [[3]](https://eprint.iacr.org/2015/564.pdf) |
+
+**State of the art:** Keystone is the most widely adopted open-source RISC-V TEE framework, used in research and some embedded deployments. It uses RISC-V Physical Memory Protection (PMP) for enclave isolation with a formal security monitor. RISC-V's TEE working group is standardizing TEE primitives. Alternative to proprietary SGX/TrustZone for open hardware. Related to [TEE Attestation (SGX, TrustZone, TDX)](14-applied-infrastructure-pki.md#tee-remote-attestation-sgx-trustzone-tdx).
+
+**Production readiness:** Experimental
+Keystone and Penglai are research-grade. SiFive and other RISC-V vendors are incorporating TEE features. Not yet production-deployed at scale. RISC-V International's TEE TF working on standards.
+
+**Implementations:**
+- [keystone-enclave](https://github.com/keystone-enclave/keystone) ⭐ 929 — C/assembly, RISC-V TEE framework
+- [penglai-enclave](https://github.com/Penglai-Enclave/Penglai-Enclave-sPMP) ⭐ 248 — C, Fudan University TEE
+
+**Security status:** Caution
+Formal security proofs for the security monitor. Physical attacks (cold boot, voltage fault injection) are not addressed by software TEE mechanisms. Side-channel resistance varies by implementation.
+
+**Community acceptance:** Emerging
+Active RISC-V ecosystem project. RISC-V International TEE TF. Growing interest from cloud providers and embedded security researchers. Not yet a RISC-V standard.
 
 ---
 

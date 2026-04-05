@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (49 schemes)
+## Contents (56 schemes)
 
 **[Secure Channel Protocols](#secure-channel-protocols)**
 - [Secure Channels / Protocol Constructions](#secure-channels--protocol-constructions)
@@ -24,6 +24,7 @@
 - [Roughtime / Authenticated Rough Time Synchronization](#roughtime--authenticated-rough-time-synchronization)
 - [SCRAM / Salted Challenge Response Authentication Mechanism](#scram--salted-challenge-response-authentication-mechanism)
 - [tcpcrypt / Opportunistic TCP Stream Encryption](#tcpcrypt--opportunistic-tcp-stream-encryption)
+- [ALTS (Application Layer Transport Security, Google Service Mesh)](#alts-application-layer-transport-security-google-service-mesh)
 
 **[End-to-End Messaging](#end-to-end-messaging)**
 - [Double Ratchet / Symmetric Ratchet](#double-ratchet--symmetric-ratchet)
@@ -44,14 +45,18 @@
 - [MIMI / More Instant Messaging Interoperability](#mimi--more-instant-messaging-interoperability)
 - [age / Modern File Encryption Format](#age--modern-file-encryption-format)
 - [Saltpack / NaCl-Based Authenticated Message Format](#saltpack--nacl-based-authenticated-message-format)
+- [Autocrypt (Opportunistic End-to-End Email Encryption)](#autocrypt-opportunistic-end-to-end-email-encryption)
+- [SimpleX Messaging Protocol (No User Identifiers E2E Messaging)](#simplex-messaging-protocol-no-user-identifiers-e2e-messaging)
 
 **[Authentication and Identity](#authentication-and-identity)**
 - [EAP-PWD / Password-Based Enterprise WiFi Auth](#eap-pwd--password-based-enterprise-wifi-auth)
 - [Token-Based Authentication (TOTP / FIDO2 / WebAuthn)](#token-based-authentication-totp--fido2--webauthn)
 - [DKIM / DomainKeys Identified Mail](#dkim--domainkeys-identified-mail)
+- [Private Access Tokens (RFC 9577, CAPTCHA-Free Attestation)](#private-access-tokens-rfc-9577-captcha-free-attestation)
 
 **[Certificate and Key Infrastructure](#certificate-and-key-infrastructure)**
 - [BIP 324 / Opportunistic P2P Encryption](#bip-324--opportunistic-p2p-encryption)
+- [Delegated Credentials for TLS (RFC 9345, Short-Lived Sub-Credentials)](#delegated-credentials-for-tls-rfc-9345-short-lived-sub-credentials)
 
 **[Group Key Agreement](#group-key-agreement)**
 - [Group Key Agreement](#group-key-agreement)
@@ -1008,6 +1013,31 @@ IETF Experimental RFC 8548. Limited deployment. Conceptually influential but pra
 
 ---
 
+### ALTS (Application Layer Transport Security, Google Service Mesh)
+
+**Goal:** Provide mutual authentication and transport encryption for Google's internal RPC framework (Stubby/gRPC) without relying on X.509 PKI, using hardware-attested service identities and symmetric key establishment.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ALTS** | 2017 | Custom handshake + AES-GCM | Google production service-mesh mTLS alternative [[1]](https://cloud.google.com/docs/security/encryption-in-transit/application-layer-transport-security) |
+
+**State of the art:** ALTS is Google's internal answer to mTLS for service-to-service communication, used across all of Google's production infrastructure. It uses a Google-internal CA and hardware attestation rather than X.509. The protocol is documented publicly and served as inspiration for gRPC security. Related to [TLS 1.3](#tls-13-and-dtls-13) and [mTLS / Mutual TLS for Zero-Trust Architectures](#mtls--mutual-tls-for-zero-trust-architectures).
+
+**Production readiness:** Production
+Running on all of Google's production infrastructure for service-to-service communication since 2007. Handles petabytes of traffic per day.
+
+**Implementations:**
+- [grpc-alts](https://github.com/grpc/grpc/tree/master/src/core/tsi/alts) ⭐ 42k — C/C++, gRPC ALTS implementation (within gRPC repo)
+- [google-cloud-alts](https://cloud.google.com/docs/security/encryption-in-transit/application-layer-transport-security) — official documentation
+
+**Security status:** Secure
+Custom protocol designed and audited by Google's security team. Based on AES-128-GCM for record encryption. Hardware-attested identities prevent impersonation.
+
+**Community acceptance:** Niche
+Published by Google but used only within Google's infrastructure. gRPC ALTS is available to Cloud users. Not an IETF standard. Inspired but did not become a general standard.
+
+---
+
 
 ## End-to-End Messaging
 
@@ -1855,6 +1885,59 @@ Open specification. Developed by Keybase. Not standardized by IETF. Limited adop
 
 ---
 
+### Autocrypt (Opportunistic End-to-End Email Encryption)
+
+**Goal:** Enable automatic, transparent end-to-end encrypted email between users whose clients support Autocrypt, by embedding OpenPGP public keys in email headers and automating key exchange without requiring manual key management.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Autocrypt Level 1** | 2017 | OpenPGP + email header key distribution | Autocrypt spec; Thunderbird, Delta Chat [[1]](https://autocrypt.org) |
+| **Autocrypt Setup Message** | 2018 | Encrypted key backup | Cross-device key transfer [[2]](https://autocrypt.org/level1.html#autocrypt-setup-message) |
+
+**State of the art:** Autocrypt is implemented in Thunderbird (via Enigmail then built-in), K-9 Mail, Delta Chat, and Claws Mail. It removes the manual key exchange barrier that prevented widespread PGP email adoption. Relies on TOFU (trust on first use) rather than a PKI. Related to [OpenPGP / PGP / GPG](#openpgp--pgp--gpg) and [DKIM](#dkim-domainkeys-identified-mail).
+
+**Production readiness:** Production
+Shipped in Thunderbird 78+ (2020) as the default encryption UI. K-9 Mail and Delta Chat use Autocrypt. Millions of users.
+
+**Implementations:**
+- [autocrypt-py](https://github.com/autocrypt/autocrypt-py) ⭐ 92 — Python, reference implementation
+- [Thunderbird](https://github.com/mozilla/releases-comm-central) ⭐ 193 — C++/JavaScript, built-in Autocrypt
+- [delta-chat-core-rust](https://github.com/deltachat/deltachat-core-rust) ⭐ 608 — Rust, Delta Chat uses Autocrypt
+
+**Security status:** Caution
+TOFU model provides no protection against active MITM at first contact. Key verification is optional and rarely performed by end-users. No certificate authority backs keys. Vulnerable to provider-level MITM.
+
+**Community acceptance:** Emerging
+Implemented by major email clients. EU-funded development. Not an IETF RFC. Practical improvement over no encryption despite TOFU limitations.
+
+---
+
+### SimpleX Messaging Protocol (No User Identifiers E2E Messaging)
+
+**Goal:** Provide end-to-end encrypted messaging without any user identifiers (no phone numbers, usernames, or persistent IDs), using unidirectional message queues with per-conversation cryptographic identities.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SimpleX Messaging Protocol** | 2022 | NaCl + X3DH-inspired + SMP queues | No user IDs; Trail of Bits audited [[1]](https://github.com/simplex-chat/simplexmq/blob/stable/protocol/simplex-messaging.md) |
+| **SimpleX Chat Protocol** | 2022 | SMP + double ratchet | End-to-end encrypted messaging on top of SMP [[2]](https://github.com/simplex-chat/simplex-chat/blob/stable/docs/SIMPLEX.md) |
+
+**State of the art:** SimpleX is the most privacy-preserving mass-market messaging protocol: the server cannot correlate message senders and receivers because each conversation uses distinct one-time queue addresses. Audited by Trail of Bits (2022, 2024). Related to [Double Ratchet Algorithm](#double-ratchet-algorithm-signal-protocol) and [X3DH (Extended Triple Diffie-Hellman)](#x3dh-extended-triple-diffie-hellman).
+
+**Production readiness:** Production
+SimpleX Chat app deployed with hundreds of thousands of active users. Protocol stable since 2022. Trail of Bits security audit completed.
+
+**Implementations:**
+- [simplexmq](https://github.com/simplex-chat/simplexmq) ⭐ 868 — Haskell, SMP server and protocol library
+- [simplex-chat](https://github.com/simplex-chat/simplex-chat) ⭐ 7.9k — Haskell/Kotlin/Swift, cross-platform chat
+
+**Security status:** Secure
+Trail of Bits audit found no critical issues (2022, 2024). X3DH-inspired key agreement with forward secrecy. No user identifiers means traffic analysis is significantly harder.
+
+**Community acceptance:** Emerging
+Growing community (7.9k GitHub stars, active users). Not yet standardized. Positive reception from privacy/security researchers. Unique no-identifier design distinguishes it from Signal.
+
+---
+
 
 ## Authentication and Identity
 
@@ -1986,6 +2069,33 @@ IETF RFC 6376, RFC 8463 (Ed25519). Effectively mandatory for email deliverabilit
 
 ---
 
+### Private Access Tokens (RFC 9577, CAPTCHA-Free Attestation)
+
+**Goal:** Allow clients (iOS, macOS) to prove to a server that they are legitimate users (not bots) using a blind signature-based token issued by a trusted attester, without revealing the client's identity to either the attester or the server.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Private Access Tokens** | 2023 | RSA Blind Signatures (RSABSSA) | RFC 9577; Apple/Cloudflare deployment [[1]](https://datatracker.ietf.org/doc/html/rfc9577) |
+| **RSABSSA** | 2023 | Blind RSA + PKCS1-v1.5 | RFC 9474; underlying signature scheme [[2]](https://datatracker.ietf.org/doc/html/rfc9474) |
+
+**State of the art:** Private Access Tokens replace CAPTCHAs for iOS/macOS users on Cloudflare-protected sites. Apple attests device legitimacy (using DeviceCheck/App Attest) and issues a blind-signed token; Cloudflare verifies the token without learning the device's identity. Deployed since iOS 16/macOS Ventura (2022). Related to [Privacy Pass (HTTP Authentication Extensions)](#privacy-pass-http-authentication-extensions) and [Blind Signatures](#blind-signatures).
+
+**Production readiness:** Production
+Deployed on Apple devices (iOS 16+, macOS 13+) and Cloudflare CDN (millions of domains). Eliminates CAPTCHAs for legitimate Apple device users.
+
+**Implementations:**
+- [blindrsa-ts](https://github.com/nicowillis/blindrsa-ts) ⭐ 29 — TypeScript, RSABSSA implementation
+- [voprf (IETF reference)](https://github.com/facebook/voprf) ⭐ 105 — Rust, includes blind RSA
+- [pat-go](https://github.com/chris-wood/pat-go) ⭐ 42 — Go, Private Access Tokens reference
+
+**Security status:** Secure
+RSABSSA proven secure under RSA assumption. Blindness property prevents attester from linking tokens to requests. RFC 9474 and RFC 9577 peer-reviewed.
+
+**Community acceptance:** Standard
+RFC 9474 (RSABSSA) and RFC 9577 (Private Access Tokens) are IETF standards (2023). Deployed by Apple and Cloudflare at massive scale. Privacy Pass working group endorsed.
+
+---
+
 
 ## Certificate and Key Infrastructure
 
@@ -2021,6 +2131,32 @@ Uses well-studied primitives (X25519 + ChaCha20-Poly1305 + Elligator2). Opportun
 
 **Community acceptance:** Standard
 Bitcoin BIP 324; adopted by Bitcoin Core. Well-received by the Bitcoin developer community. Peer-reviewed.
+
+---
+
+### Delegated Credentials for TLS (RFC 9345, Short-Lived Sub-Credentials)
+
+**Goal:** Allow a TLS server to create short-lived sub-credentials (valid for hours/days) from its long-lived certificate without CA involvement, keeping the long-term private key offline while enabling CDN edge servers to present valid credentials.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Delegated Credentials** | 2023 | X.509 extension + TLS handshake | RFC 9345; Cloudflare/Mozilla/Meta proposal [[1]](https://datatracker.ietf.org/doc/html/rfc9345) |
+
+**State of the art:** Delegated credentials solve the CDN key distribution problem: instead of distributing the TLS private key to CDN edge PoPs, the origin creates short-lived (max 7-day) delegated credentials that edge servers use. Deployed by Cloudflare, Meta, and Mozilla. Supported in Firefox, Chrome, and BoringSSL. Related to [TLS 1.3](#tls-13-and-dtls-13) and [Short-Lived Certificates (SLC)](#short-lived-certificates-slc).
+
+**Production readiness:** Production
+Deployed by Cloudflare (millions of domains), Meta, and Mozilla. Supported in Firefox 85+ and Chrome 117+. RFC 9345 finalized August 2023.
+
+**Implementations:**
+- [boringssl](https://boringssl.googlesource.com/boringssl/) — C, Google's TLS library with delegated credentials
+- [rustls](https://github.com/rustls/rustls) ⭐ 6.5k — Rust, supports RFC 9345
+- [cloudflare/tls-tris](https://github.com/cloudflare/tls-tris) ⭐ 531 — Go, Cloudflare TLS with DC support
+
+**Security status:** Secure
+Delegation is unforgeable: only the certificate's private key can create valid delegated credentials. Short validity window limits exposure. RFC 9345 peer-reviewed.
+
+**Community acceptance:** Standard
+IETF RFC 9345 (August 2023). Supported by major browsers, CDNs, and TLS libraries. Endorsed by Cloudflare, Meta, Mozilla.
 
 ---
 

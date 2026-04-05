@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (40 schemes)
+## Contents (45 schemes)
 
 **[Indistinguishability Obfuscation (iO)](#indistinguishability-obfuscation-io)**
 - [Indistinguishability Obfuscation (iO)](#indistinguishability-obfuscation-io)
@@ -20,6 +20,8 @@
 - [Lattice-Based iO (Jain-Lin-Sahai Construction)](#lattice-based-io-jain-lin-sahai-construction)
 - [Program Obfuscation for RAM Programs](#program-obfuscation-for-ram-programs)
 - [Evasive LWE and the iO Landscape](#evasive-lwe-and-the-io-landscape)
+- [Distributed Obfuscation (Multi-Authority and Threshold iO)](#distributed-obfuscation-multi-authority-and-threshold-io)
+- [SNARKs for NP from iO (Sahai-Waters 2014)](#snarks-for-np-from-io-sahai-waters-2014)
 
 **[Laconic and Succinct Cryptography](#laconic-and-succinct-cryptography)**
 - [Laconic Cryptography](#laconic-cryptography)
@@ -38,6 +40,7 @@
 - [Hyperplane Membership Obfuscation](#hyperplane-membership-obfuscation)
 - [Software Copy-Protection from iO](#software-copy-protection-from-io)
 - [Obfuscation of Point Functions with Multi-Bit Output](#obfuscation-of-point-functions-with-multi-bit-output)
+- [Auxiliary-Input Obfuscation (Point Functions with Auxiliary Input)](#auxiliary-input-obfuscation-point-functions-with-auxiliary-input)
 
 **[Hardness Assumptions](#hardness-assumptions)**
 - [Average-Case Hardness & Planted Problems](#average-case-hardness--planted-problems)
@@ -53,6 +56,8 @@
 - [Multi-Input Functional Encryption](#multi-input-functional-encryption)
 - [Attribute-Hiding Predicate Encryption](#attribute-hiding-predicate-encryption)
 - [Predicate Encryption from Lattices](#predicate-encryption-from-lattices)
+- [Hard Homogeneous Spaces (HHS, Cryptographic Group Actions)](#hard-homogeneous-spaces-hhs-cryptographic-group-actions)
+- [Uber Assumption (Generic Bilinear Group Hardness Framework)](#uber-assumption-generic-bilinear-group-hardness-framework)
 
 <!-- /TOC -->
 
@@ -479,6 +484,55 @@ Rapidly growing interest since Wee's 2022 introduction; major results at top ven
 
 ---
 
+### Distributed Obfuscation (Multi-Authority and Threshold iO)
+
+**Goal:** Distribute the obfuscation process across multiple authorities so that no single party holds the obfuscated program or its secrets, enabling threshold iO where t-of-n authorities must cooperate to evaluate the obfuscated circuit.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Distributed iO** | 2021 | LWE + lattice iO | Brakerski-Jain-Tan; threshold from lattice iO [[1]](https://eprint.iacr.org/2021/1249.pdf) |
+| **Multi-Authority iO** | 2019 | Garbled circuits + PRF shares | Chvojka-Jager-Slamanig; multi-authority functional enc [[2]](https://eprint.iacr.org/2019/908.pdf) |
+
+**State of the art:** Distributed obfuscation attempts to reduce the trust assumption in iO from a single obfuscator to a threshold. This is primarily theoretical — current lattice-based iO is itself inefficient, so distributed variants are doubly so. Interesting for the long-term vision of decentralized computation. Related to [Indistinguishability Obfuscation (iO)](#indistinguishability-obfuscation-io).
+
+**Production readiness:** Research
+Purely theoretical. No implementations. Builds on lattice-based iO which is itself not practically instantiable.
+
+**Implementations:**
+- No practical implementations exist.
+
+**Security status:** Secure
+Security reduces to underlying lattice iO assumptions. Theoretical results only.
+
+**Community acceptance:** Niche
+Small community of iO theorists. Primarily interesting as a research direction toward decentralized computation. No standardization activity.
+
+---
+
+### SNARKs for NP from iO (Sahai-Waters 2014)
+
+**Goal:** Construct succinct non-interactive arguments of knowledge (SNARKs) for all NP languages from indistinguishability obfuscation and one-way functions, establishing iO as a sufficient assumption for universal zkSNARKs.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SNARKs from iO** | 2014 | iO + one-way functions | Sahai-Waters; STOC 2014 [[1]](https://eprint.iacr.org/2013/454.pdf) |
+
+**State of the art:** Sahai and Waters' 2014 construction is a landmark theoretical result showing that iO is a "master" primitive from which SNARKs (and many other primitives) can be derived. This was historically significant in establishing iO's power. In practice, SNARKs are built from more efficient assumptions (pairings, random oracle + hashing). Related to [Indistinguishability Obfuscation (iO)](#indistinguishability-obfuscation-io) and [Groth16 / SNARKs](../categories/04-zero-knowledge-proof-systems.md#groth16--pinocchio-pairing-based-zksnark).
+
+**Production readiness:** Research
+Purely theoretical result. Actual SNARKs use more efficient constructions (pairings, FRI). The iO-to-SNARK construction is exponentially slower.
+
+**Implementations:**
+- No practical implementations. Theoretical significance only.
+
+**Security status:** Secure
+Proven secure assuming iO and one-way functions. Security inherits from iO assumptions.
+
+**Community acceptance:** Niche
+STOC 2014 best paper. Seminal theoretical result in cryptography. No practical impact — actual SNARKs use better constructions.
+
+---
+
 
 ## Laconic and Succinct Cryptography
 
@@ -812,6 +866,31 @@ ROM-based constructions are secure under random oracle assumption; standard-mode
 
 **Community acceptance:** Niche
 Theoretically well-understood; the ROM variant is implicitly used in password-based encryption but rarely referenced as "MBPF obfuscation" in practice.
+
+---
+
+### Auxiliary-Input Obfuscation (Point Functions with Auxiliary Input)
+
+**Goal:** Obfuscate a point function (a circuit that outputs 1 on exactly one input) even when the adversary has access to correlated auxiliary input about the secret point, enabling password-based systems where the secret is correlated with observed data.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Auxiliary-input VBB for point functions** | 2014 | Differing-inputs obfuscation | Canetti-Rothblum-Varia; AI-VBB [[1]](https://eprint.iacr.org/2010/586.pdf) |
+| **Differing-Inputs Obfuscation (diO)** | 2014 | Stronger than iO | Barak-Garg-Kalai-Paneth-Sahai [[2]](https://eprint.iacr.org/2013/689.pdf) |
+
+**State of the art:** Auxiliary-input obfuscation is relevant for software protection when the secret (e.g., a password check) can be correlated with side-channel observations. The differing-inputs obfuscation (diO) is a stronger variant of iO that has been shown to be implausible for many circuit classes. Primarily theoretical. Related to [Point Function Obfuscation](#point-function-obfuscation--digital-locker) and [Indistinguishability Obfuscation (iO)](#indistinguishability-obfuscation-io).
+
+**Production readiness:** Research
+No practical implementations. Theoretical constructions based on multilinear maps or iO.
+
+**Implementations:**
+- No practical implementations. Academic research only.
+
+**Security status:** Caution
+diO (differing-inputs obfuscation) has been shown impossible for some circuit classes. Auxiliary-input obfuscation has limited formal guarantees depending on the correlation structure.
+
+**Community acceptance:** Niche
+Important theoretical distinction between iO and VBB. Limited community beyond iO specialists. No standardization.
 
 ---
 
@@ -1208,5 +1287,57 @@ Proven secure under LWE for inner-product predicates; evasive LWE and tensor LWE
 
 **Community acceptance:** Emerging
 Active research area with growing interest due to post-quantum properties; evasive LWE constructions receiving significant attention since 2022.
+
+---
+
+### Hard Homogeneous Spaces (HHS, Cryptographic Group Actions)
+
+**Goal:** Generalize Diffie-Hellman key exchange to settings where a group acts on a set (rather than the set being the group itself), enabling post-quantum DH-like protocols from hard problems in isogeny graphs (CSIDH) and lattice cosets.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HHS (Hard Homogeneous Spaces)** | 1997 | Group action + DH analogue | Couveignes; formalized by Stolbunov [[1]](https://eprint.iacr.org/2006/291.pdf) |
+| **CSIDH** | 2018 | Commutative isogeny action | Castryck-Lange-Martindale-Panny-Renes [[2]](https://eprint.iacr.org/2018/383.pdf) |
+| **Group Action Sigma Protocols** | 2022 | HHS + ZK proofs | Beullens-Kleinjung-Vercauteren [[3]](https://eprint.iacr.org/2019/1375.pdf) |
+
+**State of the art:** CSIDH is the canonical HHS: the class group of an imaginary quadratic field acts on supersingular elliptic curves over Fp. CSIDH enables non-interactive key exchange post-quantum (unlike SIDH/SIKE which was broken in 2022). However, CSIDH's security against quantum algorithms is not fully analyzed — subexponential quantum attacks exist. Used as the basis for post-quantum group signatures and ZK proofs. Related to [Isogeny-Based Cryptography](15-quantum-cryptography.md#isogeny-based-cryptography-csidh-sqisign) and [Indistinguishability Obfuscation (iO)](#indistinguishability-obfuscation-io).
+
+**Production readiness:** Experimental
+CSIDH has research implementations. Not standardized. Quantum security parameters debated. Not suitable for production without clearer quantum security analysis.
+
+**Implementations:**
+- [sibc](https://github.com/JJChiDguez/sibc) ⭐ 52 — Python/C, isogeny-based crypto library (CSIDH)
+- [velusqrt](https://velusqrt.isogeny.org) — C, fast isogeny evaluation
+
+**Security status:** Caution
+CSIDH has subexponential quantum attacks (Childs-Jao-Soukharev 2010-type). Parameters must be chosen conservatively. Security analysis is ongoing. SIDH/SIKE (a related scheme) was completely broken in 2022 — CSIDH uses a different structure (commutative) that is not affected.
+
+**Community acceptance:** Niche
+Active post-quantum research community. Not standardized. NIST PQC competition did not select any HHS-based scheme. Interesting for group signatures and ZK proofs.
+
+---
+
+### Uber Assumption (Generic Bilinear Group Hardness Framework)
+
+**Goal:** Provide a unified framework for stating and proving security of pairing-based cryptographic schemes under a single generic assumption (the "Uber assumption") that captures the hardness of computing specific functions in a bilinear group, unifying dozens of ad-hoc pairing-based assumptions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Uber Assumption** | 2004 | Generic bilinear group model | Boyen; unifies BDHIE, DBDH, etc. [[1]](https://eprint.iacr.org/2006/043.pdf) |
+| **q-type assumptions** | 2006 | Parameterized DH variants | q-SDH, q-PKE; Boneh-Boyen-Shacham [[2]](https://eprint.iacr.org/2004/172.pdf) |
+
+**State of the art:** The Uber assumption framework allows proving that a new pairing-based scheme is secure if the scheme's polynomial systems over the group have a specific form. This provides a modular security analysis tool without needing to introduce new hardness assumptions for each scheme. Used to analyze BLS, Groth16, and many other pairing-based schemes. Related to [Bilinear Map Assumptions (DBDH, DLIN, SXDH, q-SDH, q-DBDHI)](#bilinear-map-assumptions-dbdh-dlin-sxdh-q-sdh-q-dbdhi).
+
+**Production readiness:** Research
+The Uber assumption is a theoretical framework used for security proofs, not a deployable scheme. Its value is in security analysis methodology.
+
+**Implementations:**
+- No standalone implementation. Used as an analysis framework for pairing-based schemes.
+
+**Security status:** Secure
+In the generic group model, the Uber assumption is proven to capture the hardness of all "natural" bilinear group problems. Outside the generic model, specific instantiations reduce to DLOG or CDH.
+
+**Community acceptance:** Widely trusted
+Widely cited in pairing-based cryptography papers. Standard tool for security analysis. Referenced in analyses of Groth16, BLS, and other deployed pairing schemes.
 
 ---

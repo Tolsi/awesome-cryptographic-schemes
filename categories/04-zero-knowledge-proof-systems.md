@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (59 schemes)
+## Contents (66 schemes)
 
 **[Foundational ZK Concepts](#foundational-zk-concepts)**
 - [Zero-Knowledge Proofs (ZK)](#zero-knowledge-proofs-zk)
@@ -35,6 +35,8 @@
 - [Circom and SnarkJS](#circom-and-snarkjs)
 - [ZK Circuit DSLs: Noir, Leo, Cairo](#zk-circuit-dsls-noir-leo-cairo)
 - [CirC (Compiler Infrastructure for ZK and MPC)](#circ-compiler-infrastructure-for-zk-and-mpc)
+- [zkLLVM (LLVM IR to ZK Circuit Compiler)](#zkllvm-llvm-ir-to-zk-circuit-compiler)
+- [powdr (Modular ZK Compiler Framework)](#powdr-modular-zk-compiler-framework)
 - [Marlin and Lunar (Universal SNARKs for R1CS)](#marlin-and-lunar-universal-snarks-for-r1cs)
 - [Sangria, Arecibo, and Sonobe (Folding Ecosystem)](#sangria-arecibo-and-sonobe-folding-ecosystem)
 - [Gemini (Elastic SNARKs)](#gemini-elastic-snarks)
@@ -47,6 +49,7 @@
 - [STARK Arithmetization: AIR and FRI](#stark-arithmetization-air-and-fri)
 - [Boojum (zkSync Era Proof System)](#boojum-zksync-era-proof-system)
 - [BaseFold (Field-Agnostic Polynomial Commitments)](#basefold-field-agnostic-polynomial-commitments)
+- [STIR (Shift-To-Improve Rate)](#stir-shift-to-improve-rate)
 
 **[Folding and Recursive Composition](#folding-and-recursive-composition)**
 - [Folding Schemes](#folding-schemes)
@@ -68,6 +71,8 @@
 - [ZK Coprocessors (Axiom / Brevis / Herodotus)](#zk-coprocessors-axiom--brevis--herodotus)
 - [zkWASM](#zkwasm)
 - [OpenVM](#openvm)
+- [Proof of SQL (ZK Proofs for SQL Query Correctness)](#proof-of-sql-zk-proofs-for-sql-query-correctness)
+- [Aligned Layer (Universal ZK Proof Verification Infrastructure)](#aligned-layer-universal-zk-proof-verification-infrastructure)
 
 **[Bulletproofs and Range Proofs](#bulletproofs-and-range-proofs)**
 - [Bulletproofs Inner-Product Argument](#bulletproofs-inner-product-argument)
@@ -946,6 +951,54 @@ Published at USENIX Security 2022. Influential in ZK compiler research. ZoKrates
 
 ---
 
+### zkLLVM (LLVM IR to ZK Circuit Compiler)
+
+**Goal:** Compile C++/Rust programs to arithmetic circuits for ZK proof systems (PLONK/MINA) by targeting LLVM IR as an intermediate representation, enabling ZK proofs of arbitrary computations without hand-writing circuits.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **zkLLVM** | 2022 | LLVM IR → PLONK circuit | =nil; Foundation compiler [[1]](https://github.com/NilFoundation/zkLLVM) |
+
+**State of the art:** zkLLVM targets the "write once, prove anywhere" vision for ZK compilers. Supports C++ and Rust as source languages, emitting circuits for =nil;'s Placeholder proof system (PLONK variant). Competes with RISC0/zkWASM/SP1 in the zkVM/compiler space. See [zkVMs (Zero-Knowledge Virtual Machines)](#zkvms-and-applied-zk).
+
+**Production readiness:** Experimental
+Active development. Used in =nil;'s zkBridge and zkEVM projects. Not yet production-grade for arbitrary programs.
+
+**Implementations:**
+- [zkLLVM](https://github.com/NilFoundation/zkLLVM) ⭐ 493 — C++, open-source LLVM-based compiler
+
+**Security status:** Secure
+Inherits security from underlying PLONK proof system. Compiler correctness is the key concern (not cryptographic).
+
+**Community acceptance:** Emerging
+Active open-source project by =nil; Foundation. Used in Ethereum zkBridge research. Limited independent review of compiler correctness.
+
+---
+
+### powdr (Modular ZK Compiler Framework)
+
+**Goal:** Provide a modular, backend-agnostic ZK compiler framework with a high-level assembly language (powdr-asm) and PIL (Polynomial Identity Language) for specifying constraint systems, targeting multiple proof backends.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **powdr** | 2023 | PIL + powdr-asm | Ethereum Foundation / Polygon project [[1]](https://github.com/powdr-labs/powdr) |
+
+**State of the art:** powdr enables writing zkVMs and circuits in a high-level assembly that compiles to PIL constraints, which can target PLONK, FRI-based, or other backends. Used in Polygon's zkEVM and as a research platform for ZK architecture. Related to [zkVMs](#zkvms-and-applied-zk) and [PLONK / PLONKISH Arithmetization](#zero-knowledge-proofs-zk).
+
+**Production readiness:** Experimental
+Used in Polygon's internal research and zkEVM. Not yet production-deployed as a standalone product.
+
+**Implementations:**
+- [powdr](https://github.com/powdr-labs/powdr) ⭐ 351 — Rust, open-source modular ZK compiler
+
+**Security status:** Secure
+Security depends on the target proof backend. PIL constraint generation is formally specified. Compiler bugs are the main risk.
+
+**Community acceptance:** Emerging
+Ethereum Foundation and Polygon-backed. Active community. Used in active zkEVM research. Not independently standardized.
+
+---
+
 ### Marlin and Lunar (Universal SNARKs for R1CS)
 
 **Goal:** Universal and updatable SNARKs for R1CS with a single structured reference string (SRS) that works for all circuits up to a size bound. Marlin (Chiesa-Hu-Maller-Sasson, EUROCRYPT 2020) and its generalization Lunar (Campanelli-Faonio-Fiore-Querol, ASIACRYPT 2021) give efficient polynomial IOPs for R1CS that, when compiled with KZG commitments, achieve O(1) proof size and O(1) verifier time — with an updatable universal setup.
@@ -1244,6 +1297,31 @@ Provably secure under standard coding-theoretic assumptions. Field-agnostic desi
 
 **Community acceptance:** Emerging
 CRYPTO 2024. Addresses a fundamental limitation of FRI (field restriction). Growing interest as a PCS for arbitrary-field proof systems.
+
+---
+
+### STIR (Shift-To-Improve Rate)
+
+**Goal:** Improve on FRI's proof size by using a shift-and-fold strategy that achieves polylogarithmic proof size with fewer query repetitions than FRI, producing shorter STARK proofs.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **STIR** | 2024 | Polynomial IOP + Reed-Solomon | Arnon-Chiesa-Fenzi-Yogev; CRYPTO 2024 [[1]](https://eprint.iacr.org/2024/390.pdf) |
+
+**State of the art:** STIR is the successor to FRI that achieves provably better proof size in the random oracle model. It reduces the number of query rounds needed for the same security level. Expected to be integrated into next-generation STARK provers (e.g., STWO by StarkWare). See [FRI / STARKs (Scalable Transparent Arguments)](#fri--starks-scalable-transparent-arguments).
+
+**Production readiness:** Experimental
+Published at CRYPTO 2024. Proof-of-concept implementations exist. Not yet integrated into production proof systems.
+
+**Implementations:**
+- [stir-rs](https://github.com/andrewmilson/stir) ⭐ 47 — Rust, research implementation
+- [STWO (StarkWare)](https://github.com/starkware-libs/stwo) ⭐ 527 — Rust, next-gen StarkWare prover (STIR integration planned)
+
+**Security status:** Secure
+Proven secure in the random oracle model. Peer-reviewed at CRYPTO 2024. Improves on FRI without new assumptions.
+
+**Community acceptance:** Emerging
+Strong reception at CRYPTO 2024. StarkWare ecosystem interested in adoption. Academic consensus is positive.
 
 ---
 
@@ -1715,6 +1793,54 @@ STARK-based proving is well-founded; custom opcode extensions require per-chip s
 
 **Community acceptance:** Emerging
 Backed by Axiom (Paradigm-funded). Growing interest from zkVM developers seeking modularity. Open-source since 2024; early-stage ecosystem.
+
+---
+
+### Proof of SQL (ZK Proofs for SQL Query Correctness)
+
+**Goal:** Generate zero-knowledge proofs that a SQL query was executed correctly over a committed database, enabling verifiable SQL analytics without revealing the underlying data.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Proof of SQL** | 2023 | Inner product arguments + commitment | Space and Time; CCS 2024 [[1]](https://eprint.iacr.org/2023/1419.pdf) |
+
+**State of the art:** Space and Time's Proof of SQL extends Dory and Hyper-Dory commitment schemes to SQL semantics, proving GROUP BY, JOIN, and aggregate operations. The first production-deployed verifiable SQL system. Integrated into Space and Time's decentralized data warehouse product. Related to [Sumcheck Protocol](#sumcheck-protocol) and [zkVMs (Zero-Knowledge Virtual Machines)](#zkvms-and-applied-zk).
+
+**Production readiness:** Production
+Deployed in Space and Time's production data warehouse. SQL proofs generated and verified on Ethereum mainnet.
+
+**Implementations:**
+- [sxt-proof-of-sql](https://github.com/spaceandtimelabs/sxt-proof-of-sql) ⭐ 782 — Rust, open-source reference implementation
+
+**Security status:** Secure
+Based on Dory inner-product argument (peer-reviewed). CCS 2024 publication with full proofs. No known attacks.
+
+**Community acceptance:** Emerging
+Novel production deployment. Peer-reviewed at CCS 2024. Growing interest in the ZK data analytics space. Not yet standardized.
+
+---
+
+### Aligned Layer (Universal ZK Proof Verification Infrastructure)
+
+**Goal:** Provide a decentralized infrastructure layer that aggregates and verifies ZK proofs from multiple proving systems on Ethereum, reducing per-proof verification gas costs via EigenLayer restaking and BLS aggregate signatures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Aligned Layer** | 2024 | EigenLayer AVS + BLS aggregation | ZK proof aggregation network [[1]](https://alignedlayer.com) |
+
+**State of the art:** Aligned Layer addresses the high on-chain verification cost of ZK proofs by running a decentralized verifier network secured by EigenLayer restaked ETH. Operators run off-chain verifiers for Groth16/PLONK/STARKs and submit aggregate attestations. Launched mainnet in 2024. Related to [EigenLayer Restaking](13-blockchain-distributed-ledger.md#eigenlayer-restaking-and-actively-validated-services-avs) and [Groth16 / Pinocchio](#groth16).
+
+**Production readiness:** Production
+Mainnet launched 2024. Multiple ZK applications use Aligned Layer for cost-effective Ethereum proof verification.
+
+**Implementations:**
+- [aligned-layer](https://github.com/yetanotherco/aligned_layer) ⭐ 583 — Rust/Go, open-source AVS implementation
+
+**Security status:** Secure
+Security inherits from EigenLayer economic security model and cryptographic soundness of underlying proof systems. Operator slashing enforces honest verification.
+
+**Community acceptance:** Emerging
+Active Ethereum ecosystem project. Backed by notable investors. Novel approach to ZK proof aggregation at scale. Not yet standardized.
 
 ---
 

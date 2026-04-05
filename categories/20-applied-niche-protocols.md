@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (47 schemes)
+## Contents (52 schemes)
 
 **[Electronic Voting](#electronic-voting)**
 - [End-to-End Verifiable E-Voting](#end-to-end-verifiable-e-voting)
@@ -13,6 +13,7 @@
 - [MarkPledge: Cast-as-Intended Verifiable Voting](#markpledge-cast-as-intended-verifiable-voting)
 - [Wombat Voting System](#wombat-voting-system)
 - [Blockchain-Based Voting: Deployments and Controversies](#blockchain-based-voting-deployments-and-controversies)
+- [Return Code Voting Systems (CHVote, Swiss Post Return Codes)](#return-code-voting-systems-chvote-swiss-post-return-codes)
 
 **[Visual and Physical Cryptography](#visual-and-physical-cryptography)**
 - [Visual Cryptography](#visual-cryptography)
@@ -33,6 +34,8 @@
 - [Incremental Cryptography](#incremental-cryptography)
 - [Distance-Bounding Protocols](#distance-bounding-protocols)
 - [Mental Poker Protocols](#mental-poker-protocols)
+- [Optimistic Fair Exchange / Private Contract Signing](#optimistic-fair-exchange--private-contract-signing)
+- [Government Key Escrow and CALEA-Compliant Cryptography](#government-key-escrow-and-calea-compliant-cryptography)
 
 **[Domain-Specific Applications](#domain-specific-applications)**
 - [Cryptographic Lotteries & Fairness Protocols](#cryptographic-lotteries--fairness-protocols)
@@ -64,6 +67,8 @@
 - [TESLA — Timed Efficient Stream Loss-Tolerant Authentication](#tesla--timed-efficient-stream-loss-tolerant-authentication)
 - [Updatable Encryption (Key Rotation Protocols)](#updatable-encryption-key-rotation-protocols)
 - [Cashu](#cashu)
+- [Cryptographic Cloud Backup Key Recovery](#cryptographic-cloud-backup-key-recovery)
+- [Privacy-Preserving Password Breach Detection](#privacy-preserving-password-breach-detection)
 
 <!-- /TOC -->
 
@@ -299,6 +304,36 @@ Academic consensus (USENIX Security 2020, National Academies) opposes internet/b
 
 ---
 
+
+### Return Code Voting Systems (CHVote, Swiss Post Return Codes)
+
+**Goal:** Give each voter a short, human-readable return code (typically 4–6 characters) tied to their specific ballot selection, which they can later verify on a public bulletin board — confirming their vote was recorded correctly without requiring any cryptographic knowledge. Combines cast-as-intended verifiability with accessibility for non-technical voters.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CHVote (Geneva, vVote-style return codes)** | 2011 | Commitments + randomized code tables | Each voter's ballot card pre-prints a unique table of codes; the system reveals the correct code for the marked candidate; voter checks the posted code matches [[1]](https://chvote.ch/download/CHVote-Protocol-v-1-3.pdf) |
+| **Swiss Post E-Voting Return Codes** | 2019 | Threshold HE + ZK proofs of correct code derivation | Return codes derived by multiple independent code generators from the encrypted ballot; no single server learns both the vote and the return code; ZK proofs bind codes to the ciphertext [[1]](https://eprint.iacr.org/2019/1234) |
+| **Remark protocol (Hirt-Seyser)** | 2010 | Commitment to code table | Per-voter, per-candidate codes published as a commitment; codes revealed only when the vote is cast; board verifiability requires ZK proofs of consistent code assignment [[1]](https://link.springer.com/chapter/10.1007/978-3-642-20901-7_20) |
+| **Belenios with return codes** | 2021 | Helios + per-voter code tables | Extension of Belenios adding per-voter ballot confirmation codes; code generators are distinct from the election authority to prevent collusion [[1]](https://hal.inria.fr/hal-03341338) |
+
+The key challenge is distributing the return codes to voters before the election without the system knowing which voter chose which candidate at code-delivery time. Swiss Post solves this by having multiple independent "code generators" each holding a share of the code derivation key; each generator can independently compute its share of the code for a given encrypted ballot without seeing the plaintext vote. Only after the threshold of generators cooperates is the full return code revealed — and each generator produces a ZK proof that its share was correctly computed, allowing public verification. The approach is orthogonal to but complementary with the tally-level verifiability provided by mixnets and homomorphic tallying in systems like [Belenios](#end-to-end-verifiable-e-voting) and [Swiss Post / Scytl](#end-to-end-verifiable-e-voting).
+
+**State of the art:** Swiss Post e-voting return code system (operational for cantonal votes since 2023); CHVote (deployed in Geneva cantonal votes 2012–2018). Extends [E2E E-Voting](#end-to-end-verifiable-e-voting) with a human-verifiable cast-as-intended layer. Compare [MarkPledge](#markpledge-cast-as-intended-verifiable-voting) (ZK string comparison) and [Scantegrity II](#scantegrity-ii) (invisible ink codes).
+
+**Production readiness:** Experimental
+Swiss Post system deployed for Swiss federal and cantonal votes since 2023 but with limited voter participation; CHVote was used in binding Geneva cantonal elections 2012–2018 before being paused.
+
+**Implementations:**
+- [Swiss Post e-voting open-source system](https://github.com/swiss-post-e-voting) — Java, open-source Swiss Post system including return code generation with threshold HE
+- [CHVote reference](https://chvote.ch/) — Java, reference implementation of the Geneva CHVote protocol
+
+**Security status:** Caution
+Cryptographic design of Swiss Post return codes is sound under threshold assumptions; formal security proof published (ESORICS 2019); practical security depends on independence of the multiple code generators and the integrity of the voter's device delivering codes.
+
+**Community acceptance:** Niche
+Swiss Post system received independent security review by multiple academic teams (Bernhard et al., Haines et al.); adopted by Swiss federal chancellery for e-voting; no international standard; limited deployment outside Switzerland.
+
+---
 
 ## Visual and Physical Cryptography
 
@@ -612,6 +647,70 @@ Active research area since 1981; libTMCG is the most mature implementation; bloc
 
 ---
 
+
+### Optimistic Fair Exchange / Private Contract Signing
+
+**Goal:** Allow two parties to exchange digital items (signatures, documents, payments) fairly — neither party ends up with the other's item without delivering their own — without requiring constant TTP involvement. A trusted third party intervenes only in case of dispute (optimistic model), making fair exchange practical for internet commerce and e-contracts.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Asokan-Schunter-Waidner Optimistic FE** | 1997 | Sequential commitment + TTP | First optimistic fair exchange protocol; parties exchange partial signatures; TTP issues a recovery token only on dispute; TTP never sees the exchanged items in the honest case [[1]](https://link.springer.com/chapter/10.1007/BFb0052234) |
+| **Asokan-Shoup-Waidner (ASW) Protocol** | 1998 | RSA verifiable escrow + TTP | Efficient two-party fair exchange with offline TTP; first formally analyzed optimistic protocol; basis for certified email and e-contract standards [[1]](https://link.springer.com/chapter/10.1007/BFb0054144) |
+| **Garay-Jakobsson Abuse-Free Contract Signing** | 1999 | Multi-party + RSA gradual release | First abuse-free contract signing; neither party can selectively abort; TTP issues "abort token" preventing the other party from completing [[1]](https://doi.org/10.1145/319709.319728) |
+| **Boneh-Naor Timed Fair Exchange** | 2000 | Time-lock puzzle | Fair exchange without a TTP: parties release keys after a computed time delay; no abort possible after commitment [[1]](https://doi.org/10.1145/335168.335352) |
+| **Chadha-Kremer-Scedrov** | 2004 | ZK + gradual release | First composable security proof for fair exchange under UC framework; formal foundations for certified email protocols [[1]](https://www.iacr.org/archive/crypto2004/31520145/paper.pdf) |
+| **ETSI TS 101 733 Electronic Signature** | 2000 | CAdES + RFC 2634 signed receipts | Industry standard for non-repudiation with signed delivery receipts; used in certified electronic mail and legally binding e-contracts in the EU [[1]](https://www.etsi.org/deliver/etsi_ts/101700_101799/101733/) |
+
+The fundamental tension in fair exchange is the **simultaneous delivery problem**: if A sends to B first, B can abort and keep A's item without delivering their own. Optimistic protocols resolve this by having both parties commit to a partial exchange (e.g., partial signatures using verifiable escrow), with the TTP able to complete or abort the exchange on request. The ASW protocol is the canonical design: A sends a commitment to their signature, B sends a commitment to theirs, each verifiable under the TTP's key; once both have the other's commitment, they exchange final signatures and the TTP is never involved. If one party aborts mid-protocol, the TTP provides either an abort token (preventing completion) or a resolution token (completing the exchange), ensuring fairness even against malicious adversaries. Applications include certified electronic mail (RFC 2634 signed receipts), e-contract signing, and cross-chain atomic swaps (though the latter typically use timelock-based fairness — see [Fair Exchange / Atomic Swaps](13-blockchain-distributed-ledger.md#fair-exchange--atomic-swaps)).
+
+**State of the art:** ASW remains the reference for offline-TTP fair exchange; ETSI certified electronic mail standards (CAdES, PAdES) incorporate receipt-based non-repudiation. The blockchain-based approach using timelocks and hash-locks has largely superseded TTP-based fair exchange for cryptocurrency applications. Related to [Verifiable Encrypted Signatures](09-commitments-verifiability.md#verifiable-encrypted-signatures--proofs) and [Adaptor Signatures](08-signatures-advanced.md#adaptor-signatures).
+
+**Production readiness:** Mature
+ASW-based certified electronic mail deployed in EU e-government and legal systems (ETSI TS 101 733); blockchain-based atomic swaps deployed at scale; TTP-based fair exchange implemented in procurement systems.
+
+**Implementations:**
+- [OpenSSL (CAdES/PAdES)](https://github.com/openssl/openssl) ⭐ 27k — C, supports CAdES/PAdES signatures used in certified e-mail
+- [DSS (Digital Signature Service)](https://github.com/esig/dss) ⭐ 266 — Java, EU Commission's reference implementation of CAdES/PAdES/XAdES for certified electronic documents
+- No widely maintained open-source implementation of the pure ASW optimistic fair exchange protocol; research code accompanies original papers.
+
+**Security status:** Secure
+ASW protocol proven secure under the random oracle model (RSA assumption); Garay-Jakobsson abuse-free variant prevents selective abort; formal UC security proofs published (Chadha et al. 2004); ETSI CAdES deployed in legally binding contexts.
+
+**Community acceptance:** Standard
+ETSI TS 101 733 (CAdES) and TS 102 778 (PAdES) are EU legal standards for qualified electronic signatures; RFC 2634 signed receipts published 1999; eIDAS Regulation mandates qualified electronic signatures across EU; blockchain-based atomic swaps are widely deployed.
+
+---
+
+### Government Key Escrow and CALEA-Compliant Cryptography
+
+**Goal:** Allow law enforcement to decrypt communications under judicial authorization by requiring that encryption keys be escrowed with a trusted third party or recoverable via threshold cryptography — while preserving confidentiality against unauthorized access. The central debate of the 1990s "Crypto Wars," with lasting impact on export controls and cryptographic policy.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Clipper Chip / EES (Escrow Encryption Standard)** | 1993 | Skipjack + LEAF (Law Enforcement Access Field) | NSA-designed hardware chip; LEAF carries session key encrypted under per-chip escrow key shared between two government agencies (NIST + Treasury); Blaze discovered LEAF integrity flaw — altered LEAF values bypassed escrow [[1]](https://www.mattblaze.org/papers/eesproto.pdf) |
+| **Micali's Fair Cryptosystems** | 1992 | Secret sharing + PKI | First formal proposal for cryptographic key escrow; private key split among n escrow authorities using secret sharing; government retrieves key only with t-of-n cooperation; does not require special hardware [[1]](https://dl.acm.org/doi/10.5555/646757.705682) |
+| **Blaze's Cryptographic Clipper Analysis** | 1994 | Protocol flaw analysis | Demonstrated that the LEAF integrity check could be circumvented in software; fatal flaw in the Clipper Chip's escrow enforcement mechanism; ended practical prospects for EES deployment [[1]](https://dl.acm.org/doi/10.1145/191177.191193) |
+| **Trusted Third Party (TTP) Key Escrow (EU proposals)** | 1997 | X.509 key escrow extensions | European Commission proposed TTP key escrow framework; never implemented due to industry and civil-society opposition; key escrow extensions proposed for X.509 certificates [[1]](https://doi.org/10.1007/978-3-540-69339-0_13) |
+| **Exceptional Access (Ghost Key / GCHQ NOBUS)** | 2015 | Asymmetric "ghost key" in key exchange | GCHQ's "Noisy Intermediate-Scale" proposal: messaging servers silently add a government public key as an additional recipient; Abelson et al. report identified fundamental security flaws [[1]](https://dspace.mit.edu/handle/1721.1/97690) |
+
+The Clipper Chip (1993–1996) was the U.S. government's attempt to mandate backdoor access to all encrypted communications via hardware-enforced key escrow. Each Clipper chip contained a unique unit key split between two escrow agencies; a LEAF embedded in each encrypted session carried the session key encrypted under the unit key. Blaze's 1994 analysis showed the LEAF could be replaced with a syntactically valid but incorrect value — a chip would accept the modified LEAF without decrypting it, silently bypassing the escrow mechanism. This fatal flaw, combined with industry opposition, civil liberties concerns, and the inadequacy of export controls in the internet era, caused EES to be abandoned. Micali's Fair Cryptosystems (1992) provided the formal cryptographic model: private keys are verifiably shared among n escrow trustees; no individual trustee holds the full key; the government retrieves a key only by obtaining t shares under judicial authorization and can verify the shares reconstruct the correct key.
+
+**State of the art:** No nation has successfully deployed mandatory cryptographic key escrow. The academic consensus (Abelson et al. 1997, 2015 updates) holds that any "exceptional access" mechanism creates vulnerabilities exploitable by adversaries. CALEA (1994) mandates law enforcement access to telecommunications infrastructure but does not specify cryptographic mechanisms. Related to [Secret Sharing](05-secret-sharing-threshold-cryptography.md#shamir-secret-sharing) and [Threshold Decryption](05-secret-sharing-threshold-cryptography.md#threshold-decryption).
+
+**Production readiness:** Deprecated
+Clipper Chip abandoned by 1996; no nation has deployed mandatory cryptographic key escrow; CALEA compliance achieved through network-layer access, not cryptographic escrow; Micali's Fair Cryptosystems remains an academic reference design.
+
+**Implementations:**
+- [Clipper Chip LEAF emulation](https://www.mattblaze.org/papers/eesproto.pdf) — C, Blaze's eSafe prototype demonstrating LEAF bypass (academic)
+- No production open-source key escrow implementations; research code accompanies Micali (1992) and related papers.
+
+**Security status:** Broken
+Clipper Chip's LEAF integrity mechanism had a fatal bypass flaw (Blaze 1994); "ghost key" / exceptional access proposals (GCHQ NOBUS) identified as introducing systemic vulnerabilities exploitable by adversaries (Abelson et al. 1997, 2015); no cryptographically sound mandatory key escrow mechanism has been devised.
+
+**Community acceptance:** Controversial
+Cryptographic community consensus (CRYPTO, IEEE S&P, Abelson et al.) strongly opposes mandatory key escrow; law enforcement agencies continue to advocate for "exceptional access"; CALEA (1994) and EARN IT Act (proposed) represent ongoing policy tensions; Micali's Fair Cryptosystems is academically respected but practically undeployed.
+
+---
 
 ## Domain-Specific Applications
 
@@ -1521,5 +1620,70 @@ Blind signature scheme is cryptographically sound (Chaum's protocol). Security d
 
 **Community acceptance:** Niche
 Growing adoption in Bitcoin privacy community. Multiple wallets and mints operational. NUT specification is community-driven (no formal standard body). Fedimint backed by significant venture funding. Not suitable for regulatory-compliant use cases due to anonymity properties.
+
+---
+
+### Cryptographic Cloud Backup Key Recovery
+
+**Goal:** Allow users to recover encrypted cloud backups without storing a plaintext backup key on any single server — using hardware security modules, threshold secret sharing, or OPRF-based protocols so that the backup key is recoverable only with the user's PIN/passphrase and cannot be extracted by the cloud provider or a single compromised server.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **WhatsApp End-to-End Encrypted Backup** | 2021 | HSM + OPRF + PIN | Backup key wrapped with a key derived from the user's 64-bit PIN via an OPRF evaluated inside an HSM fleet; HSMs enforce rate-limiting (10 guesses); WhatsApp never holds the PIN or backup key in plaintext [[1]](https://scontent.whatsapp.net/v/t39.8562-34/241394876_546411393127971_8207943889040837963_n.pdf) |
+| **iCloud Advanced Data Protection (ADP)** | 2022 | SSKR (Shamir over BIP39 wordlist) + device-based key recovery contacts | User data encrypted with a key split across trusted devices and optional recovery contact; no escrow held by Apple; recovery requires a trusted device or the user's recovery key; HKDF-derived per-record keys under a per-account master key [[1]](https://support.apple.com/en-us/HT202303) |
+| **Signal Secure Value Recovery (SVR2)** | 2023 | SGX TEE + OPRF + PIN | Signal stores an encrypted backup of the registration lock secret inside an SGX enclave; the enclave runs an OPRF step keyed to the user's PIN; attacker with SGX memory access cannot extract the PIN-derived key without brute force inside the enclave; rate-limited to 10 tries [[1]](https://signal.org/blog/secure-value-recovery/) |
+| **1Password Secret Key + PBKDF** | 2018 | SRP + account key + PBKDF2 | Account key (34-character random string) combined with master password via PBKDF2; server never receives either component; two-secret approach means dictionary attack requires knowing both account key and password [[1]](https://1password.com/files/1Password-White-Paper.pdf) |
+| **Threshold HSM Key Recovery (AWS CloudHSM / Thales)** | 2018 | Shamir SS across HSM cluster | Backup key material split among multiple HSMs in different availability zones; reconstruction requires quorum; cloud provider cannot reconstruct the key from a single HSM compromise [[1]](https://docs.aws.amazon.com/cloudhsm/latest/userguide/key-backup.html) |
+
+The core problem in cloud backup is the **usability vs. security tension**: if users must manually manage cryptographic keys, most will lose them; if the cloud provider holds keys, the provider (or law enforcement) can access data. OPRF-based solutions (WhatsApp, Signal SVR2) address this by binding the backup key to a low-entropy PIN via a rate-limited OPRF inside a hardware security module or TEE — brute-forcing the PIN requires cooperating with the rate-limited server for each guess. Apple's ADP approach uses a device-federation model: the key is split across all of the user's enrolled Apple devices, so recovery requires access to one device or an explicit recovery contact. Neither approach requires Apple or WhatsApp to hold a copy of the backup key; both rely on hardware integrity for rate-limiting. The iCloud ADP design uses SSKR (Sharded Secret Key Recovery, a BIP39-compatible Shamir variant) for optional explicit backup of the master key as a printable wordlist.
+
+**State of the art:** WhatsApp ADP (production, Meta 2021); iCloud ADP (production, Apple 2022); Signal SVR2 (production, Signal 2023). Related to [OPAQUE](#opaque-password-authenticated-key-exchange), [OPRF](10-privacy-preserving-computation.md#oblivious-prf-oprf), and [Secret Sharing](05-secret-sharing-threshold-cryptography.md#shamir-secret-sharing).
+
+**Production readiness:** Production
+WhatsApp ADP deployed to all 2B+ users who opt in (2021); iCloud ADP available in 29+ countries (2022); Signal SVR2 in production for registration lock (2023); 1Password production since 2018.
+
+**Implementations:**
+- [Signal SVR2](https://github.com/signalapp/SecureValueRecovery2) ⭐ 180 — Rust, Signal's SGX-based secure value recovery service
+- [libsodium (secretbox + PBKDF)](https://github.com/jedisct1/libsodium) ⭐ 13k — C, symmetric key derivation primitives used in backup encryption
+- [SSKR reference](https://github.com/BlockchainCommons/bc-sskr) ⭐ 56 — C, Blockchain Commons Sharded Secret Key Recovery (Apple ADP-style Shamir wordlist)
+
+**Security status:** Caution
+OPRF-based schemes (WhatsApp, SVR2) are cryptographically sound but depend on HSM/TEE integrity and rate-limiting enforcement; iCloud ADP's security requires all enrolled devices to not be simultaneously compromised; key-management mistakes by users (lost recovery keys, no recovery contacts) can result in permanent data loss.
+
+**Community acceptance:** Widely trusted
+WhatsApp ADP reviewed by academic cryptographers (audited by Zellic 2021); iCloud ADP receives privacy organization endorsement; Signal SVR2 is open source and reviewed; 1Password's two-secret model endorsed by security researchers; no IETF standard for cloud backup key recovery but OPAQUE (related) is in IETF CFRG.
+
+---
+
+### Privacy-Preserving Password Breach Detection
+
+**Goal:** Allow a user to check whether their password (or password hash) appears in a known breach database — without revealing the password or hash to the breach-checking service, and without the service learning which specific entry the user queried. Combines k-anonymity or OPRF techniques to protect both parties' sensitive data.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HaveIBeenPwned k-Anonymity Model** | 2018 | SHA-1 prefix truncation | User computes SHA-1(password); sends first 5 hex chars (prefix) to HIBP API; server returns all hashes with that prefix (~500 entries); client checks locally; server never sees the full hash [[1]](https://www.troyhunt.com/ive-just-launched-pwned-passwords-version-2/) |
+| **OPRF-Based Private Password Checking (Tyagi et al.)** | 2021 | OPRF (Ristretto255 + SHA-512) | Client blinds the password hash, server evaluates OPRF, client unblinds to obtain a pseudorandom tag and checks membership; server learns nothing (even the prefix); more private than k-anonymity model [[1]](https://eprint.iacr.org/2019/416) |
+| **Google Password Checkup** | 2019 | PSI-based private set membership | Chrome's password breach checker; encrypted username+password pairs compared against breach database using a 2-HashDH-based private set membership protocol; server learns only an encryption of the matched record, not which specific credential was queried [[1]](https://security.googleblog.com/2019/02/protect-your-accounts-from-data.html) |
+| **Private Password Monitoring (Apple)** | 2021 | PSI + homomorphic hashing | Keychain password monitoring; checks stored passwords against breach databases using a protocol where neither the passwords nor the specific match is revealed to Apple; uses a variant of private set intersection [[1]](https://www.apple.com/privacy/docs/Password_Monitoring_Security_Overview.pdf) |
+| **1Password Watchtower HIBP Integration** | 2018 | k-Anonymity (HIBP v2) | 1Password integrates HIBP k-anonymity API; password hashes checked against breach database using the same 5-prefix model; client-side matching ensures 1Password servers never see the password or hash [[1]](https://blog.1password.com/finding-pwned-passwords-in-1password/) |
+
+The k-anonymity model (HIBP) is the most widely deployed approach: the server cannot determine the full hash from a 5-character prefix alone (there are ~500 matching hashes per prefix), but the server does observe which prefix was queried, enabling coarse-grained inference about what passwords a user holds. The OPRF-based approach (Tyagi et al.) eliminates this residual leakage: the OPRF evaluation produces a pseudorandom output that the server cannot link to any specific password — the server sees only a blinded group element and cannot determine even the prefix of the queried hash. Google's Password Checkup uses a private set membership variant based on 2-HashDH that provides stronger privacy guarantees than k-anonymity while remaining practical for browser integration. The common thread is that both the user's passwords (extremely sensitive) and the breach database (a commercial asset worth protecting from bulk download) must be kept private from the other party.
+
+**State of the art:** HIBP k-anonymity API (deployed by 1Password, Firefox Monitor, Google Chrome 2018+); Google Password Checkup (Chrome production 2019); Apple Keychain breach monitoring (iOS 14+). Related to [PSI](10-privacy-preserving-computation.md#private-set-intersection-psi), [OPRF](10-privacy-preserving-computation.md#oblivious-prf-oprf), and [OPAQUE](#opaque-password-authenticated-key-exchange).
+
+**Production readiness:** Production
+HIBP k-anonymity API integrated into 1Password, Firefox Monitor, Chrome, and Bitwarden for hundreds of millions of users; Google Password Checkup in production since 2019; Apple Keychain breach monitoring in iOS 14+.
+
+**Implementations:**
+- [HaveIBeenPwned API](https://haveibeenpwned.com/API/v3) — REST API, k-anonymity password breach checking (free public API)
+- [pwnedpasswords](https://github.com/lionheart/pwnedpasswords) ⭐ 413 — Python, CLI and library wrapping the HIBP k-anonymity API
+- [Bitwarden password-health](https://github.com/bitwarden/clients) ⭐ 18k — TypeScript, open-source password manager with HIBP integration
+- [password-monitor](https://github.com/google/password-alert) ⭐ 619 — JavaScript, Chrome extension for password monitoring (predecessor to Password Checkup)
+
+**Security status:** Caution
+HIBP k-anonymity leaks the 5-character SHA-1 prefix to the server, allowing coarse inference about queried passwords; OPRF-based approaches (Tyagi et al., Google Password Checkup) eliminate this leakage but are more complex; SHA-1 usage in HIBP is for lookup efficiency only, not security — collision resistance is not required for this application.
+
+**Community acceptance:** Widely trusted
+HIBP k-anonymity model endorsed by NCSC (UK), NIST SP 800-63B (recommends checking passwords against breach lists), and Mozilla; integrated into major password managers; OPRF-based private set membership approach actively researched and deployed by Google and Apple; no formal IETF standard but broad industry adoption.
 
 ---

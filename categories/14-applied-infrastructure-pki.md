@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (43 schemes)
+## Contents (48 schemes)
 
 **[Decentralized Identity (DID / VC)](#decentralized-identity-did--vc)**
 - [W3C Decentralized Identifiers (DID) and Verifiable Credentials](#w3c-decentralized-identifiers-did-and-verifiable-credentials)
@@ -58,6 +58,11 @@
 - [GlobalPlatform SCP03 — Smart Card Secure Channel Protocol](#globalplatform-scp03--smart-card-secure-channel-protocol)
 - [Matter / Thread IoT Device Security (CASE/PASE)](#matter--thread-iot-device-security-casepase)
 - [KMIP — Key Management Interoperability Protocol](#kmip--key-management-interoperability-protocol)
+- [BIMI (Brand Indicators for Message Identification)](#bimi-brand-indicators-for-message-identification)
+- [mTLS / Mutual TLS for Zero-Trust Architectures (BeyondCorp, SPIFFE)](#mtls--mutual-tls-for-zero-trust-architectures-beyondcorp-spiffe)
+- [SSH Certificate Authority (OpenSSH CA, Netflix BLESS, Smallstep)](#ssh-certificate-authority-openssh-ca-netflix-bless-smallstep)
+- [Short-Lived Certificates (SLC, Revocation-Free PKI)](#short-lived-certificates-slc-revocation-free-pki)
+- [ACME with External Account Binding (EAB, RFC 8555 §7.3.4)](#acme-with-external-account-binding-eab-rfc-8555-7334)
 
 <!-- /TOC -->
 
@@ -2776,5 +2781,142 @@ KMIP itself is a management protocol; security depends on the underlying KMS/HSM
 
 **Community acceptance:** Standard
 OASIS KMIP specification (v1.0-3.0); KMIP Profiles define compliance testing; adopted by all major HSM and KMS vendors; FIPS 140-3 CMVP references KMIP for interoperability.
+
+---
+
+### BIMI (Brand Indicators for Message Identification)
+
+**Goal:** Allow organizations to display their verified brand logo in email clients by publishing a DNS BIMI record pointing to a Verified Mark Certificate (VMC) issued by a CA, combining DMARC enforcement with visual brand verification.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BIMI** | 2021 | DMARC + VMC (Mark Certificates) | AuthIndicators Working Group; RFC draft [[1]](https://bimigroup.org) |
+| **VMC (Verified Mark Certificate)** | 2021 | X.509 extended for mark logos | DigiCert, Entrust issue VMCs [[2]](https://bimigroup.org/bimi-guide/) |
+
+**State of the art:** BIMI is supported by Gmail, Apple Mail, Yahoo Mail, and Fastmail. It requires DMARC enforcement (p=quarantine or reject) and optionally a Verified Mark Certificate for logo display. VMCs are issued by DigiCert, Entrust, and other CAs. Growing adoption by Fortune 500 companies. Related to [DKIM (DomainKeys Identified Mail)](12-secure-communication-protocols.md#dkim-domainkeys-identified-mail) and [DANE](#dane--dns-based-authentication-of-named-entities).
+
+**Production readiness:** Production
+Gmail and Apple Mail support BIMI since 2021. Thousands of organizations have deployed BIMI. VMC market growing with major CA support.
+
+**Implementations:**
+- [BIMI Inspector](https://bimigroup.org/bimi-generator/) — online DNS record validator
+- [pymilter](https://github.com/sdgathman/pymilter) ⭐ 82 — Python, email authentication including BIMI
+- [BIMI checker](https://easydmarc.com/tools/bimi-lookup) — online lookup tool
+
+**Security status:** Caution
+BIMI without VMC relies only on DMARC alignment — a compromised domain can display any logo. VMC adds CA-issued certificate binding. DMARC spoofing at the organizational domain level is still possible.
+
+**Community acceptance:** Emerging
+AuthIndicators Working Group (Google, Yahoo, Validity, Fastmail). Not yet an IETF RFC. Growing adoption by email providers and enterprises. Effective as anti-phishing measure for branded senders.
+
+---
+
+### mTLS / Mutual TLS for Zero-Trust Architectures (BeyondCorp, SPIFFE)
+
+**Goal:** Authenticate both client and server in every service-to-service connection using X.509 certificates, eliminating implicit network trust and implementing zero-trust security even inside corporate networks.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **BeyondCorp** | 2014 | mTLS + context-aware access | Google's zero-trust model [[1]](https://research.google/pubs/beyondcorp-a-new-approach-to-enterprise-security/) |
+| **SPIFFE / SPIRE** | 2018 | X.509-SVID + workload identity | CNCF project; k8s service mesh identity [[2]](https://spiffe.io) |
+| **Istio / Linkerd mTLS** | 2018 | Envoy proxy + SPIFFE certs | Service mesh automatic mTLS [[3]](https://istio.io/latest/docs/concepts/security/) |
+
+**State of the art:** mTLS is the de facto zero-trust standard for microservices. SPIFFE (Secure Production Identity Framework for Everyone) provides the identity standard (X.509-SVIDs) that service meshes (Istio, Linkerd, Consul) use for automatic mTLS. Google BeyondCorp inspired the industry shift from perimeter security to identity-based access. Related to [TLS 1.3](12-secure-communication-protocols.md#tls-13-and-dtls-13) and [ALTS](12-secure-communication-protocols.md#alts-application-layer-transport-security-google-service-mesh).
+
+**Production readiness:** Production
+SPIFFE/SPIRE deployed across hundreds of organizations. Istio and Linkerd provide automatic mTLS in millions of Kubernetes clusters. Google BeyondCorp in production since 2011.
+
+**Implementations:**
+- [spire](https://github.com/spiffe/spire) ⭐ 1.8k — Go, CNCF SPIFFE runtime environment
+- [istio](https://github.com/istio/istio) ⭐ 36k — Go, service mesh with automatic mTLS
+- [linkerd2](https://github.com/linkerd/linkerd2) ⭐ 11k — Rust/Go, ultralight service mesh with mTLS
+
+**Security status:** Secure
+mTLS with X.509 is a well-understood, proven security primitive. Security depends on CA trustworthiness and certificate lifecycle management. Short-lived certificates (SPIFFE SVIDs, typically 1 hour) mitigate revocation issues.
+
+**Community acceptance:** Standard
+SPIFFE is a CNCF graduated project. BeyondCorp model adopted by industry (NIST SP 800-207 zero trust). Istio is a CNCF graduated project. mTLS is the zero-trust standard.
+
+---
+
+### SSH Certificate Authority (OpenSSH CA, Netflix BLESS, Smallstep)
+
+**Goal:** Replace static SSH authorized_keys files with a certificate-based SSH access model where short-lived SSH certificates are issued by a trusted CA, enabling centralized access control, automatic expiry, and principal-based authorization.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **OpenSSH certificates** | 2010 | Custom SSH cert format (not X.509) | Man-page ssh-keygen; widely supported [[1]](https://man.openbsd.org/ssh-keygen#CERTIFICATES) |
+| **Netflix BLESS** | 2016 | AWS Lambda SSH CA | Ephemeral SSH certificates via Lambda [[2]](https://netflixtechblog.com/netflix-pays-400m-per-year-for-aws-and-its-getting-more-expensive-af77e2d45b85) |
+| **Smallstep step-ca** | 2018 | ACME-style SSH + TLS CA | Open-source SSH/TLS certificate authority [[3]](https://smallstep.com/docs/step-ca/) |
+
+**State of the art:** OpenSSH certificate-based authentication is the modern standard for large-scale SSH access management. Netflix BLESS (2016) popularized the ephemeral SSH certificate model. Smallstep provides an open-source ACME-compatible CA that issues both SSH and TLS certificates. HashiCorp Vault SSH secrets engine also popular. Related to [ACME with External Account Binding](#acme-with-external-account-binding-eab-rfc-8555-7334).
+
+**Production readiness:** Production
+Netflix BLESS in production managing access for thousands of engineers. Smallstep deployed by hundreds of organizations. OpenSSH certificate support is ubiquitous.
+
+**Implementations:**
+- [netflix/bless](https://github.com/Netflix/bless) ⭐ 2.7k — Python, AWS Lambda SSH CA
+- [smallstep/certificates](https://github.com/smallstep/certificates) ⭐ 7.0k — Go, open-source CA for SSH+TLS
+- [hashicorp/vault (SSH)](https://github.com/hashicorp/vault) ⭐ 31k — Go, Vault SSH secrets engine
+
+**Security status:** Secure
+SSH certificate format is cryptographically sound (RSA/ECDSA/Ed25519). Short-lived certificates eliminate revocation complexity. Principal-based access control prevents lateral movement.
+
+**Community acceptance:** Widely trusted
+OpenSSH certificate support included since OpenSSH 5.4 (2010). Netflix BLESS is a landmark production deployment. Smallstep is widely adopted. HashiCorp Vault SSH is enterprise standard.
+
+---
+
+### Short-Lived Certificates (SLC, Revocation-Free PKI)
+
+**Goal:** Issue TLS certificates with validity periods of hours to days rather than months, making CRL/OCSP revocation unnecessary — if a certificate is compromised, it expires before significant damage can occur.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Let's Encrypt 90-day** | 2015 | ACME + 90-day max validity | Most common TLS cert lifetime [[1]](https://letsencrypt.org/2015/11/09/why-90-days.html) |
+| **Sigstore 10-minute certs** | 2021 | OIDC + ephemeral signing cert | Code signing without long-lived keys [[2]](https://docs.sigstore.dev/fulcio/certificate-issuing-overview/) |
+| **CA/Browser Forum SC-063** | 2023 | Gradual cert lifetime reduction | 90→47 days by 2027 [[3]](https://cabforum.org/2023/07/14/ballot-sc-063-v4-make-ocsp-optional-require-crls-and-incentivize-short-lived-certs/) |
+
+**State of the art:** The industry is moving toward shorter-lived certificates. Apple's proposal to reduce max TLS cert validity to 45 days (2025) follows the 90-day standard pioneered by Let's Encrypt. Sigstore uses 10-minute certificates for code signing, eliminating the need for long-term key storage. CA/Browser Forum SC-063 mandates gradual lifetime reduction. Related to [ACME with External Account Binding](#acme-with-external-account-binding-eab-rfc-8555-7334) and [Sigstore / Keyless Code Signing](#sigstore--keyless-code-signing).
+
+**Production readiness:** Production
+Let's Encrypt (90-day) is the dominant TLS CA with billions of certificates. Sigstore Fulcio issues millions of 10-minute code signing certificates. Apple's 45-day proposal is accepted by CA/Browser Forum (2025).
+
+**Implementations:**
+- [certbot](https://github.com/certbot/certbot) ⭐ 32k — Python, Let's Encrypt ACME client
+- [sigstore/fulcio](https://github.com/sigstore/fulcio) ⭐ 733 — Go, short-lived code signing CA
+- [smallstep/certificates](https://github.com/smallstep/certificates) ⭐ 7.0k — Go, configurable cert lifetime
+
+**Security status:** Secure
+Short-lived certificates improve security posture by eliminating revocation complexity. The main risk is operational: automation failures can cause outages if certificates are not renewed in time.
+
+**Community acceptance:** Standard
+Let's Encrypt 90-day is the global standard (billions of certs). CA/Browser Forum SC-063 is ratified. Apple's 45-day proposal accepted. Trend toward shorter lifetimes is clear.
+
+---
+
+### ACME with External Account Binding (EAB, RFC 8555 §7.3.4)
+
+**Goal:** Extend the ACME certificate issuance protocol to link ACME accounts to pre-existing accounts in an external system (billing, identity), enabling commercial CAs to issue DV/OV/EV certificates automatically while maintaining customer account management.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ACME EAB** | 2019 | ACME (RFC 8555) + HMAC binding | §7.3.4 of RFC 8555; Google Trust Services [[1]](https://datatracker.ietf.org/doc/html/rfc8555#section-7.3.4) |
+
+**State of the art:** ACME EAB is used by all major commercial CAs that support ACME: Google Trust Services, ZeroSSL, DigiCert, Sectigo. It allows enterprises to automate certificate issuance via ACME while maintaining billing relationships. EAB tokens are pre-provisioned via the CA's management portal. Complements the base ACME protocol designed for public/free CAs like Let's Encrypt. Related to [CMC Protocol / Certificate Lifecycle Management](#cmc-protocol--certificate-lifecycle-management).
+
+**Production readiness:** Production
+Google Trust Services, ZeroSSL (used by millions of ACME clients), and DigiCert all deploy ACME EAB. Standard in enterprise PKI automation.
+
+**Implementations:**
+- [certbot](https://github.com/certbot/certbot) ⭐ 32k — Python, supports EAB flag
+- [acme.sh](https://github.com/acmesh-official/acme.sh) ⭐ 40k — Shell, --eab-kid and --eab-hmac-key flags
+- [caddy](https://github.com/caddyserver/caddy) ⭐ 60k — Go, supports EAB in ACME module
+
+**Security status:** Secure
+HMAC-based binding is cryptographically sound. EAB MAC key must be kept secret by the CA. No known attacks on the EAB mechanism.
+
+**Community acceptance:** Standard
+Part of RFC 8555 (ACME), which is an IETF Standard. Deployed by all major commercial CAs. Universal support in ACME clients (certbot, acme.sh, Caddy, Traefik).
 
 ---

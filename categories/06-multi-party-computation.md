@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (57 schemes)
+## Contents (62 schemes)
 
 **[Foundational MPC Protocols](#foundational-mpc-protocols)**
 - [Multi-Party Computation (MPC)](#multi-party-computation-mpc)
@@ -46,6 +46,9 @@
 - [ABY / ABY3 (Mixed-Protocol MPC Framework)](#aby--aby3-mixed-protocol-mpc-framework)
 - [BMR Protocol (Constant-Round Multi-Party Garbled Circuits)](#bmr-protocol-constant-round-multi-party-garbled-circuits)
 - [Sharemind (Practical 3-Party MPC Platform)](#sharemind-practical-3-party-mpc-platform)
+- [Le Mans (Efficient MPC with Programmable Preprocessing)](#le-mans-efficient-mpc-with-programmable-preprocessing)
+- [Outsourced MPC and Server-Aided Secure Computation](#outsourced-mpc-and-server-aided-secure-computation)
+- [Secure Fixed-Point and Floating-Point Arithmetic in MPC](#secure-fixed-point-and-floating-point-arithmetic-in-mpc)
 
 **[Oblivious Transfer and Extensions](#oblivious-transfer-and-extensions)**
 - [TinyOT (Maliciously Secure 2PC from OT)](#tinyot-maliciously-secure-2pc-from-ot)
@@ -72,6 +75,8 @@
 - [Secure Computation on Graphs (Private Graph Algorithms)](#secure-computation-on-graphs-private-graph-algorithms)
 - [Private Decision Trees and Random Forests (Bost et al., ABY3)](#private-decision-trees-and-random-forests-bost-et-al-aby3)
 - [SecretFlow](#secretflow)
+- [CryptGPU and Piranha (GPU-Accelerated Secret-Shared MPC)](#cryptgpu-and-piranha-gpu-accelerated-secret-shared-mpc)
+- [MPCFormer and PUMA (Privacy-Preserving Transformer Inference)](#mpcformer-and-puma-privacy-preserving-transformer-inference)
 
 <!-- /TOC -->
 
@@ -1240,6 +1245,86 @@ Sharemind is a pioneering deployed MPC platform; used in the first large-scale g
 
 ---
 
+### Le Mans (Efficient MPC with Programmable Preprocessing)
+
+**Goal:** Extend SPDZ-style preprocessing MPC to support arbitrary dynamic computation including function-independent preprocessing that can be reused across different functionalities, reducing online-phase overhead.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Le Mans** | 2022 | SPDZ + programmable preprocessing | Rachuri-Scholl; CRYPTO 2022 [[1]](https://eprint.iacr.org/2021/1373.pdf) |
+
+**State of the art:** Le Mans demonstrates that SPDZ-like preprocessing can be made more flexible: the same preprocessing material can serve multiple circuit topologies, enabling more efficient MPC pipelines where the function to compute is determined at runtime. Extends the SPDZ framework significantly. Related to [SPDZ / SPDZ2k (Malicious-Secure MPC)](#spdz--spdz2k-malicious-secure-mpc-with-preprocessing).
+
+**Production readiness:** Experimental
+Academic result at CRYPTO 2022. No production deployment. MP-SPDZ library may include implementations.
+
+**Implementations:**
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, comprehensive MPC framework (Le Mans-like preprocessing)
+
+**Security status:** Secure
+Security proven in the standard model (UC framework). Builds on SPDZ security proofs. Malicious-secure.
+
+**Community acceptance:** Emerging
+Published at CRYPTO 2022. Extends the well-regarded SPDZ line of work. Primarily of interest to MPC researchers building flexible frameworks.
+
+---
+
+### Outsourced MPC and Server-Aided Secure Computation
+
+**Goal:** Allow resource-constrained clients to outsource the heavy computation of MPC protocols to untrusted (or semi-trusted) servers, while retaining privacy and correctness guarantees, enabling MPC on IoT/mobile devices.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Sharemind** | 2008 | 3-party additive sharing | Bogdanov et al.; production data analytics platform [[1]](https://eprint.iacr.org/2008/763.pdf) |
+| **Carbyne Stack** | 2022 | Sharemind + cloud-native | Bosch open-source MPC platform [[2]](https://carbynestack.io) |
+| **Server-aided MPC (SAMC)** | 2017 | Outsourced garbling | Hazay-Ishai-Venkitasubramaniam; mobile MPC [[3]](https://eprint.iacr.org/2017/378.pdf) |
+
+**State of the art:** Sharemind is the longest-running production outsourced MPC platform, used for tax analytics (Estonian government) and medical data analysis. Carbyne Stack modernizes Sharemind as a cloud-native Kubernetes-based platform. Server-aided MPC enables smartphone clients to participate in garbled-circuit protocols via untrusted servers.
+
+**Production readiness:** Production
+Sharemind has been in production since 2013. Used for Estonian tax-fraud analytics, medical record analysis. Carbyne Stack is production-ready since 2022.
+
+**Implementations:**
+- [Sharemind MPC](https://github.com/sharemind-sdk/libsharemind) ⭐ 58 — C++, production MPC SDK
+- [Carbyne Stack](https://github.com/carbynestack/carbynestack) ⭐ 107 — Java/Helm, cloud-native MPC platform
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, supports server-aided configurations
+
+**Security status:** Secure
+Sharemind and Carbyne Stack proven secure against semi-honest adversaries. Full malicious security requires additional protocols. Estonian government tax deployment has run securely for over a decade.
+
+**Community acceptance:** Widely trusted
+Sharemind is a landmark production MPC deployment. Cited extensively. Carbyne Stack endorsed by Bosch and open-sourced. Pioneer in practical outsourced MPC.
+
+---
+
+### Secure Fixed-Point and Floating-Point Arithmetic in MPC
+
+**Goal:** Implement accurate fixed-point and IEEE 754 floating-point arithmetic over secret-shared values in MPC, enabling scientific computation and machine learning training on encrypted data.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Catrina-Saxena** | 2010 | Fixed-point truncation in SPDZ | Foundational fixed-point MPC paper [[1]](https://www.ifca.ai/pub/fc10/31_47.pdf) |
+| **SecFloat** | 2022 | IEEE 754 FP via MPC | Rathee et al., S&P 2022; full FP semantics [[2]](https://eprint.iacr.org/2022/322.pdf) |
+| **MOTION/HPMPC fixed-point** | 2022 | Garbled + arithmetic hybrid | Practical ML training [[3]](https://eprint.iacr.org/2021/1164.pdf) |
+
+**State of the art:** Fixed-point arithmetic (using Catrina-Saxena truncation) is the standard for MPC-based ML training and inference. SecFloat achieves full IEEE 754 semantics in MPC at ~15× overhead vs plaintext. Used in frameworks like CrypTen, TF-Encrypted, and SecretFlow. Essential primitive for any private ML system.
+
+**Production readiness:** Mature
+Fixed-point truncation is implemented in every practical MPC framework. SecFloat is experimental. CrypTen and TF-Encrypted use fixed-point in production.
+
+**Implementations:**
+- [CrypTen](https://github.com/facebookresearch/CrypTen) ⭐ 1.5k — Python, PyTorch-compatible MPC with fixed-point
+- [SecFloat](https://github.com/mpc-msri/EzPC/tree/master/SecFloat) ⭐ 224 — C++, S&P 2022 reference
+- [MP-SPDZ](https://github.com/data61/MP-SPDZ) ⭐ 1.1k — C++, fixed-point and floating-point support
+
+**Security status:** Secure
+Catrina-Saxena truncation is proven correct with negligible error probability. SecFloat proven secure under 2-party honest-majority assumption.
+
+**Community acceptance:** Widely trusted
+Catrina-Saxena is the standard reference cited by all MPC-ML papers. SecFloat published at IEEE S&P 2022. Fixed-point is a well-understood and universally implemented technique.
+
+---
+
 ---
 
 
@@ -1709,5 +1794,59 @@ Underlying MPC protocols (SEMI2K, ABY3, Cheetah) are well-studied and proven sec
 
 **Community acceptance:** Emerging
 Largest open-source MPC/FL framework by star count; backed by Ant Group; used in Chinese financial sector regulatory sandbox. Growing international adoption; academic publications at USENIX, VLDB.
+
+---
+
+### CryptGPU and Piranha (GPU-Accelerated Secret-Shared MPC)
+
+**Goal:** Accelerate secret-shared multi-party computation (specifically for machine learning inference) using GPU parallelism, achieving orders-of-magnitude speedup over CPU-based MPC frameworks.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CryptGPU** | 2021 | FSS + GPU CUDA kernels | Tan et al., S&P 2021; 3-party ML inference [[1]](https://eprint.iacr.org/2021/1546.pdf) |
+| **Piranha** | 2022 | GPU-accelerated secret sharing | Watson et al., USENIX 2022; 3/4-party protocols [[2]](https://eprint.iacr.org/2022/892.pdf) |
+
+**State of the art:** CryptGPU demonstrated 50–550× speedup over CrypTen for MPC-based neural network inference. Piranha generalized to multiple sharing protocols (SecureNN, Fantastic Four) on GPU. These systems enable private ML inference on ResNet-50 in ~2 seconds, approaching practical deployment. Related to [MPCFormer and PUMA](#mpcformer-and-puma-privacy-preserving-transformer-inference) and [Secure Aggregation (SecAgg)](#secure-aggregation-secagg).
+
+**Production readiness:** Experimental
+Research prototypes. CryptGPU code is open-source. No production deployments known; used as performance baselines.
+
+**Implementations:**
+- [CryptGPU](https://github.com/Jeffrey-Ding/CryptGPU) ⭐ 79 — CUDA/C++, S&P 2021 implementation
+- [piranha](https://github.com/ucbrise/piranha) ⭐ 96 — CUDA/C++, USENIX 2022 reference
+
+**Security status:** Secure
+Security inherited from underlying secret-sharing protocols (3-party honest-majority, semi-honest or malicious). GPU acceleration doesn't affect cryptographic security.
+
+**Community acceptance:** Emerging
+Published at top security venues (IEEE S&P, USENIX Security). Active research area. Growing interest as private ML inference becomes commercially relevant.
+
+---
+
+### MPCFormer and PUMA (Privacy-Preserving Transformer Inference)
+
+**Goal:** Enable privacy-preserving inference on transformer-based neural networks (BERT, GPT) using MPC, where neither party reveals their input (model weights or query) while computing the output.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **MPCFormer** | 2023 | GAS + distillation | Li et al., ICLR 2023; BERT inference via MPC [[1]](https://arxiv.org/abs/2211.01452) |
+| **PUMA** | 2023 | Secret sharing + approximate nonlinear | Dong et al., CCS 2023; 2-party BERT inference [[2]](https://eprint.iacr.org/2023/294.pdf) |
+| **Iron** | 2022 | 2-party GPT inference | Hao et al., NeurIPS 2022; GPT-2 [[3]](https://arxiv.org/abs/2211.16382) |
+
+**State of the art:** PUMA achieves private BERT-BASE inference in ~14 seconds in a LAN setting, a 2–5× improvement over prior work. MPCFormer uses a knowledge-distillation approach to replace nonlinear activations with MPC-friendly approximations. Iron targets GPT-2. These are the state of the art for private transformer inference. Related to [CryptGPU and Piranha](#cryptgpu-and-piranha-gpu-accelerated-secret-shared-mpc).
+
+**Production readiness:** Experimental
+Research prototypes. Inference latency (seconds per query) is still too high for most production applications. Active optimization.
+
+**Implementations:**
+- [PUMA](https://github.com/secretflow/spu) ⭐ 1.9k — Python/C++, SecretFlow SPU includes PUMA
+- [MPCFormer](https://github.com/DachengLi1/MPCFormer) ⭐ 211 — Python, ICLR 2023 reference
+- [Iron-inference](https://github.com/xingpz2008/Iron) ⭐ 37 — Python, NeurIPS 2022 GPT reference
+
+**Security status:** Secure
+Security inherits from underlying 2/3-party secret sharing protocols (semi-honest). Full malicious security not yet achieved in efficient transformer inference.
+
+**Community acceptance:** Emerging
+Published at top ML/security venues (ICLR, CCS, NeurIPS). Fast-moving area. SecretFlow framework (Ant Group) provides production-oriented infrastructure.
 
 ---

@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (42 schemes)
+## Contents (51 schemes)
 
 **[Quantum Key Distribution (QKD)](#quantum-key-distribution-qkd)**
 - [Quantum Key Distribution (QKD)](#quantum-key-distribution-qkd)
@@ -14,11 +14,13 @@
 - [Commercial QKD Systems and Quantum Network Deployments](#commercial-qkd-systems-and-quantum-network-deployments)
 - [Device-Independent Quantum Key Distribution (DI-QKD)](#device-independent-quantum-key-distribution-di-qkd)
 - [Quantum Secure Direct Communication (QSDC)](#quantum-secure-direct-communication-qsdc)
+- [Quantum Network Simulation Platforms (NetSquid, QuNetSim, IETF QIRG)](#quantum-network-simulation-platforms-netsquid-qunetsim-ietf-qirg)
 
 **[Quantum Primitives](#quantum-primitives)**
 - [Quantum Copy-Protection / Uncloneable Encryption](#quantum-copy-protection--uncloneable-encryption)
 - [Position-Based Quantum Cryptography](#position-based-quantum-cryptography)
 - [Certified Quantum Randomness / Proof of Quantumness](#certified-quantum-randomness--proof-of-quantumness)
+- [Quantum Random Number Generators (QRNG, Hardware Entropy Sources)](#quantum-random-number-generators-qrng-hardware-entropy-sources)
 
 **[Post-Quantum Cryptography (PQC)](#post-quantum-cryptography-pqc)**
 - [Post-Quantum Cryptography](#post-quantum-cryptography)
@@ -38,6 +40,9 @@
 - [Post-Quantum Composite Signatures and Certificates](#post-quantum-composite-signatures-and-certificates)
 - [Post-Quantum TLS Performance Benchmarks](#post-quantum-tls-performance-benchmarks)
 - [Blind Quantum Computation (BQC)](#blind-quantum-computation-bqc)
+- [Post-Quantum Code Signing and Software Supply Chain Security](#post-quantum-code-signing-and-software-supply-chain-security)
+- [PQC Crypto-Agility and Cryptographic Bill of Materials (CBOM)](#pqc-crypto-agility-and-cryptographic-bill-of-materials-cbom)
+- [Post-Quantum DNSSEC (PQ DNS Zone Signing)](#post-quantum-dnssec-pq-dns-zone-signing)
 
 **[Isogeny and Lattice Assumptions](#isogeny-and-lattice-assumptions)**
 - [Lattice Isomorphism Problem (LIP) / HAWK](#lattice-isomorphism-problem-lip--hawk)
@@ -354,6 +359,35 @@ Primarily developed in Chinese research institutions. Published in Nature Light:
 
 ---
 
+### Quantum Network Simulation Platforms (NetSquid, QuNetSim, IETF QIRG)
+
+**Goal:** Simulate quantum communication networks to design, test, and validate quantum repeater protocols, entanglement distribution, and quantum internet architectures before physical deployment.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **NetSquid** | 2020 | Discrete-event quantum simulation | TNO/QuTech; quantum network simulator [[1]](https://netsquid.org) |
+| **QuNetSim** | 2021 | Python quantum network simulator | Diadamo et al.; lightweight simulation [[2]](https://github.com/tqsd/QuNetSim) |
+| **IETF QIRG** | 2019 | Quantum Internet Research Group | IETF quantum internet architecture RFCs [[3]](https://datatracker.ietf.org/rg/qirg/about/) |
+| **SeQUeNCe** | 2021 | Modular quantum network simulator | Argonne/UChicago quantum internet [[4]](https://github.com/sequence-toolbox/SeQUeNCe) |
+
+**State of the art:** NetSquid (by QuTech/TNO) is the most widely-used quantum network simulator for research, supporting noise models, quantum memories, and entanglement swapping. SeQUeNCe is used for simulating the Chicago quantum internet testbed. IETF QIRG has produced RFC 9340 (quantum internet architecture) and continues developing quantum networking standards. Related to [QKD (Quantum Key Distribution)](#quantum-key-distribution-qkd).
+
+**Production readiness:** Research
+Simulation platforms in production use for academic and national laboratory research. No production quantum internet deployed. Chicago and Delft testbeds are the most advanced.
+
+**Implementations:**
+- [NetSquid](https://netsquid.org) — Python, commercial-academic simulator (free for research)
+- [QuNetSim](https://github.com/tqsd/QuNetSim) ⭐ 321 — Python, open-source quantum network simulator
+- [SeQUeNCe](https://github.com/sequence-toolbox/SeQUeNCe) ⭐ 348 — Python, Argonne quantum network simulator
+
+**Security status:** Secure
+Simulation platforms don't directly have cryptographic security; they model quantum physical processes. Correctness of simulations is the key concern.
+
+**Community acceptance:** Emerging
+IETF QIRG produced RFC 9340. NetSquid widely used in quantum networking papers. US DoE and European quantum internet initiatives rely on simulation. Active standardization at IETF and ISO.
+
+---
+
 
 ## Quantum Primitives
 
@@ -435,6 +469,35 @@ Cryptographic certification under standard computational assumptions (LWE). The 
 
 **Community acceptance:** Emerging
 Nature 2025 publication; first classically verifiable quantum advantage. Growing interest from NIST randomness beacon community and commercial quantum computing vendors.
+
+---
+
+### Quantum Random Number Generators (QRNG, Hardware Entropy Sources)
+
+**Goal:** Generate true random numbers from inherently quantum-mechanical processes (photon arrival times, vacuum fluctuations, radioactive decay), providing entropy that is provably unpredictable even to an attacker with unlimited computational resources.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ID Quantique Quantis** | 2001 | Photon detection QRNG | Commercial QRNG USB/PCIe cards [[1]](https://www.idquantique.com/random-number-generation/) |
+| **Quantinuum H-Series QRNG** | 2023 | Ion trap quantum computer | Certified QRNG from trapped-ion system [[2]](https://www.quantinuum.com/hardware) |
+| **ITU-T X.1702** | 2021 | QRNG standard | International quantum RNG standard [[3]](https://www.itu.int/rec/T-REC-X.1702) |
+| **NIST SP 800-90B (physical)** | 2018 | Entropy source testing framework | Certifies QRNG devices as entropy sources [[4]](https://csrc.nist.gov/publications/detail/sp/800-90b/final) |
+
+**State of the art:** QRNG chips are embedded in Samsung Galaxy smartphones (S21+), some AWS Graviton3 instances, and Nokia base stations. ID Quantique is the market leader for network-attached QRNGs. Quantinuum offers a cloud QRNG service based on their H-series quantum computer. ITU-T X.1702 is the primary international standard. Related to [Certified Quantum Randomness / Proof of Quantumness](#certified-quantum-randomness--proof-of-quantumness).
+
+**Production readiness:** Production
+Commercial QRNG hardware widely available. Samsung Galaxy S21+ has a QRNG chip (SK Telecom/IDQ). AWS Graviton3 includes hardware entropy. ITU-T standardized.
+
+**Implementations:**
+- [rngd (Linux)](https://github.com/nhorman/rng-tools) ⭐ 316 — C, Linux QRNG/TRNG harvester (rngd)
+- [quantis-usb](https://www.idquantique.com/random-number-generation/products/quantis-usb/) — ID Quantique commercial QRNG
+- [tpm2-tools](https://github.com/tpm2-software/tpm2-tools) ⭐ 718 — C, TPM-based hardware entropy (pseudo-QRNG)
+
+**Security status:** Secure
+True QRNG output is information-theoretically random. Post-processing via SP 800-90B-compliant conditioning is required. Side-channel attacks on hardware are a practical concern.
+
+**Community acceptance:** Standard
+ITU-T X.1702 international standard. NIST SP 800-90B certifies entropy sources. Growing deployment in mobile devices and cloud infrastructure.
 
 ---
 
@@ -1093,6 +1156,90 @@ BFK provides perfect privacy (information-theoretic). Mahadev classical verifica
 
 **Community acceptance:** Niche
 Mahadev (2018) won FOCS best paper. Active research at QIP and STOC/FOCS. Important for quantum cloud computing vision but no near-term commercial deployment.
+
+---
+
+### Post-Quantum Code Signing and Software Supply Chain Security
+
+**Goal:** Protect software package signatures, firmware updates, and kernel code signing from quantum adversaries by migrating from RSA/ECDSA to NIST PQC signature standards (ML-DSA, SLH-DSA), ensuring supply chain integrity in the post-quantum era.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Sigstore PQ** | 2023 | ML-DSA + Sigstore infrastructure | Sigstore post-quantum migration planning [[1]](https://blog.sigstore.dev/sigstore-and-post-quantum-cryptography/) |
+| **Linux kernel PQ signing** | 2024 | ML-DSA-65 module signing | LKML RFC for PQ kernel module signatures [[2]](https://lkml.org/lkml/2024/3/1/1) |
+| **Windows PQ code signing** | 2025 | ML-DSA (Dilithium) | Microsoft PQ migration for Windows Update [[3]](https://www.microsoft.com/en-us/security/blog/2024/) |
+
+**State of the art:** NIST finalized ML-DSA (FIPS 204) and SLH-DSA (FIPS 205) in 2024, making PQ code signing standardized. Microsoft has announced PQ migration for Windows Update signing. The Linux kernel has an RFC for ML-DSA module signing. Sigstore (used for container/Python/NPM signing) is planning PQ migration. Critical for supply chains that must remain secure against harvest-now-decrypt-later attacks on signatures. Related to [Post-Quantum Cryptography](#post-quantum-cryptography) and [Sigstore](14-applied-infrastructure-pki.md#sigstore-cosign-and-supply-chain-security).
+
+**Production readiness:** Experimental
+Planning and prototyping phase. NIST standards finalized 2024. Microsoft PQ signing: 2025 timeline. Linux kernel: RFC stage. No production PQ code signing deployed yet.
+
+**Implementations:**
+- [pqcrypto-sign](https://github.com/rustpq/pqcrypto) ⭐ 436 — Rust, ML-DSA/SLH-DSA for code signing integration
+- [sigstore](https://github.com/sigstore/sigstore) ⭐ 668 — Go, supply chain security (PQ migration in progress)
+- [openssl 3.x](https://github.com/openssl/openssl) ⭐ 27k — C, ML-DSA support via OQS provider
+
+**Security status:** Secure
+ML-DSA and SLH-DSA are NIST FIPS standards with full post-quantum security proofs. Implementation correctness and migration completeness are the main risks.
+
+**Community acceptance:** Emerging
+NIST FIPS 204/205 finalized August 2024. CISA and NSA mandate PQ migration for national security systems by 2030. Industry-wide migration planning underway.
+
+---
+
+### PQC Crypto-Agility and Cryptographic Bill of Materials (CBOM)
+
+**Goal:** Prepare software systems for post-quantum migration by designing for cryptographic agility (ability to swap algorithms without code rewrites) and by inventorying all cryptographic usage in a Cryptographic Bill of Materials (CBOM) format.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CBOM (CycloneDX)** | 2023 | CycloneDX 1.4+ SBOM extension | OWASP cryptographic asset inventory [[1]](https://cyclonedx.org/capabilities/cbom/) |
+| **IBM Cryptography Discovery** | 2023 | Static analysis + CBOM | IBM CryptoDiscovery tool [[2]](https://www.ibm.com/quantum/blog/quantum-safe-discovery) |
+| **NIST NCCoE PQC Migration** | 2024 | Migration guides for enterprises | NIST SP 1800-38 series [[3]](https://www.nccoe.nist.gov/projects/migration-post-quantum-cryptography) |
+
+**State of the art:** CBOM is the cryptographic inventory standard (part of CycloneDX 1.4+) that allows organizations to track all cryptographic dependencies — algorithms, key sizes, libraries, certificates — and identify what needs PQC migration. IBM's CryptoDiscovery tool scans binaries for cryptographic usage. NIST NCCoE is coordinating industry PQC migration with SP 1800-38 guidance documents. Related to [Post-Quantum Cryptography](#post-quantum-cryptography) and [Post-Quantum Code Signing and Software Supply Chain Security](#post-quantum-code-signing-and-software-supply-chain-security).
+
+**Production readiness:** Experimental
+CycloneDX CBOM is production-ready (v1.4+, 2022). IBM CryptoDiscovery is in pilot deployments. NIST NCCoE guidance released 2024. Enterprise adoption early-stage.
+
+**Implementations:**
+- [cyclonedx-cli](https://github.com/CycloneDX/cyclonedx-cli) ⭐ 374 — C#, CycloneDX SBOM/CBOM tooling
+- [cryptobom-forge](https://github.com/IBM/cbom) ⭐ 47 — Python, IBM CBOM generation tool
+- [cdxgen](https://github.com/CycloneDX/cdxgen) ⭐ 1.0k — JavaScript, CycloneDX/CBOM generator
+
+**Security status:** Secure
+CBOM is a governance/inventory tool, not a cryptographic scheme. Security comes from the cryptographic algorithms it tracks and enables migration of.
+
+**Community acceptance:** Emerging
+OWASP endorsed CBOM. CycloneDX (Linux Foundation) is the standard SBOM format extended for CBOM. Growing adoption in regulated industries (finance, healthcare, defense) for PQC readiness assessments.
+
+---
+
+### Post-Quantum DNSSEC (PQ DNS Zone Signing)
+
+**Goal:** Replace DNSSEC's ECDSA/RSA zone-signing keys with post-quantum signatures (ML-DSA, SLH-DSA) to protect DNS integrity against quantum adversaries, while managing the significant DNS packet-size increase from larger PQ signatures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ML-DSA DNSSEC** | 2024 | FIPS 204 + DNS record types | IETF DNSOP draft-ietf-dnsop-pq-dnssec [[1]](https://datatracker.ietf.org/doc/draft-ietf-dnsop-pq-dnssec/) |
+| **SLH-DSA DNSSEC** | 2024 | FIPS 205 + small-sig variant | SLH-DSA-SHA2-128s for DNSSEC [[2]](https://datatracker.ietf.org/doc/draft-ietf-dnsop-pq-dnssec/) |
+| **FALCON DNSSEC** | 2022 | NTRU lattice + compact sigs | IETF draft; smaller than Dilithium [[3]](https://datatracker.ietf.org/doc/draft-tjhai-ipsecme-falcon/) |
+
+**State of the art:** PQ DNSSEC faces a fundamental challenge: ML-DSA signatures (~3.3 KB) are much larger than ECDSA P-256 signatures (64 bytes), exceeding typical UDP packet sizes and requiring TCP fallback or DNS Extended Data Length. IETF DNSOP working group has an active draft (draft-ietf-dnsop-pq-dnssec) evaluating multiple PQ signature schemes for DNS constraints. SLH-DSA's smallest variant (128s, 7.9 KB) has smaller keys but larger sigs. FALCON (~700 bytes) is the most DNS-friendly. Related to [DNSSEC (DNS Security Extensions)](14-applied-infrastructure-pki.md#dnssec-dns-security-extensions).
+
+**Production readiness:** Experimental
+IETF draft stage. Test deployments in research environments. No production PQ DNSSEC zone signed. Awaiting IETF finalization and DNS software updates.
+
+**Implementations:**
+- [bind9](https://github.com/isc-projects/bind9) ⭐ 437 — C, BIND DNS server (PQ support experimental)
+- [knot-dns](https://github.com/CZ-NIC/knot) ⭐ 752 — C, Knot DNS (PQ signing prototype)
+- [oqs-provider](https://github.com/open-quantum-safe/oqs-provider) ⭐ 535 — C, OpenSSL PQ provider (used in DNS experiments)
+
+**Security status:** Secure
+Post-quantum security under MLWE (ML-DSA) or hash security (SLH-DSA) assumptions. The security model is sound; the challenge is operational (packet sizes, deployment complexity).
+
+**Community acceptance:** Emerging
+Active IETF DNSOP working group draft. ICANN and RIPE NCC studying PQ DNSSEC. NSA mandates PQ migration for national security DNS by 2030. Challenge of large signatures is the key open issue.
 
 ---
 

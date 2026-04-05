@@ -5,12 +5,13 @@ Several nations have developed sovereign cryptographic algorithms — independen
 Cross-references to foundational concepts: [Symmetric Encryption](01-foundational-primitives.md#symmetric-encryption), [Hash Functions](01-foundational-primitives.md#hash-functions), [Digital Signatures](01-foundational-primitives.md#digital-signatures), [AEAD](04-zero-knowledge-proof-systems.md#folding-schemes).
 
 <!-- TOC -->
-## Contents (11 schemes)
+## Contents (16 schemes)
 
 **[🇨🇳 China (OSCCA / GM/T)](#-china-oscca--gmt)**
 - [SM4 / Chinese National Standard Block Ciphers](#sm4--chinese-national-standard-block-ciphers)
 - [SM3 Hash Function](#sm3-hash-function)
 - [SM2 Digital Signatures (Chinese National Standard)](#sm2-digital-signatures-chinese-national-standard)
+- [SM9 Identity-Based Cryptography (GM/T 0044)](#sm9-identity-based-cryptography-gmt-0044)
 
 **[🇷🇺 Russia (GOST)](#-russia-gost)**
 - [GOST R 34.12-2015 Block Ciphers (Grasshopper / Magma)](#gost-r-3412-2015-block-ciphers-grasshopper--magma)
@@ -23,8 +24,16 @@ Cross-references to foundational concepts: [Symmetric Encryption](01-foundationa
 - [LSH (Korean Lightweight Secure Hash)](#lsh-korean-lightweight-secure-hash)
 
 **[🇯🇵 Japan (CRYPTREC)](#-japan-cryptrec)**
+- [Camellia (NTT / Mitsubishi Electric)](#camellia-ntt--mitsubishi-electric)
 - [Camellia-GCM and ARIA-GCM](#camellia-gcm-and-aria-gcm)
 - [CLEFIA and MISTY1 (Japanese Industry Ciphers)](#clefia-and-misty1-japanese-industry-ciphers)
+- [KCipher-2 (NTT Stream Cipher)](#kcipher-2-ntt-stream-cipher)
+
+**[🇩🇪 Germany / Europe (BSI / ETSI)](#-germany--europe-bsi--etsi)**
+- [Brainpool Elliptic Curves (BSI / RFC 5639)](#brainpool-elliptic-curves-bsi--rfc-5639)
+
+**[🇺🇦 Eastern Europe & CIS](#-eastern-europe--cis)**
+- [DSTU 4145-2002 (Ukrainian ECDSA)](#dstu-4145-2002-ukrainian-ecdsa)
 <!-- /TOC -->
 
 ---
@@ -122,6 +131,37 @@ Provably secure in the generic group model; no known practical attacks on the SM
 
 **Community acceptance:** Standard
 Chinese national standard GB/T 32918.2-2016; ISO/IEC 14888-3:2018; IETF RFC 8998. Limited adoption outside China.
+
+---
+
+### SM9 Identity-Based Cryptography (GM/T 0044)
+
+**Goal:** Identity-based encryption and signature scheme standardized by China's OSCCA (GM/T 0044-2016), allowing a user's identifier (email, phone number, employee ID) to serve directly as their public key — eliminating the need for a certificate infrastructure while retaining elliptic-curve-level security.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SM9 IBE (Encryption)** | 2016 | Pairing-based IBE | Identity-based encryption using a 256-bit pairing-friendly BN curve; GM/T 0044.4-2016 [[1]](https://www.oscca.gov.cn/sca/xxgk/2016-03/28/content_1002207.shtml) |
+| **SM9 IBS (Signature)** | 2016 | Pairing-based IBS | Identity-based signature; GM/T 0044.2-2016; ISO/IEC 14888-3:2018 Amd.1 [[1]](https://www.iso.org/standard/76382.html) |
+| **SM9 Key Exchange** | 2016 | Pairing-based KA | Identity-based key agreement protocol; GM/T 0044.3-2016 [[1]](https://www.oscca.gov.cn/sca/xxgk/2016-03/28/content_1002207.shtml) |
+| **SM9 in ISO/IEC 11770-3** | 2021 | Pairing-based | International standardization of SM9 key establishment mechanisms [[1]](https://www.iso.org/standard/81213.html) |
+
+**Design:** SM9 uses a 256-bit Barreto-Naehrig (BN) pairing-friendly elliptic curve with a 256-bit embedding degree 12 extension field. The IBE scheme is based on the Boneh-Franklin framework: a Private Key Generator (PKG) holds a master secret and issues identity-specific private keys derived via hashing the identity string to a curve point. Encryption and key exchange use the optimal Ate pairing. The IBS scheme follows the Cha-Cheon construction. SM9 enables certificate-free PKI — users can encrypt to "alice@example.com" without requiring Alice to first generate or distribute a certificate.
+
+**State of the art:** GM/T 0044-2016 is the Chinese national standard; ISO/IEC 14888-3:2018/Amd.1 and ISO/IEC 11770-3 include SM9 for international interoperability. Deployed in Chinese enterprise email encryption, IoT authentication, and mobile payment systems where PKI certificate management is impractical. See [Identity-Based Encryption](07-homomorphic-functional-encryption.md#identity-based-encryption-ibe).
+
+**Production readiness:** Production
+Deployed in Chinese enterprise systems, IoT, and mobile applications; mandated for Chinese classified communications where certificate infrastructure is not feasible.
+
+**Implementations:**
+- [GmSSL](https://github.com/guanzhi/GmSSL) ⭐ 6.0k — C, full SM9 IBE/IBS/KA implementation
+- [Tongsuo](https://github.com/Tongsuo-Project/Tongsuo) ⭐ 1.4k — C, SM9 support in Alibaba's OpenSSL fork
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, BN-256 pairing used by SM9
+
+**Security status:** Secure
+SM9 security reduces to the Bilinear Diffie-Hellman (BDH) assumption on the BN-256 curve; no practical attacks known. The BN-256 curve provides approximately 100-bit security against current pairing attacks (Kim-Barbulescu 2016 improved index calculus for extension fields — BN-256 is still considered safe for near-term use).
+
+**Community acceptance:** Standard
+Chinese national standard GM/T 0044-2016; ISO/IEC 14888-3:2018/Amd.1 (IBS) and ISO/IEC 11770-3 (key establishment). Primarily adopted within China; growing interest internationally for certificate-free IoT scenarios.
 
 ---
 
@@ -314,6 +354,37 @@ Korean national standard KS X 3262. Not standardized by NIST or IETF; adoption l
 
 ---
 
+### Camellia (NTT / Mitsubishi Electric)
+
+**Goal:** General-purpose 128-bit block cipher jointly designed by NTT and Mitsubishi Electric, offering AES-equivalent security with an independent design lineage; standardized as an international cipher (ISO/IEC 18033-3, CRYPTREC, NESSIE) and widely deployed in Japanese government, TLS, and IPsec.
+
+| Algorithm | Year | Type/Basis | Note |
+|-----------|------|------------|------|
+| **Camellia-128** | 2000 | Feistel, 18 rounds | 128-bit block, 128-bit key; 18 rounds with 6-round FL/FL⁻¹ layers every 6 rounds; CRYPTREC recommended [[1]](https://info.isl.ntt.co.jp/crypt/camellia/dl/01espec.pdf) |
+| **Camellia-192** | 2000 | Feistel, 24 rounds | 192-bit key; 24 rounds [[1]](https://info.isl.ntt.co.jp/crypt/camellia/) |
+| **Camellia-256** | 2000 | Feistel, 24 rounds | 256-bit key; 24 rounds; highest security level [[1]](https://info.isl.ntt.co.jp/crypt/camellia/) |
+| **Camellia in TLS 1.2** | 2007 | Camellia-CBC/GCM | RFC 5932 (CBC cipher suites), RFC 6367 (GCM cipher suites) [[1]](https://www.rfc-editor.org/rfc/rfc5932)[[2]](https://www.rfc-editor.org/rfc/rfc6367) |
+
+**Design:** Camellia is a type-3 Feistel network with a 128-bit block and 128/192/256-bit keys. Eighteen (or 24) rounds are divided into groups of six, with Feistel Logical (FL/FL⁻¹) layers inserted between groups for extra non-linearity. The S-boxes are designed to resist differential and linear cryptanalysis with provable security bounds. The structure allows efficient software implementation on 32-bit and 64-bit processors, and compact hardware implementation — making it suitable for both server TLS and constrained devices.
+
+**State of the art:** Camellia is CRYPTREC-recommended for Japanese government use and is a NESSIE (EU) selected cipher. ISO/IEC 18033-3:2010 standardizes it internationally. TLS cipher suites are defined in RFC 5932 (CBC) and RFC 6367 (GCM). Firefox, NSS, and OpenSSL all ship Camellia support. TLS 1.3 omitted Camellia from its mandatory cipher set, limiting it to TLS 1.2 contexts. See [Camellia-GCM and ARIA-GCM](#camellia-gcm-and-aria-gcm) for AEAD usage details.
+
+**Production readiness:** Production
+Deployed in Japanese government TLS 1.2 stacks, IPsec (RFC 4312), CMS (RFC 3657), and OpenPGP (RFC 5581). Available in OpenSSL, GnuTLS, and NSS.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, Camellia-128/192/256 with CBC and GCM modes
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, Camellia block cipher and Camellia-GCM
+- [Crypto++](https://github.com/weidai11/cryptopp) ⭐ 5.4k — C++, Camellia implementation
+
+**Security status:** Secure
+No practical attacks on full-round Camellia at any key size. Best known attacks reach reduced-round variants. Extensively analyzed by international cryptographers over 20+ years with no weaknesses found.
+
+**Community acceptance:** Standard
+ISO/IEC 18033-3:2010; CRYPTREC (Japan, 2003); NESSIE (EU, 2003); IETF RFCs 3713, 5932, 6367. Widely trusted in Japan; limited use outside East Asia due to AES dominance.
+
+---
+
 ### Camellia-GCM and ARIA-GCM
 
 **Goal:** GCM-mode AEAD using non-AES 128-bit block ciphers — Camellia (Japanese national standard) and ARIA (Korean national standard) — providing cryptographic diversity, regulatory compliance in Japan and South Korea, and an alternative cipher path in environments where reliance on a single cipher is undesirable.
@@ -371,5 +442,104 @@ MISTY1 has a practical full-round integral attack (Todo 2015); should not be use
 
 **Community acceptance:** Niche
 CLEFIA is ISO/IEC 29192-2; MISTY1 was NESSIE-selected and RFC 2994 but is now considered weakened. Both are primarily used in Japanese industry contexts.
+
+---
+
+### KCipher-2 (NTT Stream Cipher)
+
+**Goal:** High-speed software stream cipher developed by NTT (Japan), standardized as ISO/IEC 18033-4:2011 and CRYPTREC-recommended, designed for fast encryption of large data volumes on software platforms without hardware acceleration.
+
+| Algorithm | Year | Basis | Note |
+|-----------|------|-------|------|
+| **KCipher-2** | 2007 | LFSR + FSM + feedback | 128-bit key, 128-bit IV; two coupled LFSRs over GF(2³²) driven by a non-linear FSM; throughput ~2 Gbps on modern x86 [[1]](https://eprint.iacr.org/2011/131) |
+| **KCipher-2 (ISO/IEC 18033-4)** | 2011 | Stream cipher | International standardization alongside MUGI and SNOW 2.0 [[1]](https://www.iso.org/standard/54532.html) |
+
+**Design:** KCipher-2 uses two linear feedback shift registers (LFSR-A of length 6 and LFSR-B of length 4) over GF(2³²), driven by a 10-word feedback shift register (FSR) with a non-linear mixing function. The internal state update and keystream generation are interleaved in a single clock step. The 128-bit IV initialization uses 10 mixing rounds. The design targets software efficiency: all operations are 32-bit word operations (XOR, addition, rotation) with no lookup tables, enabling high throughput without cache-timing concerns.
+
+**State of the art:** KCipher-2 is CRYPTREC-recommended for Japanese e-Government use and ISO/IEC 18033-4:2011 standardized. Performance benchmarks show ~2 Gbps software throughput. While no practical cryptanalytic breaks exist, KCipher-2 is less widely deployed than ChaCha20 or SNOW 3G. It remains the primary stream cipher for Japanese government compliance. See [Hardware-Oriented Stream Ciphers](01-foundational-primitives.md#hardware-oriented-stream-ciphers-estream--3gpp).
+
+**Production readiness:** Mature
+CRYPTREC-recommended for Japanese government use and ISO-standardized; production-quality implementations exist but deployment outside Japan is minimal.
+
+**Implementations:**
+- [CRYPTREC reference](https://www.cryptrec.go.jp/en/method.html) — C, official CRYPTREC reference implementation
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, KCipher-2 stream cipher
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, not natively included; available via third-party engines
+
+**Security status:** Secure
+No practical attacks on the full KCipher-2 design. Differential and correlation attacks on the FSR have been studied with no effective break at the recommended 128-bit key/IV parameters.
+
+**Community acceptance:** Niche
+ISO/IEC 18033-4:2011; CRYPTREC-recommended (Japan). Adoption limited to Japanese government and industry; internationally overshadowed by ChaCha20 and AES-GCM.
+
+---
+
+## 🇩🇪 Germany / Europe (BSI / ETSI)
+
+---
+
+### Brainpool Elliptic Curves (BSI / RFC 5639)
+
+**Goal:** Elliptic curves over prime fields, specified by the German Federal Office for Information Security (BSI) and standardized in RFC 5639, providing verifiably pseudorandom curve parameters with a transparent "nothing-up-my-sleeve" derivation — designed as an alternative to NIST curves whose derivation was not fully documented.
+
+| Curve | Year | Field size | Note |
+|-------|------|------------|------|
+| **brainpoolP160r1** | 2005 | 160-bit | Smallest Brainpool curve; legacy use only [[1]](https://www.rfc-editor.org/rfc/rfc5639) |
+| **brainpoolP256r1** | 2005 | 256-bit | Main deployment curve; ~128-bit security; used in BSI TR-03111 and ETSI standards [[1]](https://www.rfc-editor.org/rfc/rfc5639) |
+| **brainpoolP384r1** | 2005 | 384-bit | ~192-bit security; used in German ePassport (PACE) and smart card standards [[1]](https://www.rfc-editor.org/rfc/rfc5639) |
+| **brainpoolP512r1** | 2005 | 512-bit | ~256-bit security; highest security Brainpool curve [[1]](https://www.rfc-editor.org/rfc/rfc5639) |
+| **Brainpool in TLS 1.3** | 2020 | 256/384/512-bit | RFC 8734: Brainpool curves for TLS 1.3; used in German government TLS stacks [[1]](https://www.rfc-editor.org/rfc/rfc8734) |
+
+**Design:** Brainpool curves are Weierstrass curves y² = x³ + ax + b over a prime field GF(p) where p and the curve parameters are derived via a deterministic hash-based process from the seed string "brainpool" — making parameter choice auditable. All curves have prime order and cofactor 1. Twisted variants (brainpoolP256t1, etc.) are also defined for potential efficiency gains in specific protocols. The transparent derivation distinguishes them from NIST curves (P-256, P-384, P-521) whose seed derivation raised concerns after the Dual EC DRBG scandal.
+
+**State of the art:** Brainpool curves are mandatory in German government PKI (BSI TR-03111) and deployed in German ePassports (PACE protocol), eHealth cards, and electronic ID documents. IETF RFC 5639 (2010) defines the curves; RFC 8734 (2020) adds TLS 1.3 support. The European eIDAS framework and ETSI TS 119 312 recommend Brainpool as a compliant alternative to NIST curves. Performance is ~20–30% slower than Curve25519 due to non-special prime fields. See [Key Exchange and ECDH](03-key-exchange-key-management.md#diffie-hellman-key-exchange--ecdh--x25519).
+
+**Production readiness:** Production
+Deployed in German government PKI, ePassports, eHealth cards, and German TLS implementations; mandatory in BSI-compliant systems.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, full Brainpool curve suite (P256r1, P384r1, P512r1)
+- [Botan](https://github.com/randombit/botan) ⭐ 3.2k — C++, Brainpool curves
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, Brainpool curves for ECDSA and ECDH
+
+**Security status:** Secure
+No known attacks specific to Brainpool curves. The prime fields are not "special" (unlike Mersenne-style NIST primes), so no special-structure attacks apply. Independently verified transparent generation.
+
+**Community acceptance:** Standard
+IETF RFC 5639 (curves) and RFC 8734 (TLS 1.3); BSI TR-03111; ETSI TS 119 312. Mandatory in German government systems; broadly accepted in European PKI. Less widely deployed than NIST P-256 or Curve25519 globally.
+
+---
+
+## 🇺🇦 Eastern Europe & CIS
+
+---
+
+### DSTU 4145-2002 (Ukrainian ECDSA)
+
+**Goal:** Ukrainian national standard for elliptic-curve digital signatures (DSTU 4145-2002), defining an ECDSA-like scheme over binary extension fields GF(2^m) for authentication and non-repudiation in Ukrainian government, financial, and critical-infrastructure systems.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **DSTU 4145-2002** | 2002 | ECC over GF(2^m) | Binary-field ECDSA; standardized field sizes: m = 163, 167, 173, 179, 191, 233, 257, 307, 367, 431 [[1]](https://www.securemessage.net/index_en.html) |
+| **DSTU 4145 in RFC 6189** | 2011 | ECC / ZRTP | DSTU 4145 curve referenced in ZRTP (VoIP key agreement) as alternative ECC option [[1]](https://www.rfc-editor.org/rfc/rfc6189) |
+| **DSTU 4145 with GOST hash** | 2002 | ECC + GOST R 34.11-94 | Original standard pairs the signature with GOST R 34.11-94 hash function; later versions support SHA-256 [[1]](https://zakon.rada.gov.ua/laws/show/z0185-03) |
+
+**Design:** DSTU 4145-2002 uses elliptic curves over binary fields GF(2^m) with standardized irreducible polynomial bases. The signing algorithm is structurally similar to ECDSA: generate random k, compute R = kG, derive r and s from R and the message hash. The use of binary extension fields (rather than prime fields) offers hardware efficiency in constrained environments via XOR-based arithmetic, though software implementations are typically slower than prime-field ECDH due to less optimized libraries. The standard defines multiple field sizes for different security levels, from 163-bit (legacy) to 431-bit (high-security government use).
+
+**State of the art:** DSTU 4145-2002 is mandated by Ukraine's State Service of Special Communications and Information Protection (SSSCIP/DSSZZI) for all government digital signature applications. Ukrainian PKI (IIT, PrivatBank, Ukrsig) uses DSTU 4145 for electronic documents, tax filings, and banking. Ukraine's CAdES/XAdES profiles mandate DSTU 4145 for qualified electronic signatures under Ukrainian law. Binary-field ECC has generally fallen out of favor internationally due to concerns about potential hidden weaknesses in some binary curves (Semaev, 2015), though no attack is known on the specific DSTU 4145 curves. See [Digital Signatures](01-foundational-primitives.md#digital-signatures).
+
+**Production readiness:** Production
+Mandatory for Ukrainian government electronic signatures and qualified e-signatures under Ukrainian law; deployed in Ukrainian banking, tax, and e-government systems.
+
+**Implementations:**
+- [IIT Crypto library](https://iit.com.ua/cryptography) — C, official Ukrainian certified library for DSTU 4145 (commercial)
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.6k — Java, DSTU 4145-2002 support
+- [cryptonite](https://github.com/privat-dev/cryptonite) ⭐ 42 — C, PrivatBank open-source DSTU 4145 implementation
+
+**Security status:** Caution
+No practical attacks on DSTU 4145-specific curves, but binary-extension-field ECC broadly has faced scrutiny (potential structural weaknesses in GF(2^n) discrete logarithm versus prime fields). The 163-bit variant is below modern security recommendations; the 257-bit and higher variants provide adequate margins.
+
+**Community acceptance:** Niche
+Ukrainian national standard DSTU 4145-2002; mandated by Ukrainian law for qualified electronic signatures. Referenced in RFC 6189 (ZRTP). Not adopted outside Ukraine and CIS contexts.
 
 ---
