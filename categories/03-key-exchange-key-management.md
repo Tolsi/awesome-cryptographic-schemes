@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (63 schemes)
+## Contents (64 schemes)
 
 **[Diffie-Hellman and ECDH](#diffie-hellman-and-ecdh)**
 - [Non-Interactive Key Exchange (NIKE)](#non-interactive-key-exchange-nike)
@@ -43,6 +43,7 @@
 - [Hierarchical Deterministic Keys (BIP32 / HD Wallets)](#hierarchical-deterministic-keys-bip32--hd-wallets)
 - [Key Wrapping / Envelope Encryption](#key-wrapping--envelope-encryption)
 - [HPKE (Hybrid Public Key Encryption, RFC 9180)](#hpke-hybrid-public-key-encryption-rfc-9180)
+- [Deterministic Key Generation for ECDSA and RSA (C2SP det-keygen)](#deterministic-key-generation-for-ecdsa-and-rsa-c2sp-det-keygen)
 
 **[Key Management Infrastructure](#key-management-infrastructure)**
 - [Certificateless Cryptography](#certificateless-cryptography)
@@ -1776,6 +1777,32 @@ RFC 9180 with formal security analysis; no known attacks on the construction at 
 
 **Community acceptance:** Standard
 IRTF RFC 9180; used as building block in TLS ECH, MLS (RFC 9420), OHTTP (RFC 9458), and ODoH; widely adopted.
+
+---
+
+### Deterministic Key Generation for ECDSA and RSA (C2SP det-keygen)
+
+**Goal:** Provide a seed-based deterministic key generation process for ECDSA and RSA — the same affordance that ML-KEM, ML-DSA, and Ed25519 already enjoy. Lets implementations derive deterministic keypairs from a fixed-length seed, enabling known-answer test vectors for keygen edge cases, fixed-secret key derivation, and cross-implementation test-suite parity. Compliant with FIPS 186-5; targets production parameters only.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **det-keygen (ECDSA)** | 2024 | HKDF-SHA-256/512 + FIPS 186-5 random-bit testing | Seed → HKDF → candidate scalars → modular reduction with rejection per FIPS 186-5 [[1]](https://c2sp.org/det-keygen) |
+| **det-keygen (RSA)** | 2024 | HKDF + Miller-Rabin (deterministic via FIPS 186-5) | Seed → HKDF stream → candidate primes → FIPS-compliant primality testing [[1]](https://c2sp.org/det-keygen) |
+
+**State of the art:** Bridges the gap between modern PQC algorithms (ML-KEM, ML-DSA, SLH-DSA — all seed-based by spec) and legacy [ECDSA](08-signatures-advanced.md#ecdsa--details-vulnerabilities-and-rfc-6979) / RSA, which historically required an abstract RBG and could not be reproduced from a seed. Distinct from [RFC 6979 deterministic ECDSA *nonces*](08-signatures-advanced.md#ecdsa--details-vulnerabilities-and-rfc-6979) (which makes signing deterministic, not key generation). C2SP spec by Filippo Valsorda + Go cryptography team. Related to [HKDF](01-foundational-primitives.md#hkdf-extract-and-expand-key-derivation), [Hierarchical Deterministic Keys (BIP32 / HD Wallets)](#hierarchical-deterministic-keys-bip32--hd-wallets).
+
+**Production readiness:** Experimental
+C2SP spec published 2024 with reference algorithm pseudocode. Reference implementation in Go via `crypto/ecdsa` / `crypto/rsa` test suites; not yet a FIPS-certified path on its own.
+
+**Implementations:**
+- [C2SP/C2SP](https://github.com/C2SP/C2SP) ⭐ 587 — spec + pseudocode
+- [C2SP/CCTV](https://github.com/C2SP/CCTV) ⭐ 101 — test vectors for det-keygen ECDSA/RSA
+
+**Security status:** Secure
+Output keys are statistically indistinguishable from FIPS-186-5-generated keys; security of generated keys reduces to the seed's entropy (full 256-bit seeds give full strength). Confidentiality of derived keys is exactly the confidentiality of the seed.
+
+**Community acceptance:** Emerging
+C2SP-blessed; cited by Go cryptography and test-vector-driven validation workflows. No IETF/NIST track yet, but technique is widely accepted in cryptographic test infrastructure.
 
 ---
 

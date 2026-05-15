@@ -1012,6 +1012,7 @@ Core technique behind Zama's commercial FHE stack; published at ASIACRYPT 2020; 
 | **TFHE** | 2016 | LWE + TLWE + TGSW | Chillotti-Gama-Georgieva-Izabachène [[1]](https://eprint.iacr.org/2018/421.pdf) |
 | **FHEW** | 2014 | NTRU + bootstrapping | Ducas-Micciancio; <1s bootstrapping [[2]](https://eprint.iacr.org/2014/816.pdf) |
 | **Concrete / TFHE-rs** | 2022 | TFHE optimized | Zama's production TFHE implementation [[3]](https://github.com/zama-ai/tfhe-rs) |
+| **Common Mask (CM) Ciphertexts** | 2025 | FHEW/TFHE packed bootstrapping | Shared mask + multiple message bodies; extends FHEW/TFHE-style PBS to packed format; up to 51% amortized improvement with 8 packed messages; distinct lookup tables on different messages in single ciphertext; TCHES 2025(4); Bergerat-Bonte-Curtis-Orfila-Paillier-Tap [[1]](https://eprint.iacr.org/2025/2112) |
 
 **State of the art:** TFHE is the foundation of Zama's commercial FHE stack (concrete, concrete-ml, fhEVM). It offers the fastest gate-by-gate bootstrapping (~1ms per gate) and supports arbitrary programmable bootstrapping (PBS). Used in Zama's blockchain confidential computation platform. Related to [BFV / BGV / CKKS (Leveled FHE Schemes)](#bfv--bgv--ckks-leveled-fhe-schemes).
 

@@ -263,3 +263,4 @@ Before committing changes, verify ALL of the following:
 | 19 | theoretical-foundations | Leakage-resilient crypto, circular/KDM security, non-malleable codes, WI/witness hiding, non-black-box ZK/concurrent ZK, rational cryptography, human-computable crypto, cryptographic reverse firewalls, lossy encryption/TDF |
 | 20 | applied-niche-protocols | E-voting, visual cryptography, linked timestamping, coercion-resistant voting, PoSE, key-insulated crypto, client puzzles, incremental cryptography |
 | 21 | regional-national-cryptography | SM4/SM3/SM2 (China), GOST R 34.12/34.11/34.10 (Russia), ARIA/SEED/LSH (South Korea), Camellia-GCM/ARIA-GCM, CLEFIA/MISTY1 (Japan) |
+| 22 | attacks-cryptanalysis | Pohlig-Hellman, MOV Attack, Xedni Calculus, Differential Cryptanalysis (Biham-Shamir), Linear Cryptanalysis (Matsui), Refined Linear Approx. for ARX/ChaCha, Bleichenbacher's/ROBOT, DROWN |

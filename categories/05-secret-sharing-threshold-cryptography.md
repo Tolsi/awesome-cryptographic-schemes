@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (63 schemes)
+## Contents (66 schemes)
 
 **[Shamir and Basic Secret Sharing](#shamir-and-basic-secret-sharing)**
 - [Secret Sharing Schemes (SSS)](#secret-sharing-schemes-sss)
@@ -24,7 +24,9 @@
 
 **[Threshold Cryptography](#threshold-cryptography)**
 - [Threshold Decryption](#threshold-decryption)
+- [Context-Dependent Threshold Decryption (CDTD)](#context-dependent-threshold-decryption-cdtd)
 - [Distributed Key Generation (DKG)](#distributed-key-generation-dkg)
+- [COCKTAIL DKG (C2SP)](#cocktail-dkg-c2sp)
 - [Non-Interactive DKG (NIDKG)](#non-interactive-dkg-nidkg)
 - [Universal Thresholdizer](#universal-thresholdizer)
 - [FROST: Flexible Round-Optimized Schnorr Threshold Signatures](#frost-flexible-round-optimized-schnorr-threshold-signatures)
@@ -74,6 +76,7 @@
 - [Verifiable Secret Redistribution (VSR)](#verifiable-secret-redistribution-vsr)
 - [Timed Secret Sharing](#timed-secret-sharing)
 - [Social Recovery Wallets (Guardian-Based Threshold Key Recovery)](#social-recovery-wallets-guardian-based-threshold-key-recovery)
+- [ANARKey (Mutual-Dependency Community Key Recovery)](#anarkey-mutual-dependency-community-key-recovery)
 
 <!-- /TOC -->
 
@@ -569,6 +572,30 @@ Threshold ElGamal is a textbook construction; TPKE is deployed in major blockcha
 
 ---
 
+### Context-Dependent Threshold Decryption (CDTD)
+
+**Goal:** High-threshold (t > n/2) public-key decryption with *context binding*: each decryption share is bound to an explicit context string (e.g., a block hash, epoch, or session ID) so that shares issued under one context cannot be combined with shares from another context to decrypt the same ciphertext. Plugs a class of cross-context replay/recombination attacks in threshold decryption, particularly relevant to [encrypted mempools](13-blockchain-distributed-ledger.md#encrypted-mempools--threshold-encryption-for-transaction-ordering) and consensus-driven decryption.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CDTD (Boneh-Bünz-Nayak-Rotem-Shoup)** | 2025 | Pairings + high-threshold TPKE | Definitions, constructions, security proofs for context-dependent and high-threshold decryption; published ASIACRYPT 2025 [[1]](https://eprint.iacr.org/2025/279) [[2]](https://link.springer.com/chapter/10.1007/978-981-95-5119-4_16) |
+
+**State of the art:** Boneh-Bünz-Nayak-Rotem-Shoup 2025 — first formal treatment of high-threshold + context-dependent decryption. Refines plain [Threshold Decryption](#threshold-decryption) (low-threshold, no context binding) and [TPKE](#threshold-decryption); motivates concrete deployments in [Encrypted Mempools](13-blockchain-distributed-ledger.md#encrypted-mempools--threshold-encryption-for-transaction-ordering) and [Threshold BLS](#threshold-bls-key-generation)-based ordering services.
+
+**Production readiness:** Research
+Published 2025 at ASIACRYPT; no known production deployment yet. Direct applicability to live encrypted-mempool projects (Shutter, Penumbra/Ferveo) under discussion.
+
+**Implementations:**
+- No public reference implementation released as of 2026-05.
+
+**Security status:** Secure
+Provable security under pairing-based assumptions in the random oracle model; resists cross-context share recombination by construction. Peer-reviewed at ASIACRYPT 2025.
+
+**Community acceptance:** Emerging
+Strong author lineup (Boneh, Bünz, Nayak, Rotem, Shoup) and top-tier venue acceptance; cited in follow-up MEV/encrypted-mempool work but no standardization activity yet.
+
+---
+
 ### Distributed Key Generation (DKG)
 
 **Goal:** Availability + distributed trust. Generate a threshold public/private keypair among *n* parties so that no single party — nor any coalition below threshold *t* — ever knows the full private key.
@@ -596,6 +623,30 @@ GJKR DKG is provably secure against malicious adversaries; Pedersen DKG is secur
 
 **Community acceptance:** Standard
 FROST DKG is part of IETF RFC 9591; Pedersen/GJKR are textbook constructions; Aggregatable DKG is endorsed by Ethereum and Celo research teams.
+
+---
+
+### COCKTAIL DKG (C2SP)
+
+**Goal:** Self-contained, channel-bootstrapping DKG for FROST ([RFC 9591](#frost-flexible-round-optimized-schnorr-threshold-signatures)) and other Schnorr threshold schemes. Independent derivative of [ChillDKG](08-signatures-advanced.md#chilldkg) generalized for non-Bitcoin protocols. Removes ChillDKG's BIP-32 / Bitcoin-specific assumptions, while preserving its key property: participants do not need a pre-existing authenticated channel — the protocol itself establishes encryption + authentication on top of an unauthenticated network using only the long-term group key and a participant identity list.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **COCKTAIL DKG** | 2025 | encpedpop + Pedersen DKG + Proofs of Possession | C2SP spec v0.1.0; channel-self-bootstrapping FROST DKG; protocol-agnostic [[1]](https://c2sp.org/cocktail-dkg) |
+
+**State of the art:** Designed by Daniel Bourdrez, Soatok Dreamseeker, and Tjaden Hess (Trail of Bits); independent derivative of [ChillDKG](08-signatures-advanced.md#chilldkg) (Nick-Ruffing, Blockstream). Compared with vanilla [Pedersen DKG](#distributed-key-generation-dkg) it adds in-band authenticated/encrypted message exchange, deterministic backup of generated shares, and proof-of-possession against rogue-key attacks — all without external PKI. Related to [FROST](#frost-flexible-round-optimized-schnorr-threshold-signatures), [Threshold Decryption](#threshold-decryption), [Context-Dependent Threshold Decryption (CDTD)](#context-dependent-threshold-decryption-cdtd).
+
+**Production readiness:** Experimental
+C2SP spec v0.1.0 (2025); reference work in progress. Trail of Bits commissioned the design to remove Bitcoin-only assumptions for general threshold-Schnorr deployment.
+
+**Implementations:**
+- [bytemare/dkg](https://github.com/bytemare/dkg) ⭐ 6 — Go, encpedpop / FROST DKG by COCKTAIL author Bourdrez
+
+**Security status:** Secure
+Inherits FROST DKG's provable security; the channel-bootstrapping layer (encpedpop) is the same construction analyzed in the ChillDKG BIP draft. No formal proof of the composed COCKTAIL spec yet, but cryptographic core matches a peer-reviewed BIP draft.
+
+**Community acceptance:** Emerging
+C2SP-blessed (2025); endorsed by Trail of Bits and Blockstream researcher overlap. Targets non-Bitcoin protocols (e.g., zcash-style chains, generic threshold-Schnorr applications) that ChillDKG's BIP-32 assumptions don't fit.
 
 ---
 
@@ -1848,5 +1899,29 @@ Security depends on the honesty of guardians (threshold assumption). Smart contr
 
 **Community acceptance:** Widely trusted
 Endorsed by Vitalik Buterin and the Ethereum Foundation. Multiple production deployments. Growing ecosystem of ERC-4337 compatible recovery modules.
+
+---
+
+### ANARKey (Mutual-Dependency Community Key Recovery)
+
+**Goal:** Eliminate the per-guardian storage blow-up of [Social Recovery Wallets](#social-recovery-wallets-guardian-based-threshold-key-recovery). In classical Shamir-based social recovery, each guardian must store one share per backed-up user — O(n) storage per guardian in a community of n users. ANARKey lets community members back up each other's keys *using their own keypairs as the share-storage substrate* — bounded guardian storage independent of community size.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ANARKey** | 2025 | PKE + reusable threshold encryption | Each guardian's existing keypair acts as the secret share holder; constant per-guardian state regardless of how many people use them as a guardian [[1]](https://eprint.iacr.org/2025/551) |
+
+**State of the art:** Kate, Mukherjee, Saleem, Sarkar, Roberts (2025). Targets the practical pain point of community key recovery where every guardian otherwise carries n−1 shares. Related to [Shamir Secret Sharing (SSS)](#secret-sharing-schemes-sss), [Threshold Decryption](#threshold-decryption), [Context-Dependent Threshold Decryption (CDTD)](#context-dependent-threshold-decryption-cdtd).
+
+**Production readiness:** Research
+ePrint 2025/551; academic prototype. No production wallet uses it yet, but the design is a drop-in upgrade for existing guardian-based recovery UX.
+
+**Implementations:**
+- No public reference implementation released as of 2026-05.
+
+**Security status:** Secure
+Reduces to standard PKE + threshold encryption security in the analyzed model.
+
+**Community acceptance:** Emerging
+Strong author lineup (Aniket Kate, Pratyay Mukherjee); cited as a candidate primitive for next-generation [Social Recovery Wallets](#social-recovery-wallets-guardian-based-threshold-key-recovery) and community-self-recovery protocols.
 
 ---

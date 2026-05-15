@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (68 schemes)
+## Contents (69 schemes)
 
 **[Private Set Operations (PSI / PSU)](#private-set-operations-psi--psu)**
 - [Private Set Intersection (PSI)](#private-set-intersection-psi)
@@ -26,6 +26,7 @@
 - [Frequency-Smoothing Oblivious Datastores (PANCAKE / Waffle)](#frequency-smoothing-oblivious-datastores-pancake--waffle)
 - [Private Information Retrieval (PIR)](#private-information-retrieval-pir)
 - [Oblivious Sorting / Oblivious Data Structures](#oblivious-sorting--oblivious-data-structures)
+- [Oblivious Bloom Filter Insertion (OBFI)](#oblivious-bloom-filter-insertion-obfi)
 - [Oblivious Message Retrieval (OMR)](#oblivious-message-retrieval-omr)
 - [Advanced Single-Server PIR (OnionPIR / Spiral)](#advanced-single-server-pir-onionpir--spiral)
 - [Keyword PIR](#keyword-pir)
@@ -103,6 +104,7 @@
 | **PSI-CA** | 2012 | Various | Cardinality only: learn size of intersection, not elements [[1]](https://eprint.iacr.org/2011/141) |
 | **Multi-Party PSI (Kolesnikov et al.)** | 2017 | OPRF + OT | PSI for N>2 parties; star topology or circuit-based; used in Google Private Join and Compute [[1]](https://eprint.iacr.org/2017/799) |
 | **Private Contact Discovery (Signal)** | 2023 | Unbalanced PSI + SGX | Find which phone contacts use Signal without revealing contacts; ~2 sec for 1024 contacts against billions [[1]](https://eprint.iacr.org/2023/758) |
+| **Partial Authorized PSI (Partial-APSI)** | 2025 | PSI with judge authorization | PSI where a judge authorizes elements but cannot see full set; 21× less bandwidth and 6× faster than prior work for sets of size 2^20; Koster-Falzon-Markatou [[1]](https://eprint.iacr.org/2025/2132) |
 
 **State of the art:** OPRF-based PSI (semi-honest), circuit PSI (malicious), multi-party PSI (N parties), private contact discovery (Signal production).
 
@@ -613,6 +615,30 @@ Bitonic sort data-independent by construction; bucket sort proven oblivious with
 
 **Community acceptance:** Widely trusted
 Bitonic sort used since 1968; foundational building block in all major MPC frameworks; FSS-based sorting (2024) represents cutting-edge advancement
+
+---
+
+### Oblivious Bloom Filter Insertion (OBFI)
+
+**Goal:** Allow a storage-limited sender to obliviously insert or delete batches of elements into an encrypted Bloom filter held on an untrusted server, without revealing which positions are accessed. Enables batch-updatable SSE, PEKS, and Outsourced PSI with state-of-the-art security.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **OBFI (van Dijk & Yuan)** | 2025 | ORAM + Oblivious Bucket Distribution (OBD) | First formal treatment of oblivious Bloom filter updates; sender storage O(λ) down to O(1) depending on variant [[1]](https://eprint.iacr.org/2025/2116) |
+
+**State of the art:** OBFI (2025) is the first scheme to formally define and construct oblivious batch updates for outsourced Bloom filters. The core building block, Oblivious Bucket Distribution (OBD), enables storage-limited senders to distribute elements into fixed-size buckets data-obliviously. Applied to [Searchable Encryption (SSE / PEKS)](#searchable-encryption-sse--peks) and [Private Set Intersection (PSI)](#private-set-intersection-psi) to obtain batch-updatable variants.
+
+**Production readiness:** Research
+Academic paper (ePrint 2025/2116, approved November 2025); no production implementations yet
+
+**Implementations:**
+- No known public implementations at this time
+
+**Security status:** Secure
+Security proven under standard ORAM-based assumptions; obliviousness of access patterns guaranteed with negligible failure probability
+
+**Community acceptance:** Emerging
+Published at IACR ePrint in 2025; formalizes a previously unstudied problem; not yet peer-reviewed at a major venue as of writing
 
 ---
 
@@ -1633,6 +1659,7 @@ Academic interest primarily driven by COVID-19; limited adoption outside contact
 | **Lipmaa-Asokan-Niemi** | 2002 | Paillier + range proofs | Efficient first-price sealed-bid auction; additive homomorphic [[1]](https://doi.org/10.1007/3-540-36563-X_4) |
 | **Bogetoft et al. (Danish Sugar Beet Auction)** | 2009 | MPC (Shamir SS) | First real-world MPC auction; 1200+ farmers, Danish sugar beet contracts [[1]](https://doi.org/10.1007/978-3-642-03549-4_19) |
 | **MEV Auction / Fair Ordering** | 2023 | Threshold encryption | Transaction ordering auctions to prevent MEV extraction; see [Encrypted Mempools](13-blockchain-distributed-ledger.md#encrypted-mempools--threshold-encryption-for-transaction-ordering) [[1]](https://eprint.iacr.org/2023/1063) |
+| **Censorship-Resistant Sealed-Bid Auctions on Blockchains** | 2025 | Timestamp certificates + inclusion lists | Strong bid hiding + censorship resistance via blockchain inclusion lists; Alpos-Heimbach-Nayak-Wadhwa [[1]](https://eprint.iacr.org/2025/2127) |
 
 **State of the art:** MPC-based auctions for high-value settings; threshold encryption auctions for blockchain MEV. Combines [MPC](06-multi-party-computation.md#multi-party-computation-mpc), [HE](#graph-encryption), and [ZK Proofs](04-zero-knowledge-proof-systems.md#zero-knowledge-proofs-zk).
 

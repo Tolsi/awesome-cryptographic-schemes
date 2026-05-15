@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (62 schemes)
+## Contents (65 schemes)
 
 **[Authenticated Encryption (AEAD)](#authenticated-encryption-aead)**
 - [Authenticated Encryption (AEAD)](#authenticated-encryption-aead)
@@ -43,6 +43,8 @@
 - [ESTATE (Energy-Efficient Short-Tweak TBC-Based AEAD)](#estate-energy-efficient-short-tweak-tbc-based-aead)
 - [Partitioning Oracle Attacks and Committing AEAD Landscape](#partitioning-oracle-attacks-and-committing-aead-landscape)
 - [XAES-256-GCM (Extended-Nonce AES-GCM)](#xaes-256-gcm-extended-nonce-aes-gcm)
+- [ChaCha20-Poly1305-SIV (C2SP CCP-SIV)](#chacha20-poly1305-siv-c2sp-ccp-siv)
+- [FLOE — Fast Lightweight Online Encryption](#floe--fast-lightweight-online-encryption)
 - [Kravatte (Farfalle-Based PRF and AEAD)](#kravatte-farfalle-based-prf-and-aead)
 - [SUNDAE-GIFT (Deterministic Nonce-Free AEAD)](#sundae-gift-deterministic-nonce-free-aead)
 - [COMET (Counter-based Mode with Tweakable Block Cipher)](#comet-counter-based-mode-with-tweakable-block-cipher)
@@ -55,6 +57,7 @@
 
 **[Format-Preserving and Disk Encryption](#format-preserving-and-disk-encryption)**
 - [Format-Preserving Encryption (FPE)](#format-preserving-encryption-fpe)
+- [IPCrypt — Practical Encryption of IP Addresses](#ipcrypt--practical-encryption-of-ip-addresses)
 - [Disk Encryption / Tweakable Block Ciphers](#disk-encryption--tweakable-block-ciphers)
 - [HPolyC and HBSH (Hash-Poly-Cipher Wide-Block Constructions)](#hpolyc-and-hbsh-hash-poly-cipher-wide-block-constructions)
 - [Order-Preserving / Order-Revealing Encryption (OPE / ORE)](#order-preserving--order-revealing-encryption-ope--ore)
@@ -1444,6 +1447,54 @@ Specified by C2SP (community cryptography specification project), endorsed by Go
 
 ---
 
+### ChaCha20-Poly1305-SIV (C2SP CCP-SIV)
+
+**Goal:** Misuse-resistant, key-committing AEAD built from ChaCha20 and Poly1305 with **no design modifications** — same primitives, just rearranged. Adds nonce-misuse resistance (SIV mode), 128-bit committing security, 128-bit nonce, and context discoverability — fixing the four major generic limitations of [ChaCha20-Poly1305 (RFC 8439)](#authenticated-encryption-aead) without dropping AES-GCM-SIV's hardware affinity story for the ChaCha side.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ChaCha20-Poly1305-SIV (CCP-SIV)** | 2024 | ChaCha20 + Poly1305 (SIV mode) | Two ChaCha20 blocks of overhead over plain CCP; 128-bit nonce, 256-bit key, no HChaCha20 needed [[1]](https://c2sp.org/chacha20-poly1305-siv) |
+
+**State of the art:** Designed by Samuel Lucas (C2SP, 2024). Complementary to [AES-GCM-SIV (RFC 8452)](#mrae-and-online-authenticated-encryption-oae) for ChaCha-based deployments. Fixes [Partitioning Oracle Attacks](#partitioning-oracle-attacks-and-committing-aead-landscape) on ChaCha20-Poly1305 with strong (≥128-bit) committing security, unlike weak (64-bit) commitments in Ascon-AEAD128. Larger nonce + SIV makes it the recommended default when nonce hygiene cannot be guaranteed. See also [Key-Committing AEAD](#key-committing-aead), [Deterministic AEAD with Any Nonce (DAEAD / ANYDAE)](#deterministic-aead-with-any-nonce-daead--anydae).
+
+**Production readiness:** Experimental
+C2SP spec v0.0.1 (2024); no widely deployed implementation yet. Conceptually trivial to implement on top of existing ChaCha20 + Poly1305 libraries with counter access.
+
+**Implementations:**
+- [samuel-lucas6/ChaCha20-Poly1305-SIV](https://github.com/samuel-lucas6/ChaCha20-Poly1305-SIV) ⭐ 0 — C#, reference implementation by spec author
+
+**Security status:** Secure
+Reduces to ChaCha20 PRF security and Poly1305 universal-hash security — both well-studied. SIV structure prevents nonce-reuse plaintext recovery; key-commitment via tag derivation; context discoverability proven.
+
+**Community acceptance:** Emerging
+Published as C2SP spec; not yet IETF/NIST tracked. Targets the deployment niche left empty by AES-GCM-SIV on non-AES-NI platforms.
+
+---
+
+### FLOE — Fast Lightweight Online Encryption
+
+**Goal:** Streaming AEAD for **multi-gigabyte files** that is (1) authenticated, (2) bounded-memory (constant RAM regardless of file size), and (3) FIPS-compatible (buildable from FIPS-validated AES-GCM modules alone). Solves the AES-GCM problem where the whole plaintext must be buffered before auth-tag verification — infeasible for 2 GB+ files.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **FLOE** | 2024 | Chained AES-GCM segments + HKDF + length-prefixed framing | Per-segment AEAD with chained keys; final-segment marker prevents truncation; FIPS-validatable [[1]](https://c2sp.org/FLOE) [[2]](https://github.com/Snowflake-Labs/floe-specification) |
+
+**State of the art:** Designed at Snowflake for encrypting customer data files at rest in FIPS environments. Conceptually similar to [STREAM: Online Authenticated Encryption with Segmented Ciphertexts](#stream-online-authenticated-encryption-with-segmented-ciphertexts) and [age](03-key-exchange-key-management.md#age-encryption-format)'s chunked AEAD, but explicitly engineered for FIPS-validation-only-AES-GCM, large files, and bounded memory. C2SP-blessed in 2024; Snowflake-maintained spec is canonical.
+
+**Production readiness:** Production
+Deployed in Snowflake's data platform for production at-rest encryption of multi-GB customer files (per author statements).
+
+**Implementations:**
+- [Snowflake-Labs/floe-specification](https://github.com/Snowflake-Labs/floe-specification) ⭐ 45 — specification + reference implementation + test vectors
+
+**Security status:** Secure
+Each segment is a standard AEAD encryption (AES-GCM) with HKDF-chained keys; final-segment flag prevents truncation attacks. Security composes from AES-GCM's IND-CCA + HKDF's KDF security. No published attacks.
+
+**Community acceptance:** Emerging
+C2SP spec; Snowflake-backed; not yet IETF/NIST standardized. Notable as one of the few large-file AEAD specs designed explicitly for FIPS validation paths.
+
+---
+
 ### Kravatte (Farfalle-Based PRF and AEAD)
 
 **Goal:** Provide a fast, parallelizable PRF and AEAD scheme using the Farfalle construction on top of Keccak-p permutations, achieving high throughput on modern CPUs with SIMD.
@@ -1684,6 +1735,34 @@ FF1 and FF3-1 are secure for sufficiently large domains; small-domain FPE has in
 
 **Community acceptance:** Standard
 NIST SP 800-38G (FF1) and SP 800-38G Rev.1 (FF3-1); widely adopted in PCI-DSS tokenization.
+
+---
+
+### IPCrypt — Practical Encryption of IP Addresses
+
+**Goal:** Reversible, format-preserving encryption for IPv4/IPv6 addresses suitable for log storage, telemetry pipelines, and third-party data exchange. Four modes covering different privacy/queryability trade-offs: deterministic (queryable, 16-byte output), prefix-preserving (subnet aggregation still works), and two non-deterministic (random tweak) variants. Replaces the lossy practice of truncating addresses for privacy.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ipcrypt-deterministic** | 2025 | AES-128 (encode as 128-bit int) | Format-preserving 128-bit output; same address → same ciphertext (queryable) [[1]](https://eprint.iacr.org/2025/1689) |
+| **ipcrypt-pfx** | 2025 | AES-128 prefix-preserving | Preserves common prefix length (CIDR aggregation usable post-encryption) |
+| **ipcrypt-nd** | 2025 | AES-128 + 8-byte random tweak | Non-deterministic; semantically secure |
+| **ipcrypt-ndx** | 2025 | AES-256 + 16-byte random tweak | Stronger non-deterministic variant |
+
+**State of the art:** Designed by Frank Denis (libsodium); IETF draft `draft-denis-ipcrypt` under IETF CFRG review (2024-2026); reference site at [ipcrypt-std.github.io](https://ipcrypt-std.github.io/). Effectively a small-domain [FPE](#format-preserving-encryption-fpe) tailored for the IP address use case, but with prefix-preserving and non-deterministic modes not available in [FF1/FF3-1](#format-preserving-encryption-fpe). Direct competitor to lossy IP truncation (`/24` zeroing).
+
+**Production readiness:** Experimental
+IETF draft + reference implementations; not yet widely deployed in production logging stacks. Endorsed by privacy-aware operators (Cloudflare-adjacent ecosystem).
+
+**Implementations:**
+- [ipcrypt-std/draft-denis-ipcrypt](https://github.com/ipcrypt-std/draft-denis-ipcrypt) — IETF draft + reference implementations
+- libsodium ecosystem maintains C/Python/Rust/Zig reference libraries
+
+**Security status:** Secure
+AES-128/AES-256 base; deterministic mode trades randomness for queryability (standard FPE trade-off); prefix-preserving mode leaks prefix length by design (intentional for CIDR analytics); non-deterministic modes are IND-CPA secure.
+
+**Community acceptance:** Emerging
+IETF CFRG draft; growing adoption in privacy-conscious telemetry. Targets a real operational gap (IP-log privacy) currently filled by ad-hoc truncation or unencrypted storage.
 
 ---
 

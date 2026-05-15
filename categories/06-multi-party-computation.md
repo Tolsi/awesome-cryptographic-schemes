@@ -245,6 +245,7 @@ VOLE is rapidly becoming the preferred correlation for modern MPC preprocessing 
 | **PCG for Beaver Triples** | 2020 | Ring-LPN | Extend PCG to multiplication triples for general MPC [[1]](https://eprint.iacr.org/2020/924) |
 | **Silver (Couteau et al.)** | 2021 | LDPC + LPN | Optimized Silent OT with quasi-linear computation [[1]](https://eprint.iacr.org/2021/1150) |
 | **VOLE-in-the-head (Baum et al.)** | 2023 | VOLE + PCG | Use PCG-based VOLE for efficient ZK proofs [[1]](https://eprint.iacr.org/2023/996) |
+| **Silentium** | 2025 | Ring-LPN + Bt-PCG | Concrete PCG implementation for Beaver triples; 3 orders of magnitude less communication than SPDZ offline phase; >20k lines C [[1]](https://eprint.iacr.org/2025/1013) |
 
 **State of the art:** Silent OT / PCG (Boyle et al. 2019+); transformative for MPC (see [MPC](#multi-party-computation-mpc)) preprocessing â€” reduces communication by orders of magnitude.
 
@@ -303,6 +304,7 @@ Covert security is well-understood theoretically but rarely chosen in practice â
 | **Dumbo** | 2020 | MVBA + ABA | Improved async BFT; better latency than HoneyBadger [[1]](https://eprint.iacr.org/2020/841) |
 | **VABA (Validated Async BA)** | 2019 | Threshold sigs + MVBA | Async BA with external validity; basis of many async protocols [[1]](https://eprint.iacr.org/2019/1460) |
 | **DAG-Rider** | 2021 | DAG + zero-message overhead | BFT from DAG structure; no extra consensus messages [[1]](https://eprint.iacr.org/2021/1362) |
+| **Byzantine Broadcast with Unknown Participants** | 2025 | PKI + standard broadcast | First broadcast protocol where participant count is unknown; Choi-Cohen-Garay-Skoumios-Zikas [[1]](https://eprint.iacr.org/2025/2133) |
 
 **State of the art:** DAG-based BFT (DAG-Rider, Bullshark, Narwhal-Tusk); used in Aptos, Sui. Related to [MPC](#multi-party-computation-mpc), [Threshold Decryption](05-secret-sharing-threshold-cryptography.md#threshold-decryption).
 
@@ -382,6 +384,7 @@ YOSO is an active research area with interest from the blockchain community for 
 | **Chase-Ghosh-Poburinnaya Shuffle** | 2020 | PRF + secret sharing | First sublinear-round secret-shared shuffle [[1]](https://eprint.iacr.org/2019/1340) |
 | **Maliciously Secure Shuffle (NDSS 2024)** | 2024 | Correlation checks | Malicious security via lightweight checks; linear communication [[1]](https://www.ndss-symposium.org/wp-content/uploads/2024-21-paper.pdf) |
 | **SLIDE** | 2025 | Shamir SS + unconditional | Uniform shuffle of Shamir shares; unconditional security under honest majority [[1]](https://eprint.iacr.org/2025/165) |
+| **Linear Maliciously Secure 2-Party Shuffle** | 2025 | Rerandomizable enc + delegated Fisher-Yates | First linear end-to-end time and communication for 2-party secret-shared shuffle with malicious security; "weak predicability" assumption; Dittmer-Nema-Ostrovsky [[1]](https://eprint.iacr.org/2025/2137) |
 
 **State of the art:** SLIDE (2025) for unconditional security; maliciously secure shuffle (NDSS 2024) for two-party. Extends [Oblivious Sorting](#obliv-c-language-for-data-oblivious-computation) and [Mixnets](11-anonymity-credentials.md#mix-networks-mixnets).
 
@@ -864,6 +867,7 @@ Oblivious linear algebra is a key building block for private ML; growing adoptio
 | **Belenios** | 2013 | ElGamal threshold + homomorphic tally | Successor to Helios; trustees hold shares of the decryption key via Pedersen DKG; used in real French university elections [[1]](https://eprint.iacr.org/2013/177) |
 | **DEMOS-2** | 2015 | Secret sharing + MPC tally | Fully coercion-resistant; distributes credential issuance and tallying using MPC with honest majority [[1]](https://eprint.iacr.org/2015/1069) |
 | **Norwegian e-voting (Scytl/MPC)** | 2014 | Threshold decryption + mix-net | National-scale use of threshold MPC for tallying in Norwegian parliamentary elections; post-election audit [[1]](https://dl.acm.org/doi/10.1145/2660267.2660315) |
+| **Robust MPC for E-Voting (Preprocessing Model)** | 2025 | BGW + Beaver tuples preprocessing | Online communication matches online-BGW; preprocessing produces Beaver multiplication triples; achieves robust e-elections; Jutla-Manohar-Roy [[1]](https://eprint.iacr.org/2025/2135) |
 
 **State of the art:** Belenios is the most actively maintained and deployed academic system (France, Switzerland); Civitas pioneered coercion resistance via MPC. The dominant approach is homomorphic tally (fast but limited to simple tally functions) or MPC-based mix-net (supports ranked/approval voting). Related to [Threshold Decryption](05-secret-sharing-threshold-cryptography.md#threshold-decryption), [Mix-networks](11-anonymity-credentials.md#mix-networks-mixnets), [E-voting](20-applied-niche-protocols.md#coercion-resistant-voting--receipt-freeness), and [DKG](05-secret-sharing-threshold-cryptography.md#distributed-key-generation-dkg).
 

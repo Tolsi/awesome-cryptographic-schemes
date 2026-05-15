@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (48 schemes)
+## Contents (50 schemes)
 
 **[Decentralized Identity (DID / VC)](#decentralized-identity-did--vc)**
 - [W3C Decentralized Identifiers (DID) and Verifiable Credentials](#w3c-decentralized-identifiers-did-and-verifiable-credentials)
@@ -36,6 +36,7 @@
 - [Sigstore / Keyless Code Signing](#sigstore--keyless-code-signing)
 - [TUF / The Update Framework](#tuf--the-update-framework)
 - [SCITT (Supply Chain Integrity, Transparency, and Trust)](#scitt-supply-chain-integrity-transparency-and-trust)
+- [C2SP Transparency Log Specifications (Sunlight Family)](#c2sp-transparency-log-specifications-sunlight-family)
 
 **[Certificate Management](#certificate-management)**
 - [RPKI / Resource Public Key Infrastructure](#rpki--resource-public-key-infrastructure)
@@ -61,6 +62,7 @@
 - [BIMI (Brand Indicators for Message Identification)](#bimi-brand-indicators-for-message-identification)
 - [mTLS / Mutual TLS for Zero-Trust Architectures (BeyondCorp, SPIFFE)](#mtls--mutual-tls-for-zero-trust-architectures-beyondcorp-spiffe)
 - [SSH Certificate Authority (OpenSSH CA, Netflix BLESS, Smallstep)](#ssh-certificate-authority-openssh-ca-netflix-bless-smallstep)
+- [.well-known/ssh-known-hosts (C2SP)](#well-knownssh-known-hosts-c2sp)
 - [Short-Lived Certificates (SLC, Revocation-Free PKI)](#short-lived-certificates-slc-revocation-free-pki)
 - [ACME with External Account Binding (EAB, RFC 8555 §7.3.4)](#acme-with-external-account-binding-eab-rfc-8555-7334)
 
@@ -2918,5 +2920,69 @@ HMAC-based binding is cryptographically sound. EAB MAC key must be kept secret b
 
 **Community acceptance:** Standard
 Part of RFC 8555 (ACME), which is an IETF Standard. Deployed by all major commercial CAs. Universal support in ACME clients (certbot, acme.sh, Caddy, Traefik).
+
+---
+
+### C2SP Transparency Log Specifications (Sunlight Family)
+
+**Goal:** Unified, modular set of specs for building modern transparency logs (Certificate Transparency, sigstore, key transparency, software supply chain) using HTTP-cacheable static assets, signed Merkle-tree heads, witness cosigning, mirroring, and proof bundles. Designed by Filippo Valsorda and collaborators to replace [RFC 6962](#certificate-transparency-ct)-style log servers with simpler, statically-served, cheaper-to-operate logs while keeping the same trust model and adding witness-based split-view resistance.
+
+| Spec | Year | Role | Note |
+|------|------|------|------|
+| **signed-note** | 2019 | Base text format | Text body signed by one or more named keys; foundation of all tlog artifacts [[1]](https://c2sp.org/signed-note) |
+| **tlog-checkpoint** | 2022 | Merkle tree head | Signed note containing origin, tree size, root hash — log's commitment at size N [[1]](https://c2sp.org/tlog-checkpoint) |
+| **tlog-cosignature** | 2023 | Witness statement | Cosigner signs a verified checkpoint or subtree; Ed25519 and ML-DSA-44 (PQ) variants [[1]](https://c2sp.org/tlog-cosignature) |
+| **tlog-tiles** | 2023 | Static HTTP API | Tiled hash tree fetchable as static files; cacheable on CDNs; no dynamic log endpoint [[1]](https://c2sp.org/tlog-tiles) |
+| **tlog-witness** | 2024 | Witness protocol | Synchronous HTTP protocol for clients to request cosignatures from witnesses [[1]](https://c2sp.org/tlog-witness) |
+| **tlog-mirror** | 2024 | Mirror protocol | Spec for replicating a log + obtaining mirror-attestation signatures [[1]](https://c2sp.org/tlog-mirror) |
+| **tlog-proof** | 2024 | Offline proof bundle | Textual format: checkpoint + cosignatures + index + Merkle inclusion proof + optional payload [[1]](https://c2sp.org/tlog-proof) |
+| **static-ct-api** | 2023 | Static CT log API | Sunlight-style read API for CT logs alongside RFC 6962 write API; no client changes needed [[1]](https://c2sp.org/static-ct-api) |
+| **https-bastion** | 2024 | Reverse proxy | Backend (e.g., witness) authenticated by Ed25519 key hash in URL path; lets witnesses run without public IP [[1]](https://c2sp.org/https-bastion) |
+
+**State of the art:** Sunlight (Filippo Valsorda, 2023) is the reference Static CT log implementation; transparency-dev/tessera (Google) is a Go library for building tiled logs. Together these specs define the "next-generation" transparency log architecture: static asset hosting + witness quorum + offline-verifiable proofs. Already adopted by Let's Encrypt, Google Argon, and TrustAsia CT logs (transitioning from RFC 6962 to Static CT API). See [Certificate Transparency (CT)](#certificate-transparency-ct), [SCITT (Supply Chain Integrity, Transparency, and Trust)](#scitt-supply-chain-integrity-transparency-and-trust), [Sigstore / Keyless Code Signing](#sigstore--keyless-code-signing), [TUF / The Update Framework](#tuf--the-update-framework), [Merkle Tree Certificates (MTC)](#merkle-tree-certificates-mtc).
+
+**Production readiness:** Production
+Sunlight powers production Static CT logs at Let's Encrypt and Google (2024-2025); witness cosigning is in production via the sigsum and Go module proxy ecosystems; tlog-tiles is the substrate of the Go checksum database (sum.golang.org) since 2019.
+
+**Implementations:**
+- [FiloSottile/sunlight](https://github.com/FiloSottile/sunlight) ⭐ 294 — Go, reference Static CT log
+- [transparency-dev/tessera](https://github.com/transparency-dev/tessera) ⭐ 185 — Go, library for building tiled transparency logs
+- [transparency-dev/tesseract](https://github.com/transparency-dev/tesseract) ⭐ 31 — Go, Static CT API implementation
+- [transparency-dev/witness](https://github.com/transparency-dev/witness) ⭐ 39 — Go, witness service
+- [FiloSottile/torchwood](https://github.com/FiloSottile/torchwood) ⭐ 26 — Go, lightweight tlog tooling
+- [google/certificate-transparency-go](https://github.com/google/certificate-transparency-go) ⭐ 1.1k — Go, original RFC 6962 + Static CT support
+- [google/trillian](https://github.com/google/trillian) ⭐ 3.7k — Go, log storage backend
+- [C2SP/C2SP](https://github.com/C2SP/C2SP) ⭐ 587 — all specifications
+- [C2SP/CCTV](https://github.com/C2SP/CCTV) ⭐ 101 — test vectors
+
+**Security status:** Secure
+Checkpoint signatures use Ed25519 (or ML-DSA-44 for PQ witnesses); inclusion proofs are standard RFC 6962 Merkle proofs; witness cosignatures resist log split-view attacks; ML-DSA-44 cosignature variant is post-quantum secure. No known cryptographic weakness.
+
+**Community acceptance:** Standard
+Static CT API adopted by Let's Encrypt + Google as the replacement for RFC 6962 read endpoints; tlog-checkpoint format is universal across Go module proxy, Sigstore Rekor v2, sigsum.org, and Static CT; witness protocol is the IETF SCITT and Sigstore-blessed approach to split-view resistance. Most active C2SP family by deployment volume.
+
+---
+
+### .well-known/ssh-known-hosts (C2SP)
+
+**Goal:** Discover and trust an SSH server's host key automatically over HTTPS, instead of manual out-of-band verification + caching in `~/.ssh/known_hosts`. The server publishes its public host key at `https://example.com/.well-known/ssh-known-hosts`, formatted as a standard `known_hosts` file. TLS authentication transfers trust from the HTTPS PKI to SSH on first contact.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **.well-known/ssh-known-hosts** | 2023 | HTTPS + RFC 4255 known_hosts format | Static file served at a `.well-known` URI; content is standard sshd `known_hosts` lines [[1]](https://c2sp.org/well-known-ssh-hosts) |
+
+**State of the art:** Designed by Filippo Valsorda (2023) as a static-HTTPS alternative to [DNSSEC-Based Key Infrastructure: SSHFP, TLSA, SMIMEA](#dnssec-based-key-infrastructure-sshfp-tlsa-smimea) — instead of requiring DNSSEC validation in SSH clients, leverages the existing Web PKI. Complements [SSH Certificate Authority (OpenSSH CA, Netflix BLESS, Smallstep)](#ssh-certificate-authority-openssh-ca-netflix-bless-smallstep) for environments without an SSH CA, and is simpler than [DANE / DNS-Based Authentication of Named Entities](#dane--dns-based-authentication-of-named-entities).
+
+**Production readiness:** Experimental
+C2SP spec (2023); no major SSH client implements automatic discovery yet, though several SSH automation toolchains have added support. GitHub, GitLab, and other major SSH endpoints serve the file (or could trivially do so) to enable client-side automation.
+
+**Implementations:**
+- [C2SP/C2SP](https://github.com/C2SP/C2SP) ⭐ 587 — specification document
+
+**Security status:** Caution
+Security depends on the HTTPS PKI for the published URL. Initial discovery trusts the TLS certificate for the domain — same trust assumption as visiting the website. Subsequent SSH connections verify the cached key like normal. Vulnerable to a compromised HTTPS PKI for that one domain, but no worse than software downloads from the same site.
+
+**Community acceptance:** Emerging
+C2SP spec; cited by SSH tooling discussions but no major SSH client (OpenSSH, PuTTY) integrates it natively yet. Most useful for automation scripts and infrastructure-as-code that need first-connection trust without manual fingerprint distribution.
 
 ---

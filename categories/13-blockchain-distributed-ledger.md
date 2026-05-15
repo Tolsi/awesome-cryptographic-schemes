@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (52 schemes)
+## Contents (54 schemes)
 
 **[Consensus Mechanisms](#consensus-mechanisms)**
 - [Casper FFG / Ethereum Proof-of-Stake Finality](#casper-ffg--ethereum-proof-of-stake-finality)
@@ -26,6 +26,7 @@
 **[Bitcoin Protocols](#bitcoin-protocols)**
 - [Bitcoin Taproot / BIP 340-342](#bitcoin-taproot--bip-340-342)
 - [Lightning Network Payment Channels](#lightning-network-payment-channels)
+- [RGB I.0 (Client-Side Validated Bitcoin Smart Contracts)](#rgb-i0-client-side-validated-bitcoin-smart-contracts)
 
 **[Cross-Chain and Interoperability](#cross-chain-and-interoperability)**
 - [Fair Exchange / Atomic Swaps](#fair-exchange--atomic-swaps)
@@ -47,6 +48,7 @@
 - [EIP-712: Ethereum Typed Structured Data Signing](#eip-712-ethereum-typed-structured-data-signing)
 - [Tornado Cash — zkSNARK Privacy Mixer](#tornado-cash--zksnark-privacy-mixer)
 - [Proof of Work (PoW) / Proof of Space](#proof-of-work-pow--proof-of-space)
+- [Proofs of Useful Work (PoUW) from Matrix Multiplication](#proofs-of-useful-work-pouw-from-matrix-multiplication)
 - [Groth16 / Zcash Sapling zk-SNARK](#groth16--zcash-sapling-zk-snark)
 - [Verkle Trees (Ethereum State)](#verkle-trees-ethereum-state)
 - [Filecoin PoRep / PoSt (Proof of Replication / Proof of Spacetime)](#filecoin-porep--post-proof-of-replication--proof-of-spacetime)
@@ -473,8 +475,11 @@ Ethereum Foundation (PSE team) actively maintains MACI. Used in multiple public 
 | **Commit-Reveal Mempool** | 2019 | Hash commitment + reveal | Simpler: commit hash, reveal after inclusion; see [Commit-Reveal](09-commitments-verifiability.md#commit-reveal-schemes) |
 | **Delay Encryption** | 2021 | VDF + encryption | Decrypt only after a time delay; combines VDF with encryption; see [VDF](09-commitments-verifiability.md#verifiable-delay-functions-vdf) [[1]](https://eprint.iacr.org/2021/1490) |
 | **BEAT-MEV** | 2024 | Epochless batched TE | Batched threshold enc for mempools; communication independent of batch size; USENIX Security 2025 [[1]](https://eprint.iacr.org/2024/1533) |
+| **BEAST-MEV** | 2025 | Batched TE + silent setup | Successor to BEAT-MEV: removes interactive DKG/setup phase; constant communication for batched decryption; Rust reference impl [[1]](https://eprint.iacr.org/2025/1419) [[2]](https://github.com/guruvamsi-policharla/batched-silent-threshold-encryption) |
+| **Weighted Batched Threshold Encryption (wBTE)** | 2025 | Weighted BTE + batch-independent ciphertexts | Communication cost independent of batch size B; extends BEAST-MEV to weighted committees; Agarwal-Babel-Das et al. [[1]](https://eprint.iacr.org/2025/2115) |
+| **DPaaS (Decentralized Proposer-as-a-Service)** | 2025 | TEE + BLS threshold sigs | Eliminates trusted MEV-Boost relays; TEE-based Proposer Entities + BLS threshold; <5ms bid processing; backward compatible with PBS; Liu-Abraham-Lentz-Nayak [[1]](https://eprint.iacr.org/2025/2126) |
 
-**State of the art:** Threshold encryption (Shutter, Penumbra), BEAT-MEV (2025, batch-optimized), commit-reveal (simplest deployed).
+**State of the art:** Threshold encryption (Shutter, Penumbra), BEAT-MEV (2025, batch-optimized), commit-reveal (simplest deployed). See also [Context-Dependent Threshold Decryption (CDTD)](05-secret-sharing-threshold-cryptography.md#context-dependent-threshold-decryption-cdtd) — Boneh-Bünz-Nayak-Rotem-Shoup 2025, high-threshold TPKE with context binding to prevent cross-context share recombination.
 
 **Production readiness:** Experimental
 Shutter Network deployed on Gnosis Chain; Penumbra mainnet launched 2024; most systems are in testnet or early production
@@ -830,6 +835,31 @@ Penalty mechanism is game-theoretically secure; requires watchtower or online pr
 
 **Community acceptance:** Widely trusted
 Original paper (Poon-Dryja, 2016) is highly cited; multiple independent implementations; adopted by major exchanges and payment processors
+
+---
+
+### RGB I.0 (Client-Side Validated Bitcoin Smart Contracts)
+
+**Goal:** Scalable, private smart contracts on Bitcoin (and Lightning) via *client-side validation*: contract state and operations live off-chain, the blockchain only carries cryptographic commitments + single-use-seal anchors. Each contract effectively becomes its own independent shard — only the parties directly involved validate its state, avoiding the scalability and privacy issues of Ethereum-style global state.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **RGB I.0** | 2025 | Single-use seals + client-side validation + Bitcoin tx commitments | First formal specification of RGB consensus; UTXO seal = commitment to off-chain state transition [[1]](https://eprint.iacr.org/2025/1400) |
+
+**State of the art:** Maxim Orlovsky / RGB Consortium (2025) — first peer-reviewed specification of the RGB protocol family that has been developed in the Bitcoin ecosystem since ~2016. Companion to [Bitcoin Taproot / BIP 340-342](#bitcoin-taproot--bip-340-342) (anchor mechanism), [Lightning Network Payment Channels](#lightning-network-payment-channels) (off-chain payment substrate), [Commit-Reveal Schemes](09-commitments-verifiability.md#commit-reveal-schemes) (single-use seals), and [Confidential Transactions](#confidential-transactions-ct). Alternative to Ethereum-style global-state smart contracts.
+
+**Production readiness:** Experimental
+RGB Core library has been in development since 2019; RGB I.0 spec (2025) is the first formal description. Several wallets implement subsets of RGB. Mainnet contract issuance live but limited in scope.
+
+**Implementations:**
+- [RGB-WG/rgb-core](https://github.com/RGB-WG/rgb-core) — Rust, RGB Core consensus library
+- [RGB-WG](https://github.com/RGB-WG) — broader RGB ecosystem repositories
+
+**Security status:** Caution
+Client-side validation moves the trust burden onto contract participants — only those who validate can detect state-transition fraud, unlike global consensus where everyone checks. Security of individual contracts depends on participants' validation diligence; commitments themselves are bound by Bitcoin's blockchain security.
+
+**Community acceptance:** Niche
+Strong Bitcoin-ecosystem community; competing approaches (Taro/Taproot Assets, ARK) and ongoing debate about complexity/maintainability. Now backed by a peer-reviewed specification (2025).
 
 ---
 
@@ -1628,6 +1658,30 @@ SHA-256 PoW is secure at current difficulty; Equihash memory-hardness limits ASI
 
 **Community acceptance:** Standard
 Bitcoin PoW is the longest-running and most battle-tested consensus mechanism; Proof of Space adopted by Chia as energy-efficient alternative
+
+---
+
+### Proofs of Useful Work (PoUW) from Matrix Multiplication
+
+**Goal:** Replace "wasted" cryptographic-puzzle Proof of Work with a real-world computation: matrix multiplication MatMul(A, B). The miner picks the input matrices, performs the multiplication, and produces a PoW certificate with prescribed hardness and only 1+o(1) multiplicative overhead over naive matmul. Solves the long-open question of making Nakamoto-style consensus do useful computation in a truly permissionless setting where the miner chooses the workload.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **PoUW (Komargodski-Schen-Weinstein)** | 2025 | Random self-reducibility of matmul + Fiat-Shamir | Negligible overhead vs naive matmul; miner cannot bias acceptance probability [[1]](https://eprint.iacr.org/2025/685) [[2]](https://arxiv.org/abs/2504.09971) |
+
+**State of the art:** Komargodski, Schen, Weinstein (2025). Long-standing open problem in PoUW design solved for the matmul-class workload. Competing approaches (Coin.AI, Primecoin, GPU-mining-as-folding) lack the security guarantee that a malicious miner cannot game the verifier. Related to [Proof of Work (PoW) / Proof of Space](#proof-of-work-pow--proof-of-space), [Compact Proofs of Exponentiation (PoE)](09-commitments-verifiability.md#compact-proofs-of-exponentiation-poe-and-knowledge-of-exponent-kea).
+
+**Production readiness:** Research
+ePrint 2025/685 (with companion arXiv 2504.09971). No production chain has deployed it.
+
+**Implementations:**
+- No public reference implementation released as of 2026-05.
+
+**Security status:** Secure
+Reduction to standard cryptographic assumptions (CRH + matmul self-reduction); malicious miner cannot achieve better-than-honest acceptance probability for similar compute.
+
+**Community acceptance:** Emerging
+2025 ePrint; talk by Weinstein widely circulated. Likely target for "AI compute mining" projects looking for cryptographically rigorous PoUW substrates.
 
 ---
 

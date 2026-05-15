@@ -69,7 +69,10 @@
 21. **[Regional & National Cryptographic Standards](categories/21-regional-national-cryptography.md)**
     Sovereign cryptographic algorithms mandated by national standardization bodies: SM4/SM3/SM2 (China, OSCCA), GOST R 34.12/34.11/34.10 including Kuznyechik, Magma, and Streebog (Russia), ARIA/SEED/LSH (South Korea, KISA/NIS), Camellia-GCM/ARIA-GCM and CLEFIA/MISTY1 (Japan, CRYPTREC).
 
-See [INDEX.md](INDEX.md) for an alphabetical index of all 1069 schemes.
+22. **[Attacks & Cryptanalysis](categories/22-attacks-cryptanalysis.md)**
+    Classical and modern attacks on cryptographic primitives and protocols: Pohlig-Hellman and MOV attacks on discrete log, differential cryptanalysis (Biham-Shamir), linear cryptanalysis (Matsui), Bleichenbacher's padding oracle attack / ROBOT, DROWN cross-protocol attack, and refined ARX cipher distinguishers.
+
+See [INDEX.md](INDEX.md) for an alphabetical index of all 1197 schemes.
 
 ---
 

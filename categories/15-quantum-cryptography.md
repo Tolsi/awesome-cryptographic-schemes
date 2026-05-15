@@ -574,6 +574,7 @@ NIST FIPS 203/204/205/206 standards. Mandated by CNSA 2.0 for US national securi
 | **CSIDH** | 2018 | PQ-NIKE / key exchange | Group action on supersingular curves over Fp; quantum-safe (sub-exponential quantum attack) [[1]](https://eprint.iacr.org/2018/383) |
 | **SQIsign** | 2020 | Digital signature | Shortest PQ signatures: ~200 B (vs. Dilithium ~2.4 KB); slow key gen and signing [[1]](https://sqisign.org/) |
 | **SQIsign2D** | 2024 | Digital signature | 2× faster signing than SQIsign; NIST PQC Round 2 (onramp) alternate [[1]](https://eprint.iacr.org/2023/436) |
+| **SQIsign2D²** | 2025 | Digital signature | New SQIsign2D variant leveraging power-smooth isogenies in dimension 1; lower-degree 2D isogeny computations → reduced overall overhead [[1]](https://eprint.iacr.org/2025/920) |
 | **FESTA** | 2023 | Key exchange | Based on SIDH with trapdoor; partially addresses SIDH attacks [[1]](https://eprint.iacr.org/2023/660) |
 | **PEGASIS** | 2024 | Signature | Group-action-based signature from CSIDH; compact; NIST onramp [[1]](https://eprint.iacr.org/2024/344) |
 

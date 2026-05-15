@@ -960,6 +960,7 @@ Ker's square-root law is widely cited in steganography literature. Published at 
 | **Bellare-Paterson-Rogaway ASA** | 2014 | Symmetric / AEAD | Algorithm-substitution attacks on symmetric encryption; post-Snowden model [[1]](https://eprint.iacr.org/2014/438) |
 | **Dual_EC_DRBG Backdoor** | 2013 | EC points | Real-world kleptographic backdoor in NIST DRBG; NSA-planted [[1]](https://projectbullrun.org/dual-ec/documents.html) |
 | **ASA on Signatures (Ateniese et al.)** | 2015 | Randomness manipulation | Subvert signature randomness to leak signing key [[1]](https://eprint.iacr.org/2015/517) |
+| **Anamorphic Signatures — Unforgeability Notions** | 2025 | Parallel unforgeability definitions | Two new notions: dictator unforgeability (signing keys known to adversary) and recipient unforgeability (hidden channel known); shows 3 prior constructions are insecure under active dictator; fixes gaps in BGHMR and KPPYZ definitions; Jaeger-Stracovsky [[1]](https://eprint.iacr.org/2025/2123) |
 
 **State of the art:** ASA model (Bellare et al. 2014); defenses include [CRF](19-theoretical-foundations.md#cryptographic-reverse-firewalls), deterministic signatures (EdDSA), and verifiable randomness. See also [DRBG](01-foundational-primitives.md#drbg-deterministic-random-bit-generators).
 

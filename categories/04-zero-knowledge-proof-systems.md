@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (66 schemes)
+## Contents (67 schemes)
 
 **[Foundational ZK Concepts](#foundational-zk-concepts)**
 - [Zero-Knowledge Proofs (ZK)](#zero-knowledge-proofs-zk)
@@ -41,6 +41,7 @@
 - [Sangria, Arecibo, and Sonobe (Folding Ecosystem)](#sangria-arecibo-and-sonobe-folding-ecosystem)
 - [Gemini (Elastic SNARKs)](#gemini-elastic-snarks)
 - [LatticeFold (Post-Quantum Folding)](#latticefold-post-quantum-folding)
+- [SALSAA (Sumcheck-Aided Lattice-based Succinct Arguments)](#salsaa-sumcheck-aided-lattice-based-succinct-arguments)
 - [Libra and Virgo (GKR-Based Transparent SNARKs)](#libra-and-virgo-gkr-based-transparent-snarks)
 - [Ceno (Non-Uniform GKR zkVM)](#ceno-non-uniform-gkr-zkvm)
 
@@ -560,6 +561,7 @@ Established theoretical foundation (Chiesa-Tromer 2010). Production-validated by
 | **Collaborative Groth16** | 2022 | Secret-shared Groth16 | Each party holds shares of witness; MSM computed collaboratively [[1]](https://eprint.iacr.org/2021/1530) |
 | **zkSaaS** | 2023 | SNARK-as-a-service | Cloud provers with input privacy; secret-shared witness computation [[1]](https://eprint.iacr.org/2023/905) |
 | **Atlas** | 2024 | Folding + MPC | Distributed Nova/SuperNova; IVC with multiple provers [[1]](https://eprint.iacr.org/2024/286) |
+| **Single-Server Private SNARK Outsourcing (EMSM)** | 2025 | Encrypted Multi-Scalar Multiplication | Prover outsources to one untrusted server; server learns nothing about witness, statement, or proof; supports Nova/Groth16/Plonk; up to 20× client compute reduction, 9× latency reduction; Abbaszadeh-Hafezi-Katz-Meiklejohn [[1]](https://eprint.iacr.org/2025/2113) |
 
 **Applications:** Privacy-preserving ML inference proof (witness = model weights, inputs private); cross-institutional compliance proof; outsourced proof generation without revealing inputs to cloud provider.
 
@@ -1116,6 +1118,33 @@ Secure under Module-SIS (LatticeFold) and standard LWE/SIS (Lova) assumptions. P
 
 **Community acceptance:** Emerging
 Published by Dan Boneh and collaborators (2024). First post-quantum folding schemes. High interest from the PQ and ZK research communities.
+
+---
+
+### SALSAA (Sumcheck-Aided Lattice-based Succinct Arguments)
+
+**Goal:** Lattice-based SNARK with linear-time prover via sumcheck integration. Extends the RPS/RnR lattice argument framework by incorporating the sumcheck protocol as a core component, enabling a strictly linear-time prover for norm checks and native support for R1CS relations, while reducing proof sizes 2–3× over prior lattice-based SNARKs.
+
+| Scheme | Year | Type/Basis | Note |
+|--------|------|------------|------|
+| **RPS / RnR (baseline)** | 2023–2024 | Module-SIS + lattice folding | Prior state of art for lattice-based fully-succinct arguments; quasi-linear norm-check bottleneck [[1]](https://eprint.iacr.org/2023/1762) |
+| **SALSAA** | 2025 | Module-SIS + sumcheck | Sumcheck-aided norm check: linear-time prover, 2–3× smaller proofs; native R1CS; also yields PCS and folding scheme [[1]](https://eprint.iacr.org/2025/2124) |
+
+SALSAA integrates the sumcheck protocol into the lattice-based argument framework of RPS/RnR, eliminating the quasi-linear norm-check bottleneck that dominated prior lattice SNARKs. The sumcheck approach enables a strictly linear-time prover while also allowing native handling of rank-1 constraint systems (R1CS), previously awkward in lattice settings. Benchmark SNARK achieves verification below 50 ms and proof size below 1 MB for a witness of size 2²⁸ elements — competitive with hash-based schemes on verifier runtime while remaining post-quantum secure.
+
+**State of the art:** SALSAA (2025) is the leading lattice-based SNARK by proof size and verifier efficiency. Complements [LatticeFold](#latticefold-post-quantum-folding) (folding scheme focus) and [Libra/Virgo](#libra-and-virgo-gkr-based-transparent-snarks) (GKR-based transparent). Cross-links: [Sumcheck Protocol](#sumcheck-protocol), [Folding Schemes](#folding-schemes).
+
+**Production readiness:** Research
+Reference implementation published; no production deployment. Post-quantum secure but not yet battle-tested.
+
+**Implementations:**
+- [salsaa](https://github.com/lattice-arguments/salsaa) ⭐ 2 — Rust, reference SNARK + folding scheme implementation
+
+**Security status:** Secure
+Security relies on Module-SIS (post-quantum). Sumcheck integration preserves lattice soundness. No known attacks.
+
+**Community acceptance:** Emerging
+Published 2025 by Aalto University researchers. Advances the RPS/RnR lattice SNARK lineage. First lattice-based scheme to achieve linear-time prover with sumcheck integration.
 
 ---
 

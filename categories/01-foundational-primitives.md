@@ -2,13 +2,14 @@
 
 
 <!-- TOC -->
-## Contents (59 schemes)
+## Contents (62 schemes)
 
 **[Symmetric Ciphers](#symmetric-ciphers)**
 - [Symmetric Encryption](#symmetric-encryption)
 - [Asymmetric (Public-Key) Encryption](#asymmetric-public-key-encryption)
 - [Pseudorandom Functions (PRF) & Pseudorandom Permutations (PRP)](#pseudorandom-functions-prf--pseudorandom-permutations-prp)
 - [Pseudorandom Generators (PRG)](#pseudorandom-generators-prg)
+- [ChaCha8Rand (C2SP CSPRNG)](#chacha8rand-c2sp-csprng)
 - [Sponge Construction / Duplex](#sponge-construction--duplex)
 - [Lightweight Cryptography / ASCON](#lightweight-cryptography--ascon)
 - [Feistel Networks (Luby-Rackoff Construction)](#feistel-networks-luby-rackoff-construction)
@@ -54,6 +55,7 @@
 - [HKDF (Extract-and-Expand Key Derivation)](#hkdf-extract-and-expand-key-derivation)
 - [Merkle-Damgård Construction](#merkle-damgård-construction)
 - [TupleHash / ParallelHash (NIST SP 800-185)](#tuplehash--parallelhash-nist-sp-800-185)
+- [SequenceHash and SequenceMAC (C2SP)](#sequencehash-and-sequencemac-c2sp)
 - [RIPEMD-160](#ripemd-160)
 - [Keccak-p Permutation](#keccak-p-permutation)
 - [BLAKE2 Hash Function Internals](#blake2-hash-function-internals)
@@ -76,6 +78,7 @@
 
 **[Trapdoor and Structural Primitives](#trapdoor-and-structural-primitives)**
 - [Ristretto255 / Decaf (Prime-Order Group Abstractions)](#ristretto255--decaf-prime-order-group-abstractions)
+- [jq255 (jq255e and jq255s Prime-Order Groups)](#jq255-jq255e-and-jq255s-prime-order-groups)
 
 <!-- /TOC -->
 
@@ -200,6 +203,33 @@ AES-CTR and ChaCha20 are secure PRGs. BBS is provably secure under factoring but
 
 **Community acceptance:** Standard
 AES-CTR is NIST SP 800-38A; ChaCha20 is RFC 8439. The PRG→PRF→PRP hierarchy is a foundational result in theoretical cryptography.
+
+---
+
+### ChaCha8Rand (C2SP CSPRNG)
+
+**Goal:** Fast key-erasure CSPRNG with near non-cryptographic speed. Designed by Russ Cox / Filippo Valsorda as the default source for Go's `math/rand/v2` and `runtime` packages. Accepts a 32-byte seed, operates on 289 bytes of state, can serialize to 33 bytes (forward-secret after at most 992 additional output bytes). Optimized for 128/256/512-bit SIMD vectorization.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ChaCha8Rand** | 2024 | ChaCha8 + fast key erasure | C2SP spec; each iteration produces 992 RNG bytes + 32 chain bytes via reduced-round ChaCha8 [[1]](https://c2sp.org/chacha8rand) [[2]](https://go.dev/issue/61716) |
+
+**State of the art:** ChaCha8Rand (2024) is the default math/rand/v2 source in Go 1.22+. Reduces ChaCha20 to 8 rounds (still cryptographically secure at this output volume) and uses a custom permutation/subtraction step to match SIMD layout. Replaces previous non-CSPRNG `math/rand` source; preserves forward secrecy. See [Pseudorandom Generators (PRG)](#pseudorandom-generators-prg).
+
+**Production readiness:** Production
+Ships in Go 1.22+ standard library (`math/rand/v2`, `runtime`); used everywhere Go random numbers are drawn. Third-party Rust/Swift/Odin ports exist.
+
+**Implementations:**
+- [golang/go](https://github.com/golang/go) ⭐ 134k — Go, reference implementation in `runtime` and `math/rand/v2`
+- [hanna-kruppe/chacha8rand](https://github.com/hanna-kruppe/chacha8rand) ⭐ 2 — Rust port
+- [nixberg/chacha8rand-rs](https://github.com/nixberg/chacha8rand-rs) ⭐ 1 — Rust port
+- [C2SP/CCTV](https://github.com/C2SP/CCTV) ⭐ 101 — test vectors
+
+**Security status:** Secure
+8-round ChaCha provides ample security margin at the 992-byte output budget per iteration; forward secrecy under fast key erasure. No known attacks. Reviewed by Filippo Valsorda and Go cryptography team.
+
+**Community acceptance:** Emerging
+Default in Go since 1.22 (2024); C2SP-blessed spec; not yet an IETF/NIST RFC but rapidly establishing as the modern CSPRNG default for Go ecosystem.
 
 ---
 
@@ -1368,6 +1398,7 @@ Landmark theoretical results (Crypto/STOC 2019) resolving a long-standing open q
 |--------|------|-------|------|
 | **Poseidon** | 2019 | Partial SPN over Fp | First widely-deployed ZK hash; S-box = x^α over prime field [[1]](https://eprint.iacr.org/2019/458) |
 | **Poseidon2** | 2023 | Improved Poseidon | 2-4x faster than Poseidon; optimized linear layer [[1]](https://eprint.iacr.org/2023/323) |
+| **Poseidon(2)b** | 2025 | Binary extension field Poseidon/Poseidon2 | Designed for [Binius](04-zero-knowledge-proof-systems.md#binary-field-proof-systems) and other binary-field proving systems; 128-bit security; smaller proofs and faster verification vs prime-field variants and Vision-32b [[1]](https://eprint.iacr.org/2025/1893) [[2]](https://github.com/Poseidon-Hash/Poseidon2b) |
 | **Anemoi / Jive** | 2023 | Flystel S-box | Novel "Flystel" structure + Jive compression; 2x improvement over Poseidon in R1CS [[1]](https://eprint.iacr.org/2022/840) |
 | **Griffin** | 2022 | Degree-3 S-box | Distinct non-linear/linear interaction; optimized for Groth16 [[1]](https://eprint.iacr.org/2022/403) |
 | **Reinforced Concrete** | 2022 | Lookup-table + algebraic | Combines lookup-based "bricks" with algebraic structure; CCS 2022 [[1]](https://eprint.iacr.org/2021/1038) |
@@ -1527,6 +1558,31 @@ Based on full 24-round Keccak-f[1600]; no known attacks. Security inherits direc
 
 **Community acceptance:** Standard
 NIST SP 800-185 (2016). KMAC is referenced in NIST SP 800-108 Rev. 1 for KDF and in post-quantum standards.
+
+---
+
+### SequenceHash and SequenceMAC (C2SP)
+
+**Goal:** Hash-agnostic, byte-oriented, unambiguous hashing of *sequences* of byte strings — like TupleHash, but built on any hash function (SHA-256, BLAKE2, etc.), not just Keccak. Solves the naive-concatenation ambiguity (`H("ab","c") ≠ H("a","bc")`) for arbitrary modern hashes with native domain-separation strings.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SequenceHash** | 2024 | Double-hash (HMAC-like) + unambiguous length encoding | TupleHash-equivalent for SHA-2/BLAKE2/etc.; resists length extension; built-in customization string [[1]](https://c2sp.org/sequencehash) |
+| **SequenceMAC** | 2024 | Keyed SequenceHash | MAC variant; same construction with key prepended to sequence [[1]](https://c2sp.org/sequencehash) |
+
+**State of the art:** SequenceHash (C2SP, Opal Wright + Scott Arciszewski, 2024). Provides [TupleHash](#tuplehash--parallelhash-nist-sp-800-185) semantics for hash functions that don't support customization natively. Useful in ZK transcripts, signatures of structured data, and protocol commitments where domain separation matters but Keccak isn't the target hash. See also [Hash Functions](#hash-functions), [HKDF](#hkdf-extract-and-expand-key-derivation).
+
+**Production readiness:** Experimental
+C2SP spec published 2024; reference implementations under development. No major production deployment yet, but conceptually trivial to implement on top of any compliant SHA-2/BLAKE2/etc. library.
+
+**Implementations:**
+- No widely-used reference implementation released as of 2026-05; the spec is implementable directly from text.
+
+**Security status:** Secure
+Construction is HMAC-style double hashing; security reduces to the underlying hash's collision/preimage resistance. Length-extension resistant even when built on Merkle-Damgård hashes.
+
+**Community acceptance:** Emerging
+Published as a C2SP spec; cited by hash-agnostic protocols seeking TupleHash-like semantics without Keccak dependency. Not yet IETF-standardized.
 
 ---
 
@@ -2002,5 +2058,33 @@ Ristretto255 provides a clean prime-order group abstraction, eliminating cofacto
 
 **Community acceptance:** Standard
 RFC 9496 (2023) is an IETF standard. Ristretto255 is the recommended prime-order group for CFRG protocols. Widely adopted in the Rust cryptography ecosystem.
+
+---
+
+### jq255 (jq255e and jq255s Prime-Order Groups)
+
+**Goal:** Compact, exception-free, constant-time-friendly prime-order elliptic-curve groups for 128-bit security. Each group element fits in 32 bytes with canonical encoding (single representation per element, decoder rejects invalid encodings → no invalid-curve attacks, no cofactor issues). Alternative to [Ristretto255](#ristretto255--decaf-prime-order-group-abstractions) with smaller scalars (~254 bits) and a fast endomorphism on jq255e for accelerated scalar multiplication.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **jq255e** | 2022 | Edwards curve over GF(2^255 − 18651) + endomorphism | Prime-order group of order ≈ 2^254; ~25% faster mul via GLV endomorphism [[1]](https://c2sp.org/jq255) |
+| **jq255s** | 2022 | Short-Weierstrass / Edwards over GF(2^255 − 3957) | Prime-order group; no endomorphism but simpler reductions [[1]](https://c2sp.org/jq255) |
+| **jq255e/s Key Exchange + Signatures** | 2022 | DH + Schnorr over jq255 | Companion KEX and signature ciphersuites defined in the spec [[1]](https://c2sp.org/jq255) |
+
+**State of the art:** Designed by Thomas Pornin (NCC Group); published as C2SP spec 2022. Competes with [Ristretto255](#ristretto255--decaf-prime-order-group-abstractions) and the [Decaf](#ristretto255--decaf-prime-order-group-abstractions) family for clean prime-order group APIs. Particularly attractive on constrained microcontrollers due to small/canonical encoding and endomorphism-accelerated jq255e.
+
+**Production readiness:** Experimental
+Reference implementations in C/Go/Python by Thomas Pornin (doubleodd org); no major protocol has standardized on jq255 yet. Best regarded as a research-quality alternative.
+
+**Implementations:**
+- [doubleodd/c-jq255](https://github.com/doubleodd/c-jq255) ⭐ 1 — C, reference implementation
+- [doubleodd/go-jq255](https://github.com/doubleodd/go-jq255) ⭐ 0 — Go port
+- [doubleodd/py-jq255](https://github.com/doubleodd/py-jq255) ⭐ 0 — Python port
+
+**Security status:** Secure
+Discrete log security at the ~127-bit level (group order ≈ 2^254). No known attacks on the underlying curves; endomorphism on jq255e is well-understood (GLV-style). Constant-time formulas without exceptional cases.
+
+**Community acceptance:** Niche
+C2SP spec exists; cited in cryptographic engineering circles but no IETF/NIST track. Most new CFRG protocols continue to standardize on Ristretto255.
 
 ---

@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (70 schemes)
+## Contents (73 schemes)
 
 **[Threshold Signatures](#threshold-signatures)**
 - [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss)
@@ -15,6 +15,7 @@
 - [MuSig2 (Multi-Signatures for Bitcoin)](#musig2-multi-signatures-for-bitcoin)
 - [ROAST (Robust Asynchronous Threshold Signatures)](#roast-robust-asynchronous-threshold-signatures)
 - [ChillDKG](#chilldkg)
+- [Trilithium (Distributed ML-DSA Signing)](#trilithium-distributed-ml-dsa-signing)
 
 **[Blind and Partially Blind Signatures](#blind-and-partially-blind-signatures)**
 - [Blind Signatures](#blind-signatures)
@@ -49,6 +50,7 @@
 - [Proxy Signatures](#proxy-signatures)
 - [Multi-Designated Verifier Signatures (MDVS)](#multi-designated-verifier-signatures-mdvs)
 - [Mercurial Signatures](#mercurial-signatures)
+- [Non-Interactive Threshold Mercurial Signatures (NITMS)](#non-interactive-threshold-mercurial-signatures-nitms)
 
 **[Structural Signature Primitives](#structural-signature-primitives)**
 - [One-Time Signatures (OTS)](#one-time-signatures-ots)
@@ -78,6 +80,7 @@
 - [Batch Verification of Signatures](#batch-verification-of-signatures)
 - [Post-Quantum Signature Comparison: ML-DSA vs. SLH-DSA vs. FN-DSA](#post-quantum-signature-comparison-ml-dsa-vs-slh-dsa-vs-fn-dsa)
 - [Verifiable Random Functions (ECVRF, RFC 9381)](#verifiable-random-functions-ecvrf-rfc-9381)
+- [ristretto255 VRF (C2SP vrf-r255)](#ristretto255-vrf-c2sp-vrf-r255)
 - [Schnorr Half-Aggregation (Signature Aggregation Beyond BLS)](#schnorr-half-aggregation-signature-aggregation-beyond-bls)
 - [Code-Based Signatures (Wave, LESS, and Related)](#code-based-signatures-wave-less-and-related)
 - [SQIsign (Isogeny-Based Signatures)](#sqisign-isogeny-based-signatures)
@@ -215,6 +218,7 @@ Combines ring signature anonymity with threshold trust; limited to specialized p
 | **MuSig2 (Nick-Ruffing-Seurin)** | 2020 | Schnorr / AOMDL | Reduces to 2 rounds (1 preprocessing + 1 online); concurrent-session secure; BIP 327 [[1]](https://eprint.iacr.org/2020/1261) |
 | **MuSig-DN (deterministic nonces)** | 2020 | Schnorr + NIZK | Deterministic nonce generation with ZK proof; eliminates per-session randomness [[1]](https://eprint.iacr.org/2020/1057) |
 | **MuSig-L (lattice)** | 2022 | Module lattice | First lattice-based multi-sig with key aggregation, PPK-model security, and single online round [[1]](https://eprint.iacr.org/2022/1036) |
+| **T-Spoon** | 2025 | Schnorr + DDH | First tightly secure 2-round multi-sig with key aggregation in pairing-free groups; large signatures (9 field + 2 group elements) [[1]](https://eprint.iacr.org/2025/840) |
 
 MuSig2 is the n-of-n variant of [Threshold Signature Schemes](#threshold-signature-schemes-tss). Key aggregation means the combined public key is computationally indistinguishable from an ordinary Schnorr public key — on-chain footprint is a single 32-byte x-only key (BIP 340) and a single 64-byte signature, regardless of signer count. Security is proved under the algebraic one-more discrete logarithm (AOMDL) assumption. Rogue-key attacks are prevented by requiring a proof of knowledge of each individual public key before aggregation.
 
@@ -246,6 +250,7 @@ BIP 327 standardized for Bitcoin; MuSig-L extends to post-quantum via lattice-ba
 | **FROST-DKG (Pedersen DKG + FROST)** | 2020 | 2 + DKG | Distributed key generation phase (Pedersen or Gennaro-Goldfeder DKG) followed by FROST signing [[1]](https://eprint.iacr.org/2020/852) |
 | **FROST-Ed25519 (RFC 9591)** | 2024 | 2 | IETF specification of FROST for Ed25519 and Ristretto255; interoperable wire format [[1]](https://datatracker.ietf.org/doc/rfc9591/) |
 | **FROST-secp256k1** | 2023 | 2 | FROST instantiation for Bitcoin's secp256k1 curve; compatible with BIP 340 (Schnorr) [[1]](https://github.com/ZcashFoundation/frost) |
+| **Dynamic-FROST (D-FROST)** | 2024 | FROST + CHURP | Combines FROST with CHURP proactive secret sharing; dynamic committee and threshold changes without key regeneration [[1]](https://eprint.iacr.org/2024/896) |
 
 FROST achieves round-optimality for threshold Schnorr: Round 1 (preprocessing) generates nonce commitments which can be done offline before a message is known; Round 2 (signing) produces signature shares given a message. The coordinator aggregates shares into a single Schnorr signature. Security requires the One-More Discrete Logarithm (OMDL) assumption. FROST does not inherently provide robustness (a malicious participant can cause abort); the ROAST protocol wraps FROST to achieve guaranteed output delivery in asynchronous settings. The Zcash Foundation maintains a production-quality Rust implementation supporting Ed25519, Ristretto255, secp256k1, and P-256.
 
@@ -379,6 +384,31 @@ Cryptographic core is FROST DKG (proven secure); Bitcoin-specific adaptations (s
 
 **Community acceptance:** Emerging
 Authored by Blockstream Research cryptographers (Nick, Ruffing); active BIP process; Bitcoin developer community engaged. FROST itself is IETF RFC 9591; ChillDKG adapts it for Bitcoin's specific needs.
+
+---
+
+### Trilithium (Distributed ML-DSA Signing)
+
+**Goal:** Universally composable two-party distributed signing for [ML-DSA (FIPS 204)](#nist-pqc-signature-standards-ml-dsa--slh-dsa) — produce a *standard* ML-DSA signature where neither party (server + phone) holds the full signing key, with help of an offline correlated randomness provider (CRP). Targets PQ-secure threshold custody, mobile wallet co-signing, and HSM offload patterns where the existing [CGGMP Threshold ECDSA](#cggmp-threshold-ecdsa) construction needs a quantum-resistant analogue.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Trilithium** | 2025 | ML-DSA + UC MPC + CRP offline preprocessing | 2-party distributed signing; FIPS 204-compliant outputs; CRP can be offline [[1]](https://eprint.iacr.org/2025/675) |
+| **Quorus** | 2025 | ML-DSA + MPC | Companion line of work; n-party scalable threshold ML-DSA [[1]](https://eprint.iacr.org/2025/1163) |
+
+**State of the art:** Trilithium (Dufka, Kravtsenko, Laud, Snetkov, 2025) and Quorus (Bormet et al., 2025) are leading 2025 candidates for threshold ML-DSA. Trilithium uses an offline CRP to keep online signing rounds minimal; signatures verify under standard FIPS 204 — no protocol changes to verifiers. Companion to [Threshold Raccoon](#threshold-raccoon-post-quantum-lattice-threshold-signatures) (lattice-native non-FIPS threshold scheme). See [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss), [Context-Dependent Threshold Decryption (CDTD)](05-secret-sharing-threshold-cryptography.md#context-dependent-threshold-decryption-cdtd).
+
+**Production readiness:** Research
+2025 academic papers; reference implementations under development. No production deployment, but the FIPS-compliant output is the main practical attraction.
+
+**Implementations:**
+- No public reference implementation released as of 2026-05.
+
+**Security status:** Secure
+Trilithium is UC-secure against a static malicious adversary; Quorus security inherits from underlying MPC protocols. Standard FIPS 204 verification means downstream verifiers gain no new attack surface.
+
+**Community acceptance:** Emerging
+2025 academic publication; active follow-up work (Quorus, Efficient Threshold ML-DSA up to 6 parties); discussed at the 6th NIST PQC Standardization Conference.
 
 ---
 
@@ -1045,6 +1075,7 @@ Extends DVS to multi-verifier settings; relevant for board/committee authenticat
 | **Mercurial Signatures (Chase-Kohlweiss-Lysyanskaya-Meiklejohn)** | 2014 | Pairings (Type III) | First formalization; public key and signature are both class-changeable [[1]](https://eprint.iacr.org/2014/944) |
 | **Mercurial Sig from EQS** | 2014 | Pairings | Mercurial sigs shown equivalent to Structure-Preserving Signatures on Equivalence Classes (SPS-EQ) [[1]](https://eprint.iacr.org/2014/944) |
 | **Crites-Lysyanskaya** | 2019 | Pairing-based, key equivalence | Enables true multi-level anonymous delegation chains; NDSS 2019 [[1]](https://eprint.iacr.org/2018/923) |
+| **Crites-Lysyanskaya (variable-length)** | 2020 | Pairings | Eliminates fixed-length restriction: public key size no longer tied to message length; signs messages of arbitrary length [[1]](https://eprint.iacr.org/2020/979) |
 | **Crites-Kohlweiss-Preneel-Sedaghat** | 2023 | Pairings | Improved efficiency; tighter security reduction; practical instantiation [[1]](https://eprint.iacr.org/2023/1051) |
 | **Stronger privacy (Lysyanskaya et al.)** | 2024 | Enhanced model | Strengthened privacy definitions; ePrint 2024/1216 [[1]](https://eprint.iacr.org/2024/1216) |
 | **Delegatable Anonymous Credentials from Mercurial Sigs** | 2019 | Pairings + Groth-Sahai | Multi-level delegation: user A delegates to B who delegates to C; each delegation is unlinkable [[1]](https://eprint.iacr.org/2018/1126) |
@@ -1057,7 +1088,7 @@ Mercurial signatures operate on projective equivalence classes: two message vect
 Academic prototypes; enables delegatable anonymous credentials but no production deployment.
 
 **Implementations:**
-- Academic reference implementations accompany published papers
+- [mercurial-signature](https://github.com/AlvinHon/mercurial-signature) ⭐ 0 — Rust, implementation of mercurial signatures scheme
 - Implementable via [MCL](https://github.com/herumi/mcl) ⭐ 520 — C++, pairing library
 - [RELIC](https://github.com/relic-toolkit/relic) ⭐ 508 — C, pairing toolkit
 
@@ -1066,6 +1097,33 @@ No known attacks; security proved under pairing assumptions; close relationship 
 
 **Community acceptance:** Niche
 Foundation of delegatable anonymous credentials with unlinkable multi-level delegation chains.
+
+---
+
+### Non-Interactive Threshold Mercurial Signatures (NITMS)
+
+**Goal:** Threshold-signed equivalence-class credentials with strong privacy. Multiple parties jointly sign a representative of a message equivalence class such that no individual signer learns the underlying secret key; the resulting signature has full mercurial convertibility. Solves the "insider recognition" problem: a threshold signer who contributed to a delegation chain cannot recognize their own link after randomization.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Interactive Threshold Mercurial Sigs** | 2024 | Pairings + threshold VSS | First threshold variant; requires interactive signing round; solves insider recognition [[1]](https://eprint.iacr.org/2024/625) |
+| **NITMS (Griffy-Jankovic-Lysyanskaya-Mondal)** | 2025 | Pairings + threshold VSS | Non-interactive threshold signing; also introduces threshold delegatable anonymous credentials (TDAC) [[1]](https://eprint.iacr.org/2025/2134) |
+
+Ordinary mercurial signatures allow a single signer. Threshold mercurial signatures split the signing key among *t*-of-*n* parties, so no single party can forge or learn the signing key. The critical privacy challenge: in a delegation chain A→B→C, even if B is a threshold signer who contributed to their own credential, they must not be able to recognize their link after chain randomization. NITMS achieves this with key size ℓ=2, supporting both signing and public-key equivalence-class operations. The paper also defines threshold delegatable anonymous credentials (TDAC) as the main application.
+
+**State of the art:** NITMS (2025) is the first non-interactive construction, improving on the interactive threshold variant (2024). Enables TDAC — delegatable anonymous credentials issued by a threshold committee rather than a single trusted issuer. Cross-links: [Mercurial Signatures](#mercurial-signatures), [Anonymous Credentials](11-anonymity-credentials.md#anonymous-credentials).
+
+**Production readiness:** Research
+Academic construction (2025); no implementations available.
+
+**Implementations:**
+- No public implementation; theoretical construction.
+
+**Security status:** Secure
+Proved secure under pairing assumptions in the same models as single-signer mercurial signatures; inherits the credential chain privacy guarantees.
+
+**Community acceptance:** Emerging
+Addresses a clear open problem (threshold issuance of delegatable credentials); authored by Lysyanskaya group (NDSS/CCS tradition). First non-interactive threshold mercurial construction.
 
 ---
 
@@ -1483,6 +1541,7 @@ Active NIST Additional Signatures Round 2 candidate. Strong Korean academic team
 | **CGGMP21 (Canetti-Gennaro-Goldfeder-Makriyannis-Peled)** | 2021 | ECDSA + Paillier | UC-secure, proactive, non-interactive presign, identifiable abort; production standard [[1]](https://eprint.iacr.org/2021/060) |
 | **DKLs18 (Doerner-Kondi-Lee-Shelat)** | 2018 | ECDSA + OT | 2-of-n threshold ECDSA via OT; avoids Paillier; faster in practice [[1]](https://eprint.iacr.org/2018/499) |
 | **DKLs23 (Doerner-Kondi-Lee-Shelat)** | 2023 | ECDSA + OT + UC | UC-secure t-of-n in 3 rounds; OT replaces MtA; information-theoretic interior [[1]](https://eprint.iacr.org/2023/765) |
+| **Cait-Sith** | 2022 | ECDSA + OT + committed Beaver | Committed Beaver triples isolate complexity in preprocessing; simple online phase; used in NEAR MPC; no formal ePrint [[1]](https://github.com/cronokirby/cait-sith) |
 
 The core challenge of threshold ECDSA is that the signing equation requires a product of secret shares (the nonce inverse times the key), which is not naturally linear. GG18/GG20/CGGMP21 solve this via multiplicative-to-additive (MtA) conversion using Paillier encryption — correct but expensive in bandwidth and computation. DKLs18/23 replace MtA with correlated OT extensions: two-party multiplication (2PC-Mul) built on OT is faster, avoids the Paillier key-generation overhead, and achieves UC-security with an information-theoretic commitment layer. DKLs23 achieves 3-round online signing (down from 6 in GG20) and is the current state of the art for maliciously-secure threshold ECDSA.
 
@@ -1494,9 +1553,11 @@ CGGMP deployed in Fireblocks, ZenGo, and Binance MPC wallets; DKLs23 gaining ado
 **Implementations:**
 - [multi-party-ecdsa](https://github.com/ZenGo-X/multi-party-ecdsa) ⭐ 1.1k — Rust, GG18/GG20/CGGMP
 - [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 1.0k — Go, Binance threshold ECDSA
+- [cait-sith](https://github.com/cronokirby/cait-sith) ⭐ 84 — Rust, Cait-Sith threshold ECDSA via committed Beaver triples
+- [near/threshold-signatures](https://github.com/near/threshold-signatures) ⭐ 13 — Rust, NEAR MPC using Cait-Sith
 
 **Security status:** Secure
-UC-secure under standard assumptions; DKLs23 replaces Paillier MtA with OT for improved efficiency and security.
+UC-secure under standard assumptions; DKLs23 replaces Paillier MtA with OT; Cait-Sith uses committed Beaver triples (no formal proof yet, experimental).
 
 **Community acceptance:** Widely trusted
 Industry standard for institutional MPC wallets; CGGMP has extensive peer review and production track record.
@@ -1889,6 +1950,32 @@ No known attacks; pseudorandomness proved under ECDLP assumption; uniqueness is 
 
 **Community acceptance:** Standard
 IETF RFC 9381 (2023) standardizes ECVRF; widely adopted in blockchain leader election and verifiable lottery systems.
+
+---
+
+### ristretto255 VRF (C2SP vrf-r255)
+
+**Goal:** Define `ECVRF-RISTRETTO255-SHA512` — an [ECVRF (RFC 9381)](#verifiable-random-functions-ecvrf-rfc-9381) ciphersuite over the [ristretto255](01-foundational-primitives.md#ristretto255--decaf-prime-order-group-abstractions) prime-order group with SHA-512. Fills the gap left by RFC 9381, which only standardizes P-256 and edwards25519 (cofactor 8) ciphersuites — neither of which provides a clean prime-order group abstraction. Per RFC 9381 §7.10, prime-order groups are recommended for new VRF deployments to eliminate cofactor handling.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ECVRF-RISTRETTO255-SHA512 (vrf-r255)** | 2023 | ristretto255 + SHA-512 + ELL2 | C2SP ciphersuite; suite_string = `0xFF || "c2sp.org/vrf-r255"`; q = 2^252 + 27742317777372353535851937790883648493 [[1]](https://c2sp.org/vrf-r255) |
+
+**State of the art:** Companion to [Ristretto255 / Decaf](01-foundational-primitives.md#ristretto255--decaf-prime-order-group-abstractions) abstractions used in [FROST](#frost-flexible-round-optimized-schnorr-threshold-signatures), [Privacy Pass / VOPRF](11-anonymity-credentials.md), and [OPAQUE](03-key-exchange-key-management.md). Provides a VRF ciphersuite that matches the same group and hash choices, simplifying protocol design when mixing VRF + OPRF + threshold Schnorr over a single group. See [ECVRF (RFC 9381)](#verifiable-random-functions-ecvrf-rfc-9381) for the underlying construction; [Ring VRF](#ring-vrf) for the anonymous variant.
+
+**Production readiness:** Experimental
+C2SP ciphersuite spec; reference implementations in Go (filippo.io/edwards25519-ristretto255 helpers) and Rust (curve25519-dalek). Not yet adopted as the default in any major production protocol.
+
+**Implementations:**
+- [C2SP/C2SP](https://github.com/C2SP/C2SP) ⭐ 587 — ciphersuite specification
+- [C2SP/CCTV](https://github.com/C2SP/CCTV) ⭐ 101 — test vectors
+- ristretto255 substrate via [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek) ⭐ 1.1k — Rust group operations
+
+**Security status:** Secure
+Inherits ECVRF's pseudorandomness + uniqueness proofs under ECDLP; ristretto255 provides a prime-order group, eliminating cofactor-related issues that the edwards25519 ciphersuite must mitigate via explicit point clearing.
+
+**Community acceptance:** Emerging
+C2SP-blessed; consistent with the IETF/CFRG direction of standardizing ristretto255-based ciphersuites (RFC 9496). No protocol has yet adopted it as default, but expected to be the canonical VRF ciphersuite for new ristretto255-native protocols.
 
 ---
 

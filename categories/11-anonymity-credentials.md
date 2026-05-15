@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (59 schemes)
+## Contents (60 schemes)
 
 **[Anonymous Credentials](#anonymous-credentials)**
 - [Anonymous Credentials](#anonymous-credentials)
@@ -29,6 +29,7 @@
 - [Tor v3 Onion Services](#tor-v3-onion-services)
 - [I2P (Invisible Internet Project)](#i2p-invisible-internet-project)
 - [CoinJoin / WabiSabi](#coinjoin--wabisabi)
+- [CoinMaze (KVAC-Based Bitcoin CoinJoin)](#coinmaze-kvac-based-bitcoin-coinjoin)
 - [Privacy Pools](#privacy-pools)
 - [Accumulators for Credential Revocation](#accumulators-for-credential-revocation)
 - [mDL (Mobile Driver's License, ISO 18013-5)](#mdl-mobile-drivers-license-iso-18013-5)
@@ -717,6 +718,31 @@ WabiSabi is cryptographically sound (KVAC-based); effectiveness depends on suffi
 
 **Community acceptance:** Widely trusted
 WabiSabi peer-reviewed (ePrint 2021/206); CoinJoin is a widely accepted Bitcoin privacy technique; regulatory pressure led to Wasabi coordinator shutdown in some jurisdictions.
+
+---
+
+### CoinMaze (KVAC-Based Bitcoin CoinJoin)
+
+**Goal:** Successor / alternative to [WabiSabi](#coinjoin--wabisabi). Privacy-focused CoinJoin protocol for Bitcoin built on keyed-verification anonymous credentials (KVAC), with the explicit aim of fixing operational issues that led to centralization pressure on WabiSabi coordinators (regulatory shutdowns, single-coordinator failure modes).
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **CoinMaze** | 2025 | KVAC + Bitcoin tx | Coordinator-blind CoinJoin alternative to WabiSabi; design tradeoffs around amount agility and coordinator decentralization [[1]](https://eprint.iacr.org/2025/747) |
+| **KeyJoin** | 2025 | Companion design | Parallel ePrint 2025/838 by same author/team direction [[1]](https://eprint.iacr.org/2025/838) |
+
+**State of the art:** Dmitry Astakhin (2025). Targets the same threat model as [CoinJoin / WabiSabi](#coinjoin--wabisabi) and [Privacy Pools](#privacy-pools): on-chain UTXO unlinkability without consensus changes. Builds on [Keyed-Verification Anonymous Credentials (KVAC)](#keyed-verification-anonymous-credentials-kvac).
+
+**Production readiness:** Research
+ePrint 2025/747; academic prototype. No deployed wallet yet.
+
+**Implementations:**
+- No public reference implementation released as of 2026-05.
+
+**Security status:** Secure
+KVAC-based blind crediting; security inherits from KVAC security proofs (analyzed in WabiSabi line of work).
+
+**Community acceptance:** Emerging
+Recent (2025) submission; cited in Bitcoin privacy ecosystem discussion. Successor candidates compete with WabiSabi 2.0 and PayJoin-family approaches.
 
 ---
 
