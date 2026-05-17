@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (67 schemes)
+## Contents (69 schemes)
 
 **[Foundational ZK Concepts](#foundational-zk-concepts)**
 - [Zero-Knowledge Proofs (ZK)](#zero-knowledge-proofs-zk)
@@ -2073,3 +2073,52 @@ Underlying ZK proofs (Bulletproofs, PLONK) are secure. Supply chain attestation 
 Academic research with growing enterprise interest. EU Digital Product Passport regulation (2024) is driving commercial development. ING and Commerzbank have published pilot results.
 
 ---
+### TCitH (Threshold-Computation-in-the-Head)
+
+**Goal:** Generalization of MPC-in-the-Head where the underlying MPC protocol uses threshold-based polynomial sharing (Shamir-style) instead of additive sharing. Reduces signature size and enables masking-friendly post-quantum signatures via natural compatibility with side-channel countermeasures.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **TCitH (Feneuil-Rivain)** | 2024 | MPCitH + Shamir polynomial sharing | Smaller signatures than additive-MPCitH; masking-friendly [[1]](https://eprint.iacr.org/2025/520) |
+| **Masking-Friendly PQ Signatures via TCitH** | 2025 | TCitH framework | Side-channel countermeasures with minimal masking overhead [[1]](https://eprint.iacr.org/2025/520) |
+
+**State of the art:** TCitH is the current frontier for MPCitH signature design where masking against differential power analysis (DPA) is required. Compared to additive MPCitH (used in SDitH, Picnic), TCitH halves masking cost and enables compact signatures. Related: [Picnic](08-signatures-advanced.md#picnic-signatures-from-zk-proofs-of-symmetric-primitives) and [MPCitH](#mpc-in-the-head-mpcitH).
+
+**Production readiness:** Research
+Reference implementation in paper; basis for next-generation MPCitH PQ signature designs.
+
+**Implementations:**
+- [TCitH reference (Feneuil et al.)](https://github.com/CryptoExperts/sdith) ⭐ 18 — C, SDitH reference can be adapted to TCitH variant
+
+**Security status:** Secure
+Underlying assumptions same as MPCitH (one-way function + ZK). No known weaknesses; masking analysis included in paper.
+
+**Community acceptance:** Emerging
+2024-2025 papers; active research area for post-quantum signatures with side-channel resistance.
+
+---
+
+### HYPERSHIELD (Hypercube-MPCitH Masking-Free DPA Protection)
+
+**Goal:** Protect Hypercube-MPCitH signature schemes (SDitH variants) against differential power analysis WITHOUT explicit masking of large parts of the signing operation. Leverages hypercube structure to randomize execution while keeping efficiency.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HYPERSHIELD** | 2026 | Hypercube-MPCitH + structural randomization | DPA protection without large-state masking overhead [[1]](https://eprint.iacr.org/2026/081) |
+
+**State of the art:** Eliminates the masking-overhead burden traditionally required for side-channel protection in Hypercube-SDitH. Achieves DPA security with minimal performance penalty.
+
+**Production readiness:** Research
+Academic prototype; basis for hardened SDitH variant submissions.
+
+**Implementations:**
+- [SDitH-Hypercube](https://github.com/CryptoExperts/sdith) ⭐ 18 — C, baseline implementation that HYPERSHIELD targets
+
+**Security status:** Secure
+DPA-resistant by design; standard MPCitH security otherwise.
+
+**Community acceptance:** Emerging
+Recent (2026); relevant for post-quantum signatures targeting smart card / HSM deployment.
+
+---
+

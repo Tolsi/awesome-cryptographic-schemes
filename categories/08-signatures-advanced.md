@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (73 schemes)
+## Contents (74 schemes)
 
 **[Threshold Signatures](#threshold-signatures)**
 - [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss)
@@ -412,6 +412,30 @@ Trilithium is UC-secure against a static malicious adversary; Quorus security in
 
 ---
 
+
+### Trout (Two-Round Threshold ECDSA from Class Groups)
+
+**Goal:** Two-round threshold ECDSA signing protocol built on class-group encryption, providing simpler interaction patterns than 3+ round protocols (CGGMP, DKLs23) while preserving full UC security.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Trout (Dahari-Garbian et al.)** | 2025 | Class-group encryption + non-interactive ZK | 2 rounds vs 3-4 rounds in CGGMP/DKLs23; UC-secure [[1]](https://eprint.iacr.org/2025/1666) |
+
+**State of the art:** Current best two-round threshold ECDSA. Class-group encryption provides efficient (HSM-PVSS-style) primitives unavailable in standard Paillier-based protocols. Compatible with Bitcoin / Ethereum ECDSA signing for cold wallets, custodial services, threshold validators.
+
+**Production readiness:** Research
+Reference implementation expected in CryptoExperts / Fireblocks repos; not yet in major wallet libraries.
+
+**Implementations:**
+- Reference code released alongside paper; integration into [tss-lib](https://github.com/bnb-chain/tss-lib) ⭐ 738 expected.
+
+**Security status:** Secure
+UC-secure under class-group hardness; resistant to adaptive corruptions in the asynchronous model.
+
+**Community acceptance:** Emerging
+2025 paper; class-group threshold ECDSA gaining traction as alternative to Paillier-based approaches. Related: [CGGMP Threshold ECDSA](#cggmp-threshold-ecdsa), [DKLs23](#dkls23--next-generation-threshold-ecdsa).
+
+---
 
 ## Blind and Partially Blind Signatures
 

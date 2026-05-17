@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (60 schemes)
+## Contents (63 schemes)
 
 **[Fully Homomorphic Encryption (FHE)](#fully-homomorphic-encryption-fhe)**
 - [Microsoft SEAL](#microsoft-seal)
@@ -1112,6 +1112,78 @@ Pegasus published at IEEE S&P 2021. Active research on improving conversion effi
 
 ---
 
+
+### Ajax (Fast Threshold FHE without Noise Flooding)
+
+**Goal:** Threshold FHE protocol that avoids noise flooding — the standard but expensive technique used to hide secret-key shares during threshold decryption. Replaces noise flooding with simulation-based proof to drastically reduce ciphertext expansion and computational cost.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Ajax (Threshold FHE without Noise Flooding)** | 2025 | BGV/BFV/CKKS + simulation proof | First efficient TFHE protocol skipping noise flooding [[1]](https://eprint.iacr.org/2025/1834) |
+
+**State of the art:** Removes the dominant overhead in classical threshold FHE constructions. Applicable to BGV, BFV, CKKS, and lattice-based PKE. Enables practical threshold homomorphic decryption for production deployments.
+
+**Production readiness:** Research
+Academic protocol; reference implementation expected to integrate with major FHE libraries.
+
+**Implementations:**
+- [OpenFHE](https://github.com/openfheorg/openfhe-development) ⭐ 877 — C++, generic FHE library; Ajax-style protocols can be implemented atop it
+
+**Security status:** Secure
+Proven secure under LWE/RLWE assumptions; replaces statistical hiding (noise flooding) with computational simulation soundness.
+
+**Community acceptance:** Emerging
+2025 paper; expected to influence threshold FHE library design.
+
+---
+
+### Dense-Key Bootstrapping with Subring Secret Encapsulation
+
+**Goal:** Bootstrap BGV/BFV/CKKS ciphertexts encrypted under dense (small Hamming-weight) keys via subring secret encapsulation. Improves practical bootstrapping efficiency by trading sparse-key advantages for subring structure.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Subring Dense-Key Bootstrap** | 2025 | BGV/BFV/CKKS + subring encapsulation | Practical dense-key bootstrap; benchmark improvements over sparse-key bootstrap [[1]](https://eprint.iacr.org/2025/1594) |
+
+**State of the art:** Alternative to ternary/sparse-key bootstrapping. Subring encapsulation enables full-Hamming-weight keys without the slowdown of traditional dense-key bootstrap.
+
+**Production readiness:** Research
+Algorithmic improvement; integratable into OpenFHE / HElib / Microsoft SEAL.
+
+**Implementations:**
+- Reference implementation in paper supplement; not yet upstream in major libraries.
+
+**Security status:** Secure
+LWE/RLWE-based; standard FHE security analysis applies.
+
+**Community acceptance:** Emerging
+Late 2025; relevant for production FHE deployments needing dense-key compatibility.
+
+---
+
+### Low-Latency CKKS Bootstrapping via Roots of Unity
+
+**Goal:** Reduce CKKS bootstrap latency by exploiting roots-of-unity decompositions in the homomorphic linear transform step. Targets the highest-cost operation in approximate FHE workflows.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Low-Latency CKKS Bootstrap** | 2025 | CKKS + RoU decomposition | Lower latency than baseline CKKS bootstrap; suitable for interactive workloads [[1]](https://eprint.iacr.org/2025/651) |
+
+**State of the art:** Current best CKKS bootstrap latency optimization. Bootstrap is the dominant cost in approximate FHE deployments; this reduction directly improves end-to-end FHE inference latency.
+
+**Production readiness:** Research
+Algorithmic improvement; ready for upstream into Lattigo / OpenFHE.
+
+**Implementations:**
+- [Lattigo](https://github.com/tuneinsight/lattigo) ⭐ 624 — Go, reference CKKS library; algorithm applicable
+
+**Security status:** Secure
+Equivalent CKKS security; only changes the linear-transform decomposition.
+
+**Community acceptance:** Emerging
+2025 paper; influences CKKS implementation choices in major libraries.
+
+---
 
 ## Attribute-Based Encryption (ABE)
 
