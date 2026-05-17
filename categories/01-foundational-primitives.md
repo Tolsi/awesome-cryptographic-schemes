@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (62 schemes)
+## Contents (64 schemes)
 
 **[Symmetric Ciphers](#symmetric-ciphers)**
 - [Symmetric Encryption](#symmetric-encryption)
@@ -29,6 +29,8 @@
 - [ARX Ciphers (Add-Rotate-XOR Design Paradigm)](#arx-ciphers-add-rotate-xor-design-paradigm)
 - [Wide Block Ciphers (Adiantum / HCTR2)](#wide-block-ciphers-adiantum--hctr2)
 - [Threefish and Skein (SHA-3 Finalist)](#threefish-and-skein-sha-3-finalist)
+- [Legacy Block Ciphers (Pre-AES Historical)](#legacy-block-ciphers-pre-aes-historical)
+- [Legacy Stream Ciphers (Pre-eSTREAM Historical)](#legacy-stream-ciphers-pre-estream-historical)
 
 **[Public-Key Encryption](#public-key-encryption)**
 - [One-Time Pad / Information-Theoretic Security](#one-time-pad--information-theoretic-security)
@@ -853,6 +855,90 @@ No known practical attacks on full-round Threefish or Skein at recommended param
 
 **Community acceptance:** Niche
 Strong academic reputation as SHA-3 finalist. Not standardized post-competition. Limited adoption outside security research.
+
+---
+
+### Legacy Block Ciphers (Pre-AES Historical)
+
+**Goal:** Reference catalog of pre-AES block ciphers that appear in cryptanalysis literature, legacy protocols, and "Applied Cryptography" (Schneier). Most are either broken, superseded by AES, or retained only for backward compatibility.
+
+| Cipher | Year | Designer | Block / Key | Status |
+|--------|------|----------|-------------|--------|
+| **Lucifer** | 1971 | Feistel (IBM) | 128/128 | Direct DES precursor; partially broken (Biham-Shamir DC) [[1]](https://www.iacr.org/cryptodb/data/paper.php?pubkey=20034) |
+| **Madryga** | 1984 | Madryga | variable | Bit-orientation novel; broken by Biham-Shamir 1991 [[1]](https://link.springer.com/chapter/10.1007/3-540-46416-6_18) |
+| **NewDES** | 1985 | Scott | 64/120 | DES alternative without S-boxes; key-schedule weaknesses; not adopted [[1]](https://link.springer.com/chapter/10.1007/3-540-58108-1_25) |
+| **FEAL-4/8/N/NX** | 1987 | Shimizu-Miyaguchi (NTT) | 64/64 (FEAL-N: 64/128) | First target of differential cryptanalysis; FEAL-4 broken with 8 chosen pairs; FEAL-N broken for all N [[1]](https://link.springer.com/chapter/10.1007/3-540-46877-3_2) |
+| **REDOC II / III** | 1990 | Wood | 80/160-bit / 70/varying | Patented (Cryptech); REDOC II reduced rounds broken; REDOC III obscure [[1]](https://link.springer.com/chapter/10.1007/3-540-58108-1_23) |
+| **Khufu / Khafre** | 1990 | Merkle (Xerox) | 64/512 | Khufu: S-boxes from key; Khafre: fixed S-boxes; Biham-Shamir DC breaks reduced rounds [[1]](https://link.springer.com/chapter/10.1007/3-540-46766-1_22) |
+| **LOKI89 / LOKI91 / LOKI97** | 1990–1997 | Brown-Pieprzyk-Seberry (Australia) | 64/64 or 128/256 | DES alternative; LOKI89 broken by DC; LOKI97 broken by Knudsen-Rijmen [[1]](https://link.springer.com/chapter/10.1007/3-540-46766-1_22) |
+| **MMB (Modular Multiplication-Based)** | 1993 | Daemen | 128/128 | IDEA-style modular multiplication; broken by Wagner 1995 (related-key) [[1]](https://link.springer.com/chapter/10.1007/3-540-58108-1_22) |
+| **SAFER K-64 / K-128 / SK / + / ++** | 1993–1998 | Massey (Cylink) | 64/64 or 128/128 | SAFER+ was AES candidate; SAFER++ in Bluetooth E0/E1 derivation; key-schedule attacks on early variants [[1]](https://link.springer.com/chapter/10.1007/3-540-58108-1_2) |
+| **Skipjack** | 1993 (declass. 1998) | NSA | 64/80 | Designed for Clipper chip; unbalanced Feistel; reduced-round impossible-differential breaks (Biham-Biryukov-Shamir 1999) [[1]](https://www.iacr.org/archive/eurocrypt99/15920012/15920012.pdf) |
+| **3-Way** | 1994 | Daemen-Govaerts-Vandewalle | 96/96 | Bit-slice friendly; related-key attacks [[1]](https://link.springer.com/chapter/10.1007/3-540-58108-1_24) |
+| **GOST 28147-89** | 1989 | Soviet government | 64/256 | Soviet/Russian standard; weak keys; analyzed in [GOST R Block Cipher](21-regional-national-cryptography.md) |
+| **CAST-128 (CAST5) / CAST-256** | 1996/1998 | Adams-Tavares | 64/128 or 128/256 | CAST-128 in RFC 2144 (used in OpenPGP, GnuPG); CAST-256 was AES candidate [[1]](https://www.rfc-editor.org/rfc/rfc2144) |
+| **RC2** | 1987/1996 | Rivest (RSA Inc.) | 64/8–1024 | Designed as DES drop-in; export-controlled at 40 bits; broken at 40-bit by brute force in hours; RFC 2268 [[1]](https://www.rfc-editor.org/rfc/rfc2268) |
+| **RC5** | 1994 | Rivest | 32/64/128 / 0–2040 | Variable-parameter ARX-style cipher; family of designs; basis for RC6 (AES candidate); Distributed.net RC5-64 broken in 2002 [[1]](https://people.csail.mit.edu/rivest/Rivest-rc5rev.pdf) |
+| **SXAL8 / MBAL** | 1993 | Hitachi | 64/64 (SXAL) | Japanese substitution-XOR-add-look ciphers; obscure; reduced-round breaks [[1]](https://link.springer.com/chapter/10.1007/3-540-58108-1_26) |
+| **CA-1.1** | 1991 | Gutowitz | 384/1088 | Cellular automaton-based; obscure, no widely-cited break [[1]](https://link.springer.com/chapter/10.1007/3-540-58108-1_30) |
+| **CRAB** | 1993 | Kaliski-Robshaw (RSA Labs) | 8192/varying | Hash-function-based block cipher experiment; never deployed [[1]](https://link.springer.com/chapter/10.1007/3-540-58108-1_27) |
+
+**State of the art:** All these ciphers are retired in favor of [AES](#symmetric-encryption). Skipjack was an interesting NSA case study (Clipper chip controversy). FEAL is the classical example used in cryptanalysis courses since it motivated differential cryptanalysis. SAFER+ influenced Bluetooth E0/E1 key derivation. RC5's ARX style influenced ChaCha20 and Speck. See [Differential Cryptanalysis](22-attacks-cryptanalysis.md#differential-cryptanalysis-biham-shamir) and [Linear Cryptanalysis](22-attacks-cryptanalysis.md#linear-cryptanalysis-matsuis-attack) for the analytical techniques that ended this generation.
+
+**Production readiness:** Deprecated
+Universally retired from new designs. CAST-128 remains in OpenPGP for legacy compatibility; Skipjack appeared in some US-government legacy systems before deprecation in 2010.
+
+**Implementations:**
+- [OpenSSL](https://github.com/openssl/openssl) ⭐ 29k — C, includes CAST-128, RC2, RC5 (legacy modules)
+- [Crypto++](https://github.com/weidai11/cryptopp) ⭐ 5.1k — C++, reference implementations of most legacy ciphers (SAFER, MARS, CAST, GOST, IDEA, Skipjack)
+- [Bouncy Castle](https://github.com/bcgit/bc-java) ⭐ 2.8k — Java, comprehensive legacy cipher support
+- [GnuPG](https://gnupg.org/) — C, CAST-128 (RFC 2440 legacy compatibility)
+
+**Security status:** Broken
+FEAL-N (all rounds), Madryga, MMB, LOKI89, REDOC II reduced-round all have practical breaks. RC2-40 is brute-forceable. Skipjack 31-round reduced version has impossible-differential attacks; full 32-round Skipjack has no practical break but 80-bit key is below modern minimum. RC5 with 64-bit blocks is vulnerable to SWEET32-style birthday attacks.
+
+**Community acceptance:** Deprecated
+NIST removed Skipjack from approved algorithms in 2016. CAST-128 retained in RFC 2144 for OpenPGP legacy. All others are textbook examples only; no new deployments since ~2001 (AES standardization).
+
+---
+
+### Legacy Stream Ciphers (Pre-eSTREAM Historical)
+
+**Goal:** Reference catalog of pre-eSTREAM (pre-2008) stream ciphers — GSM voice encryption, archive encryption, hardware-oriented designs that appear in legacy protocols, "Applied Cryptography" (Schneier), and stream cipher cryptanalysis literature.
+
+| Cipher | Year | Designer | State / Key | Status |
+|--------|------|----------|-------------|--------|
+| **A5/1** | 1987 | ETSI (GSM) | 64 bits across 3 LFSRs / 54-bit effective | GSM voice over Europe/US; broken by Biryukov-Shamir-Wagner (2000) real-time attack; Karsten Nohl rainbow tables (2009) [[1]](https://link.springer.com/chapter/10.1007/3-540-44706-7_1) |
+| **A5/2** | 1989 | ETSI | weakened A5/1 | Export-grade GSM; trivially broken (Goldberg-Wagner-Briceno 1999); banned by 3GPP in 2007 [[1]](https://link.springer.com/chapter/10.1007/978-3-540-39887-5_5) |
+| **A5/3 (KASUMI)** | 1999 | ETSI/3GPP | 64-bit block (used as stream) / 128 | UMTS/3G/2.5G; related-key sandwich attack (Dunkelman-Keller-Shamir 2010) gives theoretical full-key break but not practical for UMTS deployment [[1]](https://eprint.iacr.org/2010/013) |
+| **E0 (Bluetooth)** | 1999 | Bluetooth SIG | 128-bit state / 128 | Combiner of 4 LFSRs; Lu-Meier-Vaudenay 2005 broke with 2^39 known keystream [[1]](https://link.springer.com/chapter/10.1007/11535218_8) |
+| **RC4** | 1987 (1994 leak) | Rivest (RSA) | 2048-bit state / 40–2048 | Used in WEP, TLS, SSH-1; broken by FMS attack (Fluhrer-Mantin-Shamir 2001), AlFardan-Bernstein-Paterson 2013, and bias-based plaintext recovery; NOMORE removed RC4 from TLS in RFC 7465 [[1]](https://www.rsa.com/rsalabs/node.asp?id=2009) — covered separately at [RC4 Stream Cipher (Historical)](#rc4-stream-cipher-historical) |
+| **SEAL 3.0** | 1997 | Rogaway-Coppersmith (IBM) | SHA-1-based / 160 | Software-optimized; SEAL 2.0 broken by Fluhrer-Lucks; SEAL 3.0 has distinguisher attacks but no practical break [[1]](https://link.springer.com/chapter/10.1007/978-3-540-78967-3_27) |
+| **WAKE (Word Auto-Key Encryption)** | 1993 | Wheeler | 128-bit / variable | Self-modifying key schedule; broken by chosen-plaintext attack (Biham 1994) [[1]](https://link.springer.com/chapter/10.1007/3-540-58108-1_28) |
+| **PKZIP Stream Cipher** | 1989 | Roger Schlafly (PKWARE) | 96-bit / password-derived | Used in ZIP archive encryption; broken by Biham-Kocher 1994 known-plaintext attack; replaced by AES-256 in ZIP 2.0 spec [[1]](https://link.springer.com/chapter/10.1007/3-540-60590-8_12) |
+| **GIFFORD** | 1985 | Gifford (MIT) | 64-bit / 64 | Newspaper distribution cipher; broken by Cain-Schneier 1997 [[1]](https://link.springer.com/article/10.1007/BF02620231) |
+| **ORYX** | 1990s | TIA | LFSR-based / 96 | US cellular (TDMA/IS-54); broken by Wagner-Schneier-Kelsey 1998 [[1]](https://www.schneier.com/academic/paperfiles/paper-cmea.html) |
+| **CMEA (Cellular Message Encryption Algorithm)** | 1991 | TIA | 64-bit block (used as stream) / 64 | US cellular signaling; broken by Wagner-Schneier-Kelsey 1997 [[1]](https://www.schneier.com/academic/paperfiles/paper-cmea.html) |
+| **NANOTEQ** | 1990s | Nanoteq (South Africa) | proprietary | South African military stream cipher; details classified, no public cryptanalysis [[1]](https://link.springer.com/chapter/10.1007/3-540-58108-1_28) |
+| **RAMBUTAN** | 1990s | CESG (UK) | proprietary | UK government stream cipher; classified, no public spec [[1]](https://en.wikipedia.org/wiki/Rambutan_(cryptography)) |
+| **Hughes XPD/KPD** | 1990s | Hughes Aircraft | proprietary | Voice encryption for military radios; no public cryptanalysis |
+
+**State of the art:** Modern designs (ChaCha20, Trivium, Grain, ZUC, SNOW 3G in [Hardware-Oriented Stream Ciphers](#hardware-oriented-stream-ciphers-estream--3gpp)) have replaced all of these. Cryptanalysis of A5/1 and RC4 are textbook examples illustrating LFSR weaknesses and key-scheduling vulnerabilities respectively. GSM still negotiates A5/1 in many networks despite its being broken.
+
+**Production readiness:** Deprecated
+RC4 was removed from TLS by RFC 7465 (2015). A5/2 was banned by 3GPP in 2007. PKZIP cipher is replaced by AES-256 in archive software. SEAL, WAKE, GIFFORD, CMEA, ORYX have no current deployments.
+
+**Implementations:**
+- [Osmocom](https://github.com/osmocom/libosmocore) ⭐ 50 — C, A5/1 and A5/2 for GSM testing
+- [gr-gsm](https://github.com/ptrkrysik/gr-gsm) ⭐ 2.3k — Python/C++, A5/1 cryptanalysis using rainbow tables
+- [Bluetooth E0 reference](https://github.com/greatscottgadgets/ubertooth) ⭐ 1.7k — C, E0 implementation for Bluetooth sniffing
+- [pkcrack](https://github.com/keyunluo/pkcrack) ⭐ 240 — C, Biham-Kocher attack on PKZIP cipher
+
+**Security status:** Broken
+A5/1, A5/2, E0, RC4 (in TLS context), PKZIP cipher, CMEA, ORYX, GIFFORD all have practical breaks. SEAL 3.0 has only theoretical distinguishers. KASUMI has theoretical related-key break but is still secure as deployed in 3G.
+
+**Community acceptance:** Deprecated
+3GPP banned A5/2 in 2007. IETF removed RC4 from TLS in 2015 (RFC 7465). PKZIP and CMEA are legacy compatibility only. Bluetooth E0 replaced by AES-CCM in Bluetooth 4.0+ LE.
 
 ---
 

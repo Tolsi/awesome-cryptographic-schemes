@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (52 schemes)
+## Contents (53 schemes)
 
 **[Electronic Voting](#electronic-voting)**
 - [End-to-End Verifiable E-Voting](#end-to-end-verifiable-e-voting)
@@ -14,6 +14,7 @@
 - [Wombat Voting System](#wombat-voting-system)
 - [Blockchain-Based Voting: Deployments and Controversies](#blockchain-based-voting-deployments-and-controversies)
 - [Return Code Voting Systems (CHVote, Swiss Post Return Codes)](#return-code-voting-systems-chvote-swiss-post-return-codes)
+- [ElectionGuard (Microsoft)](#electionguard-microsoft)
 
 **[Visual and Physical Cryptography](#visual-and-physical-cryptography)**
 - [Visual Cryptography](#visual-cryptography)
@@ -332,6 +333,35 @@ Cryptographic design of Swiss Post return codes is sound under threshold assumpt
 
 **Community acceptance:** Niche
 Swiss Post system received independent security review by multiple academic teams (Bernhard et al., Haines et al.); adopted by Swiss federal chancellery for e-voting; no international standard; limited deployment outside Switzerland.
+
+---
+
+
+### ElectionGuard (Microsoft)
+
+**Goal:** Open-source SDK from Microsoft Research providing end-to-end verifiable tallying for existing election systems via additive ElGamal homomorphic encryption, Pedersen DKG among trustees, threshold decryption, and Chaum-Pedersen NIZK proofs of correct decryption. Lets any voter (or independent auditor) cryptographically verify that every recorded ballot was counted correctly without revealing how anyone voted. Designed to bolt onto existing scanners/voting machines rather than replace them.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ElectionGuard 1.x** | 2019 | EC-ElGamal additive + Pedersen DKG + Chaum-Pedersen NIZK | Open-source SDK; ballots encrypted on-device; homomorphic tally; threshold decryption among guardians [[1]](https://www.electionguard.vote/spec/) |
+| **ElectionGuard 2.0 (preencrypted ballots)** | 2023 | + Benaloh challenge + ballot-code commitments | Adds pre-encrypted paper ballots for mail-in voting; voter spoils-or-casts protocol [[1]](https://www.electionguard.vote/spec/2.0.0/) |
+| **First-use pilots** | 2020– | — | Used in Fulton County WI (2020), Maryland mock election (2021), Idaho/Preston pilot (2022), College Park MD municipal (2023) [[1]](https://www.microsoft.com/en-us/security/blog/2021/03/03/protecting-democracy-with-electionguard/) |
+
+ElectionGuard's cryptographic core is a textbook additive-ElGamal e-voting pipeline very close to the [voting.py](#) demonstration protocol: voters' ballots are encrypted under a joint election public key produced by a Pedersen DKG run among k-of-n guardians; each candidate's encrypted votes are homomorphically summed; the guardian quorum produces partial decryptions of the tally with Chaum-Pedersen NIZK proofs of equality of discrete logarithms; anyone can verify the proofs against the published election record. The disjunctive OR-proof (Cramer-Damgård-Schoenmakers) is used to prove each ballot encrypts a 0/1 value. The "election record" — encrypted ballots + tally + proofs — is published so independent verifiers can run the verification protocol end-to-end. The system explicitly does not address voter authentication, casting integrity (cast-as-intended), or coercion resistance — those layers are delegated to the host voting system. Cross-references: [End-to-End Verifiable E-Voting](#end-to-end-verifiable-e-voting), [MPC for E-Voting (Helios, Belenios, Civitas)](06-multi-party-computation.md#mpc-for-e-voting-helios-belenios-civitas), [Pedersen DKG](05-secret-sharing-threshold-cryptography.md), [Chaum-Pedersen NIZK](04-zero-knowledge-proof-systems.md), [AND/OR Composition (CDS)](04-zero-knowledge-proof-systems.md).
+
+**State of the art:** Reference open-source SDK for verifiable tallying; primary U.S. vendor-neutral verifiable voting effort. Adopted by Hart InterCivic (Verity scanner) and Enhanced Voting; piloted in real low-stakes municipal elections. Specification (Spec 2.0, 2023) is the only major non-academic E2E verifiable voting standard.
+
+**Implementations:**
+- [electionguard-core2](https://github.com/microsoft/electionguard-core2) ⭐ 75 — C++/.NET, primary reference implementation (Spec 2.0)
+- [electionguard-python](https://github.com/microsoft/electionguard-python) ⭐ 270 — Python, Spec 1.x reference
+- [electionguard-rust](https://github.com/microsoft/electionguard-rust) ⭐ 35 — Rust, Spec 2.0 verifier
+- [electionguard-cpp](https://github.com/microsoft/electionguard-cpp) ⭐ 105 [archived] — C++, Spec 1.x
+
+**Security status:** Caution
+Cryptographic design (additive ElGamal + Pedersen DKG + Chaum-Pedersen + CDS OR-proof) is sound and based on textbook constructions. Independent formal analyses identified parameter-validation gaps in early releases (Pereira et al. 2020, Haines et al. 2020); Spec 2.0 addresses most issues. Practical security depends on host voting-system integrity (ballot capture, voter authentication) — ElectionGuard provides verifiability of tallying, not of voter intent.
+
+**Community acceptance:** Emerging
+Backed by Microsoft Research and Josh Benaloh (verifiable-voting pioneer); reviewed by academic cryptographers (Pereira, Adida, Halderman); piloted in several real elections; growing interest from U.S. election officials. Not yet a formal standard. Competes with [Belenios](06-multi-party-computation.md#mpc-for-e-voting-helios-belenios-civitas) (academic-led, deployed in French university and IACR elections).
 
 ---
 

@@ -70,9 +70,9 @@
     Sovereign cryptographic algorithms mandated by national standardization bodies: SM4/SM3/SM2 (China, OSCCA), GOST R 34.12/34.11/34.10 including Kuznyechik, Magma, and Streebog (Russia), ARIA/SEED/LSH (South Korea, KISA/NIS), Camellia-GCM/ARIA-GCM and CLEFIA/MISTY1 (Japan, CRYPTREC).
 
 22. **[Attacks & Cryptanalysis](categories/22-attacks-cryptanalysis.md)**
-    Classical and modern attacks on cryptographic primitives and protocols: Pohlig-Hellman and MOV attacks on discrete log, differential cryptanalysis (Biham-Shamir), linear cryptanalysis (Matsui), Bleichenbacher's padding oracle attack / ROBOT, DROWN cross-protocol attack, and refined ARX cipher distinguishers.
+    Classical and modern attacks on cryptographic primitives and protocols: Pohlig-Hellman, Pollard rho/lambda, MOV, Smart, Weil descent, and index calculus attacks on discrete log; differential, linear, boomerang, slide, integral, MITM/biclique, algebraic (XL/XSL), and cube cryptanalysis of symmetric ciphers; FMS/NOMORE biases on RC4 and correlation attacks on LFSR stream ciphers; Wang's MD5/SHA-1 collisions, length-extension, multi-collision (Joux), herding (Nostradamus), and rebound attacks on hash functions; GNFS, ECM, Wiener-Boneh-Durfee, Coppersmith, and ROCA factoring/RSA attacks; LLL/BKZ lattice reduction and ECDSA-nonce-bias (HNP) attacks; Shor's, Grover's, Simon's, and Kuperberg's quantum cryptanalysis; padding-oracle, BEAST/POODLE/Lucky 13, CRIME/BREACH, Sweet32, FREAK/Logjam, GCM-nonce-reuse, and renegotiation/3SHAKE protocol-level attacks; SPA/DPA, cache-timing/Spectre/Meltdown/MDS/Hertzbleed/GoFetch, fault injection (Bellcore, Rowhammer, PlunderVolt), and cold-boot side-channel attacks.
 
-See [INDEX.md](INDEX.md) for an alphabetical index of all 1197 schemes.
+See [INDEX.md](INDEX.md) for an alphabetical index of all 1219 schemes.
 
 ---
 
