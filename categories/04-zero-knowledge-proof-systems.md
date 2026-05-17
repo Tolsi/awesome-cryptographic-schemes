@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (74 schemes)
+## Contents (79 schemes)
 
 **[Foundational ZK Concepts](#foundational-zk-concepts)**
 - [Zero-Knowledge Proofs (ZK)](#zero-knowledge-proofs-zk)
@@ -1200,6 +1200,90 @@ Published in Journal of Cryptology 2024. Backed by Scroll (major Ethereum L2). D
 ---
 
 
+### Plonk Without Random Oracles
+
+**Goal:** Prove PLONK knowledge-soundness in the algebraic group model (AGM) and computational zero-knowledge in the standard model — eliminating the heuristic random-oracle assumption from the original PLONK security proof.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Plonk Without Random Oracles (Fuchsbauer-Sefranek)** | 2026 | AGM + zero-testing assumption | Standard-model security proof for PLONK [[1]](https://eprint.iacr.org/2026/200) |
+
+**State of the art:** Bridges the gap between PLONK's deployed implementation (which assumes ROM) and standard-model security. Important for formal-verification deployments and conservative production use.
+
+**Production readiness:** Research
+Theoretical contribution; influences future PLONK deployments needing standard-model proofs.
+
+**Security status:** Secure
+AGM + zero-testing assumption is well-studied; matches deployed PLONK.
+
+**Community acceptance:** Emerging
+Recent (2026); strengthens theoretical foundation of widely-deployed PLONK.
+
+---
+
+### Symphony (Scalable SNARKs from Lattice-Based High-Arity Folding)
+
+**Goal:** Build scalable SNARKs in the Random Oracle Model using lattice-based high-arity folding — combines folding scheme efficiency with post-quantum security and high-arity (k-to-1 instead of 2-to-1) folding for proof aggregation.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Symphony** | 2025 | Lattice-based high-arity folding + RO | Scalable PQ-secure SNARK via high-arity folding [[1]](https://eprint.iacr.org/2025/1905) |
+
+**State of the art:** Combines lattice-folding scalability with high-arity aggregation. PQ-secure alternative to BN254-based SNARKs for incremental proofs.
+
+**Production readiness:** Research
+Academic prototype.
+
+**Security status:** Secure
+Lattice-MSIS + ROM assumptions.
+
+**Community acceptance:** Emerging
+2025; lattice-folding family gaining traction for PQ-SNARK applications.
+
+---
+
+### HOBBIT (Space-Efficient zkSNARK with Optimal Prover Time)
+
+**Goal:** zkSNARK with optimal prover time complexity AND space-efficient memory footprint. Prior efficient SNARKs traded space for time; HOBBIT achieves both simultaneously.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **HOBBIT** | 2025 | Optimized polynomial IOP + streaming PCS | Optimal prover time AND space; enables proving on memory-constrained hardware [[1]](https://eprint.iacr.org/2025/1214) |
+
+**State of the art:** Current frontier for SNARK prover efficiency. Enables proving large circuits on consumer hardware (laptops, embedded systems) that previously required server-grade RAM.
+
+**Production readiness:** Research
+Reference implementation in paper.
+
+**Security status:** Secure
+Standard SNARK soundness from underlying PCS.
+
+**Community acceptance:** Emerging
+2025; significant practical improvement for client-side proving.
+
+---
+
+### Mangrove (Distributed SNARK via Folding Schemes)
+
+**Goal:** Distribute SNARK proving across multiple machines via folding schemes with Proof-Carrying Data (PCD). Splits large circuits into chunks that can be folded independently in parallel.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Mangrove (Distributed SNARK via Folding)** | 2025 | Folding + PCD + chunked arithmetic circuits | Parallel proving across machines for PLONK-style circuits [[1]](https://eprint.iacr.org/2025/1653) |
+
+**State of the art:** Enables horizontally-scaled proving for large zkVMs and zkRollups. Mangrove specifically supports PLONK arithmetization.
+
+**Production readiness:** Research
+Academic prototype; influences zkRollup proving infrastructure.
+
+**Security status:** Secure
+Folding scheme security + PCD soundness.
+
+**Community acceptance:** Emerging
+2025; practical interest from rollup operators seeking proof distribution.
+
+---
+
 ## STARKs and Transparent Proofs
 
 ---
@@ -1431,6 +1515,27 @@ Foundational taxonomy established by Valiant (2008), Chiesa-Tromer (2010), and B
 
 ---
 
+
+### Proof-Carrying Data via Holography Accumulation
+
+**Goal:** Generic Proof-Carrying Data construction abstracting holographic verification of modern SNARKs via Generalized Bilinear Forms (GBF). Compatible with both univariate and multivariate polynomial commitment schemes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **PCD via Holography Accumulation** | 2026 | Generalized Bilinear Forms (GBF) | Unifies Halo, Nova, HyperNova-style accumulation under one framework [[1]](https://eprint.iacr.org/2026/538) |
+
+**State of the art:** Mathematical unification of holographic SNARK accumulators. Provides a single recipe that instantiates to Halo, Nova, HyperNova, and other accumulation schemes.
+
+**Production readiness:** Research
+Theoretical framework; basis for future generic PCD implementations.
+
+**Security status:** Secure
+Standard PCD security via GBF abstraction.
+
+**Community acceptance:** Emerging
+2026; influential framework for PCD/accumulation scheme design.
+
+---
 
 ## Lookup Arguments and Polynomial Commitments
 

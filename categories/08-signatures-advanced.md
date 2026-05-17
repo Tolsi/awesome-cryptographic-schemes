@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (74 schemes)
+## Contents (80 schemes)
 
 **[Threshold Signatures](#threshold-signatures)**
 - [Threshold Signature Schemes (TSS)](#threshold-signature-schemes-tss)
@@ -437,6 +437,51 @@ UC-secure under class-group hardness; resistant to adaptive corruptions in the a
 
 ---
 
+### Finally! A Compact Lattice-Based Threshold Signature
+
+**Goal:** Lattice-based threshold signature with size close to a single Dilithium signature for thresholds T ≤ 8. Avoids heavy machinery (TFHE, garbled circuits) by running T parallel Dilithium executions.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Compact Lattice TSS (del Pino et al.)** | 2025 | MLWE + SelfTargetMSIS + parallel Dilithium | Signature size ~1 Dilithium for T≤8; no FHE/garbling [[1]](https://eprint.iacr.org/2025/872) |
+
+**State of the art:** Current best lattice-based threshold signature for small thresholds (T≤8). Avoids the order-of-magnitude blowup that FHE-based TSS suffers.
+
+**Production readiness:** Research
+Reference implementation expected; basis for post-quantum threshold-validator and cold-wallet schemes.
+
+**Implementations:**
+- [pq-dilithium-tss](https://github.com/itzmeanjan/dilithium) ⭐ 53 — Rust, baseline Dilithium can be extended
+
+**Security status:** Secure
+MLWE + SelfTargetMSIS standard PQ assumptions; no auxiliary heavy primitives.
+
+**Community acceptance:** Emerging
+2025; addresses major practical gap in PQ threshold signatures.
+
+---
+
+### Simple and Efficient Lattice Threshold Signatures with Identifiable Aborts
+
+**Goal:** Lattice threshold signatures with identifiable aborts — a malicious participant who deviates from the protocol can be identified by honest parties. Built on plain Fiat-Shamir without rejection sampling.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Lattice TSS with Identifiable Aborts** | 2025 | Plain Fiat-Shamir + standard tools | No rejection sampling; identifiable aborts under malicious behavior [[1]](https://eprint.iacr.org/2025/871) |
+
+**State of the art:** Current best lattice TSS with malicious-participant accountability. Identifies the malicious party rather than failing silently.
+
+**Production readiness:** Research
+Academic prototype.
+
+**Security status:** Secure
+Standard lattice assumptions; identifiable-abort property under malicious adversaries.
+
+**Community acceptance:** Emerging
+2025; addresses operational gap in lattice TSS for production threshold systems.
+
+---
+
 ## Blind and Partially Blind Signatures
 
 ---
@@ -495,6 +540,27 @@ Studied in the blind signature and e-cash communities; lattice PBS provides a po
 
 ---
 
+
+### Blinding Post-Quantum Hash-and-Sign Signatures
+
+**Goal:** Generic transformation to add blind-signature functionality to hash-and-sign PQ signatures (Falcon, SLH-DSA, HAWK) without modifying the underlying scheme.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Blinding PQ Hash-and-Sign** | 2025 | Blindable Fiat-Shamir wrapping | Adds blind functionality to Falcon/SLH-DSA/HAWK without re-design [[1]](https://eprint.iacr.org/2025/895) |
+
+**State of the art:** Bridges blind-signature schemes (e-cash, anonymous credentials) with NIST-standardized PQ hash-and-sign signatures. Enables PQ-secure Privacy Pass and PQ e-cash.
+
+**Production readiness:** Research
+Reference protocols described in paper.
+
+**Security status:** Secure
+PQ-blind-signature security inherited from underlying scheme + Fiat-Shamir.
+
+**Community acceptance:** Emerging
+2025; enables PQ migration for blind-signature protocols.
+
+---
 
 ## Ring and Group Signatures
 
@@ -694,6 +760,48 @@ IRTF CFRG draft formalizing hedged signing as the preferred approach; adopted in
 
 ---
 
+
+### Post-Quantum k-Times Traceable Ring Signature (kTRS+)
+
+**Goal:** Lattice-based ring signature where each signer is anonymously limited to k signatures; the (k+1)-th signature is automatically traceable. Uses a lattice-based weak PRF to bind signature count to a unique tag per use.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **kTRS+** | 2026 | Lattice wPRF + ring signature | Anonymous up to k signatures; (k+1)-th traceable [[1]](https://eprint.iacr.org/2026/697) |
+
+**State of the art:** First efficient lattice-based k-times traceable ring signature. Enables anonymous-up-to-quota voting, anonymous reputation systems with abuse bounds.
+
+**Production readiness:** Research
+Academic prototype.
+
+**Security status:** Secure
+Lattice assumptions; PQ-secure.
+
+**Community acceptance:** Emerging
+2026; relevant for anonymous-but-accountable applications.
+
+---
+
+### Lattice Group Signatures, Revisited
+
+**Goal:** Modernize lattice-based group signatures with improved compactness, security model, and revocation efficiency. Addresses prior lattice GS schemes' large parameter sizes.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Lattice GS Revisited** | 2026 | Lattice trapdoors + improved encoding | Smaller signatures than prior lattice GS; modern security model [[1]](https://eprint.iacr.org/2026/847) |
+
+**State of the art:** Current best lattice-based group signatures. Smaller signature sizes than 2020-era constructions.
+
+**Production readiness:** Research
+Academic prototype.
+
+**Security status:** Secure
+Standard lattice assumptions.
+
+**Community acceptance:** Emerging
+2026; advances PQ group-signature deployability.
+
+---
 
 ## Aggregate and BLS Signatures
 
@@ -1151,6 +1259,48 @@ Addresses a clear open problem (threshold issuance of delegatable credentials); 
 
 ---
 
+
+### Compact Post-Quantum Strong Designated Verifier from Isogenies
+
+**Goal:** Compact PQ strong designated verifier signature scheme built from isogeny-based primitives. The verifier is the only party who can validate; outsiders learn nothing — even existence is ambiguous.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **PQ Strong DVS (Isogeny)** | 2025 | Isogeny + SDVS encoding | Compact size; PQ-secure designated verifier [[1]](https://eprint.iacr.org/2025/1335) |
+
+**State of the art:** First PQ strong-designated-verifier signature with compact size. Useful for receipt-free voting, deniable messaging, attestation with limited verifier set.
+
+**Production readiness:** Research
+Academic prototype; isogeny crypto practical for compact PQ DVS.
+
+**Security status:** Caution (PQ isogeny)
+Isogeny-based PKE was broken (Castryck-Decru 2022 on SIDH); current isogeny schemes use different structures. Independent cryptanalysis ongoing.
+
+**Community acceptance:** Emerging
+2025; PQ DVS is niche but growing area.
+
+---
+
+### Migration to Post-Quantum Cryptography: From ECDSA to ML-DSA
+
+**Goal:** Practical guidance and protocol-design patterns for migrating ECDSA-based deployments to ML-DSA (NIST FIPS 204). Covers signature-size mitigation, key rotation, hybrid signatures, agility patterns.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **ECDSA → ML-DSA Migration Guide** | 2025 | Migration patterns + benchmarks | Hybrid signatures, signature-size mitigation, agility for production deployments [[1]](https://eprint.iacr.org/2025/2025) |
+
+**State of the art:** Practical migration playbook for production systems. Addresses TLS, Bitcoin/Ethereum, X.509, SSH — the major ECDSA-deployment domains.
+
+**Production readiness:** Reference (guidance document)
+Influences CABF / IETF migration roadmaps.
+
+**Security status:** Secure (under proper migration)
+Hybrid ECDSA+ML-DSA prevents downgrade attacks; pure ML-DSA after migration.
+
+**Community acceptance:** Standard
+2025; aligns with NIST CNSA 2.0 migration timelines.
+
+---
 
 ## Structural Signature Primitives
 
