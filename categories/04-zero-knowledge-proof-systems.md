@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (69 schemes)
+## Contents (74 schemes)
 
 **[Foundational ZK Concepts](#foundational-zk-concepts)**
 - [Zero-Knowledge Proofs (ZK)](#zero-knowledge-proofs-zk)
@@ -1873,6 +1873,114 @@ Active Ethereum ecosystem project. Backed by notable investors. Novel approach t
 
 ---
 
+
+### zkPyTorch (Hierarchical Compiler for zkML)
+
+**Goal:** Compile PyTorch ML models into zero-knowledge proofs of correct inference. Bridges ML practitioner workflows (PyTorch) and ZK backends (Expander) so model authors don't manually write circuits.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **zkPyTorch** | 2025 | PyTorch → Expander | VGG-16 proof in 2.2 s / CIFAR-10 image; Llama-3 inference in 150 s/token [[1]](https://eprint.iacr.org/2025/535) |
+
+**State of the art:** Best-in-class compiler tooling for zkML. Eliminates manual circuit writing for major model families (CNN, Transformer); integrates with existing PyTorch training pipelines.
+
+**Production readiness:** Experimental
+Active development; usable for research workloads.
+
+**Implementations:**
+- [Expander](https://github.com/PolyhedraZK/Expander) ⭐ 233 — Rust, ZK proof system backend that zkPyTorch targets
+
+**Security status:** Secure
+Soundness inherited from Expander GKR proof system.
+
+**Community acceptance:** Emerging
+2025 paper; pushes practical zkML toward production usability.
+
+---
+
+### zkGPT (Non-Interactive ZK Proofs for LLM Inference)
+
+**Goal:** Prove correct LLM inference (GPT-2, Llama family) in zero knowledge with practical proving time. Achieves 279× speedup over previous state-of-the-art zkLLM systems.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **zkGPT** | 2025 | Optimized Transformer arithmetization | GPT-2 inference proved in < 25 s; 279× speedup vs prior zkLLM [[1]](https://eprint.iacr.org/2025/1184) |
+
+**State of the art:** Fastest zkLLM proof system to date. Combines lookup-argument optimizations with Transformer-specific gadget design.
+
+**Production readiness:** Experimental
+Research prototype; suitable for verifying LLM API outputs in adversarial-client settings.
+
+**Security status:** Secure
+Cryptographic soundness from underlying lookup + sumcheck arguments.
+
+**Community acceptance:** Emerging
+2025 paper; significant zkLLM milestone reducing proof cost by orders of magnitude.
+
+---
+
+### zkRNN (ZK Proofs for Recurrent Neural Network Inference)
+
+**Goal:** Generate zero-knowledge proofs for RNN inference (LSTM, GRU) — relevant for time-series ML, NLP pipelines, sequence modeling where Transformer-only zkML doesn't cover the model class.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **zkRNN** | 2026 | RNN-specific arithmetization | Proves LSTM/GRU inference correctness in ZK [[1]](https://eprint.iacr.org/2026/073) |
+
+**State of the art:** First specialized zkML system for recurrent architectures. Recurrent gates require different gadget design than Transformer attention layers.
+
+**Production readiness:** Research
+Academic prototype.
+
+**Security status:** Secure
+Soundness via cryptographic backend (likely Spartan / Groth16 variant per paper).
+
+**Community acceptance:** Emerging
+Recent (2026); fills gap in zkML coverage for non-Transformer architectures.
+
+---
+
+### Zero-Knowledge AI Inference with High Precision (IEEE 754)
+
+**Goal:** Generate ZK proofs of AI inference performed under high-precision floating-point semantics (IEEE 754) rather than fixed-point approximation. Bridges the gap between standard FP32/FP64 ML practice and ZK arithmetic.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **High-Precision zkAI** | 2025 | Numerical analysis + relative-error-bound ZK | Proves AI inference under IEEE 754 FP semantics; novel relative-error gadgets [[1]](https://eprint.iacr.org/2025/1732) |
+
+**State of the art:** Bridges the precision gap between ML practice and ZK theory. Most prior zkML quantized models to int8/int16; this work proves correctness of full FP32/FP64 inference.
+
+**Production readiness:** Research
+Academic prototype; basis for high-fidelity zkML deployments.
+
+**Security status:** Secure
+Cryptographic soundness + numerical correctness within proved error bounds.
+
+**Community acceptance:** Emerging
+2025 paper; addresses key practical limitation of zkML.
+
+---
+
+### Architecture-Private ZK Proof of Neural Networks
+
+**Goal:** Prove correct execution of a committed neural network on public input WITHOUT revealing the architecture (layer counts, hidden sizes, attention heads). Useful for proprietary models served via API where architecture is IP.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Architecture-Private ZKP** | 2025 | Universal NN circuit + commitment | Architecture hidden from verifier; only behavior proven [[1]](https://eprint.iacr.org/2025/2211) |
+
+**State of the art:** Novel privacy axis for zkML — hides not just weights but architecture. Enables ML-as-a-service proof of correctness without revealing model design.
+
+**Production readiness:** Research
+Academic prototype.
+
+**Security status:** Secure
+ZK soundness + simulation-based privacy of architecture commitment.
+
+**Community acceptance:** Emerging
+2025 paper; addresses unique commercial use case for zkML.
+
+---
 
 ## Bulletproofs and Range Proofs
 

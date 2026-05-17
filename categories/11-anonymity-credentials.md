@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (60 schemes)
+## Contents (61 schemes)
 
 **[Anonymous Credentials](#anonymous-credentials)**
 - [Anonymous Credentials](#anonymous-credentials)
@@ -549,6 +549,27 @@ Active NIST/IETF discussion on PQ credential migration; PQ-BBS aims for W3C VC e
 
 ---
 
+
+### SoK: Anonymous Credentials for Digital Identity Wallets (EUDI)
+
+**Goal:** Systematization-of-Knowledge survey of anonymous credential schemes for digital identity wallets, in the context of the European Digital Identity Wallet (EUDI) framework launching 2026.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **SoK: AC for Digital Identity Wallets** | 2026 | Survey + design recommendations | Analyzes EUDI wallet anon-cred requirements; benchmarks BBS+, ECDAA, PS, mDL, IDEMIX [[1]](https://eprint.iacr.org/2026/330) |
+
+**State of the art:** Comprehensive analysis of how production digital identity systems should integrate anonymous credentials. Identifies gaps in current EUDI proposals re: selective disclosure, unlinkability, post-quantum readiness.
+
+**Production readiness:** Reference (SoK)
+Survey, not a deployable scheme; shapes EUDI rollout design.
+
+**Security status:** N/A (survey)
+Analyzes security properties of multiple AC schemes (BBS+, PS, ECDAA, IDEMIX).
+
+**Community acceptance:** Standard (for SoK)
+Influential SoK; cited in EUDI wallet design discussions.
+
+---
 
 ## Mixnets and Anonymous Routing
 

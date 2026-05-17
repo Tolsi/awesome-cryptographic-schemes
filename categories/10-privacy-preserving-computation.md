@@ -2,7 +2,7 @@
 
 
 <!-- TOC -->
-## Contents (69 schemes)
+## Contents (73 schemes)
 
 **[Private Set Operations (PSI / PSU)](#private-set-operations-psi--psu)**
 - [Private Set Intersection (PSI)](#private-set-intersection-psi)
@@ -499,6 +499,68 @@ Google production deployment and open-source library. Published at IEEE S&P. Inf
 ---
 
 
+### JAGUAR (Malicious Unbalanced PSI in Client-Server)
+
+**Goal:** Maliciously-secure unbalanced PSI (large server set, small client set) with novel fixed-VOLE-based OPRF that enables reusable lightweight preprocessing across multiple clients.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **JAGUAR** | 2026 | Fixed-VOLE OPRF + malicious PSI | Reusable preprocessing across clients; sub-linear online cost [[1]](https://eprint.iacr.org/2026/025) |
+
+**State of the art:** Current best malicious-secure unbalanced PSI for client-server deployments. Reusable preprocessing amortizes setup over many clients — ideal for breach-detection services, contact-discovery.
+
+**Production readiness:** Research
+Academic prototype; positioned for integration with HIBP-style password breach services.
+
+**Security status:** Secure
+Malicious security in standard model; OPRF security via VOLE.
+
+**Community acceptance:** Emerging
+2026 paper; advances state-of-the-art for production unbalanced PSI.
+
+---
+
+### Faster Than Ever PSI (New Lightweight Paradigm)
+
+**Goal:** Two-party PSI protocol achieving 1.5× faster runtime than the most efficient VOLE-based PSI through a new lightweight paradigm.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Faster Than Ever PSI** | 2026 | New lightweight non-VOLE primitive | 1.5× faster than VOLE-based PSI; smaller communication [[1]](https://eprint.iacr.org/2026/024) |
+
+**State of the art:** Current fastest balanced two-party PSI. Reduces both compute and bandwidth vs VOLE-OPRF designs.
+
+**Production readiness:** Research
+Reference implementation in paper.
+
+**Security status:** Secure (semi-honest); malicious variant in roadmap.
+
+**Community acceptance:** Emerging
+Recent (2026); challenges VOLE-PSI as the dominant practical approach.
+
+---
+
+### Fuzzy Private Set Intersection from VOLE
+
+**Goal:** Compute fuzzy PSI — intersection of elements within a threshold distance — using VOLE-based primitives. Useful for biometric matching, near-duplicate detection, location proximity.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **Fuzzy PSI from VOLE (van Baarsen-Pu)** | 2025 | VOLE + threshold distance test | First efficient fuzzy PSI under malicious adversaries [[1]](https://eprint.iacr.org/2025/911) |
+
+**State of the art:** Efficient fuzzy PSI in the malicious-security model. Prior fuzzy PSI either required exact match or weak (semi-honest) security; this combines threshold matching with malicious security.
+
+**Production readiness:** Research
+Academic prototype; targets biometric privacy and proximity applications.
+
+**Security status:** Secure
+Malicious security via VOLE-based primitives.
+
+**Community acceptance:** Emerging
+2025 paper; fills gap in fuzzy PSI literature.
+
+---
+
 ## Oblivious RAM and PIR
 
 ---
@@ -967,6 +1029,27 @@ CCS 2023 publications. Active research area. Growing interest as PIR deployment 
 
 ---
 
+
+### InsPIRe (Silent-Preprocessing PIR — IEEE S&P 2026)
+
+**Goal:** Private Information Retrieval protocol combining high throughput AND low query communication via silent preprocessing — server precomputes offline without client involvement. First scheme to achieve both simultaneously.
+
+| Scheme | Year | Basis | Note |
+|--------|------|-------|------|
+| **InsPIRe** | 2025 | Silent preprocessing + LWE/RLWE | IEEE S&P 2026; high throughput + low query cost [[1]](https://eprint.iacr.org/2025/1352) |
+
+**State of the art:** Current best PIR for high-throughput server-side workloads. Silent preprocessing eliminates client-server interaction overhead in setup.
+
+**Production readiness:** Research
+Reference implementation expected; IEEE S&P 2026 acceptance.
+
+**Security status:** Secure
+Computational PIR under LWE/RLWE.
+
+**Community acceptance:** Emerging
+2025 paper, S&P 2026 — high-visibility venue.
+
+---
 
 ## Private Search and Retrieval
 
